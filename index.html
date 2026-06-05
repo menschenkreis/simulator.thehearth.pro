@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Hearth Mastery — Guitar Learning Simulator</title>
+  <meta name="description" content="A gamified guitar learning platform. Quest-based progression through 8 mastery nodes. From first chord to creative identity.">
+  <meta name="theme-color" content="#0d0b08">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎸</text></svg>">
+</head>
+<body>
+
+  <!-- Ember particles (generated via JS) -->
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-content">
+      <div class="hero-icon">🔥</div>
+      <h1 class="hero-title">The Hearth Mastery</h1>
+      <p class="hero-sub">A guitar learning simulator built on quest-based progression. Eight interconnected nodes. One journey from first chord to creative identity.</p>
+      <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap">
+        <a href="#nodes" class="btn btn-gold">Begin Your Quest →</a>
+        <a href="#about" class="btn btn-ghost">Learn More</a>
+      </div>
+      <div class="hero-tagline">// GUITAR LEARNING SIMULATOR v0.1</div>
+    </div>
+  </section>
+
+  <!-- Nodes -->
+  <section class="nodes-section" id="nodes">
+    <div class="section-title">
+      <h2>The Eight Nodes</h2>
+      <p>Each node is a world. Each world has depth.</p>
+    </div>
+    <div class="nodes-grid">
+      <div class="node-card">
+        <div class="node-num">I</div>
+        <div class="node-name">Foundations</div>
+        <div class="node-tag">Level 1</div>
+      </div>
+      <div class="node-card">
+        <div class="node-num">II</div>
+        <div class="node-name">Doing</div>
+        <div class="node-tag">Drills & Skills</div>
+      </div>
+      <div class="node-card">
+        <div class="node-num">III</div>
+        <div class="node-name">Knowing</div>
+        <div class="node-tag">Theory</div>
+      </div>
+      <div class="node-card">
+        <div class="node-num">IV</div>
+        <div class="node-name">Practice</div>
+        <div class="node-tag">Structured Space</div>
+      </div>
+      <div class="node-card">
+        <div class="node-num">V</div>
+        <div class="node-name">Play</div>
+        <div class="node-tag">Songs & Genre</div>
+      </div>
+      <div class="node-card">
+        <div class="node-num">VI</div>
+        <div class="node-name">Create</div>
+        <div class="node-tag">Composition</div>
+      </div>
+      <div class="node-card">
+        <div class="node-num">VII</div>
+        <div class="node-name">Collab</div>
+        <div class="node-tag">Always On</div>
+      </div>
+      <div class="node-card">
+        <div class="node-num">VIII</div>
+        <div class="node-name">Mastery</div>
+        <div class="node-tag">Identity</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section class="features" id="about">
+    <div class="features-inner">
+      <div class="feature">
+        <div class="feature-icon">⚔️</div>
+        <h3>Quest-Based Learning</h3>
+        <p>Every lesson is a quest. Every drill is a challenge. Track your progress through a living map that grows with you.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">🎯</div>
+        <h3>Mastery Tracking</h3>
+        <p>Two axes: technical ability and creative identity. You can be a theory master but still finding your sound. Both matter.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">🎵</div>
+        <h3>Play Real Music</h3>
+        <p>From day one, you're playing songs. Genre-based progression from beginner acoustic to advanced improvisation.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">⏱️</div>
+        <h3>Smart Practice</h3>
+        <p>Tell it how much time you have. Get a focused session built from your progress. Timer, drills, self-assessment.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">🤝</div>
+        <h3>Always-On Collab</h3>
+        <p>Backing tracks, drum beats, play-along space. Play with other instruments. Community linking with musicians.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">✨</div>
+        <h3>Creative Identity</h3>
+        <p>The final node: come home to yourself. What is YOUR sound? The endpoint where everything converges into identity.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Quote -->
+  <section class="quote-section">
+    <blockquote>"Come home to yourself. Let go of levels and lessons. What is YOUR sound?"</blockquote>
+    <cite>— The Hearth Philosophy</cite>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-section">
+    <h2>The Fire Awaits</h2>
+    <p>Your journey from first chord to creative identity starts here.</p>
+    <a href="#" class="btn btn-gold">Enter the Simulator →</a>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <p>The Hearth Mastery · Guitar Learning Simulator · Est. 2026</p>
+  </footer>
+
+  <script>
+    // Generate ember particles
+    for (let i = 0; i < 15; i++) {
+      const ember = document.createElement('div');
+      ember.className = 'ember';
+      ember.style.left = Math.random() * 100 + 'vw';
+      ember.style.bottom = '-10px';
+      ember.style.animationDelay = Math.random() * 8 + 's';
+      ember.style.animationDuration = (6 + Math.random() * 6) + 's';
+      document.body.appendChild(ember);
+    }
+
+    // Node card click effect
+    document.querySelectorAll('.node-card').forEach(card => {
+      card.addEventListener('click', () => {
+        card.style.borderColor = 'var(--gold)';
+        card.style.boxShadow = '0 0 24px rgba(212,175,105,0.2)';
+        setTimeout(() => {
+          card.style.borderColor = '';
+          card.style.boxShadow = '';
+        }, 1000);
+      });
+    });
+  </script>
+</body>
+</html>
