@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Connecting...</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:#000;color:#FF8C00;font-family:'Courier New',Courier,monospace;overflow:hidden;width:100vw;height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center}
+
+  /* CRT scanlines */
+  .scanlines{position:fixed;inset:0;pointer-events:none;z-index:100;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.15) 2px,rgba(0,0,0,.15) 4px)}
+
+  /* CRT flicker */
+  .crt-flicker{position:fixed;inset:0;pointer-events:none;z-index:99;animation:flicker 0.15s infinite}
+  @keyframes flicker{0%{opacity:.97}50%{opacity:1}100%{opacity:.98}}
+
+  /* Vignette */
+  .vignette{position:fixed;inset:0;pointer-events:none;z-index:98;background:radial-gradient(ellipse at center,transparent 60%,rgba(0,0,0,.7) 100%)}
+
+  /* Terminal container */
+  .terminal{width:90%;max-width:600px;padding:24px;position:relative;z-index:10}
+
+  .line{font-size:15px;line-height:1.8;text-shadow:0 0 8px rgba(255,140,0,.6),0 0 20px rgba(255,140,0,.2);opacity:0;white-space:nowrap;overflow:hidden}
+  .line.visible{opacity:1}
+
+  /* Cursor blink */
+  .cursor{display:inline-block;width:10px;height:16px;background:#FF8C00;animation:blink 1s step-end infinite;vertical-align:middle;margin-left:2px;box-shadow:0 0 6px rgba(255,140,0,.5)}
+  @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+
+  /* Loading bar */
+  .bar-container{margin-top:28px;opacity:0;transition:opacity .3s}
+  .bar-container.visible{opacity:1}
+  .bar-label{font-size:13px;margin-bottom:6px;text-shadow:0 0 8px rgba(255,140,0,.5)}
+  .bar-track{width:100%;height:20px;border:1px solid #FF8C00;background:rgba(255,140,0,.05);position:relative;box-shadow:0 0 10px rgba(255,140,0,.15),inset 0 0 6px rgba(255,140,0,.05)}
+  .bar-fill{height:100%;width:0%;background:linear-gradient(90deg,#CC6600,#FF8C00,#FFaa33);transition:width .1s linear;box-shadow:0 0 12px rgba(255,140,0,.6),inset 0 0 4px rgba(255,200,100,.3)}
+  .bar-pct{margin-top:6px;font-size:13px;text-shadow:0 0 8px rgba(255,140,0,.5)}
+
+  /* Flash */
+  .flash{position:fixed;inset:0;background:#FF8C00;opacity:0;z-index:200;pointer-events:none;transition:opacity .4s ease}
+  .flash.active{opacity:1}
+
+  /* Fade out */
+  .fade-out{animation:fadeOut .8s ease forwards}
+  @keyframes fadeOut{to{opacity:0}}
+</style>
+</head>
+<body>
+<div class="scanlines"></div>
+<div class="crt-flicker"></div>
+<div class="vignette"></div>
+<div class="flash" id="flash"></div>
+
+<div class="terminal" id="terminal">
+  <div id="lines"></div>
+  <div class="bar-container" id="barContainer">
+    <div class="bar-label">ESTABLISHING CONNECTION...</div>
+    <div class="bar-track">
+      <div class="bar-fill" id="barFill"></div>
+    </div>
+    <div class="bar-pct" id="barPct">0%</div>
+  </div>
+</div>
+
+<script>
+(function(){
+  const lines = [
+    '> INITIALISING SYSTEM...',
+    '> LOADING KNOWLEDGE MODULES...',
+    '> CONNECTING TO THE HEARTH NETWORK...',
+    '> ESTABLISHING SECURE LINK...',
+    '> SYNCING RESOURCES...',
+    '> VERIFYING INTEGRITY...',
+    '> READY.'
+  ];
+
+  const container = document.getElementById('lines');
+  const barContainer = document.getElementById('barContainer');
+  const barFill = document.getElementById('barFill');
+  const barPct = document.getElementById('barPct');
+  const flash = document.getElementById('flash');
+
+  // Create audio context for dial-up sound (synthesized)
+  let audioCtx;
+  function startDialUp(){
+    try{
+      audioCtx = new (window.AudioContext||window.webkitAudioContext)();
+
+      // Dial tone: two sine waves (350Hz + 440Hz) like a real phone
+      const g = audioCtx.createGain();
+      g.gain.value = 0.08;
+      g.connect(audioCtx.destination);
+
+      const o1 = audioCtx.createOscillator();
+      o1.type='sine'; o1.frequency.value=350;
+      o1.connect(g); o1.start();
+
+      const o2 = audioCtx.createOscillator();
+      o2.type='sine'; o2.frequency.value=440;
+      o2.connect(g); o2.start();
+
+      // After 1.5s switch to modem handshake noise
+      setTimeout(()=>{
+        g.gain.linearRampToValueAtTime(0,audioCtx.currentTime+0.1);
+        o1.stop(audioCtx.currentTime+0.15);
+        o2.stop(audioCtx.currentTime+0.15);
+
+        // Modem screech - white noise with bandpass (20 seconds)
+        const bufSize = audioCtx.sampleRate * 20;
+        const buf = audioCtx.createBuffer(1, bufSize, audioCtx.sampleRate);
+        const data = buf.getChannelData(0);
+        for(let i=0;i<bufSize;i++) data[i]=(Math.random()*2-1);
+
+        const noise = audioCtx.createBufferSource();
+        noise.buffer = buf;
+
+        const bp = audioCtx.createBiquadFilter();
+        bp.type='bandpass';
+        bp.frequency.value=1800;
+        bp.Q.value=5;
+
+        const gn = audioCtx.createGain();
+        gn.gain.value=0.06;
+        gn.gain.linearRampToValueAtTime(0.02,audioCtx.currentTime+15);
+
+        noise.connect(bp);
+        bp.connect(gn);
+        gn.connect(audioCtx.destination);
+        noise.start();
+        noise.stop(audioCtx.currentTime+20);
+
+        // Modem tones overlaid - extended sequence
+        const tones = [
+          {f:1070,t:0.5,d:0.3},{f:1270,t:0.9,d:0.3},
+          {f:1070,t:1.3,d:0.2},{f:1270,t:1.6,d:0.2},
+          {f:2100,t:2.0,d:0.5},{f:1800,t:2.8,d:0.4},
+          {f:2400,t:3.4,d:0.3},{f:1650,t:4.0,d:0.5},
+          {f:980,t:5.5,d:0.4},{f:1400,t:6.2,d:0.3},
+          {f:2200,t:7.0,d:0.5},{f:1850,t:8.0,d:0.4},
+          {f:1100,t:9.0,d:0.3},{f:1600,t:10.0,d:0.5},
+          {f:2000,t:11.0,d:0.3},{f:1300,t:12.0,d:0.4},
+          {f:1750,t:13.0,d:0.3},{f:1900,t:14.0,d:0.5},
+        ];
+        tones.forEach(({f,t,d})=>{
+          const osc = audioCtx.createOscillator();
+          osc.type='sine'; osc.frequency.value=f;
+          const gt = audioCtx.createGain();
+          gt.gain.value=0.04;
+          osc.connect(gt); gt.connect(audioCtx.destination);
+          osc.start(audioCtx.currentTime+t);
+          osc.stop(audioCtx.currentTime+t+d);
+        });
+
+        window._stopDialUp = ()=>{try{gn.gain.value=0;noise.stop()}catch(e){}};
+      },1500);
+
+      window._stopDialUp = ()=>{try{g.gain.value=0;o1.stop();o2.stop()}catch(e){}};
+    }catch(e){console.log('Audio not supported')}
+  }
+
+  function playJingle(){
+    try{
+      if(!audioCtx) audioCtx = new (window.AudioContext||window.webkitAudioContext)();
+      const notes = [523.25,659.25,783.99,1046.50]; // C5 E5 G5 C6
+      notes.forEach((freq,i)=>{
+        const osc = audioCtx.createOscillator();
+        osc.type='sine'; osc.frequency.value=freq;
+        const g = audioCtx.createGain();
+        g.gain.value=0.15;
+        g.gain.exponentialRampToValueAtTime(0.001,audioCtx.currentTime+i*0.15+0.4);
+        osc.connect(g); g.connect(audioCtx.destination);
+        osc.start(audioCtx.currentTime+i*0.15);
+        osc.stop(audioCtx.currentTime+i*0.15+0.5);
+      });
+    }catch(e){}
+  }
+
+  // Type out a line character by character
+  function typeLine(text, el, speed=35){
+    return new Promise(resolve=>{
+      let i=0;
+      const cursor = document.createElement('span');
+      cursor.className='cursor';
+      el.appendChild(cursor);
+      function next(){
+        if(i<text.length){
+          el.insertBefore(document.createTextNode(text[i]),cursor);
+          i++;
+          setTimeout(next,speed+Math.random()*20);
+        }else{
+          cursor.remove();
+          resolve();
+        }
+      }
+      next();
+    });
+  }
+
+  async function run(){
+    // Start audio on user interaction context (passed through)
+    startDialUp();
+
+    // Phase 1: Type lines (0-5s)
+    for(let i=0;i<lines.length;i++){
+      const lineEl = document.createElement('div');
+      lineEl.className='line';
+      container.appendChild(lineEl);
+      lineEl.classList.add('visible');
+      await typeLine(lines[i],lineEl,55);
+      // Dramatic pause after each line, longer on key ones
+      const pause = (i===2||i===4) ? 800 : 350;
+      await new Promise(r=>setTimeout(r,pause));
+    }
+
+    // Phase 2: Loading bar (5-8s)
+    barContainer.classList.add('visible');
+    await new Promise(r=>setTimeout(r,500));
+
+    let pct=0;
+    let stall1Done = false;
+    let stall2Done = false;
+
+    async function stepBar(){
+      while(pct<100){
+        // Stall at 72% for 2.5 seconds
+        if(pct>=72 && !stall1Done){
+          stall1Done=true;
+          barPct.textContent='72% — WAITING FOR SERVER...';
+          await new Promise(r=>setTimeout(r,2500));
+        }
+        // Stall at 97% for 1.5 seconds
+        if(pct>=97 && !stall2Done){
+          stall2Done=true;
+          barPct.textContent='97% — ALMOST THERE...';
+          await new Promise(r=>setTimeout(r,1500));
+        }
+
+        // Step size: slower in the painful zones
+        let step=1;
+        if(pct>50 && pct<72) step=1;
+        if(pct>72 && pct<85) step=1;
+        if(pct>=85 && pct<97) step=1; // slow creep
+
+        pct=Math.min(100,pct+step);
+        barFill.style.width=pct+'%';
+        barPct.textContent=pct+'%';
+
+        // Variable speed — slower near the end
+        let delay=80;
+        if(pct>85 && pct<97) delay=150; // extra slow
+        if(pct>=97) delay=100;
+
+        await new Promise(r=>setTimeout(r,delay));
+      }
+      barPct.textContent='100% — CONNECTION ESTABLISHED';
+    }
+
+    barContainer.classList.add('visible');
+    await new Promise(r=>setTimeout(r,500));
+    await stepBar();
+
+    // Phase 3: Jingle + reveal (8-10s)
+    await new Promise(r=>setTimeout(r,200));
+
+    // Stop dial-up, play jingle
+    if(window._stopDialUp) window._stopDialUp();
+    playJingle();
+
+    // Flash amber
+    flash.classList.add('active');
+    await new Promise(r=>setTimeout(r,400));
+    flash.classList.remove('active');
+
+    // Fade to black then redirect
+    document.getElementById('terminal').classList.add('fade-out');
+    await new Promise(r=>setTimeout(r,800));
+
+    // Mark as seen
+    sessionStorage.setItem('hearth_boot_seen','true');
+
+    // Navigate to learning centre — force welcome screen
+    window.location.href='/index.html?welcome=1';
+  }
+
+  // Start after a tiny delay for the black screen to settle
+  setTimeout(run,300);
+})();
+</script>
+</body>
+</html>

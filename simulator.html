@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>The Hearth Mastery — Simulator</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0d0b08;--panel:#141210;--card:#1a1714;
+  --gold:#d4af69;--amber:#e8a020;--ember:#c45a20;
+  --text:#e8dcc8;--dim:#6a5e4e;--bright:#f5edd8;
+  --border:#252220;
+  --bg2:#1a1510;--bg3:#252015;--surface:#302a1c;
+  --border2:rgba(212,175,105,0.18);
+  --text2:#c4a882;--text3:#7a6b58;
+  --red:#c45050;--orange:#d4824a;--blue:#5b8ec4;--purple:#8b6cc4;
+  --green:#5cb870;--yellow:#d4c45a;
+  --bev:inset 1px 1px 2px rgba(0,0,0,0.5),inset -1px -1px 1px rgba(255,255,255,0.03);
+  --ris:1px 1px 2px rgba(0,0,0,0.4),-1px -1px 1px rgba(255,255,255,0.05);
+  --btn:#2a2622;--btn-h:#343028;--btn-a:#1e1c18;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{height:100%;overflow:hidden;}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;display:flex;flex-direction:column;}
+
+/* TOP BAR */
+.top{
+  height:38px;min-height:38px;
+  background:var(--panel);border-bottom:1px solid var(--border);
+  display:flex;align-items:center;padding:0 12px;gap:6px;flex-shrink:0;
+}
+.top-title{font-family:'Cinzel',serif;color:var(--gold);font-size:0.75rem;font-weight:600;margin-right:8px;}
+.top-spacer{flex:1;}
+.top-stat{font-family:'JetBrains Mono',monospace;font-size:0.6rem;color:var(--dim);}
+.top-stat .v{color:var(--amber);}
+
+/* CENTER */
+.center{flex:1;overflow-y:auto;position:relative;}
+.pnl{display:none;height:100%;}
+.pnl.on{display:flex;flex-direction:column;}
+
+/* === SVG MAP === */
+.map{padding:12px;align-items:center;justify-content:flex-start;overflow-y:auto;}
+.map-svg{width:100%;max-width:440px;height:auto;display:block;margin:0 auto;}
+.node-rect{rx:14;ry:14;cursor:pointer;transition:filter .3s;}
+.node-rect:hover{filter:brightness(1.3) drop-shadow(0 0 12px rgba(212,175,105,.4));}
+.node-text{fill:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;text-anchor:middle;dominant-baseline:middle;pointer-events:none;}
+.node-num{fill:var(--bg);font-family:'Cinzel',serif;font-size:16px;font-weight:700;text-anchor:middle;dominant-baseline:middle;pointer-events:none;}
+.node-label{fill:var(--text2);font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:500;text-anchor:middle;letter-spacing:.12em;pointer-events:none;}
+.branch-rect{rx:12;ry:12;cursor:pointer;transition:filter .3s;}
+.branch-rect:hover{filter:brightness(1.3) drop-shadow(0 0 12px rgba(212,175,105,.4));}
+.branch-text{fill:var(--text);font-family:'DM Sans',sans-serif;font-size:11px;font-weight:600;text-anchor:middle;dominant-baseline:middle;pointer-events:none;}
+.conn-dashed{stroke:var(--gold);stroke-width:2;stroke-dasharray:6 4;opacity:.4;fill:none;}
+.conn-red{stroke:var(--red);stroke-width:2.5;opacity:.5;fill:none;}
+.conn-orange{stroke:var(--orange);stroke-width:2.5;opacity:.5;fill:none;}
+.glow-line{filter:drop-shadow(0 0 4px rgba(212,175,105,.3));}
+
+/* Path toggle buttons */
+.path-btns{display:flex;gap:6px;justify-content:center;margin-bottom:10px;flex-wrap:wrap;}
+.path-btn{
+  padding:5px 10px;font-family:'JetBrains Mono',monospace;font-size:0.6rem;
+  color:var(--dim);background:var(--btn);border:1px solid var(--border);border-radius:3px;
+  cursor:pointer;box-shadow:var(--ris);transition:all 0.1s;letter-spacing:0.05em;
+}
+.path-btn:hover{color:var(--text);}
+.path-btn:active,.path-btn.on{box-shadow:var(--bev);color:var(--gold);border-color:var(--gold);}
+
+/* Node info (inline, below map) */
+.node-info{
+  background:var(--card);border:1px solid var(--border);border-radius:8px;
+  padding:14px 16px;margin-top:10px;display:none;
+}
+.node-info.vis{display:block;}
+.node-info h4{font-family:'Cinzel',serif;color:var(--gold);font-size:0.85rem;margin-bottom:2px;}
+.node-info .ni-tag{font-family:'JetBrains Mono',monospace;font-size:0.55rem;color:var(--amber);letter-spacing:0.1em;margin-bottom:6px;}
+.node-info p{font-size:0.78rem;color:var(--text2);line-height:1.6;}
+
+/* === LESSON === */
+.ls{padding:16px;}
+.ls-steps{display:flex;gap:4px;margin-bottom:14px;}
+.ls-s{
+  flex:1;text-align:center;padding:8px 4px;
+  background:var(--btn);border:1px solid var(--border);border-radius:4px;
+  cursor:pointer;box-shadow:var(--ris);transition:all 0.1s;
+}
+.ls-s:active,.ls-s.on{box-shadow:var(--bev);border-color:var(--gold);}
+.ls-s .n{font-family:'JetBrains Mono',monospace;font-size:0.5rem;color:var(--amber);}
+.ls-s .l{font-size:0.7rem;color:var(--text);}
+.ls-s.on .l{color:var(--gold);}
+.ls-body{
+  flex:1;background:var(--card);border:1px solid var(--border);border-radius:6px;
+  padding:16px;overflow-y:auto;box-shadow:var(--bev);
+}
+.ls-body h3{font-family:'Cinzel',serif;color:var(--gold);font-size:0.95rem;margin-bottom:8px;}
+.ls-body p{font-size:0.82rem;line-height:1.65;margin-bottom:8px;color:var(--text);}
+.tag{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:0.55rem;
+  background:rgba(212,175,105,0.08);color:var(--gold);padding:2px 6px;border-radius:2px;margin-right:3px;}
+.ctx{margin-top:10px;padding:10px;background:rgba(0,0,0,0.25);border-radius:4px;border-left:2px solid var(--gold);}
+.ctx p{color:var(--dim);font-size:0.68rem;font-family:'JetBrains Mono',monospace;line-height:1.5;}
+
+/* === DRILL === */
+.dr{padding:16px;}
+.dr-cats{display:flex;gap:4px;margin-bottom:12px;flex-wrap:wrap;}
+.dr-c{
+  padding:6px 10px;font-size:0.7rem;color:var(--text);
+  background:var(--btn);border:1px solid var(--border);border-radius:3px;
+  cursor:pointer;box-shadow:var(--ris);transition:all 0.1s;
+}
+.dr-c:active,.dr-c.on{box-shadow:var(--bev);color:var(--gold);border-color:var(--gold);}
+.dr-list{flex:1;overflow-y:auto;}
+.dr-i{
+  background:var(--card);border:1px solid var(--border);border-radius:4px;
+  padding:10px 12px;margin-bottom:5px;display:flex;align-items:center;justify-content:space-between;
+  cursor:pointer;box-shadow:var(--ris);
+}
+.dr-i:active{box-shadow:var(--bev);}
+.dr-i .dn{font-size:0.78rem;color:var(--bright);}
+.dr-i .dm{font-family:'JetBrains Mono',monospace;font-size:0.52rem;color:var(--dim);}
+.bd{font-family:'JetBrains Mono',monospace;font-size:0.52rem;padding:1px 5px;border-radius:2px;}
+.bd.e{background:rgba(92,184,92,0.1);color:#5cb85c;}
+.bd.m{background:rgba(232,160,32,0.1);color:#e8a020;}
+
+/* === THEORY === */
+.th{padding:16px;}
+.th-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.th-c{
+  background:var(--card);border:1px solid var(--border);border-radius:6px;
+  padding:12px;cursor:pointer;box-shadow:var(--ris);transition:all 0.15s;
+}
+.th-c:active{box-shadow:var(--bev);}
+.th-c h4{font-family:'Cinzel',serif;color:var(--gold);font-size:0.75rem;margin-bottom:3px;}
+.th-c p{font-size:0.65rem;color:var(--dim);line-height:1.4;}
+
+/* === PLAY === */
+.pl{padding:16px;}
+.pl-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.pl-c{
+  background:var(--card);border:1px solid var(--border);border-radius:6px;
+  padding:16px;text-align:center;cursor:pointer;box-shadow:var(--ris);transition:all 0.15s;
+}
+.pl-c:active{box-shadow:var(--bev);}
+.pl-c .pi{font-size:1.4rem;margin-bottom:4px;}
+.pl-c .pn{font-family:'Cinzel',serif;color:var(--bright);font-size:0.78rem;}
+.pl-c .pl2{font-family:'JetBrains Mono',monospace;font-size:0.52rem;color:var(--dim);margin-top:1px;}
+
+/* === TIMER === */
+.tm{align-items:center;justify-content:center;gap:18px;padding:20px;}
+.tm-d{
+  font-family:'JetBrains Mono',monospace;font-size:3rem;color:var(--gold);
+  text-shadow:0 0 15px rgba(212,175,105,0.1);
+}
+.tm-d.run{color:var(--amber);animation:tg 2s ease-in-out infinite;}
+@keyframes tg{0%,100%{text-shadow:0 0 15px rgba(232,160,32,0.1);}50%{text-shadow:0 0 25px rgba(232,160,32,0.3);}}
+.tm-opts{display:flex;gap:5px;flex-wrap:wrap;justify-content:center;}
+.tm-o{
+  padding:8px 14px;font-family:'JetBrains Mono',monospace;font-size:0.72rem;
+  color:var(--text);background:var(--btn);border:1px solid var(--border);border-radius:3px;
+  cursor:pointer;box-shadow:var(--ris);transition:all 0.1s;
+}
+.tm-o:active,.tm-o.on{box-shadow:var(--bev);color:var(--gold);border-color:var(--gold);}
+.tm-btns{display:flex;gap:8px;}
+.tm-b{
+  font-family:'Cinzel',serif;padding:10px 24px;border-radius:4px;
+  border:1px solid var(--border);cursor:pointer;font-size:0.82rem;font-weight:600;
+  box-shadow:var(--ris);transition:all 0.1s;
+}
+.tm-b.go{background:linear-gradient(180deg,var(--gold),#b8963a);color:var(--bg);border-color:var(--gold);}
+.tm-b.go:active{box-shadow:var(--bev);}
+.tm-b.no{background:var(--btn);color:#c45a5a;border-color:#c45a5a;}
+
+/* === RECORD === */
+.rc{align-items:center;justify-content:center;gap:16px;padding:20px;}
+.rc-b{
+  width:80px;height:80px;border-radius:50%;
+  background:radial-gradient(circle at 40% 35%,#2a1212,#140808);
+  border:2px solid #c45a5a;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;font-size:1.6rem;color:#c45a5a;
+  box-shadow:var(--ris);transition:all 0.2s;
+}
+.rc-b:active{box-shadow:var(--bev);}
+.rc-b.on{animation:rp 1s ease-in-out infinite;}
+@keyframes rp{0%,100%{box-shadow:0 0 10px rgba(196,90,90,0.15);}50%{box-shadow:0 0 25px rgba(196,90,90,0.4);}}
+.rc-st{font-family:'JetBrains Mono',monospace;font-size:0.65rem;color:var(--dim);}
+
+/* BOTTOM TOOLBAR */
+.bot{
+  height:52px;min-height:52px;
+  background:var(--panel);border-top:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-around;
+  padding:0 4px;flex-shrink:0;
+}
+.bt{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:1px;padding:4px 8px;border-radius:4px;cursor:pointer;
+  transition:all 0.1s;color:var(--dim);border:1px solid transparent;min-width:44px;
+}
+.bt:hover{color:var(--text);}
+.bt:active,.bt.on{color:var(--gold);background:rgba(212,175,105,0.06);border-color:rgba(212,175,105,0.2);}
+.bt .bi{font-size:1rem;}
+.bt .bl{font-size:0.5rem;font-family:'JetBrains Mono',monospace;letter-spacing:0.03em;}
+
+/* Desktop */
+@media(min-width:769px){
+  body{flex-direction:row;}
+  .top{display:none;}
+  .bot{
+    position:fixed;left:0;top:0;bottom:0;
+    width:56px;height:auto;min-height:unset;
+    flex-direction:column;justify-content:flex-start;
+    border-top:none;border-right:1px solid var(--border);
+    padding:8px 0;gap:2px;z-index:100;
+    box-shadow:2px 0 6px rgba(0,0,0,0.3);
+  }
+  .bt{flex-direction:row;gap:4px;padding:6px;width:44px;height:38px;min-width:unset;}
+  .bt .bl{display:none;}
+  .bt:hover::after{
+    content:attr(data-label);position:absolute;left:calc(100% + 6px);
+    background:var(--card);border:1px solid var(--gold);color:var(--bright);
+    font-family:'DM Sans',sans-serif;font-size:0.7rem;padding:3px 8px;border-radius:3px;
+    white-space:nowrap;pointer-events:none;z-index:200;
+  }
+  .center{margin-left:56px;}
+  .map-svg{max-width:560px;}
+  .th-grid{grid-template-columns:repeat(auto-fill,minmax(160px,1fr));}
+  .pl-grid{grid-template-columns:repeat(auto-fill,minmax(140px,1fr));}
+}
+</style>
+</head>
+<body>
+
+<!-- TOP BAR (mobile) -->
+<div class="top">
+  <span class="top-title">The Hearth</span>
+  <span class="top-spacer"></span>
+  <span class="top-stat">🔥 <span class="v">7d</span></span>
+  <span class="top-stat"><span class="v">142</span>h</span>
+  <span class="top-stat">🪙 <span class="v">47</span></span>
+</div>
+
+<!-- CENTER -->
+<div class="center">
+
+  <!-- SVG MAP -->
+  <div class="pnl on map" id="p-map">
+    <div class="path-btns">
+      <div class="path-btn" onclick="hlPath('journey')">Journey</div>
+      <div class="path-btn" onclick="hlPath('doing')">Doing</div>
+      <div class="path-btn" onclick="hlPath('knowing')">Knowing</div>
+      <div class="path-btn on" onclick="hlPath('all')">All</div>
+    </div>
+    <svg class="map-svg" viewBox="0 0 600 900" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <filter id="glow"><feGaussianBlur stdDeviation="3" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+      </defs>
+      <g opacity="0.03" transform="translate(300,450) scale(0.8)">
+        <circle cx="0" cy="0" r="380" fill="none" stroke="#d4af69" stroke-width="4"/>
+        <line x1="0" y1="-300" x2="0" y2="300" stroke="#d4af69" stroke-width="3"/>
+        <line x1="-200" y1="-150" x2="200" y2="-150" stroke="#d4af69" stroke-width="3"/>
+        <line x1="-200" y1="150" x2="200" y2="150" stroke="#d4af69" stroke-width="3"/>
+      </g>
+      <!-- CONNECTIONS -->
+      <g id="path-journey">
+        <line class="conn-dashed glow-line" x1="300" y1="80" x2="300" y2="160"/>
+        <line class="conn-dashed glow-line" x1="300" y1="160" x2="300" y2="240"/>
+        <line class="conn-dashed glow-line" x1="300" y1="240" x2="300" y2="320"/>
+        <line class="conn-dashed glow-line" x1="300" y1="320" x2="300" y2="400"/>
+        <line class="conn-dashed glow-line" x1="300" y1="400" x2="300" y2="480"/>
+        <line class="conn-dashed glow-line" x1="300" y1="480" x2="300" y2="560"/>
+        <line class="conn-dashed glow-line" x1="300" y1="560" x2="300" y2="700"/>
+        <line class="conn-dashed glow-line" x1="300" y1="700" x2="300" y2="810"/>
+      </g>
+      <g id="path-doing">
+        <path class="conn-red glow-line" d="M300,80 Q200,100 120,200"/>
+        <path class="conn-red glow-line" d="M120,200 Q100,350 120,440"/>
+        <path class="conn-orange glow-line" d="M120,440 Q100,530 120,580"/>
+        <path class="conn-red glow-line" d="M120,440 Q200,600 300,700"/>
+      </g>
+      <g id="path-knowing">
+        <path class="conn-red glow-line" d="M300,80 Q400,100 480,200"/>
+        <path class="conn-red glow-line" d="M480,200 Q500,350 480,440"/>
+        <path class="conn-orange glow-line" d="M480,440 Q500,530 480,580"/>
+        <path class="conn-red glow-line" d="M480,440 Q400,600 300,700"/>
+      </g>
+      <!-- CENTRAL JOURNEY -->
+      <g class="node-group" onclick="nodeTap('foundation')">
+        <rect class="node-rect" x="250" y="40" width="100" height="56" fill="var(--red)" filter="url(#glow)"/>
+        <text class="node-num" x="300" y="60">1</text>
+        <text class="node-text" x="300" y="78" style="font-size:10px;fill:var(--text)">FOUNDATION</text>
+      </g>
+      <g class="node-group" onclick="nodeTap('rhythm')">
+        <rect class="node-rect" x="260" y="140" width="80" height="48" fill="var(--bg3)" stroke="var(--border2)" stroke-width="1"/>
+        <text class="node-num" x="300" y="158" style="fill:var(--text3)">2</text>
+        <text class="node-label" x="300" y="176">RHYTHM</text>
+      </g>
+      <g class="node-group" onclick="nodeTap('chords')">
+        <rect class="node-rect" x="260" y="220" width="80" height="48" fill="var(--bg3)" stroke="var(--border2)" stroke-width="1"/>
+        <text class="node-num" x="300" y="238" style="fill:var(--text3)">3</text>
+        <text class="node-label" x="300" y="256">CHORDS</text>
+      </g>
+      <g class="node-group" onclick="nodeTap('scales')">
+        <rect class="node-rect" x="260" y="300" width="80" height="48" fill="var(--bg3)" stroke="var(--border2)" stroke-width="1"/>
+        <text class="node-num" x="300" y="318" style="fill:var(--text3)">4</text>
+        <text class="node-label" x="300" y="336">SCALES</text>
+      </g>
+      <g class="node-group" onclick="nodeTap('fretboard')">
+        <rect class="node-rect" x="260" y="380" width="80" height="48" fill="var(--bg3)" stroke="var(--border2)" stroke-width="1"/>
+        <text class="node-num" x="300" y="398" style="fill:var(--text3)">5</text>
+        <text class="node-label" x="300" y="416">FRETBOARD</text>
+      </g>
+      <g class="node-group" onclick="nodeTap('ear')">
+        <rect class="node-rect" x="260" y="460" width="80" height="48" fill="var(--bg3)" stroke="var(--border2)" stroke-width="1"/>
+        <text class="node-num" x="300" y="478" style="fill:var(--text3)">6</text>
+        <text class="node-label" x="300" y="496">EAR TRAINING</text>
+      </g>
+      <g class="node-group" onclick="nodeTap('technique')">
+        <rect class="node-rect" x="260" y="540" width="80" height="48" fill="var(--bg3)" stroke="var(--border2)" stroke-width="1"/>
+        <text class="node-num" x="300" y="558" style="fill:var(--text3)">7</text>
+        <text class="node-label" x="300" y="576">TECHNIQUE</text>
+      </g>
+      <g class="node-group" onclick="nodeTap('collab')">
+        <rect class="node-rect" x="245" y="680" width="110" height="56" fill="var(--green)" filter="url(#glow)"/>
+        <text class="node-num" x="300" y="698">8</text>
+        <text class="node-text" x="300" y="718" style="font-size:10px;fill:var(--text)">COLLABORATE</text>
+      </g>
+      <g class="node-group" onclick="nodeTap('mastery')">
+        <rect class="node-rect" x="245" y="790" width="110" height="56" fill="var(--purple)" filter="url(#glow)"/>
+        <text class="node-num" x="300" y="808">9</text>
+        <text class="node-text" x="300" y="828" style="font-size:10px;fill:var(--text)">MASTERY</text>
+      </g>
+      <!-- LEFT: DOING -->
+      <text x="120" y="160" text-anchor="middle" fill="var(--text3)" font-family="'JetBrains Mono',monospace" font-size="9" letter-spacing="0.15em">DOING</text>
+      <g class="node-group" onclick="nodeTap('practical')">
+        <rect class="branch-rect" x="60" y="180" width="120" height="50" fill="var(--orange)" rx="12"/>
+        <text class="branch-text" x="120" y="207">PRACTICAL</text>
+      </g>
+      <g class="node-group" onclick="nodeTap('practise')">
+        <rect class="branch-rect" x="60" y="420" width="120" height="50" fill="var(--yellow)" rx="12"/>
+        <text class="branch-text" x="120" y="447">PRACTISE</text>
+      </g>
+      <g class="node-group" onclick="nodeTap('play')">
+        <rect class="branch-rect" x="60" y="560" width="120" height="50" fill="var(--blue)" rx="12"/>
+        <text class="branch-text" x="120" y="587">PLAY</text>
+      </g>
+      <!-- RIGHT: KNOWING -->
+      <text x="480" y="160" text-anchor="middle" fill="var(--text3)" font-family="'JetBrains Mono',monospace" font-size="9" letter-spacing="0.15em">KNOWING</text>
+      <g class="node-group" onclick="nodeTap('theory')">
+        <rect class="branch-rect" x="420" y="180" width="120" height="50" fill="var(--orange)" rx="12"/>
+        <text class="branch-text" x="480" y="207">THEORY</text>
+      </g>
+      <g class="node-group" onclick="nodeTap('study')">
+        <rect class="branch-rect" x="420" y="420" width="120" height="50" fill="var(--yellow)" rx="12"/>
+        <text class="branch-text" x="480" y="447">STUDY</text>
+      </g>
+      <g class="node-group" onclick="nodeTap('create')">
+        <rect class="branch-rect" x="420" y="560" width="120" height="50" fill="var(--blue)" rx="12"/>
+        <text class="branch-text" x="480" y="587">CREATE</text>
+      </g>
+      <text x="300" y="30" text-anchor="middle" fill="var(--gold)" font-family="'JetBrains Mono',monospace" font-size="9" letter-spacing="0.15em" opacity="0.5">THE JOURNEY</text>
+    </svg>
+    <!-- Node info -->
+    <div class="node-info" id="ni">
+      <div class="ni-tag" id="niTag"></div>
+      <h4 id="niTitle"></h4>
+      <p id="niDesc"></p>
+    </div>
+  </div>
+
+  <!-- LESSON -->
+  <div class="pnl ls" id="p-lesson">
+    <div class="ls-steps">
+      <div class="ls-s on" onclick="lsS(this)"><div class="n">01</div><div class="l">Read</div></div>
+      <div class="ls-s" onclick="lsS(this)"><div class="n">02</div><div class="l">Watch</div></div>
+      <div class="ls-s" onclick="lsS(this)"><div class="n">03</div><div class="l">Draw</div></div>
+      <div class="ls-s" onclick="lsS(this)"><div class="n">04</div><div class="l">Do</div></div>
+      <div class="ls-s" onclick="lsS(this)"><div class="n">05</div><div class="l">Check</div></div>
+      <div class="ls-s" onclick="lsS(this)"><div class="n">06</div><div class="l">Deeper</div></div>
+    </div>
+    <div class="ls-body">
+      <h3>Open Chords: C Major</h3>
+      <div style="margin-bottom:8px"><span class="tag">Rhythm</span><span class="tag">L1</span><span class="tag">Chords</span></div>
+      <p>The C major chord is one of the first open chords every guitarist learns. Three fingers, bright full sound, foundational to thousands of songs.</p>
+      <p style="color:var(--dim);font-style:italic">Ring on 3rd fret A string. Middle on 2nd fret D. Index on 1st fret B. Strum from A down.</p>
+      <div class="ctx"><p>WHERE THIS FITS: C major → key of C → no sharps or flats. Connects to G, Am, F. Four chords, thousands of songs.</p></div>
+    </div>
+  </div>
+
+  <!-- DRILL -->
+  <div class="pnl dr" id="p-drill">
+    <div class="dr-cats">
+      <div class="dr-c on" onclick="dC(this)">🥁 Rhythm</div>
+      <div class="dr-c" onclick="dC(this)">🎶 Chords</div>
+      <div class="dr-c" onclick="dC(this)">🎸 Scales</div>
+      <div class="dr-c" onclick="dC(this)">✋ Technique</div>
+      <div class="dr-c" onclick="dC(this)">☝️ Finger</div>
+    </div>
+    <div class="dr-list">
+      <div class="dr-i"><div><div class="dn">Quarter Note Strumming</div><div class="dm">Rhythm · L1 · 3 min</div></div><span class="bd e">Easy</span></div>
+      <div class="dr-i"><div><div class="dn">Alternate Strumming</div><div class="dm">Rhythm · L1 · 5 min</div></div><span class="bd e">Easy</span></div>
+      <div class="dr-i"><div><div class="dn">Down-Up 8th Notes</div><div class="dm">Rhythm · L1 · 5 min</div></div><span class="bd m">Med</span></div>
+      <div class="dr-i"><div><div class="dn">Finger Gymnastics 1-2-3-4</div><div class="dm">Technique · L1 · 5 min</div></div><span class="bd e">Easy</span></div>
+    </div>
+  </div>
+
+  <!-- THEORY -->
+  <div class="pnl th" id="p-theory">
+    <div class="th-grid">
+      <div class="th-c"><h4>Notes &amp; Chromatic</h4><p>12 notes. Everything built from these.</p></div>
+      <div class="th-c"><h4>Intervals</h4><p>Distance between two notes.</p></div>
+      <div class="th-c"><h4>Major Scale</h4><p>W-W-H-W-W-W-H.</p></div>
+      <div class="th-c"><h4>Chord Construction</h4><p>Root + 3rd + 5th.</p></div>
+      <div class="th-c"><h4>Keys &amp; Signatures</h4><p>Circle of Fifths.</p></div>
+      <div class="th-c"><h4>Rhythm &amp; Time</h4><p>4/4, 3/4, 6/8.</p></div>
+      <div class="th-c"><h4>Pentatonic</h4><p>5 notes. Gateway to improv.</p></div>
+      <div class="th-c"><h4>Reading Music</h4><p>Staff, clef, notes, rests.</p></div>
+    </div>
+  </div>
+
+  <!-- PLAY -->
+  <div class="pnl pl" id="p-play">
+    <div style="padding:0 0 12px 0">
+      <h3 style="font-family:'Cinzel',serif;color:var(--gold);font-size:0.95rem;margin-bottom:4px;">How the World Plays</h3>
+      <p style="color:var(--dim);font-size:0.72rem;font-family:'JetBrains Mono',monospace;">Explore traditions, styles & sounds from every continent</p>
+    </div>
+    <div class="pl-grid">
+      <div class="pl-c"><div class="pi">🌍</div><div class="pn">West African</div><div class="pl2">Highlife · Palm-wine</div></div>
+      <div class="pl-c"><div class="pi">🇧🇷</div><div class="pn">Brazilian</div><div class="pl2">Samba · Bossa Nova</div></div>
+      <div class="pl-c"><div class="pi">🇯🇵</div><div class="pn">Japanese</div><div class="pl2">Shamisen-inspired</div></div>
+      <div class="pl-c"><div class="pi">🇮🇳</div><div class="pn">Indian</div><div class="pl2">Raga · Drone</div></div>
+      <div class="pl-c"><div class="pi">🇪🇸</div><div class="pn">Flamenco</div><div class="pl2">Rasgueado · Soleá</div></div>
+      <div class="pl-c"><div class="pi">🇺🇸</div><div class="pn">Blues & Roots</div><div class="pl2">Delta · Country</div></div>
+      <div class="pl-c"><div class="pi">🇨🇺</div><div class="pn">Cuban</div><div class="pl2">Son · Trova</div></div>
+      <div class="pl-c"><div class="pi">🇹🇷</div><div class="pn">Turkish</div><div class="pl2">Makam · Bağlama</div></div>
+      <div class="pl-c"><div class="pi">🇦🇷</div><div class="pn">Argentine</div><div class="pl2">Tango · Folklore</div></div>
+      <div class="pl-c"><div class="pi">🇿🇦</div><div class="pn">South African</div><div class="pl2">Maskandi · Marabi</div></div>
+      <div class="pl-c"><div class="pi">🇵🇪</div><div class="pn">Andean</div><div class="pl2">Charango · Folk</div></div>
+      <div class="pl-c"><div class="pi">🌐</div><div class="pn">More</div><div class="pl2">Explore all</div></div>
+    </div>
+  </div>
+
+  <!-- TIMER -->
+  <div class="pnl tm" id="p-timer">
+    <div class="tm-d" id="td">10:00</div>
+    <div class="tm-opts">
+      <div class="tm-o" onclick="ts(300,this)">5m</div>
+      <div class="tm-o on" onclick="ts(600,this)">10m</div>
+      <div class="tm-o" onclick="ts(900,this)">15m</div>
+      <div class="tm-o" onclick="ts(1200,this)">20m</div>
+      <div class="tm-o" onclick="ts(1800,this)">30m</div>
+    </div>
+    <div class="tm-btns">
+      <button class="tm-b go" id="tg" onclick="tt()">Start</button>
+      <button class="tm-b no" onclick="tx()">Reset</button>
+    </div>
+  </div>
+
+  <!-- RECORD -->
+  <div class="pnl rc" id="p-record">
+    <div class="rc-b" id="rb" onclick="rv()">⏺</div>
+    <div class="rc-st" id="rs">Tap to record</div>
+  </div>
+
+</div>
+
+<!-- BOTTOM TOOLBAR -->
+<div class="bot">
+  <div class="bt on" data-t="map" data-label="Map" onclick="sw('map')"><span class="bi">🗺️</span><span class="bl">Map</span></div>
+  <div class="bt" data-t="lesson" data-label="Lesson" onclick="sw('lesson')"><span class="bi">📜</span><span class="bl">Learn</span></div>
+  <div class="bt" data-t="drill" data-label="Drills" onclick="sw('drill')"><span class="bi">🎯</span><span class="bl">Drill</span></div>
+  <div class="bt" data-t="theory" data-label="Theory" onclick="sw('theory')"><span class="bi">📖</span><span class="bl">Theory</span></div>
+  <div class="bt" data-t="play" data-label="Play" onclick="sw('play')"><span class="bi">🎸</span><span class="bl">Play</span></div>
+  <div class="bt" data-t="timer" data-label="Timer" onclick="sw('timer')"><span class="bi">⏱️</span><span class="bl">Timer</span></div>
+  <div class="bt" data-t="record" data-label="Record" onclick="sw('record')"><span class="bi">🎤</span><span class="bl">Record</span></div>
+</div>
+
+<script>
+// Auth check — redirect if no user
+const currentUser = JSON.parse(localStorage.getItem('hearth_current') || 'null');
+if (!currentUser) {
+  window.location.href = '/index.html';
+}
+
+// Populate top bar with user data
+if (currentUser) {
+  document.querySelector('.top-title').textContent = currentUser.name || 'The Hearth';
+}
+
+// Node info data
+const NI={
+  foundation:{tag:'LEVEL 1',t:'Foundation',d:'The beginning. Learn the anatomy of the instrument, how to hold it, tune it, your first sounds. The 9 core topics that carry you through everything ahead.'},
+  rhythm:{tag:'LEVEL 2',t:'Rhythm',d:'The heartbeat of all music. Count, feel the pulse, understand time signatures. Before you play notes, you play time.'},
+  chords:{tag:'LEVEL 3',t:'Chords & Harmony',d:'Where harmony begins. Open chords, shapes, transitions. The building blocks of every song.'},
+  scales:{tag:'LEVEL 4',t:'Scales',d:'The alphabet of melody. Pentatonic, major, minor. The fretboard as a map of musical possibility.'},
+  fretboard:{tag:'LEVEL 5',t:'Fretboard',d:'Know your instrument. Every note, every position. The geography of the guitar neck.'},
+  ear:{tag:'LEVEL 6',t:'Ear Training',d:'Hear it before you play it. Intervals, chord qualities, melody recognition. Trust your ears.'},
+  technique:{tag:'LEVEL 7',t:'Technique',d:'Speed, accuracy, expression. Hammer-ons, pull-offs, bends, slides. The vocabulary of touch.'},
+  collab:{tag:'ALWAYS ON',t:'Collaborate',d:'Play with others. Backing tracks, jam sessions. Learn to listen and respond. Music is a conversation.'},
+  mastery:{tag:'LEVEL 9',t:'Mastery',d:'Come home to yourself. What is YOUR sound? The student becomes the artist. The thesis.'},
+  practical:{tag:'DOING',t:'Practical',d:'Open-world drill library. Every exercise, always accessible. Technique encyclopaedia. Amit Sharma style.'},
+  practise:{tag:'SESSION',t:'Practise',d:'How much time you got? Select drills, combine variations, timer starts, you practise, give feedback.'},
+  play:{tag:'PLAY',t:'Play',d:'How the world plays guitar. West African highlife, Brazilian samba, Japanese shamisen-inspired, Indian raga, Flamenco, Turkish makam, Cuban son, and beyond. No borders — just sound.'},
+  theory:{tag:'KNOWING',t:'Theory',d:'Open-world theory library. All music theory, categorised, always accessible. The encyclopedia.'},
+  study:{tag:'STUDY',t:'Study',d:'Your lab. Notes, aha moments, gaps & questions. The space where YOUR brain work lives.'},
+  create:{tag:'CREATE',t:'Create',d:'Guided creation. Walk through a composition workflow. Record. Listen back. Refine. Your music.'},
+};
+
+function nodeTap(id){
+  const info=NI[id];if(!info)return;
+  const el=document.getElementById('ni');
+  document.getElementById('niTag').textContent=info.tag;
+  document.getElementById('niTitle').textContent=info.t;
+  document.getElementById('niDesc').textContent=info.d;
+  el.classList.add('vis');
+  // On some nodes, switch to relevant panel
+  if(['practical','practise'].includes(id))sw('drill');
+  else if(['theory','study'].includes(id))sw('theory');
+  else if(id==='play')sw('play');
+  else if(id==='create')sw('record');
+}
+
+function hlPath(p){
+  document.querySelectorAll('.path-btn').forEach(b=>b.classList.remove('on'));
+  event.target.classList.add('on');
+  ['journey','doing','knowing'].forEach(id=>{
+    document.getElementById('path-'+id).style.opacity= p==='all'||p===id ? '1' : '0.1';
+  });
+}
+
+function sw(t){
+  document.querySelectorAll('.bt').forEach(b=>b.classList.remove('on'));
+  document.querySelector('[data-t="'+t+'"]').classList.add('on');
+  document.querySelectorAll('.pnl').forEach(p=>p.classList.remove('on'));
+  document.getElementById('p-'+t).classList.add('on');
+}
+function lsS(e){document.querySelectorAll('.ls-s').forEach(s=>s.classList.remove('on'));e.classList.add('on');}
+function dC(e){document.querySelectorAll('.dr-c').forEach(c=>c.classList.remove('on'));e.classList.add('on');}
+
+// Timer
+let tS=600,tR=600,tI=null,tO=false;
+function ts(s,e){if(tO)return;tS=s;tR=s;document.querySelectorAll('.tm-o').forEach(o=>o.classList.remove('on'));e.classList.add('on');utd();}
+function utd(){document.getElementById('td').textContent=String(Math.floor(tR/60)).padStart(2,'0')+':'+String(tR%60).padStart(2,'0');}
+function tt(){
+  if(tO){clearInterval(tI);tO=false;document.getElementById('tg').textContent='Resume';document.getElementById('td').classList.remove('run');}
+  else{tO=true;document.getElementById('tg').textContent='Pause';document.getElementById('td').classList.add('run');
+    tI=setInterval(()=>{if(tR<=0){clearInterval(tI);tO=false;document.getElementById('tg').textContent='Done';document.getElementById('td').classList.remove('run');return;}tR--;utd();},1000);}
+}
+function tx(){clearInterval(tI);tO=false;tR=tS;document.getElementById('tg').textContent='Start';document.getElementById('td').classList.remove('run');utd();}
+
+// Record
+let rc=false;
+function rv(){rc=!rc;const b=document.getElementById('rb'),s=document.getElementById('rs');
+  rc?(b.classList.add('on'),b.textContent='⏹',s.textContent='Recording...'):(b.classList.remove('on'),b.textContent='⏺',s.textContent='Saved');}
+</script>
+</body>
+</html>

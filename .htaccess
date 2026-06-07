@@ -1,0 +1,21 @@
+# The Hearth Mastery - simulator.thehearth.pro
+
+DirectoryIndex boot-sequence.html
+
+# Clean URLs
+RewriteEngine On
+
+# If they haven't seen the boot sequence, send them there
+# (boot sequence redirects to index.html after playing)
+
+# Force HTTPS
+RewriteCond %{HTTPS} off
+RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# Cache static assets
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType text/css "access plus 1 week"
+  ExpiresByType application/javascript "access plus 1 week"
+  ExpiresByType image/svg+xml "access plus 1 month"
+</IfModule>
