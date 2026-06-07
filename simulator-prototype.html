@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Hearth Mastery — Simulator Prototype</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0b08;
+    --bg-panel: #141210;
+    --bg-card: #1a1714;
+    --bg-hover: #221e18;
+    --gold: #d4af69;
+    --amber: #e8a020;
+    --ember: #c45a20;
+    --text: #e8dcc8;
+    --text-dim: #6a5e4e;
+    --text-bright: #f5edd8;
+    --border: #2a2520;
+    --green: #5cb85c;
+    --red: #c45a5a;
+    --blue: #5a8ec4;
+    --toolbar-w: 64px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+  }
+  body::after {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    pointer-events: none;
+    z-index: 9999;
+    background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 4px);
+  }
+
+  /* TOOLBAR */
+  .toolbar {
+    width: var(--toolbar-w);
+    min-width: var(--toolbar-w);
+    background: var(--bg-panel);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 12px 0;
+    gap: 4px;
+    z-index: 100;
+  }
+  .toolbar-logo {
+    width: 36px; height: 36px;
+    margin-bottom: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.3rem;
+    cursor: pointer;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 12px;
+  }
+  .tool-btn {
+    width: 44px; height: 44px;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    border: 1px solid transparent;
+    background: transparent;
+    color: var(--text-dim);
+    font-size: 1.1rem;
+  }
+  .tool-btn:hover { background: var(--bg-hover); color: var(--text); }
+  .tool-btn.active {
+    background: rgba(212,175,105,0.1);
+    border-color: var(--gold);
+    color: var(--gold);
+    box-shadow: 0 0 12px rgba(212,175,105,0.15);
+  }
+  .tool-btn .tooltip {
+    position: absolute;
+    left: calc(100% + 8px);
+    top: 50%; transform: translateY(-50%);
+    background: var(--bg-card);
+    border: 1px solid var(--gold);
+    color: var(--text-bright);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.75rem;
+    padding: 4px 10px;
+    border-radius: 4px;
+    white-space: nowrap;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.15s;
+    z-index: 200;
+  }
+  .tool-btn:hover .tooltip { opacity: 1; }
+  .toolbar-divider { width: 28px; height: 1px; background: var(--border); margin: 6px 0; }
+  .toolbar-spacer { flex: 1; }
+  .status-item {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.55rem;
+    color: var(--text-dim);
+    text-align: center;
+    padding: 2px 0;
+  }
+  .status-item .val { color: var(--gold); font-weight: 500; }
+
+  /* WORKSPACE */
+  .workspace { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+  .topbar {
+    height: 40px;
+    background: var(--bg-panel);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center;
+    padding: 0 16px; gap: 16px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--text-dim);
+    flex-shrink: 0;
+  }
+  .topbar-title { color: var(--gold); font-family: 'Cinzel', serif; font-size: 0.8rem; }
+  .topbar-spacer { flex: 1; }
+  .topbar-stat { display: flex; align-items: center; gap: 4px; }
+  .topbar-stat .label { color: var(--text-dim); }
+  .topbar-stat .value { color: var(--amber); font-weight: 500; }
+  .progress-mini { width: 80px; height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
+  .progress-mini-fill { height: 100%; background: linear-gradient(90deg, var(--gold), var(--amber)); border-radius: 2px; }
+
+  .main-content { flex: 1; overflow-y: auto; position: relative; }
+  .panel { display: none; height: 100%; padding: 24px; }
+  .panel.active { display: flex; flex-direction: column; }
+  .panel-header { margin-bottom: 24px; }
+  .panel-header h2 { font-family: 'Cinzel', serif; color: var(--gold); font-size: 1.3rem; font-weight: 600; margin-bottom: 4px; }
+  .panel-header p { color: var(--text-dim); font-size: 0.85rem; }
+
+  /* Map */
+  .map-container { flex: 1; display: flex; align-items: center; justify-content: center; }
+  .map-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; max-width: 600px; width: 100%; }
+  .map-node {
+    background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 16px; text-align: center; cursor: pointer; transition: all 0.3s; position: relative;
+  }
+  .map-node:hover { border-color: rgba(212,175,105,0.4); transform: translateY(-2px); box-shadow: 0 4px 16px rgba(0,0,0,0.3); }
+  .map-node.locked { opacity: 0.3; filter: grayscale(1); cursor: not-allowed; }
+  .map-node.locked:hover { transform: none; border-color: var(--border); box-shadow: none; }
+  .map-node .node-icon { font-size: 1.4rem; margin-bottom: 6px; }
+  .map-node .node-name { font-family: 'Cinzel', serif; color: var(--text-bright); font-size: 0.85rem; font-weight: 600; }
+  .map-node .node-label { font-family: 'JetBrains Mono', monospace; color: var(--text-dim); font-size: 0.6rem; margin-top: 2px; }
+  .map-node .lock-overlay { position: absolute; top: 4px; right: 6px; font-size: 0.6rem; color: var(--text-dim); font-family: 'JetBrains Mono', monospace; }
+
+  /* Lesson */
+  .lesson-flow { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+  .lesson-step {
+    background: var(--bg-card); border: 1px solid var(--border); border-radius: 6px;
+    padding: 10px 14px; cursor: pointer; transition: all 0.2s; text-align: center; flex: 1; min-width: 70px;
+  }
+  .lesson-step:hover { border-color: rgba(212,175,105,0.3); }
+  .lesson-step.active { border-color: var(--gold); background: rgba(212,175,105,0.08); }
+  .lesson-step .step-num { font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; color: var(--amber); margin-bottom: 3px; }
+  .lesson-step .step-name { font-size: 0.78rem; color: var(--text); }
+  .lesson-content {
+    flex: 1; background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 8px; padding: 24px; overflow-y: auto;
+  }
+  .lesson-content h3 { font-family: 'Cinzel', serif; color: var(--gold); font-size: 1.1rem; margin-bottom: 12px; }
+  .lesson-content p { font-size: 0.9rem; line-height: 1.7; margin-bottom: 12px; }
+  .lesson-content .tag {
+    display: inline-block; font-family: 'JetBrains Mono', monospace; font-size: 0.65rem;
+    background: rgba(212,175,105,0.1); color: var(--gold); padding: 2px 8px; border-radius: 3px; margin-right: 4px;
+  }
+  .context-box {
+    margin-top: 16px; padding: 14px; background: rgba(0,0,0,0.2);
+    border-radius: 6px; border-left: 3px solid var(--gold);
+  }
+  .context-box p { color: var(--text-dim); font-size: 0.78rem; font-family: 'JetBrains Mono', monospace; }
+
+  /* Drill */
+  .drill-categories { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 8px; margin-bottom: 16px; }
+  .drill-cat {
+    background: var(--bg-card); border: 1px solid var(--border); border-radius: 6px;
+    padding: 12px; text-align: center; cursor: pointer; transition: all 0.2s;
+  }
+  .drill-cat:hover { border-color: rgba(212,175,105,0.3); background: var(--bg-hover); }
+  .drill-cat.active { border-color: var(--gold); background: rgba(212,175,105,0.08); }
+  .drill-cat .cat-icon { font-size: 1.1rem; margin-bottom: 4px; }
+  .drill-cat .cat-name { font-size: 0.75rem; color: var(--text); }
+  .drill-list { flex: 1; overflow-y: auto; }
+  .drill-item {
+    background: var(--bg-card); border: 1px solid var(--border); border-radius: 6px;
+    padding: 12px 14px; margin-bottom: 6px;
+    display: flex; align-items: center; justify-content: space-between;
+    cursor: pointer; transition: all 0.2s;
+  }
+  .drill-item:hover { border-color: rgba(212,175,105,0.3); }
+  .drill-item .drill-name { font-size: 0.85rem; color: var(--text-bright); margin-bottom: 2px; }
+  .drill-item .drill-meta { font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; color: var(--text-dim); }
+  .drill-badge { font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; padding: 2px 8px; border-radius: 3px; }
+  .drill-badge.easy { background: rgba(92,184,92,0.15); color: var(--green); }
+  .drill-badge.medium { background: rgba(232,160,32,0.15); color: var(--amber); }
+
+  /* Theory */
+  .theory-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 12px; }
+  .theory-card {
+    background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 16px; cursor: pointer; transition: all 0.2s;
+  }
+  .theory-card:hover { border-color: rgba(212,175,105,0.3); transform: translateY(-1px); }
+  .theory-card h4 { font-family: 'Cinzel', serif; color: var(--gold); font-size: 0.85rem; margin-bottom: 4px; }
+  .theory-card p { font-size: 0.75rem; color: var(--text-dim); line-height: 1.5; }
+
+  /* Play */
+  .genre-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; }
+  .genre-card {
+    background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 20px; text-align: center; cursor: pointer; transition: all 0.2s;
+  }
+  .genre-card:hover { border-color: rgba(90,142,196,0.4); transform: translateY(-1px); }
+  .genre-card .genre-icon { font-size: 1.8rem; margin-bottom: 8px; }
+  .genre-card .genre-name { font-family: 'Cinzel', serif; color: var(--text-bright); font-size: 0.85rem; }
+  .genre-card .genre-level { font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; color: var(--text-dim); margin-top: 2px; }
+
+  /* Timer */
+  .timer-center { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 24px; }
+  .timer-display {
+    font-family: 'JetBrains Mono', monospace; font-size: 4rem; color: var(--gold);
+    letter-spacing: 0.05em; text-shadow: 0 0 30px rgba(212,175,105,0.2);
+  }
+  .timer-display.running { color: var(--amber); animation: pulse-glow 2s ease-in-out infinite; }
+  @keyframes pulse-glow {
+    0%, 100% { text-shadow: 0 0 30px rgba(232,160,32,0.2); }
+    50% { text-shadow: 0 0 40px rgba(232,160,32,0.4); }
+  }
+  .timer-presets { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+  .timer-preset {
+    background: var(--bg-card); border: 1px solid var(--border); border-radius: 6px;
+    padding: 10px 18px; color: var(--text); font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem; cursor: pointer; transition: all 0.2s;
+  }
+  .timer-preset:hover { border-color: var(--gold); color: var(--gold); }
+  .timer-preset.active { background: rgba(212,175,105,0.1); border-color: var(--gold); color: var(--gold); }
+  .timer-controls { display: flex; gap: 12px; }
+  .timer-btn {
+    font-family: 'Cinzel', serif; padding: 12px 32px; border-radius: 6px;
+    border: none; cursor: pointer; font-size: 0.9rem; font-weight: 600; transition: all 0.2s;
+  }
+  .timer-btn.start { background: linear-gradient(135deg, var(--gold), var(--amber)); color: var(--bg); }
+  .timer-btn.start:hover { box-shadow: 0 4px 20px rgba(212,175,105,0.3); }
+  .timer-btn.stop { background: rgba(196,90,90,0.15); color: var(--red); border: 1px solid var(--red); }
+
+  /* Record */
+  .record-center { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 24px; }
+  .record-btn-big {
+    width: 100px; height: 100px; border-radius: 50%;
+    background: rgba(196,90,90,0.15); border: 2px solid var(--red);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; transition: all 0.3s; font-size: 2rem; color: var(--red);
+  }
+  .record-btn-big:hover { background: rgba(196,90,90,0.25); box-shadow: 0 0 30px rgba(196,90,90,0.2); }
+  .record-btn-big.recording { background: rgba(196,90,90,0.3); animation: rec-pulse 1s ease-in-out infinite; }
+  @keyframes rec-pulse {
+    0%, 100% { box-shadow: 0 0 20px rgba(196,90,90,0.2); }
+    50% { box-shadow: 0 0 40px rgba(196,90,90,0.5); }
+  }
+  .record-status { font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: var(--text-dim); }
+
+  /* Calcifer */
+  .calcifer-bar {
+    position: absolute; bottom: 16px; right: 16px; max-width: 280px;
+    background: var(--bg-card); border: 1px solid var(--ember); border-radius: 8px;
+    padding: 12px 16px; z-index: 60; display: none;
+  }
+  .calcifer-bar.visible { display: block; animation: slide-up 0.3s ease-out; }
+  @keyframes slide-up { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+  .calcifer-icon { font-size: 0.9rem; margin-bottom: 4px; }
+  .calcifer-text { font-size: 0.8rem; color: var(--text); line-height: 1.5; font-style: italic; }
+
+  /* Mobile */
+  @media (max-width: 768px) {
+    body { flex-direction: column; }
+    .toolbar {
+      width: 100%; min-width: unset; flex-direction: row;
+      border-right: none; border-top: 1px solid var(--border);
+      order: 2; padding: 6px 8px; overflow-x: auto;
+    }
+    .toolbar-logo, .toolbar-spacer, .status-item { display: none; }
+    .toolbar-divider { width: 1px; height: 28px; margin: 0 4px; }
+    .tool-btn .tooltip { display: none; }
+    .workspace { order: 1; }
+    .panel { padding: 16px; }
+    .calcifer-bar { bottom: 80px; right: 12px; left: 12px; max-width: unset; }
+  }
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+  <div class="toolbar-logo">🔥</div>
+  <div class="tool-btn active" data-tool="map" onclick="switchTool('map')">🗺️<span class="tooltip">Map — Overview</span></div>
+  <div class="tool-btn" data-tool="lesson" onclick="switchTool('lesson')">📜<span class="tooltip">Build — Lesson Mode</span></div>
+  <div class="tool-btn" data-tool="drill" onclick="switchTool('drill')">🎯<span class="tooltip">Drill — Doing &amp; Practise</span></div>
+  <div class="tool-btn" data-tool="theory" onclick="switchTool('theory')">📖<span class="tooltip">Library — Theory</span></div>
+  <div class="tool-btn" data-tool="play" onclick="switchTool('play')">🎸<span class="tooltip">Play — Songs &amp; Genre</span></div>
+  <div class="toolbar-divider"></div>
+  <div class="tool-btn" data-tool="timer" onclick="switchTool('timer')">⏱️<span class="tooltip">Timer</span></div>
+  <div class="tool-btn" data-tool="record" onclick="switchTool('record')">🎤<span class="tooltip">Record &amp; Listen</span></div>
+  <div class="toolbar-spacer"></div>
+  <div class="status-item"><span class="val">🪙 47</span></div>
+  <div class="status-item"><span class="val">142</span>h / 10k</div>
+  <div class="status-item">L2</div>
+</div>
+
+<div class="workspace">
+  <div class="topbar">
+    <span class="topbar-title">The Hearth Mastery</span>
+    <span class="topbar-spacer"></span>
+    <div class="topbar-stat"><span class="label">🔥 streak</span><span class="value">7d</span></div>
+    <div class="progress-mini"><div class="progress-mini-fill" style="width:1.4%"></div></div>
+    <div class="topbar-stat"><span class="value">142h</span><span class="label">/ 10,000</span></div>
+  </div>
+
+  <div class="main-content">
+
+    <!-- MAP -->
+    <div class="panel active" id="panel-map">
+      <div class="panel-header"><h2>The Map</h2><p>Central spine + branches. Click to enter a node.</p></div>
+      <div class="map-container">
+        <div class="map-grid">
+          <div class="map-node" onclick="switchTool('drill')" style="border-color:rgba(232,160,32,0.3)"><div class="node-icon">⚡</div><div class="node-name">Doing</div><div class="node-label">drills &amp; skills</div></div>
+          <div class="map-node" onclick="switchTool('lesson')"><div class="node-icon">🏠</div><div class="node-name">Foundation</div><div class="node-label">home node</div></div>
+          <div class="map-node" onclick="switchTool('theory')" style="border-color:rgba(232,160,32,0.3)"><div class="node-icon">📚</div><div class="node-name">Knowing</div><div class="node-label">theory library</div></div>
+          <div class="map-node" onclick="switchTool('drill')"><div class="node-icon">🎯</div><div class="node-name">Practise</div><div class="node-label">session-based</div></div>
+          <div class="map-node" style="border-color:var(--red)"><div class="node-icon">I</div><div class="node-name">Level One</div><div class="node-label">origin — 9 disciplines</div></div>
+          <div class="map-node" onclick="switchTool('theory')"><div class="node-icon">🔬</div><div class="node-name">Study</div><div class="node-label">your lab</div></div>
+          <div class="map-node" onclick="switchTool('play')"><div class="node-icon">🎵</div><div class="node-name">Play</div><div class="node-label">songs &amp; genre</div></div>
+          <div class="map-node locked"><div class="lock-overlay">???</div><div class="node-icon">II</div><div class="node-name">Level Two</div><div class="node-label">duality</div></div>
+          <div class="map-node" onclick="switchTool('record')"><div class="node-icon">✍️</div><div class="node-name">Create</div><div class="node-label">guided creation</div></div>
+          <div class="map-node" style="border-color:rgba(92,184,92,0.3)"><div class="node-icon">🤝</div><div class="node-name">Collab</div><div class="node-label">always on</div></div>
+          <div class="map-node locked"><div class="lock-overlay">???</div><div class="node-icon">III–VII</div><div class="node-name">Levels 3–7</div><div class="node-label">locked</div></div>
+          <div class="map-node" style="border-color:rgba(160,90,196,0.3)"><div class="node-icon">◈</div><div class="node-name">Mastery</div><div class="node-label">thesis — identity</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LESSON -->
+    <div class="panel" id="panel-lesson">
+      <div class="panel-header"><h2>Lesson Simulator</h2><p>6-step lesson flow — the guided journey</p></div>
+      <div class="lesson-flow">
+        <div class="lesson-step active" onclick="setLessonStep(this)"><div class="step-num">01</div><div class="step-name">Read</div></div>
+        <div class="lesson-step" onclick="setLessonStep(this)"><div class="step-num">02</div><div class="step-name">Watch</div></div>
+        <div class="lesson-step" onclick="setLessonStep(this)"><div class="step-num">03</div><div class="step-name">Draw</div></div>
+        <div class="lesson-step" onclick="setLessonStep(this)"><div class="step-num">04</div><div class="step-name">Do</div></div>
+        <div class="lesson-step" onclick="setLessonStep(this)"><div class="step-num">05</div><div class="step-name">Check</div></div>
+        <div class="lesson-step" onclick="setLessonStep(this)"><div class="step-num">06</div><div class="step-name">Dig Deeper</div></div>
+      </div>
+      <div class="lesson-content">
+        <h3>Open Chords: C Major</h3>
+        <div style="margin-bottom:12px"><span class="tag">Rhythm</span><span class="tag">Level 1</span><span class="tag">Chords &amp; Harmony</span></div>
+        <p>The C major chord is one of the first open chords every guitarist learns. It uses three fingers and produces a bright, full sound that's foundational to countless songs.</p>
+        <p style="color:var(--text-dim);font-style:italic">Place your ring finger on the 3rd fret of the A string, middle finger on the 2nd fret of the D string, and index finger on the 1st fret of the B string. Strum from the A string down.</p>
+        <div class="context-box">
+          <p>WHERE THIS FITS: C major is the gateway to the key of C — the only major key with no sharps or flats. It connects to G major, A minor, and F major. Together these four chords open up thousands of songs.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- DRILL -->
+    <div class="panel" id="panel-drill">
+      <div class="panel-header"><h2>Doing — Drills &amp; Skills</h2><p>Open-world reference. Every practical exercise, always accessible.</p></div>
+      <div class="drill-categories">
+        <div class="drill-cat active" onclick="setDrillCat(this)"><div class="cat-icon">🥁</div><div class="cat-name">Rhythm</div></div>
+        <div class="drill-cat" onclick="setDrillCat(this)"><div class="cat-icon">🎶</div><div class="cat-name">Chords</div></div>
+        <div class="drill-cat" onclick="setDrillCat(this)"><div class="cat-icon">🎸</div><div class="cat-name">Scales</div></div>
+        <div class="drill-cat" onclick="setDrillCat(this)"><div class="cat-icon">✋</div><div class="cat-name">Technique</div></div>
+        <div class="drill-cat" onclick="setDrillCat(this)"><div class="cat-icon">🎵</div><div class="cat-name">Picking</div></div>
+        <div class="drill-cat" onclick="setDrillCat(this)"><div class="cat-icon">☝️</div><div class="cat-name">Fingerstyle</div></div>
+      </div>
+      <div class="drill-list">
+        <div class="drill-item"><div><div class="drill-name">Quarter Note Strumming</div><div class="drill-meta">Rhythm · L1 · ~3 min</div></div><span class="drill-badge easy">Easy</span></div>
+        <div class="drill-item"><div><div class="drill-name">Alternate Strumming Pattern</div><div class="drill-meta">Rhythm · L1 · ~5 min</div></div><span class="drill-badge easy">Easy</span></div>
+        <div class="drill-item"><div><div class="drill-name">Down-Up 8th Notes</div><div class="drill-meta">Rhythm · L1 · ~5 min</div></div><span class="drill-badge medium">Medium</span></div>
+        <div class="drill-item"><div><div class="drill-name">Finger Gymnastics 1-2-3-4</div><div class="drill-meta">Technique · L1 · ~5 min</div></div><span class="drill-badge easy">Easy</span></div>
+      </div>
+    </div>
+
+    <!-- THEORY -->
+    <div class="panel" id="panel-theory">
+      <div class="panel-header"><h2>Knowing — Theory Library</h2><p>Open-world reference. All music theory, always accessible.</p></div>
+      <div class="theory-grid">
+        <div class="theory-card"><h4>Notes &amp; the Chromatic Scale</h4><p>12 notes. That's all there are. Everything in music is built from these.</p></div>
+        <div class="theory-card"><h4>Intervals</h4><p>The distance between two notes. The building blocks of melody and harmony.</p></div>
+        <div class="theory-card"><h4>Major Scale Formula</h4><p>W-W-H-W-W-W-H. The formula behind every major key.</p></div>
+        <div class="theory-card"><h4>Chord Construction</h4><p>Root + 3rd + 5th. How chords are built from scale degrees.</p></div>
+        <div class="theory-card"><h4>Keys &amp; Key Signatures</h4><p>Why some songs use sharps and others flats. The Circle of Fifths.</p></div>
+        <div class="theory-card"><h4>Rhythm &amp; Time Signatures</h4><p>4/4, 3/4, 6/8 — what the numbers mean and why they matter.</p></div>
+        <div class="theory-card"><h4>The Pentatonic Scale</h4><p>5 notes that sound good over almost anything. The gateway to improvisation.</p></div>
+        <div class="theory-card"><h4>Reading Music</h4><p>Staff, clef, notes, rests. The language written on the page.</p></div>
+      </div>
+    </div>
+
+    <!-- PLAY -->
+    <div class="panel" id="panel-play">
+      <div class="panel-header"><h2>Play — Songs &amp; Genre</h2><p>Learn by playing real music. Pick a genre, pick a level.</p></div>
+      <div class="genre-grid">
+        <div class="genre-card"><div class="genre-icon">🤘</div><div class="genre-name">Rock</div><div class="genre-level">5 songs available</div></div>
+        <div class="genre-card"><div class="genre-icon">🎵</div><div class="genre-name">Pop</div><div class="genre-level">4 songs available</div></div>
+        <div class="genre-card"><div class="genre-icon">🎶</div><div class="genre-name">Folk</div><div class="genre-level">3 songs available</div></div>
+        <div class="genre-card"><div class="genre-icon">🎷</div><div class="genre-name">Blues</div><div class="genre-level">2 songs available</div></div>
+        <div class="genre-card"><div class="genre-icon">🎹</div><div class="genre-name">Classical</div><div class="genre-level">Coming soon</div></div>
+        <div class="genre-card"><div class="genre-icon">🎤</div><div class="genre-name">Country</div><div class="genre-level">Coming soon</div></div>
+      </div>
+    </div>
+
+    <!-- TIMER -->
+    <div class="panel" id="panel-timer">
+      <div class="timer-center">
+        <div class="timer-display" id="timerDisplay">10:00</div>
+        <div class="timer-presets">
+          <div class="timer-preset" onclick="setTimer(300,this)">5 min</div>
+          <div class="timer-preset active" onclick="setTimer(600,this)">10 min</div>
+          <div class="timer-preset" onclick="setTimer(900,this)">15 min</div>
+          <div class="timer-preset" onclick="setTimer(1200,this)">20 min</div>
+          <div class="timer-preset" onclick="setTimer(1800,this)">30 min</div>
+          <div class="timer-preset" onclick="setTimer(2700,this)">45 min</div>
+        </div>
+        <div class="timer-controls">
+          <button class="timer-btn start" id="timerStartBtn" onclick="toggleTimer()">Start</button>
+          <button class="timer-btn stop" onclick="resetTimer()">Reset</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- RECORD -->
+    <div class="panel" id="panel-record">
+      <div class="record-center">
+        <div class="panel-header" style="text-align:center"><h2>Record &amp; Listen</h2><p>Record yourself. Play it back. Hear what you actually sound like.</p></div>
+        <div class="record-btn-big" id="recordBtn" onclick="toggleRecord()">⏺</div>
+        <div class="record-status" id="recordStatus">Tap to start recording</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Calcifer -->
+<div class="calcifer-bar" id="calciferBar">
+  <div class="calcifer-icon">🔥</div>
+  <div class="calcifer-text" id="calciferText"></div>
+</div>
+
+<script>
+  function switchTool(tool) {
+    document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('active'));
+    document.querySelector('[data-tool="'+tool+'"]').classList.add('active');
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    document.getElementById('panel-'+tool).classList.add('active');
+    showCalcifer(tool);
+  }
+
+  function setLessonStep(el) {
+    document.querySelectorAll('.lesson-step').forEach(s => s.classList.remove('active'));
+    el.classList.add('active');
+  }
+
+  function setDrillCat(el) {
+    document.querySelectorAll('.drill-cat').forEach(c => c.classList.remove('active'));
+    el.classList.add('active');
+  }
+
+  // Timer
+  let timerSeconds = 600;
+  let timerRemaining = 600;
+  let timerInterval = null;
+  let timerRunning = false;
+
+  function setTimer(secs, el) {
+    if (timerRunning) return;
+    timerSeconds = secs;
+    timerRemaining = secs;
+    document.querySelectorAll('.timer-preset').forEach(p => p.classList.remove('active'));
+    el.classList.add('active');
+    updateTimerDisplay();
+  }
+
+  function updateTimerDisplay() {
+    const m = Math.floor(timerRemaining / 60);
+    const s = timerRemaining % 60;
+    document.getElementById('timerDisplay').textContent = String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+  }
+
+  function toggleTimer() {
+    if (timerRunning) {
+      clearInterval(timerInterval);
+      timerRunning = false;
+      document.getElementById('timerStartBtn').textContent = 'Resume';
+      document.getElementById('timerDisplay').classList.remove('running');
+    } else {
+      timerRunning = true;
+      document.getElementById('timerStartBtn').textContent = 'Pause';
+      document.getElementById('timerDisplay').classList.add('running');
+      timerInterval = setInterval(() => {
+        if (timerRemaining <= 0) {
+          clearInterval(timerInterval);
+          timerRunning = false;
+          document.getElementById('timerStartBtn').textContent = 'Done';
+          document.getElementById('timerDisplay').classList.remove('running');
+          return;
+        }
+        timerRemaining--;
+        updateTimerDisplay();
+      }, 1000);
+    }
+  }
+
+  function resetTimer() {
+    clearInterval(timerInterval);
+    timerRunning = false;
+    timerRemaining = timerSeconds;
+    document.getElementById('timerStartBtn').textContent = 'Start';
+    document.getElementById('timerDisplay').classList.remove('running');
+    updateTimerDisplay();
+  }
+
+  // Record (visual only)
+  let recording = false;
+  function toggleRecord() {
+    recording = !recording;
+    const btn = document.getElementById('recordBtn');
+    const status = document.getElementById('recordStatus');
+    if (recording) {
+      btn.classList.add('recording');
+      btn.textContent = '⏹';
+      status.textContent = 'Recording... tap to stop';
+    } else {
+      btn.classList.remove('recording');
+      btn.textContent = '⏺';
+      status.textContent = 'Recording saved. Tap to record again.';
+    }
+  }
+
+  // Calcifer
+  const calciferLines = {
+    map: [
+      "Oh, you're looking at the map again. You know you have to actually DO the lessons, right?",
+      "Nice view from up here. Less nice when you're down there sweating through drills.",
+      "See all those locked nodes? That's your future. Try not to mess it up."
+    ],
+    lesson: [
+      "Finally. Let's get through this so I can go back to sleep.",
+      "Read it. Watch it. Draw it. Do it. Not exactly rocket science. Well, for you maybe.",
+      "Don't skip the Draw step. I know you want to. Don't."
+    ],
+    drill: [
+      "Drills. The thing between you and actually being good. No pressure.",
+      "You know what's worse than drills? Being bad at guitar because you didn't do drills.",
+      "Pick one. Any one. Just start."
+    ],
+    theory: [
+      "Theory. The thing that makes the weird sounds make sense.",
+      "If you find a word you don't understand, LOOK IT UP. Don't pretend you know.",
+      "This is where the 'why' lives. You like the why, don't you."
+    ],
+    play: [
+      "Oh, NOW you want to play songs? Fine. Pick one.",
+      "This is what it's all for. Don't forget that.",
+      "Play badly. Then play it again. Then less badly. That's how this works."
+    ],
+    timer: [
+      "Setting a timer. How very organised of you. I'm almost impressed.",
+      "Time is literally the only thing standing between you and not being terrible.",
+      "Don't set 45 minutes if you're going to stop at 8. Be honest with yourself."
+    ],
+    record: [
+      "Record yourself. Yes, it's painful. Do it anyway.",
+      "You sound different than you think. You need to hear the truth.",
+      "The recording doesn't lie. Your brain does. Trust the recording."
+    ]
+  };
+
+  function showCalcifer(tool) {
+    const lines = calciferLines[tool] || [];
+    if (!lines.length) return;
+    const line = lines[Math.floor(Math.random() * lines.length)];
+    const bar = document.getElementById('calciferBar');
+    document.getElementById('calciferText').textContent = line;
+    bar.classList.add('visible');
+    setTimeout(() => bar.classList.remove('visible'), 6000);
+  }
+</script>
+</body>
+</html>
