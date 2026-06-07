@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Learning Profile — The Hearth</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0b08;
+    --bg-card: #1a1714;
+    --bg-card-hover: #221e18;
+    --gold: #d4af69;
+    --amber: #e8a020;
+    --ember: #c45a20;
+    --text: #e8dcc8;
+    --text-dim: #8a7e6e;
+    --text-bright: #f5edd8;
+    --border: #2a2520;
+    --green: #5cb85c;
+    --red: #c45a5a;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    line-height: 1.6;
+  }
+
+  .scanlines {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    pointer-events: none;
+    z-index: 9999;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,0,0,0.03) 2px,
+      rgba(0,0,0,0.03) 4px
+    );
+  }
+
+  .vignette {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    pointer-events: none;
+    z-index: 9998;
+    background: radial-gradient(ellipse at center, transparent 60%, rgba(0,0,0,0.4) 100%);
+  }
+
+  .container {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 40px 20px 80px;
+    position: relative;
+    z-index: 1;
+  }
+
+  header {
+    text-align: center;
+    margin-bottom: 50px;
+    padding-top: 20px;
+  }
+
+  header h1 {
+    font-family: 'Cinzel', serif;
+    color: var(--gold);
+    font-size: 1.8rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    margin-bottom: 8px;
+  }
+
+  header .subtitle {
+    color: var(--text-dim);
+    font-size: 0.9rem;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .section {
+    margin-bottom: 50px;
+  }
+
+  .section-title {
+    font-family: 'Cinzel', serif;
+    color: var(--gold);
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 6px;
+    letter-spacing: 0.03em;
+  }
+
+  .section-hint {
+    color: var(--text-dim);
+    font-size: 0.8rem;
+    font-family: 'JetBrains Mono', monospace;
+    margin-bottom: 16px;
+  }
+
+  .question {
+    margin-bottom: 30px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px;
+    transition: border-color 0.3s;
+  }
+
+  .question:hover {
+    border-color: rgba(212, 175, 105, 0.2);
+  }
+
+  .question-number {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--amber);
+    font-size: 0.75rem;
+    margin-bottom: 6px;
+  }
+
+  .question-text {
+    font-size: 0.95rem;
+    color: var(--text-bright);
+    margin-bottom: 14px;
+    font-weight: 500;
+  }
+
+  .options {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+    user-select: none;
+  }
+
+  .option:hover {
+    background: var(--bg-card-hover);
+    border-color: rgba(212, 175, 105, 0.3);
+  }
+
+  .option.selected {
+    background: rgba(212, 175, 105, 0.08);
+    border-color: var(--gold);
+  }
+
+  .option.selected .check-box {
+    background: var(--gold);
+    border-color: var(--gold);
+  }
+
+  .option.selected .check-box::after {
+    opacity: 1;
+  }
+
+  .check-box {
+    width: 18px;
+    height: 18px;
+    min-width: 18px;
+    border: 1.5px solid var(--text-dim);
+    border-radius: 3px;
+    position: relative;
+    transition: all 0.2s;
+  }
+
+  .check-box::after {
+    content: '✓';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: var(--bg);
+    font-size: 12px;
+    font-weight: 700;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  .option-label {
+    font-size: 0.88rem;
+    color: var(--text);
+    line-height: 1.4;
+  }
+
+  .free-text {
+    margin-top: 10px;
+    width: 100%;
+    min-height: 60px;
+    background: rgba(0,0,0,0.3);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.88rem;
+    padding: 10px 14px;
+    resize: vertical;
+    outline: none;
+    transition: border-color 0.3s;
+  }
+
+  .free-text:focus {
+    border-color: var(--gold);
+  }
+
+  .free-text::placeholder {
+    color: var(--text-dim);
+  }
+
+  .submit-area {
+    text-align: center;
+    margin-top: 40px;
+  }
+
+  .submit-btn {
+    font-family: 'Cinzel', serif;
+    background: linear-gradient(135deg, var(--gold), var(--amber));
+    color: var(--bg);
+    border: none;
+    padding: 14px 40px;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 6px;
+    cursor: pointer;
+    letter-spacing: 0.05em;
+    transition: all 0.3s;
+  }
+
+  .submit-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 20px rgba(212, 175, 105, 0.3);
+  }
+
+  .progress-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--gold), var(--amber));
+    z-index: 10000;
+    transition: width 0.3s;
+  }
+
+  /* Results overlay */
+  .results-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(13, 11, 8, 0.95);
+    z-index: 10001;
+    overflow-y: auto;
+    padding: 40px 20px;
+  }
+
+  .results-overlay.active {
+    display: block;
+  }
+
+  .results-content {
+    max-width: 700px;
+    margin: 0 auto;
+  }
+
+  .results-content h2 {
+    font-family: 'Cinzel', serif;
+    color: var(--gold);
+    font-size: 1.6rem;
+    text-align: center;
+    margin-bottom: 30px;
+  }
+
+  .profile-card {
+    background: var(--bg-card);
+    border: 1px solid var(--gold);
+    border-radius: 8px;
+    padding: 24px;
+    margin-bottom: 20px;
+  }
+
+  .profile-card h3 {
+    font-family: 'Cinzel', serif;
+    color: var(--amber);
+    font-size: 1rem;
+    margin-bottom: 12px;
+  }
+
+  .profile-card p, .profile-card li {
+    font-size: 0.9rem;
+    color: var(--text);
+    line-height: 1.6;
+  }
+
+  .profile-card ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  .profile-card li {
+    padding: 4px 0;
+    padding-left: 16px;
+    position: relative;
+  }
+
+  .profile-card li::before {
+    content: '◆';
+    position: absolute;
+    left: 0;
+    color: var(--gold);
+    font-size: 0.6rem;
+    top: 8px;
+  }
+
+  .close-results {
+    display: block;
+    margin: 30px auto;
+    font-family: 'Cinzel', serif;
+    background: transparent;
+    color: var(--gold);
+    border: 1px solid var(--gold);
+    padding: 10px 30px;
+    font-size: 0.9rem;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+
+  .close-results:hover {
+    background: rgba(212, 175, 105, 0.1);
+  }
+
+  @media (max-width: 600px) {
+    .container { padding: 20px 14px 60px; }
+    header h1 { font-size: 1.4rem; }
+    .question { padding: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="scanlines"></div>
+<div class="vignette"></div>
+<div class="progress-bar" id="progressBar" style="width: 0%"></div>
+
+<div class="container">
+  <header>
+    <h1>How Does Your Brain Learn?</h1>
+    <div class="subtitle">// learning profile questionnaire</div>
+  </header>
+
+  <!-- SECTION 1: INPUT — HOW YOU TAKE INFORMATION IN -->
+  <div class="section">
+    <div class="section-title">Input — How You Take Information In</div>
+    <div class="section-hint">select all that apply</div>
+
+    <div class="question" data-q="1">
+      <div class="question-number">001</div>
+      <div class="question-text">When you encounter a new concept, what helps it land first?</div>
+      <div class="options">
+        <label class="option"><div class="check-box"></div><span class="option-label">Reading the explanation in plain language</span></label>
+        <label class="option"><div class="check-box"></div><span class="option-label">Watching someone demonstrate it</span></label>
+        <label class="option"><div class="check-box"></div><span class="option-label">Hearing it explained out loud</span></label>
+        <label class="option"><div class="check-box"></div><span class="option-label">Drawing or diagramming it myself</span></label>
+        <label class="option"><div class="check-box"></div><span class="option-label">Physically doing it with my hands</span></label>
+        <label class="option"><div class="check-box"></div><span class="option-label">Seeing a visual representation (diagram, chart, fretboard map)</span></label>
+        <label class="option"><div class="check-box"></div><span class="option-label">Comparing it to something I already know</span></label>
+        <label class="option"><div class="check-box"></div><span class="option-label">Breaking it into pieces and studying each part</span></label>
+      </div>
+    </div>
+
+    <div class="question" data-q="2">
+      <div class="question-number">002</div>
+      <div class="question-text">When someone explains something and you don't get it, what do you do?</div>
+      <div class="options">
+        <label class="option"><div class="check-box"></div><span class="option-label">Ask them to explain it differently</span></label>
+        <label class="option"><div class="check-box"></div><span class="option-label">Go read about it on my own</span></label>
+        <label class="option"><div class="check-box"></div><span class="option-label">Watch a video about it</span></label>
+        <label class="option"><div class="check-box"></div><span class="option-label">Draw it out or map it visually</span></label>
+        <label class="option"><div class="check-box"></div><span class="option-label">Try to do it and figure it out by trial and error</span></label>
+        <label class="option"><div class="check-box"></div><span class="option-label">Sit with it until it clicks — I need time</span></label>
+        <label class="option"><div class="check-box"></div><span class="option-label">Look for a simpler version first, then build up</span></label>
+        <label class="option"><div class="check-box"></div><span class="option-label">Get frustrated and come back to it later</span></label>
+      </div>
+    </div>
+
+    <div class="question" data-q="3">
+      <div class="question-number">003</div>
+      <div class="question-text">When you're learning something hands-on (like guitar), what matters most?</div>
+      <div class="options">
+        <label class="option"><div class="check-box"></div><span class="option-label">Understanding the WHY before I try it</span></label>
+        <label class="option"><div class="check-box"></div><span class="option-label">Just doing it — understanding comes through repetition</span></label>
+        <label class="option"><div class="check-box"></div><span class="option-label">Seeing the whole picture first, then filling in details</span></label>
+        <label class="option"><div class="check-box"></div><span class="option-label">Getting one small piece perfect before moving to the next</span></label>
+        <label class="option"><div class="check-box"></div><span class="option-label">Having a clear structure or roadmap to follow</span></label>
+        <label class="option"><div class="check-box"></div><span class="option-label">Knowing where this fits into the bigger journey</span></label>
+        <label class="option"><div class="check-box"></div><span class="option-label">Having someone guide me step by step</span></label>
+        <label class="option"><div class="check-box"></div><span class="option-label">Being left alone to explore at my own pace</span></label>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 2: PROCESSING — HOW YOUR BRAIN ORGANISES IT -->
+  <div class="section">
+    <div class="section-title">Processing — How Your Brain Organises It</div>
+    <div class="section-hint">select all that apply</div>
+
+    <div class="question" data-q="4">
+      <div class="question-number">004</div>
+      <div class="question-text">How do you know you've actually learned something?</div>
+      <div class="options">
+        <label class="option"><div class="check-box"></div><span class="option-label">I can explain it to someone else clearly</span></label>
+        <label class="option"><div class="check-box"></div><span class="option-label">I can do it without thinking about it</span></label>
+        <label class="option"><div class="check-box"></div><span class="option-label">I can draw it or write it out from memory</span></label>
+        <label class="option"><div class="check-box"></div><span class="option-label">I can apply it in a different context than where I learned it</span></label>
+        <label class="option"><div class="check-box"></div><span class="option-label">It just feels different — I can't unsee it</span></label>
+        <label class="option"><div class="check-box"></div><span class="option-label">I catch myself noticing it in the wild (in songs, in conversation)</span></label>
+        <label class="option"><div class="check-box"></div><span class="option-label">I can connect it to other things I know</span></label>
+        <label class="option"><div class="check-box"></div><span class="option-label">I've successfully taught myself something harder that builds on it</span></label>
+      </div>
+    </div>
+
+    <div class="question" data-q="5">
+      <div class="question-number">005</div>
+      <div class="question-text">What does your brain do when a topic feels overwhelming?</div>
+      <div class="options">
+        <label class="option"><div class="check-box"></div><span class="option-label">Shuts down — I can't think at all</span></label>
+        <label class="option"><div class="check-box"></div><span class="option-label">Gets anxious — I feel like I'm falling behind</span></label>
+        <label class="option"><div class="check-box"></div><span class="option-label">Needs to step back and see the simpler version</span></label>
+        <label class="option"><div class="check-box"></div><span class="option-label">Starts guessing — trial and error to find a foothold</span></label>
+        <label class="option"><div class="check-box"></div><span class="option-label">Needs to break it into smaller pieces immediately</span></label>
+        <label class="option"><div class="check-box"></div><span class="option-label">Feels like there's a word or concept I'm missing (and that's the block)</span></label>
+        <label class="option"><div class="check-box"></div><span class="option-label">Leaves it and comes back when I'm fresher</span></label>
+        <label class="option"><div class="check-box"></div><span class="option-label">Gets stubborn — I won't let it beat me</span></label>
+      </div>
+    </div>
+
+    <div class="question" data-q="6">
+      <div class="question-number">006</div>
+      <div class="question-text">How do you organise new information in your head?</div>
+      <div class="options">
+        <label class="option"><div class="check-box"></div><span class="option-label">Categories and folders — everything in its place</span></label>
+        <label class="option"><div class="check-box"></div><span class="option-label">Maps and diagrams — I need to see the layout</span></label>
+        <label class="option"><div class="check-box"></div><span class="option-label">Stories and sequences — this happened, then this</span></label>
+        <label class="option"><div class="check-box"></div><span class="option-label">Connections and relationships — this links to that</span></label>
+        <label class="option"><div class="check-box"></div><span class="option-label">Layers — basics first, then depth, then nuance</span></label>
+        <label class="option"><div class="check-box"></div><span class="option-label">I don't organise it — it either clicks or it doesn't</span></label>
+        <label class="option"><div class="check-box"></div><span class="option-label">Through use — I learn by doing and it files itself</span></label>
+        <label class="option"><div class="check-box"></div><span class="option-label">Through teaching — if I can explain it, I've filed it</span></label>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 3: OUTPUT — HOW YOU EXPRESS WHAT YOU'VE LEARNED -->
+  <div class="section">
+    <div class="section-title">Output — How You Express What You've Learned</div>
+    <div class="section-hint">select all that apply</div>
+
+    <div class="question" data-q="7">
+      <div class="question-number">007</div>
+      <div class="question-text">When you pick up your guitar to practise, what feels most natural?</div>
+      <div class="options">
+        <label class="option"><div class="check-box"></div><span class="option-label">Running through exercises I've been given</span></label>
+        <label class="option"><div class="check-box"></div><span class="option-label">Exploring — trying things out, seeing what sounds good</span></label>
+        <label class="option"><div class="check-box"></div><span class="option-label">Playing along with songs or backing tracks</span></label>
+        <label class="option"><div class="check-box"></div><span class="option-label">Working on something specific I'm struggling with</span></label>
+        <label class="option"><div class="check-box"></div><span class="option-label">Repeating one thing until I nail it</span></label>
+        <label class="option"><div class="check-box"></div><span class="option-label">Trying to write something or improvise</span></label>
+        <label class="option"><div class="check-box"></div><span class="option-label">Following a structured session with a timer</span></label>
+        <label class="option"><div class="check-box"></div><span class="option-label">Just messing around — it's how I discover things</span></label>
+      </div>
+    </div>
+
+    <div class="question" data-q="8">
+      <div class="question-number">008</div>
+      <div class="question-text">When you record yourself and listen back, what happens?</div>
+      <div class="options">
+        <label class="option"><div class="check-box"></div><span class="option-label">I hear things I didn't notice while playing</span></label>
+        <label class="option"><div class="check-box"></div><span class="option-label">It's painful but I learn from it</span></label>
+        <label class="option"><div class="check-box"></div><span class="option-label">I can hear my progress over time</span></label>
+        <label class="option"><div class="check-box"></div><span class="option-label">I don't record myself much — I should though</span></label>
+        <label class="option"><div class="check-box"></div><span class="option-label">I compare to how it's supposed to sound</span></label>
+        <label class="option"><div class="check-box"></div><span class="option-label">I notice timing issues I didn't feel</span></label>
+        <label class="option"><div class="check-box"></div><span class="option-label">I notice tone and dynamics more than notes</span></label>
+        <label class="option"><div class="check-box"></div><span class="option-label">It motivates me to keep going</span></label>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 4: MOTIVATION — WHAT KEEPS YOU GOING -->
+  <div class="section">
+    <div class="section-title">Motivation — What Keeps You Going</div>
+    <div class="section-hint">select all that apply</div>
+
+    <div class="question" data-q="9">
+      <div class="question-number">009</div>
+      <div class="question-text">What makes you want to quit learning something?</div>
+      <div class="options">
+        <label class="option"><div class="check-box"></div><span class="option-label">Feeling like I'm not making progress</span></label>
+        <label class="option"><div class="check-box"></div><span class="option-label">Not understanding WHY I'm doing this</span></label>
+        <label class="option"><div class="check-box"></div><span class="option-label">The pace is too slow — I'm bored</span></label>
+        <label class="option"><div class="check-box"></div><span class="option-label">The pace is too fast — I'm lost</span></label>
+        <label class="option"><div class="check-box"></div><span class="option-label">Too much information at once</span></label>
+        <label class="option"><div class="check-box"></div><span class="option-label">Feeling like I should be further along than I am</span></label>
+        <label class="option"><div class="check-box"></div><span class="option-label">No clear next step — I don't know what to do</span></label>
+        <label class="option"><div class="check-box"></div><span class="option-label">It stops being fun</span></label>
+      </div>
+    </div>
+
+    <div class="question" data-q="10">
+      <div class="question-number">010</div>
+      <div class="question-text">What makes you obsessed with learning something?</div>
+      <div class="options">
+        <label class="option"><div class="check-box"></div><span class="option-label">Seeing clear, measurable progress</span></label>
+        <label class="option"><div class="check-box"></div><span class="option-label">Understanding the WHY — the purpose behind it</span></label>
+        <label class="option"><div class="check-box"></div><span class="option-label">A challenge that feels just beyond my reach</span></label>
+        <label class="option"><div class="check-box"></div><span class="option-label">Discovering connections between things</span></label>
+        <label class="option"><div class="check-box"></div><span class="option-label">Having a structure I can trust</span></label>
+        <label class="option"><div class="check-box"></div><span class="option-label">Someone believing I can do it</span></label>
+        <label class="option"><div class="check-box"></div><span class="option-label">Noticing I'm better than I was last week</span></label>
+        <label class="option"><div class="check-box"></div><span class="option-label">It becomes part of who I am, not just something I do</span></label>
+      </div>
+    </div>
+
+    <div class="question" data-q="11">
+      <div class="question-number">011</div>
+      <div class="question-text">How do you feel about routine vs freedom in learning?</div>
+      <div class="options">
+        <label class="option"><div class="check-box"></div><span class="option-label">I need routine — tell me what to do and I'll do it</span></label>
+        <label class="option"><div class="check-box"></div><span class="option-label">I need freedom — let me explore and follow curiosity</span></label>
+        <label class="option"><div class="check-box"></div><span class="option-label">Both — routine structure with freedom inside it</span></label>
+        <label class="option"><div class="check-box"></div><span class="option-label">Routine to start, freedom once I know what I'm doing</span></label>
+        <label class="option"><div class="check-box"></div><span class="option-label">I resist routine but actually need it</span></label>
+        <label class="option"><div class="check-box"></div><span class="option-label">I need someone to hold me accountable</span></label>
+        <label class="option"><div class="check-box"></div><span class="option-label">I'm self-motivated — just point me in a direction</span></label>
+        <label class="option"><div class="check-box"></div><span class="option-label">Routine kills my motivation — I need variety</span></label>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 5: PATTERNS — YOUR LEARNING HISTORY -->
+  <div class="section">
+    <div class="section-title">Patterns — Your Learning History</div>
+    <div class="section-hint">select all that apply</div>
+
+    <div class="question" data-q="12">
+      <div class="question-number">012</div>
+      <div class="question-text">Think about something you're really good at. How did you get there?</div>
+      <div class="options">
+        <label class="option"><div class="check-box"></div><span class="option-label">Repetition — I just kept doing it</span></label>
+        <label class="option"><div class="check-box"></div><span class="option-label">Obsession — I couldn't stop thinking about it</span></label>
+        <label class="option"><div class="check-box"></div><span class="option-label">Structure — I had a clear path and followed it</span></label>
+        <label class="option"><div class="check-box"></div><span class="option-label">Mentorship — someone guided me</span></label>
+        <label class="option"><div class="check-box"></div><span class="option-label">Necessity — I had to learn it, no choice</span></label>
+        <label class="option"><div class="check-box"></div><span class="option-label">Play — it was fun and I didn't realise I was learning</span></label>
+        <label class="option"><div class="check-box"></div><span class="option-label">Teaching — I learned it by teaching someone else</span></label>
+        <label class="option"><div class="check-box"></div><span class="option-label">Failure — I sucked at first and refused to stay there</span></label>
+      </div>
+    </div>
+
+    <div class="question" data-q="13">
+      <div class="question-number">013</div>
+      <div class="question-text">What have you started learning and abandoned? What stopped you?</div>
+      <textarea class="free-text" data-q="13" placeholder="Free text — tell me the story"></textarea>
+    </div>
+
+    <div class="question" data-q="14">
+      <div class="question-number">014</div>
+      <div class="question-text">Is there anything else about how your brain learns that these questions missed?</div>
+      <textarea class="free-text" data-q="14" placeholder="Free text — anything goes"></textarea>
+    </div>
+  </div>
+
+  <div class="submit-area">
+    <button class="submit-btn" id="submitBtn">Build My Profile</button>
+  </div>
+</div>
+
+<!-- Results Overlay -->
+<div class="results-overlay" id="resultsOverlay">
+  <div class="results-content" id="resultsContent"></div>
+</div>
+
+<script>
+  // Toggle options
+  document.querySelectorAll('.option').forEach(opt => {
+    opt.addEventListener('click', () => {
+      opt.classList.toggle('selected');
+      updateProgress();
+    });
+  });
+
+  function updateProgress() {
+    const total = document.querySelectorAll('.question').length;
+    const answered = document.querySelectorAll('.question').length - 
+      [...document.querySelectorAll('.question')].filter(q => {
+        const sel = q.querySelectorAll('.option.selected').length;
+        const txt = q.querySelector('.free-text');
+        return sel === 0 && (!txt || txt.value.trim() === '');
+      }).length;
+    const pct = Math.round((answered / total) * 100);
+    document.getElementById('progressBar').style.width = pct + '%';
+  }
+
+  document.querySelectorAll('.free-text').forEach(t => {
+    t.addEventListener('input', updateProgress);
+  });
+
+  // Build profile
+  document.getElementById('submitBtn').addEventListener('click', () => {
+    const answers = {};
+    document.querySelectorAll('.question').forEach(q => {
+      const num = q.dataset.q || q.querySelector('.free-text')?.dataset.q;
+      const selected = [...q.querySelectorAll('.option.selected')].map(o => o.querySelector('.option-label').textContent);
+      const ft = q.querySelector('.free-text');
+      answers[num] = { options: selected, text: ft ? ft.value.trim() : '' };
+    });
+
+    const profile = buildProfile(answers);
+    showResults(profile);
+  });
+
+  function buildProfile(a) {
+    const profile = {
+      input: [],
+      processing: [],
+      output: [],
+      motivation: [],
+      patterns: [],
+      warnings: [],
+      raw: a
+    };
+
+    // Q1: Input preference
+    const q1 = a['1']?.options || [];
+    if (q1.some(x => x.includes('Reading'))) profile.input.push('Text-first learner — written explanation is your entry point');
+    if (q1.some(x => x.includes('Watching'))) profile.input.push('Visual mimic — you learn by watching it done');
+    if (q1.some(x => x.includes('Hearing'))) profile.input.push('Auditory processor — spoken explanation lands harder');
+    if (q1.some(x => x.includes('Drawing'))) profile.input.push('Kinesthetic integrator — drawing it IS understanding it');
+    if (q1.some(x => x.includes('Physically'))) profile.input.push('Hands-first — your body learns before your mind does');
+    if (q1.some(x => x.includes('visual representation'))) profile.input.push('Spatial thinker — diagrams and maps are your language');
+    if (q1.some(x => x.includes('Comparing'))) profile.input.push('Analogical thinker — new knowledge anchors to existing knowledge');
+    if (q1.some(x => x.includes('Breaking'))) profile.input.push('Analytical — you decompose before you comprehend');
+
+    // Q2: Recovery strategy
+    const q2 = a['2']?.options || [];
+    if (q2.some(x => x.includes('differently'))) profile.processing.push('Needs multiple explanations — one framing won\'t do it');
+    if (q2.some(x => x.includes('read'))) profile.processing.push('Self-researcher — you go find your own source');
+    if (q2.some(x => x.includes('video'))) profile.processing.push('Video-reliant — moving images are your safety net');
+    if (q2.some(x => x.includes('Draw'))) profile.processing.push('Visual processor — you draw to understand (Hubbard clay demo instinct)');
+    if (q2.some(x => x.includes('trial'))) profile.processing.push('Experimental — you learn by breaking things');
+    if (q2.some(x => x.includes('time'))) profile.processing.push('Incubator — you need processing time, not more input');
+    if (q2.some(x => x.includes('simpler'))) profile.processing.push('Gradient-aware — you naturally step back when lost (Hubbard aligned)');
+    if (q2.some(x => x.includes('frustrated'))) profile.processing.push('Emotional learner — frustration is part of your process');
+
+    // Q3: Hands-on style
+    const q3 = a['3']?.options || [];
+    if (q3.some(x => x.includes('WHY'))) profile.input.push('Needs purpose — understanding WHY is non-negotiable before doing');
+    if (q3.some(x => x.includes('repetition'))) profile.input.push('Repetition-learner — understanding emerges through doing');
+    if (q3.some(x => x.includes('whole picture'))) profile.processing.push('Top-down processor — needs the big picture before details');
+    if (q3.some(x => x.includes('one small piece'))) profile.processing.push('Bottom-up builder — one piece at a time, mastered before moving on');
+    if (q3.some(x => x.includes('structure'))) profile.input.push('Structure-dependent — a clear roadmap is essential');
+    if (q3.some(x => x.includes('bigger journey'))) profile.input.push('Context-driven — knowing where this fits keeps you engaged');
+    if (q3.some(x => x.includes('guide me'))) profile.input.push('Guided learner — step-by-step with a teacher');
+    if (q3.some(x => x.includes('own pace'))) profile.input.push('Autonomous explorer — self-directed, resents being rushed');
+
+    // Q4: Knowing you've learned
+    const q4 = a['4']?.options || [];
+    if (q4.some(x => x.includes('explain'))) profile.processing.push('Teaching is your proof — if you can explain it, you know it');
+    if (q4.some(x => x.includes('without thinking'))) profile.processing.push('Automaticity is your benchmark — muscle memory = mastery');
+    if (q4.some(x => x.includes('draw'))) profile.processing.push('Visual recall is your test — can you reproduce it from scratch?');
+    if (q4.some(x => x.includes('different context'))) profile.processing.push('Transfer is your metric — applying it elsewhere proves it');
+    if (q4.some(x => x.includes('feels different'))) profile.processing.push('Intuitive knower — you feel it shift, can\'t always articulate why');
+    if (q4.some(x => x.includes('wild'))) profile.processing.push('Pattern noticer — you know you\'ve learned when you see it everywhere');
+    if (q4.some(x => x.includes('connect'))) profile.processing.push('Network thinker — mastery = connection density');
+    if (q4.some(x => x.includes('harder'))) profile.processing.push('Progressive builder — learning harder things proves the foundation');
+
+    // Q5: Overwhelm response
+    const q5 = a['5']?.options || [];
+    if (q5.some(x => x.includes('Shuts down'))) profile.warnings.push('Shutdown risk — overwhelm causes full stop. App must detect and respond before this point');
+    if (q5.some(x => x.includes('anxious'))) profile.warnings.push('Anxiety response — falling-behind feeling compounds the block');
+    if (q5.some(x => x.includes('simpler'))) profile.warnings.push('Gradient need — automatically offer simpler version on struggle');
+    if (q5.some(x => x.includes('guessing'))) profile.processing.push('Experimental under pressure — you guess when stuck');
+    if (q5.some(x => x.includes('smaller'))) profile.processing.push('Decomposer — you instinctively break things down when overwhelmed');
+    if (q5.some(x => x.includes('word or concept'))) profile.warnings.push('Misunderstood-word sensitive (Hubbard) — the block is almost always a missing definition');
+    if (q5.some(x => x.includes('fresher'))) profile.processing.push('Strategic withdrawer — you know when to walk away and come back');
+    if (q5.some(x => x.includes('stubborn'))) profile.motivation.push('Stubborn streak — challenge activates your determination');
+
+    // Q6: Organisation style
+    const q6 = a['6']?.options || [];
+    if (q6.some(x => x.includes('Categories'))) profile.processing.push('Taxonomic mind — you file by category and type');
+    if (q6.some(x => x.includes('Maps'))) profile.processing.push('Spatial organiser — you think in maps and layouts');
+    if (q6.some(x => x.includes('Stories'))) profile.processing.push('Narrative processor — you remember through story and sequence');
+    if (q6.some(x => x.includes('Connections'))) profile.processing.push('Relational thinker — you see links between things');
+    if (q6.some(x => x.includes('Layers'))) profile.processing.push('Layered learner — basics → depth → nuance, always in order');
+    if (q6.some(x => x.includes('don\'t organise'))) profile.warnings.push('Passive processor — relies on click-moment rather than active organisation. App needs to organise FOR you');
+    if (q6.some(x => x.includes('Through use'))) profile.processing.push('Experiential — knowledge files itself through application');
+    if (q6.some(x => x.includes('teaching'))) profile.processing.push('Teacher-learner — you solidify by articulating');
+
+    // Q7: Practice style
+    const q7 = a['7']?.options || [];
+    if (q7.some(x => x.includes('exercises'))) profile.output.push('Exercise-runner — follows prescribed practise');
+    if (q7.some(x => x.includes('Exploring'))) profile.output.push('Explorer — follows sound and curiosity');
+    if (q7.some(x => x.includes('songs or backing'))) profile.output.push('Play-along learner — needs musical context');
+    if (q7.some(x => x.includes('struggling'))) profile.output.push('Problem-focused — targets weaknesses directly');
+    if (q7.some(x => x.includes('Repeating'))) profile.output.push('Perfectionist — repeats until clean');
+    if (q7.some(x => x.includes('write'))) profile.output.push('Creator — uses practise as creative space');
+    if (q7.some(x => x.includes('structured'))) profile.output.push('Structured practiser — timer + plan = productive session');
+    if (q7.some(x => x.includes('messing'))) profile.output.push('Discovery practiser — noodling IS your process');
+
+    // Q8: Recording response
+    const q8 = a['8']?.options || [];
+    if (q8.some(x => x.includes('didn\'t notice'))) profile.output.push('Blind-spot revealer — recording shows what playing hides');
+    if (q8.some(x => x.includes('painful'))) profile.output.push('Reluctant realist — recording hurts but you value it');
+    if (q8.some(x => x.includes('progress over time'))) profile.motivation.push('Progress-visible — hearing improvement over time fuels you');
+    if (q8.some(x => x.includes('don\'t record'))) profile.warnings.push('Under-records — app should prompt and make recording frictionless');
+    if (q8.some(x => x.includes('supposed to'))) profile.output.push('Reference-comparer — you measure against the ideal');
+    if (q8.some(x => x.includes('timing'))) profile.output.push('Timing-aware — you catch rhythm issues in playback');
+    if (q8.some(x => x.includes('tone'))) profile.output.push('Tone-conscious — you hear dynamics more than accuracy');
+    if (q8.some(x => x.includes('motivates'))) profile.motivation.push('Recording as fuel — playback motivates, not just informs');
+
+    // Q9: Quit triggers
+    const q9 = a['9']?.options || [];
+    if (q9.some(x => x.includes('not making'))) profile.warnings.push('Progress-invisible = quit. Must show micro-progress constantly');
+    if (q9.some(x => x.includes('WHY'))) profile.warnings.push('Purpose-gap = quit. Every exercise needs context');
+    if (q9.some(x => x.includes('too slow'))) profile.warnings.push('Boredom trigger — pace too slow and you disengage');
+    if (q9.some(x => x.includes('too fast'))) profile.warnings.push('Overload trigger — pace too fast and you shut down');
+    if (q9.some(x => x.includes('Too much'))) profile.warnings.push('Volume-sensitive — information overload kills engagement');
+    if (q9.some(x => x.includes('should be further'))) profile.warnings.push('Comparison trap — comparing to imagined timeline kills motivation');
+    if (q9.some(x => x.includes('clear next step'))) profile.warnings.push('Ambiguity trigger — no clear next step = paralysis');
+    if (q9.some(x => x.includes('stops being fun'))) profile.warnings.push('Joy-dependent — fun is not optional, it\'s the fuel');
+
+    // Q10: Obsession triggers
+    const q10 = a['10']?.options || [];
+    if (q10.some(x => x.includes('measurable'))) profile.motivation.push('Metrics-driven — visible numbers and progress bars activate you');
+    if (q10.some(x => x.includes('WHY — the purpose'))) profile.motivation.push('Purpose-activated — understanding the deeper reason drives obsession');
+    if (q10.some(x => x.includes('just beyond'))) profile.motivation.push('Challenge-seeker — the sweet spot just beyond reach is addictive');
+    if (q10.some(x => x.includes('connections'))) profile.motivation.push('Connection-finder — discovering links between ideas fuels you');
+    if (q10.some(x => x.includes('structure'))) profile.motivation.push('Structure-truster — a reliable path you can count on');
+    if (q10.some(x => x.includes('believing'))) profile.motivation.push('Belief-activated — someone\'s faith in you is powerful fuel');
+    if (q10.some(x => x.includes('last week'))) profile.motivation.push('Growth-noticer — seeing improvement, even small, drives you');
+    if (q10.some(x => x.includes('part of who'))) profile.motivation.push('Identity-learner — when it becomes WHO you are, not what you do');
+
+    // Q11: Routine vs freedom
+    const q11 = a['11']?.options || [];
+    if (q11.some(x => x.includes('need routine — tell'))) profile.processing.push('Wants direction — prescriptive daily assignments');
+    if (q11.some(x => x.includes('need freedom'))) profile.processing.push('Needs autonomy — open-world exploration is essential');
+    if (q11.some(x => x.includes('Both'))) profile.processing.push('Structured freedom — routine frame, freedom within');
+    if (q11.some(x => x.includes('Routine to start'))) profile.processing.push('Graduated autonomy — guided first, independent later');
+    if (q11.some(x => x.includes('resist routine'))) profile.warnings.push('Routine-resistant but routine-needing — app must disguise structure as choice');
+    if (q11.some(x => x.includes('accountable'))) profile.motivation.push('Accountability-seeker — external accountability helps');
+    if (q11.some(x => x.includes('self-motivated'))) profile.motivation.push('Self-starter — just needs a direction, not hand-holding');
+    if (q11.some(x => x.includes('variety'))) profile.warnings.push('Variety-need — same routine every day kills motivation');
+
+    // Q12: How you got good
+    const q12 = a['12']?.options || [];
+    if (q12.some(x => x.includes('Repetition'))) profile.patterns.push('Repetition is your foundation — doing it over and over until it\'s yours');
+    if (q12.some(x => x.includes('Obsession'))) profile.patterns.push('Obsession-driven — when you\'re hooked, nothing stops you');
+    if (q12.some(x => x.includes('Structure'))) profile.patterns.push('Structure-dependency confirmed — clear paths lead to mastery');
+    if (q12.some(x => x.includes('Mentorship'))) profile.patterns.push('Mentor-responsive — guidance accelerates your learning');
+    if (q12.some(x => x.includes('Necessity'))) profile.patterns.push('Necessity-learner — you rise to the occasion when there\'s no alternative');
+    if (q12.some(x => x.includes('Play'))) profile.patterns.push('Play-state learner — best learning happens when you don\'t know you\'re learning');
+    if (q12.some(x => x.includes('Teaching'))) profile.patterns.push('Teacher-learner confirmed — teaching IS your learning tool');
+    if (q12.some(x => x.includes('Failure'))) profile.patterns.push('Growth-through-failure — refusing to stay down is your pattern');
+
+    return profile;
+  }
+
+  function showResults(profile) {
+    let html = '<h2>Your Learning Profile</h2>';
+
+    const sections = [
+      { key: 'input', title: 'Input — How You Take Things In', icon: '→' },
+      { key: 'processing', title: 'Processing — How Your Brain Works', icon: '⟲' },
+      { key: 'output', title: 'Output — How You Express Learning', icon: '←' },
+      { key: 'motivation', title: 'Motivation — What Drives You', icon: '🔥' },
+      { key: 'warnings', title: 'Warnings — What to Watch For', icon: '⚡' },
+      { key: 'patterns', title: 'Patterns — Your Learning History', icon: '◈' },
+    ];
+
+    sections.forEach(s => {
+      const items = profile[s.key];
+      if (!items || items.length === 0) return;
+      html += `<div class="profile-card"><h3>${s.icon} ${s.title}</h3><ul>`;
+      items.forEach(item => {
+        html += `<li>${item}</li>`;
+      });
+      html += '</ul></div>';
+    });
+
+    // Free text
+    const q13 = profile.raw['13']?.text;
+    const q14 = profile.raw['14']?.text;
+    if (q13 || q14) {
+      html += '<div class="profile-card"><h3>Free Response</h3>';
+      if (q13) html += `<p style="margin-bottom:12px"><strong style="color:var(--amber)">What you abandoned & why:</strong><br>${q13}</p>`;
+      if (q14) html += `<p><strong style="color:var(--amber)">Anything else:</strong><br>${q14}</p>`;
+      html += '</div>';
+    }
+
+    html += '<button class="close-results" onclick="document.getElementById(\'resultsOverlay\').classList.remove(\'active\')">Back to Questionnaire</button>';
+
+    document.getElementById('resultsContent').innerHTML = html;
+    document.getElementById('resultsOverlay').classList.add('active');
+  }
+</script>
+
+</body>
+</html>
