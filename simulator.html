@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>The Hearth Mastery</title>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="assets/css/foundation.css" rel="stylesheet">
 <style>
 :root{
   --bg:#0d0b08;--panel:#141210;--card:#1a1714;
@@ -490,6 +491,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;dis
   <div class="bt" data-t="record" onclick="sw('record')"><span class="bi">🎤</span><span class="bl">Record</span></div>
 </div>
 
+<script src="assets/js/foundation.js"></script>
 <script>
 const NI={
   hearth:{tag:'ORIGIN',t:'The Hearth',d:'The centre. Where the fire burns. Everything begins and returns here.'},
@@ -515,10 +517,87 @@ function nT(id){
   document.getElementById('niTitle').textContent=info.t;
   document.getElementById('niDesc').textContent=info.d;
   document.getElementById('ni').classList.add('vis');
-  if(['practical','practise'].includes(id))sw('drill');
+  if(id==='foundation')showFoundation();
+  else if(['practical','practise'].includes(id))sw('drill');
   else if(['theory','study'].includes(id))sw('theory');
   else if(id==='play')sw('play');
 }
+
+function showFoundation(){
+  sw('lesson');
+  const F=window.FOUNDATION;if(!F)return;
+  const el=document.getElementById('p-lesson');
+  el.innerHTML='<div class="foundation-landing">'+
+    '<div class="fl-hero">'+
+      '<div class="fl-sub">'+F.tag+'</div>'+
+      '<h2>'+F.title+'</h2>'+
+      '<p class="fl-desc">'+F.description+'</p>'+
+    '</div>'+
+    '<div class="fl-progress">'+
+      '<div class="fl-ring"><svg width="60" height="60"><circle class="ring-bg" cx="30" cy="30" r="26"/><circle class="ring-fill" cx="30" cy="30" r="26" stroke-dasharray="163.36" stroke-dashoffset="163.36"/></svg><div class="ring-text">0%</div></div>'+
+      '<div class="fl-progress-info"><div class="fl-pct">0 / '+F.topics.length+'</div><div class="fl-label">topics complete</div></div>'+
+    '</div>'+
+    '<div class="fl-topics">'+
+      F.topics.map(t=>'<div class="fl-topic '+(t.status==='done'?'done':'')+'" onclick="showFoundationTopic(\''+t.id+'\')">'+
+        '<div class="fl-topic-num">'+t.num+'</div>'+
+        '<div class="fl-topic-content">'+
+          '<h4>'+t.title+'</h4>'+
+          '<div class="fl-t-sub">'+t.subtitle+'</div>'+
+          '<div class="fl-t-meta">'+t.tags.map(tag=>'<span>'+tag+'</span>').join('')+'</div>'+
+        '</div>'+
+        '<div class="fl-t-status">'+(t.status==='done'?'✓':'→')+'</div>'+
+      '</div>').join('')+
+    '</div>'+
+    '<div class="fl-source"><p class="fl-s-label">SOURCES</p><p>'+F.sources.join('<br>')+'</p></div>'+
+  '</div>';
+}
+
+function showFoundationTopic(topicId){
+  const F=window.FOUNDATION;if(!F)return;
+  const topic=F.topics.find(t=>t.id===topicId);if(!topic)return;
+  const el=document.getElementById('p-lesson');
+  let stepIdx=0;
+  function renderStep(idx){
+    const s=topic.steps[idx];
+    return '<div class="lp-body">'+
+      '<div class="lp-tags">'+topic.tags.map(t=>'<span>'+t+'</span>').join('')+'</div>'+
+      '<h3>'+s.title+'</h3>'+
+      s.body+
+      (idx<topic.steps.length-1?'<button class="lp-next" onclick="nextFStep(\''+topicId+'\','+(idx+1)+')">Next: '+topic.steps[idx+1].label+' →</button>':'')+
+    '</div>';
+  }
+  el.innerHTML='<div class="lesson-page">'+
+    '<div class="lp-back" onclick="showFoundation()">← Foundation</div>'+
+    '<div class="lp-header">'+
+      '<div class="lp-tag">'+topic.num+' / '+F.tag+'</div>'+
+      '<h2>'+topic.title+'</h2>'+
+      '<div class="lp-subtitle">'+topic.subtitle+'</div>'+
+    '</div>'+
+    '<div class="lp-steps" id="fSteps">'+
+      topic.steps.map((s,i)=>'<div class="lp-step'+(i===0?' on':'')+'" onclick="goFStep(\''+topicId+'\','+i+')"><div class="lp-sn">'+String(i+1).padStart(2,'0')+'</div><div class="lp-sl">'+s.label+'</div></div>').join('')+
+    '</div>'+
+    '<div id="fStepBody">'+renderStep(0)+'</div>'+
+  '</div>';
+  window._fTopic=topicId;
+}
+
+window.nextFStep=function(tid,idx){goFStep(tid,idx);};
+window.goFStep=function(tid,idx){
+  const F=window.FOUNDATION;if(!F)return;
+  const topic=F.topics.find(t=>t.id===tid);if(!topic)return;
+  document.querySelectorAll('#fSteps .lp-step').forEach((s,i)=>s.classList.toggle('on',i===idx));
+  const s=topic.steps[idx];
+  const body=document.getElementById('fStepBody');
+  if(body){
+    body.innerHTML='<div class="lp-body">'+
+      '<div class="lp-tags">'+topic.tags.map(t=>'<span>'+t+'</span>').join('')+'</div>'+
+      '<h3>'+s.title+'</h3>'+
+      s.body+
+      (idx<topic.steps.length-1?'<button class="lp-next" onclick="nextFStep(\''+tid+'\','+(idx+1)+')">Next: '+topic.steps[idx+1].label+' →</button>':'')+
+    '</div>';
+    body.scrollTop=0;
+  }
+};
 
 function hlP(p){
   document.querySelectorAll('.path-btn').forEach(b=>b.classList.remove('on'));
