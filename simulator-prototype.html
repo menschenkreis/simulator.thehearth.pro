@@ -3,484 +3,381 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>The Hearth Mastery — Simulator</title>
+<title>The Hearth Mastery</title>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-:root {
-  --bg:#0d0b08; --panel:#1c1915; --panel-light:#242018;
-  --gold:#d4af69; --amber:#e8a020; --ember:#c45a20;
-  --text:#e8dcc8; --text-dim:#6a5e4e; --text-bright:#f5edd8;
-  --border:#33302a; --border-light:#3d3830;
-  --inset-shadow: inset 1px 1px 2px rgba(0,0,0,0.6), inset -1px -1px 1px rgba(255,255,255,0.04);
-  --outset-shadow: 1px 1px 2px rgba(0,0,0,0.5), -1px -1px 1px rgba(255,255,255,0.06);
-  --btn-face: linear-gradient(180deg, #3a3530 0%, #2a2520 40%, #1e1b16 100%);
-  --btn-face-hover: linear-gradient(180deg, #4a4540 0%, #3a3530 40%, #2a2520 100%);
-  --btn-face-active: linear-gradient(180deg, #1e1b16 0%, #2a2520 60%, #3a3530 100%);
-  --toolbar-w: 56px;
+:root{
+  --bg:#0d0b08;--panel:#141210;--card:#1a1714;
+  --gold:#d4af69;--amber:#e8a020;--ember:#c45a20;
+  --text:#e8dcc8;--dim:#6a5e4e;--bright:#f5edd8;
+  --border:#252220;
+  --bev:inset 1px 1px 2px rgba(0,0,0,0.5),inset -1px -1px 1px rgba(255,255,255,0.03);
+  --ris:1px 1px 2px rgba(0,0,0,0.4),-1px -1px 1px rgba(255,255,255,0.05);
+  --btn:#2a2622;--btn-h:#343028;--btn-a:#1e1c18;
 }
 *{margin:0;padding:0;box-sizing:border-box;}
-body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;height:100vh;overflow:hidden;display:flex;}
-body::after{content:'';position:fixed;top:0;left:0;right:0;bottom:0;pointer-events:none;z-index:9999;
-  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.02) 2px,rgba(0,0,0,0.02) 4px);}
+html,body{height:100%;overflow:hidden;}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;display:flex;flex-direction:column;}
 
-/* ===== LEFT TOOLBAR (SimCity 3D) ===== */
-.toolbar{
-  width:var(--toolbar-w);min-width:var(--toolbar-w);
-  background:var(--panel);
-  border-right:2px solid var(--border);
-  display:flex;flex-direction:column;align-items:center;
-  padding:6px 0;gap:2px;z-index:100;
-  box-shadow:2px 0 8px rgba(0,0,0,0.4);
+/* TOP BAR */
+.top{
+  height:38px;min-height:38px;
+  background:var(--panel);border-bottom:1px solid var(--border);
+  display:flex;align-items:center;padding:0 12px;gap:6px;
+  flex-shrink:0;
 }
-.toolbar-logo{
-  width:40px;height:40px;
-  display:flex;align-items:center;justify-content:center;
-  font-size:1.2rem;cursor:pointer;
-  margin-bottom:4px;
-  background:radial-gradient(circle, rgba(212,175,105,0.15) 0%, transparent 70%);
-  border-radius:4px;
-}
-.toolbar-sep{width:36px;height:2px;background:var(--border);margin:4px 0;border-radius:1px;box-shadow:var(--inset-shadow);}
+.top-title{font-family:'Cinzel',serif;color:var(--gold);font-size:0.75rem;font-weight:600;margin-right:8px;}
+.top-spacer{flex:1;}
+.top-stat{font-family:'JetBrains Mono',monospace;font-size:0.6rem;color:var(--dim);}
+.top-stat .v{color:var(--amber);}
 
-.tool-btn{
-  width:44px;height:40px;
-  display:flex;align-items:center;justify-content:center;
-  border-radius:4px;cursor:pointer;
-  position:relative;border:1px solid var(--border);
-  background:var(--btn-face);
-  color:var(--text-dim);font-size:1rem;
-  box-shadow:var(--outset-shadow);
-  transition:all 0.1s;
-  text-shadow:0 1px 2px rgba(0,0,0,0.5);
-}
-.tool-btn:hover{background:var(--btn-face-hover);color:var(--text);}
-.tool-btn:active,.tool-btn.active{
-  background:var(--btn-face-active);
-  box-shadow:var(--inset-shadow);
-  color:var(--gold);
-  border-color:var(--gold);
-}
-.tool-btn .tip{
-  position:absolute;left:calc(100% + 8px);top:50%;transform:translateY(-50%);
-  background:#2a2520;border:1px solid var(--gold);color:var(--text-bright);
-  font-family:'DM Sans',sans-serif;font-size:0.7rem;
-  padding:3px 8px;border-radius:3px;white-space:nowrap;
-  pointer-events:none;opacity:0;transition:opacity 0.12s;z-index:200;
-}
-.tool-btn:hover .tip{opacity:1;}
-.toolbar-spacer{flex:1;}
-.tb-stat{font-family:'JetBrains Mono',monospace;font-size:0.5rem;color:var(--text-dim);text-align:center;padding:1px 0;}
-.tb-stat .v{color:var(--gold);}
+/* CENTER */
+.center{flex:1;overflow-y:auto;position:relative;}
 
-/* ===== TOP BAR (Photoshop style) ===== */
-.topbar{
-  height:32px;min-height:32px;
-  background:var(--panel);
-  border-bottom:2px solid var(--border);
-  display:flex;align-items:center;
-  padding:0 8px;gap:2px;
-  box-shadow:0 2px 6px rgba(0,0,0,0.3);
-}
-.topbar-title{
-  font-family:'Cinzel',serif;color:var(--gold);font-size:0.75rem;
-  font-weight:600;padding:0 12px 0 8px;
-  border-right:1px solid var(--border);margin-right:4px;
-}
-.tb-btn{
-  height:24px;padding:0 10px;
-  font-family:'DM Sans',sans-serif;font-size:0.7rem;
-  color:var(--text-dim);background:var(--btn-face);
-  border:1px solid var(--border);border-radius:3px;
-  cursor:pointer;box-shadow:var(--outset-shadow);
-  transition:all 0.1s;
-}
-.tb-btn:hover{background:var(--btn-face-hover);color:var(--text);}
-.tb-btn:active,.tb-btn.active{
-  background:var(--btn-face-active);box-shadow:var(--inset-shadow);color:var(--gold);
-}
-.tb-btn.sep{border-left:2px solid var(--border);}
-.topbar-spacer{flex:1;}
-.topbar .progress-mini{width:60px;height:3px;background:#1a1714;border-radius:2px;box-shadow:var(--inset-shadow);overflow:hidden;margin:0 6px;}
-.topbar .progress-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--amber));border-radius:2px;}
-.topbar .stat{font-family:'JetBrains Mono',monospace;font-size:0.6rem;color:var(--text-dim);padding:0 4px;}
-.topbar .stat .v{color:var(--amber);}
+/* PANELS */
+.pnl{display:none;height:100%;}
+.pnl.on{display:flex;flex-direction:column;}
 
-/* ===== WORKSPACE ===== */
-.workspace{flex:1;display:flex;flex-direction:column;overflow:hidden;}
-.main-area{flex:1;overflow-y:auto;position:relative;background:#0a0908;}
-.panel{display:none;height:100%;overflow-y:auto;}
-.panel.active{display:block;}
+/* === MAP === */
+.map{padding:20px;align-items:center;justify-content:center;}
+.mgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;max-width:400px;width:100%;}
+.mnd{
+  background:var(--card);border:1px solid var(--border);border-radius:6px;
+  padding:16px 12px;text-align:center;cursor:pointer;transition:all 0.2s;
+  box-shadow:var(--ris);
+}
+.mnd:active{box-shadow:var(--bev);}
+.mnd:hover{border-color:rgba(212,175,105,0.35);}
+.mnd.lock{opacity:0.2;filter:grayscale(0.8);cursor:default;}
+.mnd .mi{font-size:1.1rem;margin-bottom:3px;}
+.mnd .mn{font-family:'Cinzel',serif;color:var(--bright);font-size:0.78rem;font-weight:600;}
+.mnd .ml{font-family:'JetBrains Mono',monospace;color:var(--dim);font-size:0.52rem;margin-top:1px;}
 
-/* ===== MAP PANEL ===== */
-.map-wrap{padding:24px;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;}
-.map-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;max-width:560px;width:100%;}
-.map-node{
-  background:var(--panel);border:2px solid var(--border);border-radius:6px;
-  padding:14px 10px;text-align:center;cursor:pointer;transition:all 0.2s;position:relative;
-  box-shadow:var(--outset-shadow);
+/* === LESSON === */
+.ls{padding:16px;}
+.ls-steps{display:flex;gap:4px;margin-bottom:14px;}
+.ls-s{
+  flex:1;text-align:center;padding:8px 4px;
+  background:var(--btn);border:1px solid var(--border);border-radius:4px;
+  cursor:pointer;box-shadow:var(--ris);transition:all 0.1s;
 }
-.map-node:hover{border-color:rgba(212,175,105,0.5);transform:translateY(-2px);box-shadow:0 4px 16px rgba(0,0,0,0.4);}
-.map-node.locked{opacity:0.25;filter:grayscale(0.8);cursor:not-allowed;}
-.map-node.locked:hover{transform:none;border-color:var(--border);box-shadow:var(--outset-shadow);}
-.map-node .ni{font-size:1.3rem;margin-bottom:4px;}
-.map-node .nn{font-family:'Cinzel',serif;color:var(--text-bright);font-size:0.8rem;font-weight:600;}
-.map-node .nl{font-family:'JetBrains Mono',monospace;color:var(--text-dim);font-size:0.55rem;margin-top:2px;}
-.map-node .lk{position:absolute;top:3px;right:5px;font-size:0.55rem;color:var(--text-dim);font-family:'JetBrains Mono',monospace;}
+.ls-s:active,.ls-s.on{box-shadow:var(--bev);border-color:var(--gold);}
+.ls-s .n{font-family:'JetBrains Mono',monospace;font-size:0.5rem;color:var(--amber);}
+.ls-s .l{font-size:0.7rem;color:var(--text);}
+.ls-s.on .l{color:var(--gold);}
+.ls-body{
+  flex:1;background:var(--card);border:1px solid var(--border);border-radius:6px;
+  padding:16px;overflow-y:auto;box-shadow:var(--bev);
+}
+.ls-body h3{font-family:'Cinzel',serif;color:var(--gold);font-size:0.95rem;margin-bottom:8px;}
+.ls-body p{font-size:0.82rem;line-height:1.65;margin-bottom:8px;color:var(--text);}
+.tag{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:0.55rem;
+  background:rgba(212,175,105,0.08);color:var(--gold);padding:2px 6px;border-radius:2px;margin-right:3px;}
+.ctx{margin-top:10px;padding:10px;background:rgba(0,0,0,0.25);border-radius:4px;border-left:2px solid var(--gold);}
+.ctx p{color:var(--dim);font-size:0.68rem;font-family:'JetBrains Mono',monospace;line-height:1.5;}
 
-/* ===== LESSON PANEL ===== */
-.lesson-wrap{padding:20px;height:100%;display:flex;flex-direction:column;}
-.lesson-steps{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap;}
-.lstep{
-  background:var(--btn-face);border:1px solid var(--border);border-radius:4px;
-  padding:8px 12px;cursor:pointer;text-align:center;flex:1;min-width:60px;
-  box-shadow:var(--outset-shadow);transition:all 0.1s;
+/* === DRILL === */
+.dr{padding:16px;}
+.dr-cats{display:flex;gap:4px;margin-bottom:12px;flex-wrap:wrap;}
+.dr-c{
+  padding:6px 10px;font-size:0.7rem;color:var(--text);
+  background:var(--btn);border:1px solid var(--border);border-radius:3px;
+  cursor:pointer;box-shadow:var(--ris);transition:all 0.1s;
 }
-.lstep:hover{background:var(--btn-face-hover);}
-.lstep.active{background:var(--btn-face-active);box-shadow:var(--inset-shadow);border-color:var(--gold);}
-.lstep .sn{font-family:'JetBrains Mono',monospace;font-size:0.55rem;color:var(--amber);margin-bottom:2px;}
-.lstep .sl{font-size:0.75rem;color:var(--text);}
-.lstep.active .sl{color:var(--gold);}
-.lesson-body{
-  flex:1;background:var(--panel);border:2px solid var(--border);border-radius:6px;
-  padding:20px;overflow-y:auto;box-shadow:var(--inset-shadow);
-}
-.lesson-body h3{font-family:'Cinzel',serif;color:var(--gold);font-size:1rem;margin-bottom:10px;}
-.lesson-body p{font-size:0.85rem;line-height:1.7;margin-bottom:10px;}
-.tag{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:0.6rem;
-  background:rgba(212,175,105,0.1);color:var(--gold);padding:2px 7px;border-radius:3px;margin-right:3px;
-  border:1px solid rgba(212,175,105,0.2);}
-.ctx-box{margin-top:14px;padding:12px;background:rgba(0,0,0,0.3);border-radius:4px;border-left:3px solid var(--gold);}
-.ctx-box p{color:var(--text-dim);font-size:0.72rem;font-family:'JetBrains Mono',monospace;}
-
-/* ===== DRILL PANEL ===== */
-.drill-wrap{padding:20px;height:100%;display:flex;flex-direction:column;}
-.dcats{display:flex;gap:4px;margin-bottom:14px;flex-wrap:wrap;}
-.dcat{
-  background:var(--btn-face);border:1px solid var(--border);border-radius:4px;
-  padding:8px 12px;cursor:pointer;text-align:center;
-  box-shadow:var(--outset-shadow);transition:all 0.1s;font-size:0.72rem;color:var(--text);
-}
-.dcat:hover{background:var(--btn-face-hover);}
-.dcat.active{background:var(--btn-face-active);box-shadow:var(--inset-shadow);color:var(--gold);border-color:var(--gold);}
-.dcat .di{font-size:0.9rem;margin-right:3px;}
-.dlist{flex:1;overflow-y:auto;}
-.ditem{
-  background:var(--panel);border:1px solid var(--border);border-radius:4px;
+.dr-c:active,.dr-c.on{box-shadow:var(--bev);color:var(--gold);border-color:var(--gold);}
+.dr-list{flex:1;overflow-y:auto;}
+.dr-i{
+  background:var(--card);border:1px solid var(--border);border-radius:4px;
   padding:10px 12px;margin-bottom:5px;display:flex;align-items:center;justify-content:space-between;
-  cursor:pointer;transition:all 0.15s;box-shadow:var(--outset-shadow);
+  cursor:pointer;box-shadow:var(--ris);
 }
-.ditem:hover{border-color:rgba(212,175,105,0.3);}
-.ditem .dn{font-size:0.8rem;color:var(--text-bright);margin-bottom:1px;}
-.ditem .dm{font-family:'JetBrains Mono',monospace;font-size:0.55rem;color:var(--text-dim);}
-.badge{font-family:'JetBrains Mono',monospace;font-size:0.55rem;padding:2px 6px;border-radius:2px;}
-.badge.e{background:rgba(92,184,92,0.12);color:#5cb85c;border:1px solid rgba(92,184,92,0.2);}
-.badge.m{background:rgba(232,160,32,0.12);color:#e8a020;border:1px solid rgba(232,160,32,0.2);}
+.dr-i:active{box-shadow:var(--bev);}
+.dr-i .dn{font-size:0.78rem;color:var(--bright);}
+.dr-i .dm{font-family:'JetBrains Mono',monospace;font-size:0.52rem;color:var(--dim);}
+.bd{font-family:'JetBrains Mono',monospace;font-size:0.52rem;padding:1px 5px;border-radius:2px;}
+.bd.e{background:rgba(92,184,92,0.1);color:#5cb85c;}
+.bd.m{background:rgba(232,160,32,0.1);color:#e8a020;}
 
-/* ===== THEORY PANEL ===== */
-.theory-wrap{padding:20px;}
-.tgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;}
-.tcard{
-  background:var(--panel);border:1px solid var(--border);border-radius:6px;
-  padding:14px;cursor:pointer;transition:all 0.2s;box-shadow:var(--outset-shadow);
+/* === THEORY === */
+.th{padding:16px;}
+.th-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.th-c{
+  background:var(--card);border:1px solid var(--border);border-radius:6px;
+  padding:12px;cursor:pointer;box-shadow:var(--ris);transition:all 0.15s;
 }
-.tcard:hover{border-color:rgba(212,175,105,0.3);transform:translateY(-1px);}
-.tcard h4{font-family:'Cinzel',serif;color:var(--gold);font-size:0.8rem;margin-bottom:4px;}
-.tcard p{font-size:0.7rem;color:var(--text-dim);line-height:1.5;}
+.th-c:active{box-shadow:var(--bev);}
+.th-c h4{font-family:'Cinzel',serif;color:var(--gold);font-size:0.75rem;margin-bottom:3px;}
+.th-c p{font-size:0.65rem;color:var(--dim);line-height:1.4;}
 
-/* ===== PLAY PANEL ===== */
-.play-wrap{padding:20px;}
-.pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px;}
-.pcard{
-  background:var(--panel);border:1px solid var(--border);border-radius:6px;
-  padding:18px;text-align:center;cursor:pointer;transition:all 0.2s;box-shadow:var(--outset-shadow);
+/* === PLAY === */
+.pl{padding:16px;}
+.pl-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.pl-c{
+  background:var(--card);border:1px solid var(--border);border-radius:6px;
+  padding:16px;text-align:center;cursor:pointer;box-shadow:var(--ris);transition:all 0.15s;
 }
-.pcard:hover{border-color:rgba(90,142,196,0.4);transform:translateY(-1px);}
-.pcard .pi{font-size:1.6rem;margin-bottom:6px;}
-.pcard .pn{font-family:'Cinzel',serif;color:var(--text-bright);font-size:0.8rem;}
-.pcard .pl{font-family:'JetBrains Mono',monospace;font-size:0.55rem;color:var(--text-dim);margin-top:2px;}
+.pl-c:active{box-shadow:var(--bev);}
+.pl-c .pi{font-size:1.4rem;margin-bottom:4px;}
+.pl-c .pn{font-family:'Cinzel',serif;color:var(--bright);font-size:0.78rem;}
+.pl-c .pl2{font-family:'JetBrains Mono',monospace;font-size:0.52rem;color:var(--dim);margin-top:1px;}
 
-/* ===== TIMER PANEL ===== */
-.timer-wrap{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;padding:20px;}
-.tdisp{
-  font-family:'JetBrains Mono',monospace;font-size:3.5rem;color:var(--gold);
-  letter-spacing:0.04em;text-shadow:0 0 20px rgba(212,175,105,0.15),0 2px 4px rgba(0,0,0,0.5);
+/* === TIMER === */
+.tm{align-items:center;justify-content:center;gap:18px;padding:20px;}
+.tm-d{
+  font-family:'JetBrains Mono',monospace;font-size:3rem;color:var(--gold);
+  text-shadow:0 0 15px rgba(212,175,105,0.1);
 }
-.tdisp.on{color:var(--amber);animation:tglow 2s ease-in-out infinite;}
-@keyframes tglow{0%,100%{text-shadow:0 0 20px rgba(232,160,32,0.15);}50%{text-shadow:0 0 30px rgba(232,160,32,0.35);}}
-.tpresets{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;}
-.tp{
-  background:var(--btn-face);border:1px solid var(--border);border-radius:4px;
-  padding:8px 14px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:0.75rem;
-  cursor:pointer;box-shadow:var(--outset-shadow);transition:all 0.1s;
+.tm-d.run{color:var(--amber);animation:tg 2s ease-in-out infinite;}
+@keyframes tg{0%,100%{text-shadow:0 0 15px rgba(232,160,32,0.1);}50%{text-shadow:0 0 25px rgba(232,160,32,0.3);}}
+.tm-opts{display:flex;gap:5px;flex-wrap:wrap;justify-content:center;}
+.tm-o{
+  padding:8px 14px;font-family:'JetBrains Mono',monospace;font-size:0.72rem;
+  color:var(--text);background:var(--btn);border:1px solid var(--border);border-radius:3px;
+  cursor:pointer;box-shadow:var(--ris);transition:all 0.1s;
 }
-.tp:hover{background:var(--btn-face-hover);color:var(--gold);}
-.tp.active{background:var(--btn-face-active);box-shadow:var(--inset-shadow);color:var(--gold);border-color:var(--gold);}
-.tctrls{display:flex;gap:10px;}
-.tbtn{
-  font-family:'Cinzel',serif;padding:10px 28px;border-radius:4px;
-  border:1px solid var(--border);cursor:pointer;font-size:0.85rem;font-weight:600;
-  box-shadow:var(--outset-shadow);transition:all 0.1s;
+.tm-o:active,.tm-o.on{box-shadow:var(--bev);color:var(--gold);border-color:var(--gold);}
+.tm-btns{display:flex;gap:8px;}
+.tm-b{
+  font-family:'Cinzel',serif;padding:10px 24px;border-radius:4px;
+  border:1px solid var(--border);cursor:pointer;font-size:0.82rem;font-weight:600;
+  box-shadow:var(--ris);transition:all 0.1s;
 }
-.tbtn.go{background:linear-gradient(180deg,#d4af69 0%,#b8963a 100%);color:var(--bg);border-color:var(--gold);}
-.tbtn.go:hover{box-shadow:0 2px 12px rgba(212,175,105,0.3);}
-.tbtn.go:active{box-shadow:var(--inset-shadow);}
-.tbtn.no{background:var(--btn-face);color:#c45a5a;border-color:#c45a5a;}
+.tm-b.go{background:linear-gradient(180deg,var(--gold),#b8963a);color:var(--bg);border-color:var(--gold);}
+.tm-b.go:active{box-shadow:var(--bev);}
+.tm-b.no{background:var(--btn);color:#c45a5a;border-color:#c45a5a;}
 
-/* ===== RECORD PANEL ===== */
-.rec-wrap{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;padding:20px;}
-.rec-btn{
-  width:90px;height:90px;border-radius:50%;
-  background:radial-gradient(circle at 40% 35%, #3a2020 0%, #1e0e0e 100%);
-  border:3px solid #c45a5a;
+/* === RECORD === */
+.rc{align-items:center;justify-content:center;gap:16px;padding:20px;}
+.rc-b{
+  width:80px;height:80px;border-radius:50%;
+  background:radial-gradient(circle at 40% 35%,#2a1212,#140808);
+  border:2px solid #c45a5a;
   display:flex;align-items:center;justify-content:center;
-  cursor:pointer;font-size:1.8rem;color:#c45a5a;
-  box-shadow:0 0 15px rgba(196,90,90,0.15), var(--outset-shadow);
-  transition:all 0.2s;
+  cursor:pointer;font-size:1.6rem;color:#c45a5a;
+  box-shadow:var(--ris);transition:all 0.2s;
 }
-.rec-btn:hover{box-shadow:0 0 25px rgba(196,90,90,0.25), var(--outset-shadow);background:radial-gradient(circle at 40% 35%, #4a2525 0%, #2a1515 100%);}
-.rec-btn.on{animation:rpulse 1s ease-in-out infinite;}
-@keyframes rpulse{0%,100%{box-shadow:0 0 15px rgba(196,90,90,0.2);}50%{box-shadow:0 0 30px rgba(196,90,90,0.5);}}
-.rec-st{font-family:'JetBrains Mono',monospace;font-size:0.7rem;color:var(--text-dim);}
+.rc-b:active{box-shadow:var(--bev);}
+.rc-b.on{animation:rp 1s ease-in-out infinite;}
+@keyframes rp{0%,100%{box-shadow:0 0 10px rgba(196,90,90,0.15);}50%{box-shadow:0 0 25px rgba(196,90,90,0.4);}}
+.rc-st{font-family:'JetBrains Mono',monospace;font-size:0.65rem;color:var(--dim);}
 
-/* ===== CALCFER ===== */
-.calcifer{
-  position:fixed;bottom:14px;right:14px;max-width:260px;
-  background:var(--panel);border:1px solid var(--ember);border-radius:6px;
+/* BOTTOM TOOLBAR */
+.bot{
+  height:52px;min-height:52px;
+  background:var(--panel);border-top:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-around;
+  padding:0 4px;flex-shrink:0;
+}
+.bt{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:1px;padding:4px 8px;border-radius:4px;cursor:pointer;
+  transition:all 0.1s;color:var(--dim);border:1px solid transparent;
+  min-width:44px;
+}
+.bt:hover{color:var(--text);}
+.bt:active,.bt.on{color:var(--gold);background:rgba(212,175,105,0.06);border-color:rgba(212,175,105,0.2);}
+.bt .bi{font-size:1rem;}
+.bt .bl{font-size:0.5rem;font-family:'JetBrains Mono',monospace;letter-spacing:0.03em;}
+
+/* Calcifer */
+.cf{
+  position:fixed;bottom:60px;left:8px;right:8px;
+  background:var(--card);border:1px solid var(--ember);border-radius:6px;
   padding:10px 14px;z-index:60;display:none;
-  box-shadow:0 2px 12px rgba(196,90,32,0.15);
 }
-.calcifer.vis{display:block;animation:cslide 0.25s ease-out;}
-@keyframes cslide{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
-.calcifer .ci{font-size:0.85rem;margin-bottom:3px;}
-.calcifer .ct{font-size:0.75rem;color:var(--text);line-height:1.5;font-style:italic;}
+.cf.vis{display:block;animation:cs 0.2s ease-out;}
+@keyframes cs{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+.cf .ct{font-size:0.72rem;color:var(--text);line-height:1.5;font-style:italic;}
 
-/* ===== MOBILE ===== */
-@media(max-width:768px){
-  body{flex-direction:column;}
-  .toolbar{
-    width:100%;min-width:unset;flex-direction:row;
-    border-right:none;border-top:2px solid var(--border);
-    order:2;padding:4px 6px;overflow-x:auto;
-    box-shadow:0 -2px 8px rgba(0,0,0,0.4);
+/* Desktop — side toolbar instead */
+@media(min-width:769px){
+  body{flex-direction:row;}
+  .top{display:none;}
+  .bot{
+    position:fixed;left:0;top:0;bottom:0;
+    width:56px;height:auto;min-height:unset;
+    flex-direction:column;justify-content:flex-start;
+    border-top:none;border-right:1px solid var(--border);
+    padding:8px 0;gap:2px;z-index:100;
+    box-shadow:2px 0 6px rgba(0,0,0,0.3);
   }
-  .toolbar-logo,.toolbar-spacer,.toolbar-sep,.tb-stat{display:none;}
-  .tool-btn .tip{display:none;}
-  .tool-btn{width:38px;height:34px;font-size:0.9rem;}
-  .workspace{order:1;}
-  .panel{padding:12px !important;}
-  .calcifer{bottom:60px;right:8px;left:8px;max-width:unset;}
+  .bt{flex-direction:row;gap:4px;padding:6px;width:44px;height:38px;min-width:unset;}
+  .bt .bl{display:none;}
+  .bt:hover::after{
+    content:attr(data-label);position:absolute;left:calc(100% + 6px);
+    background:var(--card);border:1px solid var(--gold);color:var(--bright);
+    font-family:'DM Sans',sans-serif;font-size:0.7rem;padding:3px 8px;border-radius:3px;
+    white-space:nowrap;pointer-events:none;z-index:200;
+  }
+  .center{margin-left:56px;}
+  .cf{left:64px;right:auto;bottom:16px;max-width:260px;}
+  .mgrid{max-width:560px;grid-template-columns:1fr 1fr 1fr;}
+  .th-grid{grid-template-columns:repeat(auto-fill,minmax(160px,1fr));}
+  .pl-grid{grid-template-columns:repeat(auto-fill,minmax(140px,1fr));}
 }
 </style>
 </head>
 <body>
 
-<!-- LEFT TOOLBAR -->
-<div class="toolbar">
-  <div class="toolbar-logo">🔥</div>
-  <div class="toolbar-sep"></div>
-  <div class="tool-btn active" data-t="map" onclick="sw('map')">🗺️<span class="tip">Map</span></div>
-  <div class="tool-btn" data-t="lesson" onclick="sw('lesson')">📜<span class="tip">Lesson</span></div>
-  <div class="tool-btn" data-t="drill" onclick="sw('drill')">🎯<span class="tip">Drills</span></div>
-  <div class="tool-btn" data-t="theory" onclick="sw('theory')">📖<span class="tip">Theory</span></div>
-  <div class="tool-btn" data-t="play" onclick="sw('play')">🎸<span class="tip">Play</span></div>
-  <div class="toolbar-sep"></div>
-  <div class="tool-btn" data-t="timer" onclick="sw('timer')">⏱️<span class="tip">Timer</span></div>
-  <div class="tool-btn" data-t="record" onclick="sw('record')">🎤<span class="tip">Record</span></div>
-  <div class="toolbar-spacer"></div>
-  <div class="tb-stat"><span class="v">🪙 47</span></div>
-  <div class="tb-stat"><span class="v">142</span>h</div>
-  <div class="tb-stat">L2</div>
+<!-- TOP BAR (mobile only, hidden on desktop) -->
+<div class="top">
+  <span class="top-title">The Hearth</span>
+  <span class="top-spacer"></span>
+  <span class="top-stat">🔥 <span class="v">7d</span></span>
+  <span class="top-stat"><span class="v">142</span>h</span>
+  <span class="top-stat">🪙 <span class="v">47</span></span>
 </div>
 
-<!-- WORKSPACE -->
-<div class="workspace">
+<!-- CENTER -->
+<div class="center">
 
-  <!-- TOP BAR -->
-  <div class="topbar">
-    <span class="topbar-title">The Hearth</span>
-    <button class="tb-btn active" id="tbView">Map View</button>
-    <button class="tb-btn" id="tbQuests">Quests</button>
-    <button class="tb-btn" id="tbJournal">Journal</button>
-    <button class="tb-btn sep" id="tbProfile">Profile</button>
-    <span class="topbar-spacer"></span>
-    <div class="progress-mini"><div class="progress-fill" style="width:1.4%"></div></div>
-    <span class="stat"><span class="v">142</span>h / 10k</span>
-    <span class="stat">🔥 <span class="v">7d</span></span>
+  <div class="pnl on map" id="p-map">
+    <div class="mgrid">
+      <div class="mnd" onclick="sw('lesson')"><div class="mi">🏠</div><div class="mn">Foundation</div><div class="ml">home</div></div>
+      <div class="mnd" onclick="sw('drill')" style="border-color:rgba(232,160,32,0.25)"><div class="mi">⚡</div><div class="mn">Doing</div><div class="ml">drills</div></div>
+      <div class="mnd" onclick="sw('theory')" style="border-color:rgba(232,160,32,0.25)"><div class="mi">📖</div><div class="mn">Knowing</div><div class="ml">theory</div></div>
+      <div class="mnd" onclick="sw('drill')"><div class="mi">🎯</div><div class="mn">Practise</div><div class="ml">sessions</div></div>
+      <div class="mnd" style="border-color:rgba(196,69,69,0.3)"><div class="mi">I</div><div class="mn">Level One</div><div class="ml">origin</div></div>
+      <div class="mnd" onclick="sw('play')"><div class="mi">🎵</div><div class="mn">Play</div><div class="ml">songs</div></div>
+      <div class="mnd" onclick="sw('record')"><div class="mi">✍️</div><div class="mn">Create</div><div class="ml">compose</div></div>
+      <div class="mnd" style="border-color:rgba(92,184,92,0.25)"><div class="mi">🤝</div><div class="mn">Collab</div><div class="ml">always on</div></div>
+      <div class="mnd lock"><div class="mi">II</div><div class="mn">Level Two</div><div class="ml">???</div></div>
+      <div class="mnd lock"><div class="mi">III–VII</div><div class="mn">Levels 3–7</div><div class="ml">???</div></div>
+      <div class="mnd" style="border-color:rgba(160,90,196,0.25)"><div class="mi">◈</div><div class="mn">Mastery</div><div class="ml">thesis</div></div>
+    </div>
   </div>
 
-  <!-- MAIN CONTENT -->
-  <div class="main-area">
-
-    <!-- MAP -->
-    <div class="panel active" id="p-map">
-      <div class="map-wrap">
-        <div class="map-grid">
-          <div class="map-node" onclick="sw('drill')" style="border-color:rgba(232,160,32,0.35)"><div class="ni">⚡</div><div class="nn">Doing</div><div class="nl">drills &amp; skills</div></div>
-          <div class="map-node" onclick="sw('lesson')"><div class="ni">🏠</div><div class="nn">Foundation</div><div class="nl">home node</div></div>
-          <div class="map-node" onclick="sw('theory')" style="border-color:rgba(232,160,32,0.35)"><div class="ni">📚</div><div class="nn">Knowing</div><div class="nl">theory library</div></div>
-          <div class="map-node" onclick="sw('drill')"><div class="ni">🎯</div><div class="nn">Practise</div><div class="nl">sessions</div></div>
-          <div class="map-node" style="border-color:#c45a5a"><div class="ni">I</div><div class="nn">Level One</div><div class="nl">origin · 9 disciplines</div></div>
-          <div class="map-node" onclick="sw('theory')"><div class="ni">🔬</div><div class="nn">Study</div><div class="nl">your lab</div></div>
-          <div class="map-node" onclick="sw('play')"><div class="ni">🎵</div><div class="nn">Play</div><div class="nl">songs &amp; genre</div></div>
-          <div class="map-node locked"><div class="lk">???</div><div class="ni">II</div><div class="nn">Level Two</div><div class="nl">duality</div></div>
-          <div class="map-node" onclick="sw('record')"><div class="ni">✍️</div><div class="nn">Create</div><div class="nl">guided creation</div></div>
-          <div class="map-node" style="border-color:rgba(92,184,92,0.35)"><div class="ni">🤝</div><div class="nn">Collab</div><div class="nl">always on</div></div>
-          <div class="map-node locked"><div class="lk">???</div><div class="ni">III–VII</div><div class="nn">Levels 3–7</div><div class="nl">locked</div></div>
-          <div class="map-node" style="border-color:rgba(160,90,196,0.35)"><div class="ni">◈</div><div class="nn">Mastery</div><div class="nl">thesis · identity</div></div>
-        </div>
-      </div>
+  <div class="pnl ls" id="p-lesson">
+    <div class="ls-steps">
+      <div class="ls-s on" onclick="lsS(this)"><div class="n">01</div><div class="l">Read</div></div>
+      <div class="ls-s" onclick="lsS(this)"><div class="n">02</div><div class="l">Watch</div></div>
+      <div class="ls-s" onclick="lsS(this)"><div class="n">03</div><div class="l">Draw</div></div>
+      <div class="ls-s" onclick="lsS(this)"><div class="n">04</div><div class="l">Do</div></div>
+      <div class="ls-s" onclick="lsS(this)"><div class="n">05</div><div class="l">Check</div></div>
+      <div class="ls-s" onclick="lsS(this)"><div class="n">06</div><div class="l">Deeper</div></div>
     </div>
-
-    <!-- LESSON -->
-    <div class="panel" id="p-lesson">
-      <div class="lesson-wrap">
-        <div class="lesson-steps">
-          <div class="lstep active" onclick="lsStep(this)"><div class="sn">01</div><div class="sl">Read</div></div>
-          <div class="lstep" onclick="lsStep(this)"><div class="sn">02</div><div class="sl">Watch</div></div>
-          <div class="lstep" onclick="lsStep(this)"><div class="sn">03</div><div class="sl">Draw</div></div>
-          <div class="lstep" onclick="lsStep(this)"><div class="sn">04</div><div class="sl">Do</div></div>
-          <div class="lstep" onclick="lsStep(this)"><div class="sn">05</div><div class="sl">Check</div></div>
-          <div class="lstep" onclick="lsStep(this)"><div class="sn">06</div><div class="sl">Dig Deeper</div></div>
-        </div>
-        <div class="lesson-body">
-          <h3>Open Chords: C Major</h3>
-          <div style="margin-bottom:10px"><span class="tag">Rhythm</span><span class="tag">Level 1</span><span class="tag">Chords &amp; Harmony</span></div>
-          <p>The C major chord is one of the first open chords every guitarist learns. Three fingers, bright full sound, foundational to thousands of songs.</p>
-          <p style="color:var(--text-dim);font-style:italic">Ring finger on 3rd fret A string. Middle on 2nd fret D string. Index on 1st fret B string. Strum from A down.</p>
-          <div class="ctx-box"><p>WHERE THIS FITS: C major is the gateway to the key of C — the only major key with no sharps or flats. Connects to G, Am, F. Together these four open thousands of songs.</p></div>
-        </div>
-      </div>
+    <div class="ls-body">
+      <h3>Open Chords: C Major</h3>
+      <div style="margin-bottom:8px"><span class="tag">Rhythm</span><span class="tag">L1</span><span class="tag">Chords</span></div>
+      <p>The C major chord is one of the first open chords every guitarist learns. Three fingers, bright full sound, foundational to thousands of songs.</p>
+      <p style="color:var(--dim);font-style:italic">Ring on 3rd fret A string. Middle on 2nd fret D. Index on 1st fret B. Strum from A down.</p>
+      <div class="ctx"><p>WHERE THIS FITS: C major → key of C → no sharps or flats. Connects to G, Am, F. Four chords, thousands of songs.</p></div>
     </div>
-
-    <!-- DRILL -->
-    <div class="panel" id="p-drill">
-      <div class="drill-wrap">
-        <div class="dcats">
-          <div class="dcat active" onclick="dCat(this)"><span class="di">🥁</span>Rhythm</div>
-          <div class="dcat" onclick="dCat(this)"><span class="di">🎶</span>Chords</div>
-          <div class="dcat" onclick="dCat(this)"><span class="di">🎸</span>Scales</div>
-          <div class="dcat" onclick="dCat(this)"><span class="di">✋</span>Technique</div>
-          <div class="dcat" onclick="dCat(this)"><span class="di">🎵</span>Picking</div>
-          <div class="dcat" onclick="dCat(this)"><span class="di">☝️</span>Fingerstyle</div>
-        </div>
-        <div class="dlist">
-          <div class="ditem"><div><div class="dn">Quarter Note Strumming</div><div class="dm">Rhythm · L1 · ~3 min</div></div><span class="badge e">Easy</span></div>
-          <div class="ditem"><div><div class="dn">Alternate Strumming</div><div class="dm">Rhythm · L1 · ~5 min</div></div><span class="badge e">Easy</span></div>
-          <div class="ditem"><div><div class="dn">Down-Up 8th Notes</div><div class="dm">Rhythm · L1 · ~5 min</div></div><span class="badge m">Med</span></div>
-          <div class="ditem"><div><div class="dn">Finger Gymnastics 1-2-3-4</div><div class="dm">Technique · L1 · ~5 min</div></div><span class="badge e">Easy</span></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- THEORY -->
-    <div class="panel" id="p-theory">
-      <div class="theory-wrap">
-        <div class="tgrid">
-          <div class="tcard"><h4>Notes &amp; Chromatic</h4><p>12 notes. Everything in music is built from these.</p></div>
-          <div class="tcard"><h4>Intervals</h4><p>Distance between two notes. Building blocks of melody.</p></div>
-          <div class="tcard"><h4>Major Scale</h4><p>W-W-H-W-W-W-H. The formula behind every major key.</p></div>
-          <div class="tcard"><h4>Chord Construction</h4><p>Root + 3rd + 5th. How chords are built.</p></div>
-          <div class="tcard"><h4>Keys &amp; Signatures</h4><p>Circle of Fifths. Why sharps and flats.</p></div>
-          <div class="tcard"><h4>Rhythm &amp; Time</h4><p>4/4, 3/4, 6/8. What the numbers mean.</p></div>
-          <div class="tcard"><h4>Pentatonic Scale</h4><p>5 notes that sound good over anything.</p></div>
-          <div class="tcard"><h4>Reading Music</h4><p>Staff, clef, notes, rests. The written language.</p></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- PLAY -->
-    <div class="panel" id="p-play">
-      <div class="play-wrap">
-        <div class="pgrid">
-          <div class="pcard"><div class="pi">🤘</div><div class="pn">Rock</div><div class="pl">5 songs</div></div>
-          <div class="pcard"><div class="pi">🎵</div><div class="pn">Pop</div><div class="pl">4 songs</div></div>
-          <div class="pcard"><div class="pi">🎶</div><div class="pn">Folk</div><div class="pl">3 songs</div></div>
-          <div class="pcard"><div class="pi">🎷</div><div class="pn">Blues</div><div class="pl">2 songs</div></div>
-          <div class="pcard"><div class="pi">🎹</div><div class="pn">Classical</div><div class="pl">Soon</div></div>
-          <div class="pcard"><div class="pi">🎤</div><div class="pn">Country</div><div class="pl">Soon</div></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- TIMER -->
-    <div class="panel" id="p-timer">
-      <div class="timer-wrap">
-        <div class="tdisp" id="td">10:00</div>
-        <div class="tpresets">
-          <div class="tp" onclick="st(300,this)">5m</div>
-          <div class="tp active" onclick="st(600,this)">10m</div>
-          <div class="tp" onclick="st(900,this)">15m</div>
-          <div class="tp" onclick="st(1200,this)">20m</div>
-          <div class="tp" onclick="st(1800,this)">30m</div>
-          <div class="tp" onclick="st(2700,this)">45m</div>
-        </div>
-        <div class="tctrls">
-          <button class="tbtn go" id="tgo" onclick="tt()">Start</button>
-          <button class="tbtn no" onclick="tr()">Reset</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- RECORD -->
-    <div class="panel" id="p-record">
-      <div class="rec-wrap">
-        <div style="text-align:center;margin-bottom:8px"><h3 style="font-family:'Cinzel',serif;color:var(--gold);font-size:1.1rem">Record &amp; Listen</h3><p style="color:var(--text-dim);font-size:0.8rem">Record yourself. Play it back. Hear the truth.</p></div>
-        <div class="rec-btn" id="rbtn" onclick="tr2()">⏺</div>
-        <div class="rec-st" id="rst">Tap to record</div>
-      </div>
-    </div>
-
   </div>
+
+  <div class="pnl dr" id="p-drill">
+    <div class="dr-cats">
+      <div class="dr-c on" onclick="dC(this)">🥁 Rhythm</div>
+      <div class="dr-c" onclick="dC(this)">🎶 Chords</div>
+      <div class="dr-c" onclick="dC(this)">🎸 Scales</div>
+      <div class="dr-c" onclick="dC(this)">✋ Technique</div>
+      <div class="dr-c" onclick="dC(this)">☝️ Finger</div>
+    </div>
+    <div class="dr-list">
+      <div class="dr-i"><div><div class="dn">Quarter Note Strumming</div><div class="dm">Rhythm · L1 · 3 min</div></div><span class="bd e">Easy</span></div>
+      <div class="dr-i"><div><div class="dn">Alternate Strumming</div><div class="dm">Rhythm · L1 · 5 min</div></div><span class="bd e">Easy</span></div>
+      <div class="dr-i"><div><div class="dn">Down-Up 8th Notes</div><div class="dm">Rhythm · L1 · 5 min</div></div><span class="bd m">Med</span></div>
+      <div class="dr-i"><div><div class="dn">Finger Gymnastics 1-2-3-4</div><div class="dm">Technique · L1 · 5 min</div></div><span class="bd e">Easy</span></div>
+    </div>
+  </div>
+
+  <div class="pnl th" id="p-theory">
+    <div class="th-grid">
+      <div class="th-c"><h4>Notes &amp; Chromatic</h4><p>12 notes. Everything built from these.</p></div>
+      <div class="th-c"><h4>Intervals</h4><p>Distance between two notes.</p></div>
+      <div class="th-c"><h4>Major Scale</h4><p>W-W-H-W-W-W-H.</p></div>
+      <div class="th-c"><h4>Chord Construction</h4><p>Root + 3rd + 5th.</p></div>
+      <div class="th-c"><h4>Keys &amp; Signatures</h4><p>Circle of Fifths.</p></div>
+      <div class="th-c"><h4>Rhythm &amp; Time</h4><p>4/4, 3/4, 6/8.</p></div>
+      <div class="th-c"><h4>Pentatonic</h4><p>5 notes. Gateway to improv.</p></div>
+      <div class="th-c"><h4>Reading Music</h4><p>Staff, clef, notes, rests.</p></div>
+    </div>
+  </div>
+
+  <div class="pnl pl" id="p-play">
+    <div class="pl-grid">
+      <div class="pl-c"><div class="pi">🤘</div><div class="pn">Rock</div><div class="pl2">5 songs</div></div>
+      <div class="pl-c"><div class="pi">🎵</div><div class="pn">Pop</div><div class="pl2">4 songs</div></div>
+      <div class="pl-c"><div class="pi">🎶</div><div class="pn">Folk</div><div class="pl2">3 songs</div></div>
+      <div class="pl-c"><div class="pi">🎷</div><div class="pn">Blues</div><div class="pl2">2 songs</div></div>
+    </div>
+  </div>
+
+  <div class="pnl tm" id="p-timer">
+    <div class="tm-d" id="td">10:00</div>
+    <div class="tm-opts">
+      <div class="tm-o" onclick="ts(300,this)">5m</div>
+      <div class="tm-o on" onclick="ts(600,this)">10m</div>
+      <div class="tm-o" onclick="ts(900,this)">15m</div>
+      <div class="tm-o" onclick="ts(1200,this)">20m</div>
+      <div class="tm-o" onclick="ts(1800,this)">30m</div>
+    </div>
+    <div class="tm-btns">
+      <button class="tm-b go" id="tg" onclick="tt()">Start</button>
+      <button class="tm-b no" onclick="tx()">Reset</button>
+    </div>
+  </div>
+
+  <div class="pnl rc" id="p-record">
+    <div class="rc-b" id="rb" onclick="rv()">⏺</div>
+    <div class="rc-st" id="rs">Tap to record</div>
+  </div>
+
+</div>
+
+<!-- BOTTOM TOOLBAR (mobile) / SIDE TOOLBAR (desktop) -->
+<div class="bot">
+  <div class="bt on" data-t="map" data-label="Map" onclick="sw('map')"><span class="bi">🗺️</span><span class="bl">Map</span></div>
+  <div class="bt" data-t="lesson" data-label="Lesson" onclick="sw('lesson')"><span class="bi">📜</span><span class="bl">Learn</span></div>
+  <div class="bt" data-t="drill" data-label="Drills" onclick="sw('drill')"><span class="bi">🎯</span><span class="bl">Drill</span></div>
+  <div class="bt" data-t="theory" data-label="Theory" onclick="sw('theory')"><span class="bi">📖</span><span class="bl">Theory</span></div>
+  <div class="bt" data-t="play" data-label="Play" onclick="sw('play')"><span class="bi">🎸</span><span class="bl">Play</span></div>
+  <div class="bt" data-t="timer" data-label="Timer" onclick="sw('timer')"><span class="bi">⏱️</span><span class="bl">Timer</span></div>
+  <div class="bt" data-t="record" data-label="Record" onclick="sw('record')"><span class="bi">🎤</span><span class="bl">Record</span></div>
 </div>
 
 <!-- Calcifer -->
-<div class="calcifer" id="cf"><div class="ci">🔥</div><div class="ct" id="cft"></div></div>
+<div class="cf" id="cf"><span style="font-size:0.8rem">🔥 </span><span class="ct" id="cft"></span></div>
 
 <script>
 function sw(t){
-  document.querySelectorAll('.tool-btn').forEach(b=>b.classList.remove('active'));
-  document.querySelector('[data-t="'+t+'"]').classList.add('active');
-  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
-  document.getElementById('p-'+t).classList.add('active');
-  document.getElementById('tbView').textContent={map:'Map View',lesson:'Lesson Mode',drill:'Doing / Practise',theory:'Theory Library',play:'Play Songs',timer:'Practise Timer',record:'Record & Listen'}[t]||'View';
-  cf(t);
+  document.querySelectorAll('.bt').forEach(b=>b.classList.remove('on'));
+  document.querySelector('[data-t="'+t+'"]').classList.add('on');
+  document.querySelectorAll('.pnl').forEach(p=>p.classList.remove('on'));
+  document.getElementById('p-'+t).classList.add('on');
+  cfi(t);
 }
-function lsStep(e){document.querySelectorAll('.lstep').forEach(s=>s.classList.remove('active'));e.classList.add('active');}
-function dCat(e){document.querySelectorAll('.dcat').forEach(c=>c.classList.remove('active'));e.classList.add('active');}
+function lsS(e){document.querySelectorAll('.ls-s').forEach(s=>s.classList.remove('on'));e.classList.add('on');}
+function dC(e){document.querySelectorAll('.dr-c').forEach(c=>c.classList.remove('on'));e.classList.add('on');}
 
 // Timer
-let tSec=600,tRem=600,tInt=null,tOn=false;
-function st(s,e){if(tOn)return;tSec=s;tRem=s;document.querySelectorAll('.tp').forEach(p=>p.classList.remove('active'));e.classList.add('active');utd();}
-function utd(){const m=Math.floor(tRem/60),s=tRem%60;document.getElementById('td').textContent=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');}
+let tS=600,tR=600,tI=null,tO=false;
+function ts(s,e){if(tO)return;tS=s;tR=s;document.querySelectorAll('.tm-o').forEach(o=>o.classList.remove('on'));e.classList.add('on');utd();}
+function utd(){document.getElementById('td').textContent=String(Math.floor(tR/60)).padStart(2,'0')+':'+String(tR%60).padStart(2,'0');}
 function tt(){
-  if(tOn){clearInterval(tInt);tOn=false;document.getElementById('tgo').textContent='Resume';document.getElementById('td').classList.remove('on');}
-  else{tOn=true;document.getElementById('tgo').textContent='Pause';document.getElementById('td').classList.add('on');
-    tInt=setInterval(()=>{if(tRem<=0){clearInterval(tInt);tOn=false;document.getElementById('tgo').textContent='Done';document.getElementById('td').classList.remove('on');return;}tRem--;utd();},1000);}
+  if(tO){clearInterval(tI);tO=false;document.getElementById('tg').textContent='Resume';document.getElementById('td').classList.remove('run');}
+  else{tO=true;document.getElementById('tg').textContent='Pause';document.getElementById('td').classList.add('run');
+    tI=setInterval(()=>{if(tR<=0){clearInterval(tI);tO=false;document.getElementById('tg').textContent='Done';document.getElementById('td').classList.remove('run');return;}tR--;utd();},1000);}
 }
-function tr(){clearInterval(tInt);tOn=false;tRem=tSec;document.getElementById('tgo').textContent='Start';document.getElementById('td').classList.remove('on');utd();}
+function tx(){clearInterval(tI);tO=false;tR=tS;document.getElementById('tg').textContent='Start';document.getElementById('td').classList.remove('run');utd();}
 
 // Record
-let rec=false;
-function tr2(){rec=!rec;const b=document.getElementById('rbtn'),s=document.getElementById('rst');
-  if(rec){b.classList.add('on');b.textContent='⏹';s.textContent='Recording...';}
-  else{b.classList.remove('on');b.textContent='⏺';s.textContent='Saved. Tap to record again.';}
-}
+let rc=false;
+function rv(){rc=!rc;const b=document.getElementById('rb'),s=document.getElementById('rs');
+  rc?(b.classList.add('on'),b.textContent='⏹',s.textContent='Recording...'):(b.classList.remove('on'),b.textContent='⏺',s.textContent='Saved');}
 
 // Calcifer
 const cfl={
-  map:["Looking at the map again? The lessons won't do themselves.","See all those locked nodes? Try not to mess it up.","Nice view. Less nice when you're sweating through drills."],
-  lesson:["Finally. Let's get this done.","Don't skip the Draw step. I know you want to.","Read. Watch. Draw. Do. Not exactly complicated."],
-  drill:["Drills. The thing between you and being good.","You know what's worse than drills? Being bad because you skipped them.","Pick one. Any one. Just start."],
-  theory:["Theory. Making the weird sounds make sense.","If there's a word you don't understand, LOOK IT UP.","This is where the WHY lives. You like the why."],
-  play:["Now you want to play? Fine. Pick one.","This is what it's all for.","Play badly. Then again. Then less badly. That's the process."],
-  timer:["Setting a timer. Almost impressed.","Time is literally the only thing in your way.","Don't set 45 min if you'll stop at 8. Be honest."],
-  record:["Record yourself. Yes it's painful. Do it anyway.","You sound different than you think. Hear the truth.","The recording doesn't lie. Your brain does."]
+  map:["Looking at the map? The lessons won't do themselves.","Those locked nodes? That's your future."],
+  lesson:["Finally.","Don't skip the Draw step."],
+  drill:["Drills. The thing between you and being good.","Pick one. Start."],
+  theory:["Theory. Making weird sounds make sense.","Look up words you don't know."],
+  play:["This is what it's all for.","Play badly. Then less badly."],
+  timer:["Time is the only thing in your way.","Don't set 45m if you'll stop at 8."],
+  record:["You sound different than you think.","The recording doesn't lie."]
 };
-function cf(t){const l=cfl[t]||[];if(!l.length)return;
-  document.getElementById('cft').textContent=l[Math.floor(Math.random()*l.length)];
-  const el=document.getElementById('cf');el.classList.add('vis');
-  setTimeout(()=>el.classList.remove('vis'),5500);
-}
+function cfi(t){const l=cfl[t];if(!l)return;document.getElementById('cft').textContent=l[Math.floor(Math.random()*l.length)];
+  const el=document.getElementById('cf');el.classList.add('vis');setTimeout(()=>el.classList.remove('vis'),4);}
 </script>
 </body>
 </html>
