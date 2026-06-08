@@ -992,17 +992,17 @@ function showFoundation(){
     '</div></div>'+
     '<div style="display:flex;flex-direction:column;align-items:center;gap:0;margin-top:20px">';
 
-  // Building blocks — widest at bottom, narrowest at top
-  const topics=[...F.topics].reverse(); // reverse so block 1 is at bottom
-  const maxWidth=400;
+  // Building blocks — widest at bottom (topic 1), narrowest at top (topic 7)
+  const maxWidth=420;
   const minWidth=180;
-  const step=(maxWidth-minWidth)/(topics.length-1);
+  const step=(maxWidth-minWidth)/(F.topics.length-1);
 
-  topics.forEach((t,i)=>{
+  // Render from last topic (top/smallest) to first topic (bottom/widest)
+  for(let i=F.topics.length-1; i>=0; i--){
+    const t=F.topics[i];
     const w=maxWidth-step*i;
     const isDone=completed[t.id];
-    const topicIdx=F.topics.indexOf(t);
-    const num=topicIdx+1;
+    const num=i+1;
 
     html+='<div onclick="showFoundationTopic(\''+t.id+'\')" style="'+
       'width:'+w+'px;padding:14px 16px;'+
@@ -1021,7 +1021,7 @@ function showFoundation(){
       '</div>'+
       '<div style="font-size:0.6rem;color:'+(isDone?'rgba(13,11,8,0.6)':'var(--dim)')+';margin-top:2px">'+t.subtitle+'</div>'+
     '</div>';
-  });
+  }
 
   html+='</div>'+
     '<div style="margin-top:24px;padding-top:12px;border-top:1px solid var(--border);text-align:center">'+
