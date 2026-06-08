@@ -1042,7 +1042,7 @@ function showDoing(){
     // Grid: 5 content columns + string borders
 
     // Header row (string labels for the 4 level columns)
-    html+='<div style="display:grid;grid-template-columns:140px 1fr 1fr 1fr 1fr;border-top:3px solid var(--gold);border-bottom:1px solid var(--border)">';
+    html+='<div style="display:grid;grid-template-columns:100px 1fr 1fr 1fr 1fr;border-top:3px solid var(--gold);border-bottom:1px solid var(--border)">';
     html+='<div style="padding:8px;font-family:JetBrains Mono;font-size:9px;color:var(--gold);opacity:0.5;border-right:2px solid var(--gold);text-align:center">STRING</div>';
     for(let i=1;i<5;i++){
       html+='<div style="padding:8px;font-family:JetBrains Mono;font-size:10px;color:var(--gold);text-align:center;border-right:'+(i<4?'1px solid var(--border)':'none')+';opacity:0.7">'+levels[i]+'</div>';
@@ -1054,7 +1054,7 @@ function showDoing(){
       const filtered=cat.drills.filter(d=>activeStyle==='all'||d.style===activeStyle);
       const anyDone=filtered.some(d=>completed[d.id]);
 
-      html+='<div style="display:grid;grid-template-columns:140px 1fr 1fr 1fr 1fr;border-bottom:1px solid var(--border);min-height:80px">';
+      html+='<div style="display:grid;grid-template-columns:100px 1fr 1fr 1fr 1fr;border-bottom:1px solid var(--border);min-height:80px">';
 
       // Column 1: Category label (between string 1 and 2)
       html+='<div style="padding:12px 10px;display:flex;align-items:center;justify-content:center;border-right:2px solid var(--gold);background:var(--card)">'+
