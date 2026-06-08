@@ -678,7 +678,7 @@ const NODE_DATA = {
   doing: { emoji:'', tag:'DOING PATH', title:'Doing', desc:'Open-world drill library. Every technique, every style. Click a dot to dive in.', enter:true, action:'doing', icon:'images/doing-icon.png' },
   practise: { emoji:'', tag:'DOING PATH', title:'Practise', desc:'Session-based. "How much time have you got?" Select drills, combine variations, timer starts, practise, give feedback.', enter:true, action:'practice' },
   play: { emoji:'', tag:'DOING PATH', title:'Play', desc:'Songs, genres, backing tracks, playing along with other instruments. Discover YOUR sound. Collab lives here.', enter:true, action:'play' },
-  knowing: { emoji:'', tag:'KNOWING PATH', title:'Knowing', desc:'All music theory, categorised beautifully. Always accessible like an encyclopedia. Understand the why.', enter:true, action:'knowing' },
+  knowing: { emoji:'', tag:'KNOWING PATH', title:'Knowing', desc:'All music theory, categorised beautifully. Always accessible like an encyclopedia. Understand the why.', enter:true, action:'knowing', icon:'images/knowing-icon.jpg' },
   study: { emoji:'', tag:'KNOWING PATH', title:'Study', desc:'Your lab. Notes, aha moments, gaps & questions. Where your own discoveries live.', enter:false },
   create: { emoji:'', tag:'KNOWING PATH', title:'Create', desc:'Write your own music. Arrange songs for solo guitar. Record yourself. The student becomes the creator.', enter:true, action:'create' }
 };
@@ -1205,56 +1205,147 @@ function showKnowing(){
   document.getElementById('p-foundation').classList.add('on');
   const K=window.KNOWING;if(!K)return;
   const el=document.getElementById('p-foundation');
-  el.innerHTML='<div class="foundation-landing">'+
-    '<div class="fl-hero">'+
-      '<div class="fl-sub">'+K.tag+'</div>'+
-      '<h2>'+K.title+'</h2>'+
-      '<p class="fl-desc">'+K.description+'</p>'+
-    '</div>'+
-    '<div class="fl-topics">'+
-      K.categories.map(cat=>'<div style="margin-bottom:16px">'+
-        '<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">'+
-          ''+
-          '<span style="font-family:Cinzel;font-size:0.9rem;color:var(--gold)">'+cat.title+'</span>'+
-        '</div>'+
-        '<p style="font-size:0.7rem;color:var(--dim);margin:0 0 8px 0">'+cat.description+'</p>'+
-        cat.topics.map(topic=>{
-          const diffStars='★'.repeat(topic.difficulty)+'☆'.repeat(3-topic.difficulty);
-          return '<div class="fl-topic" onclick="showKnowingTopic(\''+cat.id+'\',\''+topic.id+'\')">'+
-            '<div class="fl-topic-content">'+
-              '<h4>'+topic.title+'</h4>'+
-              '<div class="fl-t-sub">'+diffStars+' · '+topic.source+'</div>'+
-            '</div>'+
-            '<div class="fl-t-status">→</div>'+
-          '</div>';
-        }).join('')+
-      '</div>').join('')+
-    '</div>'+
-    '<div class="fl-source"><p class="fl-s-label">SOURCES</p><p>'+K.sources.join('<br>')+'</p></div>'+
+  const completed=JSON.parse(localStorage.getItem('hearth-knowing-progress')||'{}');
+
+  let html='<div style="padding:24px;max-width:650px;margin:0 auto">'+
+    '<div style="display:flex;align-items:center;gap:12px;margin-bottom:24px">'+
+      '<img src="images/knowing-icon.jpg" style="width:48px;height:48px;border-radius:50%;object-fit:cover;border:2px solid var(--gold)"/>'+
+      '<div><h2 style="font-family:Cinzel;color:var(--gold);font-size:1.1rem;margin:0">'+K.title+'</h2>'+
+      '<p style="color:var(--dim);font-size:0.7rem;margin:0">'+K.description+'</p></div>'+
+      '<button onclick="document.querySelectorAll(\'.pnl\').forEach(p=>p.classList.remove(\'on\'));document.getElementById(\'p-map\').classList.add(\'on\')" style="margin-left:auto;background:none;border:1px solid var(--border);color:var(--dim);padding:6px 12px;border-radius:4px;cursor:pointer;font-family:inherit;font-size:0.7rem">&larr; Back</button>'+
+    '</div>';
+
+  // Bookshelf — books standing on a shelf
+  html+='<div style="display:flex;align-items:flex-end;justify-content:center;gap:8px;padding:20px 16px 0 16px;min-height:200px">';
+
+  const bookColors=['#8B4513','#4A6741','#5B3A6B','#2C5F7C','#8B6914'];
+  const bookWidths=[55,45,50,42,58];
+
+  K.categories.forEach((cat,i)=>{
+    const color=bookColors[i%bookColors.length];
+    const w=bookWidths[i%bookWidths.length];
+    const topicsDone=cat.topics.filter(t=>completed[t.id]).length;
+    const totalTopics=cat.topics.length;
+    const allDone=topicsDone===totalTopics;
+
+    html+='<div onclick="showKnowingBook(\''+cat.id+'\')" style="'+
+      'width:'+w+'px;min-height:160px;'+
+      'background:linear-gradient(135deg,'+color+','+color+'cc);'+
+      'border:2px solid '+(allDone?'var(--gold)':'rgba(255,255,255,0.1)')+';'+
+      'border-radius:3px 6px 6px 3px;'+
+      'cursor:pointer;transition:all 0.2s;'+
+      'display:flex;flex-direction:column;align-items:center;justify-content:center;'+
+      'padding:12px 6px;'+
+      'position:relative;'+
+      'box-shadow:2px 2px 8px rgba(0,0,0,0.3)'+
+    '" onmouseover="this.style.transform='translateY(-8px)'" onmouseout="this.style.transform='translateY(0)'">'+
+      '<div style="writing-mode:vertical-rl;text-orientation:mixed;font-family:Cinzel;font-size:0.75rem;color:rgba(255,255,255,0.9);text-align:center;letter-spacing:0.08em;line-height:1.2">'+cat.title+'</div>'+
+      '<div style="font-family:JetBrains Mono;font-size:0.55rem;color:rgba(255,255,255,0.5);margin-top:8px">'+topicsDone+'/'+totalTopics+'</div>'+
+      (allDone?'<div style="position:absolute;top:6px;right:6px;font-size:0.6rem;color:var(--gold)">&#10003;</div>':'')+
+    '</div>';
+  });
+
+  html+='</div>';
+
+  // Shelf line
+  html+='<div style="height:4px;background:linear-gradient(to right,#5a4a3a,#8a7a6a,#5a4a3a);border-radius:0 0 2px 2px;margin:0 16px;box-shadow:0 2px 6px rgba(0,0,0,0.3)"></div>';
+
+  // Shelf supports
+  html+='<div style="display:flex;justify-content:space-between;padding:0 24px">'+
+    '<div style="width:8px;height:20px;background:#5a4a3a;border-radius:0 0 2px 2px"></div>'+
+    '<div style="width:8px;height:20px;background:#5a4a3a;border-radius:0 0 2px 2px"></div>'+
   '</div>';
+
+  html+='<div style="margin-top:20px;padding-top:12px;border-top:1px solid var(--border);text-align:center">'+
+    '<p style="font-size:0.6rem;color:var(--dim)">Sources: '+K.sources.join(' · ')+'</p>'+
+  '</div></div>';
+
+  el.innerHTML=html;
 }
 
-function showKnowingTopic(catId, topicId){
+window.showKnowingBook=function(catId){
+  const K=window.KNOWING;if(!K)return;
+  const cat=K.categories.find(c=>c.id===catId);if(!cat)return;
+  const el=document.getElementById('p-foundation');
+  const completed=JSON.parse(localStorage.getItem('hearth-knowing-progress')||'{}');
+
+  // Book open view — like reading a book
+  let html='<div style="padding:20px;max-width:650px;margin:0 auto">'+
+    '<button onclick="showKnowing()" style="background:none;border:1px solid var(--border);color:var(--dim);padding:6px 12px;border-radius:4px;cursor:pointer;font-family:inherit;font-size:0.7rem;margin-bottom:16px">&larr; Back to shelf</button>'+
+    '<div style="background:var(--card);border:1px solid var(--border);border-radius:8px;overflow:hidden">';
+
+  // Book header (like a book cover)
+  html+='<div style="background:linear-gradient(135deg,var(--gold),var(--amber));padding:24px;text-align:center">'+
+    '<h2 style="font-family:Cinzel;color:var(--bg);font-size:1.2rem;margin:0">'+cat.title+'</h2>'+
+    '<p style="font-size:0.7rem;color:rgba(13,11,8,0.6);margin:6px 0 0 0">'+cat.description+'</p>'+
+  '</div>';
+
+  // Topics as pages
+  html+='<div style="padding:16px">';
+  cat.topics.forEach((topic,i)=>{
+    const isDone=completed[topic.id];
+    const diffLabel=['','Beginner','Intermediate','Advanced'][topic.difficulty];
+
+    html+='<div onclick="showKnowingTopic(\''+cat.id+'\',\''+topic.id+'\')" style="'+
+      'padding:12px 14px;'+
+      'border-bottom:'+(i<cat.topics.length-1?'1px solid var(--border)':'none')+';'+
+      'cursor:pointer;transition:background 0.15s;'+
+      'display:flex;align-items:center;gap:10px'+
+    '" onmouseover="this.style.background=\'var(--bg)\'" onmouseout="this.style.background=\'transparent\'">'+
+      '<span style="font-family:JetBrains Mono;font-size:0.65rem;color:var(--gold);opacity:0.5;min-width:20px">'+String(i+1).padStart(2,'0')+'</span>'+
+      '<div style="flex:1">'+
+        '<div style="font-family:Cinzel;font-size:0.85rem;color:'+(isDone?'var(--gold)':'var(--text)')+'">'+topic.title+'</div>'+
+        '<div style="font-size:0.6rem;color:var(--dim);margin-top:2px">'+diffLabel+' · '+topic.source+'</div>'+
+      '</div>'+
+      '<span style="font-size:0.7rem;color:'+(isDone?'var(--gold)':'var(--dim)')+'">'+(isDone?'&#10003;':'&#8594;')+'</span>'+
+    '</div>';
+  });
+  html+='</div></div></div>';
+
+  el.innerHTML=html;
+}
+
+window.showKnowingTopic=function(catId,topicId){
   const K=window.KNOWING;if(!K)return;
   const cat=K.categories.find(c=>c.id===catId);if(!cat)return;
   const topic=cat.topics.find(t=>t.id===topicId);if(!topic)return;
   const el=document.getElementById('p-foundation');
-  const diffStars='★'.repeat(topic.difficulty)+'☆'.repeat(3-topic.difficulty);
-  el.innerHTML='<div class="lp-lesson">'+
-    '<div class="ls-steps">'+
-      '<div class="ls-s on"><div class="n">01</div><div class="l">Read</div></div>'+
-      '<div class="ls-s"><div class="n">02</div><div class="l">Explore</div></div>'+
-      '<div class="ls-s"><div class="n">03</div><div class="l">Apply</div></div>'+
-      '<div class="ls-s"><div class="n">04</div><div class="l">Quiz</div></div>'+
-    '</div>'+
-    '<div class="ls-body">'+
-      '<button onclick="showKnowing()" style="background:none;border:1px solid var(--border);color:var(--dim);padding:4px 10px;border-radius:4px;cursor:pointer;font-family:inherit;font-size:0.65rem;margin-bottom:12px">← '+cat.title+'</button>'+
-      '<h3>'+topic.title+'</h3>'+
-      '<div style="margin-bottom:10px"><span class="tag">'+diffStars+'</span><span class="tag">'+topic.source+'</span></div>'+
-      topic.body+
+  const completed=JSON.parse(localStorage.getItem('hearth-knowing-progress')||'{}');
+  const isDone=completed[topicId];
+  const diffLabel=['','Beginner','Intermediate','Advanced'][topic.difficulty];
+  const topicIdx=cat.topics.indexOf(topic);
+  const nextTopic=topicIdx<cat.topics.length-1?cat.topics[topicIdx+1]:null;
+
+  el.innerHTML='<div style="padding:20px;max-width:650px;margin:0 auto">'+
+    '<button onclick="showKnowingBook(\''+catId+'\')" style="background:none;border:1px solid var(--border);color:var(--dim);padding:6px 12px;border-radius:4px;cursor:pointer;font-family:inherit;font-size:0.7rem;margin-bottom:16px">&larr; Back to '+cat.title+'</button>'+
+    '<div style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:24px">'+
+      '<div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">'+
+        '<span class="tag">'+cat.title+'</span>'+
+        '<span class="tag">'+diffLabel+'</span>'+
+        '<span class="tag">'+topic.source+'</span>'+
+        (isDone?'<span class="tag" style="color:var(--gold)">&#10003; Complete</span>':'')+
+      '</div>'+
+      '<h2 style="font-family:Cinzel;color:var(--gold);font-size:1.1rem;margin:0 0 16px 0">'+topic.title+'</h2>'+
+      '<div style="line-height:1.7;font-size:0.85rem;color:var(--text)">'+topic.body+'</div>'+
+      '<div style="margin-top:16px;display:flex;gap:8px">'+
+        '<button onclick="completeKnowingTopic(\''+topicId+'\')" style="flex:1;background:'+(isDone?'var(--card)':'var(--gold)')+';color:'+(isDone?'var(--gold)':'var(--bg)')+';border:'+(isDone?'1px solid var(--gold)':'none')+';padding:10px;border-radius:8px;font-family:Cinzel;font-size:0.8rem;cursor:pointer">'+(isDone?'&#10003; Completed':'Mark Complete')+'</button>'+
+        (nextTopic?'<button onclick="showKnowingTopic(\''+catId+'\',\''+nextTopic.id+'\')" style="flex:1;background:var(--card);color:var(--gold);border:1px solid var(--gold);padding:10px;border-radius:8px;font-family:Cinzel;font-size:0.8rem;cursor:pointer">Next: '+nextTopic.title.substring(0,20)+' &rarr;</button>':'')+
+      '</div>'+
     '</div>'+
   '</div>';
 }
+
+window.completeKnowingTopic=function(topicId){
+  const progress=JSON.parse(localStorage.getItem('hearth-knowing-progress')||'{}');
+  progress[topicId]=true;
+  localStorage.setItem('hearth-knowing-progress',JSON.stringify(progress));
+  const K=window.KNOWING;if(!K)return;
+  let foundCat=null;
+  K.categories.forEach(c=>{if(c.topics.find(t=>t.id===topicId))foundCat=c;});
+  if(foundCat)showKnowingBook(foundCat.id);
+  else showKnowing();
+};
+
 
 function showPractice(){
   document.querySelectorAll('.pnl').forEach(p=>p.classList.remove('on'));
