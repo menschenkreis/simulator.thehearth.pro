@@ -840,7 +840,7 @@ function showHearth(){
           <h2 style="font-family:Cinzel;color:var(--gold);font-size:1.3rem;margin:0">The Hearth</h2>
           <p style="color:var(--dim);font-size:0.75rem;margin:0">Your journey at a glance</p>
         </div>
-        <button onclick="this.closest('.pnl').classList.remove('on')" style="margin-left:auto;background:none;border:1px solid var(--border);color:var(--dim);padding:6px 12px;border-radius:4px;cursor:pointer;font-family:inherit;font-size:0.7rem">✕ Close</button>
+        <button onclick="document.querySelectorAll('.pnl').forEach(p=>p.classList.remove('on'));document.getElementById('p-map').classList.add('on')" style="background:none;border:1px solid var(--border);color:var(--dim);padding:6px 12px;border-radius:4px;cursor:pointer;font-family:inherit;font-size:0.7rem">← Back</button>
       </div>
 
       <!-- Quick Stats -->
@@ -1140,7 +1140,7 @@ function showDoing(){
     '<div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">'+
       '<div><h2 style="font-family:Cinzel;color:var(--gold);font-size:1.1rem;margin:0">'+D.title+'</h2>'+
       '<p style="color:var(--dim);font-size:0.7rem;margin:0">'+D.description+'</p></div>'+
-      '<button onclick="document.querySelectorAll(\'.pnl\').forEach(p=>p.classList.remove(\'on\'));document.getElementById(\'p-map\').classList.add(\'on\')" style="margin-left:auto;background:none;border:1px solid var(--border);color:var(--dim);padding:6px 12px;border-radius:4px;cursor:pointer;font-family:inherit;font-size:0.7rem">&times;</button>'+
+      '<button onclick="document.querySelectorAll(\'.pnl\').forEach(p=>p.classList.remove(\'on\'));document.getElementById(\'p-map\').classList.add(\'on\')" style="background:none;border:1px solid var(--border);color:var(--dim);padding:6px 12px;border-radius:4px;cursor:pointer;font-family:inherit;font-size:0.7rem">← Back</button>'+
     '</div>'+
     '<div id="doing-fretboard">'+renderFretboard()+'</div>'+
     '<div style="margin-top:12px;padding-top:10px;border-top:1px solid var(--border)">'+
