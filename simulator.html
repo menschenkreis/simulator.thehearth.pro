@@ -134,8 +134,8 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;dis
 
 /* === MANDALA MAP === */
 .map{align-items:center;justify-content:center;padding:8px;position:relative;}
-.map-wrap{width:100%;max-width:480px;max-height:100%;position:relative;margin:0 auto;display:flex;align-items:center;justify-content:center;}
-.map-svg{width:100%;height:auto;max-height:calc(100vh - 100px);}
+.map-wrap{width:100%;max-width:480px;max-height:100%;position:relative;margin:0 auto;display:flex;align-items:center;justify-content:center;padding-top:10px;}
+.map-svg{width:100%;height:auto;max-height:calc(100vh - 80px);}
 .map-svg{width:100%;height:auto;display:block;}
 
 /* Node styling */
@@ -176,10 +176,14 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;dis
 .path-btns{display:none;/* Hidden — single journey path now */}
 
 /* Node info popup */
+.node-info-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.6);z-index:199;}
+.node-info-overlay.vis{display:block;}
 .node-info{
   background:var(--card);border:1px solid var(--border);border-radius:10px;
-  padding:14px 16px;margin:8px 12px;display:none;position:relative;
-  box-shadow:var(--ris);
+  padding:14px 16px;display:none;position:fixed;
+  top:50%;left:50%;transform:translate(-50%,-50%);
+  z-index:200;max-width:340px;width:90%;
+  box-shadow:0 8px 32px rgba(0,0,0,0.5);
 }
 .node-info.vis{display:block;}
 .node-info .ni-close{position:absolute;top:8px;right:10px;font-size:0.8rem;color:var(--dim);cursor:pointer;}
@@ -543,6 +547,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;dis
 
       </svg>
     </div>
+    <div class="node-info-overlay" id="niOverlay" onclick="hideNodeInfo()"></div>
     <div class="node-info" id="ni">
       <span class="ni-close" onclick="hideNodeInfo()">✕</span>
       <span class="ni-emoji" id="niEmoji"></span>
@@ -688,10 +693,12 @@ function showNodeInfo(id) {
   const enterBtn = document.getElementById('niEnter');
   if (enterBtn) enterBtn.style.display = (data.enter && !data.locked) ? 'inline-block' : 'none';
   document.getElementById('ni').classList.add('vis');
+  document.getElementById('niOverlay').classList.add('vis');
 }
 
 function hideNodeInfo() {
   document.getElementById('ni').classList.remove('vis');
+  document.getElementById('niOverlay').classList.remove('vis');
   _activeNode = null;
 }
 
