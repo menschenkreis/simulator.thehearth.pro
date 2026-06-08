@@ -220,7 +220,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;dis
       <div class="path-btn on" onclick="hlP('all')">All</div>
     </div>
     <div class="map-wrap">
-      <svg class="map-svg" viewBox="0 0 600 700" xmlns="http://www.w3.org/2000/svg">
+      <svg class="map-svg" viewBox="0 0 600 800" xmlns="http://www.w3.org/2000/svg">
         <defs>
           <filter id="glow"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
           <radialGradient id="bgGrad"><stop offset="0%" stop-color="#1a1510" stop-opacity="0.4"/><stop offset="100%" stop-color="#0d0b08" stop-opacity="0"/></radialGradient>
@@ -233,31 +233,31 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;dis
 
         <!-- Background glow -->
         <rect width="600" height="700" fill="var(--bg)"/>
-        <ellipse cx="300" cy="350" rx="280" ry="340" fill="url(#bgGrad)"/>
+        <ellipse cx="300" cy="400" rx="280" ry="380" fill="url(#bgGrad)"/>
 
         <!-- MANDALA STRUCTURE — organic curves from logo -->
         <g class="mandala" id="mandala">
           <!-- Central vertical spine line -->
-          <line x1="300" y1="55" x2="300" y2="645" stroke-width="0.4" opacity="0.12"/>
+          <line x1="300" y1="55" x2="300" y2="745" stroke-width="0.4" opacity="0.12"/>
           <!-- Horizontal spread line -->
-          <line x1="60" y1="350" x2="540" y2="350" stroke-width="0.3" opacity="0.08"/>
+          <line x1="60" y1="420" x2="540" y2="420" stroke-width="0.3" opacity="0.08"/>
           <!-- Branch guide lines (Doing left, Knowing right) -->
-          <line x1="300" y1="350" x2="100" y2="260" stroke-width="0.2" opacity="0.06"/>
-          <line x1="300" y1="350" x2="500" y2="260" stroke-width="0.2" opacity="0.06"/>
-          <line x1="300" y1="350" x2="80" y2="440" stroke-width="0.2" opacity="0.06"/>
-          <line x1="300" y1="350" x2="520" y2="440" stroke-width="0.2" opacity="0.06"/>
+          <line x1="300" y1="420" x2="100" y2="260" stroke-width="0.2" opacity="0.06"/>
+          <line x1="300" y1="420" x2="500" y2="260" stroke-width="0.2" opacity="0.06"/>
+          <line x1="300" y1="420" x2="80" y2="440" stroke-width="0.2" opacity="0.06"/>
+          <line x1="300" y1="420" x2="520" y2="440" stroke-width="0.2" opacity="0.06"/>
           <!-- Decorative rings around center -->
-          <circle cx="300" cy="350" r="45" stroke-width="0.3" opacity="0.15"/>
-          <circle cx="300" cy="350" r="80" stroke-width="0.2" opacity="0.08"/>
+          <circle cx="300" cy="420" r="45" stroke-width="0.3" opacity="0.15"/>
+          <circle cx="300" cy="420" r="80" stroke-width="0.2" opacity="0.08"/>
           <!-- Organic petal shapes radiating from center -->
-          <path d="M300,305 Q315,330 315,350 Q315,370 300,395 Q285,370 285,350 Q285,330 300,305Z" opacity="0.08"/>
+          <path d="M300,370 Q320,390 320,420 Q320,450 300,470 Q280,450 280,420 Q280,390 300,370Z" opacity="0.08"/>
           <!-- Left petal (Doing) -->
-          <path d="M270,335 Q220,300 170,270 Q190,310 210,350 Q190,390 170,430 Q220,400 270,365Z" opacity="0.06"/>
+          <path d="M270,400 Q220,370 170,340 Q190,380 210,420 Q190,460 170,500 Q220,470 270,435Z" opacity="0.06"/>
           <!-- Right petal (Knowing) -->
-          <path d="M330,335 Q380,300 430,270 Q410,310 390,350 Q410,390 430,430 Q380,400 330,365Z" opacity="0.06"/>
+          <path d="M330,400 Q380,370 430,340 Q410,380 390,420 Q410,460 430,500 Q380,470 330,435Z" opacity="0.06"/>
           <!-- Outer decorative arcs -->
-          <path d="M160,260 Q140,350 160,440" fill="none" stroke-width="0.3" opacity="0.1"/>
-          <path d="M440,260 Q460,350 440,440" fill="none" stroke-width="0.3" opacity="0.1"/>
+          <path d="M160,260 Q140,420 160,530" fill="none" stroke-width="0.3" opacity="0.1"/>
+          <path d="M440,260 Q460,420 440,530" fill="none" stroke-width="0.3" opacity="0.1"/>
         </g>
 
         <!-- ═══ CONNECTIONS ═══ -->
@@ -267,25 +267,27 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;dis
           <path class="mn-conn journey hl" d="M300,120 L300,185"/><!-- L1 → L2-4 -->
           <path class="mn-conn journey hl" d="M300,185 L300,250"/><!-- L2-4 → L5-7 -->
           <path class="mn-conn journey hl" d="M300,250 L300,315"/><!-- L5-7 → Foundation center -->
-          <path class="mn-conn journey hl" d="M300,385 L300,450"/><!-- Center → L8-10 -->
-          <path class="mn-conn journey hl" d="M300,450 L300,515"/><!-- L8-10 → Collab -->
-          <path class="mn-conn journey hl" d="M300,515 L300,580"/><!-- Collab → Mastery -->
+          <path class="mn-conn journey hl" d="M300,385 L300,520"/><!-- Center → L8-10 -->
+          <path class="mn-conn journey hl" d="M300,520 L300,600"/><!-- L8-10 → Collab -->
+          <path class="mn-conn journey hl" d="M300,600 L300,680"/><!-- Collab → Mastery -->
 
           <!-- Foundation → Doing -->
           <line x1="278" y1="72" x2="110" y2="230" style="stroke:#e8a020;opacity:0.3"/>
           <!-- LEFT BRANCH — Doing Path (orange/ember) -->
           <path class="mn-conn" d="M265,330 Q180,290 110,250" style="stroke:#e8a020;opacity:0.25"/><!-- Center → Doing -->
-          <path class="mn-conn" d="M265,330 Q220,310 188,290" style="stroke:#e8a020;opacity:0.25"/><!-- Center → Practise -->
+          <path class="mn-conn" d="M265,400 Q180,330 110,250" style="stroke:#e8a020;opacity:0.25"/><!-- Center → Doing -->
+          <path class="mn-conn" d="M265,400 Q220,340 188,290" style="stroke:#e8a020;opacity:0.25"/><!-- Center → Practise -->
           <path class="mn-conn" d="M188,290 L30,500" style="stroke:#5a9fd4;opacity:0.25"/><!-- Practise → Play -->
-          <path class="mn-conn" d="M30,500 Q120,560 270,515" style="stroke:#5a9fd4;opacity:0.15;stroke-dasharray:3 3"/><!-- Play → Collab (convergence) -->
+          <path class="mn-conn" d="M30,500 Q130,590 270,600" style="stroke:#5a9fd4;opacity:0.15;stroke-dasharray:3 3"/><!-- Play → Collab (convergence) -->
 
           <!-- Foundation → Knowing -->
           <line x1="322" y1="72" x2="490" y2="230" style="stroke:#e8a020;opacity:0.3"/>
           <!-- RIGHT BRANCH — Knowing Path (orange/amber) -->
           <path class="mn-conn" d="M335,330 Q420,290 490,250" style="stroke:#e8a020;opacity:0.25"/><!-- Center → Knowing -->
-          <path class="mn-conn" d="M335,330 Q380,310 412,290" style="stroke:#e8a020;opacity:0.25"/><!-- Center → Study -->
+          <path class="mn-conn" d="M335,400 Q420,330 490,250" style="stroke:#e8a020;opacity:0.25"/><!-- Center → Knowing -->
+          <path class="mn-conn" d="M335,400 Q380,340 412,290" style="stroke:#e8a020;opacity:0.25"/><!-- Center → Study -->
           <path class="mn-conn" d="M412,290 L570,500" style="stroke:#5a9fd4;opacity:0.25"/><!-- Study → Create -->
-          <path class="mn-conn" d="M570,500 Q480,560 330,515" style="stroke:#5a9fd4;opacity:0.15;stroke-dasharray:3 3"/><!-- Create → Collab (convergence) -->
+          <path class="mn-conn" d="M570,500 Q470,590 330,600" style="stroke:#5a9fd4;opacity:0.15;stroke-dasharray:3 3"/><!-- Create → Collab (convergence) -->
         </g>
 
         <!-- ═══ CENTRAL SPINE NODES ═══ -->
@@ -326,41 +328,41 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;dis
           <text class="mn-sublabel" x="330" y="255" text-anchor="start">deeper waters</text>
         </g>
 
-        <!-- ═══ CENTER: THE HEARTH ═══ -->
+        <!-- THE HEARTH -->
         <g class="mn-g" onclick="showNodeInfo('hearth')">
-          <circle cx="300" cy="350" r="50" fill="url(#nodeGlow)"/>
-          <circle class="center-glow" cx="300" cy="350" r="18"/>
-          <circle cx="300" cy="350" r="32" fill="#141210" stroke="#d4af69" stroke-width="1.5" filter="url(#glow)"/>
-          <text x="300" y="356" text-anchor="middle" font-size="22">🔥</text>
-          <text class="mn-label" x="300" y="395" fill="#d4af69" font-size="9" style="font-weight:600">THE HEARTH</text>
-          <text class="mn-sublabel" x="300" y="405">the fire that sustains</text>
+          <circle cx="300" cy="420" r="50" fill="url(#nodeGlow)"/>
+          <circle class="center-glow" cx="300" cy="420" r="18"/>
+          <circle cx="300" cy="420" r="32" fill="#141210" stroke="#d4af69" stroke-width="1.5" filter="url(#glow)"/>
+          <text x="300" y="426" text-anchor="middle" font-size="22">🔥</text>
+          <text class="mn-label" x="300" y="465" fill="#d4af69" font-size="9" style="font-weight:600">THE HEARTH</text>
+          <text class="mn-sublabel" x="300" y="475">the fire that sustains</text>
         </g>
 
         <!-- LEVELS 8-10 -->
         <g class="mn-g locked" onclick="showNodeInfo('levels8-10')" data-node="levels8-10">
-          <circle cx="300" cy="450" r="18" fill="url(#nodeGlow)"/>
-          <circle class="mn-ring" cx="300" cy="450" r="14" stroke="#3a3530" stroke-width="1" stroke-dasharray="2 2"/>
-          <text x="300" y="454" text-anchor="middle" font-size="8">8-10</text>
-          <text class="mn-label" x="330" y="446" text-anchor="start" font-size="7">POWER · COMPLETION</text>
-          <text class="mn-sublabel" x="330" y="455" text-anchor="start">the collective force</text>
+          <circle cx="300" cy="520" r="18" fill="url(#nodeGlow)"/>
+          <circle class="mn-ring" cx="300" cy="520" r="14" stroke="#3a3530" stroke-width="1" stroke-dasharray="2 2"/>
+          <text x="300" y="524" text-anchor="middle" font-size="8">8-10</text>
+          <text class="mn-label" x="330" y="516" text-anchor="start" font-size="7">POWER · COMPLETION</text>
+          <text class="mn-sublabel" x="330" y="525" text-anchor="start">the collective force</text>
         </g>
 
         <!-- COLLABORATE -->
         <g class="mn-g unlocked" onclick="showNodeInfo('collab')" data-node="collab">
-          <circle cx="300" cy="515" r="20" fill="url(#nodeGlowGreen)"/>
-          <circle class="mn-ring" cx="300" cy="515" r="16" stroke="#5cb85c" stroke-width="1.5"/>
-          <text x="300" y="520" text-anchor="middle" font-size="12">🤝</text>
-          <text class="mn-label" x="300" y="545">COLLABORATE</text>
-          <text class="mn-sublabel" x="300" y="554">always on</text>
+          <circle cx="300" cy="600" r="20" fill="url(#nodeGlowGreen)"/>
+          <circle class="mn-ring" cx="300" cy="600" r="16" stroke="#5cb85c" stroke-width="1.5"/>
+          <text x="300" y="605" text-anchor="middle" font-size="12">🤝</text>
+          <text class="mn-label" x="300" y="630">COLLABORATE</text>
+          <text class="mn-sublabel" x="300" y="639">always on</text>
         </g>
 
-        <!-- MASTERY (bottom of spine) -->
+        <!-- MASTERY -->
         <g class="mn-g locked" onclick="showNodeInfo('mastery')" data-node="mastery">
-          <circle cx="300" cy="580" r="24" fill="url(#nodeGlowPurple)"/>
-          <circle class="mn-ring" cx="300" cy="580" r="18" stroke="#9b59b6" stroke-width="1.5" stroke-dasharray="3 3"/>
-          <text x="300" y="585" text-anchor="middle" font-size="13">👑</text>
-          <text class="mn-label" x="300" y="610">MASTERY</text>
-          <text class="mn-sublabel" x="300" y="619">come home to yourself</text>
+          <circle cx="300" cy="680" r="24" fill="url(#nodeGlowPurple)"/>
+          <circle class="mn-ring" cx="300" cy="680" r="18" stroke="#9b59b6" stroke-width="1.5" stroke-dasharray="3 3"/>
+          <text x="300" y="685" text-anchor="middle" font-size="13">👑</text>
+          <text class="mn-label" x="300" y="710">MASTERY</text>
+          <text class="mn-sublabel" x="300" y="719">come home to yourself</text>
         </g>
 
         <!-- ═══ LEFT BRANCH — DOING PATH ═══ -->
