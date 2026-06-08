@@ -371,6 +371,10 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;dis
           <text class="mn-label" x="420" y="497">CREATE</text>
           <text class="mn-sublabel" x="420" y="506">write & record</text>
         </g>
+        <!-- Travelling flame -->
+        <g id="travel-flame" transform="translate(240,50)" style="transition: transform 1.2s cubic-bezier(0.4,0,0.2,1)">
+          <text font-size="14" text-anchor="middle" dominant-baseline="central" style="filter:drop-shadow(0 0 4px #e8a020)">🔥</text>
+        </g>
 
       </svg>
     </div>
@@ -513,6 +517,7 @@ function showNodeInfo(id) {
   const data = NODE_DATA[id];
   if (!data) return;
   _activeNode = id;
+  moveFlame(id);
   document.getElementById('niEmoji').textContent = data.emoji;
   document.getElementById('niTag').textContent = data.tag;
   document.getElementById('niTitle').textContent = data.title;
@@ -536,6 +541,77 @@ function enterNode() {
 
 // Legacy compat
 function nT(id){ showNodeInfo(id); if(id==='foundation') showFoundation(); }
+
+// ═══ TRAVEL FLAME ═══
+const NODE_POS = {
+  foundation: [240,50], hearth: [240,340], mastery: [240,530],
+  doing: [100,195], knowing: [380,195],
+  practise: [170,267], study: [310,267],
+  play: [60,470], create: [420,470]
+};
+
+// Routes: from -> to = array of waypoint node ids
+const FLAME_ROUTES = {
+  'foundation->doing': ['foundation','doing'],
+  'foundation->knowing': ['foundation','knowing'],
+  'foundation->practise': ['foundation','doing','practise'],
+  'foundation->study': ['foundation','knowing','study'],
+  'foundation->play': ['foundation','doing','practise','play'],
+  'foundation->create': ['foundation','knowing','study','create'],
+  'foundation->hearth': ['foundation','hearth'],
+  'foundation->mastery': ['foundation','hearth','mastery'],
+  'hearth->foundation': ['hearth','foundation'],
+  'hearth->doing': ['hearth','doing'],
+  'hearth->knowing': ['hearth','knowing'],
+  'hearth->practise': ['hearth','doing','practise'],
+  'hearth->study': ['hearth','knowing','study'],
+  'hearth->play': ['hearth','doing','practise','play'],
+  'hearth->create': ['hearth','knowing','study','create'],
+  'hearth->mastery': ['hearth','mastery'],
+  'doing->practise': ['doing','practise'],
+  'doing->play': ['doing','practise','play'],
+  'doing->hearth': ['doing','hearth'],
+  'knowing->study': ['knowing','study'],
+  'knowing->create': ['knowing','study','create'],
+  'knowing->hearth': ['knowing','hearth'],
+  'practise->play': ['practise','play'],
+  'practise->doing': ['practise','doing'],
+  'practise->hearth': ['practise','hearth'],
+  'study->create': ['study','create'],
+  'study->knowing': ['study','knowing'],
+  'study->hearth': ['study','hearth'],
+  'play->practise': ['play','practise'],
+  'play->doing': ['play','practise','doing'],
+  'create->study': ['create','study'],
+  'create->knowing': ['create','study','knowing'],
+};
+
+let _flameNode = 'foundation';
+let _flameAnimating = false;
+
+function moveFlame(targetId) {
+  if (_flameAnimating || _flameNode === targetId) return;
+  const key = _flameNode + '->' + targetId;
+  const route = FLAME_ROUTES[key];
+  if (!route) return;
+  _flameAnimating = true;
+  const flame = document.getElementById('travel-flame');
+  let step = 1;
+  function nextStep() {
+    if (step >= route.length) {
+      _flameNode = targetId;
+      _flameAnimating = false;
+      return;
+    }
+    const pos = NODE_POS[route[step]];
+    flame.style.transform = 'translate(' + pos[0] + 'px,' + pos[1] + 'px)';
+    _flameNode = route[step];
+    step++;
+    if (step < route.length) setTimeout(nextStep, 600);
+    else setTimeout(function(){ _flameAnimating = false; }, 600);
+  }
+  nextStep();
+}
 
 function showFoundation(){
   document.querySelectorAll('.pnl').forEach(p=>p.classList.remove('on'));
