@@ -1013,6 +1013,7 @@ function showDoing(){
   // Collect all unique styles
   const allStyles=[];
   D.categories.forEach(c=>c.drills.forEach(d=>{if(!allStyles.includes(d.style))allStyles.push(d.style);}));
+  allStyles.sort();
 
   let activeStyle='all';
 
@@ -1026,71 +1027,64 @@ function showDoing(){
     }));
 
     // Style filter bar
-    let html='<div style="margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">'+
-      '<div style="font-family:JetBrains Mono;font-size:0.7rem;color:var(--dim)">'+doneDrills+'/'+totalDrills+' drills</div>'+
-      '<div style="display:flex;gap:4px;flex-wrap:wrap">';
-    html+='<span class="style-filter'+(activeStyle==='all'?' active':'')+'" data-style="all">all</span>';
+    let html='<div style="margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">'+
+      '<div style="font-family:JetBrains Mono;font-size:0.75rem;color:var(--dim)">'+doneDrills+'/'+totalDrills+' drills complete</div>'+
+      '<div id="style-filters" style="display:flex;gap:4px;flex-wrap:wrap">';
+    html+='<span class="style-filter'+(activeStyle==='all'?' active':'')+'" data-style="all">All</span>';
     allStyles.forEach(s=>{
       html+='<span class="style-filter'+(activeStyle===s?' active':'')+'" data-style="'+s+'">'+s+'</span>';
     });
     html+='</div></div>';
 
-    // VERTICAL FRETBOARD — guitar standing up
-    // X axis = strings (categories), Y axis = frets (difficulty)
-    const svgW=650;
-    const leftPad=130; // room for category labels
+    // SWAPPED LAYOUT: 3 strings = difficulty levels, 7 frets = categories
+    // Strings run horizontally, frets run vertically (top to bottom)
+    const strings=['Beginner','Intermediate','Advanced'];
+    const stringCount=strings.length;
+    const fretCount=cats.length;
+
+    const svgW=600;
+    const leftPad=120;
     const rightPad=20;
-    const topPad=50; // room for fret labels
+    const topPad=40;
+    const fretH=70;
     const botPad=30;
-    const stringCount=cats.length;
     const stringSpacing=(svgW-leftPad-rightPad)/(stringCount-1);
-    const fretH=80; // height per difficulty level
-    const svgH=topPad+botPad+fretH*3+20;
+    const svgH=topPad+botPad+fretH*fretCount;
 
-    let svg='<svg viewBox="0 0 '+svgW+' '+svgH+'" style="width:100%;max-width:700px;display:block;margin:0 auto;cursor:default">';
+    let svg='<svg viewBox="0 0 '+svgW+' '+svgH+'" style="width:100%;max-width:650px;display:block;margin:0 auto">';
 
-    // Fret labels (top)
-    ['Beginner','Intermediate','Advanced'].forEach((label,fi)=>{
-      const y=topPad+fi*fretH+fretH/2;
-      svg+='<text x="'+(leftPad-10)+'" y="'+(y+4)+'" text-anchor="end" style="font-family:JetBrains Mono;font-size:10px;fill:var(--gold);opacity:0.7">'+label+'</text>';
-      // Fret line (horizontal)
-      if(fi>0){
-        svg+='<line x1="'+(leftPad-5)+'" y1="'+(topPad+fi*fretH)+'" x2="'+(svgW-rightPad+5)+'" y2="'+(topPad+fi*fretH)+'" stroke="var(--border)" stroke-width="1" opacity="0.3"/>';
-      }
+    // String labels (top) + string lines (vertical)
+    strings.forEach((label,si)=>{
+      const x=leftPad+stringSpacing*si;
+      svg+='<text x="'+x+'" y="'+(topPad-15)+'" text-anchor="middle" style="font-family:JetBrains Mono;font-size:10px;fill:var(--gold);opacity:0.7">'+label+'</text>';
+      svg+='<line x1="'+x+'" y1="'+(topPad-5)+'" x2="'+x+'" y2="'+(topPad+fretH*fretCount)+'" stroke="var(--gold)" stroke-width="'+(1.5+si*0.3)+'" opacity="0.15"/>';
     });
 
-    // Nut (thick horizontal line at top)
+    // Nut (top horizontal line)
     svg+='<line x1="'+(leftPad-5)+'" y1="'+(topPad-5)+'" x2="'+(svgW-rightPad+5)+'" y2="'+(topPad-5)+'" stroke="var(--gold)" stroke-width="2" opacity="0.4"/>';
 
-    // Strings (vertical lines) + category labels
-    cats.forEach((cat,si)=>{
-      const x=leftPad+stringSpacing*si;
+    // Fret lines (horizontal) + category labels (left)
+    cats.forEach((cat,fi)=>{
+      const y=topPad+fretH*fi+fretH/2;
       const filtered=cat.drills.filter(d=>activeStyle==='all'||d.style===activeStyle);
       const anyDone=filtered.some(d=>completed[d.id]);
 
-      // String line
-      svg+='<line x1="'+x+'" y1="'+(topPad-5)+'" x2="'+x+'" y2="'+(topPad+fretH*3)+'" stroke="var(--gold)" stroke-width="'+(1.5+si*0.15)+'" opacity="0.15"/>';
+      // Fret divider line (except first)
+      if(fi>0){
+        svg+='<line x1="'+(leftPad-5)+'" y1="'+(topPad+fretH*fi)+'" x2="'+(svgW-rightPad+5)+'" y2="'+(topPad+fretH*fi)+'" stroke="var(--border)" stroke-width="1" opacity="0.3"/>';
+      }
 
-      // Category label (top, rotated)
-      svg+='<text x="'+x+'" y="'+(topPad-15)+'" text-anchor="middle" style="font-family:Cinzel;font-size:10px;fill:'+(anyDone?'var(--gold)':'var(--text)')+';font-weight:'+(anyDone?'700':'400')+'">'+cat.title+'</text>';
-    });
+      // Category label
+      svg+='<text x="'+(leftPad-10)+'" y="'+(y+4)+'" text-anchor="end" style="font-family:Cinzel;font-size:10px;fill:'+(anyDone?'var(--gold)':'var(--text)')+';font-weight:'+(anyDone?'700':'400')+'">'+cat.title+'</text>';
 
-    // Place dots on the fretboard
-    cats.forEach((cat,si)=>{
-      const x=leftPad+stringSpacing*si;
-      const filtered=cat.drills.filter(d=>activeStyle==='all'||d.style===activeStyle);
-
-      // Group by difficulty
-      const byDiff={1:[],2:[],3:[]};
-      filtered.forEach(d=>byDiff[d.difficulty].push(d));
-
+      // Place dots at each string position (difficulty level)
       [1,2,3].forEach(diff=>{
-        const drills=byDiff[diff];
-        const fretY=topPad+fretH*(diff-1)+fretH/2;
+        const si=diff-1;
+        const x=leftPad+stringSpacing*si;
+        const drills=cat.drills.filter(d=>d.difficulty===diff&&(activeStyle==='all'||d.style===activeStyle));
 
         drills.forEach((drill,di)=>{
-          // Spread dots horizontally within the fret area
-          const spread=Math.min(drills.length*12, stringSpacing*0.7);
+          const spread=Math.min(drills.length*14, stringSpacing*0.6);
           const dx=(di-((drills.length-1)/2))*(drills.length>1?spread/(drills.length-1):0);
           const dotX=x+dx;
 
@@ -1100,16 +1094,16 @@ function showDoing(){
           const stroke=isDone?'var(--gold)':'var(--border)';
           const op=isDone?'1':'0.5';
 
-          svg+='<circle cx="'+dotX+'" cy="'+fretY+'" r="'+r+'" fill="'+fill+'" stroke="'+stroke+'" stroke-width="1.5" opacity="'+op+'" style="cursor:pointer" class="drill-dot" data-cat="'+cat.id+'" data-drill="'+drill.id+'"><title>'+drill.title+' ('+drill.style+')</title></circle>';
+          svg+='<circle cx="'+dotX+'" cy="'+y+'" r="'+r+'" fill="'+fill+'" stroke="'+stroke+'" stroke-width="1.5" opacity="'+op+'" style="cursor:pointer" class="drill-dot" data-cat="'+cat.id+'" data-drill="'+drill.id+'"><title>'+drill.title+' ['+drill.style+']</title></circle>';
         });
       });
     });
 
     // Legend
-    const legY=topPad+fretH*3+20;
+    const legY=topPad+fretH*fretCount+15;
     svg+='<circle cx="'+leftPad+'" cy="'+legY+'" r="5" fill="var(--gold)"/><text x="'+(leftPad+10)+'" y="'+(legY+3)+'" style="font-size:9px;fill:var(--dim)">Complete</text>';
     svg+='<circle cx="'+(leftPad+80)+'" cy="'+legY+'" r="5" fill="var(--dim)" stroke="var(--border)" opacity="0.5"/><text x="'+(leftPad+90)+'" y="'+(legY+3)+'" style="font-size:9px;fill:var(--dim)">Not started</text>';
-    svg+='<text x="'+(leftPad+170)+'" y="'+(legY+3)+'" style="font-size:8px;fill:var(--dim)">Hover dots for drill name · Click to open</text>';
+    svg+='<text x="'+(leftPad+170)+'" y="'+(legY+3)+'" style="font-size:8px;fill:var(--dim)">Hover for drill name</text>';
 
     svg+='</svg>';
     return html+svg;
@@ -1120,18 +1114,18 @@ function showDoing(){
     const cat=D.categories.find(c=>c.id===catId);if(!cat)return;
     const drill=cat.drills.find(d=>d.id===drillId);if(!drill)return;
     const isDone=completed[drillId];
-    const diffStars='&#9733;'.repeat(drill.difficulty)+'&#9734;'.repeat(3-drill.difficulty);
+    const diffLabel=['','Beginner','Intermediate','Advanced'][drill.difficulty];
     el.innerHTML='<div style="padding:20px;max-width:650px;margin:0 auto">'+
       '<button onclick="showDoing()" style="background:none;border:1px solid var(--border);color:var(--dim);padding:6px 12px;border-radius:4px;cursor:pointer;font-family:inherit;font-size:0.7rem;margin-bottom:16px">&larr; Back to fretboard</button>'+
-      '<div style="display:flex;align-items:center;gap:12px;margin-bottom:8px">'+
-        ''+
-        '<div><h2 style="font-family:Cinzel;color:var(--gold);font-size:1.1rem;margin:0">'+drill.title+'</h2>'+
+      '<div style="margin-bottom:8px">'+
+        '<h2 style="font-family:Cinzel;color:var(--gold);font-size:1.1rem;margin:0">'+drill.title+'</h2>'+
         '<div style="display:flex;gap:8px;margin-top:4px">'+
-          '<span style="font-size:0.65rem;color:var(--amber)">'+diffStars+'</span>'+
-          '<span style="font-size:0.65rem;color:var(--dim)">BPM: '+drill.bpm+'</span>'+
-          '<span style="font-size:0.65rem;color:var(--dim)">'+drill.duration+'</span>'+
-          '<span style="font-size:0.65rem;color:var(--dim)">'+drill.style+'</span>'+
-        '</div></div>'+
+          '<span class="tag">'+cat.title+'</span>'+
+          '<span class="tag">'+diffLabel+'</span>'+
+          '<span class="tag">'+drill.style+'</span>'+
+          '<span class="tag">BPM '+drill.bpm+'</span>'+
+          '<span class="tag">'+drill.duration+'</span>'+
+        '</div>'+
       '</div>'+
       '<div style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:20px;margin-top:12px;line-height:1.7;font-size:0.85rem;color:var(--text)">'+
         drill.body+
@@ -1144,7 +1138,6 @@ function showDoing(){
 
   el.innerHTML='<div style="padding:16px;max-width:700px;margin:0 auto">'+
     '<div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">'+
-      '<span style="font-size:20px">&#9996;</span>'+
       '<div><h2 style="font-family:Cinzel;color:var(--gold);font-size:1.1rem;margin:0">'+D.title+'</h2>'+
       '<p style="color:var(--dim);font-size:0.7rem;margin:0">'+D.description+'</p></div>'+
       '<button onclick="document.querySelectorAll(\'.pnl\').forEach(p=>p.classList.remove(\'on\'));document.getElementById(\'p-map\').classList.add(\'on\')" style="margin-left:auto;background:none;border:1px solid var(--border);color:var(--dim);padding:6px 12px;border-radius:4px;cursor:pointer;font-family:inherit;font-size:0.7rem">&times;</button>'+
@@ -1155,13 +1148,15 @@ function showDoing(){
     '</div>'+
   '</div>';
 
-  // Bind style filter clicks
-  el.querySelectorAll('.style-filter').forEach(btn=>{
-    btn.onclick=function(){
-      activeStyle=this.getAttribute('data-style')||'all';
-      document.getElementById('doing-fretboard').innerHTML=renderFretboard();
-      bindDots();
-    };
+  // Bind style filter clicks — use event delegation on parent
+  document.getElementById('style-filters').addEventListener('click',function(e){
+    const btn=e.target.closest('.style-filter');
+    if(!btn)return;
+    activeStyle=btn.getAttribute('data-style')||'all';
+    document.getElementById('doing-fretboard').innerHTML=renderFretboard();
+    bindDots();
+    // Rebind filters after re-render
+    document.getElementById('style-filters').addEventListener('click',arguments.callee);
   });
 
   function bindDots(){
