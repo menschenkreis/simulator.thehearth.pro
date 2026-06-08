@@ -694,21 +694,72 @@ function enterNode() {
 }
 
 // ═══ THEME SYSTEM ═══
+const THEME_COLORS = {
+  standard: {
+    bg: '#0d0b08', branch: '#e8a020', branchAlt: '#5a9fd4',
+    spine: '#3a3530', spineActive: '#d4af69', web: '#d4af69', webOp: 0.1,
+    tick: '#d4af69', tickDim: '#3a3530', glow: '#d4af69'
+  },
+  sparks: {
+    bg: '#FFF8F0', branch: '#FF8C42', branchAlt: '#FF6B6B',
+    spine: '#FFB088', spineActive: '#FF8C42', web: '#FF8C42', webOp: 0.12,
+    tick: '#FF8C42', tickDim: '#FFB088', glow: '#FF8C42'
+  },
+  flames: {
+    bg: '#F8F5F0', branch: '#E17055', branchAlt: '#00B894',
+    spine: '#DDD5C8', spineActive: '#E17055', web: '#E17055', webOp: 0.1,
+    tick: '#E17055', tickDim: '#DDD5C8', glow: '#E17055'
+  }
+};
+
 function setTheme(mode) {
   document.documentElement.setAttribute('data-theme', mode);
   localStorage.setItem('hearth-theme', mode);
-  // Update SVG background
-  const svgBg = document.querySelector('.map-svg rect');
-  if (svgBg) svgBg.style.fill = 'var(--bg)';
+  applyThemeColors(mode);
 }
-// Restore saved theme
-(function(){
-  const saved = localStorage.getItem('hearth-theme');
-  if (saved) {
-    document.documentElement.setAttribute('data-theme', saved);
-    const sel = document.getElementById('mode-select');
-    if (sel) sel.value = saved;
+
+function applyThemeColors(mode) {
+  const c = THEME_COLORS[mode] || THEME_COLORS.standard;
+  // SVG background
+  const svgBg = document.querySelector('.map-svg rect');
+  if (svgBg) svgBg.style.fill = c.bg;
+  // Connection lines (orange branches)
+  document.querySelectorAll('#connections > line:not([id])').forEach(function(l) {
+    if (!l.closest('#web')) {
+      var op = l.style.opacity || '0.3';
+      l.style.stroke = op > '0.25' ? c.branch : c.branchAlt;
+    }
+  });
+  // Spine segments
+  for (var i = 1; i <= 8; i++) {
+    var seg = document.getElementById('spine-l' + i);
+    if (seg) { seg.style.stroke = c.spine; }
   }
+  // Tick marks
+  document.querySelectorAll('#connections > line:not([id])').forEach(function(l) {
+    if (l.closest('#web')) return;
+    var sw = parseFloat(l.style.strokeWidth || l.getAttribute('stroke-width') || 0);
+    if (sw <= 1) l.style.stroke = c.tickDim;
+  });
+  // Web
+  var web = document.getElementById('web');
+  if (web) { web.style.stroke = c.web; web.style.opacity = c.webOp; }
+  // Glow
+  var glow = document.querySelector('.center-glow');
+  if (glow) glow.style.fill = c.glow;
+  // Mastery rings keep their rainbow colours — just adjust opacity
+  document.querySelectorAll('.mastery-ring').forEach(function(r) {
+    r.style.opacity = (mode === 'sparks') ? '0.3' : '0.15';
+  });
+}
+
+// Restore saved theme on load
+(function(){
+  var saved = localStorage.getItem('hearth-theme') || 'standard';
+  document.documentElement.setAttribute('data-theme', saved);
+  var sel = document.getElementById('mode-select');
+  if (sel) sel.value = saved;
+  applyThemeColors(saved);
 })();
 
 // Legacy compat
