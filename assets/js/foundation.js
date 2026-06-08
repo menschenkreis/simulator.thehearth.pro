@@ -22,6 +22,7 @@ const FOUNDATION = {
       status: 'open',
       sources: ['Jamie Andreas'],
       tags: ['Mindset', 'Practice', 'Core'],
+      video: 'https://www.youtube.com/results?search_query=how+to+practise+guitar+correctly+andreas',
       steps: [
         {
           label: 'Read',
