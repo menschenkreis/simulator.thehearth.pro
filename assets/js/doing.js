@@ -1,18 +1,24 @@
-// Doing Node — Open-World Drill Library
-// Sources: Phillips & Chappell (Guitar Exercises For Dummies), Troy Nelson (Guitar Aerobics),
-//          Berklee Phase 2 (Leavitt), Funk Guitar (Bolton), Satriani Guitar Secrets
+// Doing Node — Open-World Drill Library (Expanded)
+// Sources: Full knowledge base — 42+ books
 
 const DOING = {
   id: 'doing',
   title: 'Doing',
   tag: 'DOING PATH',
-  description: 'Open-world drill library. All exercises, always accessible. Categorised by skill. Revisit anything, anytime.',
+  description: 'Open-world drill library. Every technique, every style. Click a dot to dive in.',
   sources: [
-    'Mark Phillips & Jon Chappell — Guitar Exercises For Dummies (Wiley)',
-    'Troy Nelson — Guitar Aerobics: 52-Week Workout (Hal Leonard, 2007)',
-    'William Leavitt — Berklee Basic Guitar Phase 2 (Berklee Press)',
-    'Ross Bolton — Funk Guitar: The Essential Guide (Hal Leonard)',
-    'Joe Satriani — Guitar Secrets (Guitar Educational)'
+    'Troy Nelson — Guitar Aerobics (2007)',
+    'Phillips & Chappell — Guitar Exercises For Dummies',
+    'William Leavitt — Berklee Phase 2',
+    'Ross Bolton — Funk Guitar',
+    'Joe Satriani — Guitar Secrets',
+    'Troy Stetina — Speed Mechanics',
+    'Jamie Andreas — Correct Practice',
+    'John Ganapes — Blues You Can Use',
+    'John Jorgenson — Gypsy Jazz Guitar',
+    'David Hamburger — Slide Basics',
+    'Christopher Parkening — Classical Guitar',
+    'Glenn Weiser — Celtic Guitar'
   ],
 
   categories: [
@@ -20,292 +26,115 @@ const DOING = {
       id: 'picking',
       title: 'Picking',
       icon: '🎸',
-      description: 'Alternate picking, economy picking, sweep picking. The foundation of right-hand technique.',
+      styles: ['rock','blues','jazz','metal','country'],
       drills: [
-        {
-          id: 'alt-picking-basic',
-          title: 'Alternate Picking — Single String',
-          difficulty: 1,
-          bpm: '60-100',
-          duration: '5 min',
-          source: 'Guitar Aerobics (Mon)',
-          body: `<p>Start on the low E string. Pick down-up-down-up continuously. Focus on:</p>
-<p>• <strong>Even volume</strong> — downstrokes and upstrokes should sound identical<br>
-• <strong>Small motion</strong> — the pick moves only 2-3mm past the string<br>
-• <strong>Relaxed grip</strong> — hold the pick between thumb and index finger, no death grip</p>
-<div class="lp-callout">
-  <div class="lp-co-title">THE RULE</div>
-  <p>If you can't play it clean at 60 BPM, you can't play it. Speed is earned through accuracy, not forced through repetition of sloppiness.</p>
-</div>
-<p><strong>Exercise:</strong> Play open E string, 4 down-up cycles per fret. Move frets 0-1-2-3-4-5. Then reverse. Use a metronome.</p>`
-        },
-        {
-          id: 'alt-picking-cross',
-          title: 'Alternate Picking — String Crossing',
-          difficulty: 2,
-          bpm: '50-80',
-          duration: '8 min',
-          source: 'Guitar Aerobics (Mon)',
-          body: `<p>The real challenge of alternate picking isn't speed — it's crossing strings cleanly.</p>
-<p>When you cross from a downstroke on one string to the next string, the pick needs to <em>land</em> on the new string without catching. This is where most picking problems live.</p>
-<p><strong>Exercise:</strong> Play E-A-D-G-B-E, one note per string. Down-up on each. Focus on the moment of string crossing — the pick should glide, not hop.</p>
-<p><strong>Advanced:</strong> Play 3 notes per string ascending, then reverse. This creates different picking patterns at each crossing (down-down-up, down-up-down, etc.)</p>`
-        },
-        {
-          id: 'sweep-intro',
-          title: 'Sweep Picking — Introduction',
-          difficulty: 3,
-          bpm: '40-70',
-          duration: '10 min',
-          source: 'Guitar Aerobics (Fri)',
-          body: `<p>Sweep picking is <em>not</em> strumming. Each note rings individually, like a harp. The pick drags across strings in one fluid motion, but each finger lifts off before the next note sounds.</p>
-<p>Start with a 3-string minor arpeggio:</p>
-<p>• String 3, fret 7 — pick down<br>
-• String 2, fret 6 — pick down (sweep through)<br>
-• String 1, fret 5 — pick down (sweep through)<br>
-• Reverse: pick up through strings 1-2-3</p>
-<div class="lp-callout">
-  <div class="lp-co-title">THE TRAP</div>
-  <p>Most beginners let all notes ring together like a chord. The skill is in the left hand — lifting each finger just before the next note. Practice the left-hand pattern WITHOUT picking first.</p>
-</div>`
-        }
+        { id:'alt-1', title:'Alternate Picking — Single String', difficulty:1, bpm:'60-100', duration:'5 min', source:'Guitar Aerobics (Mon)', style:'rock', body:'<p>Start on low E. Down-up-down-up. Focus on even volume. Small motion — pick moves 2-3mm.</p><p><strong>Exercise:</strong> Open E, 4 cycles per fret. Frets 0-1-2-3-4-5. Reverse. Metronome on.</p>' },
+        { id:'alt-2', title:'Alternate Picking — String Crossing', difficulty:2, bpm:'50-80', duration:'8 min', source:'Guitar Aerobics (Mon)', style:'rock', body:'<p>Cross strings cleanly. Down on E, up on A, down on D. The pick glides, not hops.</p><p><strong>Exercise:</strong> E-A-D-G-B-E, one note per string. Then 3 notes per string ascending.</p>' },
+        { id:'alt-3', title:'Alternate Picking — 3 Notes Per String', difficulty:2, bpm:'60-90', duration:'8 min', source:'Guitar Aerobics (Mon)', style:'metal', body:'<p>The metal/rock standard. 3 notes per string creates odd picking patterns at string crossings.</p><p><strong>Exercise:</strong> Major scale, 3NPS pattern. Start at 60 BPM, increase by 5 when clean.</p>' },
+        { id:'econ-1', title:'Economy Picking — Introduction', difficulty:2, bpm:'50-80', duration:'8 min', source:'Stetina — Speed Mechanics', style:'jazz', body:'<p>Economy picking = sweep in the direction you\'re going. If ascending, sweep down across strings. Faster than alternate picking for scale runs.</p>' },
+        { id:'sweep-1', title:'Sweep Picking — 3-String Minor', difficulty:3, bpm:'40-70', duration:'10 min', source:'Guitar Aerobics (Fri)', style:'metal', body:'<p>Not strumming — each note rings individually. 3-string minor arpeggio: pick drags across, each finger lifts before next note.</p>' },
+        { id:'sweep-2', title:'Sweep Picking — 5-String Major', difficulty:3, bpm:'40-60', duration:'12 min', source:'Guitar Aerobics (Fri)', style:'metal', body:'<p>Full 5-string major arpeggio sweep. The advanced version. Requires precise left-hand muting.</p>' },
+        { id:'flatpick-1', title:'Flatpick Basics — Carter Style', difficulty:1, bpm:'60-80', duration:'5 min', source:'General knowledge', style:'country', body:'<p>The boom-chick pattern. Thumb alternates bass notes, index/middle pick melody on treble strings. The foundation of country and folk flatpicking.</p>' },
+        { id:'gypsy-1', title:'Rest-Stroke Picking — Gypsy Style', difficulty:2, bpm:'60-90', duration:'10 min', source:'Jorgenson — Gypsy Jazz', style:'flamenco', body:'<p>Pick follows through to rest on adjacent string. Produces a powerful, punchy tone. Non-negotiable for Gypsy Jazz.</p>' }
       ]
     },
-
     {
       id: 'fretting',
       title: 'Fretting',
       icon: '✋',
-      description: 'Finger independence, chromatic exercises, barre chords, left-hand strength.',
+      styles: ['rock','classical','jazz','blues'],
       drills: [
-        {
-          id: 'chromatic-1234',
-          title: 'The 1-2-3-4 Chromatic Exercise',
-          difficulty: 1,
-          bpm: '60-120',
-          duration: '5 min',
-          source: 'Cary White — Complete Guitar Series',
-          body: `<p>The most fundamental fretting exercise. Play frets 1-2-3-4 on each string, one finger per fret:</p>
-<p>• Index on fret 1<br>
-• Middle on fret 2<br>
-• Ring on fret 3<br>
-• Pinky on fret 4</p>
-<p>Move across all 6 strings (E-A-D-G-B-E), then shift up to frets 2-3-4-5 and continue up the neck.</p>
-<p><strong>Focus on:</strong><br>
-• Each finger stays close to the fretboard (no flying fingers)<br>
-• Minimum pressure — just enough for a clean note<br>
-• No tension in the thumb or wrist<br>
-• Even timing — every note exactly on the beat</p>`
-        },
-        {
-          id: 'finger-independence',
-          title: 'Finger Independence — Spider Exercise',
-          difficulty: 2,
-          bpm: '40-80',
-          duration: '8 min',
-          source: 'Guitar Exercises For Dummies',
-          body: `<p>This exercise isolates each finger by forcing it to move while others stay planted.</p>
-<p>Play this pattern on strings 1-2:</p>
-<p>• Fret 1 (index on string 2) + Fret 3 (ring on string 1)<br>
-• Fret 2 (middle on string 2) + Fret 4 (pinky on string 1)<br>
-• Fret 3 (ring on string 2) + Fret 1 (index on string 1)<br>
-• Fret 4 (pinky on string 2) + Fret 2 (middle on string 1)</p>
-<p>The key: each finger moves <strong>independently</strong>. If your ring finger moves when your pinky moves, you've found a weakness. That's exactly what you're training.</p>`
-        },
-        {
-          id: 'barre-chord-strength',
-          title: 'Barre Chord Strength Builder',
-          difficulty: 3,
-          bpm: '—',
-          duration: '10 min',
-          source: 'Guitar Exercises For Dummies',
-          body: `<p>Barre chords are the gateway to playing anywhere on the neck. But they're physically demanding until your hand builds the right muscles.</p>
-<p><strong>Step 1:</strong> Barre all 6 strings at fret 5 with your index finger. Strum. Do all strings ring? If not, adjust your finger angle (slight roll toward the thumb side helps).</p>
-<p><strong>Step 2:</strong> Add middle finger on fret 6, string 3. Strum. This is an A minor shape — moveable.</p>
-<p><strong>Step 3:</strong> Practice the "squeeze and release" — barre for 5 seconds, release for 5 seconds. Repeat 10 times. This builds endurance without overstraining.</p>
-<div class="lp-callout">
-  <div class="lp-co-title">THE MYTH</div>
-  <p>You do NOT need to press hard. The barre works because of the <em>structure</em> of your hand, not brute force. Thumb behind the neck (not over it), index finger slightly rolled, arm pulling back (not just squeezing). If it hurts, you're doing it wrong.</p>
-</div>`
-        }
+        { id:'chrom-1', title:'1-2-3-4 Chromatic Exercise', difficulty:1, bpm:'60-120', duration:'5 min', source:'Cary White', style:'rock', body:'<p>Index=1, Middle=2, Ring=3, Pinky=4. All 6 strings, shift up the neck. Fingers stay close to fretboard.</p>' },
+        { id:'spider-1', title:'Spider Exercise — Cross String', difficulty:2, bpm:'40-80', duration:'8 min', source:'Exercises For Dummies', style:'rock', body:'<p>Isolates each finger. 1-3 on one string, 2-4 on next. Fingers move independently.</p>' },
+        { id:'barre-1', title:'Barre Chord Strength Builder', difficulty:2, bpm:'—', duration:'10 min', source:'Exercises For Dummies', style:'rock', body:'<p>Barre at fret 5. Squeeze 5 sec, release 5 sec × 10. Build endurance without strain. Thumb behind neck, arm pulling back.</p>' },
+        { id:'barre-2', title:'Barre Chord Changes — F to Bb', difficulty:2, bpm:'40-60', duration:'8 min', source:'Exercises For Dummies', style:'rock', body:'<p>The hardest barre chord change. F major (1st fret) to Bb major (6th fret). Slow, deliberate. Clean transition before speed.</p>' },
+        { id:'trill-1', title:'Trill Exercise — Hammer/Pull Endurance', difficulty:2, bpm:'—', duration:'5 min', source:'Stetina — Speed Mechanics', style:'metal', body:'<p>Hammer-on/pull-off between two fingers. 60 seconds each pair: 1-2, 1-3, 1-4, 2-3, 2-4, 3-4. Count the reps. Build stamina.</p>' },
+        { id:'legato-1', title:'Legato — Hammer-ons & Pull-offs', difficulty:2, bpm:'60-100', duration:'8 min', source:'Stetina — Speed Mechanics', style:'rock', body:'<p>Pick fret 5, hammer to 7, pull off. Same volume as picked note. Legato = smooth and connected.</p>' },
+        { id:'legato-2', title:'Legato — 3-Note-Per-String Runs', difficulty:3, bpm:'50-90', duration:'10 min', source:'Stetina — Speed Mechanics', style:'metal', body:'<p>3NPS legato runs. Pick first note of each string, hammer the other two. The shredder\'s secret.</p>' },
+        { id:'classical-1', title:'Classical Left Hand — PIMA Position', difficulty:1, bpm:'—', duration:'8 min', source:'Parkening Vol 1', style:'classical', body:'<p>Thumb behind neck (not over), fingers curved, fingertips only. Classical position is the foundation of clean fretting.</p>' }
       ]
     },
-
     {
       id: 'rhythm',
       title: 'Rhythm',
       icon: '🥁',
-      description: '16th notes, syncopation, groove, muting, time feel.',
+      styles: ['funk','rock','blues','latin','reggae'],
       drills: [
-        {
-          id: 'sixteenth-notes',
-          title: '16th Note Subdivision',
-          difficulty: 1,
-          bpm: '60-100',
-          duration: '5 min',
-          source: 'Berklee Phase 2 (Leavitt)',
-          body: `<p>16th notes divide each beat into 4 equal parts. Count: <strong>1-e-&-a  2-e-&-a  3-e-&-a  4-e-&-a</strong></p>
-<p>Play one note per subdivision on an open string. Start at 60 BPM. Feel how the 4 notes fit inside each beat.</p>
-<p><strong>Test:</strong> Accent only beat 1. Then only the "e"s. Then only the "&"s. Then only the "a"s. If you can do this cleanly, you own the subdivision.</p>
-<p><strong>Next level:</strong> Play 8th notes (2 per beat) with your fretting hand while your picking hand plays 16th notes. This is the beginning of rhythmic independence.</p>`
-        },
-        {
-          id: 'funk-muting',
-          title: 'Scratch Muting — The Funk Foundation',
-          difficulty: 2,
-          bpm: '70-110',
-          duration: '8 min',
-          source: 'Ross Bolton — Funk Guitar',
-          body: `<p>Funk guitar is 80% muting. The notes you DON'T hear are as important as the ones you do.</p>
-<p><strong>The technique:</strong> Lay your left hand fingers lightly across the strings (don't press to the fret). Pick. You get a percussive "chk" — no pitch, just rhythm.</p>
-<p><strong>Exercise:</strong> Play a 16th-note scratch pattern. Accent beat 1 and the "&" of 2. This is the basic funk grid.</p>
-<p>Now add ONE real chord (E7) on beat 1 only. Scratch everything else. The contrast between the chord and the scratches creates the groove.</p>
-<div class="lp-callout">
-  <div class="lp-co-title">THE SECRET</div>
-  <p>Listen to James Brown's guitar players. They play the <em>space</em> between notes. The groove lives in the muting. A guitarist who can make people dance with one chord is worth more than someone who can play 100 chords without rhythm.</p>
-</div>`
-        }
+        { id:'16th-1', title:'16th Note Subdivision', difficulty:1, bpm:'60-100', duration:'5 min', source:'Berklee Phase 2', style:'rock', body:'<p>Count: 1-e-&-a. Play one note per subdivision. Accent beat 1, then "&"s, then "a"s.</p>' },
+        { id:'funk-1', title:'Scratch Muting — Funk Grid', difficulty:1, bpm:'70-110', duration:'8 min', source:'Bolton — Funk Guitar', style:'funk', body:'<p>Left hand lightly across strings. Pick = percussive "chk". 16th-note scratch pattern, accent 1 and & of 2.</p>' },
+        { id:'funk-2', title:'Funk Chord Stabs', difficulty:2, bpm:'80-110', duration:'8 min', source:'Bolton — Funk Guitar', style:'funk', body:'<p>Play E7 on beat 1, scratch the rest. Then add stabs on the "e" and "a". The groove lives in the muting.</p>' },
+        { id:'shuffle-1', title:'Shuffle Rhythm — Blues Feel', difficulty:1, bpm:'60-90', duration:'5 min', source:'Ganapes — Blues You Can Use', style:'blues', body:'<p>Swung 8th notes. Long-short-long-short. The shuffle is the heartbeat of blues. Play on open A string first, then apply to chords.</p>' },
+        { id:'strum-1', title:'Basic Strumming — D DU UDU', difficulty:1, bpm:'60-100', duration:'5 min', source:'General knowledge', style:'rock', body:'<p>The universal strum pattern. Down, Down-Up, Up-Down-Up. Works for thousands of songs. G-C-D-Em loop.</p>' },
+        { id:'bossa-1', title:'Bossa Nova Rhythm Pattern', difficulty:2, bpm:'60-90', duration:'8 min', source:'Donat — Bossa Nova', style:'latin', body:'<p>The subtle syncopation. Thumb plays bass on beats 1 and 3, fingers comp the off-beats. Gentle, not aggressive.</p>' },
+        { id:'reggae-1', title:'Reggae Skank — Offbeat Muting', difficulty:2, bpm:'70-100', duration:'5 min', source:'General knowledge', style:'reggae', body:'<p>Play chords ONLY on beats 2 and 4. Mute on 1 and 3. The guitar becomes a percussion instrument.</p>' },
+        { id:'metronome-1', title:'Metronome Displacement', difficulty:2, bpm:'60-80', duration:'8 min', source:'Jamie Andreas', style:'rock', body:'<p>Set metronome to click on beats 2 and 4 only (not 1 and 3). Forces you to internalize the pulse. Advanced: metronome clicks on the "and" of each beat.</p>' }
       ]
     },
-
     {
       id: 'scales',
       title: 'Scales',
       icon: '🎵',
-      description: 'Major, minor, pentatonic patterns. 5-pattern system. Sequences and melodic patterns.',
+      styles: ['rock','blues','jazz','metal','classical','flamenco'],
       drills: [
-        {
-          id: 'pentatonic-box1',
-          title: 'Minor Pentatonic — Box 1',
-          difficulty: 1,
-          bpm: '60-100',
-          duration: '5 min',
-          source: 'Guitar Exercises For Dummies',
-          body: `<p>The minor pentatonic is the most used scale in rock, blues, and pop. Box 1 (also called "Position 1") is where everyone starts.</p>
-<p>In A minor, Box 1 sits at fret 5:</p>
-<p>• String 6: frets 5-8<br>
-• String 5: frets 5-7<br>
-• String 4: frets 5-7<br>
-• String 3: frets 5-7<br>
-• String 2: frets 5-8<br>
-• String 1: frets 5-8</p>
-<p>Play it ascending, then descending. Then play it with a metronome, one note per beat. Then two notes per beat.</p>
-<p><strong>The key:</strong> This one shape works over ANY minor key. Move it to fret 3 for G minor, fret 7 for B minor. The shape is the same — only the position changes.</p>`
-        },
-        {
-          id: 'major-scale-pos1',
-          title: 'Major Scale — Position 1',
-          difficulty: 2,
-          bpm: '50-80',
-          duration: '8 min',
-          source: 'Guitar Aerobics (Tue)',
-          body: `<p>The major scale is the foundation of Western music. Every chord, every key, every progression comes from this pattern.</p>
-<p>In C major, Position 1 starts at fret 8:</p>
-<p>• String 6: frets 8-10<br>
-• String 5: frets 7-8-10<br>
-• String 4: frets 7-8-10<br>
-• String 3: frets 7-9-10<br>
-• String 2: frets 8-10<br>
-• String 1: frets 7-8-10</p>
-<p>Play it slowly. Listen to the <em>sound</em> — this is what "happy" and "resolved" sounds like. Compare it to the minor pentatonic. Feel the difference in mood.</p>
-<p><strong>Next:</strong> Play the same pattern starting on different frets. Fret 3 = G major. Fret 5 = A major. You're learning keys, not just patterns.</p>`
-        },
-        {
-          id: 'scale-sequences',
-          title: 'Scale Sequences — Patterns Within Patterns',
-          difficulty: 3,
-          bpm: '50-80',
-          duration: '10 min',
-          source: 'Guitar Exercises For Dummies',
-          body: `<p>Playing a scale up and down is like reciting the alphabet. Sequences are like forming words — they're what make scales musical.</p>
-<p><strong>3rds:</strong> Play scale notes in intervals of 3rds: 1-3, 2-4, 3-5, 4-6, 5-7, 6-8, 7-9, then descend. This creates a harmonised melody.</p>
-<p><strong>4ths:</strong> Same idea, in 4ths: 1-4, 2-5, 3-6, etc.</p>
-<p><strong>Groups of 4:</strong> Play notes 1-2-3-4, then 2-3-4-5, then 3-4-5-6. This creates a "running" effect used in rock and metal solos.</p>
-<div class="lp-callout">
-  <div class="lp-co-title">WHY SEQUENCES MATTER</div>
-  <p>Scales are vocabulary. Sequences are sentences. You don't speak by listing words — you combine them into phrases. Same with music. Learn the scale, then learn to <em>say something</em> with it.</p>
-</div>`
-        }
+        { id:'pent-1', title:'Minor Pentatonic — Box 1', difficulty:1, bpm:'60-100', duration:'5 min', source:'Exercises For Dummies', style:'blues', body:'<p>A minor pentatonic at fret 5. The rock/blues staple. Up and down, one note per beat.</p>' },
+        { id:'pent-2', title:'Minor Pentatonic — All 5 Boxes', difficulty:2, bpm:'60-80', duration:'12 min', source:'Exercises For Dummies', style:'blues', body:'<p>5 moveable shapes covering the entire neck. Learn all 5 = fretboard freedom in any minor key.</p>' },
+        { id:'major-1', title:'Major Scale — Position 1', difficulty:1, bpm:'50-80', duration:'5 min', source:'Guitar Aerobics (Tue)', style:'classical', body:'<p>C major at fret 8. The foundation of Western music. Slow, listen to the sound.</p>' },
+        { id:'major-2', title:'Major Scale — 3 Notes Per String', difficulty:2, bpm:'50-80', duration:'10 min', source:'Stetina — Speed Mechanics', style:'metal', body:'<p>7 positions, 3 notes each string. The metal/rock scale pattern. Enables fast runs.</p>' },
+        { id:'modes-1', title:'Modes — Dorian (C to C on white keys)', difficulty:2, bpm:'50-70', duration:'8 min', source:'Belkadi — Advanced Scales', style:'jazz', body:'<p>Play D Dorian = C major starting on D. Hear the minor-with-bright-6th sound. Santana\'s signature.</p>' },
+        { id:'modes-2', title:'Modes — Mixolydian (G to G on white keys)', difficulty:2, bpm:'50-70', duration:'8 min', source:'Belkadi — Advanced Scales', style:'blues', body:'<p>G Mixolydian = C major starting on G. Bluesy major sound. Beatles, classic rock.</p>' },
+        { id:'harm-min-1', title:'Harmonic Minor Scale', difficulty:2, bpm:'50-70', duration:'8 min', source:'Belkadi — Advanced Scales', style:'flamenco', body:'<p>Minor scale with raised 7th. The exotic, Middle Eastern, flamenco sound. Essential for classical and metal.</p>' },
+        { id:'phrygian-1', title:'Phrygian Mode — Spanish Sound', difficulty:2, bpm:'50-70', duration:'8 min', source:'Belkadi — Advanced Scales', style:'flamenco', body:'<p>E Phrygian = C major starting on E. The flat 2nd = Spanish/flamenco. Metal uses it heavily too.</p>' },
+        { id:'blues-scale-1', title:'Blues Scale — Adding the b5', difficulty:1, bpm:'60-90', duration:'5 min', source:'Ganapes — Blues You Can Use', style:'blues', body:'<p>Minor pentatonic + b5 (the "blue note"). Adds the tension that makes blues sound like blues.</p>' },
+        { id:'dim-scale-1', title:'Diminished Scale — Whole-Half', difficulty:3, bpm:'40-60', duration:'10 min', source:'Belkadi — Advanced Scales', style:'jazz', body:'<p>Alternating whole and half steps. The jazz improvisation secret weapon over dominant 7th chords.</p>' }
       ]
     },
-
     {
       id: 'arpeggios',
       title: 'Arpeggios',
       icon: '🔺',
-      description: 'Major, minor, dominant 7th arpeggios. Breaking chords into melody.',
+      styles: ['rock','jazz','classical','metal'],
       drills: [
-        {
-          id: 'major-arpeggio',
-          title: 'Major Arpeggio — 3 Notes',
-          difficulty: 1,
-          bpm: '60-90',
-          duration: '5 min',
-          source: 'Guitar Aerobics (Thu)',
-          body: `<p>An arpeggio is a chord played one note at a time. A major arpeggio uses 3 notes: Root, 3rd, 5th.</p>
-<p>In C major: C (fret 8, string 6) → E (fret 7, string 5) → G (fret 5, string 4)</p>
-<p>Play each note individually, letting each ring. Then move to the next octave position. This is what creates the "flowing" sound in fingerpicking and lead guitar.</p>
-<p><strong>Exercise:</strong> Play C major arpeggio ascending through 2 octaves, then descend. Each note should ring clearly into the next.</p>`
-        },
-        {
-          id: 'dom7-arpeggio',
-          title: 'Dominant 7th Arpeggio',
-          difficulty: 2,
-          bpm: '50-80',
-          duration: '8 min',
-          source: 'Guitar Exercises For Dummies',
-          body: `<p>The dominant 7th arpeggio adds the flatted 7th to the major triad: Root-3rd-5th-b7th. This is the sound of blues, funk, and jazz.</p>
-<p>In A7: A → C# → E → G</p>
-<p>Play it across 4 strings. Notice the <em>tension</em> — the b7th wants to resolve down. This tension is the engine of blues and jazz. The chord wants to move somewhere.</p>
-<p><strong>Next:</strong> Play the arpeggio over a static A7 vamp. Improvise by mixing the arpeggio notes in different orders. This is the beginning of chord-based soloing.</p>`
-        }
+        { id:'maj-arp', title:'Major Arpeggio — 3 Notes', difficulty:1, bpm:'60-90', duration:'5 min', source:'Guitar Aerobics (Thu)', style:'rock', body:'<p>Root-3rd-5th. C-E-G. Play each note individually, let ring. 2 octaves.</p>' },
+        { id:'min-arp', title:'Minor Arpeggio — 3 Notes', difficulty:1, bpm:'60-90', duration:'5 min', source:'Guitar Aerobics (Thu)', style:'rock', body:'<p>Root-b3-5th. A-C-E. The sad version. Same shape, different interval.</p>' },
+        { id:'dom7-arp', title:'Dominant 7th Arpeggio', difficulty:2, bpm:'50-80', duration:'8 min', source:'Exercises For Dummies', style:'blues', body:'<p>Root-3rd-5th-b7th. A-C#-E-G. The blues/funk sound. Tension wants to resolve.</p>' },
+        { id:'maj7-arp', title:'Major 7th Arpeggio', difficulty:2, bpm:'50-80', duration:'8 min', source:'Exercises For Dummies', style:'jazz', body:'<p>Root-3rd-5th-7th. C-E-G-B. Dreamy, jazzy. The "elevator music" arpeggio.</p>' },
+        { id:'dim-arp', title:'Diminished 7th Arpeggio', difficulty:3, bpm:'40-60', duration:'8 min', source:'Fowler — Patterns', style:'jazz', body:'<p>Root-b3-b5-bb7. Symmetrical — same shape every 3 frets. Can resolve to 4 different keys.</p>' },
+        { id:'sweep-arp', title:'Sweep Arpeggio — Major (5 strings)', difficulty:3, bpm:'40-60', duration:'10 min', source:'Stetina — Speed Mechanics', style:'metal', body:'<p>Full sweep across 5 strings. Pick drags down then up. Each note rings individually.</p>' },
+        { id:'classical-arp', title:'Classical Arpeggio Patterns — PIMA', difficulty:2, bpm:'60-80', duration:'8 min', source:'Parkening Vol 1', style:'classical', body:'<p>Right hand arpeggio patterns: P-I-M-A, P-I-M-A-M-I. The classical guitar tone engine.</p>' }
       ]
     },
-
     {
       id: 'speed',
       title: 'Speed Mechanics',
       icon: '⚡',
-      description: 'Building speed through technique, not force. Legato, tapping, string skipping.',
+      styles: ['metal','rock','jazz'],
       drills: [
-        {
-          id: 'legato-basic',
-          title: 'Legato — Hammer-ons and Pull-offs',
-          difficulty: 2,
-          bpm: '60-100',
-          duration: '8 min',
-          source: 'Troy Stetina — Speed Mechanics',
-          body: `<p>Legato means "smooth and connected." Instead of picking every note, you use your fretting hand to sound notes via hammer-ons and pull-offs.</p>
-<p><strong>Exercise:</strong> On string 1:<br>
-• Pick fret 5 (index)<br>
-• Hammer-on to fret 7 (ring) — don't pick, let the hammer sound the note<br>
-• Pull-off from fret 7 back to fret 5 — snap the string slightly as you lift</p>
-<p>Repeat. The goal: the hammer-on and pull-off should be the SAME volume as the picked note. If they're quieter, you're not hitting/pulling hard enough.</p>
-<div class="lp-callout">
-  <div class="lp-co-title">THE SPEED SECRET</div>
-  <p>Legato is faster than alternate picking because the picking hand rests. Most shredders use a mix: pick the first note of each string, legato the rest. This is how Satriani and Joe Pass play fast lines with minimal picking effort.</p>
-</div>`
-        },
-        {
-          id: 'tapping-intro',
-          title: 'Tapping — Introduction',
-          difficulty: 3,
-          bpm: '50-80',
-          duration: '10 min',
-          source: 'Satriani — Guitar Secrets',
-          body: `<p>Tapping extends your fretting hand's range by using your picking hand to hammer-on notes higher on the neck.</p>
-<p><strong>Basic pattern:</strong> On string 1:<br>
-• Fret 5 (left index) — pick<br>
-• Fret 12 (right middle finger) — tap and pull-off<br>
-• Fret 8 (left ring) — sounds from the pull-off</p>
-<p>The sequence is: pick → tap → pull-off → pull-off. Three notes with one pick stroke.</p>
-<p><strong>Key technique:</strong> The tapping finger should snap off the string (not lift gently) to create enough volume for the pull-off chain to work.</p>
-<p><strong>Next:</strong> Move the pattern across strings. Then try tapping arpeggio patterns — this is how Eddie Van Halen revolutionised guitar.</p>`
-        }
+        { id:'trem-1', title:'Tremolo Picking — Single Note', difficulty:2, bpm:'100-200', duration:'5 min', source:'Stetina — Speed Mechanics', style:'metal', body:'<p>Pick one note as fast as you can, evenly. Start slow, increase. The foundation of speed.</p>' },
+        { id:'seq-1', title:'Scale Sequences — Groups of 4', difficulty:2, bpm:'50-80', duration:'8 min', source:'Exercises For Dummies', style:'rock', body:'<p>1-2-3-4, 2-3-4-5, 3-4-5-6. Running effect used in rock and metal solos.</p>' },
+        { id:'skip-1', title:'String Skipping — Pentatonic', difficulty:3, bpm:'40-70', duration:'10 min', source:'Guitar Aerobics (Tue)', style:'rock', body:'<p>Play pentatonic notes but skip strings. Creates wide interval leaps. Sounds more interesting than linear runs.</p>' },
+        { id:'tap-1', title:'Tapping — Introduction', difficulty:3, bpm:'50-80', duration:'10 min', source:'Satriani — Guitar Secrets', style:'rock', body:'<p>Right hand taps high notes, pull-off chain. Pick→tap→pull-off→pull-off. Three notes, one pick stroke.</p>' },
+        { id:'tap-2', title:'Tapping — Arpeggio Patterns', difficulty:3, bpm:'40-70', duration:'12 min', source:'Satriani — Guitar Secrets', style:'metal', body:'<p>Tapped arpeggios across strings. Eddie Van Halen\'s signature. Tap the 5th, pull to root, pull to 3rd.</p>' },
+        { id:'speed-ramp', title:'Speed Ramp — Progressive BPM', difficulty:2, bpm:'60-140', duration:'10 min', source:'Guitar Aerobics', style:'metal', body:'<p>Start a pattern at 60 BPM. Play it clean 3 times. Bump to 65. Repeat. Find your ceiling. That\'s your current max. Practice 10 BPM below it.</p>' }
+      ]
+    },
+    {
+      id: 'styles',
+      title: 'Style Techniques',
+      icon: '🎭',
+      styles: ['flamenco','classical','slide','brazilian','gypsy','celtic'],
+      drills: [
+        { id:'rasg-1', title:'Rasgueado — Flamenco Strum', difficulty:2, bpm:'60-90', duration:'8 min', source:'General knowledge', style:'flamenco', body:'<p>Fingers fire outward in rapid succession: pinky-ring-middle-index. Creates a explosive, percussive strum. The flamenco signature.</p>' },
+        { id:'golpe-1', title:'Golpe — Percussive Tap', difficulty:2, bpm:'60-80', duration:'5 min', source:'General knowledge', style:'flamenco', body:'<p>Strike the guitar top with ring finger while playing. Adds percussion to the guitar. Essential flamenco technique.</p>' },
+        { id:'alzap-1', title:'Alzapua — Thumb Technique', difficulty:3, bpm:'50-80', duration:'8 min', source:'General knowledge', style:'flamenco', body:'<p>Thumb plays rapid single-note runs using the flesh and nail. Powerful, driving sound. Advanced flamenco.</p>' },
+        { id:'slide-1', title:'Slide Guitar — Open D Basics', difficulty:2, bpm:'—', duration:'8 min', source:'Hamburger — Slide Basics', style:'slide', body:'<p>Tune to Open D (D-A-D-F#-A-D). Place slide on ring finger. Light touch, right over the fret. Let it sing.</p>' },
+        { id:'slide-2', title:'Slide Guitar — Standard Tuning', difficulty:2, bpm:'—', duration:'8 min', source:'Hamburger — Slide Basics', style:'slide', body:'<p>Slide in standard tuning. Target chord tones. Mute behind the slide with index finger.</p>' },
+        { id:'pima-1', title:'Classical Right Hand — PIMA Patterns', difficulty:1, bpm:'60-80', duration:'5 min', source:'Parkening Vol 1', style:'classical', body:'<p>P=thumb, I=index, M=middle, A=ring. Basic arpeggio: P-I-M-A-M-I. Classical guitar tone starts here.</p>' },
+        { id:'pima-2', title:'Classical — Rest Stroke vs Free Stroke', difficulty:1, bpm:'—', duration:'5 min', source:'Parkening Vol 1', style:'classical', body:'<p>Rest stroke: finger follows through to rest on next string. Loud, full tone. Free stroke: finger clears the string. Lighter, for arpeggios.</p>' },
+        { id:'gypsy-pick', title:'Gypsy Jazz — La Pompe Rhythm', difficulty:2, bpm:'80-140', duration:'8 min', source:'Jorgenson — Gypsy Jazz', style:'gypsy', body:'<p>Percussive swing rhythm. Down-up with a flick. Accents on 2 and 4. The heartbeat of Gypsy Jazz.</p>' },
+        { id:'celtic-1', title:'Celtic Fingerstyle — DADGAD Tuning', difficulty:2, bpm:'60-80', duration:'8 min', source:'Weiser — Celtic Guitar', style:'celtic', body:'<p>DADGAD tuning creates open, droning sound. Celtic music lives in the drone. Play melody over open strings.</p>' }
       ]
     }
   ]
 };
 
-// Register globally
 window.DOING = DOING;
