@@ -85,7 +85,7 @@ const DOING = {
         { id:'harm-min-1', title:'Harmonic Minor Scale', difficulty:2, bpm:'50-70', duration:'8 min', source:'Belkadi — Advanced Scales', style:'flamenco', body:'<p>Minor scale with raised 7th. The exotic, Middle Eastern, flamenco sound. Essential for classical and metal.</p>' },
         { id:'phrygian-1', title:'Phrygian Mode — Spanish Sound', difficulty:2, bpm:'50-70', duration:'8 min', source:'Belkadi — Advanced Scales', style:'flamenco', body:'<p>E Phrygian = C major starting on E. The flat 2nd = Spanish/flamenco. Metal uses it heavily too.</p>' },
         { id:'blues-scale-1', title:'Blues Scale — Adding the b5', difficulty:1, bpm:'60-90', duration:'5 min', source:'Ganapes — Blues You Can Use', style:'blues', body:'<p>Minor pentatonic + b5 (the "blue note"). Adds the tension that makes blues sound like blues.</p>' },
-        { id:'dim-scale-1', title:'Diminished Scale — Whole-Half', difficulty:3, bpm:'40-60', duration:'10 min', source:'Belkadi — Advanced Scales', style:'jazz', body:'<p>Alternating whole and half steps. The jazz improvisation secret weapon over dominant 7th chords.</p>' }
+        { id:'dim-scale-1', title:'Diminished Scale — Whole-Half', difficulty:4, bpm:'40-60', duration:'10 min', source:'Belkadi — Advanced Scales', style:'jazz', body:'<p>Alternating whole and half steps. The jazz improvisation secret weapon over dominant 7th chords.</p>' }
       ]
     },
     {
@@ -98,7 +98,7 @@ const DOING = {
         { id:'min-arp', title:'Minor Arpeggio — 3 Notes', difficulty:1, bpm:'60-90', duration:'5 min', source:'Guitar Aerobics (Thu)', style:'rock', body:'<p>Root-b3-5th. A-C-E. The sad version. Same shape, different interval.</p>' },
         { id:'dom7-arp', title:'Dominant 7th Arpeggio', difficulty:2, bpm:'50-80', duration:'8 min', source:'Exercises For Dummies', style:'blues', body:'<p>Root-3rd-5th-b7th. A-C#-E-G. The blues/funk sound. Tension wants to resolve.</p>' },
         { id:'maj7-arp', title:'Major 7th Arpeggio', difficulty:2, bpm:'50-80', duration:'8 min', source:'Exercises For Dummies', style:'jazz', body:'<p>Root-3rd-5th-7th. C-E-G-B. Dreamy, jazzy. The "elevator music" arpeggio.</p>' },
-        { id:'dim-arp', title:'Diminished 7th Arpeggio', difficulty:3, bpm:'40-60', duration:'8 min', source:'Fowler — Patterns', style:'jazz', body:'<p>Root-b3-b5-bb7. Symmetrical — same shape every 3 frets. Can resolve to 4 different keys.</p>' },
+        { id:'dim-arp', title:'Diminished 7th Arpeggio', difficulty:4, bpm:'40-60', duration:'8 min', source:'Fowler — Patterns', style:'jazz', body:'<p>Root-b3-b5-bb7. Symmetrical — same shape every 3 frets. Can resolve to 4 different keys.</p>' },
         { id:'sweep-arp', title:'Sweep Arpeggio — Major (5 strings)', difficulty:3, bpm:'40-60', duration:'10 min', source:'Stetina — Speed Mechanics', style:'metal', body:'<p>Full sweep across 5 strings. Pick drags down then up. Each note rings individually.</p>' },
         { id:'classical-arp', title:'Classical Arpeggio Patterns — PIMA', difficulty:2, bpm:'60-80', duration:'8 min', source:'Parkening Vol 1', style:'classical', body:'<p>Right hand arpeggio patterns: P-I-M-A, P-I-M-A-M-I. The classical guitar tone engine.</p>' }
       ]
@@ -125,7 +125,7 @@ const DOING = {
       drills: [
         { id:'rasg-1', title:'Rasgueado — Flamenco Strum', difficulty:2, bpm:'60-90', duration:'8 min', source:'General knowledge', style:'flamenco', body:'<p>Fingers fire outward in rapid succession: pinky-ring-middle-index. Creates a explosive, percussive strum. The flamenco signature.</p>' },
         { id:'golpe-1', title:'Golpe — Percussive Tap', difficulty:2, bpm:'60-80', duration:'5 min', source:'General knowledge', style:'flamenco', body:'<p>Strike the guitar top with ring finger while playing. Adds percussion to the guitar. Essential flamenco technique.</p>' },
-        { id:'alzap-1', title:'Alzapua — Thumb Technique', difficulty:3, bpm:'50-80', duration:'8 min', source:'General knowledge', style:'flamenco', body:'<p>Thumb plays rapid single-note runs using the flesh and nail. Powerful, driving sound. Advanced flamenco.</p>' },
+        { id:'alzap-1', title:'Alzapua — Thumb Technique', difficulty:4, bpm:'50-80', duration:'8 min', source:'General knowledge', style:'flamenco', body:'<p>Thumb plays rapid single-note runs using the flesh and nail. Powerful, driving sound. Advanced flamenco.</p>' },
         { id:'slide-1', title:'Slide Guitar — Open D Basics', difficulty:2, bpm:'—', duration:'8 min', source:'Hamburger — Slide Basics', style:'slide', body:'<p>Tune to Open D (D-A-D-F#-A-D). Place slide on ring finger. Light touch, right over the fret. Let it sing.</p>' },
         { id:'slide-2', title:'Slide Guitar — Standard Tuning', difficulty:2, bpm:'—', duration:'8 min', source:'Hamburger — Slide Basics', style:'slide', body:'<p>Slide in standard tuning. Target chord tones. Mute behind the slide with index finger.</p>' },
         { id:'pima-1', title:'Classical Right Hand — PIMA Patterns', difficulty:1, bpm:'60-80', duration:'5 min', source:'Parkening Vol 1', style:'classical', body:'<p>P=thumb, I=index, M=middle, A=ring. Basic arpeggio: P-I-M-A-M-I. Classical guitar tone starts here.</p>' },
