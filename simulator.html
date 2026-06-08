@@ -7,6 +7,60 @@
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link href="assets/css/foundation.css" rel="stylesheet">
 <style>
+/* ═══ THEME SYSTEM ═══ */
+:root, [data-theme="standard"]{
+  --bg:#0d0b08;--panel:#141210;--card:#1a1714;
+  --gold:#d4af69;--amber:#e8a020;--ember:#c45a20;
+  --text:#e8dcc8;--dim:#6a5e4e;--bright:#f5edd8;
+  --border:#252220;
+  --btn:#2a2622;
+  --heading-font:'Cinzel',serif;
+  --node-scale:1;
+  --label-size:9px;
+  --sublabel-size:7px;
+  --spine-width:3px;
+}
+[data-theme="sparks"]{
+  --bg:#FFF8F0;--panel:#FFFFFF;--card:#FFF3E6;
+  --gold:#FF8C42;--amber:#4ECDC4;--ember:#FF6B6B;
+  --text:#2D3436;--dim:#636E72;--bright:#2D3436;
+  --border:#F0E0D0;
+  --btn:#FFE8D6;
+  --heading-font:'DM Sans',sans-serif;
+  --node-scale:1.3;
+  --label-size:11px;
+  --sublabel-size:9px;
+  --spine-width:4px;
+}
+[data-theme="flames"]{
+  --bg:#F8F5F0;--panel:#FFFFFF;--card:#F0EBE3;
+  --gold:#E17055;--amber:#00B894;--ember:#D63031;
+  --text:#2D3436;--dim:#636E72;--bright:#2D3436;
+  --border:#DDD5C8;
+  --btn:#F0E6D8;
+  --heading-font:'Cinzel',serif;
+  --node-scale:1.15;
+  --label-size:10px;
+  --sublabel-size:8px;
+  --spine-width:3.5px;
+}
+
+/* Kids overrides */
+[data-theme="sparks"] .mn-ring{stroke-width:2.5 !important;}
+[data-theme="sparks"] .mn-label{font-size:11px !important;fill:var(--text) !important;}
+[data-theme="sparks"] .mn-sublabel{font-size:9px !important;fill:var(--dim) !important;}
+[data-theme="sparks"] body,[data-theme="sparks"] .map-svg rect{fill:var(--bg) !important;}
+[data-theme="sparks"] .bot{background:var(--panel) !important;border-right-color:var(--border) !important;}
+[data-theme="sparks"] .bt .bl{color:var(--text) !important;}
+[data-theme="sparks"] .bt.on{border-left-color:var(--gold) !important;}
+[data-theme="sparks"] .mn-ring{fill:var(--panel) !important;}
+
+[data-theme="flames"] .mn-label{font-size:10px !important;fill:var(--text) !important;}
+[data-theme="flames"] .mn-sublabel{font-size:8px !important;fill:var(--dim) !important;}
+[data-theme="flames"] body,[data-theme="flames"] .map-svg rect{fill:var(--bg) !important;}
+[data-theme="flames"] .bot{background:var(--panel) !important;border-right-color:var(--border) !important;}
+[data-theme="flames"] .mn-ring{fill:var(--panel) !important;}
+
 :root{
   --bg:#0d0b08;--panel:#141210;--card:#1a1714;
   --gold:#d4af69;--amber:#e8a020;--ember:#c45a20;
@@ -204,6 +258,11 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;dis
 <div class="top">
   <span class="top-title">The Hearth</span>
   <span class="top-spacer"></span>
+  <select id="mode-select" onchange="setTheme(this.value)" style="background:var(--btn);color:var(--text);border:1px solid var(--border);border-radius:4px;padding:3px 8px;font-family:inherit;font-size:0.65rem;cursor:pointer">
+    <option value="standard">🏰 Standard</option>
+    <option value="flames">⚡ Young Flames (8-12)</option>
+    <option value="sparks">🌟 Little Sparks (5-8)</option>
+  </select>
   <span class="top-stat">🔥 <span class="v">7d</span></span>
   <span class="top-stat"><span class="v">142</span>h</span>
   <span class="top-stat">🪙 <span class="v">47</span></span>
@@ -598,7 +657,25 @@ function enterNode() {
   else if (data.action === 'hearth') showHearth();
 }
 
-// Levels start dark — nothing complete until completed
+// ═══ THEME SYSTEM ═══
+function setTheme(mode) {
+  document.documentElement.setAttribute('data-theme', mode);
+  localStorage.setItem('hearth-theme', mode);
+  // Update SVG background
+  const svgBg = document.querySelector('.map-svg rect');
+  if (svgBg) svgBg.style.fill = 'var(--bg)';
+}
+// Restore saved theme
+(function(){
+  const saved = localStorage.getItem('hearth-theme');
+  if (saved) {
+    document.documentElement.setAttribute('data-theme', saved);
+    const sel = document.getElementById('mode-select');
+    if (sel) sel.value = saved;
+  }
+})();
+
+// Legacy compat
 
 // Legacy compat
 function nT(id){ showNodeInfo(id); if(id==='foundation') showFoundation(); }
