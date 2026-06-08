@@ -90,7 +90,8 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;dis
 
 /* === MANDALA MAP === */
 .map{align-items:center;justify-content:center;padding:8px;position:relative;}
-.map-wrap{width:100%;max-width:480px;position:relative;margin:0 auto;}
+.map-wrap{width:100%;max-width:480px;max-height:100%;position:relative;margin:0 auto;display:flex;align-items:center;justify-content:center;}
+.map-svg{width:100%;height:auto;max-height:calc(100vh - 100px);}
 .map-svg{width:100%;height:auto;display:block;}
 
 /* Node styling */
