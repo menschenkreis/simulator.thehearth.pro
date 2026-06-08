@@ -41,18 +41,29 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;dis
 
 /* Node styling */
 .mn-g{cursor:pointer;transition:filter 0.3s,transform 0.2s;}
-.mn-g:hover{filter:brightness(1.4) drop-shadow(0 0 10px rgba(212,175,105,0.5));}
+.mn-g:hover{filter:brightness(1.4) drop-shadow(0 0 12px rgba(212,175,105,0.5));}
 .mn-g:active{filter:brightness(1.2);}
-.mn-ring{fill:none;stroke-width:1.5;transition:stroke 0.3s;}
-.mn-g:hover .mn-ring{stroke:var(--gold);stroke-width:2;}
+.mn-ring{fill:none;stroke-width:2;transition:stroke 0.3s, stroke-width 0.3s;}
+.mn-g:hover .mn-ring{stroke:var(--gold);stroke-width:2.5;}
 .mn-dot{transition:r 0.3s;}
-.mn-g:hover .mn-dot{r:6;}
-.mn-label{fill:var(--dim);font-family:'JetBrains Mono',monospace;font-size:7px;letter-spacing:0.1em;text-anchor:middle;pointer-events:none;transition:fill 0.3s;}
+.mn-g:hover .mn-dot{r:8;}
+.mn-icon{font-size:18px;pointer-events:none;}
+.mn-label{fill:var(--dim);font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:0.12em;text-anchor:middle;pointer-events:none;transition:fill 0.3s;}
 .mn-g:hover .mn-label{fill:var(--gold);}
+.mn-sublabel{fill:var(--dim);font-family:'DM Sans',sans-serif;font-size:6px;letter-spacing:0.05em;text-anchor:middle;pointer-events:none;opacity:0.5;transition:opacity 0.3s;}
+.mn-g:hover .mn-sublabel{opacity:0.8;}
+/* Node states */
+.mn-g.unlocked .mn-ring{stroke:var(--gold);}
+.mn-g.unlocked .mn-label{fill:var(--text);}
+.mn-g.locked .mn-ring{stroke:#2a2520;stroke-dasharray:3 3;}
+.mn-g.locked .mn-label{fill:#3a3530;}
+.mn-g.locked .mn-icon{opacity:0.3;}
+.mn-g.active .mn-ring{stroke:var(--amber);stroke-width:3;filter:url(#glow);}
 
 /* Connection curves */
-.mn-conn{fill:none;stroke:var(--gold);stroke-width:1;opacity:0.15;transition:opacity 0.5s;}
-.mn-conn.hl{opacity:0.6;stroke-width:1.5;}
+.mn-conn{fill:none;stroke:var(--gold);stroke-width:0.8;opacity:0.1;transition:opacity 0.5s;}
+.mn-conn.hl{opacity:0.5;stroke-width:1.2;}
+.mn-conn.journey{opacity:0.2;stroke-dasharray:4 4;}
 
 /* Mandala curves */
 .mandala{fill:none;stroke:var(--gold);opacity:0.06;transition:opacity 0.5s;}
@@ -63,24 +74,28 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;dis
 @keyframes pulse{0%,100%{opacity:0.06;r:8;}50%{opacity:0.12;r:10;}}
 
 /* Path toggle */
-.path-btns{display:flex;gap:6px;justify-content:center;margin-bottom:6px;flex-wrap:wrap;}
-.path-btn{
-  padding:4px 8px;font-family:'JetBrains Mono',monospace;font-size:0.55rem;
-  color:var(--dim);background:var(--btn);border:1px solid var(--border);border-radius:3px;
-  cursor:pointer;box-shadow:var(--ris);transition:all 0.1s;letter-spacing:0.05em;
-}
-.path-btn:hover{color:var(--text);}
-.path-btn:active,.path-btn.on{box-shadow:var(--bev);color:var(--gold);border-color:var(--gold);}
+.path-btns{display:none;/* Hidden — single journey path now */}
 
-/* Node info */
+/* Node info popup */
 .node-info{
-  background:var(--card);border:1px solid var(--border);border-radius:8px;
-  padding:12px 14px;margin:8px 12px;display:none;
+  background:var(--card);border:1px solid var(--border);border-radius:10px;
+  padding:14px 16px;margin:8px 12px;display:none;position:relative;
+  box-shadow:var(--ris);
 }
 .node-info.vis{display:block;}
-.node-info h4{font-family:'Cinzel',serif;color:var(--gold);font-size:0.82rem;margin-bottom:2px;}
-.node-info .ni-tag{font-family:'JetBrains Mono',monospace;font-size:0.5rem;color:var(--amber);letter-spacing:0.1em;margin-bottom:4px;}
-.node-info p{font-size:0.72rem;color:var(--text2);line-height:1.5;}
+.node-info .ni-close{position:absolute;top:8px;right:10px;font-size:0.8rem;color:var(--dim);cursor:pointer;}
+.node-info .ni-close:hover{color:var(--gold);}
+.node-info h4{font-family:'Cinzel',serif;color:var(--gold);font-size:0.88rem;margin-bottom:2px;}
+.node-info .ni-tag{font-family:'JetBrains Mono',monospace;font-size:0.5rem;color:var(--amber);letter-spacing:0.12em;margin-bottom:4px;text-transform:uppercase;}
+.node-info .ni-emoji{font-size:1.2rem;margin-right:6px;}
+.node-info p{font-size:0.72rem;color:var(--dim);line-height:1.6;}
+.node-info .ni-enter{
+  display:inline-block;margin-top:8px;padding:6px 14px;
+  font-family:'Cinzel',serif;font-size:0.72rem;font-weight:600;
+  color:var(--bg);background:linear-gradient(180deg,var(--gold),#b8963a);
+  border:none;border-radius:4px;cursor:pointer;
+}
+.node-info .ni-enter:active{opacity:0.8;}
 
 /* === LESSON === */
 .ls{padding:16px;}
@@ -195,195 +210,179 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;dis
       <svg class="map-svg" viewBox="0 0 600 600" xmlns="http://www.w3.org/2000/svg">
         <defs>
           <filter id="glow"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-          <radialGradient id="bgGrad"><stop offset="0%" stop-color="#1a1510" stop-opacity="0.3"/><stop offset="100%" stop-color="#0d0b08" stop-opacity="0"/></radialGradient>
+          <radialGradient id="bgGrad"><stop offset="0%" stop-color="#1a1510" stop-opacity="0.4"/><stop offset="100%" stop-color="#0d0b08" stop-opacity="0"/></radialGradient>
+          <radialGradient id="nodeGlow"><stop offset="0%" stop-color="#d4af69" stop-opacity="0.15"/><stop offset="100%" stop-color="#d4af69" stop-opacity="0"/></radialGradient>
         </defs>
 
         <!-- Background glow -->
         <circle cx="300" cy="300" r="280" fill="url(#bgGrad)"/>
 
-        <!-- MANDALA STRUCTURE — 6-fold symmetry matching the logo -->
+        <!-- MANDALA STRUCTURE — 8-fold octagonal -->
         <g class="mandala" id="mandala">
           <!-- Outer ring -->
-          <circle cx="300" cy="300" r="260" stroke-width="0.5" opacity="0.4"/>
-          <circle cx="300" cy="300" r="240" stroke-width="0.3" opacity="0.3"/>
+          <circle cx="300" cy="300" r="230" stroke-width="0.5" opacity="0.3"/>
+          <circle cx="300" cy="300" r="215" stroke-width="0.3" opacity="0.2"/>
           <!-- Inner rings -->
-          <circle cx="300" cy="300" r="180" stroke-width="0.5" opacity="0.3"/>
-          <circle cx="300" cy="300" r="120" stroke-width="0.5" opacity="0.3"/>
-          <circle cx="300" cy="300" r="60" stroke-width="0.5" opacity="0.3"/>
-          <!-- 6-fold radial lines -->
-          <line x1="300" y1="40" x2="300" y2="560" stroke-width="0.3" opacity="0.3"/>
-          <line x1="75" y1="170" x2="525" y2="430" stroke-width="0.3" opacity="0.3"/>
-          <line x1="75" y1="430" x2="525" y2="170" stroke-width="0.3" opacity="0.3"/>
-          <!-- Petal curves — 6 organic petals at 60° intervals -->
-          <path d="M300,180 Q360,220 360,300 Q360,380 300,420 Q240,380 240,300 Q240,220 300,180Z" opacity="0.4"/>
-          <path d="M300,180 Q360,220 360,300 Q360,380 300,420 Q240,380 240,300 Q240,220 300,180Z" opacity="0.4" transform="rotate(60 300 300)"/>
-          <path d="M300,180 Q360,220 360,300 Q360,380 300,420 Q240,380 240,300 Q240,220 300,180Z" opacity="0.4" transform="rotate(120 300 300)"/>
-          <path d="M300,180 Q360,220 360,300 Q360,380 300,420 Q240,380 240,300 Q240,220 300,180Z" opacity="0.4" transform="rotate(180 300 300)"/>
-          <path d="M300,180 Q360,220 360,300 Q360,380 300,420 Q240,380 240,300 Q240,220 300,180Z" opacity="0.4" transform="rotate(240 300 300)"/>
-          <path d="M300,180 Q360,220 360,300 Q360,380 300,420 Q240,380 240,300 Q240,220 300,180Z" opacity="0.4" transform="rotate(300 300 300)"/>
-          <!-- Outer swirl arcs -->
-          <path d="M300,60 Q340,100 360,140" stroke-width="0.8" opacity="0.5"/>
-          <path d="M300,60 Q340,100 360,140" stroke-width="0.8" opacity="0.5" transform="rotate(60 300 300)"/>
-          <path d="M300,60 Q340,100 360,140" stroke-width="0.8" opacity="0.5" transform="rotate(120 300 300)"/>
-          <path d="M300,60 Q340,100 360,140" stroke-width="0.8" opacity="0.5" transform="rotate(180 300 300)"/>
-          <path d="M300,60 Q340,100 360,140" stroke-width="0.8" opacity="0.5" transform="rotate(240 300 300)"/>
-          <path d="M300,60 Q340,100 360,140" stroke-width="0.8" opacity="0.5" transform="rotate(300 300 300)"/>
-          <!-- Inner petal details — swirl marks -->
-          <path d="M280,240 Q300,220 320,240" stroke-width="0.5" opacity="0.5"/>
-          <path d="M280,240 Q300,220 320,240" stroke-width="0.5" opacity="0.5" transform="rotate(60 300 300)"/>
-          <path d="M280,240 Q300,220 320,240" stroke-width="0.5" opacity="0.5" transform="rotate(120 300 300)"/>
-          <path d="M280,240 Q300,220 320,240" stroke-width="0.5" opacity="0.5" transform="rotate(180 300 300)"/>
-          <path d="M280,240 Q300,220 320,240" stroke-width="0.5" opacity="0.5" transform="rotate(240 300 300)"/>
-          <path d="M280,240 Q300,220 320,240" stroke-width="0.5" opacity="0.5" transform="rotate(300 300 300)"/>
+          <circle cx="300" cy="300" r="140" stroke-width="0.4" opacity="0.2"/>
+          <circle cx="300" cy="300" r="60" stroke-width="0.4" opacity="0.15"/>
+          <!-- 8-fold radial lines -->
+          <line x1="300" y1="70" x2="300" y2="530" stroke-width="0.3" opacity="0.15"/>
+          <line x1="137" y1="163" x2="463" y2="437" stroke-width="0.3" opacity="0.15"/>
+          <line x1="70" y1="300" x2="530" y2="300" stroke-width="0.3" opacity="0.15"/>
+          <line x1="137" y1="437" x2="463" y2="163" stroke-width="0.3" opacity="0.15"/>
+          <!-- 8 organic petals -->
+          <path d="M300,200 Q330,240 330,300 Q330,360 300,400 Q270,360 270,300 Q270,240 300,200Z" opacity="0.25" transform="rotate(0 300 300)"/>
+          <path d="M300,200 Q330,240 330,300 Q330,360 300,400 Q270,360 270,300 Q270,240 300,200Z" opacity="0.25" transform="rotate(45 300 300)"/>
+          <path d="M300,200 Q330,240 330,300 Q330,360 300,400 Q270,360 270,300 Q270,240 300,200Z" opacity="0.25" transform="rotate(90 300 300)"/>
+          <path d="M300,200 Q330,240 330,300 Q330,360 300,400 Q270,360 270,300 Q270,240 300,200Z" opacity="0.25" transform="rotate(135 300 300)"/>
+          <path d="M300,200 Q330,240 330,300 Q330,360 300,400 Q270,360 270,300 Q270,240 300,200Z" opacity="0.25" transform="rotate(180 300 300)"/>
+          <path d="M300,200 Q330,240 330,300 Q330,360 300,400 Q270,360 270,300 Q270,240 300,200Z" opacity="0.25" transform="rotate(225 300 300)"/>
+          <path d="M300,200 Q330,240 330,300 Q330,360 300,400 Q270,360 270,300 Q270,240 300,200Z" opacity="0.25" transform="rotate(270 300 300)"/>
+          <path d="M300,200 Q330,240 330,300 Q330,360 300,400 Q270,360 270,300 Q270,240 300,200Z" opacity="0.25" transform="rotate(315 300 300)"/>
+          <!-- Inner swirl details -->
+          <path d="M285,260 Q300,248 315,260" stroke-width="0.5" opacity="0.3" transform="rotate(0 300 300)"/>
+          <path d="M285,260 Q300,248 315,260" stroke-width="0.5" opacity="0.3" transform="rotate(45 300 300)"/>
+          <path d="M285,260 Q300,248 315,260" stroke-width="0.5" opacity="0.3" transform="rotate(90 300 300)"/>
+          <path d="M285,260 Q300,248 315,260" stroke-width="0.5" opacity="0.3" transform="rotate(135 300 300)"/>
+          <path d="M285,260 Q300,248 315,260" stroke-width="0.5" opacity="0.3" transform="rotate(180 300 300)"/>
+          <path d="M285,260 Q300,248 315,260" stroke-width="0.5" opacity="0.3" transform="rotate(225 300 300)"/>
+          <path d="M285,260 Q300,248 315,260" stroke-width="0.5" opacity="0.3" transform="rotate(270 300 300)"/>
+          <path d="M285,260 Q300,248 315,260" stroke-width="0.5" opacity="0.3" transform="rotate(315 300 300)"/>
         </g>
 
-        <!-- CONNECTIONS between nodes -->
+        <!-- CONNECTIONS — journey path around the octagon -->
         <g id="connections">
-          <!-- Journey path: center → spine nodes -->
-          <path class="mn-conn" data-p="journey" d="M300,300 Q300,230 300,140"/>
-          <path class="mn-conn" data-p="journey" d="M300,140 Q300,100 300,60"/>
-          <path class="mn-conn" data-p="journey" d="M300,60 Q360,60 420,100"/>
-          <path class="mn-conn" data-p="journey" d="M420,100 Q480,160 500,240"/>
-          <path class="mn-conn" data-p="journey" d="M500,240 Q500,320 500,380"/>
-          <path class="mn-conn" data-p="journey" d="M500,380 Q480,440 420,500"/>
-          <path class="mn-conn" data-p="journey" d="M420,500 Q360,530 300,540"/>
-          <path class="mn-conn" data-p="journey" d="M300,540 Q240,530 180,500"/>
-          <path class="mn-conn" data-p="journey" d="M180,500 Q120,440 100,380"/>
-          <path class="mn-conn" data-p="journey" d="M100,380 Q100,320 100,240"/>
-
-          <!-- Doing connections (left branch) -->
-          <path class="mn-conn" data-p="doing" d="M300,300 Q240,240 180,220"/>
-          <path class="mn-conn" data-p="doing" d="M180,220 Q140,260 100,240"/>
-          <path class="mn-conn" data-p="doing" d="M100,240 Q80,300 100,380"/>
-          <path class="mn-conn" data-p="doing" d="M100,380 Q140,420 180,440"/>
-
-          <!-- Knowing connections (right branch) -->
-          <path class="mn-conn" data-p="knowing" d="M300,300 Q360,240 420,220"/>
-          <path class="mn-conn" data-p="knowing" d="M420,220 Q460,260 500,240"/>
-          <path class="mn-conn" data-p="knowing" d="M500,240 Q520,300 500,380"/>
-          <path class="mn-conn" data-p="knowing" d="M500,380 Q460,420 420,440"/>
-
-          <!-- Cross connections -->
-          <path class="mn-conn" data-p="all" d="M180,440 Q240,480 300,540" opacity="0.08"/>
-          <path class="mn-conn" data-p="all" d="M420,440 Q360,480 300,540" opacity="0.08"/>
-          <path class="mn-conn" data-p="all" d="M180,220 Q240,180 300,140" opacity="0.08"/>
-          <path class="mn-conn" data-p="all" d="M420,220 Q360,180 300,140" opacity="0.08"/>
+          <!-- Center → Foundation -->
+          <path class="mn-conn journey hl" d="M300,300 L300,162"/>
+          <!-- Foundation → Doing -->
+          <path class="mn-conn journey hl" d="M300,162 Q380,140 447,198"/>
+          <!-- Doing → Knowing -->
+          <path class="mn-conn journey hl" d="M447,198 L498,300"/>
+          <!-- Knowing → Practice -->
+          <path class="mn-conn journey hl" d="M498,300 Q500,370 447,402"/>
+          <!-- Practice → Play -->
+          <path class="mn-conn journey hl" d="M447,402 Q400,460 300,438"/>
+          <!-- Play → Create -->
+          <path class="mn-conn journey hl" d="M300,438 Q220,460 153,402"/>
+          <!-- Create → Collab -->
+          <path class="mn-conn journey hl" d="M153,402 Q100,370 102,300"/>
+          <!-- Collab → Mastery -->
+          <path class="mn-conn journey hl" d="M102,300 Q100,230 153,198"/>
+          <!-- Mastery → Center (completion loop) -->
+          <path class="mn-conn journey" d="M153,198 Q220,150 300,300" opacity="0.08"/>
         </g>
 
         <!-- CENTER: The Hearth -->
-        <g class="mn-g" onclick="nT('hearth')">
-          <circle class="center-glow" cx="300" cy="300" r="8"/>
-          <circle cx="300" cy="300" r="16" fill="var(--gold)" opacity="0.9" filter="url(#glow)"/>
-          <text x="300" y="303" text-anchor="middle" fill="var(--bg)" font-size="12" font-weight="700">🔥</text>
-          <text class="mn-label" x="300" y="326" fill="var(--gold)" font-size="8">THE HEARTH</text>
+        <g class="mn-g" onclick="showNodeInfo('hearth')">
+          <circle cx="300" cy="300" r="40" fill="url(#nodeGlow)"/>
+          <circle class="center-glow" cx="300" cy="300" r="14"/>
+          <circle cx="300" cy="300" r="28" fill="#1a1510" stroke="#d4af69" stroke-width="1.5" filter="url(#glow)"/>
+          <text x="300" y="306" text-anchor="middle" font-size="20">🔥</text>
+          <text class="mn-label" x="300" y="340" fill="#d4af69" font-size="9" style="font-weight:600">THE HEARTH</text>
         </g>
 
-        <!-- JOURNEY NODES (top, going clockwise) -->
-        <!-- 1: Foundation (top center) -->
-        <g class="mn-g" onclick="nT('foundation')">
-          <circle class="mn-ring" cx="300" cy="140" r="22" stroke="var(--red)"/>
-          <circle class="mn-dot" cx="300" cy="140" r="4" fill="var(--red)"/>
-          <text class="mn-label" x="300" y="170">1 FOUNDATION</text>
+        <!-- NODE 1: FOUNDATIONS (top) -->
+        <!-- Position: top center, 300,70 → on the ring at r=230 from center -->
+        <g class="mn-g unlocked" onclick="showNodeInfo('foundation')" data-node="foundation">
+          <circle cx="300" cy="70" r="30" fill="url(#nodeGlow)"/>
+          <circle class="mn-ring" cx="300" cy="70" r="24" stroke="#d4af69"/>
+          <circle class="mn-dot" cx="300" cy="70" r="5" fill="#d4af69"/>
+          <text class="mn-label" x="300" y="74" fill="#d4af69" font-size="10">🏰</text>
+          <text class="mn-label" x="300" y="106">FOUNDATIONS</text>
+          <text class="mn-sublabel" x="300" y="115">where it begins</text>
         </g>
 
-        <!-- 2: Rhythm (top right) -->
-        <g class="mn-g" onclick="nT('rhythm')">
-          <circle class="mn-ring" cx="420" cy="100" r="18" stroke="var(--amber)"/>
-          <circle class="mn-dot" cx="420" cy="100" r="4" fill="var(--amber)"/>
-          <text class="mn-label" x="420" y="126">2 RHYTHM</text>
+        <!-- NODE 2: DOING (top-right) -->
+        <!-- 45° on r=230 ring → 300+230*sin(45), 300-230*cos(45) = 463,137 -->
+        <g class="mn-g unlocked" onclick="showNodeInfo('doing')" data-node="doing">
+          <circle cx="463" cy="137" r="26" fill="url(#nodeGlow)"/>
+          <circle class="mn-ring" cx="463" cy="137" r="22" stroke="#e8a020"/>
+          <circle class="mn-dot" cx="463" cy="137" r="5" fill="#e8a020"/>
+          <text class="mn-label" x="463" y="141" fill="#e8a020" font-size="10">✋</text>
+          <text class="mn-label" x="463" y="170">DOING</text>
+          <text class="mn-sublabel" x="463" y="179">play with your hands</text>
         </g>
 
-        <!-- 3: Chords (right upper) -->
-        <g class="mn-g" onclick="nT('chords')">
-          <circle class="mn-ring" cx="500" cy="240" r="18" stroke="var(--amber)"/>
-          <circle class="mn-dot" cx="500" cy="240" r="4" fill="var(--amber)"/>
-          <text class="mn-label" x="500" y="266">3 CHORDS</text>
+        <!-- NODE 3: KNOWING (right) -->
+        <!-- 90° on ring → 530,300 -->
+        <g class="mn-g unlocked" onclick="showNodeInfo('knowing')" data-node="knowing">
+          <circle cx="530" cy="300" r="26" fill="url(#nodeGlow)"/>
+          <circle class="mn-ring" cx="530" cy="300" r="22" stroke="#e8a020"/>
+          <circle class="mn-dot" cx="530" cy="300" r="5" fill="#e8a020"/>
+          <text class="mn-label" x="530" y="304" fill="#e8a020" font-size="10">📖</text>
+          <text class="mn-label" x="530" y="333">KNOWING</text>
+          <text class="mn-sublabel" x="530" y="342">understand the why</text>
         </g>
 
-        <!-- 4: Scales (right lower) -->
-        <g class="mn-g" onclick="nT('scales')">
-          <circle class="mn-ring" cx="500" cy="380" r="18" stroke="var(--amber)"/>
-          <circle class="mn-dot" cx="500" cy="380" r="4" fill="var(--amber)"/>
-          <text class="mn-label" x="500" y="406">4 SCALES</text>
+        <!-- NODE 4: PRACTICE (bottom-right) -->
+        <!-- 135° → 463,463 -->
+        <g class="mn-g unlocked" onclick="showNodeInfo('practice')" data-node="practice">
+          <circle cx="463" cy="463" r="26" fill="url(#nodeGlow)"/>
+          <circle class="mn-ring" cx="463" cy="463" r="22" stroke="#e8a020"/>
+          <circle class="mn-dot" cx="463" cy="463" r="5" fill="#e8a020"/>
+          <text class="mn-label" x="463" y="467" fill="#e8a020" font-size="10">🔁</text>
+          <text class="mn-label" x="463" y="496">PRACTICE</text>
+          <text class="mn-sublabel" x="463" y="505">repetition is the teacher</text>
         </g>
 
-        <!-- 5: Fretboard (bottom right) -->
-        <g class="mn-g" onclick="nT('fretboard')">
-          <circle class="mn-ring" cx="420" cy="500" r="18" stroke="var(--amber)"/>
-          <circle class="mn-dot" cx="420" cy="500" r="4" fill="var(--amber)"/>
-          <text class="mn-label" x="420" y="526">5 FRETBOARD</text>
+        <!-- NODE 5: PLAY (bottom) -->
+        <!-- 180° → 300,530 -->
+        <g class="mn-g unlocked" onclick="showNodeInfo('play')" data-node="play">
+          <circle cx="300" cy="530" r="26" fill="url(#nodeGlow)"/>
+          <circle class="mn-ring" cx="300" cy="530" r="22" stroke="#c45a20"/>
+          <circle class="mn-dot" cx="300" cy="530" r="5" fill="#c45a20"/>
+          <text class="mn-label" x="300" y="534" fill="#c45a20" font-size="10">🎸</text>
+          <text class="mn-label" x="300" y="563">PLAY</text>
+          <text class="mn-sublabel" x="300" y="572">make music now</text>
         </g>
 
-        <!-- 6: Ear Training (bottom center) -->
-        <g class="mn-g" onclick="nT('ear')">
-          <circle class="mn-ring" cx="300" cy="540" r="18" stroke="var(--amber)"/>
-          <circle class="mn-dot" cx="300" cy="540" r="4" fill="var(--amber)"/>
-          <text class="mn-label" x="300" y="566">6 EAR</text>
+        <!-- NODE 6: CREATE (bottom-left) -->
+        <!-- 225° → 137,463 -->
+        <g class="mn-g unlocked" onclick="showNodeInfo('create')" data-node="create">
+          <circle cx="137" cy="463" r="26" fill="url(#nodeGlow)"/>
+          <circle class="mn-ring" cx="137" cy="463" r="22" stroke="#c45a20"/>
+          <circle class="mn-dot" cx="137" cy="463" r="5" fill="#c45a20"/>
+          <text class="mn-label" x="137" y="467" fill="#c45a20" font-size="10">✨</text>
+          <text class="mn-label" x="137" y="496">CREATE</text>
+          <text class="mn-sublabel" x="137" y="505">write, arrange, produce</text>
         </g>
 
-        <!-- 7: Technique (bottom left) -->
-        <g class="mn-g" onclick="nT('technique')">
-          <circle class="mn-ring" cx="180" cy="500" r="18" stroke="var(--amber)"/>
-          <circle class="mn-dot" cx="180" cy="500" r="4" fill="var(--amber)"/>
-          <text class="mn-label" x="180" y="526">7 TECHNIQUE</text>
+        <!-- NODE 7: COLLAB (left) -->
+        <!-- 270° → 70,300 -->
+        <g class="mn-g unlocked" onclick="showNodeInfo('collab')" data-node="collab">
+          <circle cx="70" cy="300" r="26" fill="url(#nodeGlow)"/>
+          <circle class="mn-ring" cx="70" cy="300" r="22" stroke="#c45a20"/>
+          <circle class="mn-dot" cx="70" cy="300" r="5" fill="#c45a20"/>
+          <text class="mn-label" x="70" y="304" fill="#c45a20" font-size="10">🤝</text>
+          <text class="mn-label" x="70" y="333">COLLAB</text>
+          <text class="mn-sublabel" x="70" y="342">play with others</text>
         </g>
 
-        <!-- 8: Collab (left lower) -->
-        <g class="mn-g" onclick="nT('collab')">
-          <circle class="mn-ring" cx="100" cy="380" r="18" stroke="var(--green)"/>
-          <circle class="mn-dot" cx="100" cy="380" r="4" fill="var(--green)"/>
-          <text class="mn-label" x="100" y="406">8 COLLAB</text>
+        <!-- NODE 8: MASTERY (top-left) -->
+        <!-- 315° → 137,137 -->
+        <g class="mn-g locked" onclick="showNodeInfo('mastery')" data-node="mastery">
+          <circle cx="137" cy="137" r="26" fill="url(#nodeGlow)"/>
+          <circle class="mn-ring" cx="137" cy="137" r="22" stroke="#3a3530" stroke-dasharray="3 3"/>
+          <circle class="mn-dot" cx="137" cy="137" r="5" fill="#3a3530"/>
+          <text class="mn-label" x="137" y="141" fill="#3a3530" font-size="10">👑</text>
+          <text class="mn-label" x="137" y="170" fill="#3a3530">MASTERY</text>
+          <text class="mn-sublabel" x="137" y="179">the endless path</text>
         </g>
 
-        <!-- 9: Mastery (left upper) -->
-        <g class="mn-g" onclick="nT('mastery')">
-          <circle class="mn-ring" cx="100" cy="240" r="18" stroke="var(--purple)"/>
-          <circle class="mn-dot" cx="100" cy="240" r="4" fill="var(--purple)"/>
-          <text class="mn-label" x="100" y="266">9 MASTERY</text>
-        </g>
-
-        <!-- DOING BRANCH (left side) -->
-        <g class="mn-g" onclick="nT('practical')">
-          <circle class="mn-ring" cx="180" cy="220" r="16" stroke="var(--ember)"/>
-          <circle class="mn-dot" cx="180" cy="220" r="3" fill="var(--ember)"/>
-          <text class="mn-label" x="180" y="244" style="fill:var(--ember)">PRACTICAL</text>
-        </g>
-        <g class="mn-g" onclick="nT('practise')">
-          <circle class="mn-ring" cx="180" cy="440" r="16" stroke="var(--ember)"/>
-          <circle class="mn-dot" cx="180" cy="440" r="3" fill="var(--ember)"/>
-          <text class="mn-label" x="180" y="464" style="fill:var(--ember)">PRACTISE</text>
-        </g>
-
-        <!-- KNOWING BRANCH (right side) -->
-        <g class="mn-g" onclick="nT('theory')">
-          <circle class="mn-ring" cx="420" cy="220" r="16" stroke="var(--blue)"/>
-          <circle class="mn-dot" cx="420" cy="220" r="3" fill="var(--blue)"/>
-          <text class="mn-label" x="420" y="244" style="fill:var(--blue)">THEORY</text>
-        </g>
-        <g class="mn-g" onclick="nT('study')">
-          <circle class="mn-ring" cx="420" cy="440" r="16" stroke="var(--blue)"/>
-          <circle class="mn-dot" cx="420" cy="440" r="3" fill="var(--blue)"/>
-          <text class="mn-label" x="420" y="464" style="fill:var(--blue)">STUDY</text>
-        </g>
-
-        <!-- Play & Create on outer ring -->
-        <g class="mn-g" onclick="nT('play')">
-          <circle class="mn-ring" cx="300" cy="60" r="16" stroke="var(--blue)"/>
-          <circle class="mn-dot" cx="300" cy="60" r="3" fill="var(--blue)"/>
-          <text class="mn-label" x="300" y="84" style="fill:var(--blue)">PLAY</text>
-        </g>
-
-        <!-- Branch labels -->
-        <text x="100" y="200" text-anchor="middle" fill="var(--ember)" font-family="'JetBrains Mono',monospace" font-size="7" letter-spacing="0.15em" opacity="0.5">DOING</text>
-        <text x="500" y="200" text-anchor="middle" fill="var(--blue)" font-family="'JetBrains Mono',monospace" font-size="7" letter-spacing="0.15em" opacity="0.5">KNOWING</text>
       </svg>
     </div>
     <div class="node-info" id="ni">
+      <span class="ni-close" onclick="hideNodeInfo()">✕</span>
+      <span class="ni-emoji" id="niEmoji"></span>
       <div class="ni-tag" id="niTag"></div>
       <h4 id="niTitle"></h4>
       <p id="niDesc"></p>
+      <button class="ni-enter" id="niEnter" onclick="enterNode()">Enter Node →</button>
     </div>
   </div>
+
+  <!-- FOUNDATION NODE -->
+  <div class="pnl" id="p-foundation"></div>
 
   <!-- LESSON -->
   <div class="pnl ls" id="p-lesson">
@@ -493,40 +492,53 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;dis
 
 <script src="assets/js/foundation.js"></script>
 <script>
-const NI={
-  hearth:{tag:'ORIGIN',t:'The Hearth',d:'The centre. Where the fire burns. Everything begins and returns here.'},
-  foundation:{tag:'LEVEL 1',t:'Foundation',d:'The beginning. Anatomy of the instrument, how to hold it, tune it, your first sounds. The 9 core topics that carry you through everything.'},
-  rhythm:{tag:'LEVEL 2',t:'Rhythm',d:'The heartbeat of all music. Count, feel the pulse, time signatures. Before you play notes, you play time.'},
-  chords:{tag:'LEVEL 3',t:'Chords & Harmony',d:'Where harmony begins. Open chords, shapes, transitions. Building blocks of every song.'},
-  scales:{tag:'LEVEL 4',t:'Scales',d:'The alphabet of melody. Pentatonic, major, minor. The fretboard as possibility.'},
-  fretboard:{tag:'LEVEL 5',t:'Fretboard',d:'Know your instrument. Every note, every position. Geography of the neck.'},
-  ear:{tag:'LEVEL 6',t:'Ear Training',d:'Hear it before you play it. Intervals, chord qualities, melody recognition. Trust your ears.'},
-  technique:{tag:'LEVEL 7',t:'Technique',d:'Speed, accuracy, expression. Hammer-ons, pull-offs, bends, slides. The vocabulary of touch.'},
-  collab:{tag:'ALWAYS ON',t:'Collaborate',d:'Play with others. Backing tracks, jam sessions. Listen and respond. Music is conversation.'},
-  mastery:{tag:'LEVEL 9',t:'Mastery',d:'Come home to yourself. What is YOUR sound? The student becomes the artist.'},
-  practical:{tag:'DOING',t:'Practical',d:'Open-world drill library. Every exercise, always accessible.'},
-  practise:{tag:'SESSION',t:'Practise',d:'Select drills, combine variations, timer starts, you practise, give feedback.'},
-  play:{tag:'PLAY',t:'Play',d:'How the world plays guitar. West African highlife, Brazilian samba, Japanese, Indian raga, Flamenco, Turkish makam and beyond.'},
-  theory:{tag:'KNOWING',t:'Theory',d:'Open-world theory library. All music theory, categorised, always accessible.'},
-  study:{tag:'STUDY',t:'Study',d:'Your lab. Notes, aha moments, gaps & questions.'},
+const NODE_DATA = {
+  hearth: { emoji:'🔥', tag:'ORIGIN', title:'The Hearth', desc:'The centre. Where the fire burns. Everything begins and returns here.', enter:false },
+  foundation: { emoji:'🏰', tag:'NODE 1 · LEVEL 1', title:'Foundations', desc:'Before you play a note — learn how learning works, how to hold the guitar, tune it, and produce your first clean sound. 7 core topics.', enter:true, action:'foundation' },
+  doing: { emoji:'✋', tag:'NODE 2 · LEVEL 2', title:'Doing', desc:'Chords, strumming, your first songs. Hands-heavy, theory-light. Make music from day one.', enter:false },
+  knowing: { emoji:'📖', tag:'NODE 3 · LEVEL 2', title:'Knowing', desc:'Theory, reading music, understanding why things work. Intervals, scales, keys, chord construction.', enter:false },
+  practice: { emoji:'🔁', tag:'NODE 4 · LEVEL 3', title:'Practice', desc:'Daily drills, structured workouts, technique development. 52 weeks of progressive exercises.', enter:false },
+  play: { emoji:'🎸', tag:'NODE 5 · LEVEL 3', title:'Play', desc:'Styles, songs, traditions. Blues, jazz, classical, rock, slide, bossa nova. Make music now.', enter:false },
+  create: { emoji:'✨', tag:'NODE 6 · LEVEL 4', title:'Create', desc:'Songwriting, arranging, recording, production. Turn your playing into art.', enter:false },
+  collab: { emoji:'🤝', tag:'NODE 7 · LEVEL 4', title:'Collab', desc:'Playing with others. Duets, jamming, listening, ensemble skills, recording together.', enter:false },
+  mastery: { emoji:'👑', tag:'NODE 8 · FINAL', title:'Mastery', desc:'The endless path. Advanced technique, deep theory, finding your voice. No graduation — only deeper understanding.', enter:false, locked:true }
 };
 
-function nT(id){
-  const info=NI[id];if(!info)return;
-  document.getElementById('niTag').textContent=info.tag;
-  document.getElementById('niTitle').textContent=info.t;
-  document.getElementById('niDesc').textContent=info.d;
+let _activeNode = null;
+
+function showNodeInfo(id) {
+  const data = NODE_DATA[id];
+  if (!data) return;
+  _activeNode = id;
+  document.getElementById('niEmoji').textContent = data.emoji;
+  document.getElementById('niTag').textContent = data.tag;
+  document.getElementById('niTitle').textContent = data.title;
+  document.getElementById('niDesc').textContent = data.desc;
+  const enterBtn = document.getElementById('niEnter');
+  if (enterBtn) enterBtn.style.display = (data.enter && !data.locked) ? 'inline-block' : 'none';
   document.getElementById('ni').classList.add('vis');
-  if(id==='foundation')showFoundation();
-  else if(['practical','practise'].includes(id))sw('drill');
-  else if(['theory','study'].includes(id))sw('theory');
-  else if(id==='play')sw('play');
 }
 
+function hideNodeInfo() {
+  document.getElementById('ni').classList.remove('vis');
+  _activeNode = null;
+}
+
+function enterNode() {
+  const data = NODE_DATA[_activeNode];
+  if (!data || data.locked) return;
+  hideNodeInfo();
+  if (data.action === 'foundation') showFoundation();
+}
+
+// Legacy compat
+function nT(id){ showNodeInfo(id); if(id==='foundation') showFoundation(); }
+
 function showFoundation(){
-  sw('lesson');
+  document.querySelectorAll('.pnl').forEach(p=>p.classList.remove('on'));
+  document.getElementById('p-foundation').classList.add('on');
   const F=window.FOUNDATION;if(!F)return;
-  const el=document.getElementById('p-lesson');
+  const el=document.getElementById('p-foundation');
   el.innerHTML='<div class="foundation-landing">'+
     '<div class="fl-hero">'+
       '<div class="fl-sub">'+F.tag+'</div>'+
@@ -555,8 +567,7 @@ function showFoundation(){
 function showFoundationTopic(topicId){
   const F=window.FOUNDATION;if(!F)return;
   const topic=F.topics.find(t=>t.id===topicId);if(!topic)return;
-  const el=document.getElementById('p-lesson');
-  let stepIdx=0;
+  const el=document.getElementById('p-foundation');
   function renderStep(idx){
     const s=topic.steps[idx];
     return '<div class="lp-body">'+
@@ -599,15 +610,7 @@ window.goFStep=function(tid,idx){
   }
 };
 
-function hlP(p){
-  document.querySelectorAll('.path-btn').forEach(b=>b.classList.remove('on'));
-  event.target.classList.add('on');
-  document.querySelectorAll('.mn-conn').forEach(c=>{
-    const cp=c.getAttribute('data-p');
-    c.classList.toggle('hl', p==='all' || cp===p);
-  });
-  document.querySelectorAll('.mandala').forEach(m=>m.classList.toggle('hl', p==='all'));
-}
+function hlP(p){}
 
 function sw(t){
   document.querySelectorAll('.bt').forEach(b=>b.classList.remove('on'));
