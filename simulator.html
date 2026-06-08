@@ -656,6 +656,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;dis
 
 <script src="assets/js/foundation.js"></script>
 <script src="assets/js/doing.js"></script>
+<script src="assets/js/knowing.js"></script>
 <script>
 const NODE_DATA = {
   hearth: { emoji:'🔥', tag:'ORIGIN', title:'The Hearth', desc:'Your progress dashboard. See how you\'re doing across all paths.', enter:true, action:'hearth' },
@@ -664,7 +665,7 @@ const NODE_DATA = {
   doing: { emoji:'✋', tag:'DOING PATH', title:'Doing', desc:'Open-world drill library. Full library of drills, skills, and practical exercises, categorised. Revisit anything anytime.', enter:true, action:'doing' },
   practise: { emoji:'🔁', tag:'DOING PATH', title:'Practise', desc:'Session-based. "How much time have you got?" Select drills, combine variations, timer starts, practise, give feedback.', enter:false },
   play: { emoji:'🎸', tag:'DOING PATH', title:'Play', desc:'Songs, genres, backing tracks, playing along with other instruments. Discover YOUR sound. Collab lives here.', enter:false },
-  knowing: { emoji:'📖', tag:'KNOWING PATH', title:'Knowing', desc:'Open-world reference. All music theory, categorised beautifully. Always accessible like an encyclopedia.', enter:false },
+  knowing: { emoji:'📖', tag:'KNOWING PATH', title:'Knowing', desc:'All music theory, categorised beautifully. Always accessible like an encyclopedia. Understand the why.', enter:true, action:'knowing' },
   study: { emoji:'📝', tag:'KNOWING PATH', title:'Study', desc:'Your lab. Notes, aha moments, gaps & questions. Where your own discoveries live.', enter:false },
   create: { emoji:'✨', tag:'KNOWING PATH', title:'Create', desc:'Guided creation. Write your own music. Record it. Listen back. The student becomes the creator.', enter:false }
 };
@@ -697,6 +698,7 @@ function enterNode() {
   if (data.action === 'foundation') showFoundation();
   else if (data.action === 'hearth') showHearth();
   else if (data.action === 'doing') showDoing();
+  else if (data.action === 'knowing') showKnowing();
 }
 
 // ═══ THEME SYSTEM ═══
@@ -1029,6 +1031,62 @@ function showDoingDrill(catId, drillId){
       '<div style="margin-bottom:10px"><span class="tag">'+diffStars+'</span><span class="tag">BPM '+drill.bpm+'</span><span class="tag">'+drill.duration+'</span></div>'+
       '<div class="ctx"><p>SOURCE: '+drill.source+'</p></div>'+
       drill.body+
+    '</div>'+
+  '</div>';
+}
+
+function showKnowing(){
+  document.querySelectorAll('.pnl').forEach(p=>p.classList.remove('on'));
+  document.getElementById('p-foundation').classList.add('on');
+  const K=window.KNOWING;if(!K)return;
+  const el=document.getElementById('p-foundation');
+  el.innerHTML='<div class="foundation-landing">'+
+    '<div class="fl-hero">'+
+      '<div class="fl-sub">'+K.tag+'</div>'+
+      '<h2>'+K.title+'</h2>'+
+      '<p class="fl-desc">'+K.description+'</p>'+
+    '</div>'+
+    '<div class="fl-topics">'+
+      K.categories.map(cat=>'<div style="margin-bottom:16px">'+
+        '<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">'+
+          '<span style="font-size:1.1rem">'+cat.icon+'</span>'+
+          '<span style="font-family:Cinzel;font-size:0.9rem;color:var(--gold)">'+cat.title+'</span>'+
+        '</div>'+
+        '<p style="font-size:0.7rem;color:var(--dim);margin:0 0 8px 0">'+cat.description+'</p>'+
+        cat.topics.map(topic=>{
+          const diffStars='★'.repeat(topic.difficulty)+'☆'.repeat(3-topic.difficulty);
+          return '<div class="fl-topic" onclick="showKnowingTopic(\''+cat.id+'\',\''+topic.id+'\')">'+
+            '<div class="fl-topic-content">'+
+              '<h4>'+topic.title+'</h4>'+
+              '<div class="fl-t-sub">'+diffStars+' · '+topic.source+'</div>'+
+            '</div>'+
+            '<div class="fl-t-status">→</div>'+
+          '</div>';
+        }).join('')+
+      '</div>').join('')+
+    '</div>'+
+    '<div class="fl-source"><p class="fl-s-label">SOURCES</p><p>'+K.sources.join('<br>')+'</p></div>'+
+  '</div>';
+}
+
+function showKnowingTopic(catId, topicId){
+  const K=window.KNOWING;if(!K)return;
+  const cat=K.categories.find(c=>c.id===catId);if(!cat)return;
+  const topic=cat.topics.find(t=>t.id===topicId);if(!topic)return;
+  const el=document.getElementById('p-foundation');
+  const diffStars='★'.repeat(topic.difficulty)+'☆'.repeat(3-topic.difficulty);
+  el.innerHTML='<div class="lp-lesson">'+
+    '<div class="ls-steps">'+
+      '<div class="ls-s on"><div class="n">01</div><div class="l">Read</div></div>'+
+      '<div class="ls-s"><div class="n">02</div><div class="l">Explore</div></div>'+
+      '<div class="ls-s"><div class="n">03</div><div class="l">Apply</div></div>'+
+      '<div class="ls-s"><div class="n">04</div><div class="l">Quiz</div></div>'+
+    '</div>'+
+    '<div class="ls-body">'+
+      '<button onclick="showKnowing()" style="background:none;border:1px solid var(--border);color:var(--dim);padding:4px 10px;border-radius:4px;cursor:pointer;font-family:inherit;font-size:0.65rem;margin-bottom:12px">← '+cat.title+'</button>'+
+      '<h3>'+topic.title+'</h3>'+
+      '<div style="margin-bottom:10px"><span class="tag">'+diffStars+'</span><span class="tag">'+topic.source+'</span></div>'+
+      topic.body+
     '</div>'+
   '</div>';
 }
