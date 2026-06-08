@@ -719,38 +719,38 @@ function setTheme(mode) {
 }
 
 function applyThemeColors(mode) {
-  const c = THEME_COLORS[mode] || THEME_COLORS.standard;
+  var c = THEME_COLORS[mode] || THEME_COLORS.standard;
   // SVG background
-  const svgBg = document.querySelector('.map-svg rect');
+  var svgBg = document.querySelector('.map-svg rect');
   if (svgBg) svgBg.style.fill = c.bg;
-  // Connection lines (orange branches)
-  document.querySelectorAll('#connections > line:not([id])').forEach(function(l) {
-    if (!l.closest('#web')) {
-      var op = l.style.opacity || '0.3';
-      l.style.stroke = op > '0.25' ? c.branch : c.branchAlt;
-    }
-  });
-  // Spine segments
-  for (var i = 1; i <= 8; i++) {
-    var seg = document.getElementById('spine-l' + i);
-    if (seg) { seg.style.stroke = c.spine; }
+  // All lines in connections
+  var lines = document.querySelectorAll('#connections line');
+  for (var i = 0; i < lines.length; i++) {
+    var l = lines[i];
+    var cur = l.style.stroke || '';
+    // Skip web lines (handled by parent g)
+    if (l.closest('#web')) continue;
+    // Spine lines
+    if (l.id && l.id.indexOf('spine') === 0) { l.style.stroke = c.spine; continue; }
+    // Branch lines (orange = #e8a020)
+    if (cur.indexOf('#e8a020') >= 0 || cur.indexOf('e8a020') >= 0) { l.style.stroke = c.branch; continue; }
+    // Alt branch lines (blue = #5a9fd4)
+    if (cur.indexOf('#5a9fd4') >= 0 || cur.indexOf('5a9fd4') >= 0) { l.style.stroke = c.branchAlt; continue; }
+    // Tick marks and other small lines
+    var sw = parseFloat(l.style.strokeWidth || '0');
+    if (sw <= 1.5) { l.style.stroke = c.tickDim; }
   }
-  // Tick marks
-  document.querySelectorAll('#connections > line:not([id])').forEach(function(l) {
-    if (l.closest('#web')) return;
-    var sw = parseFloat(l.style.strokeWidth || l.getAttribute('stroke-width') || 0);
-    if (sw <= 1) l.style.stroke = c.tickDim;
-  });
-  // Web
+  // Web group
   var web = document.getElementById('web');
   if (web) { web.style.stroke = c.web; web.style.opacity = c.webOp; }
   // Glow
   var glow = document.querySelector('.center-glow');
   if (glow) glow.style.fill = c.glow;
-  // Mastery rings keep their rainbow colours — just adjust opacity
-  document.querySelectorAll('.mastery-ring').forEach(function(r) {
-    r.style.opacity = (mode === 'sparks') ? '0.3' : '0.15';
-  });
+  // Mastery rings
+  var rings = document.querySelectorAll('.mastery-ring');
+  for (var j = 0; j < rings.length; j++) {
+    rings[j].style.opacity = (mode === 'sparks') ? '0.3' : '0.15';
+  }
 }
 
 // Restore saved theme on load
