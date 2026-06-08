@@ -397,6 +397,9 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;dis
     </div>
   </div>
 
+  <!-- HEARTH DASHBOARD -->
+  <div class="pnl" id="p-hearth"></div>
+
   <!-- FOUNDATION NODE -->
   <div class="pnl" id="p-foundation"></div>
 
@@ -509,7 +512,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;dis
 <script src="assets/js/foundation.js"></script>
 <script>
 const NODE_DATA = {
-  hearth: { emoji:'🔥', tag:'ORIGIN', title:'The Hearth', desc:'The centre. Where the fire burns. Everything begins and returns here.', enter:false },
+  hearth: { emoji:'🔥', tag:'ORIGIN', title:'The Hearth', desc:'Your progress dashboard. See how you\'re doing across all paths.', enter:true, action:'hearth' },
   foundation: { emoji:'🏰', tag:'HOME NODE', title:'Foundation', desc:'Before you play a note — learn how learning works, how to hold the guitar, tune it, and produce your first clean sound. 7 core topics.', enter:true, action:'foundation' },
   mastery: { emoji:'👑', tag:'FINAL', title:'Mastery', desc:'Come home to yourself. What is YOUR sound? The student becomes the artist.', enter:false, locked:true },
   doing: { emoji:'✋', tag:'DOING PATH', title:'Doing', desc:'Open-world reference. Full library of drills, skills, and practical exercises, categorised. Revisit anything anytime.', enter:false },
@@ -546,6 +549,7 @@ function enterNode() {
   if (!data || data.locked) return;
   hideNodeInfo();
   if (data.action === 'foundation') showFoundation();
+  else if (data.action === 'hearth') showHearth();
 }
 
 // Levels start dark — nothing complete until completed
@@ -636,6 +640,150 @@ function moveFlame(targetId) {
     else setTimeout(function(){ _flameAnimating = false; }, 600);
   }
   nextStep();
+}
+
+// ═══ HEARTH DASHBOARD ═══
+function showHearth(){
+  document.querySelectorAll('.pnl').forEach(p=>p.classList.remove('on'));
+  document.getElementById('p-hearth').classList.add('on');
+  const el = document.getElementById('p-hearth');
+  const progress = JSON.parse(localStorage.getItem('hearth-progress') || '{}');
+  const sessions = JSON.parse(localStorage.getItem('hearth-sessions') || '[]');
+  const totalSessions = sessions.length;
+  const totalTime = sessions.reduce((a,s)=>a+(s.minutes||0),0);
+  const streak = calcStreak(sessions);
+
+  el.innerHTML = `
+    <div style="padding:24px;max-width:800px;margin:0 auto">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:24px">
+        <span style="font-size:28px">🔥</span>
+        <div>
+          <h2 style="font-family:Cinzel;color:var(--gold);font-size:1.3rem;margin:0">The Hearth</h2>
+          <p style="color:var(--dim);font-size:0.75rem;margin:0">Your journey at a glance</p>
+        </div>
+        <button onclick="this.closest('.pnl').classList.remove('on')" style="margin-left:auto;background:none;border:1px solid var(--border);color:var(--dim);padding:6px 12px;border-radius:4px;cursor:pointer;font-family:inherit;font-size:0.7rem">✕ Close</button>
+      </div>
+
+      <!-- Quick Stats -->
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:28px">
+        <div style="background:var(--card);padding:14px;border-radius:8px;text-align:center;border:1px solid var(--border)">
+          <div style="font-family:JetBrains Mono;font-size:1.4rem;color:var(--gold);font-weight:700">${totalSessions}</div>
+          <div style="font-size:0.65rem;color:var(--dim);text-transform:uppercase;letter-spacing:0.1em;margin-top:4px">Sessions</div>
+        </div>
+        <div style="background:var(--card);padding:14px;border-radius:8px;text-align:center;border:1px solid var(--border)">
+          <div style="font-family:JetBrains Mono;font-size:1.4rem;color:var(--amber);font-weight:700">${totalTime}m</div>
+          <div style="font-size:0.65rem;color:var(--dim);text-transform:uppercase;letter-spacing:0.1em;margin-top:4px">Time Played</div>
+        </div>
+        <div style="background:var(--card);padding:14px;border-radius:8px;text-align:center;border:1px solid var(--border)">
+          <div style="font-family:JetBrains Mono;font-size:1.4rem;color:var(--ember);font-weight:700">${streak}🔥</div>
+          <div style="font-size:0.65rem;color:var(--dim);text-transform:uppercase;letter-spacing:0.1em;margin-top:4px">Day Streak</div>
+        </div>
+        <div style="background:var(--card);padding:14px;border-radius:8px;text-align:center;border:1px solid var(--border)">
+          <div style="font-family:JetBrains Mono;font-size:1.4rem;color:#00cc44;font-weight:700">${calcOverallLevel(progress)}</div>
+          <div style="font-size:0.65rem;color:var(--dim);text-transform:uppercase;letter-spacing:0.1em;margin-top:4px">Level</div>
+        </div>
+      </div>
+
+      <!-- Level Progress (spine) -->
+      <div style="background:var(--card);padding:18px;border-radius:8px;margin-bottom:20px;border:1px solid var(--border)">
+        <h3 style="font-family:Cinzel;color:var(--gold);font-size:0.85rem;margin:0 0 14px 0">Level Journey</h3>
+        <div style="display:grid;grid-template-columns:repeat(8,1fr);gap:6px">
+          ${[1,2,3,4,5,6,7,8].map(l => {
+            const done = progress['L'+l];
+            const colors = ['#ff0000','#ff8800','#ffdd00','#00cc44','#00cccc','#3366ff','#6633cc','#cc33ff'];
+            return `<div style="text-align:center">
+              <div style="width:28px;height:28px;border-radius:50%;margin:0 auto 4px;display:flex;align-items:center;justify-content:center;font-family:JetBrains Mono;font-size:0.65rem;font-weight:700;${done ? 'background:'+colors[l-1]+';color:#0d0b08' : 'border:1.5px solid var(--border);color:var(--dim)'}">L${l}</div>
+              <div style="font-size:0.55rem;color:${done?'var(--text)':'var(--dim)'}">${done?'Done':'Locked'}</div>
+            </div>`;
+          }).join('')}
+        </div>
+      </div>
+
+      <!-- Node Progress Cards -->
+      <h3 style="font-family:Cinzel;color:var(--gold);font-size:0.85rem;margin:0 0 12px 0">Paths</h3>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px">
+        ${renderPathCard('Doing','✋','#e8a020','doing,practise,play',progress)}
+        ${renderPathCard('Knowing','📖','#e8a020','knowing,study,create',progress)}
+      </div>
+
+      <!-- Node Grid -->
+      <h3 style="font-family:Cinzel;color:var(--gold);font-size:0.85rem;margin:0 0 12px 0">All Nodes</h3>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">
+        ${Object.entries(NODE_DATA).filter(([k])=>k!=='hearth').map(([id, d]) => {
+          const p = progress[id] || {};
+          const pct = p.topics ? Math.round((p.topicsDone||0)/p.topics*100) : 0;
+          return `<div style="background:var(--card);padding:12px;border-radius:6px;border:1px solid var(--border);cursor:pointer" onclick="this.closest('.pnl').classList.remove('on');showNodeInfo('${id}')">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+              <span style="font-size:1.1rem">${d.emoji}</span>
+              <span style="font-family:Cinzel;font-size:0.75rem;color:var(--text)">${d.title}</span>
+            </div>
+            <div style="background:var(--bg);border-radius:3px;height:4px;overflow:hidden">
+              <div style="height:100%;width:${pct}%;background:var(--gold);border-radius:3px;transition:width 0.5s"></div>
+            </div>
+            <div style="font-size:0.55rem;color:var(--dim);margin-top:4px">${p.topics ? (p.topicsDone||0)+'/'+p.topics+' topics' : 'Not started'}</div>
+          </div>`;
+        }).join('')}
+      </div>
+
+      <!-- Recent Sessions -->
+      ${sessions.length ? `
+        <h3 style="font-family:Cinzel;color:var(--gold);font-size:0.85rem;margin:20px 0 12px 0">Recent Sessions</h3>
+        <div style="display:flex;flex-direction:column;gap:6px">
+          ${sessions.slice(-5).reverse().map(s => `
+            <div style="background:var(--card);padding:10px 14px;border-radius:6px;display:flex;justify-content:space-between;align-items:center;border:1px solid var(--border)">
+              <div>
+                <span style="font-size:0.75rem;color:var(--text)">${s.node||'Practice'}</span>
+                <span style="font-size:0.6rem;color:var(--dim);margin-left:8px">${s.date||''}</span>
+              </div>
+              <span style="font-family:JetBrains Mono;font-size:0.7rem;color:var(--amber)">${s.minutes||0}min</span>
+            </div>
+          `).join('')}
+        </div>
+      ` : ''}
+    </div>
+  `;
+}
+
+function renderPathCard(name, emoji, color, nodes, progress) {
+  const nodeList = nodes.split(',');
+  const titles = nodeList.map(n => NODE_DATA[n]?.title || n);
+  return `<div style="background:var(--card);padding:16px;border-radius:8px;border:1px solid ${color}33">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+      <span style="font-size:1.2rem">${emoji}</span>
+      <span style="font-family:Cinzel;font-size:0.9rem;color:${color}">${name} Path</span>
+    </div>
+    <div style="display:flex;gap:6px">
+      ${nodeList.map((n,i) => {
+        const p = progress[n] || {};
+        const done = p.complete;
+        return `<div style="flex:1;text-align:center">
+          <div style="width:32px;height:32px;border-radius:50%;margin:0 auto 4px;display:flex;align-items:center;justify-content:center;font-size:0.9rem;${done ? 'background:'+color+'33;border:2px solid '+color : 'border:1.5px dashed var(--border)'}">${NODE_DATA[n]?.emoji||'?'}</div>
+          <div style="font-size:0.6rem;color:${done?'var(--text)':'var(--dim)'}">${titles[i]}</div>
+        </div>${i<nodeList.length-1?'<div style=\'display:flex;align-items:center;color:var(--border);font-size:0.7rem\'>→</div>':''}`;
+      }).join('')}
+    </div>
+  </div>`;
+}
+
+function calcStreak(sessions) {
+  if (!sessions.length) return 0;
+  const days = [...new Set(sessions.map(s => s.date))].sort().reverse();
+  const today = new Date().toISOString().split('T')[0];
+  let streak = 0;
+  let check = new Date(today);
+  for (let i = 0; i < 365; i++) {
+    const ds = check.toISOString().split('T')[0];
+    if (days.includes(ds)) { streak++; check.setDate(check.getDate()-1); }
+    else if (i === 0) { check.setDate(check.getDate()-1); continue; }
+    else break;
+  }
+  return streak;
+}
+
+function calcOverallLevel(progress) {
+  let lvl = 0;
+  for (let i = 1; i <= 8; i++) { if (progress['L'+i]) lvl = i; else break; }
+  return lvl || '-';
 }
 
 function showFoundation(){
