@@ -1029,7 +1029,7 @@ function showDoing(){
     // Style filter bar
     let html='<div style="margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">'+
       '<div style="font-family:JetBrains Mono;font-size:0.75rem;color:var(--dim)">'+doneDrills+'/'+totalDrills+' drills complete</div>'+
-      '<div id="style-filters" style="display:flex;gap:4px;flex-wrap:wrap">';
+      '<div id="style-filters" style="display:flex;gap:6px;flex-wrap:wrap">';
     html+='<span class="style-filter'+(activeStyle==='all'?' active':'')+'" data-style="all">All</span>';
     allStyles.forEach(s=>{
       html+='<span class="style-filter'+(activeStyle===s?' active':'')+'" data-style="'+s+'">'+s+'</span>';
@@ -1043,20 +1043,20 @@ function showDoing(){
     const fretCount=cats.length;
 
     const svgW=600;
-    const leftPad=120;
+    const leftPad=140;
     const rightPad=20;
-    const topPad=40;
-    const fretH=70;
+    const topPad=50;
+    const fretH=100;
     const botPad=30;
     const stringSpacing=(svgW-leftPad-rightPad)/(stringCount-1);
-    const svgH=topPad+botPad+fretH*fretCount;
+    const svgH=topPad+botPad+fretH*fretCount+20;
 
     let svg='<svg viewBox="0 0 '+svgW+' '+svgH+'" style="width:100%;max-width:650px;display:block;margin:0 auto">';
 
     // String labels (top) + string lines (vertical)
     strings.forEach((label,si)=>{
       const x=leftPad+stringSpacing*si;
-      svg+='<text x="'+x+'" y="'+(topPad-15)+'" text-anchor="middle" style="font-family:JetBrains Mono;font-size:10px;fill:var(--gold);opacity:0.7">'+label+'</text>';
+      svg+='<text x="'+x+'" y="'+(topPad-15)+'" text-anchor="middle" style="font-family:JetBrains Mono;font-size:11px;fill:var(--gold);opacity:0.8">'+label+'</text>';
       svg+='<line x1="'+x+'" y1="'+(topPad-5)+'" x2="'+x+'" y2="'+(topPad+fretH*fretCount)+'" stroke="var(--gold)" stroke-width="'+(1.5+si*0.3)+'" opacity="0.15"/>';
     });
 
