@@ -670,6 +670,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;dis
 <script src="assets/js/practice.js"></script>
 <script src="assets/js/play.js"></script>
 <script src="assets/js/create.js"></script>
+<script src="assets/js/references.js"></script>
 <script>
 const NODE_DATA = {
   hearth: { emoji:'', tag:'ORIGIN', title:'The Hearth', desc:'Your progress dashboard. See how you\'re doing across all paths.', enter:true, action:'hearth' },
@@ -1155,6 +1156,10 @@ function showDoing(){
       '<div style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:20px;margin-top:12px;line-height:1.7;font-size:0.85rem;color:var(--text)">'+
         drill.body+
       '</div>'+
+      '<div style="margin-top:12px;padding:10px 14px;background:var(--bg);border:1px solid var(--border);border-radius:6px;font-size:0.65rem;color:var(--dim);line-height:1.5">'+
+        '<strong style="color:var(--gold)">Source:</strong> '+drill.source+
+        (drill.page?' · p.'+drill.page:'')+
+      '</div>'+
       '<div style="margin-top:16px;display:flex;gap:8px">'+
         '<button onclick="completeDoingDrill(\''+catId+'\',\''+drillId+'\')" style="flex:1;background:'+(isDone?'var(--card)':'var(--gold)')+';color:'+(isDone?'var(--gold)':'var(--bg)')+';border:'+(isDone?'1px solid var(--gold)':'none')+';padding:12px;border-radius:8px;font-family:Cinzel;font-size:0.85rem;cursor:pointer">'+(isDone?'&#10003; Completed':'Mark Complete')+'</button>'+
       '</div>'+
@@ -1327,6 +1332,11 @@ window.showKnowingTopic=function(catId,topicId){
       '</div>'+
       '<h2 style="font-family:Cinzel;color:var(--gold);font-size:1.1rem;margin:0 0 16px 0">'+topic.title+'</h2>'+
       '<div style="line-height:1.7;font-size:0.85rem;color:var(--text)">'+topic.body+'</div>'+
+      '<div style="margin-top:12px;padding:10px 14px;background:var(--bg);border:1px solid var(--border);border-radius:6px;font-size:0.65rem;color:var(--dim);line-height:1.5">'+
+        '<strong style="color:var(--gold)">Source:</strong> '+topic.source+
+        (topic.book?' &middot; '+topic.book:'')+
+        (topic.page?' &middot; p.'+topic.page:'')+
+      '</div>'+
       '<div style="margin-top:16px;display:flex;gap:8px">'+
         '<button onclick="completeKnowingTopic(\''+topicId+'\')" style="flex:1;background:'+(isDone?'var(--card)':'var(--gold)')+';color:'+(isDone?'var(--gold)':'var(--bg)')+';border:'+(isDone?'1px solid var(--gold)':'none')+';padding:10px;border-radius:8px;font-family:Cinzel;font-size:0.8rem;cursor:pointer">'+(isDone?'&#10003; Completed':'Mark Complete')+'</button>'+
         (nextTopic?'<button onclick="showKnowingTopic(\''+catId+'\',\''+nextTopic.id+'\')" style="flex:1;background:var(--card);color:var(--gold);border:1px solid var(--gold);padding:10px;border-radius:8px;font-family:Cinzel;font-size:0.8rem;cursor:pointer">Next: '+nextTopic.title.substring(0,20)+' &rarr;</button>':'')+
