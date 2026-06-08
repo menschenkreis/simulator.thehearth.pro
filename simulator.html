@@ -1014,78 +1014,70 @@ function showDoing(){
   const allStyles=[];
   D.categories.forEach(c=>c.drills.forEach(d=>{if(!allStyles.includes(d.style))allStyles.push(d.style);}));
 
-  // State
   let activeStyle='all';
 
   function renderFretboard(){
     const cats=D.categories;
-    // Count drills per category (filtered by style)
+
+    // Count filtered drills
     let totalDrills=0, doneDrills=0;
     cats.forEach(c=>c.drills.forEach(d=>{
-      if(activeStyle==='all'||d.style===activeStyle){
-        totalDrills++;
-        if(completed[d.id])doneDrills++;
-      }
+      if(activeStyle==='all'||d.style===activeStyle){totalDrills++;if(completed[d.id])doneDrills++;}
     }));
 
-    let html='<div style="margin-bottom:12px;display:flex;align-items:center;justify-content:space-between">'+
-      '<div style="font-family:JetBrains Mono;font-size:0.7rem;color:var(--dim)">'+doneDrills+'/'+totalDrills+' drills complete</div>'+
-      '<div style="display:flex;gap:4px;flex-wrap:wrap">'+
-        '<span class="style-filter'+(activeStyle==='all'?' active':'')+'" onclick="\''+'\'">all</span>';
+    // Style filter bar
+    let html='<div style="margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">'+
+      '<div style="font-family:JetBrains Mono;font-size:0.7rem;color:var(--dim)">'+doneDrills+'/'+totalDrills+' drills</div>'+
+      '<div style="display:flex;gap:4px;flex-wrap:wrap">';
+    html+='<span class="style-filter'+(activeStyle==='all'?' active':'')+'" data-style="all">all</span>';
     allStyles.forEach(s=>{
       html+='<span class="style-filter'+(activeStyle===s?' active':'')+'" data-style="'+s+'">'+s+'</span>';
     });
     html+='</div></div>';
 
-    // Vertical fretboard SVG
-    const svgW=600;
-    const nutX=120;
-    const fretW=120;
-    const stringPad=20;
-    const topPad=30;
-    const botPad=20;
+    // VERTICAL FRETBOARD — guitar standing up
+    // X axis = strings (categories), Y axis = frets (difficulty)
+    const svgW=650;
+    const leftPad=130; // room for category labels
+    const rightPad=20;
+    const topPad=50; // room for fret labels
+    const botPad=30;
+    const stringCount=cats.length;
+    const stringSpacing=(svgW-leftPad-rightPad)/(stringCount-1);
+    const fretH=80; // height per difficulty level
+    const svgH=topPad+botPad+fretH*3+20;
 
-    // Calculate max drills in any category
-    let maxDrills=0;
-    cats.forEach(c=>{
-      let count=0;
-      c.drills.forEach(d=>{if(activeStyle==='all'||d.style===activeStyle)count++;});
-      if(count>maxDrills)maxDrills=count;
-    });
+    let svg='<svg viewBox="0 0 '+svgW+' '+svgH+'" style="width:100%;max-width:700px;display:block;margin:0 auto;cursor:default">';
 
-    const stringSpacing=28;
-    const svgH=topPad+botPad+maxDrills*stringSpacing+40;
-
-    let svg='<svg viewBox="0 0 '+svgW+' '+svgH+'" style="width:100%;max-width:650px;display:block;margin:0 auto">';
-
-    // For each category (string)
-    cats.forEach((cat,si)=>{
-      const y=topPad+si*stringSpacing;
-      const filtered=cat.drills.filter(d=>activeStyle==='all'||d.style===activeStyle);
-
-      // String line (horizontal)
-      svg+='<line x1="'+nutX+'" y1="'+y+'" x2="'+(nutX+fretW*3+40)+'" y2="'+y+'" stroke="var(--gold)" stroke-width="'+(1+si*0.2)+'" opacity="0.2"/>';
-
-      // Category label (left of nut)
-      const isAnyDone=filtered.some(d=>completed[d.id]);
-      svg+='<text x="'+(nutX-10)+'" y="'+(y+4)+'" text-anchor="end" style="font-family:Cinzel;font-size:11px;fill:'+(isAnyDone?'var(--gold)':'var(--text)')+';font-weight:'+(isAnyDone?'700':'400')+'">'+cat.icon+' '+cat.title+'</text>';
-    });
-
-    // Nut (thick vertical line)
-    svg+='<line x1="'+nutX+'" y1="'+(topPad-10)+'" x2="'+nutX+'" y2="'+(topPad+cats.length*stringSpacing-8)+'" stroke="var(--gold)" stroke-width="3" opacity="0.4"/>';
-
-    // Fret labels
+    // Fret labels (top)
     ['Beginner','Intermediate','Advanced'].forEach((label,fi)=>{
-      const x=nutX+fretW*fi+fretW/2;
-      svg+='<text x="'+x+'" y="'+(topPad-12)+'" text-anchor="middle" style="font-family:JetBrains Mono;font-size:9px;fill:var(--dim)">'+label+'</text>';
+      const y=topPad+fi*fretH+fretH/2;
+      svg+='<text x="'+(leftPad-10)+'" y="'+(y+4)+'" text-anchor="end" style="font-family:JetBrains Mono;font-size:10px;fill:var(--gold);opacity:0.7">'+label+'</text>';
+      // Fret line (horizontal)
       if(fi>0){
-        svg+='<line x1="'+(nutX+fretW*fi)+'" y1="'+(topPad-5)+'" x2="'+(nutX+fretW*fi)+'" y2="'+(topPad+cats.length*stringSpacing)+'" stroke="var(--border)" stroke-width="1" opacity="0.3"/>';
+        svg+='<line x1="'+(leftPad-5)+'" y1="'+(topPad+fi*fretH)+'" x2="'+(svgW-rightPad+5)+'" y2="'+(topPad+fi*fretH)+'" stroke="var(--border)" stroke-width="1" opacity="0.3"/>';
       }
     });
 
-    // Place dots
+    // Nut (thick horizontal line at top)
+    svg+='<line x1="'+(leftPad-5)+'" y1="'+(topPad-5)+'" x2="'+(svgW-rightPad+5)+'" y2="'+(topPad-5)+'" stroke="var(--gold)" stroke-width="2" opacity="0.4"/>';
+
+    // Strings (vertical lines) + category labels
     cats.forEach((cat,si)=>{
-      const y=topPad+si*stringSpacing;
+      const x=leftPad+stringSpacing*si;
+      const filtered=cat.drills.filter(d=>activeStyle==='all'||d.style===activeStyle);
+      const anyDone=filtered.some(d=>completed[d.id]);
+
+      // String line
+      svg+='<line x1="'+x+'" y1="'+(topPad-5)+'" x2="'+x+'" y2="'+(topPad+fretH*3)+'" stroke="var(--gold)" stroke-width="'+(1.5+si*0.15)+'" opacity="0.15"/>';
+
+      // Category label (top, rotated)
+      svg+='<text x="'+x+'" y="'+(topPad-15)+'" text-anchor="middle" style="font-family:Cinzel;font-size:10px;fill:'+(anyDone?'var(--gold)':'var(--text)')+';font-weight:'+(anyDone?'700':'400')+'">'+cat.icon+' '+cat.title+'</text>';
+    });
+
+    // Place dots on the fretboard
+    cats.forEach((cat,si)=>{
+      const x=leftPad+stringSpacing*si;
       const filtered=cat.drills.filter(d=>activeStyle==='all'||d.style===activeStyle);
 
       // Group by difficulty
@@ -1094,60 +1086,90 @@ function showDoing(){
 
       [1,2,3].forEach(diff=>{
         const drills=byDiff[diff];
-        const fretX=nutX+fretW*(diff-1)+fretW/2;
+        const fretY=topPad+fretH*(diff-1)+fretH/2;
+
         drills.forEach((drill,di)=>{
-          const dy=y+(di-((drills.length-1)/2))*18;
+          // Spread dots horizontally within the fret area
+          const spread=Math.min(drills.length*12, stringSpacing*0.7);
+          const dx=(di-((drills.length-1)/2))*(drills.length>1?spread/(drills.length-1):0);
+          const dotX=x+dx;
+
           const isDone=completed[drill.id];
-          const r=isDone?7:6;
+          const r=isDone?7:5;
           const fill=isDone?'var(--gold)':'var(--dim)';
           const stroke=isDone?'var(--gold)':'var(--border)';
           const op=isDone?'1':'0.5';
-          svg+='<circle cx="'+fretX+'" cy="'+dy+'" r="'+r+'" fill="'+fill+'" stroke="'+stroke+'" stroke-width="1.5" opacity="'+op+'" style="cursor:pointer" class="drill-dot" data-cat="'+cat.id+'" data-drill="'+drill.id+'"/>';
-          // Label
-          svg+='<text x="'+(fretX+r+6)+'" y="'+(dy+3)+'" style="font-family:DM Sans;font-size:8px;fill:var(--dim);pointer-events:none">'+drill.title.substring(0,25)+(drill.title.length>25?'...':'')+'</text>';
+
+          svg+='<circle cx="'+dotX+'" cy="'+fretY+'" r="'+r+'" fill="'+fill+'" stroke="'+stroke+'" stroke-width="1.5" opacity="'+op+'" style="cursor:pointer" class="drill-dot" data-cat="'+cat.id+'" data-drill="'+drill.id+'"><title>'+drill.title+' ('+drill.style+')</title></circle>';
         });
       });
     });
 
     // Legend
-    const legY=topPad+cats.length*stringSpacing+20;
-    svg+='<circle cx="'+nutX+'" cy="'+legY+'" r="5" fill="var(--gold)"/><text x="'+(nutX+10)+'" y="'+(legY+3)+'" style="font-size:9px;fill:var(--dim)">Complete</text>';
-    svg+='<circle cx="'+(nutX+80)+'" cy="'+legY+'" r="5" fill="var(--dim)" stroke="var(--border)" opacity="0.5"/><text x="'+(nutX+90)+'" y="'+(legY+3)+'" style="font-size:9px;fill:var(--dim)">Not started</text>';
-    svg+='<text x="'+(nutX+180)+'" y="'+(legY+3)+'" style="font-size:8px;fill:var(--dim)">Strings = categories · Frets = difficulty · Dots = drills</text>';
+    const legY=topPad+fretH*3+20;
+    svg+='<circle cx="'+leftPad+'" cy="'+legY+'" r="5" fill="var(--gold)"/><text x="'+(leftPad+10)+'" y="'+(legY+3)+'" style="font-size:9px;fill:var(--dim)">Complete</text>';
+    svg+='<circle cx="'+(leftPad+80)+'" cy="'+legY+'" r="5" fill="var(--dim)" stroke="var(--border)" opacity="0.5"/><text x="'+(leftPad+90)+'" y="'+(legY+3)+'" style="font-size:9px;fill:var(--dim)">Not started</text>';
+    svg+='<text x="'+(leftPad+170)+'" y="'+(legY+3)+'" style="font-size:8px;fill:var(--dim)">Hover dots for drill name · Click to open</text>';
 
     svg+='</svg>';
     return html+svg;
   }
 
+  // Drill detail view
+  window.showDoingDrill=function(catId,drillId){
+    const cat=D.categories.find(c=>c.id===catId);if(!cat)return;
+    const drill=cat.drills.find(d=>d.id===drillId);if(!drill)return;
+    const isDone=completed[drillId];
+    const diffStars='&#9733;'.repeat(drill.difficulty)+'&#9734;'.repeat(3-drill.difficulty);
+    el.innerHTML='<div style="padding:20px;max-width:650px;margin:0 auto">'+
+      '<button onclick="showDoing()" style="background:none;border:1px solid var(--border);color:var(--dim);padding:6px 12px;border-radius:4px;cursor:pointer;font-family:inherit;font-size:0.7rem;margin-bottom:16px">&larr; Back to fretboard</button>'+
+      '<div style="display:flex;align-items:center;gap:12px;margin-bottom:8px">'+
+        '<span style="font-size:1.5rem">'+cat.icon+'</span>'+
+        '<div><h2 style="font-family:Cinzel;color:var(--gold);font-size:1.1rem;margin:0">'+drill.title+'</h2>'+
+        '<div style="display:flex;gap:8px;margin-top:4px">'+
+          '<span style="font-size:0.65rem;color:var(--amber)">'+diffStars+'</span>'+
+          '<span style="font-size:0.65rem;color:var(--dim)">BPM: '+drill.bpm+'</span>'+
+          '<span style="font-size:0.65rem;color:var(--dim)">'+drill.duration+'</span>'+
+          '<span style="font-size:0.65rem;color:var(--dim)">'+drill.style+'</span>'+
+        '</div></div>'+
+      '</div>'+
+      '<div style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:20px;margin-top:12px;line-height:1.7;font-size:0.85rem;color:var(--text)">'+
+        drill.body+
+      '</div>'+
+      '<div style="margin-top:16px;display:flex;gap:8px">'+
+        '<button onclick="completeDoingDrill(\''+catId+'\',\''+drillId+'\')" style="flex:1;background:'+(isDone?'var(--card)':'var(--gold)')+';color:'+(isDone?'var(--gold)':'var(--bg)')+';border:'+(isDone?'1px solid var(--gold)':'none')+';padding:12px;border-radius:8px;font-family:Cinzel;font-size:0.85rem;cursor:pointer">'+(isDone?'✓ Completed':'Mark Complete')+'</button>'+
+      '</div>'+
+    '</div>';
+  };
+
   el.innerHTML='<div style="padding:16px;max-width:700px;margin:0 auto">'+
     '<div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">'+
-      '<span style="font-size:20px">✋</span>'+
+      '<span style="font-size:20px">&#9996;</span>'+
       '<div><h2 style="font-family:Cinzel;color:var(--gold);font-size:1.1rem;margin:0">'+D.title+'</h2>'+
       '<p style="color:var(--dim);font-size:0.7rem;margin:0">'+D.description+'</p></div>'+
-      '<button onclick="document.querySelectorAll(\'.pnl\').forEach(p=>p.classList.remove(\'on\'));document.getElementById(\'p-map\').classList.add(\'on\')" style="margin-left:auto;background:none;border:1px solid var(--border);color:var(--dim);padding:6px 12px;border-radius:4px;cursor:pointer;font-family:inherit;font-size:0.7rem">✕</button>'+
+      '<button onclick="document.querySelectorAll(\'.pnl\').forEach(p=>p.classList.remove(\'on\'));document.getElementById(\'p-map\').classList.add(\'on\')" style="margin-left:auto;background:none;border:1px solid var(--border);color:var(--dim);padding:6px 12px;border-radius:4px;cursor:pointer;font-family:inherit;font-size:0.7rem">&times;</button>'+
     '</div>'+
     '<div id="doing-fretboard">'+renderFretboard()+'</div>'+
     '<div style="margin-top:12px;padding-top:10px;border-top:1px solid var(--border)">'+
-      '<p style="font-size:0.6rem;color:var(--dim)">Sources: '+D.sources.join(' · ')+'</p>'+
+      '<p style="font-size:0.6rem;color:var(--dim)">Sources: '+D.sources.join(' &middot; ')+'</p>'+
     '</div>'+
   '</div>';
 
-  // Style filter click
+  // Bind style filter clicks
   el.querySelectorAll('.style-filter').forEach(btn=>{
     btn.onclick=function(){
-      activeStyle=this.dataset.style||'all';
+      activeStyle=this.getAttribute('data-style')||'all';
       document.getElementById('doing-fretboard').innerHTML=renderFretboard();
-      // Rebind drill clicks
-      bindDrillClicks();
+      bindDots();
     };
   });
 
-  function bindDrillClicks(){
+  function bindDots(){
     el.querySelectorAll('.drill-dot').forEach(dot=>{
-      dot.onclick=function(){showDoingDrill(this.dataset.cat,this.dataset.drill);};
+      dot.onclick=function(){showDoingDrill(this.getAttribute('data-cat'),this.getAttribute('data-drill'));};
     });
   }
-  bindDrillClicks();
+  bindDots();
 }
 
 
