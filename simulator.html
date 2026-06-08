@@ -671,15 +671,15 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;dis
 <script src="assets/js/create.js"></script>
 <script>
 const NODE_DATA = {
-  hearth: { emoji:'🔥', tag:'ORIGIN', title:'The Hearth', desc:'Your progress dashboard. See how you\'re doing across all paths.', enter:true, action:'hearth' },
-  foundation: { emoji:'🏗️', tag:'HOME NODE', title:'Foundation', desc:'Before you play a note — learn how learning works, how to hold the guitar, tune it, and produce your first clean sound. 7 core topics.', enter:true, action:'foundation', icon:'images/foundation-icon.png' },
-  mastery: { emoji:'👑', tag:'FINAL', title:'Mastery', desc:'Come home to yourself. What is YOUR sound? The student becomes the artist.', enter:false, locked:true },
-  doing: { emoji:'✋', tag:'DOING PATH', title:'Doing', desc:'Open-world drill library. Full library of drills, skills, and practical exercises, categorised. Revisit anything anytime.', enter:true, action:'doing' },
-  practise: { emoji:'🔁', tag:'DOING PATH', title:'Practise', desc:'Session-based. "How much time have you got?" Select drills, combine variations, timer starts, practise, give feedback.', enter:true, action:'practice' },
-  play: { emoji:'🎸', tag:'DOING PATH', title:'Play', desc:'Songs, genres, backing tracks, playing along with other instruments. Discover YOUR sound. Collab lives here.', enter:true, action:'play' },
-  knowing: { emoji:'📖', tag:'KNOWING PATH', title:'Knowing', desc:'All music theory, categorised beautifully. Always accessible like an encyclopedia. Understand the why.', enter:true, action:'knowing' },
-  study: { emoji:'📝', tag:'KNOWING PATH', title:'Study', desc:'Your lab. Notes, aha moments, gaps & questions. Where your own discoveries live.', enter:false },
-  create: { emoji:'✨', tag:'KNOWING PATH', title:'Create', desc:'Write your own music. Arrange songs for solo guitar. Record yourself. The student becomes the creator.', enter:true, action:'create' }
+  hearth: { emoji:'', tag:'ORIGIN', title:'The Hearth', desc:'Your progress dashboard. See how you\'re doing across all paths.', enter:true, action:'hearth' },
+  foundation: { emoji:'', tag:'HOME NODE', title:'Foundation', desc:'Before you play a note — learn how learning works, how to hold the guitar, tune it, and produce your first clean sound. 7 core topics.', enter:true, action:'foundation', icon:'images/foundation-icon.png' },
+  mastery: { emoji:'', tag:'FINAL', title:'Mastery', desc:'Come home to yourself. What is YOUR sound? The student becomes the artist.', enter:false, locked:true },
+  doing: { emoji:'', tag:'DOING PATH', title:'Doing', desc:'Open-world drill library. Full library of drills, skills, and practical exercises, categorised. Revisit anything anytime.', enter:true, action:'doing' },
+  practise: { emoji:'', tag:'DOING PATH', title:'Practise', desc:'Session-based. "How much time have you got?" Select drills, combine variations, timer starts, practise, give feedback.', enter:true, action:'practice' },
+  play: { emoji:'', tag:'DOING PATH', title:'Play', desc:'Songs, genres, backing tracks, playing along with other instruments. Discover YOUR sound. Collab lives here.', enter:true, action:'play' },
+  knowing: { emoji:'', tag:'KNOWING PATH', title:'Knowing', desc:'All music theory, categorised beautifully. Always accessible like an encyclopedia. Understand the why.', enter:true, action:'knowing' },
+  study: { emoji:'', tag:'KNOWING PATH', title:'Study', desc:'Your lab. Notes, aha moments, gaps & questions. Where your own discoveries live.', enter:false },
+  create: { emoji:'', tag:'KNOWING PATH', title:'Create', desc:'Write your own music. Arrange songs for solo guitar. Record yourself. The student becomes the creator.', enter:true, action:'create' }
 };
 
 let _activeNode = null;
@@ -1072,7 +1072,7 @@ function showDoing(){
       svg+='<line x1="'+x+'" y1="'+(topPad-5)+'" x2="'+x+'" y2="'+(topPad+fretH*3)+'" stroke="var(--gold)" stroke-width="'+(1.5+si*0.15)+'" opacity="0.15"/>';
 
       // Category label (top, rotated)
-      svg+='<text x="'+x+'" y="'+(topPad-15)+'" text-anchor="middle" style="font-family:Cinzel;font-size:10px;fill:'+(anyDone?'var(--gold)':'var(--text)')+';font-weight:'+(anyDone?'700':'400')+'">'+cat.icon+' '+cat.title+'</text>';
+      svg+='<text x="'+x+'" y="'+(topPad-15)+'" text-anchor="middle" style="font-family:Cinzel;font-size:10px;fill:'+(anyDone?'var(--gold)':'var(--text)')+';font-weight:'+(anyDone?'700':'400')+'">'+cat.title+'</text>';
     });
 
     // Place dots on the fretboard
@@ -1124,7 +1124,7 @@ function showDoing(){
     el.innerHTML='<div style="padding:20px;max-width:650px;margin:0 auto">'+
       '<button onclick="showDoing()" style="background:none;border:1px solid var(--border);color:var(--dim);padding:6px 12px;border-radius:4px;cursor:pointer;font-family:inherit;font-size:0.7rem;margin-bottom:16px">&larr; Back to fretboard</button>'+
       '<div style="display:flex;align-items:center;gap:12px;margin-bottom:8px">'+
-        '<span style="font-size:1.5rem">'+cat.icon+'</span>'+
+        ''+
         '<div><h2 style="font-family:Cinzel;color:var(--gold);font-size:1.1rem;margin:0">'+drill.title+'</h2>'+
         '<div style="display:flex;gap:8px;margin-top:4px">'+
           '<span style="font-size:0.65rem;color:var(--amber)">'+diffStars+'</span>'+
@@ -1194,7 +1194,7 @@ function showKnowing(){
     '<div class="fl-topics">'+
       K.categories.map(cat=>'<div style="margin-bottom:16px">'+
         '<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">'+
-          '<span style="font-size:1.1rem">'+cat.icon+'</span>'+
+          ''+
           '<span style="font-family:Cinzel;font-size:0.9rem;color:var(--gold)">'+cat.title+'</span>'+
         '</div>'+
         '<p style="font-size:0.7rem;color:var(--dim);margin:0 0 8px 0">'+cat.description+'</p>'+
@@ -1251,7 +1251,7 @@ function showPractice(){
       '<div style="margin-bottom:20px">'+
         '<h3 style="font-family:Cinzel;color:var(--gold);font-size:0.9rem;margin-bottom:10px">Session Types</h3>'+
         P.sessionTypes.map(s=>'<div class="fl-topic" onclick="showPracticeSession(\''+s.id+'\')">'+
-          '<div class="fl-topic-num">'+s.icon+'</div>'+
+          '<div class="fl-topic-num">'+(P.sessionTypes.indexOf(s)+1)+'</div>'+
           '<div class="fl-topic-content">'+
             '<h4>'+s.title+' — '+s.duration+'</h4>'+
             '<div class="fl-t-sub">'+s.description+'</div>'+
@@ -1265,7 +1265,7 @@ function showPractice(){
           '<p style="font-size:0.75rem;color:var(--text);margin:0 0 8px 0">'+P.weeklyProgramme.description+'</p>'+
           '<p style="font-size:0.65rem;color:var(--dim);margin:0 0 10px 0">BPM: '+P.weeklyProgramme.bpmRange+' · Styles: '+P.weeklyProgramme.styles+'</p>'+
           P.weeklyProgramme.schedule.map(d=>'<div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--border)">'+
-            '<span>'+d.icon+'</span>'+
+            ''+
             '<span style="font-family:Cinzel;font-size:0.75rem;color:var(--text);width:90px">'+d.day+'</span>'+
             '<span style="font-size:0.7rem;color:var(--dim)">'+d.technique+'</span>'+
           '</div>').join('')+
@@ -1312,7 +1312,7 @@ function showPlay(){
     '<div class="fl-topics">'+
       PL.genres.map(g=>'<div style="margin-bottom:16px">'+
         '<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">'+
-          '<span style="font-size:1.1rem">'+g.icon+'</span>'+
+          ''+
           '<span style="font-family:Cinzel;font-size:0.9rem;color:'+g.color+'">'+g.title+'</span>'+
           '<span style="font-size:0.6rem;color:var(--dim);margin-left:auto">'+g.difficulty+'</span>'+
         '</div>'+
@@ -1364,7 +1364,7 @@ function showCreate(){
     '<div class="fl-topics">'+
       C.categories.map(cat=>'<div style="margin-bottom:16px">'+
         '<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">'+
-          '<span style="font-size:1.1rem">'+cat.icon+'</span>'+
+          ''+
           '<span style="font-family:Cinzel;font-size:0.9rem;color:var(--gold)">'+cat.title+'</span>'+
         '</div>'+
         '<p style="font-size:0.7rem;color:var(--dim);margin:0 0 8px 0">'+cat.description+'</p>'+

@@ -25,7 +25,7 @@ const DOING = {
     {
       id: 'picking',
       title: 'Picking',
-      icon: '🎸',
+      icon: '',
       styles: ['rock','blues','jazz','metal','country'],
       drills: [
         { id:'alt-1', title:'Alternate Picking — Single String', difficulty:1, bpm:'60-100', duration:'5 min', source:'Guitar Aerobics (Mon)', style:'rock', body:'<p>Start on low E. Down-up-down-up. Focus on even volume. Small motion — pick moves 2-3mm.</p><p><strong>Exercise:</strong> Open E, 4 cycles per fret. Frets 0-1-2-3-4-5. Reverse. Metronome on.</p>' },
@@ -41,7 +41,7 @@ const DOING = {
     {
       id: 'fretting',
       title: 'Fretting',
-      icon: '✋',
+      icon: '',
       styles: ['rock','classical','jazz','blues'],
       drills: [
         { id:'chrom-1', title:'1-2-3-4 Chromatic Exercise', difficulty:1, bpm:'60-120', duration:'5 min', source:'Cary White', style:'rock', body:'<p>Index=1, Middle=2, Ring=3, Pinky=4. All 6 strings, shift up the neck. Fingers stay close to fretboard.</p>' },
@@ -57,7 +57,7 @@ const DOING = {
     {
       id: 'rhythm',
       title: 'Rhythm',
-      icon: '🥁',
+      icon: '',
       styles: ['funk','rock','blues','latin','reggae'],
       drills: [
         { id:'16th-1', title:'16th Note Subdivision', difficulty:1, bpm:'60-100', duration:'5 min', source:'Berklee Phase 2', style:'rock', body:'<p>Count: 1-e-&-a. Play one note per subdivision. Accent beat 1, then "&"s, then "a"s.</p>' },
@@ -73,7 +73,7 @@ const DOING = {
     {
       id: 'scales',
       title: 'Scales',
-      icon: '🎵',
+      icon: '',
       styles: ['rock','blues','jazz','metal','classical','flamenco'],
       drills: [
         { id:'pent-1', title:'Minor Pentatonic — Box 1', difficulty:1, bpm:'60-100', duration:'5 min', source:'Exercises For Dummies', style:'blues', body:'<p>A minor pentatonic at fret 5. The rock/blues staple. Up and down, one note per beat.</p>' },
@@ -91,7 +91,7 @@ const DOING = {
     {
       id: 'arpeggios',
       title: 'Arpeggios',
-      icon: '🔺',
+      icon: '',
       styles: ['rock','jazz','classical','metal'],
       drills: [
         { id:'maj-arp', title:'Major Arpeggio — 3 Notes', difficulty:1, bpm:'60-90', duration:'5 min', source:'Guitar Aerobics (Thu)', style:'rock', body:'<p>Root-3rd-5th. C-E-G. Play each note individually, let ring. 2 octaves.</p>' },
@@ -106,7 +106,7 @@ const DOING = {
     {
       id: 'speed',
       title: 'Speed Mechanics',
-      icon: '⚡',
+      icon: '',
       styles: ['metal','rock','jazz'],
       drills: [
         { id:'trem-1', title:'Tremolo Picking — Single Note', difficulty:2, bpm:'100-200', duration:'5 min', source:'Stetina — Speed Mechanics', style:'metal', body:'<p>Pick one note as fast as you can, evenly. Start slow, increase. The foundation of speed.</p>' },
@@ -120,7 +120,7 @@ const DOING = {
     {
       id: 'styles',
       title: 'Style Techniques',
-      icon: '🎭',
+      icon: '',
       styles: ['flamenco','classical','slide','brazilian','gypsy','celtic'],
       drills: [
         { id:'rasg-1', title:'Rasgueado — Flamenco Strum', difficulty:2, bpm:'60-90', duration:'8 min', source:'General knowledge', style:'flamenco', body:'<p>Fingers fire outward in rapid succession: pinky-ring-middle-index. Creates a explosive, percussive strum. The flamenco signature.</p>' },
