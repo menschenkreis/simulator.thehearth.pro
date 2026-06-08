@@ -700,7 +700,7 @@ function enterNode() {
 // ═══ THEME SYSTEM ═══
 function setTheme(mode) {
   document.documentElement.setAttribute('data-theme', mode);
-  localStorage.setItem('hearth-theme', mode);
+  localStorage.setItem('hearth-theme-v2', mode);
   // SVG background rect needs direct style (SVG rect doesn't use CSS vars)
   var svgBg = document.querySelector('.map-svg rect');
   var bgColors = {standard:'#0d0b08',sparks:'#FFF8F0',flames:'#F8F5F0'};
@@ -712,11 +712,11 @@ function setTheme(mode) {
   }
 }
 (function(){
-  var saved = localStorage.getItem('hearth-theme');
+  var saved = localStorage.getItem('hearth-theme-v2');
   // If no saved preference, use HTML attribute as default
   var theme = saved || 'sparks';
   document.documentElement.setAttribute('data-theme', theme);
-  localStorage.setItem('hearth-theme', theme);
+  localStorage.setItem('hearth-theme-v2', theme);
   var sel = document.getElementById('mode-select');
   if (sel) sel.value = theme;
   setTheme(theme);
