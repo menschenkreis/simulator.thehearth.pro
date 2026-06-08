@@ -276,7 +276,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;dis
   body{flex-direction:column;}
   .top{display:flex;z-index:101;}
   .main-wrap{display:flex;flex:1;overflow:hidden;}
-  .bot{position:static;width:220px !important;min-width:220px !important;flex-direction:column;justify-content:flex-start;border-top:none;border-right:1px solid var(--border);border-bottom:none;padding:16px 0;gap:0;box-shadow:none;background:var(--panel);flex-shrink:0;overflow-y:auto;}
+  .bot{position:static;width:240px;min-width:240px;height:auto;min-height:0;flex-direction:column;justify-content:flex-start;border-top:none;border-right:1px solid var(--border);border-bottom:none;padding:16px 0;gap:0;box-shadow:none;background:var(--panel);flex-shrink:0;overflow:visible;}
   .bt{flex-direction:row;gap:10px;padding:14px 18px;width:100%;height:auto;min-width:unset;border-radius:0;justify-content:flex-start;border-left:3px solid transparent;transition:all 0.15s;}
   .bt:hover{background:rgba(212,175,105,0.04);border-left-color:rgba(212,175,105,0.3);}
   .bt:active,.bt.on{background:rgba(212,175,105,0.08);border-left-color:var(--gold);}
@@ -316,7 +316,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;dis
 <div class="main-wrap">
 
 <!-- TOOLBAR -->
-<div class="bot" style="width:220px;min-width:220px;flex-shrink:0;">
+<div class="bot" style="width:240px;min-width:240px;flex-shrink:0;overflow:visible;">
   <div class="bt on" data-t="map" onclick="sw('map')"><span class="bi">🗺️</span><span class="bl">Map</span></div>
   <div class="bt" data-t="lesson" onclick="sw('lesson')"><span class="bi">📜</span><span class="bl">Learn</span></div>
   <div class="bt" data-t="drill" onclick="sw('drill')"><span class="bi">🎯</span><span class="bl">Drill</span></div>
