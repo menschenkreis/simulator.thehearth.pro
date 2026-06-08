@@ -277,7 +277,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;dis
           <path class="mn-conn" d="M265,330 Q180,290 110,250" style="stroke:#e8a020;opacity:0.25"/><!-- Center → Doing -->
           <path class="mn-conn" d="M265,400 Q180,330 110,250" style="stroke:#e8a020;opacity:0.25"/><!-- Center → Doing -->
           <path class="mn-conn" d="M265,400 Q220,340 188,290" style="stroke:#e8a020;opacity:0.25"/><!-- Center → Practise -->
-          <path class="mn-conn" d="M188,290 L30,500" style="stroke:#5a9fd4;opacity:0.25"/><!-- Practise → Play -->
+          <path class="mn-conn" d="M205,335 L30,500" style="stroke:#5a9fd4;opacity:0.25"/><!-- Practise → Play -->
           <path class="mn-conn" d="M30,500 Q130,590 270,600" style="stroke:#5a9fd4;opacity:0.15;stroke-dasharray:3 3"/><!-- Play → Collab (convergence) -->
 
           <!-- Foundation → Knowing -->
@@ -286,7 +286,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;dis
           <path class="mn-conn" d="M335,330 Q420,290 490,250" style="stroke:#e8a020;opacity:0.25"/><!-- Center → Knowing -->
           <path class="mn-conn" d="M335,400 Q420,330 490,250" style="stroke:#e8a020;opacity:0.25"/><!-- Center → Knowing -->
           <path class="mn-conn" d="M335,400 Q380,340 412,290" style="stroke:#e8a020;opacity:0.25"/><!-- Center → Study -->
-          <path class="mn-conn" d="M412,290 L570,500" style="stroke:#5a9fd4;opacity:0.25"/><!-- Study → Create -->
+          <path class="mn-conn" d="M395,335 L570,500" style="stroke:#5a9fd4;opacity:0.25"/><!-- Study → Create -->
           <path class="mn-conn" d="M570,500 Q470,590 330,600" style="stroke:#5a9fd4;opacity:0.15;stroke-dasharray:3 3"/><!-- Create → Collab (convergence) -->
         </g>
 
@@ -378,11 +378,11 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;dis
 
         <!-- PRACTISE — on the midpoint of Doing↔Hearth line -->
         <g class="mn-g unlocked" onclick="showNodeInfo('practise')" data-node="practise">
-          <circle cx="188" cy="290" r="20" fill="url(#nodeGlowOrange)"/>
-          <circle class="mn-ring" cx="188" cy="290" r="16" stroke="#e8a020" stroke-width="1.5"/>
-          <text x="188" y="295" text-anchor="middle" font-size="11">🔁</text>
-          <text class="mn-label" x="188" y="318">PRACTISE</text>
-          <text class="mn-sublabel" x="188" y="327">timed sessions</text>
+          <circle cx="205" cy="335" r="20" fill="url(#nodeGlowOrange)"/>
+          <circle class="mn-ring" cx="205" cy="335" r="16" stroke="#e8a020" stroke-width="1.5"/>
+          <text x="205" y="340" text-anchor="middle" font-size="11">🔁</text>
+          <text class="mn-label" x="205" y="363">PRACTISE</text>
+          <text class="mn-sublabel" x="205" y="372">timed sessions</text>
         </g>
 
         <!-- PLAY — mirrored angle from Practise, same as Foundation→Doing -->
@@ -407,11 +407,11 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;dis
 
         <!-- STUDY — on the midpoint of Knowing↔Hearth line -->
         <g class="mn-g unlocked" onclick="showNodeInfo('study')" data-node="study">
-          <circle cx="412" cy="290" r="20" fill="url(#nodeGlowOrange)"/>
-          <circle class="mn-ring" cx="412" cy="290" r="16" stroke="#e8a020" stroke-width="1.5"/>
-          <text x="412" y="295" text-anchor="middle" font-size="11">📝</text>
-          <text class="mn-label" x="412" y="318">STUDY</text>
-          <text class="mn-sublabel" x="412" y="327">your lab</text>
+          <circle cx="395" cy="335" r="20" fill="url(#nodeGlowOrange)"/>
+          <circle class="mn-ring" cx="395" cy="335" r="16" stroke="#e8a020" stroke-width="1.5"/>
+          <text x="395" y="340" text-anchor="middle" font-size="11">📝</text>
+          <text class="mn-label" x="395" y="363">STUDY</text>
+          <text class="mn-sublabel" x="395" y="372">your lab</text>
         </g>
 
         <!-- CREATE — mirrored angle from Study, same as Foundation→Knowing -->
