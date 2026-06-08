@@ -712,11 +712,14 @@ function setTheme(mode) {
   }
 }
 (function(){
-  var saved = localStorage.getItem('hearth-theme') || 'sparks';
-  document.documentElement.setAttribute('data-theme', saved);
+  var saved = localStorage.getItem('hearth-theme');
+  // If no saved preference, use HTML attribute as default
+  var theme = saved || 'sparks';
+  document.documentElement.setAttribute('data-theme', theme);
+  localStorage.setItem('hearth-theme', theme);
   var sel = document.getElementById('mode-select');
-  if (sel) sel.value = saved;
-  setTheme(saved);
+  if (sel) sel.value = theme;
+  setTheme(theme);
 })();
 
 // Legacy compat
