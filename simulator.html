@@ -657,17 +657,20 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;dis
 <script src="assets/js/foundation.js"></script>
 <script src="assets/js/doing.js"></script>
 <script src="assets/js/knowing.js"></script>
+<script src="assets/js/practice.js"></script>
+<script src="assets/js/play.js"></script>
+<script src="assets/js/create.js"></script>
 <script>
 const NODE_DATA = {
   hearth: { emoji:'🔥', tag:'ORIGIN', title:'The Hearth', desc:'Your progress dashboard. See how you\'re doing across all paths.', enter:true, action:'hearth' },
   foundation: { emoji:'🏰', tag:'HOME NODE', title:'Foundation', desc:'Before you play a note — learn how learning works, how to hold the guitar, tune it, and produce your first clean sound. 7 core topics.', enter:true, action:'foundation' },
   mastery: { emoji:'👑', tag:'FINAL', title:'Mastery', desc:'Come home to yourself. What is YOUR sound? The student becomes the artist.', enter:false, locked:true },
   doing: { emoji:'✋', tag:'DOING PATH', title:'Doing', desc:'Open-world drill library. Full library of drills, skills, and practical exercises, categorised. Revisit anything anytime.', enter:true, action:'doing' },
-  practise: { emoji:'🔁', tag:'DOING PATH', title:'Practise', desc:'Session-based. "How much time have you got?" Select drills, combine variations, timer starts, practise, give feedback.', enter:false },
-  play: { emoji:'🎸', tag:'DOING PATH', title:'Play', desc:'Songs, genres, backing tracks, playing along with other instruments. Discover YOUR sound. Collab lives here.', enter:false },
+  practise: { emoji:'🔁', tag:'DOING PATH', title:'Practise', desc:'Session-based. "How much time have you got?" Select drills, combine variations, timer starts, practise, give feedback.', enter:true, action:'practice' },
+  play: { emoji:'🎸', tag:'DOING PATH', title:'Play', desc:'Songs, genres, backing tracks, playing along with other instruments. Discover YOUR sound. Collab lives here.', enter:true, action:'play' },
   knowing: { emoji:'📖', tag:'KNOWING PATH', title:'Knowing', desc:'All music theory, categorised beautifully. Always accessible like an encyclopedia. Understand the why.', enter:true, action:'knowing' },
   study: { emoji:'📝', tag:'KNOWING PATH', title:'Study', desc:'Your lab. Notes, aha moments, gaps & questions. Where your own discoveries live.', enter:false },
-  create: { emoji:'✨', tag:'KNOWING PATH', title:'Create', desc:'Guided creation. Write your own music. Record it. Listen back. The student becomes the creator.', enter:false }
+  create: { emoji:'✨', tag:'KNOWING PATH', title:'Create', desc:'Write your own music. Arrange songs for solo guitar. Record yourself. The student becomes the creator.', enter:true, action:'create' }
 };
 
 let _activeNode = null;
@@ -699,6 +702,9 @@ function enterNode() {
   else if (data.action === 'hearth') showHearth();
   else if (data.action === 'doing') showDoing();
   else if (data.action === 'knowing') showKnowing();
+  else if (data.action === 'practice') showPractice();
+  else if (data.action === 'play') showPlay();
+  else if (data.action === 'create') showCreate();
 }
 
 // ═══ THEME SYSTEM ═══
@@ -1086,6 +1092,166 @@ function showKnowingTopic(catId, topicId){
       '<button onclick="showKnowing()" style="background:none;border:1px solid var(--border);color:var(--dim);padding:4px 10px;border-radius:4px;cursor:pointer;font-family:inherit;font-size:0.65rem;margin-bottom:12px">← '+cat.title+'</button>'+
       '<h3>'+topic.title+'</h3>'+
       '<div style="margin-bottom:10px"><span class="tag">'+diffStars+'</span><span class="tag">'+topic.source+'</span></div>'+
+      topic.body+
+    '</div>'+
+  '</div>';
+}
+
+function showPractice(){
+  document.querySelectorAll('.pnl').forEach(p=>p.classList.remove('on'));
+  document.getElementById('p-foundation').classList.add('on');
+  const P=window.PRACTICE;if(!P)return;
+  const el=document.getElementById('p-foundation');
+  let html='<div class="foundation-landing">'+
+    '<div class="fl-hero">'+
+      '<div class="fl-sub">'+P.tag+'</div>'+
+      '<h2>'+P.title+'</h2>'+
+      '<p class="fl-desc">'+P.description+'</p>'+
+    '</div>'+
+    '<div class="fl-topics">'+
+      '<div style="margin-bottom:20px">'+
+        '<h3 style="font-family:Cinzel;color:var(--gold);font-size:0.9rem;margin-bottom:10px">Session Types</h3>'+
+        P.sessionTypes.map(s=>'<div class="fl-topic" onclick="showPracticeSession(\''+s.id+'\')">'+
+          '<div class="fl-topic-num">'+s.icon+'</div>'+
+          '<div class="fl-topic-content">'+
+            '<h4>'+s.title+' — '+s.duration+'</h4>'+
+            '<div class="fl-t-sub">'+s.description+'</div>'+
+          '</div>'+
+          '<div class="fl-t-status">→</div>'+
+        '</div>').join('')+
+      '</div>'+
+      '<div style="margin-bottom:20px">'+
+        '<h3 style="font-family:Cinzel;color:var(--gold);font-size:0.9rem;margin-bottom:10px">52-Week Programme</h3>'+
+        '<div style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:14px">'+
+          '<p style="font-size:0.75rem;color:var(--text);margin:0 0 8px 0">'+P.weeklyProgramme.description+'</p>'+
+          '<p style="font-size:0.65rem;color:var(--dim);margin:0 0 10px 0">BPM: '+P.weeklyProgramme.bpmRange+' · Styles: '+P.weeklyProgramme.styles+'</p>'+
+          P.weeklyProgramme.schedule.map(d=>'<div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--border)">'+
+            '<span>'+d.icon+'</span>'+
+            '<span style="font-family:Cinzel;font-size:0.75rem;color:var(--text);width:90px">'+d.day+'</span>'+
+            '<span style="font-size:0.7rem;color:var(--dim)">'+d.technique+'</span>'+
+          '</div>').join('')+
+        '</div>'+
+      '</div>'+
+    '</div>'+
+    '<div class="fl-source"><p class="fl-s-label">SOURCES</p><p>'+P.sources.join('<br>')+'</p></div>'+
+  '</div>';
+  el.innerHTML=html;
+}
+
+function showPracticeSession(id){
+  const P=window.PRACTICE;if(!P)return;
+  const s=P.sessionTypes.find(x=>x.id===id);if(!s)return;
+  const el=document.getElementById('p-foundation');
+  el.innerHTML='<div class="lp-lesson">'+
+    '<div class="ls-body">'+
+      '<button onclick="showPractice()" style="background:none;border:1px solid var(--border);color:var(--dim);padding:4px 10px;border-radius:4px;cursor:pointer;font-family:inherit;font-size:0.65rem;margin-bottom:12px">← Sessions</button>'+
+      '<h3>'+s.icon+' '+s.title+' — '+s.duration+'</h3>'+
+      '<p style="font-size:0.8rem;color:var(--dim);margin-bottom:16px">'+s.description+'</p>'+
+      s.drills.map((d,i)=>'<div style="display:flex;align-items:center;gap:10px;padding:10px;background:var(--card);border:1px solid var(--border);border-radius:6px;margin-bottom:6px">'+
+        '<span style="font-family:JetBrains Mono;font-size:0.7rem;color:var(--gold);opacity:0.5">'+d.time+'min</span>'+
+        '<span style="font-size:0.8rem;color:var(--text)">'+d.name+'</span>'+
+      '</div>').join('')+
+      '<div style="margin-top:16px;padding:14px;background:var(--card);border:1px solid var(--gold);border-radius:8px;text-align:center">'+
+        '<p style="font-family:Cinzel;color:var(--gold);font-size:0.85rem;margin:0">Total: '+s.duration+'</p>'+
+        '<p style="font-size:0.65rem;color:var(--dim);margin:4px 0 0 0">Start when ready</p>'+
+      '</div>'+
+    '</div>'+
+  '</div>';
+}
+
+function showPlay(){
+  document.querySelectorAll('.pnl').forEach(p=>p.classList.remove('on'));
+  document.getElementById('p-foundation').classList.add('on');
+  const PL=window.PLAY;if(!PL)return;
+  const el=document.getElementById('p-foundation');
+  el.innerHTML='<div class="foundation-landing">'+
+    '<div class="fl-hero">'+
+      '<div class="fl-sub">'+PL.tag+'</div>'+
+      '<h2>'+PL.title+'</h2>'+
+      '<p class="fl-desc">'+PL.description+'</p>'+
+    '</div>'+
+    '<div class="fl-topics">'+
+      PL.genres.map(g=>'<div style="margin-bottom:16px">'+
+        '<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">'+
+          '<span style="font-size:1.1rem">'+g.icon+'</span>'+
+          '<span style="font-family:Cinzel;font-size:0.9rem;color:'+g.color+'">'+g.title+'</span>'+
+          '<span style="font-size:0.6rem;color:var(--dim);margin-left:auto">'+g.difficulty+'</span>'+
+        '</div>'+
+        '<p style="font-size:0.7rem;color:var(--dim);margin:0 0 8px 0">'+g.description+'</p>'+
+        g.songs.map(s=>'<div class="fl-topic" onclick="showPlaySong(\''+g.id+'\',\''+s.title.replace("'","\\'")+'\')">'+
+          '<div class="fl-topic-content">'+
+            '<h4>'+s.title+'</h4>'+
+            '<div class="fl-t-sub">'+('★'.repeat(s.difficulty))+('☆'.repeat(3-s.difficulty))+' · '+s.source+'</div>'+
+          '</div>'+
+          '<div class="fl-t-status">→</div>'+
+        '</div>').join('')+
+      '</div>').join('')+
+    '</div>'+
+    '<div class="fl-source"><p class="fl-s-label">SOURCES</p><p>'+PL.sources.join('<br>')+'</p></div>'+
+  '</div>';
+}
+
+function showPlaySong(genreId, songTitle){
+  const PL=window.PLAY;if(!PL)return;
+  const g=PL.genres.find(x=>x.id===genreId);if(!g)return;
+  const s=g.songs.find(x=>x.title===songTitle);if(!s)return;
+  const el=document.getElementById('p-foundation');
+  el.innerHTML='<div class="lp-lesson">'+
+    '<div class="ls-body">'+
+      '<button onclick="showPlay()" style="background:none;border:1px solid var(--border);color:var(--dim);padding:4px 10px;border-radius:4px;cursor:pointer;font-family:inherit;font-size:0.65rem;margin-bottom:12px">← '+g.title+'</button>'+
+      '<h3>'+g.icon+' '+s.title+'</h3>'+
+      '<div style="margin-bottom:10px"><span class="tag">'+('★'.repeat(s.difficulty))+('☆'.repeat(3-s.difficulty))+'</span><span class="tag">'+s.source+'</span></div>'+
+      '<div class="ctx"><p>GENRE: '+g.title+' · SOURCE: '+s.source+'</p></div>'+
+      '<p style="font-size:0.85rem;color:var(--text);line-height:1.6">This song is from the '+g.title.toLowerCase()+' tradition. The full lesson content, sheet music, and backing tracks will be loaded from the source material when you\'re ready to play.</p>'+
+      '<div style="margin-top:16px;padding:14px;background:var(--card);border:1px solid var(--gold);border-radius:8px;text-align:center">'+
+        '<p style="font-family:Cinzel;color:var(--gold);font-size:0.85rem;margin:0">Ready to play?</p>'+
+        '<p style="font-size:0.65rem;color:var(--dim);margin:4px 0 0 0">Connect your guitar and let\'s go</p>'+
+      '</div>'+
+    '</div>'+
+  '</div>';
+}
+
+function showCreate(){
+  document.querySelectorAll('.pnl').forEach(p=>p.classList.remove('on'));
+  document.getElementById('p-foundation').classList.add('on');
+  const C=window.CREATE;if(!C)return;
+  const el=document.getElementById('p-foundation');
+  el.innerHTML='<div class="foundation-landing">'+
+    '<div class="fl-hero">'+
+      '<div class="fl-sub">'+C.tag+'</div>'+
+      '<h2>'+C.title+'</h2>'+
+      '<p class="fl-desc">'+C.description+'</p>'+
+    '</div>'+
+    '<div class="fl-topics">'+
+      C.categories.map(cat=>'<div style="margin-bottom:16px">'+
+        '<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">'+
+          '<span style="font-size:1.1rem">'+cat.icon+'</span>'+
+          '<span style="font-family:Cinzel;font-size:0.9rem;color:var(--gold)">'+cat.title+'</span>'+
+        '</div>'+
+        '<p style="font-size:0.7rem;color:var(--dim);margin:0 0 8px 0">'+cat.description+'</p>'+
+        cat.topics.map(t=>'<div class="fl-topic" onclick="showCreateTopic(\''+cat.id+'\',\''+t.id+'\')">'+
+          '<div class="fl-topic-content">'+
+            '<h4>'+t.title+'</h4>'+
+            '<div class="fl-t-sub">'+('★'.repeat(t.difficulty))+('☆'.repeat(3-t.difficulty))+' · '+t.source+'</div>'+
+          '</div>'+
+          '<div class="fl-t-status">→</div>'+
+        '</div>').join('')+
+      '</div>').join('')+
+    '</div>'+
+    '<div class="fl-source"><p class="fl-s-label">SOURCES</p><p>'+C.sources.join('<br>')+'</p></div>'+
+  '</div>';
+}
+
+function showCreateTopic(catId, topicId){
+  const C=window.CREATE;if(!C)return;
+  const cat=C.categories.find(x=>x.id===catId);if(!cat)return;
+  const topic=cat.topics.find(t=>t.id===topicId);if(!topic)return;
+  const el=document.getElementById('p-foundation');
+  el.innerHTML='<div class="lp-lesson">'+
+    '<div class="ls-body">'+
+      '<button onclick="showCreate()" style="background:none;border:1px solid var(--border);color:var(--dim);padding:4px 10px;border-radius:4px;cursor:pointer;font-family:inherit;font-size:0.65rem;margin-bottom:12px">← '+cat.title+'</button>'+
+      '<h3>'+topic.title+'</h3>'+
+      '<div style="margin-bottom:10px"><span class="tag">'+('★'.repeat(topic.difficulty))+('☆'.repeat(3-topic.difficulty))+'</span><span class="tag">'+topic.source+'</span></div>'+
       topic.body+
     '</div>'+
   '</div>';
