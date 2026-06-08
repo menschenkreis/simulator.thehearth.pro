@@ -220,7 +220,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;dis
       <div class="path-btn on" onclick="hlP('all')">All</div>
     </div>
     <div class="map-wrap">
-      <svg class="map-svg" viewBox="0 0 480 560" xmlns="http://www.w3.org/2000/svg">
+      <svg class="map-svg" viewBox="0 0 480 620" xmlns="http://www.w3.org/2000/svg">
         <defs>
           <filter id="glow"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
           <radialGradient id="bgGrad"><stop offset="0%" stop-color="#1a1510" stop-opacity="0.4"/><stop offset="100%" stop-color="#0d0b08" stop-opacity="0"/></radialGradient>
@@ -231,8 +231,8 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;dis
         </defs>
 
         <!-- Background -->
-        <rect width="480" height="560" fill="var(--bg)"/>
-        <ellipse cx="240" cy="340" rx="230" ry="220" fill="url(#bgGrad)"/>
+        <rect width="480" height="620" fill="var(--bg)"/>
+        <ellipse cx="240" cy="340" rx="230" ry="280" fill="url(#bgGrad)"/>
 
         <!-- ═══ SUBTLE MANDALA GUIDES ═══ -->
         <g class="mandala" id="mandala">
@@ -265,30 +265,30 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;dis
           <line id="spine-l3" x1="240" y1="208" x2="240" y2="254" style="stroke:#3a3530;opacity:0.25;stroke-width:3"/>
           <line id="spine-l4" x1="240" y1="262" x2="240" y2="308" style="stroke:#3a3530;opacity:0.25;stroke-width:3"/>
           <!-- After Hearth: 4 segments from y=372 to y=510 -->
-          <line id="spine-l5" x1="240" y1="372" x2="240" y2="405" style="stroke:#3a3530;opacity:0.25;stroke-width:3"/>
-          <line id="spine-l6" x1="240" y1="413" x2="240" y2="446" style="stroke:#3a3530;opacity:0.25;stroke-width:3"/>
-          <line id="spine-l7" x1="240" y1="454" x2="240" y2="487" style="stroke:#3a3530;opacity:0.25;stroke-width:3"/>
-          <line id="spine-l8" x1="240" y1="495" x2="240" y2="515" style="stroke:#3a3530;opacity:0.25;stroke-width:3"/>
+          <line id="spine-l5" x1="240" y1="372" x2="240" y2="410" style="stroke:#3a3530;opacity:0.25;stroke-width:3"/>
+          <line id="spine-l6" x1="240" y1="418" x2="240" y2="456" style="stroke:#3a3530;opacity:0.25;stroke-width:3"/>
+          <line id="spine-l7" x1="240" y1="464" x2="240" y2="502" style="stroke:#3a3530;opacity:0.25;stroke-width:3"/>
+          <line id="spine-l8" x1="240" y1="510" x2="240" y2="540" style="stroke:#3a3530;opacity:0.25;stroke-width:3"/>
 
           <!-- Level tick marks -->
           <line x1="232" y1="99" x2="248" y2="99" style="stroke:#d4af69;opacity:0.4;stroke-width:1"/>
           <line x1="232" y1="169" x2="248" y2="169" style="stroke:#3a3530;opacity:0.3;stroke-width:1"/>
           <line x1="232" y1="231" x2="248" y2="231" style="stroke:#3a3530;opacity:0.3;stroke-width:1"/>
           <line x1="232" y1="285" x2="248" y2="285" style="stroke:#3a3530;opacity:0.3;stroke-width:1"/>
-          <line x1="232" y1="388" x2="248" y2="388" style="stroke:#3a3530;opacity:0.3;stroke-width:1"/>
-          <line x1="232" y1="429" x2="248" y2="429" style="stroke:#3a3530;opacity:0.3;stroke-width:1"/>
-          <line x1="232" y1="470" x2="248" y2="470" style="stroke:#3a3530;opacity:0.3;stroke-width:1"/>
-          <line x1="232" y1="505" x2="248" y2="505" style="stroke:#3a3530;opacity:0.3;stroke-width:1"/>
+          <line x1="232" y1="391" x2="248" y2="391" style="stroke:#3a3530;opacity:0.3;stroke-width:1"/>
+          <line x1="232" y1="437" x2="248" y2="437" style="stroke:#3a3530;opacity:0.3;stroke-width:1"/>
+          <line x1="232" y1="483" x2="248" y2="483" style="stroke:#3a3530;opacity:0.3;stroke-width:1"/>
+          <line x1="232" y1="525" x2="248" y2="525" style="stroke:#3a3530;opacity:0.3;stroke-width:1"/>
 
           <!-- Level labels -->
           <text x="256" y="102" style="font-family:'JetBrains Mono',monospace;font-size:7px;fill:#d4af69;opacity:0.6">L1</text>
           <text x="256" y="172" style="font-family:'JetBrains Mono',monospace;font-size:7px;fill:#3a3530;opacity:0.4">L2</text>
           <text x="256" y="234" style="font-family:'JetBrains Mono',monospace;font-size:7px;fill:#3a3530;opacity:0.4">L3</text>
           <text x="256" y="288" style="font-family:'JetBrains Mono',monospace;font-size:7px;fill:#3a3530;opacity:0.4">L4</text>
-          <text x="256" y="391" style="font-family:'JetBrains Mono',monospace;font-size:7px;fill:#3a3530;opacity:0.4">L5</text>
-          <text x="256" y="432" style="font-family:'JetBrains Mono',monospace;font-size:7px;fill:#3a3530;opacity:0.4">L6</text>
-          <text x="256" y="473" style="font-family:'JetBrains Mono',monospace;font-size:7px;fill:#3a3530;opacity:0.4">L7</text>
-          <text x="256" y="508" style="font-family:'JetBrains Mono',monospace;font-size:7px;fill:#3a3530;opacity:0.4">L8</text>
+          <text x="256" y="394" style="font-family:'JetBrains Mono',monospace;font-size:7px;fill:#3a3530;opacity:0.4">L5</text>
+          <text x="256" y="440" style="font-family:'JetBrains Mono',monospace;font-size:7px;fill:#3a3530;opacity:0.4">L6</text>
+          <text x="256" y="486" style="font-family:'JetBrains Mono',monospace;font-size:7px;fill:#3a3530;opacity:0.4">L7</text>
+          <text x="256" y="528" style="font-family:'JetBrains Mono',monospace;font-size:7px;fill:#3a3530;opacity:0.4">L8</text>
         </g>
 
         <!-- ═══ FOUNDATION (top) ═══ -->
@@ -312,12 +312,21 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;dis
           <text class="mn-label" x="240" y="378" fill="#d4af69" font-size="8" style="font-weight:600">THE HEARTH</text>
         </g>
 
-        <!-- ═══ MASTERY (bottom) ═══ -->
+        <!-- ═══ MASTERY (bottom) with 8 level rings ═══ -->
         <g class="mn-g locked" onclick="showNodeInfo('mastery')" data-node="mastery">
-          <circle cx="240" cy="530" r="20" fill="url(#nodeGlowPurple)"/>
-          <circle class="mn-ring" cx="240" cy="530" r="16" stroke="#9b59b6" stroke-width="1.5" stroke-dasharray="3 3"/>
-          <text x="240" y="535" text-anchor="middle" font-size="12">👑</text>
-          <text class="mn-label" x="240" y="555">MASTERY</text>
+          <!-- 8 concentric level rings (rainbow, outer=L1 red → inner=L8 violet) -->
+          <circle class="mastery-ring" id="mring-l8" cx="240" cy="560" r="68" stroke="#cc33ff" stroke-width="1.5" fill="none" opacity="0.15"/>
+          <circle class="mastery-ring" id="mring-l7" cx="240" cy="560" r="62" stroke="#6633cc" stroke-width="1.5" fill="none" opacity="0.15"/>
+          <circle class="mastery-ring" id="mring-l6" cx="240" cy="560" r="56" stroke="#3366ff" stroke-width="1.5" fill="none" opacity="0.15"/>
+          <circle class="mastery-ring" id="mring-l5" cx="240" cy="560" r="50" stroke="#00cccc" stroke-width="1.5" fill="none" opacity="0.15"/>
+          <circle class="mastery-ring" id="mring-l4" cx="240" cy="560" r="44" stroke="#00cc44" stroke-width="1.5" fill="none" opacity="0.15"/>
+          <circle class="mastery-ring" id="mring-l3" cx="240" cy="560" r="38" stroke="#ffdd00" stroke-width="1.5" fill="none" opacity="0.15"/>
+          <circle class="mastery-ring" id="mring-l2" cx="240" cy="560" r="32" stroke="#ff8800" stroke-width="1.5" fill="none" opacity="0.15"/>
+          <circle class="mastery-ring" id="mring-l1" cx="240" cy="560" r="26" stroke="#ff0000" stroke-width="2" fill="none" opacity="0.5"/>
+          <!-- Core node -->
+          <circle cx="240" cy="560" r="20" fill="#141210" stroke="#9b59b6" stroke-width="2" stroke-dasharray="3 3"/>
+          <text x="240" y="565" text-anchor="middle" font-size="12">👑</text>
+          <text class="mn-label" x="240" y="600">MASTERY</text>
         </g>
 
         <!-- ═══ LEFT BRANCH — DOING PATH ═══ -->
@@ -539,12 +548,15 @@ function enterNode() {
   if (data.action === 'foundation') showFoundation();
 }
 
+// Light up L1 (Foundation complete by default)
+lightUpLevel(1);
+
 // Legacy compat
 function nT(id){ showNodeInfo(id); if(id==='foundation') showFoundation(); }
 
 // ═══ TRAVEL FLAME ═══
 const NODE_POS = {
-  foundation: [240,50], hearth: [240,340], mastery: [240,530],
+  foundation: [240,50], hearth: [240,340], mastery: [240,560],
   doing: [100,195], knowing: [380,195],
   practise: [170,267], study: [310,267],
   play: [60,470], create: [420,470]
@@ -588,6 +600,20 @@ const FLAME_ROUTES = {
 
 let _flameNode = 'foundation';
 let _flameAnimating = false;
+
+// Level completion: light up mastery ring
+function lightUpLevel(level) {
+  const ring = document.getElementById('mring-l' + level);
+  if (!ring) return;
+  ring.setAttribute('opacity', '0.8');
+  ring.setAttribute('stroke-width', '2.5');
+  // Also light the spine segment
+  const spine = document.getElementById('spine-l' + level);
+  if (spine) {
+    spine.style.stroke = '#d4af69';
+    spine.style.opacity = '0.5';
+  }
+}
 
 function moveFlame(targetId) {
   if (_flameAnimating || _flameNode === targetId) return;
