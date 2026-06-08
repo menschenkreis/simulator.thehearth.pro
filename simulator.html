@@ -260,7 +260,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;dis
 
           <!-- CENTRAL SPINE — 8 segments through Hearth -->
           <!-- Before Hearth: 4 segments from y=68 to y=308 -->
-          <line id="spine-l1" x1="240" y1="68" x2="240" y2="130" style="stroke:#d4af69;opacity:0.35;stroke-width:3"/>
+          <line id="spine-l1" x1="240" y1="68" x2="240" y2="130" style="stroke:#3a3530;opacity:0.25;stroke-width:3"/>
           <line id="spine-l2" x1="240" y1="138" x2="240" y2="200" style="stroke:#3a3530;opacity:0.25;stroke-width:3"/>
           <line id="spine-l3" x1="240" y1="208" x2="240" y2="254" style="stroke:#3a3530;opacity:0.25;stroke-width:3"/>
           <line id="spine-l4" x1="240" y1="262" x2="240" y2="308" style="stroke:#3a3530;opacity:0.25;stroke-width:3"/>
@@ -548,8 +548,7 @@ function enterNode() {
   if (data.action === 'foundation') showFoundation();
 }
 
-// Light up L1 (Foundation complete by default)
-lightUpLevel(1);
+// Levels start dark — nothing complete until completed
 
 // Legacy compat
 function nT(id){ showNodeInfo(id); if(id==='foundation') showFoundation(); }
