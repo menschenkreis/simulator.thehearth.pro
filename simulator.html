@@ -45,6 +45,16 @@
   --spine-width:3.5px;
 }
 
+/* SVG connection classes — themed by data-theme */
+#web{stroke:var(--gold);opacity:0.1;stroke-width:0.6;}
+.conn-branch{stroke:var(--amber);opacity:0.3;stroke-width:3.5;}
+.conn-alt{stroke:#5a9fd4;opacity:0.25;stroke-width:2.2;}
+.conn-spine{stroke:#3a3530;opacity:0.25;stroke-width:3;}
+.conn-tick{stroke:var(--gold);opacity:0.4;stroke-width:1;}
+.conn-tick.dim{stroke:#3a3530;opacity:0.3;}
+.conn-label{font-family:'JetBrains Mono',monospace;font-size:7px;fill:var(--gold);opacity:0.6;}
+.conn-label.dim{fill:#3a3530;opacity:0.4;}
+
 /* ═══ LITTLE SPARKS (5-8) OVERRIDES ═══ */
 [data-theme="sparks"] .mn-ring{stroke-width:3 !important;fill:var(--panel) !important;}
 [data-theme="sparks"] .mn-label{font-size:12px !important;fill:var(--text) !important;font-weight:600 !important;font-family:'DM Sans',sans-serif !important;}
@@ -350,8 +360,8 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;dis
         <!-- ═══ CONNECTIONS ═══ -->
         <g id="connections">
 
-          <!-- Web: thin gold lines between all nodes -->
-          <g id="web" style="stroke:#d4af69;opacity:0.1;stroke-width:0.6">
+          <!-- Web: thin lines between all nodes -->
+          <g id="web">
             <!-- Foundation to all -->
             <line x1="240" y1="50" x2="100" y2="195"/>
             <line x1="240" y1="50" x2="380" y2="195"/>
@@ -397,50 +407,43 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;dis
           </g>
 
           <!-- FOUNDATION(240,50) → DOING(100,195) -->
-          <line x1="222" y1="50" x2="100" y2="195" style="stroke:#e8a020;opacity:0.3;stroke-width:3.5"/>
-          <!-- DOING(100,195) → HEARTH(240,340) -->
-          <line x1="100" y1="195" x2="240" y2="340" style="stroke:#e8a020;opacity:0.25;stroke-width:3.5"/>
-          <!-- PRACTISE(170,267) → PLAY(30,412) same angle as Foundation→Doing -->
-          <line x1="170" y1="267" x2="60" y2="470" style="stroke:#5a9fd4;opacity:0.25;stroke-width:2.2"/>
-
-          <!-- FOUNDATION(240,50) → KNOWING(380,195) -->
-          <line x1="258" y1="50" x2="380" y2="195" style="stroke:#e8a020;opacity:0.3;stroke-width:3.5"/>
-          <!-- KNOWING(380,195) → HEARTH(240,340) -->
-          <line x1="380" y1="195" x2="240" y2="340" style="stroke:#e8a020;opacity:0.25;stroke-width:3.5"/>
-          <!-- STUDY(310,267) → CREATE(450,412) same angle as Foundation→Knowing -->
-          <line x1="310" y1="267" x2="420" y2="470" style="stroke:#5a9fd4;opacity:0.25;stroke-width:2.2"/>
+          <line class="conn-branch" x1="222" y1="50" x2="100" y2="195"/>
+          <line class="conn-branch" x1="100" y1="195" x2="240" y2="340"/>
+          <line class="conn-alt" x1="170" y1="267" x2="60" y2="470"/>
+          <line class="conn-branch" x1="258" y1="50" x2="380" y2="195"/>
+          <line class="conn-branch" x1="380" y1="195" x2="240" y2="340"/>
+          <line class="conn-alt" x1="310" y1="267" x2="420" y2="470"/>
 
           <!-- CENTRAL SPINE — 8 segments through Hearth -->
           <!-- Before Hearth: 4 segments from y=68 to y=308 -->
-          <line id="spine-l1" x1="240" y1="68" x2="240" y2="130" style="stroke:#3a3530;opacity:0.25;stroke-width:3"/>
-          <line id="spine-l2" x1="240" y1="138" x2="240" y2="200" style="stroke:#3a3530;opacity:0.25;stroke-width:3"/>
-          <line id="spine-l3" x1="240" y1="208" x2="240" y2="254" style="stroke:#3a3530;opacity:0.25;stroke-width:3"/>
-          <line id="spine-l4" x1="240" y1="262" x2="240" y2="308" style="stroke:#3a3530;opacity:0.25;stroke-width:3"/>
-          <!-- After Hearth: 4 segments from y=372 to y=510 -->
-          <line id="spine-l5" x1="240" y1="372" x2="240" y2="410" style="stroke:#3a3530;opacity:0.25;stroke-width:3"/>
-          <line id="spine-l6" x1="240" y1="418" x2="240" y2="456" style="stroke:#3a3530;opacity:0.25;stroke-width:3"/>
-          <line id="spine-l7" x1="240" y1="464" x2="240" y2="502" style="stroke:#3a3530;opacity:0.25;stroke-width:3"/>
-          <line id="spine-l8" x1="240" y1="510" x2="240" y2="540" style="stroke:#3a3530;opacity:0.25;stroke-width:3"/>
+          <line class="conn-spine" id="spine-l1" x1="240" y1="68" x2="240" y2="130"/>
+          <line class="conn-spine" id="spine-l2" x1="240" y1="138" x2="240" y2="200"/>
+          <line class="conn-spine" id="spine-l3" x1="240" y1="208" x2="240" y2="254"/>
+          <line class="conn-spine" id="spine-l4" x1="240" y1="262" x2="240" y2="308"/>
+          <line class="conn-spine" id="spine-l5" x1="240" y1="372" x2="240" y2="410"/>
+          <line class="conn-spine" id="spine-l6" x1="240" y1="418" x2="240" y2="456"/>
+          <line class="conn-spine" id="spine-l7" x1="240" y1="464" x2="240" y2="502"/>
+          <line class="conn-spine" id="spine-l8" x1="240" y1="510" x2="240" y2="540"/>
 
           <!-- Level tick marks -->
-          <line x1="232" y1="99" x2="248" y2="99" style="stroke:#d4af69;opacity:0.4;stroke-width:1"/>
-          <line x1="232" y1="169" x2="248" y2="169" style="stroke:#3a3530;opacity:0.3;stroke-width:1"/>
-          <line x1="232" y1="231" x2="248" y2="231" style="stroke:#3a3530;opacity:0.3;stroke-width:1"/>
-          <line x1="232" y1="285" x2="248" y2="285" style="stroke:#3a3530;opacity:0.3;stroke-width:1"/>
-          <line x1="232" y1="391" x2="248" y2="391" style="stroke:#3a3530;opacity:0.3;stroke-width:1"/>
-          <line x1="232" y1="437" x2="248" y2="437" style="stroke:#3a3530;opacity:0.3;stroke-width:1"/>
-          <line x1="232" y1="483" x2="248" y2="483" style="stroke:#3a3530;opacity:0.3;stroke-width:1"/>
-          <line x1="232" y1="525" x2="248" y2="525" style="stroke:#3a3530;opacity:0.3;stroke-width:1"/>
+          <line class="conn-tick" x1="232" y1="99" x2="248" y2="99"/>
+          <line class="conn-tick dim" x1="232" y1="169" x2="248" y2="169"/>
+          <line class="conn-tick dim" x1="232" y1="231" x2="248" y2="231"/>
+          <line class="conn-tick dim" x1="232" y1="285" x2="248" y2="285"/>
+          <line class="conn-tick dim" x1="232" y1="391" x2="248" y2="391"/>
+          <line class="conn-tick dim" x1="232" y1="437" x2="248" y2="437"/>
+          <line class="conn-tick dim" x1="232" y1="483" x2="248" y2="483"/>
+          <line class="conn-tick dim" x1="232" y1="525" x2="248" y2="525"/>
 
           <!-- Level labels -->
-          <text x="256" y="102" style="font-family:'JetBrains Mono',monospace;font-size:7px;fill:#d4af69;opacity:0.6">L1</text>
-          <text x="256" y="172" style="font-family:'JetBrains Mono',monospace;font-size:7px;fill:#3a3530;opacity:0.4">L2</text>
-          <text x="256" y="234" style="font-family:'JetBrains Mono',monospace;font-size:7px;fill:#3a3530;opacity:0.4">L3</text>
-          <text x="256" y="288" style="font-family:'JetBrains Mono',monospace;font-size:7px;fill:#3a3530;opacity:0.4">L4</text>
-          <text x="256" y="394" style="font-family:'JetBrains Mono',monospace;font-size:7px;fill:#3a3530;opacity:0.4">L5</text>
-          <text x="256" y="440" style="font-family:'JetBrains Mono',monospace;font-size:7px;fill:#3a3530;opacity:0.4">L6</text>
-          <text x="256" y="486" style="font-family:'JetBrains Mono',monospace;font-size:7px;fill:#3a3530;opacity:0.4">L7</text>
-          <text x="256" y="528" style="font-family:'JetBrains Mono',monospace;font-size:7px;fill:#3a3530;opacity:0.4">L8</text>
+          <text class="conn-label" x="256" y="102">L1</text>
+          <text class="conn-label dim" x="256" y="172">L2</text>
+          <text class="conn-label dim" x="256" y="234">L3</text>
+          <text class="conn-label dim" x="256" y="288">L4</text>
+          <text class="conn-label dim" x="256" y="394">L5</text>
+          <text class="conn-label dim" x="256" y="440">L6</text>
+          <text class="conn-label dim" x="256" y="486">L7</text>
+          <text class="conn-label dim" x="256" y="528">L8</text>
         </g>
 
         <!-- ═══ FOUNDATION (top) ═══ -->
@@ -694,72 +697,25 @@ function enterNode() {
 }
 
 // ═══ THEME SYSTEM ═══
-const THEME_COLORS = {
-  standard: {
-    bg: '#0d0b08', branch: '#e8a020', branchAlt: '#5a9fd4',
-    spine: '#3a3530', spineActive: '#d4af69', web: '#d4af69', webOp: 0.1,
-    tick: '#d4af69', tickDim: '#3a3530', glow: '#d4af69'
-  },
-  sparks: {
-    bg: '#FFF8F0', branch: '#FF8C42', branchAlt: '#FF6B6B',
-    spine: '#FFB088', spineActive: '#FF8C42', web: '#FF8C42', webOp: 0.12,
-    tick: '#FF8C42', tickDim: '#FFB088', glow: '#FF8C42'
-  },
-  flames: {
-    bg: '#F8F5F0', branch: '#E17055', branchAlt: '#00B894',
-    spine: '#DDD5C8', spineActive: '#E17055', web: '#E17055', webOp: 0.1,
-    tick: '#E17055', tickDim: '#DDD5C8', glow: '#E17055'
-  }
-};
-
 function setTheme(mode) {
   document.documentElement.setAttribute('data-theme', mode);
   localStorage.setItem('hearth-theme', mode);
-  applyThemeColors(mode);
-}
-
-function applyThemeColors(mode) {
-  var c = THEME_COLORS[mode] || THEME_COLORS.standard;
-  // SVG background
+  // SVG background rect needs direct style (SVG rect doesn't use CSS vars)
   var svgBg = document.querySelector('.map-svg rect');
-  if (svgBg) svgBg.style.fill = c.bg;
-  // All lines in connections
-  var lines = document.querySelectorAll('#connections line');
-  for (var i = 0; i < lines.length; i++) {
-    var l = lines[i];
-    var cur = l.style.stroke || '';
-    // Skip web lines (handled by parent g)
-    if (l.closest('#web')) continue;
-    // Spine lines
-    if (l.id && l.id.indexOf('spine') === 0) { l.style.stroke = c.spine; continue; }
-    // Branch lines (orange = #e8a020)
-    if (cur.indexOf('#e8a020') >= 0 || cur.indexOf('e8a020') >= 0) { l.style.stroke = c.branch; continue; }
-    // Alt branch lines (blue = #5a9fd4)
-    if (cur.indexOf('#5a9fd4') >= 0 || cur.indexOf('5a9fd4') >= 0) { l.style.stroke = c.branchAlt; continue; }
-    // Tick marks and other small lines
-    var sw = parseFloat(l.style.strokeWidth || '0');
-    if (sw <= 1.5) { l.style.stroke = c.tickDim; }
-  }
-  // Web group
-  var web = document.getElementById('web');
-  if (web) { web.style.stroke = c.web; web.style.opacity = c.webOp; }
-  // Glow
-  var glow = document.querySelector('.center-glow');
-  if (glow) glow.style.fill = c.glow;
-  // Mastery rings
+  var bgColors = {standard:'#0d0b08',sparks:'#FFF8F0',flames:'#F8F5F0'};
+  if (svgBg) svgBg.style.fill = bgColors[mode] || bgColors.standard;
+  // Mastery ring opacity
   var rings = document.querySelectorAll('.mastery-ring');
   for (var j = 0; j < rings.length; j++) {
     rings[j].style.opacity = (mode === 'sparks') ? '0.3' : '0.15';
   }
 }
-
-// Restore saved theme on load
 (function(){
   var saved = localStorage.getItem('hearth-theme') || 'standard';
   document.documentElement.setAttribute('data-theme', saved);
   var sel = document.getElementById('mode-select');
   if (sel) sel.value = saved;
-  applyThemeColors(saved);
+  setTheme(saved);
 })();
 
 // Legacy compat
