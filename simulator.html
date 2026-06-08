@@ -982,35 +982,56 @@ function showFoundation(){
   const completed=JSON.parse(localStorage.getItem('hearth-foundation-progress')||'{}');
   const doneCount=Object.keys(completed).filter(k=>completed[k]).length;
   const pct=Math.round(doneCount/F.topics.length*100);
-  const dashOffset=163.36-(163.36*pct/100);
 
-  el.innerHTML='<div class="foundation-landing">'+
-    '<div class="fl-hero">'+
-      '<div class="fl-sub">'+F.tag+'</div>'+
-      '<h2>'+F.title+'</h2>'+
-      '<p class="fl-desc">'+F.description+'</p>'+
+  let html='<div style="padding:24px;max-width:600px;margin:0 auto">'+
+    '<div style="display:flex;align-items:center;gap:12px;margin-bottom:20px">'+
+      '<img src="images/foundation-icon.png" style="width:48px;height:48px;border-radius:50%;object-fit:cover;border:2px solid var(--gold)"/>'+
+      '<div><h2 style="font-family:Cinzel;color:var(--gold);font-size:1.1rem;margin:0">'+F.title+'</h2>'+
+      '<p style="color:var(--dim);font-size:0.7rem;margin:0">'+F.description+'</p>'+
+      '<div style="font-family:JetBrains Mono;font-size:0.65rem;color:var(--amber);margin-top:4px">'+doneCount+'/'+F.topics.length+' blocks placed · '+pct+'%</div>'+
+    '</div></div>'+
+    '<div style="display:flex;flex-direction:column;align-items:center;gap:0;margin-top:20px">';
+
+  // Building blocks — widest at bottom, narrowest at top
+  const topics=[...F.topics].reverse(); // reverse so block 1 is at bottom
+  const maxWidth=400;
+  const minWidth=180;
+  const step=(maxWidth-minWidth)/(topics.length-1);
+
+  topics.forEach((t,i)=>{
+    const w=maxWidth-step*i;
+    const isDone=completed[t.id];
+    const topicIdx=F.topics.indexOf(t);
+    const num=topicIdx+1;
+
+    html+='<div onclick="showFoundationTopic(\''+t.id+'\')" style="'+
+      'width:'+w+'px;padding:14px 16px;'+
+      'background:'+(isDone?'var(--gold)':'var(--card)')+';'+
+      'border:2px solid '+(isDone?'var(--gold)':'var(--border)')+';'+
+      'border-radius:6px;'+
+      'cursor:pointer;transition:all 0.15s;'+
+      'text-align:center;'+
+      'position:relative;'+
+      'z-index:'+(topics.length-i)+
+    '">'+
+      '<div style="display:flex;align-items:center;justify-content:center;gap:8px">'+
+        '<span style="font-family:JetBrains Mono;font-size:0.7rem;color:'+(isDone?'var(--bg)':'var(--gold)')+';opacity:'+(isDone?'1':'0.5')+'">'+String(num).padStart(2,'0')+'</span>'+
+        '<span style="font-family:Cinzel;font-size:0.85rem;color:'+(isDone?'var(--bg)':'var(--text)')+';font-weight:600">'+t.title+'</span>'+
+        '<span style="font-size:0.7rem;color:'+(isDone?'var(--bg)':'var(--dim)')+'">'+(isDone?'&#10003;':'&#8594;')+'</span>'+
+      '</div>'+
+      '<div style="font-size:0.6rem;color:'+(isDone?'rgba(13,11,8,0.6)':'var(--dim)')+';margin-top:2px">'+t.subtitle+'</div>'+
+    '</div>';
+  });
+
+  html+='</div>'+
+    '<div style="margin-top:24px;padding-top:12px;border-top:1px solid var(--border);text-align:center">'+
+      '<p style="font-size:0.6rem;color:var(--dim)">Sources: '+F.sources.join(' · ')+'</p>'+
     '</div>'+
-    '<div class="fl-progress">'+
-      '<div class="fl-ring"><svg width="60" height="60"><circle class="ring-bg" cx="30" cy="30" r="26"/><circle class="ring-fill" cx="30" cy="30" r="26" stroke-dasharray="163.36" stroke-dashoffset="'+dashOffset+'"/></svg><div class="ring-text">'+pct+'%</div></div>'+
-      '<div class="fl-progress-info"><div class="fl-pct">'+doneCount+' / '+F.topics.length+'</div><div class="fl-label">topics complete</div></div>'+
-    '</div>'+
-    '<div class="fl-topics">'+
-      F.topics.map(t=>{
-        const isDone=completed[t.id];
-        return '<div class="fl-topic '+(isDone?'done':'')+'" onclick="showFoundationTopic(\''+t.id+'\')" style="'+(isDone?'border-left:3px solid var(--gold);':'')+'">'+
-          '<div class="fl-topic-num" style="'+(isDone?'color:var(--gold);font-weight:700':'')+'">'+t.num+'</div>'+
-          '<div class="fl-topic-content">'+
-            '<h4 style="'+(isDone?'color:var(--gold)':'')+'">'+t.title+'</h4>'+
-            '<div class="fl-t-sub">'+t.subtitle+'</div>'+
-            '<div class="fl-t-meta">'+t.tags.map(tag=>'<span>'+tag+'</span>').join('')+'</div>'+
-          '</div>'+
-          '<div class="fl-t-status" style="'+(isDone?'color:var(--gold);font-weight:700':'')+'">'+(isDone?'✓':'→')+'</div>'+
-        '</div>';
-      }).join('')+
-    '</div>'+
-    '<div class="fl-source"><p class="fl-s-label">SOURCES</p><p>'+F.sources.join('<br>')+'</p></div>'+
   '</div>';
+
+  el.innerHTML=html;
 }
+
 
 function showDoing(){
   document.querySelectorAll('.pnl').forEach(p=>p.classList.remove('on'));
