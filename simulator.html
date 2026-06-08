@@ -655,12 +655,13 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;dis
 </div>
 
 <script src="assets/js/foundation.js"></script>
+<script src="assets/js/doing.js"></script>
 <script>
 const NODE_DATA = {
   hearth: { emoji:'🔥', tag:'ORIGIN', title:'The Hearth', desc:'Your progress dashboard. See how you\'re doing across all paths.', enter:true, action:'hearth' },
   foundation: { emoji:'🏰', tag:'HOME NODE', title:'Foundation', desc:'Before you play a note — learn how learning works, how to hold the guitar, tune it, and produce your first clean sound. 7 core topics.', enter:true, action:'foundation' },
   mastery: { emoji:'👑', tag:'FINAL', title:'Mastery', desc:'Come home to yourself. What is YOUR sound? The student becomes the artist.', enter:false, locked:true },
-  doing: { emoji:'✋', tag:'DOING PATH', title:'Doing', desc:'Open-world reference. Full library of drills, skills, and practical exercises, categorised. Revisit anything anytime.', enter:false },
+  doing: { emoji:'✋', tag:'DOING PATH', title:'Doing', desc:'Open-world drill library. Full library of drills, skills, and practical exercises, categorised. Revisit anything anytime.', enter:true, action:'doing' },
   practise: { emoji:'🔁', tag:'DOING PATH', title:'Practise', desc:'Session-based. "How much time have you got?" Select drills, combine variations, timer starts, practise, give feedback.', enter:false },
   play: { emoji:'🎸', tag:'DOING PATH', title:'Play', desc:'Songs, genres, backing tracks, playing along with other instruments. Discover YOUR sound. Collab lives here.', enter:false },
   knowing: { emoji:'📖', tag:'KNOWING PATH', title:'Knowing', desc:'Open-world reference. All music theory, categorised beautifully. Always accessible like an encyclopedia.', enter:false },
@@ -695,6 +696,7 @@ function enterNode() {
   hideNodeInfo();
   if (data.action === 'foundation') showFoundation();
   else if (data.action === 'hearth') showHearth();
+  else if (data.action === 'doing') showDoing();
 }
 
 // ═══ THEME SYSTEM ═══
@@ -971,6 +973,63 @@ function showFoundation(){
       '</div>').join('')+
     '</div>'+
     '<div class="fl-source"><p class="fl-s-label">SOURCES</p><p>'+F.sources.join('<br>')+'</p></div>'+
+  '</div>';
+}
+
+function showDoing(){
+  document.querySelectorAll('.pnl').forEach(p=>p.classList.remove('on'));
+  document.getElementById('p-foundation').classList.add('on');
+  const D=window.DOING;if(!D)return;
+  const el=document.getElementById('p-foundation');
+  el.innerHTML='<div class="foundation-landing">'+
+    '<div class="fl-hero">'+
+      '<div class="fl-sub">'+D.tag+'</div>'+
+      '<h2>'+D.title+'</h2>'+
+      '<p class="fl-desc">'+D.description+'</p>'+
+    '</div>'+
+    '<div class="fl-topics">'+
+      D.categories.map(cat=>'<div style="margin-bottom:16px">'+
+        '<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">'+
+          '<span style="font-size:1.1rem">'+cat.icon+'</span>'+
+          '<span style="font-family:Cinzel;font-size:0.9rem;color:var(--gold)">'+cat.title+'</span>'+
+        '</div>'+
+        '<p style="font-size:0.7rem;color:var(--dim);margin:0 0 8px 0">'+cat.description+'</p>'+
+        cat.drills.map(drill=>{
+          const diffStars='★'.repeat(drill.difficulty)+'☆'.repeat(3-drill.difficulty);
+          return '<div class="fl-topic" onclick="showDoingDrill(\''+cat.id+'\',\''+drill.id+'\')">'+
+            '<div class="fl-topic-content">'+
+              '<h4>'+drill.title+'</h4>'+
+              '<div class="fl-t-sub">'+diffStars+' · BPM '+drill.bpm+' · '+drill.duration+'</div>'+
+            '</div>'+
+            '<div class="fl-t-status">→</div>'+
+          '</div>';
+        }).join('')+
+      '</div>').join('')+
+    '</div>'+
+    '<div class="fl-source"><p class="fl-s-label">SOURCES</p><p>'+D.sources.join('<br>')+'</p></div>'+
+  '</div>';
+}
+
+function showDoingDrill(catId, drillId){
+  const D=window.DOING;if(!D)return;
+  const cat=D.categories.find(c=>c.id===catId);if(!cat)return;
+  const drill=cat.drills.find(d=>d.id===drillId);if(!drill)return;
+  const el=document.getElementById('p-foundation');
+  const diffStars='★'.repeat(drill.difficulty)+'☆'.repeat(3-drill.difficulty);
+  el.innerHTML='<div class="lp-lesson">'+
+    '<div class="ls-steps">'+
+      '<div class="ls-s on"><div class="n">01</div><div class="l">Read</div></div>'+
+      '<div class="ls-s"><div class="n">02</div><div class="l">Watch</div></div>'+
+      '<div class="ls-s"><div class="n">03</div><div class="l">Do</div></div>'+
+      '<div class="ls-s"><div class="n">04</div><div class="l">Check</div></div>'+
+    '</div>'+
+    '<div class="ls-body">'+
+      '<button onclick="showDoing()" style="background:none;border:1px solid var(--border);color:var(--dim);padding:4px 10px;border-radius:4px;cursor:pointer;font-family:inherit;font-size:0.65rem;margin-bottom:12px">← '+cat.title+'</button>'+
+      '<h3>'+drill.title+'</h3>'+
+      '<div style="margin-bottom:10px"><span class="tag">'+diffStars+'</span><span class="tag">BPM '+drill.bpm+'</span><span class="tag">'+drill.duration+'</span></div>'+
+      '<div class="ctx"><p>SOURCE: '+drill.source+'</p></div>'+
+      drill.body+
+    '</div>'+
   '</div>';
 }
 
