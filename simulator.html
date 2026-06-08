@@ -455,7 +455,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;dis
             <animate attributeName="opacity" values="0.2;0.05;0.2" dur="3s" repeatCount="indefinite"/>
           </circle>
           <circle class="mn-ring" cx="240" cy="50" r="24" stroke="#d4af69" stroke-width="3"/>
-          <text x="240" y="57" text-anchor="middle" font-size="18">🏰</text>
+          <image href="images/foundation-icon.png" x="216" y="26" width="48" height="48" style="filter:drop-shadow(0 0 4px rgba(212,175,105,0.3))"/>
           <text class="mn-label" x="240" y="84" style="font-size:10px;font-weight:700;letter-spacing:0.15em">FOUNDATION</text>
         </g>
 
@@ -664,7 +664,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;dis
 <script>
 const NODE_DATA = {
   hearth: { emoji:'🔥', tag:'ORIGIN', title:'The Hearth', desc:'Your progress dashboard. See how you\'re doing across all paths.', enter:true, action:'hearth' },
-  foundation: { emoji:'🏰', tag:'HOME NODE', title:'Foundation', desc:'Before you play a note — learn how learning works, how to hold the guitar, tune it, and produce your first clean sound. 7 core topics.', enter:true, action:'foundation' },
+  foundation: { emoji:'🏗️', tag:'HOME NODE', title:'Foundation', desc:'Before you play a note — learn how learning works, how to hold the guitar, tune it, and produce your first clean sound. 7 core topics.', enter:true, action:'foundation', icon:'images/foundation-icon.png' },
   mastery: { emoji:'👑', tag:'FINAL', title:'Mastery', desc:'Come home to yourself. What is YOUR sound? The student becomes the artist.', enter:false, locked:true },
   doing: { emoji:'✋', tag:'DOING PATH', title:'Doing', desc:'Open-world drill library. Full library of drills, skills, and practical exercises, categorised. Revisit anything anytime.', enter:true, action:'doing' },
   practise: { emoji:'🔁', tag:'DOING PATH', title:'Practise', desc:'Session-based. "How much time have you got?" Select drills, combine variations, timer starts, practise, give feedback.', enter:true, action:'practice' },
