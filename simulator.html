@@ -553,6 +553,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;dis
     <div class="node-info-overlay" id="niOverlay" onclick="hideNodeInfo()"></div>
     <div class="node-info" id="ni">
       <span class="ni-close" onclick="hideNodeInfo()">✕</span>
+      <div id="niThumb" style="display:none;margin-bottom:10px;text-align:center"><img id="niThumbImg" src="" style="width:64px;height:64px;border-radius:50%;object-fit:cover;border:2px solid var(--gold)"/></div>
       <span class="ni-emoji" id="niEmoji"></span>
       <div class="ni-tag" id="niTag"></div>
       <h4 id="niTitle"></h4>
@@ -674,7 +675,7 @@ const NODE_DATA = {
   hearth: { emoji:'', tag:'ORIGIN', title:'The Hearth', desc:'Your progress dashboard. See how you\'re doing across all paths.', enter:true, action:'hearth' },
   foundation: { emoji:'', tag:'HOME NODE', title:'Foundation', desc:'Before you play a note — learn how learning works, how to hold the guitar, tune it, and produce your first clean sound. 7 core topics.', enter:true, action:'foundation', icon:'images/foundation-icon.png' },
   mastery: { emoji:'', tag:'FINAL', title:'Mastery', desc:'Come home to yourself. What is YOUR sound? The student becomes the artist.', enter:false, locked:true },
-  doing: { emoji:'', tag:'DOING PATH', title:'Doing', desc:'Open-world drill library. Full library of drills, skills, and practical exercises, categorised. Revisit anything anytime.', enter:true, action:'doing' },
+  doing: { emoji:'', tag:'DOING PATH', title:'Doing', desc:'Open-world drill library. Every technique, every style. Click a dot to dive in.', enter:true, action:'doing', icon:'images/doing-icon.png' },
   practise: { emoji:'', tag:'DOING PATH', title:'Practise', desc:'Session-based. "How much time have you got?" Select drills, combine variations, timer starts, practise, give feedback.', enter:true, action:'practice' },
   play: { emoji:'', tag:'DOING PATH', title:'Play', desc:'Songs, genres, backing tracks, playing along with other instruments. Discover YOUR sound. Collab lives here.', enter:true, action:'play' },
   knowing: { emoji:'', tag:'KNOWING PATH', title:'Knowing', desc:'All music theory, categorised beautifully. Always accessible like an encyclopedia. Understand the why.', enter:true, action:'knowing' },
@@ -693,6 +694,14 @@ function showNodeInfo(id) {
   document.getElementById('niTag').textContent = data.tag;
   document.getElementById('niTitle').textContent = data.title;
   document.getElementById('niDesc').textContent = data.desc;
+  const thumbEl = document.getElementById('niThumb');
+  const thumbImg = document.getElementById('niThumbImg');
+  if (data.icon) {
+    thumbImg.src = data.icon;
+    thumbEl.style.display = 'block';
+  } else {
+    thumbEl.style.display = 'none';
+  }
   const enterBtn = document.getElementById('niEnter');
   if (enterBtn) enterBtn.style.display = (data.enter && !data.locked) ? 'inline-block' : 'none';
   document.getElementById('ni').classList.add('vis');
