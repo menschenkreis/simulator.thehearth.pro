@@ -271,7 +271,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;dis
 .bt .bi{font-size:1rem;}
 .bt .bl{font-size:0.5rem;font-family:'JetBrains Mono',monospace;letter-spacing:0.03em;}
 
-@media(min-width:769px){
+@media(min-width:600px){
   body{flex-direction:column;}
   .top{display:flex;z-index:101;}
   .main-wrap{display:flex;flex:1;overflow:hidden;}
@@ -711,7 +711,7 @@ function setTheme(mode) {
   }
 }
 (function(){
-  var saved = localStorage.getItem('hearth-theme') || 'standard';
+  var saved = localStorage.getItem('hearth-theme') || 'sparks';
   document.documentElement.setAttribute('data-theme', saved);
   var sel = document.getElementById('mode-select');
   if (sel) sel.value = saved;
