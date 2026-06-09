@@ -989,11 +989,15 @@ function showFoundation(){
   const doneCount=Object.keys(completed).filter(k=>completed[k]).length;
   const pct=Math.round(doneCount/F.topics.length*100);
 
+  // Determine which topics are accessible: first not-done one + all completed
+  const firstIncomplete=F.topics.findIndex(t=>!completed[t.id]);
+  const activeIdx=firstIncomplete===-1?F.topics.length-1:firstIncomplete;
+
   let html='<div style="padding:24px;max-width:600px;margin:0 auto">'+
     '<div style="display:flex;align-items:center;gap:12px;margin-bottom:20px">'+
       '<img src="images/foundation-icon.png" style="width:64px;height:64px;border-radius:50%;object-fit:cover;border:3px solid var(--gold);box-shadow:0 0 16px rgba(212,175,105,0.12)"/>'+
       '<div><h2 style="font-family:Cinzel;color:var(--gold);font-size:1.2rem;margin:0">'+F.title+'</h2>'+
-      '<div style="font-family:JetBrains Mono;font-size:0.65rem;color:var(--amber);margin-top:4px">'+doneCount+'/'+F.topics.length+' blocks · '+pct+'%</div>'+
+      '<div style="font-family:JetBrains Mono;font-size:0.65rem;color:var(--amber);margin-top:4px">'+doneCount+'/'+F.topics.length+' blocks</div>'+
     '</div></div>'+
     '<div style="display:flex;flex-direction:column;align-items:center;gap:0;margin-top:20px">';
 
@@ -1007,24 +1011,45 @@ function showFoundation(){
     const t=F.topics[i];
     const w=maxWidth-step*i;
     const isDone=completed[t.id];
+    const isActive=i===activeIdx;
+    const isLocked=i>activeIdx&&!isDone;
     const num=i+1;
 
-    html+='<div onclick="showFoundationTopic(\''+t.id+'\')" style="'+
-      'width:'+w+'px;padding:12px 16px;'+
-      'background:'+(isDone?'var(--gold)':'var(--card)')+';'+
-      'border:2px solid '+(isDone?'var(--gold)':'var(--border)')+';'+
-      'border-radius:6px;'+
-      'cursor:pointer;transition:all 0.15s;'+
-      'text-align:center;'+
-      'position:relative;'+
-      'z-index:'+(F.topics.length-i)+
-    '">'+
-      '<div style="display:flex;align-items:center;justify-content:center;gap:8px">'+
-        '<span style="font-family:JetBrains Mono;font-size:0.7rem;color:'+(isDone?'var(--bg)':'var(--gold)')+';opacity:'+(isDone?'1':'0.5')+'">'+String(num).padStart(2,'0')+'</span>'+
-        '<span style="font-family:Cinzel;font-size:0.9rem;color:'+(isDone?'var(--bg)':'var(--text)')+';font-weight:600">'+t.title+'</span>'+
-        (isDone?'<span style="font-size:0.8rem;color:var(--bg)">&#10003;</span>':'')+
-      '</div>'+
-    '</div>';
+    if(isLocked){
+      // Skeleton — just a dim line, no click
+      html+='<div style="'+
+        'width:'+w+'px;padding:10px 16px;'+
+        'background:transparent;'+
+        'border:1px dashed var(--border);'+
+        'border-radius:6px;'+
+        'text-align:center;'+
+        'position:relative;'+
+        'z-index:'+(F.topics.length-i)+
+      '">'+
+        '<div style="display:flex;align-items:center;justify-content:center;gap:8px">'+
+          '<span style="font-family:JetBrains Mono;font-size:0.7rem;color:var(--border)">'+String(num).padStart(2,'0')+'</span>'+
+          '<span style="font-family:Cinzel;font-size:0.85rem;color:var(--border);font-weight:600">'+t.title+'</span>'+
+        '</div>'+
+      '</div>';
+    } else {
+      // Clickable block
+      html+='<div onclick="showFoundationTopic(\''+t.id+'\')" style="'+
+        'width:'+w+'px;padding:12px 16px;'+
+        'background:'+(isDone?'var(--gold)':'var(--card)')+';'+
+        'border:2px solid '+(isDone?'var(--gold)':'var(--border)')+';'+
+        'border-radius:6px;'+
+        'cursor:pointer;transition:all 0.15s;'+
+        'text-align:center;'+
+        'position:relative;'+
+        'z-index:'+(F.topics.length-i)+
+      '">'+
+        '<div style="display:flex;align-items:center;justify-content:center;gap:8px">'+
+          '<span style="font-family:JetBrains Mono;font-size:0.7rem;color:'+(isDone?'var(--bg)':'var(--gold)')+';opacity:'+(isDone?'1':'0.5')+'">'+String(num).padStart(2,'0')+'</span>'+
+          '<span style="font-family:Cinzel;font-size:0.9rem;color:'+(isDone?'var(--bg)':'var(--text)')+';font-weight:600">'+t.title+'</span>'+
+          (isDone?'<span style="font-size:0.8rem;color:var(--bg)">&#10003;</span>':'')+
+        '</div>'+
+      '</div>';
+    }
   }
 
   html+='</div>'+
@@ -1558,9 +1583,10 @@ function showFoundationTopic(topicId){
   }
 
   el.innerHTML='<div class="lesson-page">'+
-    '<div class="lp-back" onclick="showFoundation()">← Foundation</div>'+
+    '<div class="lp-back" onclick="showFoundation()">\u2190 Foundation</div>'+
+    '<div style="display:flex;justify-content:flex-end;margin-bottom:4px"><button id="ttsBtn" onclick="ttsToggle()" style="background:var(--card);color:var(--gold);border:1px solid var(--border);padding:6px 14px;border-radius:6px;cursor:pointer;font-family:inherit;font-size:0.75rem">Read aloud</button></div>'+
     '<div class="lp-header">'+
-      '<div class="lp-tag">'+topic.num+' / '+F.tag+(isCompleted?' · <span style="color:var(--gold)">✓ Complete</span>':'')+'</div>'+
+      '<div class="lp-tag">'+topic.num+' / '+F.tag+(isCompleted?' · <span style="color:var(--gold)">\u2713 Complete</span>':'')+'</div>'+
       '<h2>'+topic.title+'</h2>'+
       '<div class="lp-subtitle">'+topic.subtitle+'</div>'+
     '</div>'+
@@ -1585,6 +1611,7 @@ window.completeFoundationTopic=function(tid){
 
 window.nextFStep=function(tid,idx){goFStep(tid,idx);};
 window.goFStep=function(tid,idx){
+  if(window.speechSynthesis)window.speechSynthesis.cancel();_ttsPlaying=false;
   const F=window.FOUNDATION;if(!F)return;
   const topic=F.topics.find(t=>t.id===tid);if(!topic)return;
   document.querySelectorAll('#fSteps .lp-step').forEach((s,i)=>s.classList.toggle('on',i===idx));
@@ -1624,6 +1651,31 @@ window.goFStep=function(tid,idx){
 };
 
 function hlP(p){}
+
+// ═══ TEXT-TO-SPEECH ═══
+let _ttsUtterance=null;
+let _ttsPlaying=false;
+function ttsToggle(){
+  if(_ttsPlaying&&window.speechSynthesis.speaking){window.speechSynthesis.cancel();_ttsPlaying=false;updateTtsBtn();return;}
+  const body=document.getElementById('fStepBody');
+  if(!body)return;
+  const text=body.innerText||body.textContent||'';
+  if(!text.trim())return;
+  const u=new SpeechSynthesisUtterance(text);
+  u.rate=0.9;u.pitch=1.0;u.lang='en-US';
+  u.onend=function(){_ttsPlaying=false;updateTtsBtn();};
+  window.speechSynthesis.cancel();
+  window.speechSynthesis.speak(u);
+  _ttsPlaying=true;
+  updateTtsBtn();
+}
+function updateTtsBtn(){
+  const btn=document.getElementById('ttsBtn');
+  if(!btn)return;
+  btn.textContent=_ttsPlaying?'Stop':'Read aloud';
+  btn.style.background=_ttsPlaying?'var(--ember)':'var(--card)';
+  btn.style.color=_ttsPlaying?'white':'var(--gold)';
+}
 
 function sw(t){
   document.querySelectorAll('.bt').forEach(b=>b.classList.remove('on'));

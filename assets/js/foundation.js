@@ -18,7 +18,7 @@ const FOUNDATION = {
       id: 'f-how-to-learn',
       num: '01',
       title: 'How to Learn',
-      subtitle: 'Learn how learning works before you start! 🧠',
+      subtitle: 'Learn how learning works before you start',
       status: 'open',
       sources: ['Jamie Andreas'],
       tags: ['Mindset', 'Practice', 'Core'],
@@ -26,22 +26,22 @@ const FOUNDATION = {
       steps: [
         {
           label: 'Read',
-          title: 'Your Super Power: Paying Attention ✨',
+          title: 'Your Super Power: Paying Attention ',
           body: `<p>Playing guitar starts in your <strong>brain</strong>, not your fingers!</p>
-<p>When you practise, your brain tells your fingers what to do. If you pay really good attention, your fingers learn the right way. If you don't pay attention... they learn the wrong way! 😬</p>
+<p>When you practise, your brain tells your fingers what to do. If you pay really good attention, your fingers learn the right way. If you don't pay attention... they learn the wrong way! </p>
 <p>Imagine you're building with LEGO. If you don't look at the instructions and just snap pieces together, it won't look right. Your fingers are the same — they need your brain to guide them carefully.</p>
 <div class="lp-callout">
-  <div class="lp-co-title">THE BIG IDEA 💡</div>
+  <div class="lp-co-title">THE BIG IDEA </div>
   <p>When you practise slowly and really pay attention, your fingers remember the RIGHT way to do things. If you rush, they remember the WRONG way — and that's harder to fix later!</p>
 </div>
 <p>Here are three tricks that will help you learn anything on guitar:</p>
-<p><strong>🐢 Super Slow Mode</strong> — Play sooooo slowly that you can feel what every finger is doing. Speed will come later by itself!</p>
-<p><strong>🧊 Freeze!</strong> — Stop at any point and hold still. Feel what your hand is doing. Is it tight? Let it relax.</p>
-<p><strong>👁️ Body Scanner</strong> — Check different parts of your body one at a time. Thumb. Wrist. Shoulder. Are any of them tight when they don't need to be?</p>`
+<p><strong> Super Slow Mode</strong> — Play sooooo slowly that you can feel what every finger is doing. Speed will come later by itself!</p>
+<p><strong> Freeze!</strong> — Stop at any point and hold still. Feel what your hand is doing. Is it tight? Let it relax.</p>
+<p><strong> Body Scanner</strong> — Check different parts of your body one at a time. Thumb. Wrist. Shoulder. Are any of them tight when they don't need to be?</p>`
         },
         {
           label: 'Feel',
-          title: 'The Tension Hunt 🔍',
+          title: 'The Tension Hunt ',
           body: `<p>Close your eyes. Pick up the guitar (or pretend to hold one).</p>
 <p>Now let's go on a tension hunt! Check each body part:</p>
 <p>• Your right shoulder — is it up by your ear? Let it drop down.<br>
@@ -50,7 +50,7 @@ const FOUNDATION = {
 • Your jaw — are you biting down? Let it go soft.</p>
 <p>When one part of your body works hard, other parts get tight too — without you even knowing! This is called <strong>sympathetic tension</strong>. Fancy name, simple idea: one tight spot makes other spots tight.</p>
 <div class="lp-callout">
-  <div class="lp-co-title">THE SLOW PUSH TRICK 🎯</div>
+  <div class="lp-co-title">THE SLOW PUSH TRICK </div>
   <p>Instead of pressing a string down hard, touch it <em>super gently</em> at first. Then push a tiny bit more... and a tiny bit more... until the note sounds clean. That's all the pressure you need! Any more is wasting energy.</p>
 </div>
 <div class="lp-quote">
@@ -60,7 +60,7 @@ const FOUNDATION = {
         },
         {
           label: 'Draw',
-          title: 'Draw Your Tension Map 🗺️',
+          title: 'Draw Your Tension Map ',
           body: `<p>On paper, draw a simple picture of a person holding a guitar.</p>
 <p>Now put a RED DOT on every place that feels tight when you hold the guitar:</p>
 <p>• Neck and shoulders<br>
@@ -72,23 +72,23 @@ const FOUNDATION = {
 • Legs</p>
 <p>Now pick up the guitar and check each spot. Were you right? Did you miss any?</p>
 <div class="lp-callout">
-  <div class="lp-co-title">WHY THIS IS COOL 🌟</div>
+  <div class="lp-co-title">WHY THIS IS COOL </div>
   <p>This is YOUR tension map! As you get better at guitar, you'll have fewer and fewer red dots. The map shows you're getting better — even better than playing fast does!</p>
 </div>`
         },
         {
           label: 'Do',
-          title: 'The 2-Minute Body Scan ⏰',
+          title: 'The 2-Minute Body Scan ',
           body: `<p>Set a timer for 2 minutes. Hold the guitar. Don't play anything!</p>
 <p>Instead, check your body from head to toes like a robot scanning for problems:</p>
-<p>1. Jaw — let it hang loose. 👄<br>
+<p>1. Jaw — let it hang loose. <br>
 2. Neck — roll it around gently.<br>
 3. Shoulders — drop them down like heavy rocks.<br>
 4. Upper arms — are they tight or floppy?<br>
 5. Forearms — this is where your finger muscles live! Soft?<br>
 6. Wrists — they should curve nicely, not be flat.<br>
 7. Hands — make a "cup" shape. Fingers curved.<br>
-8. Fingers — check each one. Especially the pinky! What's it doing? 😄<br>
+8. Fingers — check each one. Especially the pinky! What's it doing? <br>
 9. Tummy — are you breathing deep? Take a big breath.<br>
 10. Legs — feet flat on the floor, not crossed.</p>
 <p>Do this before EVERY practice session. It only takes 2 minutes!</p>`
@@ -103,13 +103,13 @@ const FOUNDATION = {
 ☐ I know the Slow Push Trick<br>
 ☐ I can do a 2-minute body scan without playing any notes</p>
 <div class="lp-callout">
-  <div class="lp-co-title">THE RULE 📏</div>
+  <div class="lp-co-title">THE RULE </div>
   <p>If any of these feel fuzzy, that's okay! Just go back and try again. Going slow here is the secret weapon. ALL the cool guitar players practised slowly first!</p>
 </div>`
         },
         {
           label: 'Deeper',
-          title: 'Why Does This Work? 🤔',
+          title: 'Why Does This Work? ',
           body: `<p>This way of learning comes from very smart guitar teachers:</p>
 <p><strong>Jamie Andreas</strong> figured out that the secret to great guitar playing isn't talent — it's <em>awareness</em>. Feeling what your body is doing. Most people never learn this and wonder why guitar feels hard.</p>
 <p>The idea is simple: <em>if you can FEEL it, you can FIX it</em>. That's what the body scan is all about.</p>
@@ -122,50 +122,50 @@ const FOUNDATION = {
       id: 'f-anatomy',
       num: '02',
       title: 'Parts of the Guitar',
-      subtitle: 'Get to know your instrument! 🎸',
+      subtitle: 'Get to know your instrument🎸',
       status: 'open',
       sources: ['Charles Kim', 'Patrick Stefurak'],
       tags: ['Instrument', 'Visual', 'Basics'],
       steps: [
         {
           label: 'Read',
-          title: 'Your Guitar Has Body Parts! 😄',
+          title: 'Your Guitar Has Body Parts! ',
           body: `<p>Every part of the guitar has a name. Knowing the names helps you follow lessons and talk about guitar with other people!</p>
 <p>The guitar has three main sections — like a head, neck, and body:</p>
-<p><strong>🤕 Head (Headstock)</strong> — the top part with the twisty knobs (tuning pegs). Each knob controls one string. Turn it one way to make the string higher, the other way to make it lower.</p>
-<p><strong>🦒 Neck</strong> — the long part connecting the head to the body. The front is called the <em>fretboard</em>. The metal strips across it are called <em>frets</em>. You press strings between the frets to make different notes.</p>
-<p><strong>🫁 Body</strong> — the big part that makes the sound louder. On some guitars it's hollow inside (like a box). On electric guitars, special magnets called <em>pickups</em> catch the string vibrations and turn them into sound through a speaker.</p>
+<p><strong> Head (Headstock)</strong> — the top part with the twisty knobs (tuning pegs). Each knob controls one string. Turn it one way to make the string higher, the other way to make it lower.</p>
+<p><strong> Neck</strong> — the long part connecting the head to the body. The front is called the <em>fretboard</em>. The metal strips across it are called <em>frets</em>. You press strings between the frets to make different notes.</p>
+<p><strong> Body</strong> — the big part that makes the sound louder. On some guitars it's hollow inside (like a box). On electric guitars, special magnets called <em>pickups</em> catch the string vibrations and turn them into sound through a speaker.</p>
 <p>Other important parts: the <em>bridge</em> (where strings attach to the body), the <em>nut</em> (where strings rest at the top), and the <em>sound hole</em> (the round hole in the middle of acoustic guitars).</p>`
         },
         {
           label: 'See',
-          title: 'Touch and Name 👆',
+          title: 'Touch and Name ',
           body: `<p>Look at your guitar. Touch each part and say its name out loud:</p>
 <p>Headstock → Tuning pegs → Nut → Fretboard → Frets → Neck (back) → Body → Sound hole (or Pickups) → Bridge → End pin</p>
 <p>Now follow a string from top to bottom: tuning peg → nut → fretboard → bridge → end pin. That's the whole length of the string!</p>
 <div class="lp-callout">
-  <div class="lp-co-title">THE TOUCH RULE 👆</div>
+  <div class="lp-co-title">THE TOUCH RULE </div>
   <p>If you can't point to it and name it, you don't really know it yet! Touch every part. Say every name. Your brain remembers better when your body is involved too.</p>
 </div>`
         },
         {
           label: 'Draw',
-          title: 'Draw Your Guitar! ✏️',
+          title: 'Draw Your Guitar! ',
           body: `<p>On paper, draw your guitar from memory. Label every part you can remember.</p>
 <p>Don't worry about making it look perfect — this isn't art class! It's about remembering. When you can't remember a part, go look at your guitar, then come back and add it.</p>
-<p>This shows you what you ACTUALLY know vs what you THINK you know. 😄</p>`
+<p>This shows you what you ACTUALLY know vs what you THINK you know. </p>`
         },
         {
           label: 'Do',
-          title: 'String Names & Numbers 🔢',
+          title: 'String Names & Numbers ',
           body: `<p>The guitar has <strong>6 strings</strong>, numbered 1 (thinnest, closest to the floor) to 6 (thickest, closest to your chin).</p>
 <p>From thick to thin, the string names are:</p>
 <p><strong>E — A — D — G — B — E</strong></p>
 <p>Here's a silly sentence to remember them:</p>
-<p><em>"Eddie Ate Dynamite, Good Bye Eddie!"</em> 💥</p>
+<p><em>"Eddie Ate Dynamite, Good Bye Eddie!"</em> </p>
 <p>Pluck each string. Listen to how it sounds. Say its name out loud. Do this until you can name them all without looking!</p>
 <div class="lp-callout">
-  <div class="lp-co-title">FUN FACT 🎵</div>
+  <div class="lp-co-title">FUN FACT </div>
   <p>The 2nd string (B) is the weird one! Every other pair of strings follows the same pattern, but B breaks the rule. This is why guitar is tricky sometimes — but also what makes it special!</p>
 </div>`
         },
@@ -184,7 +184,7 @@ const FOUNDATION = {
           body: `<p>There are three main kinds of guitar:</p>
 <p><strong>🇪🇸 Classical (Nylon strings)</strong> — soft, warm sound. Used for classical music, flamenco, and bossa nova. You play it with your fingers (no pick). Has a wider neck.</p>
 <p><strong>🤠 Acoustic (Steel strings)</strong> — bright, loud sound. Used for folk, country, and singing along. Can use a pick or your fingers.</p>
-<p><strong>⚡ Electric</strong> — lots of different sounds! Used for rock, jazz, blues. Thinner neck, lighter strings. Needs an amplifier (speaker) to make sound.</p>
+<p><strong> Electric</strong> — lots of different sounds! Used for rock, jazz, blues. Thinner neck, lighter strings. Needs an amplifier (speaker) to make sound.</p>
 <p>Which one should you learn on? <strong>Any of them!</strong> The basics are the same for all three. Pick the one that sounds the most exciting to you!</p>`
         }
       ]
@@ -194,14 +194,14 @@ const FOUNDATION = {
       id: 'f-posture',
       num: '03',
       title: 'How to Hold the Guitar',
-      subtitle: 'Your body is part of the instrument! 🧘',
+      subtitle: 'Your body is part of the instrument',
       status: 'open',
       sources: ['Jamie Andreas', 'Charles Kim'],
       tags: ['Posture', 'Body', 'Essential'],
       steps: [
         {
           label: 'Read',
-          title: 'Sit Like a Guitar Player 🪑',
+          title: 'Sit Like a Guitar Player ',
           body: `<p>Before you play a single note, you need to hold the guitar the right way. Bad posture = your body gets tight = playing feels hard = no fun! 😫</p>
 <p>Good news: holding the guitar correctly actually feels really natural once you find it!</p>
 <p><strong>Sitting down:</strong></p>
@@ -215,19 +215,19 @@ const FOUNDATION = {
         },
         {
           label: 'See',
-          title: 'The Pillow Trick 🛋️',
+          title: 'The Pillow Trick ',
           body: `<p>Here's a cool trick from guitar teacher Jamie Andreas:</p>
 <p><strong>Step 1:</strong> Sit in a chair WITHOUT the guitar. Put a pillow on your right leg. Rest your right arm over the pillow like it's the guitar. Notice how your arm falls naturally.</p>
 <p><strong>Step 2:</strong> Now pick up the real guitar. Try to make your arm feel the same way as it did on the pillow. The guitar should feel supported — not clamped!</p>
 <p><strong>Step 3:</strong> Check your left hand. Make a "C" shape with your thumb behind the neck. Your fingers should curve over the strings like little arches. No flat fingers!</p>
 <div class="lp-callout">
-  <div class="lp-co-title">THE CUP 🥤</div>
+  <div class="lp-co-title">THE CUP </div>
   <p>Imagine you're holding a small ball in your palm. Fingers curved, thumb relaxed. This shape gives you the most control with the least effort!</p>
 </div>`
         },
         {
           label: 'Do',
-          title: 'Find Your Position 🎯',
+          title: 'Find Your Position ',
           body: `<p>Let's do it step by step:</p>
 <p>1. Sit on the front edge of a chair. Feet flat.<br>
 2. Put the guitar on your right leg.<br>
@@ -252,7 +252,7 @@ const FOUNDATION = {
         },
         {
           label: 'Deeper',
-          title: 'Standing Up! 🧍',
+          title: 'Standing Up! ',
           body: `<p>When you see guitar players on stage, they're usually standing up! Standing changes things — the guitar hangs from a strap at a different height, and your arms are at different angles.</p>
 <p><strong>For now, practise sitting down.</strong> Standing comes later — after your hands learn where everything is. When you DO stand up, set the strap so the guitar is at about the same height as when you sit. That way you don't have to re-learn everything!</p>`
         }
@@ -263,19 +263,19 @@ const FOUNDATION = {
       id: 'f-tuning',
       num: '04',
       title: 'Tuning',
-      subtitle: 'If your guitar sounds weird, it needs tuning! 🎵',
+      subtitle: 'If your guitar sounds weird, it needs tuning',
       status: 'open',
       sources: ['Charles Kim'],
       tags: ['Tuning', 'Ear', 'Essential'],
       steps: [
         {
           label: 'Read',
-          title: 'What Is Tuning? 🎹',
+          title: 'What Is Tuning? ',
           body: `<p>Before you play, your guitar needs to be <strong>in tune</strong>. That means each string plays the right note!</p>
-<p>When a guitar is out of tune, even the best player in the world would sound bad. It's like trying to sing a song when everyone around you is singing a different song — chaos! 😵</p>
+<p>When a guitar is out of tune, even the best player in the world would sound bad. It's like trying to sing a song when everyone around you is singing a different song — chaos! </p>
 <p>Standard tuning from thick to thin: <strong>E A D G B E</strong></p>
 <p>The thickest string (low E) is your starting point. All the other strings are tuned from there.</p>
-<p><strong>The easiest way:</strong> Use a tuner! Clip-on tuners are cheap and work great. Phone apps work too (like GuitarTuna). The tuner tells you if the string is too high, too low, or just right. 🎯</p>`
+<p><strong>The easiest way:</strong> Use a tuner! Clip-on tuners are cheap and work great. Phone apps work too (like GuitarTuna). The tuner tells you if the string is too high, too low, or just right. </p>`
         },
         {
           label: 'Do',
@@ -288,7 +288,7 @@ const FOUNDATION = {
 6. Check ALL strings one more time</p>
 <p>New strings go out of tune a lot. Old strings stay in tune better but don't sound as bright.</p>
 <div class="lp-callout">
-  <div class="lp-co-title">DAILY HABIT ⭐</div>
+  <div class="lp-co-title">DAILY HABIT </div>
   <p>Tune your guitar at the START of every practice session. It takes about 1 minute. It makes sure your ears hear the RIGHT sounds — and it tells your brain "practice time has begun!"</p>
 </div>`
         },
@@ -307,7 +307,7 @@ const FOUNDATION = {
       id: 'f-first-sound',
       num: '05',
       title: 'Your First Sound',
-      subtitle: 'One beautiful note. That\'s the goal! 🎵',
+      subtitle: 'One beautiful note. That\'s the goal! ',
       status: 'open',
       sources: ['Jamie Andreas', 'Patrick Stefurak'],
       tags: ['Technique', 'First', 'Essential'],
@@ -315,7 +315,7 @@ const FOUNDATION = {
         {
           label: 'Read',
           title: 'The Rest Stroke 👍',
-          body: `<p>You're going to play ONE note. Just one. But you're going to make it sound BEAUTIFUL. ✨</p>
+          body: `<p>You're going to play ONE note. Just one. But you're going to make it sound BEAUTIFUL. </p>
 <p>The <strong>rest stroke</strong> is how guitar players make a nice, full sound:</p>
 <p>1. Put your right thumb on the thickest string (low E)<br>
 2. Push the string down toward the guitar body<br>
@@ -323,13 +323,13 @@ const FOUNDATION = {
 4. Listen to the note ring out!</p>
 <p>That's it! One note. One clean, beautiful, ringing note. 🎶</p>
 <div class="lp-callout">
-  <div class="lp-co-title">THE THREE PARTS OF A NOTE 🔔</div>
+  <div class="lp-co-title">THE THREE PARTS OF A NOTE </div>
   <p>Every note has three parts: <em>the start</em> (when you pluck), <em>the middle</em> (the note ringing), and <em>the end</em> (when it fades away). Most beginners only listen to the start. Try listening to the MIDDLE — that's where the magic is! 🪄</p>
 </div>`
         },
         {
           label: 'Do',
-          title: 'Play One Note 10 Times 🎯',
+          title: 'Play One Note 10 Times ',
           body: `<p>Using your thumb, play the thickest string 10 times. Each time:</p>
 <p>1. Put your thumb on the string<br>
 2. Push gently (remember the Slow Push Trick!)<br>
@@ -356,26 +356,26 @@ const FOUNDATION = {
       id: 'f-notes-neck',
       num: '06',
       title: 'Notes on the Neck',
-      subtitle: 'Learn where all the notes hide! 🗺️',
+      subtitle: 'Learn where all the notes hide',
       status: 'open',
       sources: ['Patrick Stefurak', 'Fred Sokolow'],
       tags: ['Fretboard', 'Notes', 'Foundation'],
       steps: [
         {
           label: 'Read',
-          title: 'The Music Alphabet 🔤',
+          title: 'The Music Alphabet ',
           body: `<p>Music uses <strong>12 notes</strong>. Their names are: A A# B C C# D D# E F F# G G# — then back to A again!</p>
 <p>On guitar, each fret is one step in this list. Play the thickest string open = E. First fret = F. Second fret = F#. Third fret = G. See how it works?</p>
 <p>The regular notes (no sharps) are: <strong>A B C D E F G</strong></p>
 <p>Notice something special: between B and C, there's NO sharp! Between E and F, there's NO sharp either! These are the "short jumps" in music.</p>
 <div class="lp-callout">
-  <div class="lp-co-title">SMART TEACHER SAYS 💡</div>
+  <div class="lp-co-title">SMART TEACHER SAYS </div>
   <p>"Start by learning the notes on the guitar neck! Learn where A, B, C, D, E, F, and G are EVERYWHERE. If you know how to practice and where the notes are, you have the two most important tools EVER!"</p>
 </div>`
         },
         {
           label: 'Do',
-          title: 'Find Every E! 🔎',
+          title: 'Find Every E! ',
           body: `<p>Your first fretboard treasure hunt: find EVERY E on the guitar!</p>
 <p>Start with the thickest string open (that's E!). Now go up one fret at a time: F, F#, G, G#, A... until you find the next E. It's at fret 12 — that's where the double dots are!</p>
 <p>Now do the same on each string:</p>
@@ -384,17 +384,17 @@ const FOUNDATION = {
 • 3rd string (G) → E is at fret 9 (and 12!)<br>
 • 2nd string (B) → E is at fret 5<br>
 • 1st string → E is the open string! (same as string 6, but higher!)</p>
-<p>You just found every E on the whole guitar! 🎉 Tomorrow, find every A. Then D. Then G. Then C. One note per day — like a treasure hunt!</p>`
+<p>You just found every E on the whole guitar!  Tomorrow, find every A. Then D. Then G. Then C. One note per day — like a treasure hunt!</p>`
         },
         {
           label: 'Draw',
-          title: 'Draw the Fretboard ✏️',
+          title: 'Draw the Fretboard ',
           body: `<p>Draw 6 horizontal lines (one for each string). Add vertical lines for the frets. Now write the note names in every spot!</p>
 <p>Use the open string names as your starting points: E A D G B E.</p>
 <p>Remember: B→C and E→F have NO sharp between them. Every other pair does!</p>
-<p>This is YOUR fretboard map. Keep it safe — you'll add more to it as you learn! 🗺️</p>
+<p>This is YOUR fretboard map. Keep it safe — you'll add more to it as you learn! </p>
 <div class="lp-callout">
-  <div class="lp-co-title">THE SECRET 🤫</div>
+  <div class="lp-co-title">THE SECRET </div>
   <p>Once you know where all the notes are, EVERYTHING gets easier. Chords, songs, solos — they're all just knowing where the right notes are!</p>
 </div>`
         },
@@ -414,14 +414,14 @@ const FOUNDATION = {
       id: 'f-practice-schedule',
       num: '07',
       title: 'Your Practice Plan',
-      subtitle: 'Practice makes progress! 📅',
+      subtitle: 'Practice makes progress📅',
       status: 'open',
       sources: ['Patrick Stefurak', 'Howard Roberts', 'Larry Baione'],
       tags: ['Practice', 'Schedule', 'Core'],
       steps: [
         {
           label: 'Read',
-          title: 'The Secret of Great Players 🌟',
+          title: 'The Secret of Great Players ',
           body: `<p>Here's what great guitar teachers all agree on:</p>
 <div class="lp-quote">
   "Pick a time every day to practice. When that time comes, go to your practice spot and start. Don't do other things instead!"
@@ -432,18 +432,18 @@ const FOUNDATION = {
         },
         {
           label: 'Do',
-          title: 'Your Daily Practice Recipe 🍳',
+          title: 'Your Daily Practice Recipe ',
           body: `<p>Here's your practice recipe — follow it every time:</p>
-<p><strong>1. Body Scan (2 min)</strong> 🧘 — Check for tight spots. You learned this in lesson 01.<br>
-<strong>2. Tune (1 min)</strong> 🎵 — Every time. No exceptions!<br>
+<p><strong>1. Body Scan (2 min)</strong>  — Check for tight spots. You learned this in lesson 01.<br>
+<strong>2. Tune (1 min)</strong>  — Every time. No exceptions!<br>
 <strong>3. Warm-Up (5 min)</strong> 🔥 — Super slow playing. Rest strokes. Feel your fingers.<br>
-<strong>4. Today's Lesson (15 min)</strong> 📚 — New stuff from whatever you're working on.<br>
-<strong>5. Drill (10 min)</strong> 🎯 — Practice things you've already learned. Make them stronger.<br>
+<strong>4. Today's Lesson (15 min)</strong>  — New stuff from whatever you're working on.<br>
+<strong>5. Drill (10 min)</strong>  — Practice things you've already learned. Make them stronger.<br>
 <strong>6. Play! (5-10 min)</strong> 🎸 — Something fun! A song, a riff, whatever makes you smile.</p>
 <p>Total: about 40 minutes. Same time every day if you can!</p>
 <div class="lp-callout">
-  <div class="lp-co-title">THE RULES 📏</div>
-  <p>Steps 1 and 2 happen EVERY time. Always! Steps 3-6 can change — spend more time on whatever needs it. But body scan + tuning are your anchors. They tell your brain: "It's guitar time!" ⚡</p>
+  <div class="lp-co-title">THE RULES </div>
+  <p>Steps 1 and 2 happen EVERY time. Always! Steps 3-6 can change — spend more time on whatever needs it. But body scan + tuning are your anchors. They tell your brain: "It's guitar time!" </p>
 </div>`
         },
         {
@@ -454,8 +454,8 @@ const FOUNDATION = {
 ☐ I know that body scan + tuning happen every time<br>
 ☐ I have a spot where I can practise at the same time each day</p>
 <div class="lp-callout">
-  <div class="lp-co-title">🎉 YOU DID IT! 🎉</div>
-  <p>If you can say YES to all of these, you've finished the Foundation! You know how to learn, how to hold the guitar, how to tune it, how to make a beautiful note, where all the notes live, and how to practise every day. Everything from here builds on what you just learned. You're ready! 🚀</p>
+  <div class="lp-co-title"> YOU DID IT! </div>
+  <p>If you can say YES to all of these, you've finished the Foundation! You know how to learn, how to hold the guitar, how to tune it, how to make a beautiful note, where all the notes live, and how to practise every day. Everything from here builds on what you just learned. You're ready! </p>
 </div>`
         }
       ]
