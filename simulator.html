@@ -1578,45 +1578,41 @@ function showFoundationTopic(topicId){
   const nextTopic=topicIdx<F.topics.length-1?F.topics[topicIdx+1]:null;
   const completed=JSON.parse(localStorage.getItem('hearth-foundation-progress')||'{}');
   const isCompleted=completed[topicId];
+  const rainbow=['#e74c3c','#e67e22','#f1c40f','#2ecc71','#3498db','#9b59b6','#e84393'];
+  const color=rainbow[topicIdx];
 
   function renderStep(idx){
     const s=topic.steps[idx];
     const isLast=idx===topic.steps.length-1;
-    let html='<div class="lp-body">'+
-      '<div class="lp-tags">'+topic.tags.map(t=>'<span>'+t+'</span>').join('')+'</div>'+
-      '<h3>'+s.title+'</h3>'+
+    let html='<div class="lp-body" style="--accent:'+color+'">'+
+      '<div class="lp-tags">'+topic.tags.map(t=>'<span style="border-color:'+color+'30;color:'+color+'">'+t+'</span>').join('')+'</div>'+
+      '<h3 style="color:'+color+'">'+s.title+'</h3>'+
       s.body;
-    if(topic.video){
-      html+='<div style="margin:16px 0;padding:12px;background:var(--card);border:1px solid var(--border);border-radius:8px;display:flex;align-items:center;gap:10px;cursor:pointer" onclick="window.open(\''+topic.video+'\',\'_blank\')">'+
-        '<span style="font-size:1.3rem">▶️</span>'+
-        '<div><div style="font-family:Cinzel;font-size:0.8rem;color:var(--gold)">Watch a video</div>'+
-        '<div style="font-size:0.65rem;color:var(--dim)">If the text isn\'t landing, try watching</div></div>'+
-      '</div>';
-    }
     if(isLast){
       html+='<div style="display:flex;gap:8px;margin-top:16px">'+
-        '<button class="lp-next" style="flex:1;background:var(--gold);color:var(--bg);border:none;padding:12px;border-radius:8px;font-family:DM Sans,sans-serif;font-size:0.9rem;font-weight:600;cursor:pointer" onclick="completeFoundationTopic(\''+topicId+'\')">✓ Mark Complete</button>';
+        '<button class="lp-next" style="flex:1;background:'+color+';color:white;border:none;padding:12px;border-radius:8px;font-family:DM Sans,sans-serif;font-size:0.9rem;font-weight:600;cursor:pointer" onclick="completeFoundationTopic(\''+topicId+'\')">Mark Complete</button>';
       if(nextTopic){
-        html+='<button class="lp-next" style="flex:1;background:var(--card);color:var(--gold);border:1px solid var(--gold);padding:12px;border-radius:8px;font-family:DM Sans,sans-serif;font-size:0.9rem;font-weight:600;cursor:pointer" onclick="showFoundationTopic(\''+nextTopic.id+'\')">Next: '+nextTopic.title+' →</button>';
+        const nextColor=rainbow[topicIdx+1];
+        html+='<button class="lp-next" style="flex:1;background:'+nextColor+'18;color:'+nextColor+';border:2px solid '+nextColor+'60;padding:12px;border-radius:8px;font-family:DM Sans,sans-serif;font-size:0.9rem;font-weight:600;cursor:pointer" onclick="showFoundationTopic(\''+nextTopic.id+'\')">Next: '+nextTopic.title+'</button>';
       }
       html+='</div>';
     } else {
-      html+='<button class="lp-next" onclick="nextFStep(\''+topicId+'\','+(idx+1)+')">Next: '+topic.steps[idx+1].label+' →</button>';
+      html+='<button class="lp-next" style="background:'+color+'18;color:'+color+';border:2px solid '+color+'40;padding:10px 20px;border-radius:8px;font-family:DM Sans,sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer" onclick="nextFStep(\''+topicId+'\','+(idx+1)+')">Next: '+topic.steps[idx+1].label+'</button>';
     }
     html+='</div>';
     return html;
   }
 
-  el.innerHTML='<div class="lesson-page">'+
+  el.innerHTML='<div class="lesson-page" style="border-top:4px solid '+color+'">'+
     '<div class="lp-back" onclick="showFoundation()">\u2190 Foundation</div>'+
-    '<div style="display:flex;justify-content:flex-end;margin-bottom:4px"><button id="ttsBtn" onclick="ttsToggle()" style="background:var(--card);color:var(--gold);border:1px solid var(--border);padding:6px 14px;border-radius:6px;cursor:pointer;font-family:inherit;font-size:0.75rem">Read aloud</button></div>'+
+    '<div style="display:flex;justify-content:flex-end;margin-bottom:4px"><button id="ttsBtn" onclick="ttsToggle()" style="background:'+color+'18;color:'+color+';border:1px solid '+color+'40;padding:6px 14px;border-radius:6px;cursor:pointer;font-family:inherit;font-size:0.75rem;font-weight:600">Read aloud</button></div>'+
     '<div class="lp-header">'+
-      '<div class="lp-tag">'+topic.num+' / '+F.tag+(isCompleted?' · <span style="color:var(--gold)">\u2713 Complete</span>':'')+'</div>'+
-      '<h2>'+topic.title+'</h2>'+
+      '<div class="lp-tag" style="color:'+color+'">'+topic.num+' / '+F.tag+(isCompleted?' · Complete':'')+'</div>'+
+      '<h2 style="color:'+color+'">'+topic.title+'</h2>'+
       '<div class="lp-subtitle">'+topic.subtitle+'</div>'+
     '</div>'+
     '<div class="lp-steps" id="fSteps">'+
-      topic.steps.map((s,i)=>'<div class="lp-step'+(i===0?' on':'')+'" onclick="goFStep(\''+topicId+'\','+i+')"><div class="lp-sn">'+String(i+1).padStart(2,'0')+'</div><div class="lp-sl">'+s.label+'</div></div>').join('')+
+      topic.steps.map((s,i)=>'<div class="lp-step'+(i===0?' on':'')+'" onclick="goFStep(\''+topicId+'\','+i+')" style="'+(i===0?'background:'+color+';border-color:'+color+';color:white':'background:'+color+'10;border-color:'+color+'30')+'"><div class="lp-sn" style="color:'+(i===0?'white':color)+'">'+(i+1)+'</div><div class="lp-sl" style="color:'+(i===0?'white':color)+'">'+s.label+'</div></div>').join('')+
     '</div>'+
     '<div id="fStepBody">'+renderStep(0)+'</div>'+
   '</div>';
@@ -1644,34 +1640,37 @@ window.goFStep=function(tid,idx){
   const nextTopic=topicIdx<F.topics.length-1?F.topics[topicIdx+1]:null;
   const completed=JSON.parse(localStorage.getItem('hearth-foundation-progress')||'{}');
   const isCompleted=completed[tid];
+  const rainbow=['#e74c3c','#e67e22','#f1c40f','#2ecc71','#3498db','#9b59b6','#e84393'];
+  const color=rainbow[topicIdx];
   const s=topic.steps[idx];
   const body=document.getElementById('fStepBody');
   if(body){
     const isLast=idx===topic.steps.length-1;
-    let html='<div class="lp-body">'+
-      '<div class="lp-tags">'+topic.tags.map(t=>'<span>'+t+'</span>').join('')+'</div>'+
-      '<h3>'+s.title+'</h3>'+
+    let html='<div class="lp-body" style="--accent:'+color+'">'+
+      '<div class="lp-tags">'+topic.tags.map(t=>'<span style="border-color:'+color+'30;color:'+color+'">'+t+'</span>').join('')+'</div>'+
+      '<h3 style="color:'+color+'">'+s.title+'</h3>'+
       s.body;
-    if(topic.video){
-      html+='<div style="margin:16px 0;padding:12px;background:var(--card);border:1px solid var(--border);border-radius:8px;display:flex;align-items:center;gap:10px;cursor:pointer" onclick="window.open(\''+topic.video+'\',\'_blank\')">'+
-        '<span style="font-size:1.3rem">▶️</span>'+
-        '<div><div style="font-family:Cinzel;font-size:0.8rem;color:var(--gold)">Watch a video</div>'+
-        '<div style="font-size:0.65rem;color:var(--dim)">If the text isn\'t landing, try watching</div></div>'+
-      '</div>';
-    }
     if(isLast){
       html+='<div style="display:flex;gap:8px;margin-top:16px">'+
-        '<button class="lp-next" style="flex:1;background:var(--gold);color:var(--bg);border:none;padding:12px;border-radius:8px;font-family:DM Sans,sans-serif;font-size:0.9rem;font-weight:600;cursor:pointer" onclick="completeFoundationTopic(\''+tid+'\')">✓ Mark Complete</button>';
+        '<button class="lp-next" style="flex:1;background:'+color+';color:white;border:none;padding:12px;border-radius:8px;font-family:DM Sans,sans-serif;font-size:0.9rem;font-weight:600;cursor:pointer" onclick="completeFoundationTopic(\''+tid+'\')">Mark Complete</button>';
       if(nextTopic){
-        html+='<button class="lp-next" style="flex:1;background:var(--card);color:var(--gold);border:1px solid var(--gold);padding:12px;border-radius:8px;font-family:DM Sans,sans-serif;font-size:0.9rem;font-weight:600;cursor:pointer" onclick="showFoundationTopic(\''+nextTopic.id+'\')">Next: '+nextTopic.title+' →</button>';
+        const nextColor=rainbow[topicIdx+1];
+        html+='<button class="lp-next" style="flex:1;background:'+nextColor+'18;color:'+nextColor+';border:2px solid '+nextColor+'60;padding:12px;border-radius:8px;font-family:DM Sans,sans-serif;font-size:0.9rem;font-weight:600;cursor:pointer" onclick="showFoundationTopic(\''+nextTopic.id+'\')">Next: '+nextTopic.title+'</button>';
       }
       html+='</div>';
     } else {
-      html+='<button class="lp-next" onclick="nextFStep(\''+tid+'\','+(idx+1)+')">Next: '+topic.steps[idx+1].label+' →</button>';
+      html+='<button class="lp-next" style="background:'+color+'18;color:'+color+';border:2px solid '+color+'40;padding:10px 20px;border-radius:8px;font-family:DM Sans,sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer" onclick="nextFStep(\''+tid+'\','+(idx+1)+')">Next: '+topic.steps[idx+1].label+'</button>';
     }
     html+='</div>';
     body.innerHTML=html;
     body.scrollTop=0;
+    // Update step pills color
+    document.querySelectorAll('#fSteps .lp-step').forEach(function(step,i){
+      if(i===idx){step.style.background=color;step.style.borderColor=color;}
+      else{step.style.background=color+'10';step.style.borderColor=color+'30';}
+      step.querySelector('.lp-sn').style.color=i===idx?'white':color;
+      step.querySelector('.lp-sl').style.color=i===idx?'white':color;
+    });
   }
 };
 
