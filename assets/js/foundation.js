@@ -18,105 +18,43 @@ const FOUNDATION = {
       id: 'f-how-to-learn',
       num: '01',
       title: 'How to Learn',
-      subtitle: 'Learn how learning works before you start',
+      subtitle: 'Your superpower is imagination',
       status: 'open',
       sources: ['Jamie Andreas'],
       tags: ['Mindset', 'Practice', 'Core'],
       video: 'https://www.youtube.com/results?search_query=how+to+practise+guitar+correctly+andreas',
       steps: [
         {
-          label: 'Read',
-          title: 'Your Super Power: Paying Attention ',
-          body: `<p>Playing guitar starts in your <strong>brain</strong>, not your fingers!</p>
-<p>When you practise, your brain tells your fingers what to do. If you pay really good attention, your fingers learn the right way. If you don't pay attention... they learn the wrong way! </p>
-<p>Imagine you're building with LEGO. If you don't look at the instructions and just snap pieces together, it won't look right. Your fingers are the same — they need your brain to guide them carefully.</p>
-<div class="lp-callout">
-  <div class="lp-co-title">THE BIG IDEA </div>
-  <p>When you practise slowly and really pay attention, your fingers remember the RIGHT way to do things. If you rush, they remember the WRONG way — and that's harder to fix later!</p>
-</div>
-<p>Here are three tricks that will help you learn anything on guitar:</p>
-<p><strong> Super Slow Mode</strong> — Play sooooo slowly that you can feel what every finger is doing. Speed will come later by itself!</p>
-<p><strong> Freeze!</strong> — Stop at any point and hold still. Feel what your hand is doing. Is it tight? Let it relax.</p>
-<p><strong> Body Scanner</strong> — Check different parts of your body one at a time. Thumb. Wrist. Shoulder. Are any of them tight when they don't need to be?</p>`
+          label: 'Imagine',
+          title: 'Your superpower is imagination',
+          body: `<p>Your brain is the boss of your fingers. If you imagine exactly what you want them to do, they'll learn it.</p>
+<p>If you rush and don't think, your fingers learn the wrong thing — and that's hard to undo.</p>`
         },
         {
           label: 'Feel',
-          title: 'The Tension Hunt ',
-          body: `<p>Close your eyes. Pick up the guitar (or pretend to hold one).</p>
-<p>Now let's go on a tension hunt! Check each body part:</p>
-<p>• Your right shoulder — is it up by your ear? Let it drop down.<br>
-• Your right wrist — is it stiff or bendy?<br>
-• Your left thumb — is it squeezing the guitar neck?<br>
-• Your jaw — are you biting down? Let it go soft.</p>
-<p>When one part of your body works hard, other parts get tight too — without you even knowing! This is called <strong>sympathetic tension</strong>. Fancy name, simple idea: one tight spot makes other spots tight.</p>
-<div class="lp-callout">
-  <div class="lp-co-title">THE SLOW PUSH TRICK </div>
-  <p>Instead of pressing a string down hard, touch it <em>super gently</em> at first. Then push a tiny bit more... and a tiny bit more... until the note sounds clean. That's all the pressure you need! Any more is wasting energy.</p>
-</div>
-<div class="lp-quote">
-  "There are no mistakes — only surprises. Every surprise teaches you something!"
-  <span class="lp-q-src">— Jamie Andreas (made kid-friendly)</span>
-</div>`
-        },
-        {
-          label: 'Draw',
-          title: 'Draw Your Tension Map ',
-          body: `<p>On paper, draw a simple picture of a person holding a guitar.</p>
-<p>Now put a RED DOT on every place that feels tight when you hold the guitar:</p>
-<p>• Neck and shoulders<br>
-• Arms<br>
-• Wrists<br>
-• Fingers (each one!)<br>
-• Jaw<br>
-• Back<br>
-• Legs</p>
-<p>Now pick up the guitar and check each spot. Were you right? Did you miss any?</p>
-<div class="lp-callout">
-  <div class="lp-co-title">WHY THIS IS COOL </div>
-  <p>This is YOUR tension map! As you get better at guitar, you'll have fewer and fewer red dots. The map shows you're getting better — even better than playing fast does!</p>
-</div>`
+          title: 'The tightness hunt',
+          body: `<p>Pick up the guitar. Now check: is your shoulder up? Is your jaw tight? Is your thumb squeezing?</p>
+<p>When one part works hard, other parts get tight without you knowing.</p>`
         },
         {
           label: 'Do',
-          title: 'The 2-Minute Body Scan ',
-          body: `<p>Set a timer for 2 minutes. Hold the guitar. Don't play anything!</p>
-<p>Instead, check your body from head to toes like a robot scanning for problems:</p>
-<p>1. Jaw — let it hang loose. <br>
-2. Neck — roll it around gently.<br>
-3. Shoulders — drop them down like heavy rocks.<br>
-4. Upper arms — are they tight or floppy?<br>
-5. Forearms — this is where your finger muscles live! Soft?<br>
-6. Wrists — they should curve nicely, not be flat.<br>
-7. Hands — make a "cup" shape. Fingers curved.<br>
-8. Fingers — check each one. Especially the pinky! What's it doing? <br>
-9. Tummy — are you breathing deep? Take a big breath.<br>
-10. Legs — feet flat on the floor, not crossed.</p>
-<p>Do this before EVERY practice session. It only takes 2 minutes!</p>`
+          title: 'Super slow',
+          body: `<p>Press a string down — but super slowly. Like a sloth.</p>
+<p>Feel the exact moment the note sounds clean. That's all the pressure you need. No more.</p>`
         },
         {
           label: 'Check',
-          title: 'Can You Feel It? ✅',
-          body: `<p>Before we move on, can you say YES to these?</p>
-<p>☐ I know that practising carefully is better than practising fast<br>
-☐ I can find at least 3 tight spots in my body when I hold the guitar<br>
-☐ I know what "Super Slow Mode" means<br>
-☐ I know the Slow Push Trick<br>
-☐ I can do a 2-minute body scan without playing any notes</p>
-<div class="lp-callout">
-  <div class="lp-co-title">THE RULE </div>
-  <p>If any of these feel fuzzy, that's okay! Just go back and try again. Going slow here is the secret weapon. ALL the cool guitar players practised slowly first!</p>
-</div>`
-        },
-        {
-          label: 'Deeper',
-          title: 'Why Does This Work? ',
-          body: `<p>This way of learning comes from very smart guitar teachers:</p>
-<p><strong>Jamie Andreas</strong> figured out that the secret to great guitar playing isn't talent — it's <em>awareness</em>. Feeling what your body is doing. Most people never learn this and wonder why guitar feels hard.</p>
-<p>The idea is simple: <em>if you can FEEL it, you can FIX it</em>. That's what the body scan is all about.</p>
-<p>Your style — the thing that makes YOUR playing sound like YOU — starts right here. Not in what you play, but in HOW you practise. Pretty cool, right? 🎸</p>`
+          title: 'Ready?',
+          body: `<p>Can you say yes to these?</p>
+<p>☐ I know my brain is the boss of my fingers<br>
+☐ I found at least 3 tight spots in my body<br>
+☐ I tried the slow press trick</p>`
         }
       ]
     },
+
+    {
+      id: 'f-anatomy',
 
     {
       id: 'f-anatomy',
