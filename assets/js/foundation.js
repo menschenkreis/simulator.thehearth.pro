@@ -55,9 +55,6 @@ const FOUNDATION = {
 
     {
       id: 'f-anatomy',
-
-    {
-      id: 'f-anatomy',
       num: '02',
       title: 'Parts of the Guitar',
       subtitle: 'Get to know your instrument🎸',
