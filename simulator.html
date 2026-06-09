@@ -999,6 +999,9 @@ function showFoundation(){
   const minWidth=180;
   const step=(maxWidth-minWidth)/(F.topics.length-1);
 
+  // Rainbow colors for blocks (red → violet)
+  const rainbow=['#e74c3c','#e67e22','#f1c40f','#2ecc71','#3498db','#9b59b6','#e84393'];
+
   // Render from last topic (top/smallest) to first topic (bottom/widest)
   for(let i=F.topics.length-1; i>=0; i--){
     const t=F.topics[i];
@@ -1007,29 +1010,34 @@ function showFoundation(){
     const isActive=i===activeIdx;
     const isLocked=i>activeIdx&&!isDone;
     const num=i+1;
+    const color=rainbow[i];
 
     if(isLocked){
       // Skeleton — just a dim line, no click
       html+='<div style="'+
         'width:'+w+'px;padding:10px 16px;'+
         'background:transparent;'+
-        'border:1px dashed var(--border);'+
+        'border:1px dashed '+color+'40;'+
         'border-radius:6px;'+
         'text-align:center;'+
         'position:relative;'+
         'z-index:'+(F.topics.length-i)+
       '">'+
         '<div style="display:flex;align-items:center;justify-content:center;gap:8px">'+
-          '<span style="font-family:JetBrains Mono;font-size:0.7rem;color:var(--border)">'+String(num).padStart(2,'0')+'</span>'+
-          '<span style="font-family:Cinzel;font-size:0.85rem;color:var(--border);font-weight:600">'+t.title+'</span>'+
+          '<span style="font-family:JetBrains Mono;font-size:0.7rem;color:'+color+'40">'+String(num).padStart(2,'0')+'</span>'+
+          '<span style="font-family:Cinzel;font-size:0.85rem;color:'+color+'30;font-weight:600">'+t.title+'</span>'+
         '</div>'+
       '</div>';
     } else {
-      // Clickable block
+      // Clickable block — rainbow colored
+      const bg=isDone?color:color+'18';
+      const border=isDone?color:color+'60';
+      const textCol=isDone?'#fff':color;
+      const numCol=isDone?'rgba(255,255,255,0.7)':color;
       html+='<div onclick="showFoundationTopic(\''+t.id+'\')" style="'+
         'width:'+w+'px;padding:12px 16px;'+
-        'background:'+(isDone?'var(--gold)':'var(--card)')+';'+
-        'border:2px solid '+(isDone?'var(--gold)':'var(--border)')+';'+
+        'background:'+bg+';'+
+        'border:2px solid '+border+';'+
         'border-radius:6px;'+
         'cursor:pointer;transition:all 0.15s;'+
         'text-align:center;'+
@@ -1037,9 +1045,9 @@ function showFoundation(){
         'z-index:'+(F.topics.length-i)+
       '">'+
         '<div style="display:flex;align-items:center;justify-content:center;gap:8px">'+
-          '<span style="font-family:JetBrains Mono;font-size:0.7rem;color:'+(isDone?'var(--bg)':'var(--gold)')+';opacity:'+(isDone?'1':'0.5')+'">'+String(num).padStart(2,'0')+'</span>'+
-          '<span style="font-family:Cinzel;font-size:0.9rem;color:'+(isDone?'var(--bg)':'var(--text)')+';font-weight:600">'+t.title+'</span>'+
-          (isDone?'<span style="font-size:0.8rem;color:var(--bg)">&#10003;</span>':'')+
+          '<span style="font-family:JetBrains Mono;font-size:0.7rem;color:'+numCol+';opacity:'+(isDone?'1':'0.6')+'">'+String(num).padStart(2,'0')+'</span>'+
+          '<span style="font-family:Cinzel;font-size:0.9rem;color:'+textCol+';font-weight:600">'+t.title+'</span>'+
+          (isDone?'<span style="font-size:0.8rem;color:rgba(255,255,255,0.8)">&#10003;</span>':'')+
         '</div>'+
       '</div>';
     }
