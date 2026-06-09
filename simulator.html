@@ -71,7 +71,7 @@
 [data-theme="sparks"] .top-title{font-size:1.1rem !important;color:var(--gold) !important;font-family:DM Sans,sans-serif !important;font-weight:700 !important;}
 /* Sims-style sidebar buttons */
 [data-theme="sparks"] .bot{background:var(--panel) !important;border-right:none !important;padding:12px 10px !important;gap:6px !important;}
-[data-theme="sparks"] .bt{padding:10px 14px !important;border-radius:12px !important;border:2px solid #F0E0D0 !important;background:#FFF5EA !important;box-shadow:0 2px 0 #E0C8B0 !important;transition:all 0.1s !important;margin-bottom:4px !important;}
+[data-theme="sparks"] .bt{padding:8px 14px !important;border-radius:10px !important;border:2px solid #F0E0D0 !important;background:#FFF5EA !important;box-shadow:0 2px 0 #E0C8B0 !important;transition:all 0.1s !important;margin-bottom:4px !important;width:auto !important;}
 [data-theme="sparks"] .bt .bi{font-size:1.3rem !important;}
 [data-theme="sparks"] .bt .bl{font-size:0.75rem !important;color:#1A1A2E !important;font-weight:700 !important;letter-spacing:0 !important;text-transform:none !important;font-family:DM Sans,sans-serif !important;}
 [data-theme="sparks"] .bt:hover{background:#FFE8D0 !important;border-color:#FF8C42 !important;transform:translateY(-1px) !important;box-shadow:0 3px 0 #D0A070 !important;}
@@ -283,7 +283,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
   .top{display:flex;z-index:101;}
   .main-wrap{display:flex;flex:1;overflow:hidden;}
   .bot{position:static;width:240px;min-width:240px;height:auto;min-height:0;flex-direction:column;justify-content:flex-start;border-top:none;border-right:1px solid var(--border);border-bottom:none;padding:16px 0;gap:0;box-shadow:none;background:var(--panel);flex-shrink:0;overflow:visible;}
-  .bt{flex-direction:row;gap:10px;padding:14px 18px;width:100%;height:auto;min-width:unset;border-radius:0;justify-content:flex-start;border-left:3px solid transparent;transition:all 0.15s;}
+  .bt{flex-direction:row;gap:8px;padding:10px 16px;width:auto;height:auto;min-width:unset;border-radius:8px;justify-content:flex-start;border-left:3px solid transparent;transition:all 0.15s;}
   .bt:hover{background:rgba(212,175,105,0.04);border-left-color:rgba(212,175,105,0.3);}
   .bt:active,.bt.on{background:rgba(212,175,105,0.08);border-left-color:var(--gold);}
   .bt .bi{font-size:1.2rem;}
@@ -327,6 +327,17 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 .lp-co-title{font-family:DM Sans,sans-serif;font-size:0.7rem;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px;}
 .lp-quote{border-left:3px solid var(--gold);padding:10px 14px;margin:14px 0;font-style:italic;color:var(--dim);font-size:0.85rem;}
 .lp-q-src{display:block;font-style:normal;font-size:0.7rem;margin-top:4px;color:var(--gold);}
+
+/* Tap-to-reveal interaction */
+.lp-ask{text-align:center;}
+.lp-question{font-size:1.15rem;font-weight:700;color:var(--text);margin-bottom:16px;line-height:1.4;}
+.lp-reveal-btn{display:inline-block;padding:12px 28px;border-radius:24px;font-family:DM Sans,sans-serif;font-size:1rem;font-weight:700;cursor:pointer;border:none;transition:all 0.2s;background:var(--accent,#e74c3c);color:white;box-shadow:0 4px 12px rgba(0,0,0,0.15);}
+.lp-reveal-btn:active{transform:scale(0.95);}
+.lp-answer{display:none;margin-top:20px;text-align:left;}
+.lp-ask.revealed .lp-answer{display:block;animation:fadeUp 0.3s ease;}
+.lp-ask.revealed .lp-reveal-btn{display:none;}
+.lp-ask.revealed .lp-question{opacity:0.5;font-size:0.95rem;margin-bottom:8px;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 </style>
 </head>
 <body>

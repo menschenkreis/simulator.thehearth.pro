@@ -22,33 +22,61 @@ const FOUNDATION = {
       status: 'open',
       sources: ['Jamie Andreas'],
       tags: ['Mindset', 'Practice', 'Core'],
-      video: 'https://www.youtube.com/results?search_query=how+to+practise+guitar+correctly+andreas',
       steps: [
         {
           label: 'Imagine',
-          title: 'Your superpower is imagination',
-          body: `<p>Your brain is the boss of your fingers. If you imagine exactly what you want them to do, they'll learn it.</p>
-<p>If you rush and don't think, your fingers learn the wrong thing — and that's hard to undo.</p>`
+          title: 'Tell me your superpower!',
+          body: `<div class="lp-ask" onclick=\"this.classList.toggle('revealed')\">
+  <p class="lp-question\">What do you think is the most important thing for learning guitar?</p>
+  <button class="lp-reveal-btn\">Tap to find out!</button>
+  <div class="lp-answer\">
+    <p>Your brain is the boss of your fingers!</p>
+    <p>If you imagine exactly what you want your fingers to do, they will learn it. But if you rush and don't think, your fingers learn the wrong thing — and that's really hard to undo.</p>
+    <p>So your superpower is: <strong>imagination</strong>!</p>
+  </div>
+</div>`
         },
         {
           label: 'Feel',
           title: 'The tightness hunt',
-          body: `<p>Pick up the guitar. Now check: is your shoulder up? Is your jaw tight? Is your thumb squeezing?</p>
-<p>When one part works hard, other parts get tight without you knowing.</p>`
+          body: `<div class="lp-ask" onclick=\"this.classList.toggle('revealed')\">
+  <p class="lp-question\">Pick up your guitar. Does anything feel tight?</p>
+  <button class="lp-reveal-btn\">Tap to check!</button>
+  <div class="lp-answer\">
+    <p>Check these places:</p>
+    <p>Is your shoulder up by your ear? Let it drop.<br>
+    Is your jaw squeezed? Open your mouth wide, then relax.<br>
+    Is your thumb pressing hard on the back of the neck? Ease up.</p>
+    <p>When one part of your body works too hard, other parts get tight without you even knowing.</p>
+  </div>
+</div>`
         },
         {
           label: 'Do',
           title: 'Super slow',
-          body: `<p>Press a string down — but super slowly. Like a sloth.</p>
-<p>Feel the exact moment the note sounds clean. That's all the pressure you need. No more.</p>`
+          body: `<div class="lp-ask" onclick=\"this.classList.toggle('revealed')\">
+  <p class="lp-question\">Can you press a string down so slowly that a sloth would beat you?</p>
+  <button class="lp-reveal-btn\">Let's try it!</button>
+  <div class="lp-answer\">
+    <p>Press a string down — super slowly. Feel every tiny bit of pressure.</p>
+    <p>The exact moment the note sounds clean — stop! That's all the pressure you need. Any more is wasted effort.</p>
+    <p>Your fingers have amazing memory. Teach them the right amount, and they'll never forget.</p>
+  </div>
+</div>`
         },
         {
           label: 'Check',
           title: 'Ready?',
-          body: `<p>Can you say yes to these?</p>
-<p>☐ I know my brain is the boss of my fingers<br>
-☐ I found at least 3 tight spots in my body<br>
-☐ I tried the slow press trick</p>`
+          body: `<div class="lp-ask" onclick=\"this.classList.toggle('revealed')\">
+  <p class="lp-question\">Can you say YES to all three?</p>
+  <button class="lp-reveal-btn\">Check yourself!</button>
+  <div class="lp-answer\">
+    <p>☐ I know my brain is the boss of my fingers</p>
+    <p>☐ I found at least 3 tight spots in my body</p>
+    <p>☐ I tried the slow press trick</p>
+    <p>If you can say yes — you're ready for the next one!</p>
+  </div>
+</div>`
         }
       ]
     },
