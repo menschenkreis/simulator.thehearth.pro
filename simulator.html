@@ -134,9 +134,8 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;dis
 
 /* === MANDALA MAP === */
 .map{align-items:center;justify-content:center;padding:8px;position:relative;}
-.map-wrap{width:100%;max-width:480px;max-height:100%;position:relative;margin:0 auto;display:flex;align-items:center;justify-content:center;padding-top:10px;}
-.map-svg{width:100%;height:auto;max-height:calc(100vh - 80px);}
-.map-svg{width:100%;height:auto;display:block;}
+.map-wrap{width:100%;max-width:none;max-height:100%;position:relative;margin:0 auto;display:flex;align-items:center;justify-content:center;padding-top:8px;}
+.map-svg{width:100%;height:auto;display:block;max-height:calc(100vh - 60px);}
 
 /* Node styling */
 .mn-g{cursor:pointer;transition:filter 0.3s,transform 0.2s;}
@@ -146,10 +145,10 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;dis
 .mn-g:hover .mn-ring{stroke:var(--gold);stroke-width:2.5;}
 .mn-dot{transition:r 0.3s;}
 .mn-g:hover .mn-dot{r:8;}
-.mn-icon{font-size:18px;pointer-events:none;}
-.mn-label{fill:var(--dim);font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:0.12em;text-anchor:middle;pointer-events:none;transition:fill 0.3s;}
+.mn-icon{font-size:24px;pointer-events:none;}
+.mn-label{fill:var(--dim);font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.12em;text-anchor:middle;pointer-events:none;transition:fill 0.3s;}
 .mn-g:hover .mn-label{fill:var(--gold);}
-.mn-sublabel{fill:var(--dim);font-family:'DM Sans',sans-serif;font-size:6px;letter-spacing:0.05em;text-anchor:middle;pointer-events:none;opacity:0.5;transition:opacity 0.3s;}
+.mn-sublabel{fill:var(--dim);font-family:'DM Sans',sans-serif;font-size:8px;letter-spacing:0.05em;text-anchor:middle;pointer-events:none;opacity:0.5;transition:opacity 0.3s;}
 .mn-g:hover .mn-sublabel{opacity:0.8;}
 /* Node states */
 .mn-g.unlocked .mn-ring{stroke:var(--gold);}
@@ -170,7 +169,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;dis
 
 /* Center logo glow */
 .center-glow{fill:var(--gold);opacity:0.08;animation:pulse 4s ease-in-out infinite;}
-@keyframes pulse{0%,100%{opacity:0.06;r:8;}50%{opacity:0.12;r:10;}}
+@keyframes pulse{0%,100%{opacity:0.06;r:12;}50%{opacity:0.12;r:15;}}
 
 /* Path toggle */
 .path-btns{display:none;/* Hidden — single journey path now */}
@@ -185,7 +184,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;dis
   background:var(--card);border:1px solid var(--border);border-radius:10px;
   padding:14px 16px;display:none;position:fixed;
   top:50%;left:50%;transform:translate(-50%,-50%);
-  z-index:200;max-width:340px;width:90%;
+  z-index:200;max-width:420px;width:90%;
   box-shadow:0 8px 32px rgba(0,0,0,0.5);
 }
 .node-info.vis{display:block;}
@@ -291,7 +290,8 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;dis
   .bt .bl{display:block;font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase;}
   .bt.on .bl{color:var(--gold);font-weight:600;}
   .center{margin-left:0;flex:1;overflow-y:auto;min-width:0;}
-  .map-wrap{max-width:600px;}
+  .map-wrap{max-width:none;width:100%;height:100%;padding:8px;}
+  .map-svg{max-height:calc(100vh - 60px);width:auto;height:100%;max-width:100%;}
   .th-grid{grid-template-columns:repeat(auto-fill,minmax(180px,1fr));}
   .pl-grid{grid-template-columns:repeat(auto-fill,minmax(160px,1fr));}
   .node-info{padding:20px 24px;margin:14px 18px;}
@@ -300,8 +300,8 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;dis
   .ls-body{padding:24px;}
   .ls-body h3{font-size:1.15rem;}
   .ls-body p{font-size:0.92rem;}
-  .mn-label{font-size:9px !important;}
-  .mn-sublabel{font-size:7px !important;}
+  .mn-label{font-size:12px !important;}
+  .mn-sublabel{font-size:9px !important;}
 }
 </style>
 </head>
@@ -344,7 +344,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;dis
       <div class="path-btn on" onclick="hlP('all')">All</div>
     </div>
     <div class="map-wrap">
-      <svg class="map-svg" viewBox="0 0 480 620" xmlns="http://www.w3.org/2000/svg">
+      <svg class="map-svg" viewBox="0 0 700 900" xmlns="http://www.w3.org/2000/svg">
         <defs>
           <filter id="glow"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
           <radialGradient id="bgGrad"><stop offset="0%" stop-color="#1a1510" stop-opacity="0.4"/><stop offset="100%" stop-color="#0d0b08" stop-opacity="0"/></radialGradient>
@@ -355,14 +355,14 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;dis
         </defs>
 
         <!-- Background -->
-        <rect width="480" height="620" fill="var(--bg)"/>
-        <ellipse cx="240" cy="340" rx="230" ry="280" fill="url(#bgGrad)"/>
+        <rect width="700" height="900" fill="var(--bg)"/>
+        <ellipse cx="350" cy="494" rx="335" ry="406" fill="url(#bgGrad)"/>
 
         <!-- ═══ SUBTLE MANDALA GUIDES ═══ -->
         <g class="mandala" id="mandala">
-          <circle cx="240" cy="340" r="40" stroke-width="0.3" opacity="0.12"/>
-          <circle cx="240" cy="340" r="70" stroke-width="0.2" opacity="0.06"/>
-          <path d="M240,300 Q255,318 255,340 Q255,362 240,380 Q225,362 225,340 Q225,318 240,300Z" opacity="0.06"/>
+          <circle cx="350" cy="494" r="58" stroke-width="0.3" opacity="0.12"/>
+          <circle cx="350" cy="494" r="102" stroke-width="0.2" opacity="0.06"/>
+          <path d="M350,436 Q372,462 372,494 Q372,526 350,552 Q328,526 328,494 Q328,462 350,436Z" opacity="0.06"/>
         </g>
 
         <!-- ═══ CONNECTIONS ═══ -->
@@ -371,180 +371,180 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;dis
           <!-- Web: thin lines between all nodes -->
           <g id="web">
             <!-- Foundation to all -->
-            <line x1="240" y1="50" x2="100" y2="195"/>
-            <line x1="240" y1="50" x2="380" y2="195"/>
-            <line x1="240" y1="50" x2="170" y2="267"/>
-            <line x1="240" y1="50" x2="310" y2="267"/>
-            <line x1="240" y1="50" x2="240" y2="340"/>
-            <line x1="240" y1="50" x2="60" y2="470"/>
-            <line x1="240" y1="50" x2="420" y2="470"/>
-            <line x1="240" y1="50" x2="240" y2="560"/>
+            <line x1="350" y1="73" x2="146" y2="283"/>
+            <line x1="350" y1="73" x2="554" y2="283"/>
+            <line x1="350" y1="73" x2="248" y2="388"/>
+            <line x1="350" y1="73" x2="452" y2="388"/>
+            <line x1="350" y1="73" x2="350" y2="494"/>
+            <line x1="350" y1="73" x2="88" y2="682"/>
+            <line x1="350" y1="73" x2="612" y2="682"/>
+            <line x1="350" y1="73" x2="350" y2="813"/>
             <!-- Doing to all -->
-            <line x1="100" y1="195" x2="380" y2="195"/>
-            <line x1="100" y1="195" x2="170" y2="267"/>
-            <line x1="100" y1="195" x2="310" y2="267"/>
-            <line x1="100" y1="195" x2="240" y2="340"/>
-            <line x1="100" y1="195" x2="60" y2="470"/>
-            <line x1="100" y1="195" x2="420" y2="470"/>
-            <line x1="100" y1="195" x2="240" y2="560"/>
+            <line x1="146" y1="283" x2="554" y2="283"/>
+            <line x1="146" y1="283" x2="248" y2="388"/>
+            <line x1="146" y1="283" x2="452" y2="388"/>
+            <line x1="146" y1="283" x2="350" y2="494"/>
+            <line x1="146" y1="283" x2="88" y2="682"/>
+            <line x1="146" y1="283" x2="612" y2="682"/>
+            <line x1="146" y1="283" x2="350" y2="813"/>
             <!-- Knowing to all -->
-            <line x1="380" y1="195" x2="170" y2="267"/>
-            <line x1="380" y1="195" x2="310" y2="267"/>
-            <line x1="380" y1="195" x2="240" y2="340"/>
-            <line x1="380" y1="195" x2="60" y2="470"/>
-            <line x1="380" y1="195" x2="420" y2="470"/>
-            <line x1="380" y1="195" x2="240" y2="560"/>
+            <line x1="554" y1="283" x2="248" y2="388"/>
+            <line x1="554" y1="283" x2="452" y2="388"/>
+            <line x1="554" y1="283" x2="350" y2="494"/>
+            <line x1="554" y1="283" x2="88" y2="682"/>
+            <line x1="554" y1="283" x2="612" y2="682"/>
+            <line x1="554" y1="283" x2="350" y2="813"/>
             <!-- Practise to remaining -->
-            <line x1="170" y1="267" x2="310" y2="267"/>
-            <line x1="170" y1="267" x2="240" y2="340"/>
-            <line x1="170" y1="267" x2="420" y2="470"/>
-            <line x1="170" y1="267" x2="240" y2="560"/>
+            <line x1="248" y1="388" x2="452" y2="388"/>
+            <line x1="248" y1="388" x2="350" y2="494"/>
+            <line x1="248" y1="388" x2="612" y2="682"/>
+            <line x1="248" y1="388" x2="350" y2="813"/>
             <!-- Study to remaining -->
-            <line x1="310" y1="267" x2="240" y2="340"/>
-            <line x1="310" y1="267" x2="60" y2="470"/>
-            <line x1="310" y1="267" x2="240" y2="560"/>
+            <line x1="452" y1="388" x2="350" y2="494"/>
+            <line x1="452" y1="388" x2="88" y2="682"/>
+            <line x1="452" y1="388" x2="350" y2="813"/>
             <!-- Hearth to all -->
-            <line x1="240" y1="340" x2="60" y2="470"/>
-            <line x1="240" y1="340" x2="420" y2="470"/>
-            <line x1="240" y1="340" x2="240" y2="560"/>
+            <line x1="350" y1="494" x2="88" y2="682"/>
+            <line x1="350" y1="494" x2="612" y2="682"/>
+            <line x1="350" y1="494" x2="350" y2="813"/>
             <!-- Play to remaining -->
-            <line x1="60" y1="470" x2="420" y2="470"/>
-            <line x1="60" y1="470" x2="240" y2="560"/>
+            <line x1="88" y1="682" x2="612" y2="682"/>
+            <line x1="88" y1="682" x2="350" y2="813"/>
             <!-- Create to remaining -->
-            <line x1="420" y1="470" x2="240" y2="560"/>
+            <line x1="612" y1="682" x2="350" y2="813"/>
           </g>
 
           <!-- FOUNDATION(240,50) → DOING(100,195) -->
-          <line class="conn-branch" x1="222" y1="50" x2="100" y2="195"/>
-          <line class="conn-branch" x1="100" y1="195" x2="240" y2="340"/>
-          <line class="conn-alt" x1="170" y1="267" x2="60" y2="470"/>
-          <line class="conn-branch" x1="258" y1="50" x2="380" y2="195"/>
-          <line class="conn-branch" x1="380" y1="195" x2="240" y2="340"/>
-          <line class="conn-alt" x1="310" y1="267" x2="420" y2="470"/>
+          <line class="conn-branch" x1="324" y1="73" x2="146" y2="283"/>
+          <line class="conn-branch" x1="146" y1="283" x2="350" y2="494"/>
+          <line class="conn-alt" x1="248" y1="388" x2="88" y2="682"/>
+          <line class="conn-branch" x1="376" y1="73" x2="554" y2="283"/>
+          <line class="conn-branch" x1="554" y1="283" x2="350" y2="494"/>
+          <line class="conn-alt" x1="452" y1="388" x2="612" y2="682"/>
 
           <!-- CENTRAL SPINE — 8 segments through Hearth -->
           <!-- Before Hearth: 4 segments from y=68 to y=308 -->
-          <line class="conn-spine" id="spine-l1" x1="240" y1="68" x2="240" y2="130"/>
-          <line class="conn-spine" id="spine-l2" x1="240" y1="138" x2="240" y2="200"/>
-          <line class="conn-spine" id="spine-l3" x1="240" y1="208" x2="240" y2="254"/>
-          <line class="conn-spine" id="spine-l4" x1="240" y1="262" x2="240" y2="308"/>
-          <line class="conn-spine" id="spine-l5" x1="240" y1="372" x2="240" y2="410"/>
-          <line class="conn-spine" id="spine-l6" x1="240" y1="418" x2="240" y2="456"/>
-          <line class="conn-spine" id="spine-l7" x1="240" y1="464" x2="240" y2="502"/>
-          <line class="conn-spine" id="spine-l8" x1="240" y1="510" x2="240" y2="540"/>
+          <line class="conn-spine" id="spine-l1" x1="350" y1="99" x2="350" y2="189"/>
+          <line class="conn-spine" id="spine-l2" x1="350" y1="200" x2="350" y2="290"/>
+          <line class="conn-spine" id="spine-l3" x1="350" y1="302" x2="350" y2="369"/>
+          <line class="conn-spine" id="spine-l4" x1="350" y1="380" x2="350" y2="447"/>
+          <line class="conn-spine" id="spine-l5" x1="350" y1="540" x2="350" y2="595"/>
+          <line class="conn-spine" id="spine-l6" x1="350" y1="607" x2="350" y2="662"/>
+          <line class="conn-spine" id="spine-l7" x1="350" y1="674" x2="350" y2="729"/>
+          <line class="conn-spine" id="spine-l8" x1="350" y1="740" x2="350" y2="784"/>
 
           <!-- Level tick marks -->
-          <line class="conn-tick" x1="232" y1="99" x2="248" y2="99"/>
-          <line class="conn-tick dim" x1="232" y1="169" x2="248" y2="169"/>
-          <line class="conn-tick dim" x1="232" y1="231" x2="248" y2="231"/>
-          <line class="conn-tick dim" x1="232" y1="285" x2="248" y2="285"/>
-          <line class="conn-tick dim" x1="232" y1="391" x2="248" y2="391"/>
-          <line class="conn-tick dim" x1="232" y1="437" x2="248" y2="437"/>
-          <line class="conn-tick dim" x1="232" y1="483" x2="248" y2="483"/>
-          <line class="conn-tick dim" x1="232" y1="525" x2="248" y2="525"/>
+          <line class="conn-tick" x1="338" y1="144" x2="362" y2="144"/>
+          <line class="conn-tick dim" x1="338" y1="245" x2="362" y2="245"/>
+          <line class="conn-tick dim" x1="338" y1="335" x2="362" y2="335"/>
+          <line class="conn-tick dim" x1="338" y1="414" x2="362" y2="414"/>
+          <line class="conn-tick dim" x1="338" y1="568" x2="362" y2="568"/>
+          <line class="conn-tick dim" x1="338" y1="634" x2="362" y2="634"/>
+          <line class="conn-tick dim" x1="338" y1="701" x2="362" y2="701"/>
+          <line class="conn-tick dim" x1="338" y1="762" x2="362" y2="762"/>
 
           <!-- Level labels -->
-          <text class="conn-label" x="256" y="102">L1</text>
-          <text class="conn-label dim" x="256" y="172">L2</text>
-          <text class="conn-label dim" x="256" y="234">L3</text>
-          <text class="conn-label dim" x="256" y="288">L4</text>
-          <text class="conn-label dim" x="256" y="394">L5</text>
-          <text class="conn-label dim" x="256" y="440">L6</text>
-          <text class="conn-label dim" x="256" y="486">L7</text>
-          <text class="conn-label dim" x="256" y="528">L8</text>
+          <text class="conn-label" x="370" y="148">L1</text>
+          <text class="conn-label dim" x="370" y="250">L2</text>
+          <text class="conn-label dim" x="370" y="340">L3</text>
+          <text class="conn-label dim" x="370" y="418">L4</text>
+          <text class="conn-label dim" x="370" y="572">L5</text>
+          <text class="conn-label dim" x="370" y="639">L6</text>
+          <text class="conn-label dim" x="370" y="705">L7</text>
+          <text class="conn-label dim" x="370" y="766">L8</text>
         </g>
 
         <!-- ═══ FOUNDATION (top) ═══ -->
         <g class="mn-g unlocked" onclick="showNodeInfo('foundation')" data-node="foundation">
-          <circle cx="240" cy="50" r="32" fill="url(#nodeGlow)"/>
-          <circle cx="240" cy="50" r="36" fill="none" stroke="#d4af69" stroke-width="0.5" opacity="0.2">
-            <animate attributeName="r" values="32;38;32" dur="3s" repeatCount="indefinite"/>
+          <circle cx="350" cy="73" r="47" fill="url(#nodeGlow)"/>
+          <circle cx="350" cy="73" r="52" fill="none" stroke="#d4af69" stroke-width="0.5" opacity="0.2">
+            <animate attributeName="r" values="47;54;47" dur="3s" repeatCount="indefinite"/>
             <animate attributeName="opacity" values="0.2;0.05;0.2" dur="3s" repeatCount="indefinite"/>
           </circle>
-          <circle class="mn-ring" cx="240" cy="50" r="24" stroke="#d4af69" stroke-width="3"/>
-          <image href="images/foundation-icon.png" x="216" y="26" width="48" height="48" style="filter:drop-shadow(0 0 4px rgba(212,175,105,0.3))"/>
-          <text class="mn-label" x="240" y="84" style="font-size:10px;font-weight:700;letter-spacing:0.15em">FOUNDATION</text>
+          <circle class="mn-ring" cx="350" cy="73" r="35" stroke="#d4af69" stroke-width="3"/>
+          <image href="images/foundation-icon.png" x="315" y="38" width="70" height="70" style="filter:drop-shadow(0 0 4px rgba(212,175,105,0.3))"/>
+          <text class="mn-label" x="350" y="122" style="font-size:12px;font-weight:700;letter-spacing:0.15em">FOUNDATION</text>
         </g>
 
         <!-- ═══ THE HEARTH (center) ═══ -->
         <g class="mn-g" onclick="showNodeInfo('hearth')">
-          <circle cx="240" cy="340" r="40" fill="url(#nodeGlow)"/>
-          <circle class="center-glow" cx="240" cy="340" r="18"/>
-          <circle cx="240" cy="340" r="28" fill="#141210" stroke="#d4af69" stroke-width="1.5" filter="url(#glow)"/>
-          <text x="240" y="346" text-anchor="middle" font-size="20">🔥</text>
-          <text class="mn-label" x="240" y="378" fill="#d4af69" font-size="8" style="font-weight:600">THE HEARTH</text>
+          <circle cx="350" cy="494" r="58" fill="url(#nodeGlow)"/>
+          <circle class="center-glow" cx="350" cy="494" r="26"/>
+          <circle cx="350" cy="494" r="41" fill="#141210" stroke="#d4af69" stroke-width="1.5" filter="url(#glow)"/>
+          <text x="350" y="503" text-anchor="middle" font-size="28">🔥</text>
+          <text class="mn-label" x="350" y="550" fill="#d4af69" font-size="11" style="font-weight:600">THE HEARTH</text>
         </g>
 
         <!-- ═══ MASTERY (bottom) with 8 level rings ═══ -->
         <g class="mn-g locked" onclick="showNodeInfo('mastery')" data-node="mastery">
           <!-- 8 concentric level rings (rainbow, outer=L1 red → inner=L8 violet) -->
-          <circle class="mastery-ring" id="mring-l8" cx="240" cy="560" r="68" stroke="#cc33ff" stroke-width="1.5" fill="none" opacity="0.15"/>
-          <circle class="mastery-ring" id="mring-l7" cx="240" cy="560" r="62" stroke="#6633cc" stroke-width="1.5" fill="none" opacity="0.15"/>
-          <circle class="mastery-ring" id="mring-l6" cx="240" cy="560" r="56" stroke="#3366ff" stroke-width="1.5" fill="none" opacity="0.15"/>
-          <circle class="mastery-ring" id="mring-l5" cx="240" cy="560" r="50" stroke="#00cccc" stroke-width="1.5" fill="none" opacity="0.15"/>
-          <circle class="mastery-ring" id="mring-l4" cx="240" cy="560" r="44" stroke="#00cc44" stroke-width="1.5" fill="none" opacity="0.15"/>
-          <circle class="mastery-ring" id="mring-l3" cx="240" cy="560" r="38" stroke="#ffdd00" stroke-width="1.5" fill="none" opacity="0.15"/>
-          <circle class="mastery-ring" id="mring-l2" cx="240" cy="560" r="32" stroke="#ff8800" stroke-width="1.5" fill="none" opacity="0.15"/>
-          <circle class="mastery-ring" id="mring-l1" cx="240" cy="560" r="26" stroke="#ff0000" stroke-width="2" fill="none" opacity="0.5"/>
+          <circle class="mastery-ring" id="mring-l8" cx="350" cy="813" r="99" stroke="#cc33ff" stroke-width="1.5" fill="none" opacity="0.15"/>
+          <circle class="mastery-ring" id="mring-l7" cx="350" cy="813" r="90" stroke="#6633cc" stroke-width="1.5" fill="none" opacity="0.15"/>
+          <circle class="mastery-ring" id="mring-l6" cx="350" cy="813" r="82" stroke="#3366ff" stroke-width="1.5" fill="none" opacity="0.15"/>
+          <circle class="mastery-ring" id="mring-l5" cx="350" cy="813" r="73" stroke="#00cccc" stroke-width="1.5" fill="none" opacity="0.15"/>
+          <circle class="mastery-ring" id="mring-l4" cx="350" cy="813" r="64" stroke="#00cc44" stroke-width="1.5" fill="none" opacity="0.15"/>
+          <circle class="mastery-ring" id="mring-l3" cx="350" cy="813" r="55" stroke="#ffdd00" stroke-width="1.5" fill="none" opacity="0.15"/>
+          <circle class="mastery-ring" id="mring-l2" cx="350" cy="813" r="47" stroke="#ff8800" stroke-width="1.5" fill="none" opacity="0.15"/>
+          <circle class="mastery-ring" id="mring-l1" cx="350" cy="813" r="38" stroke="#ff0000" stroke-width="2" fill="none" opacity="0.5"/>
           <!-- Core node -->
-          <circle cx="240" cy="560" r="20" fill="#141210" stroke="#9b59b6" stroke-width="2" stroke-dasharray="3 3"/>
-          <text x="240" y="565" text-anchor="middle" font-size="12">👑</text>
-          <text class="mn-label" x="240" y="600">MASTERY</text>
+          <circle cx="350" cy="813" r="29" fill="#141210" stroke="#9b59b6" stroke-width="2" stroke-dasharray="3 3"/>
+          <text x="350" y="820" text-anchor="middle" font-size="17">👑</text>
+          <text class="mn-label" x="350" y="870">MASTERY</text>
         </g>
 
         <!-- ═══ LEFT BRANCH — DOING PATH ═══ -->
 
         <g class="mn-g unlocked" onclick="showNodeInfo('doing')" data-node="doing">
-          <circle cx="100" cy="195" r="20" fill="url(#nodeGlowOrange)"/>
-          <circle class="mn-ring" cx="100" cy="195" r="16" stroke="#e8a020" stroke-width="1.5"/>
-          <image href="images/doing-icon.png" x="82" y="177" width="36" height="36" style="clip-path:circle(50% at 50% 50%)"/>
-          <text class="mn-label" x="100" y="222">DOING</text>
-          <text class="mn-sublabel" x="100" y="231">drills & skills</text>
+          <circle cx="146" cy="283" r="29" fill="url(#nodeGlowOrange)"/>
+          <circle class="mn-ring" cx="146" cy="283" r="23" stroke="#e8a020" stroke-width="1.5"/>
+          <image href="images/doing-icon.png" x="123" y="260" width="46" height="46" style="clip-path:circle(50% at 50% 50%)"/>
+          <text class="mn-label" x="146" y="322">DOING</text>
+          <text class="mn-sublabel" x="146" y="335">drills & skills</text>
         </g>
 
         <g class="mn-g unlocked" onclick="showNodeInfo('practise')" data-node="practise">
-          <circle cx="170" cy="267" r="18" fill="url(#nodeGlowOrange)"/>
-          <circle class="mn-ring" cx="170" cy="267" r="14" stroke="#e8a020" stroke-width="1.5"/>
-          <text x="170" y="272" text-anchor="middle" font-size="10">🔁</text>
-          <text class="mn-label" x="170" y="292">PRACTISE</text>
-          <text class="mn-sublabel" x="170" y="301">timed sessions</text>
+          <circle cx="248" cy="388" r="26" fill="url(#nodeGlowOrange)"/>
+          <circle class="mn-ring" cx="248" cy="388" r="20" stroke="#e8a020" stroke-width="1.5"/>
+          <text x="248" y="395" text-anchor="middle" font-size="14">🔁</text>
+          <text class="mn-label" x="248" y="422">PRACTISE</text>
+          <text class="mn-sublabel" x="248" y="435">timed sessions</text>
         </g>
 
         <g class="mn-g unlocked" onclick="showNodeInfo('play')" data-node="play">
-          <circle cx="60" cy="470" r="20" fill="url(#nodeGlowBlue)"/>
-          <circle class="mn-ring" cx="60" cy="470" r="16" stroke="#5a9fd4" stroke-width="1.5"/>
-          <text x="60" y="475" text-anchor="middle" font-size="11">🎸</text>
-          <text class="mn-label" x="60" y="497">PLAY</text>
-          <text class="mn-sublabel" x="60" y="506">songs & collab</text>
+          <circle cx="88" cy="682" r="29" fill="url(#nodeGlowBlue)"/>
+          <circle class="mn-ring" cx="88" cy="682" r="23" stroke="#5a9fd4" stroke-width="1.5"/>
+          <text x="88" y="689" text-anchor="middle" font-size="16">🎸</text>
+          <text class="mn-label" x="88" y="722">PLAY</text>
+          <text class="mn-sublabel" x="88" y="735">songs & collab</text>
         </g>
 
         <!-- ═══ RIGHT BRANCH — KNOWING PATH ═══ -->
 
         <g class="mn-g unlocked" onclick="showNodeInfo('knowing')" data-node="knowing">
-          <circle cx="380" cy="195" r="20" fill="url(#nodeGlowOrange)"/>
-          <circle class="mn-ring" cx="380" cy="195" r="16" stroke="#e8a020" stroke-width="1.5"/>
-          <text x="380" y="200" text-anchor="middle" font-size="11">📖</text>
-          <text class="mn-label" x="380" y="222">KNOWING</text>
-          <text class="mn-sublabel" x="380" y="231">theory library</text>
+          <circle cx="554" cy="283" r="29" fill="url(#nodeGlowOrange)"/>
+          <circle class="mn-ring" cx="554" cy="283" r="23" stroke="#e8a020" stroke-width="1.5"/>
+          <text x="554" y="289" text-anchor="middle" font-size="16">📖</text>
+          <text class="mn-label" x="554" y="322">KNOWING</text>
+          <text class="mn-sublabel" x="554" y="335">theory library</text>
         </g>
 
         <g class="mn-g unlocked" onclick="showNodeInfo('study')" data-node="study">
-          <circle cx="310" cy="267" r="18" fill="url(#nodeGlowOrange)"/>
-          <circle class="mn-ring" cx="310" cy="267" r="14" stroke="#e8a020" stroke-width="1.5"/>
-          <text x="310" y="272" text-anchor="middle" font-size="10">📝</text>
-          <text class="mn-label" x="310" y="292">STUDY</text>
-          <text class="mn-sublabel" x="310" y="301">your lab</text>
+          <circle cx="452" cy="388" r="26" fill="url(#nodeGlowOrange)"/>
+          <circle class="mn-ring" cx="452" cy="388" r="20" stroke="#e8a020" stroke-width="1.5"/>
+          <text x="452" y="395" text-anchor="middle" font-size="14">📝</text>
+          <text class="mn-label" x="452" y="422">STUDY</text>
+          <text class="mn-sublabel" x="452" y="435">your lab</text>
         </g>
 
         <g class="mn-g unlocked" onclick="showNodeInfo('create')" data-node="create">
-          <circle cx="420" cy="470" r="20" fill="url(#nodeGlowBlue)"/>
-          <circle class="mn-ring" cx="420" cy="470" r="16" stroke="#5a9fd4" stroke-width="1.5"/>
-          <text x="420" y="475" text-anchor="middle" font-size="11">✨</text>
-          <text class="mn-label" x="420" y="497">CREATE</text>
-          <text class="mn-sublabel" x="420" y="506">write & record</text>
+          <circle cx="612" cy="682" r="29" fill="url(#nodeGlowBlue)"/>
+          <circle class="mn-ring" cx="612" cy="682" r="23" stroke="#5a9fd4" stroke-width="1.5"/>
+          <text x="612" y="689" text-anchor="middle" font-size="16">✨</text>
+          <text class="mn-label" x="612" y="722">CREATE</text>
+          <text class="mn-sublabel" x="612" y="735">write & record</text>
         </g>
         <!-- Travelling flame -->
-        <g id="travel-flame" transform="translate(240,50)" style="transition: transform 1.2s cubic-bezier(0.4,0,0.2,1)">
+        <g id="travel-flame" transform="translate(350,73)" style="transition: transform 1.2s cubic-bezier(0.4,0,0.2,1)">
           <text font-size="14" text-anchor="middle" dominant-baseline="central" style="filter:drop-shadow(0 0 4px #e8a020)">🔥</text>
         </g>
 
@@ -553,7 +553,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;dis
     <div class="node-info-overlay" id="niOverlay" onclick="hideNodeInfo()"></div>
     <div class="node-info" id="ni">
       <span class="ni-close" onclick="hideNodeInfo()">✕</span>
-      <div id="niThumb" style="display:none;margin-bottom:10px;text-align:center"><img id="niThumbImg" src="" style="width:64px;height:64px;border-radius:50%;object-fit:cover;border:2px solid var(--gold)"/></div>
+      <div id="niThumb" style="display:none;margin-bottom:12px;text-align:center"><img id="niThumbImg" src="" style="width:96px;height:96px;border-radius:50%;object-fit:cover;border:3px solid var(--gold);box-shadow:0 0 20px rgba(212,175,105,0.15)"/></div>
       <span class="ni-emoji" id="niEmoji"></span>
       <div class="ni-tag" id="niTag"></div>
       <h4 id="niTitle"></h4>
@@ -762,10 +762,10 @@ function nT(id){ showNodeInfo(id); if(id==='foundation') showFoundation(); }
 
 // ═══ TRAVEL FLAME ═══
 const NODE_POS = {
-  foundation: [240,50], hearth: [240,340], mastery: [240,560],
-  doing: [100,195], knowing: [380,195],
-  practise: [170,267], study: [310,267],
-  play: [60,470], create: [420,470]
+  foundation: [350,73], hearth: [350,494], mastery: [350,813],
+  doing: [146,283], knowing: [554,283],
+  practise: [248,388], study: [452,388],
+  play: [88,682], create: [612,682]
 };
 
 // Routes: from -> to = array of waypoint node ids
@@ -988,7 +988,7 @@ function showFoundation(){
 
   let html='<div style="padding:24px;max-width:600px;margin:0 auto">'+
     '<div style="display:flex;align-items:center;gap:12px;margin-bottom:20px">'+
-      '<img src="images/foundation-icon.png" style="width:48px;height:48px;border-radius:50%;object-fit:cover;border:2px solid var(--gold)"/>'+
+      '<img src="images/foundation-icon.png" style="width:64px;height:64px;border-radius:50%;object-fit:cover;border:3px solid var(--gold);box-shadow:0 0 16px rgba(212,175,105,0.12)"/>'+
       '<div><h2 style="font-family:Cinzel;color:var(--gold);font-size:1.1rem;margin:0">'+F.title+'</h2>'+
       '<p style="color:var(--dim);font-size:0.7rem;margin:0">'+F.description+'</p>'+
       '<div style="font-family:JetBrains Mono;font-size:0.65rem;color:var(--amber);margin-top:4px">'+doneCount+'/'+F.topics.length+' blocks placed · '+pct+'%</div>'+
@@ -1171,7 +1171,7 @@ function showDoing(){
   el.innerHTML='<div style="padding:16px;max-width:750px;margin:0 auto">'+
     '<div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">'+
       '<div style="display:flex;align-items:center;gap:12px">'+
-        '<img src="images/doing-icon.png" style="width:48px;height:48px;border-radius:50%;object-fit:cover;border:2px solid var(--gold);flex-shrink:0"/>'+
+        '<img src="images/doing-icon.png" style="width:64px;height:64px;border-radius:50%;object-fit:cover;border:3px solid var(--gold);box-shadow:0 0 16px rgba(212,175,105,0.12);flex-shrink:0"/>'+
         '<div><h2 style="font-family:Cinzel;color:var(--gold);font-size:1.1rem;margin:0">'+D.title+'</h2>'+
         '<p style="color:var(--dim);font-size:0.7rem;margin:0">'+D.description+'</p></div>'+
       '</div>'+
@@ -1216,7 +1216,7 @@ function showKnowing(){
 
   let html='<div style="padding:24px;max-width:650px;margin:0 auto">'+
     '<div style="display:flex;align-items:center;gap:12px;margin-bottom:24px">'+
-      '<img src="images/knowing-icon.jpg" style="width:48px;height:48px;border-radius:50%;object-fit:cover;border:2px solid var(--gold)"/>'+
+      '<img src="images/knowing-icon.jpg" style="width:64px;height:64px;border-radius:50%;object-fit:cover;border:3px solid var(--gold);box-shadow:0 0 16px rgba(212,175,105,0.12)"/>'+
       '<div><h2 style="font-family:Cinzel;color:var(--gold);font-size:1.1rem;margin:0">'+K.title+'</h2>'+
       '<p style="color:var(--dim);font-size:0.7rem;margin:0">'+K.description+'</p></div>'+
       '<button onclick="document.querySelectorAll(\'.pnl\').forEach(p=>p.classList.remove(\'on\'));document.getElementById(\'p-map\').classList.add(\'on\')" style="margin-left:auto;background:none;border:1px solid var(--border);color:var(--dim);padding:6px 12px;border-radius:4px;cursor:pointer;font-family:inherit;font-size:0.7rem">&larr; Back</button>'+
