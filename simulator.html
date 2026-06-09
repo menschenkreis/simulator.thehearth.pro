@@ -461,8 +461,9 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;dis
             <animate attributeName="r" values="47;54;47" dur="3s" repeatCount="indefinite"/>
             <animate attributeName="opacity" values="0.2;0.05;0.2" dur="3s" repeatCount="indefinite"/>
           </circle>
+          <clipPath id="clip-foundation"><circle cx="350" cy="73" r="35"/></clipPath>
           <circle class="mn-ring" cx="350" cy="73" r="35" stroke="#d4af69" stroke-width="3"/>
-          <image href="images/foundation-icon.png" x="315" y="38" width="70" height="70" style="filter:drop-shadow(0 0 4px rgba(212,175,105,0.3))"/>
+          <image href="images/foundation-icon.png" x="315" y="38" width="70" height="70" clip-path="url(#clip-foundation)"/>
           <text class="mn-label" x="350" y="122" style="font-size:12px;font-weight:700;letter-spacing:0.15em">FOUNDATION</text>
         </g>
 
@@ -496,8 +497,9 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;dis
 
         <g class="mn-g unlocked" onclick="showNodeInfo('doing')" data-node="doing">
           <circle cx="146" cy="283" r="29" fill="url(#nodeGlowOrange)"/>
+          <clipPath id="clip-doing"><circle cx="146" cy="283" r="23"/></clipPath>
           <circle class="mn-ring" cx="146" cy="283" r="23" stroke="#e8a020" stroke-width="1.5"/>
-          <image href="images/doing-icon.png" x="123" y="260" width="46" height="46" style="clip-path:circle(50% at 50% 50%);transform:translate(0px,0px)"/>
+          <image href="images/doing-icon.png" x="123" y="260" width="46" height="46" clip-path="url(#clip-doing)"/>
           <text class="mn-label" x="146" y="322">DOING</text>
           <text class="mn-sublabel" x="146" y="335">drills & skills</text>
         </g>
@@ -522,8 +524,9 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;dis
 
         <g class="mn-g unlocked" onclick="showNodeInfo('knowing')" data-node="knowing">
           <circle cx="554" cy="283" r="29" fill="url(#nodeGlowOrange)"/>
+          <clipPath id="clip-knowing"><circle cx="554" cy="283" r="23"/></clipPath>
           <circle class="mn-ring" cx="554" cy="283" r="23" stroke="#e8a020" stroke-width="1.5"/>
-          <text x="554" y="289" text-anchor="middle" font-size="16">📖</text>
+          <image href="images/knowing-icon.png" x="531" y="260" width="46" height="46" clip-path="url(#clip-knowing)"/>
           <text class="mn-label" x="554" y="322">KNOWING</text>
           <text class="mn-sublabel" x="554" y="335">theory library</text>
         </g>
