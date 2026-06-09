@@ -1585,7 +1585,7 @@ function showFoundationTopic(topicId){
     const s=topic.steps[idx];
     const isLast=idx===topic.steps.length-1;
     let html='<div class="lp-body" style="--accent:'+color+'">'+
-      '<div class="lp-tags">'+topic.tags.map(t=>'<span style="border-color:'+color+'30;color:'+color+'">'+t+'</span>').join('')+'</div>'+
+      '<div class="lp-tags" style="display:none">'+topic.tags.map(t=>'<span style="border-color:'+color+'30;color:'+color+'">'+t+'</span>').join('')+'</div>'+
       '<h3 style="color:'+color+'">'+s.title+'</h3>'+
       s.body;
     if(isLast){
@@ -1647,7 +1647,7 @@ window.goFStep=function(tid,idx){
   if(body){
     const isLast=idx===topic.steps.length-1;
     let html='<div class="lp-body" style="--accent:'+color+'">'+
-      '<div class="lp-tags">'+topic.tags.map(t=>'<span style="border-color:'+color+'30;color:'+color+'">'+t+'</span>').join('')+'</div>'+
+      '<div class="lp-tags" style="display:none">'+topic.tags.map(t=>'<span style="border-color:'+color+'30;color:'+color+'">'+t+'</span>').join('')+'</div>'+
       '<h3 style="color:'+color+'">'+s.title+'</h3>'+
       s.body;
     if(isLast){
