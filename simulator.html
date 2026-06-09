@@ -497,7 +497,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;dis
         <g class="mn-g unlocked" onclick="showNodeInfo('doing')" data-node="doing">
           <circle cx="146" cy="283" r="29" fill="url(#nodeGlowOrange)"/>
           <circle class="mn-ring" cx="146" cy="283" r="23" stroke="#e8a020" stroke-width="1.5"/>
-          <image href="images/doing-icon.png" x="123" y="260" width="46" height="46" style="clip-path:circle(50% at 50% 50%)"/>
+          <image href="images/doing-icon.png" x="123" y="260" width="46" height="46" style="clip-path:circle(50% at 50% 50%);transform:translate(0px,0px)"/>
           <text class="mn-label" x="146" y="322">DOING</text>
           <text class="mn-sublabel" x="146" y="335">drills & skills</text>
         </g>
@@ -681,7 +681,7 @@ const NODE_DATA = {
   doing: { emoji:'', tag:'DOING PATH', title:'Doing', desc:'Open-world drill library. Every technique, every style. Click a dot to dive in.', enter:true, action:'doing', icon:'images/doing-icon.png' },
   practise: { emoji:'', tag:'DOING PATH', title:'Practise', desc:'Session-based. "How much time have you got?" Select drills, combine variations, timer starts, practise, give feedback.', enter:true, action:'practice' },
   play: { emoji:'', tag:'DOING PATH', title:'Play', desc:'Songs, genres, backing tracks, playing along with other instruments. Discover YOUR sound. Collab lives here.', enter:true, action:'play' },
-  knowing: { emoji:'', tag:'KNOWING PATH', title:'Knowing', desc:'All music theory, categorised beautifully. Always accessible like an encyclopedia. Understand the why.', enter:true, action:'knowing', icon:'images/knowing-icon.jpg' },
+  knowing: { emoji:'', tag:'KNOWING PATH', title:'Knowing', desc:'All music theory, categorised beautifully. Always accessible like an encyclopedia. Understand the why.', enter:true, action:'knowing', icon:'images/knowing-icon.png' },
   study: { emoji:'', tag:'KNOWING PATH', title:'Study', desc:'Your lab. Notes, aha moments, gaps & questions. Where your own discoveries live.', enter:false },
   create: { emoji:'', tag:'KNOWING PATH', title:'Create', desc:'Write your own music. Arrange songs for solo guitar. Record yourself. The student becomes the creator.', enter:true, action:'create' }
 };
@@ -1216,7 +1216,7 @@ function showKnowing(){
 
   let html='<div style="padding:24px;max-width:650px;margin:0 auto">'+
     '<div style="display:flex;align-items:center;gap:12px;margin-bottom:24px">'+
-      '<img src="images/knowing-icon.jpg" style="width:64px;height:64px;border-radius:50%;object-fit:cover;border:3px solid var(--gold);box-shadow:0 0 16px rgba(212,175,105,0.12)"/>'+
+      '<img src="images/knowing-icon.png" style="width:64px;height:64px;border-radius:50%;object-fit:cover;border:3px solid var(--gold);box-shadow:0 0 16px rgba(212,175,105,0.12)"/>'+
       '<div><h2 style="font-family:Cinzel;color:var(--gold);font-size:1.1rem;margin:0">'+K.title+'</h2>'+
       '<p style="color:var(--dim);font-size:0.7rem;margin:0">'+K.description+'</p></div>'+
       '<button onclick="document.querySelectorAll(\'.pnl\').forEach(p=>p.classList.remove(\'on\'));document.getElementById(\'p-map\').classList.add(\'on\')" style="margin-left:auto;background:none;border:1px solid var(--border);color:var(--dim);padding:6px 12px;border-radius:4px;cursor:pointer;font-family:inherit;font-size:0.7rem">&larr; Back</button>'+
