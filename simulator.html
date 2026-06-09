@@ -986,7 +986,7 @@ function showFoundation(){
   const firstIncomplete=F.topics.findIndex(t=>!completed[t.id]);
   const activeIdx=firstIncomplete===-1?F.topics.length-1:firstIncomplete;
 
-  let html='<div style="padding:24px;max-width:600px;margin:0 auto">'+
+  let html='<div style="padding:24px;max-width:800px;margin:0 auto">'+
     '<div style="display:flex;align-items:center;gap:12px;margin-bottom:20px">'+
       '<img src="images/foundation-icon.png" style="width:64px;height:64px;border-radius:50%;object-fit:cover;border:3px solid var(--gold);box-shadow:0 0 16px rgba(212,175,105,0.12)"/>'+
       '<div><h2 style="font-family:Cinzel;color:var(--gold);font-size:1.2rem;margin:0">'+F.title+'</h2>'+
@@ -995,8 +995,8 @@ function showFoundation(){
     '<div style="display:flex;flex-direction:column;align-items:center;gap:0;margin-top:20px">';
 
   // Building blocks — widest at bottom (topic 1), narrowest at top (topic 7)
-  const maxWidth=420;
-  const minWidth=180;
+  const maxWidth=560;
+  const minWidth=220;
   const step=(maxWidth-minWidth)/(F.topics.length-1);
 
   // Rainbow colors for blocks (red → violet)
