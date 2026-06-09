@@ -21,10 +21,10 @@
   --spine-width:3px;
 }
 [data-theme="sparks"]{
-  --bg:#FFF8F0;--panel:#FFFFFF;--card:#FFF3E6;
-  --gold:#FF8C42;--amber:#4ECDC4;--ember:#FF6B6B;
-  --text:#2D3436;--dim:#636E72;--bright:#2D3436;
-  --border:#F0E0D0;
+  --bg:#FFFAF5;--panel:#FFFFFF;--card:#FFF8EE;
+  --gold:#FF7B2E;--amber:#4ECDC4;--ember:#FF6B6B;
+  --text:#1A1A2E;--dim:#5A6070;--bright:#1A1A2E;
+  --border:#FFE0CC;
   --btn:#FFE8D6;
   --heading-font:'DM Sans',sans-serif;
   --node-scale:1.3;
@@ -989,7 +989,7 @@ function showFoundation(){
   let html='<div style="padding:24px;max-width:800px;margin:0 auto">'+
     '<div style="display:flex;align-items:center;gap:12px;margin-bottom:20px">'+
       '<img src="images/foundation-icon.png" style="width:64px;height:64px;border-radius:50%;object-fit:cover;border:3px solid var(--gold);box-shadow:0 0 16px rgba(212,175,105,0.12)"/>'+
-      '<div><h2 style="font-family:Cinzel;color:var(--gold);font-size:1.2rem;margin:0">'+F.title+'</h2>'+
+      '<div><h2 style="font-family:\'DM Sans\',sans-serif;color:var(--gold);font-size:1.3rem;margin:0;font-weight:700">'+F.title+'</h2>'+
       '<div style="font-family:JetBrains Mono;font-size:0.65rem;color:var(--amber);margin-top:4px">'+doneCount+'/'+F.topics.length+' blocks</div>'+
     '</div></div>'+
     '<div style="display:flex;flex-direction:column;align-items:center;gap:0;margin-top:20px">';
@@ -1024,8 +1024,8 @@ function showFoundation(){
         'z-index:'+(F.topics.length-i)+
       '">'+
         '<div style="display:flex;align-items:center;justify-content:center;gap:8px">'+
-          '<span style="font-family:Cinzel;font-size:1.1rem;color:'+color+'40">'+num+'</span>'+
-          '<span style="font-family:Cinzel;font-size:0.85rem;color:'+color+'30;font-weight:600">'+t.title+'</span>'+
+          '<span style="font-family:\'DM Sans\',sans-serif;font-size:1.2rem;color:'+color+'40">'+num+'</span>'+
+          '<span style="font-family:\'DM Sans\',sans-serif;font-size:1rem;color:'+color+'30;font-weight:600">'+t.title+'</span>'+
         '</div>'+
       '</div>';
     } else {
@@ -1045,8 +1045,8 @@ function showFoundation(){
         'z-index:'+(F.topics.length-i)+
       '">'+
         '<div style="display:flex;align-items:center;justify-content:center;gap:8px">'+
-          '<span style="font-family:Cinzel;font-size:1.4rem;color:'+numCol+';opacity:'+(isDone?'1':'0.6')+'">'+num+'</span>'+
-          '<span style="font-family:Cinzel;font-size:0.9rem;color:'+textCol+';font-weight:600">'+t.title+'</span>'+
+          '<span style="font-family:\'DM Sans\',sans-serif;font-size:1.6rem;color:'+numCol+';opacity:'+(isDone?'1':'0.6')+';font-weight:700">'+num+'</span>'+
+          '<span style="font-family:\'DM Sans\',sans-serif;font-size:1.05rem;color:'+textCol+';font-weight:700">'+t.title+'</span>'+
           (isDone?'<span style="font-size:0.8rem;color:rgba(255,255,255,0.8)">&#10003;</span>':'')+
         '</div>'+
       '</div>';
