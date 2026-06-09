@@ -1683,10 +1683,19 @@ function ttsToggle(){
   if(_ttsPlaying&&window.speechSynthesis.speaking){window.speechSynthesis.cancel();_ttsPlaying=false;updateTtsBtn();return;}
   const body=document.getElementById('fStepBody');
   if(!body)return;
-  const text=body.innerText||body.textContent||'';
+  // Get text only from paragraphs, skip checkboxes
+  const paragraphs=body.querySelectorAll('p');
+  const text=Array.from(paragraphs).map(p=>p.textContent).join(' ').replace(/☐/g,'');
   if(!text.trim())return;
   const u=new SpeechSynthesisUtterance(text);
-  u.rate=0.9;u.pitch=1.0;u.lang='en-US';
+  u.rate=0.85;u.pitch=1.1;u.lang='en-US';
+  // Pick the best voice available
+  const voices=window.speechSynthesis.getVoices();
+  const preferred=['Google US English','Microsoft Zira','Samantha','Karen','Victoria','Alex','Google UK English Female'];
+  let voice=voices.find(v=>preferred.some(p=>v.name.includes(p)));
+  if(!voice) voice=voices.find(v=>v.lang.startsWith('en')&&v.name.includes('Female'));
+  if(!voice) voice=voices.find(v=>v.lang.startsWith('en'));
+  if(voice) u.voice=voice;
   u.onend=function(){_ttsPlaying=false;updateTtsBtn();};
   window.speechSynthesis.cancel();
   window.speechSynthesis.speak(u);
