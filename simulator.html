@@ -692,26 +692,19 @@ const NODE_DATA = {
 let _activeNode = null;
 
 function showNodeInfo(id) {
+  // Skip popup — go straight into the node
   const data = NODE_DATA[id];
   if (!data) return;
   _activeNode = id;
   moveFlame(id);
-  document.getElementById('niEmoji').textContent = data.emoji;
-  document.getElementById('niTag').textContent = data.tag;
-  document.getElementById('niTitle').textContent = data.title;
-  document.getElementById('niDesc').textContent = data.desc;
-  const thumbEl = document.getElementById('niThumb');
-  const thumbImg = document.getElementById('niThumbImg');
-  if (data.icon) {
-    thumbImg.src = data.icon;
-    thumbEl.style.display = 'block';
-  } else {
-    thumbEl.style.display = 'none';
-  }
-  const enterBtn = document.getElementById('niEnter');
-  if (enterBtn) enterBtn.style.display = (data.enter && !data.locked) ? 'inline-block' : 'none';
-  document.getElementById('ni').classList.add('vis');
-  document.getElementById('niOverlay').classList.add('vis');
+  if (data.locked) return;
+  if (data.action === 'foundation') { showFoundation(); return; }
+  if (data.action === 'hearth') { showHearth(); return; }
+  if (data.action === 'doing') { showDoing(); return; }
+  if (data.action === 'knowing') { showKnowing(); return; }
+  if (data.action === 'practice') { showPractice(); return; }
+  if (data.action === 'play') { showPlay(); return; }
+  if (data.action === 'create') { showCreate(); return; }
 }
 
 function hideNodeInfo() {
