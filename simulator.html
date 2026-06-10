@@ -687,19 +687,32 @@ const NODE_DATA = {
 let _activeNode = null;
 
 function showNodeInfo(id) {
-  // Skip popup — go straight into the node
   const data = NODE_DATA[id];
   if (!data) return;
   _activeNode = id;
+  // Travel flame to the node, then enter after animation
+  const wasSame = (_flameNode === id);
+  // Calculate delay based on route length BEFORE moving
+  let delay = 0;
+  if (!wasSame) {
+    const routeKey = _flameNode + '->' + id;
+    const route = FLAME_ROUTES[routeKey];
+    const hops = route ? route.length - 1 : 1;
+    delay = hops * 500 + 400;
+  }
   moveFlame(id);
   if (data.locked) return;
-  if (data.action === 'foundation') { showFoundation(); return; }
-  if (data.action === 'hearth') { showHearth(); return; }
-  if (data.action === 'doing') { showDoing(); return; }
-  if (data.action === 'knowing') { showKnowing(); return; }
-  if (data.action === 'practice') { showPractice(); return; }
-  if (data.action === 'play') { showPlay(); return; }
-  if (data.action === 'create') { showCreate(); return; }
+  setTimeout(function() { enterNodeAction(data); }, delay);
+}
+
+function enterNodeAction(data) {
+  if (data.action === 'foundation') showFoundation();
+  else if (data.action === 'hearth') showHearth();
+  else if (data.action === 'doing') showDoing();
+  else if (data.action === 'knowing') showKnowing();
+  else if (data.action === 'practice') showPractice();
+  else if (data.action === 'play') showPlay();
+  else if (data.action === 'create') showCreate();
 }
 
 function hideNodeInfo() {
@@ -813,15 +826,49 @@ function lightUpLevel(level) {
 }
 
 function moveFlame(targetId) {
-  if (_flameAnimating || _flameNode === targetId) return;
+  if (_flameAnimating) return;
+  if (_flameNode === targetId) return;
   const toPos = NODE_POS[targetId];
   if (!toPos) return;
-  _flameAnimating = true;
+
+  // Look up route for waypoint-by-waypoint travel
+  const routeKey = _flameNode + '->' + targetId;
+  const route = FLAME_ROUTES[routeKey];
   const flame = document.getElementById('travel-flame');
-  // Use CSS transform for smooth transition
-  flame.style.transform = 'translate(' + toPos[0] + 'px,' + toPos[1] + 'px)';
-  _flameNode = targetId;
-  setTimeout(function(){ _flameAnimating = false; }, 1200);
+
+  if (route && route.length > 1) {
+    // Animate through waypoints sequentially
+    _flameAnimating = true;
+    let step = 1; // start from 1, skip the first (current position)
+    function nextStep() {
+      if (step >= route.length) {
+        _flameNode = targetId;
+        _flameAnimating = false;
+        return;
+      }
+      const pos = NODE_POS[route[step]];
+      if (pos) {
+        flame.style.transform = 'translate(' + pos[0] + 'px,' + pos[1] + 'px)';
+      }
+      step++;
+      if (step < route.length) {
+        setTimeout(nextStep, 500); // 500ms per waypoint hop
+      } else {
+        // Last waypoint done
+        setTimeout(function(){
+          _flameNode = targetId;
+          _flameAnimating = false;
+        }, 500);
+      }
+    }
+    nextStep();
+  } else {
+    // No route found — go direct
+    _flameAnimating = true;
+    flame.style.transform = 'translate(' + toPos[0] + 'px,' + toPos[1] + 'px)';
+    _flameNode = targetId;
+    setTimeout(function(){ _flameAnimating = false; }, 1200);
+  }
 }
 
 // ═══ HEARTH DASHBOARD ═══
