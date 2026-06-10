@@ -1057,10 +1057,11 @@ function showFoundation(){
   // Rainbow colors for blocks (red → violet)
   const rainbow=['#e74c3c','#e67e22','#f1c40f','#2ecc71','#3498db','#9b59b6','#e84393'];
 
-  // Render from first topic (top/widest) to last topic (bottom/narrowest)
-  // so topic 1 is at the top, aligned with the character
-  for(let i=0; i<F.topics.length; i++){
-    const t=F.topics[i];
+  // Render from last topic (top/narrowest) to first topic (bottom/widest)
+  // so topic 1 is at the bottom as the biggest block, topic 7 at the top
+  for(let idx=F.topics.length-1; idx>=0; idx--){
+    const t=F.topics[idx];
+    const i=idx;
     const w=maxWidth-step*i;
     const isDone=completed[t.id];
     const isActive=i===activeIdx;
