@@ -46,7 +46,7 @@
 }
 
 /* SVG connection classes — themed by data-theme */
-#web line{stroke:var(--gold);opacity:0.45;stroke-width:1;transition:opacity 0.3s;}
+#web line{stroke:#6a5e4e;opacity:0.35;stroke-width:0.8;transition:opacity 0.3s;}
 #web line:hover{opacity:0.6;}
 .conn-branch{stroke:var(--amber);opacity:0.3;stroke-width:3.5;}
 .conn-alt{stroke:#5a9fd4;opacity:0.25;stroke-width:2.2;}
@@ -65,7 +65,7 @@
 [data-theme="sparks"] .map-svg ellipse{opacity:0.5 !important;}
 [data-theme="sparks"] #connections line{stroke:#FF8C42 !important;}
 [data-theme="sparks"] #connections line[id^=spine]{stroke:#FF8C42 !important;opacity:0.4 !important;}
-[data-theme="sparks"] #web line{stroke:#FF8C42 !important;opacity:0.45 !important;stroke-width:1.1 !important;}
+[data-theme="sparks"] #web line{stroke:#b0a090 !important;opacity:0.3 !important;stroke-width:0.9 !important;}
 [data-theme="sparks"] .mastery-ring{opacity:0.25 !important;stroke-width:2 !important;}
 [data-theme="sparks"] .mandala circle,.mandala path{stroke:#FF8C42 !important;}
 [data-theme="sparks"] .top{background:var(--panel) !important;border-bottom:2px solid var(--gold) !important;height:56px !important;min-height:56px !important;}
@@ -1056,84 +1056,66 @@ function showFoundation(){
       '</div>'+
     '</div>'+
     '<div class="foundation-layout">'+
-      // Character on the left — bigger, fills the space
+      // Character on the left — at the bottom of the stairs
       '<div class="foundation-char">'+
         '<img src="images/character-neutral.png" class="character-float" style="width:100%;max-width:320px;height:auto;filter:drop-shadow(0 4px 20px rgba(0,0,0,0.5))"/>'+
       '</div>'+
-      // Right side: speech bubble above pyramid
-      '<div class="foundation-blocks" style="display:flex;flex-direction:column;align-items:center;gap:0">'+
-        // Speech bubble sitting above the pyramid
+      // Right side: speech bubble above staircase
+      '<div style="flex:1;display:flex;flex-direction:column;align-items:flex-end;gap:0">'+
+        // Speech bubble
         '<div id="speech-bubble" style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px 18px;margin-bottom:20px;position:relative;max-width:380px;width:100%">'+
           '<div style="position:absolute;bottom:-8px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:8px solid transparent;border-right:8px solid transparent;border-top:8px solid var(--border)"></div>'+
           '<div id="speech-text"></div>'+
-        '</div>';
-
-  // Building blocks — widest at bottom (topic 1), narrowest at top (topic 7)
-  const maxWidth=560;
-  const minWidth=220;
-  const step=(maxWidth-minWidth)/(F.topics.length-1);
+        '</div>'+
+        // Staircase
+        '<div class="staircase">';
 
   // Rainbow colors for blocks (red → violet)
   const rainbow=['#e74c3c','#e67e22','#f1c40f','#2ecc71','#3498db','#9b59b6','#e84393'];
 
-  // Render from last topic (top/narrowest) to first topic (bottom/widest)
-  // so topic 1 is at the bottom as the biggest block, topic 7 at the top
-  for(let idx=F.topics.length-1; idx>=0; idx--){
-    const t=F.topics[idx];
-    const i=idx;
-    const w=maxWidth-step*i;
+  // Render staircase — step 1 at bottom (widest), step 5 at top (narrowest)
+  // Each step indents more to the left as it goes up
+  const treadWidths=[380,340,300,260,220];
+  const stepIndent=40; // how much each step shifts left
+
+  for(let i=0; i<F.topics.length; i++){
+    const t=F.topics[i];
     const isDone=completed[t.id];
     const isActive=i===activeIdx;
     const isLocked=i>activeIdx&&!isDone;
     const num=i+1;
     const color=rainbow[i];
+    const w=treadWidths[i]||220;
 
     if(isLocked){
-      // Skeleton — just a dim line, no click
-      html+='<div style="'+
-        'width:'+w+'px;padding:10px 16px;'+
-        'background:transparent;'+
-        'border:1px dashed '+color+'40;'+
-        'border-radius:6px;'+
-        'text-align:center;'+
-        'position:relative;'+
-        'z-index:'+(F.topics.length-i)+
-      '">'+
-        '<div style="display:flex;align-items:center;justify-content:center;gap:8px">'+
-          '<span style="font-family:\'DM Sans\',sans-serif;font-size:1.2rem;color:'+color+'40">'+num+'</span>'+
-          '<span style="font-family:\'DM Sans\',sans-serif;font-size:1rem;color:'+color+'30;font-weight:600">'+t.title+'</span>'+
+      html+='<div class="stair-step locked" style="margin-right:'+(i*stepIndent)+'px">'+
+        '<div class="stair-riser" style="background:'+color+'20"></div>'+
+        '<div class="stair-tread" style="width:'+w+'px;background:transparent;border-color:'+color+'30;border-style:dashed">'+
+          '<span class="stair-num" style="color:'+color+'30">'+num+'</span>'+
+          '<span class="stair-title" style="color:'+color+'30">'+t.title+'</span>'+
         '</div>'+
       '</div>';
     } else {
-      // Clickable block — rainbow colored
       const bg=isDone?color:color+'18';
-      const border=isDone?color:color+'60';
+      const borderCol=isDone?color:color+'60';
       const textCol=isDone?'#fff':color;
       const numCol=isDone?'rgba(255,255,255,0.7)':color;
-      const glow=isDone?'box-shadow:0 0 12px '+color+'60;':'';
-      const pulse=isActive?'animation:blockPulse 2s ease-in-out infinite;':'';
-      html+='<div onclick="showFoundationTopic(\''+t.id+'\')" style="'+
-        'width:'+w+'px;padding:12px 16px;'+
-        'background:'+bg+';'+
-        'border:2px solid '+border+';'+
-        'border-radius:6px;'+
-        'cursor:pointer;transition:all 0.15s;'+
-        'text-align:center;'+
-        'position:relative;'+
-        glow+pulse+
-        'z-index:'+(F.topics.length-i)+
-      '">'+
-        '<div style="display:flex;align-items:center;justify-content:center;gap:8px">'+
-          '<span style="font-family:\'DM Sans\',sans-serif;font-size:1.6rem;color:'+numCol+';opacity:'+(isDone?'1':'0.6')+';font-weight:700">'+num+'</span>'+
-          '<span style="font-family:\'DM Sans\',sans-serif;font-size:1.05rem;color:'+textCol+';font-weight:700">'+t.title+'</span>'+
-          (isDone?'<span style="font-size:0.8rem;color:rgba(255,255,255,0.8)">&#10003;</span>':'')+
+      const glow=isDone?'0 0 12px '+color+'60':'none';
+
+      html+='<div class="stair-step'+(isActive?' active':'')+'" onclick="showFoundationTopic(\''+t.id+'\')" style="margin-right:'+(i*stepIndent)+'px">'+
+        '<div class="stair-riser" style="background:'+color+'"></div>'+
+        '<div class="stair-tread" style="width:'+w+'px;background:'+bg+';border-color:'+borderCol+';box-shadow:'+glow+'">'+
+          '<span class="stair-num" style="color:'+numCol+'">'+num+'</span>'+
+          '<span class="stair-title" style="color:'+textCol+'">'+t.title+'</span>'+
+          (isDone?'<span class="stair-status" style="color:rgba(255,255,255,0.8)">&#10003;</span>':'')+
         '</div>'+
       '</div>';
     }
   }
 
-  html+='</div>'+ // close building blocks column
-    '</div>'+ // close flex container (character + blocks)
+  html+='</div>'+ // close staircase
+    '</div>'+ // close right side
+    '</div>'+ // close foundation-layout
     '<div style="margin-top:24px;padding-top:12px;border-top:1px solid var(--border);text-align:center">'+
       '<p style="font-size:0.6rem;color:var(--dim)">Sources: '+F.sources.join(' · ')+'</p>'+
     '</div>'+
@@ -1146,7 +1128,6 @@ function showFoundation(){
     'Welcome to Foundation.',
     'These are your building blocks.',
     'Each one builds on the last.',
-    'Complete a block to unlock the next one! ✨',
     'Start at the bottom. Work your way up.'
   ];
   const speechEl=document.getElementById('speech-text');
@@ -1163,6 +1144,8 @@ function showFoundation(){
       speechEl.appendChild(div);
     });
   }
+}
+
 }
 
 
