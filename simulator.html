@@ -353,6 +353,16 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 .stair-num{font-family:'DM Sans',sans-serif;font-size:1.5rem;font-weight:700}
 .stair-title{font-family:'DM Sans',sans-serif;font-size:0.95rem;font-weight:600}
 .stair-status{font-size:0.7rem;margin-left:auto}
+
+/* ═══ BLOCK INTERIOR STAIRCASE ═══ */
+.lp-steps-stairs{display:flex;flex-direction:column;gap:0;margin:16px 0 24px 0;max-width:400px}
+.lp-stair{display:flex;align-items:stretch;cursor:pointer;transition:all 0.15s}
+.lp-stair:hover{transform:translateX(-3px)}
+.lp-stair-riser{width:8px;border-radius:2px 0 0 2px;flex-shrink:0}
+.lp-stair-tread{padding:10px 16px;border-radius:0 6px 6px 0;display:flex;align-items:center;gap:10px;transition:all 0.15s;border:2px solid;border-left:none}
+.lp-stair:hover .lp-stair-tread{filter:brightness(1.15)}
+.lp-stair-sn{font-family:'DM Sans',sans-serif;font-size:1.1rem;font-weight:700}
+.lp-stair-label{font-family:'DM Sans',sans-serif;font-size:0.85rem;font-weight:600}
 .foundation-layout{display:flex;gap:32px;align-items:flex-end;margin-top:8px}
 .foundation-char{flex-shrink:0;width:300px;display:flex;flex-direction:column;align-items:center;justify-content:flex-end}
 @media(max-width:700px){
@@ -1824,8 +1834,21 @@ function showFoundationTopic(topicId){
       '<h2 style="color:'+color+'">'+topic.title+'</h2>'+
       '<div class="lp-subtitle">'+topic.subtitle+'</div>'+
     '</div>'+
-    '<div class="lp-steps" id="fSteps">'+
-      topic.steps.map((s,i)=>'<div class="lp-step'+(i===0?' on':'')+'" onclick="goFStep(\''+topicId+'\','+i+')" style="'+(i===0?'background:'+color+';border-color:'+color+';color:white':'background:'+color+'10;border-color:'+color+'30')+'"><div class="lp-sn" style="color:'+(i===0?'white':color)+'">'+(i+1)+'</div><div class="lp-sl" style="color:'+(i===0?'white':color)+'">'+s.label+'</div></div>').join('')+
+    // Staircase steps — each one steps up
+    '<div class="lp-steps-stairs" id="fSteps">'+
+      topic.steps.map((s,i)=>{
+        const isOn=i===0;
+        const bg=isOn?color:color+'10';
+        const borderCol=isOn?color:color+'30';
+        const textCol=isOn?'white':color;
+        const marginR=i*24;
+        return '<div class="lp-stair'+(isOn?' on':'')+'" onclick="goFStep(\''+topicId+'\','+i+')" style="margin-right:'+marginR+'px">'+
+          '<div class="lp-stair-riser" style="background:'+(isOn?color:color+'40')+'"></div>'+
+          '<div class="lp-stair-tread" style="background:'+bg+';border-color:'+borderCol+'">'+
+            '<span class="lp-stair-sn" style="color:'+textCol+'">'+(i+1)+'</span>'+
+            '<span class="lp-stair-label" style="color:'+textCol+'">'+s.label+'</span>'+
+          '</div></div>';
+      }).join('')+
     '</div>'+
     '<div id="fStepBody">'+renderStep(0)+'</div>'+
   '</div>';
@@ -1877,12 +1900,25 @@ window.goFStep=function(tid,idx){
     html+='</div>';
     body.innerHTML=html;
     body.scrollTop=0;
-    // Update step pills color
-    document.querySelectorAll('#fSteps .lp-step').forEach(function(step,i){
-      if(i===idx){step.style.background=color;step.style.borderColor=color;}
-      else{step.style.background=color+'10';step.style.borderColor=color+'30';}
-      step.querySelector('.lp-sn').style.color=i===idx?'white':color;
-      step.querySelector('.lp-sl').style.color=i===idx?'white':color;
+    // Update staircase step colors
+    document.querySelectorAll('#fSteps .lp-stair').forEach(function(step,i){
+      const riser=step.querySelector('.lp-stair-riser');
+      const tread=step.querySelector('.lp-stair-tread');
+      const sn=step.querySelector('.lp-stair-sn');
+      const label=step.querySelector('.lp-stair-label');
+      if(i===idx){
+        riser.style.background=color;
+        tread.style.background=color;
+        tread.style.borderColor=color;
+        sn.style.color='white';
+        label.style.color='white';
+      } else {
+        riser.style.background=color+'40';
+        tread.style.background=color+'10';
+        tread.style.borderColor=color+'30';
+        sn.style.color=color;
+        label.style.color=color;
+      }
     });
   }
 };
