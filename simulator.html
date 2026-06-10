@@ -1060,7 +1060,8 @@ function rainbowBlocks(items, opts){
   const activeIdx=firstIncomplete===-1?n-1:firstIncomplete;
 
   let html='<div style="padding:24px;max-width:800px;margin:0 auto">'+
-    '<div style="display:flex;align-items:center;gap:12px;margin-bottom:20px">'+
+    '<button onclick="document.querySelectorAll(\'.pnl\').forEach(p=>p.classList.remove(\'on\'));document.getElementById(\'p-map\').classList.add(\'on\')" style="background:none;border:1px solid var(--border);color:var(--dim);padding:6px 12px;border-radius:4px;cursor:pointer;font-family:inherit;font-size:0.7rem;margin-bottom:16px">\u2190 Back to Map</button>'+
+    '<div style="display:flex;align-items:center;gap:12px;margin-bottom:20px">'+ 
       (opts.icon?'<img src="'+opts.icon+'" style="width:64px;height:64px;border-radius:50%;object-fit:cover;border:3px solid var(--gold);box-shadow:0 0 16px rgba(212,175,105,0.12)"/>':'<div style="width:64px;height:64px;border-radius:50%;border:3px solid var(--gold);box-shadow:0 0 16px rgba(212,175,105,0.12);display:flex;align-items:center;justify-content:center;font-family:Cinzel,serif;color:var(--gold);font-size:1.5rem;font-weight:700">'+opts.title.charAt(0)+'</div>')+
       '<div><h2 style="font-family:\'DM Sans\',sans-serif;color:var(--gold);font-size:1.3rem;margin:0;font-weight:700">'+opts.title+'</h2>'+
       '<div style="font-family:JetBrains Mono;font-size:0.65rem;color:var(--amber);margin-top:4px">'+doneCount+'/'+n+' blocks</div>'+
