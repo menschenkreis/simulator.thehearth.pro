@@ -72,7 +72,6 @@
 /* Sims-style sidebar buttons */
 [data-theme="sparks"] .bot{background:var(--panel) !important;border-right:none !important;padding:12px 10px !important;gap:6px !important;}
 [data-theme="sparks"] .bt{padding:8px 14px !important;border-radius:10px !important;border:2px solid #F0E0D0 !important;background:#FFF5EA !important;box-shadow:0 2px 0 #E0C8B0 !important;transition:all 0.1s !important;margin-bottom:4px !important;width:auto !important;}
-[data-theme="sparks"] .bt .bi{font-size:1.3rem !important;}
 [data-theme="sparks"] .bt .bl{font-size:0.75rem !important;color:#1A1A2E !important;font-weight:700 !important;letter-spacing:0 !important;text-transform:none !important;font-family:DM Sans,sans-serif !important;}
 [data-theme="sparks"] .bt:hover{background:#FFE8D0 !important;border-color:#FF8C42 !important;transform:translateY(-1px) !important;box-shadow:0 3px 0 #D0A070 !important;}
 [data-theme="sparks"] .bt:active{transform:translateY(1px) !important;box-shadow:0 1px 0 #D0A070 !important;}
@@ -275,8 +274,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 .bt{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;padding:4px 8px;border-radius:4px;cursor:pointer;transition:all 0.1s;color:var(--dim);border:1px solid transparent;min-width:44px;}
 .bt:hover{color:var(--text);}
 .bt:active,.bt.on{color:var(--gold);background:rgba(212,175,105,0.06);border-color:rgba(212,175,105,0.2);}
-.bt .bi{font-size:1rem;}
-.bt .bl{font-size:0.5rem;font-family:'JetBrains Mono',monospace;letter-spacing:0.03em;}
+.bt .bl{font-size:0.55rem;font-family:'JetBrains Mono',monospace;letter-spacing:0.05em;}
 
 @media(min-width:600px){
   body{flex-direction:column;}
@@ -286,8 +284,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
   .bt{flex-direction:row;gap:8px;padding:10px 16px;width:auto;height:auto;min-width:unset;border-radius:8px;justify-content:flex-start;border-left:3px solid transparent;transition:all 0.15s;}
   .bt:hover{background:rgba(212,175,105,0.04);border-left-color:rgba(212,175,105,0.3);}
   .bt:active,.bt.on{background:rgba(212,175,105,0.08);border-left-color:var(--gold);}
-  .bt .bi{font-size:1.2rem;}
-  .bt .bl{display:block;font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase;}
+  .bt .bl{display:block;font-size:0.78rem;letter-spacing:0.1em;text-transform:uppercase;}
   .bt.on .bl{color:var(--gold);font-weight:600;}
   .center{margin-left:0;flex:1;overflow-y:auto;min-width:0;}
   .map-wrap{max-width:none;width:100%;height:100%;padding:8px;}
@@ -359,13 +356,13 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 
 <!-- TOOLBAR -->
 <div class="bot" style="width:240px;min-width:240px;flex-shrink:0;overflow:visible;">
-  <div class="bt on" data-t="map" onclick="sw('map')"><span class="bi">🗺️</span><span class="bl">Map</span></div>
-  <div class="bt" data-t="lesson" onclick="sw('lesson')"><span class="bi">📜</span><span class="bl">Learn</span></div>
-  <div class="bt" data-t="drill" onclick="sw('drill')"><span class="bi">🎯</span><span class="bl">Drill</span></div>
-  <div class="bt" data-t="theory" onclick="sw('theory')"><span class="bi">📖</span><span class="bl">Theory</span></div>
-  <div class="bt" data-t="play" onclick="sw('play')"><span class="bi">🎸</span><span class="bl">Play</span></div>
-  <div class="bt" data-t="timer" onclick="sw('timer')"><span class="bi">⏱️</span><span class="bl">Timer</span></div>
-  <div class="bt" data-t="record" onclick="sw('record')"><span class="bi">🎤</span><span class="bl">Record</span></div>
+  <div class="bt on" data-t="map" onclick="sw('map')"><span class="bl">Map</span></div>
+  <div class="bt" data-t="lesson" onclick="sw('lesson')"><span class="bl">Learn</span></div>
+  <div class="bt" data-t="drill" onclick="sw('drill')"><span class="bl">Drill</span></div>
+  <div class="bt" data-t="theory" onclick="sw('theory')"><span class="bl">Theory</span></div>
+  <div class="bt" data-t="play" onclick="sw('play')"><span class="bl">Play</span></div>
+  <div class="bt" data-t="timer" onclick="sw('timer')"><span class="bl">Timer</span></div>
+  <div class="bt" data-t="record" onclick="sw('record')"><span class="bl">Record</span></div>
 </div>
 
 <div class="center">
