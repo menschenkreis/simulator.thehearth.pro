@@ -625,6 +625,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
   <!-- DICTIONARY -->
   <div class="pnl" id="p-theory">
     <div style="padding:24px;max-width:600px;margin:0 auto">
+      <button onclick="closeDictionary()" style="background:none;border:1px solid var(--border);color:var(--dim);padding:6px 12px;border-radius:4px;cursor:pointer;font-family:inherit;font-size:0.7rem;margin-bottom:16px">\u2190 Back</button>
       <h2 style="font-family:'DM Sans',sans-serif;color:var(--gold);font-size:1.3rem;margin:0 0 4px 0;font-weight:700">Dictionary</h2>
       <p style="color:var(--dim);font-size:0.7rem;margin:0 0 16px 0;font-style:italic">If you don't know the word, you can't learn the concept</p>
       <input id="glossary-search" type="text" placeholder="Look up a term..." style="width:100%;padding:10px 14px;background:var(--card);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:DM Sans,sans-serif;font-size:0.85rem;outline:none;margin-bottom:16px" oninput="filterGlossary(this.value)" autofocus>
@@ -1785,7 +1786,13 @@ function updateTtsBtn(){
   btn.style.color=_ttsPlaying?'white':'var(--gold)';
 }
 
+let _savedPanel = null;
+
 function sw(t){
+  // Save current panel before switching (for dictionary overlay)
+  const currentPanel = document.querySelector('.pnl.on');
+  if(currentPanel && t==='theory') _savedPanel = currentPanel.id;
+
   document.querySelectorAll('.bt').forEach(b=>b.classList.remove('on'));
   document.querySelector('[data-t="'+t+'"]').classList.add('on');
   document.querySelectorAll('.pnl').forEach(p=>p.classList.remove('on'));
@@ -1794,6 +1801,23 @@ function sw(t){
   if(t==='lesson') populateJourney();
   if(t==='drill') populateNotebook();
   if(t==='theory') populateDictionary();
+}
+
+function closeDictionary(){
+  if(_savedPanel){
+    const saved=_savedPanel;
+    _savedPanel=null;
+    document.querySelectorAll('.pnl').forEach(p=>p.classList.remove('on'));
+    document.getElementById(saved).classList.add('on');
+    // Highlight the correct toolbar button based on saved panel
+    const btnMap={'p-map':'map','p-lesson':'lesson','p-drill':'drill','p-record':'record','p-foundation':'map','p-theory':'theory'};
+    const btn=btnMap[saved]||'map';
+    document.querySelectorAll('.bt').forEach(b=>b.classList.remove('on'));
+    const btnEl=document.querySelector('[data-t="'+btn+'"]');
+    if(btnEl) btnEl.classList.add('on');
+  } else {
+    sw('map');
+  }
 }
 
 // ═══ JOURNEY ═══
