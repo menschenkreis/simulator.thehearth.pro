@@ -338,6 +338,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 @keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
 @keyframes speechLine{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes blockPulse{0%,100%{box-shadow:0 0 4px var(--gold)}50%{box-shadow:0 0 18px var(--gold)}}
 .character-float{animation:float 3s ease-in-out infinite}
 .speech-line{opacity:0;animation:speechLine 0.4s ease forwards}
 .foundation-layout{display:flex;gap:32px;align-items:flex-start;margin-top:8px}
@@ -1032,9 +1033,16 @@ function showFoundation(){
     '<button onclick="document.querySelectorAll(\'.pnl\').forEach(p=>p.classList.remove(\'on\'));document.getElementById(\'p-map\').classList.add(\'on\')" style="background:none;border:1px solid var(--border);color:var(--dim);padding:6px 12px;border-radius:4px;cursor:pointer;font-family:inherit;font-size:0.7rem;margin-bottom:16px">\u2190 Back to Map</button>'+
     '<div style="display:flex;align-items:center;gap:12px;margin-bottom:24px">'+
       '<img src="images/foundation-icon.png" style="width:64px;height:64px;border-radius:50%;object-fit:cover;border:3px solid var(--gold);box-shadow:0 0 16px rgba(212,175,105,0.12)"/>'+
-      '<div><h2 style="font-family:\'DM Sans\',sans-serif;color:var(--gold);font-size:1.3rem;margin:0;font-weight:700">'+F.title+'</h2>'+
-      '<div style="font-family:JetBrains Mono;font-size:0.65rem;color:var(--amber);margin-top:4px">'+doneCount+'/'+F.topics.length+' blocks</div>'+
-    '</div></div>'+
+      '<div style="flex:1"><h2 style="font-family:\'DM Sans\',sans-serif;color:var(--gold);font-size:1.3rem;margin:0;font-weight:700">'+F.title+'</h2>'+
+        '<div style="display:flex;align-items:center;gap:10px;margin-top:6px">'+
+          '<div style="font-family:JetBrains Mono;font-size:0.65rem;color:var(--amber)">'+doneCount+'/'+F.topics.length+' blocks</div>'+
+          '<div style="flex:1;max-width:200px;height:6px;background:var(--surface);border-radius:3px;overflow:hidden">'+
+            '<div style="width:'+pct+'%;height:100%;background:linear-gradient(90deg,var(--gold),var(--amber));border-radius:3px;transition:width 0.5s"></div>'+
+          '</div>'+
+          '<div style="font-family:JetBrains Mono;font-size:0.6rem;color:var(--dim)">'+pct+'%</div>'+
+        '</div>'+
+      '</div>'+
+    '</div>'+
     '<div class="foundation-layout">'+
       // Character on the left — bigger, fills the space
       '<div class="foundation-char">'+
@@ -1090,6 +1098,8 @@ function showFoundation(){
       const border=isDone?color:color+'60';
       const textCol=isDone?'#fff':color;
       const numCol=isDone?'rgba(255,255,255,0.7)':color;
+      const glow=isDone?'box-shadow:0 0 12px '+color+'60;':'';
+      const pulse=isActive?'animation:blockPulse 2s ease-in-out infinite;':'';
       html+='<div onclick="showFoundationTopic(\''+t.id+'\')" style="'+
         'width:'+w+'px;padding:12px 16px;'+
         'background:'+bg+';'+
@@ -1098,6 +1108,7 @@ function showFoundation(){
         'cursor:pointer;transition:all 0.15s;'+
         'text-align:center;'+
         'position:relative;'+
+        glow+pulse+
         'z-index:'+(F.topics.length-i)+
       '">'+
         '<div style="display:flex;align-items:center;justify-content:center;gap:8px">'+
