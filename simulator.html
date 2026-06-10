@@ -589,7 +589,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
           <text class="mn-sublabel" x="612" y="735">write & record</text>
         </g>
         <!-- Travelling flame -->
-        <g id="travel-flame" transform="translate(350,73)" style="transition: transform 1.2s cubic-bezier(0.4,0,0.2,1)">
+        <g id="travel-flame" style="transform:translate(350px,73px);transition:transform 1.2s cubic-bezier(0.4,0,0.2,1)">
           <text font-size="14" text-anchor="middle" dominant-baseline="central" style="filter:drop-shadow(0 0 4px #e8a020)">🔥</text>
         </g>
 
@@ -818,14 +818,14 @@ function lightUpLevel(level) {
 
 function moveFlame(targetId) {
   if (_flameAnimating || _flameNode === targetId) return;
-  const fromPos = NODE_POS[_flameNode];
   const toPos = NODE_POS[targetId];
-  if (!fromPos || !toPos) return;
+  if (!toPos) return;
   _flameAnimating = true;
   const flame = document.getElementById('travel-flame');
+  // Use CSS transform for smooth transition
   flame.style.transform = 'translate(' + toPos[0] + 'px,' + toPos[1] + 'px)';
   _flameNode = targetId;
-  setTimeout(function(){ _flameAnimating = false; }, 700);
+  setTimeout(function(){ _flameAnimating = false; }, 1200);
 }
 
 // ═══ HEARTH DASHBOARD ═══
