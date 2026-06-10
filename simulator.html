@@ -622,11 +622,11 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
   <!-- FOUNDATION NODE -->
   <div class="pnl" id="p-foundation"></div>
 
-  <!-- JOURNEY -->
+  <!-- JOURNEY / LESSON BUILDER -->
   <div class="pnl" id="p-lesson">
     <div style="padding:24px;max-width:600px;margin:0 auto">
-      <h2 style="font-family:'DM Sans',sans-serif;color:var(--gold);font-size:1.3rem;margin:0 0 8px 0;font-weight:700">Your Journey</h2>
-      <p style="color:var(--dim);font-size:0.75rem;margin:0 0 24px 0">Where you are and what\'s next</p>
+      <h2 style="font-family:'DM Sans',sans-serif;color:var(--gold);font-size:1.3rem;margin:0 0 4px 0;font-weight:700">Journey</h2>
+      <p style="color:var(--dim);font-size:0.75rem;margin:0 0 24px 0">Your guided lessons through the central spine. Each level is a quest.</p>
       <div id="journey-content" style="display:flex;flex-direction:column;gap:12px">
         <div style="text-align:center;padding:40px 20px;color:var(--dim);font-size:0.8rem">Loading your path...</div>
       </div>
@@ -1056,80 +1056,64 @@ function showFoundation(){
       '</div>'+
     '</div>'+
     '<div class="foundation-layout">'+
-      // Character on the left — at the bottom of the stairs
+      // Character on the left
       '<div class="foundation-char">'+
-        '<img src="images/character-neutral.png" class="character-float" style="width:100%;max-width:320px;height:auto;filter:drop-shadow(0 4px 20px rgba(0,0,0,0.5))"/>'+
+        '<img src="images/character-neutral.png" class="character-float" style="width:100%;max-width:280px;height:auto;filter:drop-shadow(0 4px 16px rgba(0,0,0,0.4))"/>'+
       '</div>'+
-      // Right side: speech bubble above staircase
-      '<div style="flex:1;display:flex;flex-direction:column;align-items:flex-end;gap:0">'+
+      // Right side: speech bubble above pyramid
+      '<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:0">'+
         // Speech bubble
         '<div id="speech-bubble" style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px 18px;margin-bottom:20px;position:relative;max-width:380px;width:100%">'+
           '<div style="position:absolute;bottom:-8px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:8px solid transparent;border-right:8px solid transparent;border-top:8px solid var(--border)"></div>'+
           '<div id="speech-text"></div>'+
         '</div>'+
-        // Staircase
-        '<div class="staircase">';
+        // Building blocks pyramid
+        '<div style="display:flex;flex-direction:column;align-items:center;gap:0">';
 
-  // Rainbow colors for blocks (red → violet)
+  // Building blocks — widest at bottom (topic 1), narrowest at top (topic 5)
+  const maxWidth=480;
+  const minWidth=220;
+  const step=(maxWidth-minWidth)/(F.topics.length-1);
+
   const rainbow=['#e74c3c','#e67e22','#f1c40f','#2ecc71','#3498db','#9b59b6','#e84393'];
 
-  // Render staircase — step 1 at bottom (widest), step 5 at top (narrowest)
-  // Each step indents more to the left as it goes up
-  const treadWidths=[380,340,300,260,220];
-  const stepIndent=40; // how much each step shifts left
-
-  for(let i=0; i<F.topics.length; i++){
-    const t=F.topics[i];
+  for(let idx=F.topics.length-1; idx>=0; idx--){
+    const t=F.topics[idx];
+    const i=idx;
+    const w=maxWidth-step*i;
     const isDone=completed[t.id];
     const isActive=i===activeIdx;
     const isLocked=i>activeIdx&&!isDone;
     const num=i+1;
     const color=rainbow[i];
-    const w=treadWidths[i]||220;
 
     if(isLocked){
-      html+='<div class="stair-step locked" style="margin-right:'+(i*stepIndent)+'px">'+
-        '<div class="stair-riser" style="background:'+color+'20"></div>'+
-        '<div class="stair-tread" style="width:'+w+'px;background:transparent;border-color:'+color+'30;border-style:dashed">'+
-          '<span class="stair-num" style="color:'+color+'30">'+num+'</span>'+
-          '<span class="stair-title" style="color:'+color+'30">'+t.title+'</span>'+
-        '</div>'+
-      '</div>';
+      html+='<div style="width:'+w+'px;padding:10px 16px;background:transparent;border:1px dashed '+color+'40;border-radius:6px;text-align:center;position:relative;z-index:'+(F.topics.length-i)+'">'+
+        '<div style="display:flex;align-items:center;justify-content:center;gap:8px">'+
+          '<span style="font-family:\'DM Sans\',sans-serif;font-size:1.2rem;color:'+color+'40">'+num+'</span>'+
+          '<span style="font-family:\'DM Sans\',sans-serif;font-size:1rem;color:'+color+'30;font-weight:600">'+t.title+'</span>'+
+        '</div></div>';
     } else {
       const bg=isDone?color:color+'18';
-      const borderCol=isDone?color:color+'60';
+      const border=isDone?color:color+'60';
       const textCol=isDone?'#fff':color;
       const numCol=isDone?'rgba(255,255,255,0.7)':color;
-      const glow=isDone?'0 0 12px '+color+'60':'none';
-
-      html+='<div class="stair-step'+(isActive?' active':'')+'" onclick="showFoundationTopic(\''+t.id+'\')" style="margin-right:'+(i*stepIndent)+'px">'+
-        '<div class="stair-riser" style="background:'+color+'"></div>'+
-        '<div class="stair-tread" style="width:'+w+'px;background:'+bg+';border-color:'+borderCol+';box-shadow:'+glow+'">'+
-          '<span class="stair-num" style="color:'+numCol+'">'+num+'</span>'+
-          '<span class="stair-title" style="color:'+textCol+'">'+t.title+'</span>'+
-          (isDone?'<span class="stair-status" style="color:rgba(255,255,255,0.8)">&#10003;</span>':'')+
-        '</div>'+
-      '</div>';
+      html+='<div onclick="showFoundationTopic(\''+t.id+'\')" style="width:'+w+'px;padding:12px 16px;background:'+bg+';border:2px solid '+border+';border-radius:6px;cursor:pointer;transition:all 0.15s;text-align:center;position:relative;z-index:'+(F.topics.length-i)+'">'+
+        '<div style="display:flex;align-items:center;justify-content:center;gap:8px">'+
+          '<span style="font-family:\'DM Sans\',sans-serif;font-size:1.6rem;color:'+numCol+';opacity:'+(isDone?'1':'0.6')+';font-weight:700">'+num+'</span>'+
+          '<span style="font-family:\'DM Sans\',sans-serif;font-size:1.05rem;color:'+textCol+';font-weight:700">'+t.title+'</span>'+
+          (isDone?'<span style="font-size:0.8rem;color:rgba(255,255,255,0.8)">&#10003;</span>':'')+
+        '</div></div>';
     }
   }
 
-  html+='</div>'+ // close staircase
-    '</div>'+ // close right side
-    '</div>'+ // close foundation-layout
+  html+='</div></div></div>'+
     '<div style="margin-top:24px;padding-top:12px;border-top:1px solid var(--border);text-align:center">'+
-      '<p style="font-size:0.6rem;color:var(--dim)">Sources: '+F.sources.join(' · ')+'</p>'+
-    '</div>'+
-  '</div>';
+      '<p style="font-size:0.6rem;color:var(--dim)">Sources: '+F.sources.join(' \u00b7 ')+'</p></div></div>';
 
   el.innerHTML=html;
 
-  // Animate speech bubble text line by line
-  const speechLines=[
-    'Welcome to Foundation.',
-    'These are your building blocks.',
-    'Each one builds on the last.',
-    'Start at the bottom. Work your way up.'
-  ];
+  const speechLines=['Welcome to Foundation.','These are your building blocks.','Each one builds on the last.','Start at the bottom. Work your way up.'];
   const speechEl=document.getElementById('speech-text');
   if(speechEl){
     speechLines.forEach((line,i)=>{
@@ -1145,7 +1129,6 @@ function showFoundation(){
     });
   }
 }
-
 
 
 // ═══ REUSABLE RAINBOW BLOCKS HELPER ═══
@@ -1983,63 +1966,271 @@ function closeDictionary(){
   }
 }
 
-// ═══ JOURNEY ═══
-function populateJourney(){
-  const el=document.getElementById('journey-content');if(!el)return;
-  const nodes=['foundation','doing','knowing','practice','play','create'];
-  const nodeNames=['Foundation','Doing','Knowing','Practice','Play','Create'];
-  const rainbow=['#e74c3c','#e67e22','#f1c40f','#2ecc71','#3498db','#9b59b6'];
-  let html='';
+// ═══ JOURNEY — LESSON BUILDER ═══
 
-  nodes.forEach((nodeId,i)=>{
-    const progress=JSON.parse(localStorage.getItem('hearth-'+nodeId+'-progress')||'{}');
-    const doneKeys=Object.keys(progress).filter(k=>progress[k]);
-    const color=rainbow[i%rainbow.length];
+// Lesson formula: each lesson pulls content from the 8 nodes
+// Formula per level: Read (Foundation/Knowing) → Watch (Doing) → Integrate (Study) → Do (Doing/Practise) → Check (self-assess) → Dig Deeper (Play/Create)
+// Daily session mix: warm-up + today's doing + today's knowing + today's practise + today's song bit + reflect
 
-    // Get total items from data
-    let total=0;
-    if(nodeId==='foundation'&&window.FOUNDATION) total=window.FOUNDATION.topics.length;
-    else if(nodeId==='doing'&&window.DOING) total=window.DOING.categories.length;
-    else if(nodeId==='knowing'&&window.KNOWING) total=window.KNOWING.categories.length;
-    else if(nodeId==='practice'&&window.PRACTICE&&window.PRACTICE.topics) total=window.PRACTICE.topics.length;
-    else if(nodeId==='play'&&window.PLAY) total=window.PLAY.genres.length;
-    else if(nodeId==='create'&&window.CREATE) total=window.CREATE.categories.length;
+const JOURNEY_LEVELS = [
+  { id: 'L1', name: 'Origin', tag: 'THE SEED', num: 1, color: '#ff4444', desc: 'The starting point of everything. 9 disciplines, guided lessons.', hours: 50 },
+  { id: 'L2', name: 'Duality', tag: 'THE SECOND VOICE', num: 2, color: '#ff8800', desc: 'Harmony and contrast. Two hands, two roles.', hours: 80 },
+  { id: 'L3', name: 'Creation', tag: 'FIRST EXPRESSIONS', num: 3, color: '#ffcc00', desc: 'Building from the basics. Your first real music.', hours: 100 },
+  { id: 'L4', name: 'Structure', tag: 'FRAMEWORKS', num: 4, color: '#44cc44', desc: 'The architecture of music. Systems and patterns.', hours: 120 },
+  { id: 'L5', name: 'Change', tag: 'TRANSFORMATION', num: 5, color: '#00cccc', desc: 'Breakthrough territory. New sounds, new territory.', hours: 150 },
+  { id: 'L6', name: 'Harmony', tag: 'INTEGRATION', num: 6, color: '#3366ff', desc: 'Everything starts connecting. Deep integration.', hours: 180 },
+  { id: 'L7', name: 'Wisdom', tag: 'THE WHY', num: 7, color: '#6633cc', desc: 'Theory becomes intuition. Understanding the why.', hours: 200 },
+  { id: 'L8', name: 'Power', tag: 'COLLECTIVE FORCE', num: 8, color: '#cc33ff', desc: 'Collaboration amplifies. The collective force.', hours: 250 },
+];
 
-    const done=doneKeys.length;
-    const pct=total>0?Math.round(done/total*100):0;
+// Sample lesson templates per level (will be replaced by real data)
+const LESSON_TEMPLATES = {
+  L1: [
+    { step: 1, phase: 'READ', node: 'knowing', title: 'Today\'s Concept', icon: '\u{1F4D6}', desc: 'A brief introduction to the concept you\'re learning today.' },
+    { step: 2, phase: 'WATCH', node: 'doing', title: 'See It In Action', icon: '\u{1F3AC}', desc: 'Watch a curated video demonstrating this concept.' },
+    { step: 3, phase: 'INTEGRATE', node: 'study', title: 'Make It Yours', icon: '\u270F\uFE0F', desc: 'Fill in a worksheet, draw a diagram, or map it out.' },
+    { step: 4, phase: 'DO', node: 'practise', title: 'Pick Up Your Guitar', icon: '\u{1F3B8}', desc: 'A short physical exercise. Timer starts. Try it for 2 minutes.' },
+    { step: 5, phase: 'CHECK', node: 'hearth', title: 'How Did That Go?', icon: '\u2705', desc: 'Self-assessment: Nailed it / Getting there / Need more work.' },
+    { step: 6, phase: 'DIG DEEPER', node: 'play', title: 'Explore Further', icon: '\u{1F50D}', desc: 'Links to songs, drills, theory — go deeper where you want.' },
+  ]
+};
 
-    html+='<div style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:14px">'+
-      '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">'+
-        '<span style="font-family:\'DM Sans\',sans-serif;font-size:0.9rem;color:'+color+';font-weight:700">'+nodeNames[i]+'</span>'+
-        '<span style="font-family:JetBrains Mono;font-size:0.65rem;color:var(--dim)">'+done+'/'+total+'</span>'+
-      '</div>'+
-      '<div style="height:4px;background:var(--border);border-radius:2px;overflow:hidden">'+
-        '<div style="height:100%;width:'+pct+'%;background:'+color+';border-radius:2px;transition:width 0.3s"></div>'+
-      '</div>'+
-    '</div>';
-  });
+// Track which lesson the user is on per level
+function getJourneyState() {
+  return JSON.parse(localStorage.getItem('hearth-journey') || '{}');
+}
+function saveJourneyState(state) {
+  localStorage.setItem('hearth-journey', JSON.stringify(state));
+}
 
-  // Next step suggestion
-  const fProgress=JSON.parse(localStorage.getItem('hearth-foundation-progress')||'{}');
-  const F=window.FOUNDATION;
-  if(F){
-    const next=F.topics.find(t=>!fProgress[t.id]);
-    if(next){
-      html+='<div style="margin-top:16px;padding:16px;background:var(--card);border:2px solid var(--gold);border-radius:8px;text-align:center">'+
-        '<div style="font-family:JetBrains Mono;font-size:0.55rem;color:var(--gold);letter-spacing:0.15em;margin-bottom:6px">NEXT STEP</div>'+
-        '<div style="font-family:\'DM Sans\',sans-serif;font-size:1rem;color:var(--gold);font-weight:700">'+next.title+'</div>'+
-        '<div style="font-size:0.7rem;color:var(--dim);margin-top:4px">'+next.subtitle+'</div>'+
-        '<button onclick="showFoundationTopic(\''+next.id+'\')" style="margin-top:12px;background:var(--gold);color:var(--bg);border:none;padding:10px 24px;border-radius:6px;font-family:DM Sans,sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer">Continue</button>'+
-      '</div>';
-    } else {
-      html+='<div style="margin-top:16px;padding:16px;background:var(--card);border:2px solid var(--gold);border-radius:8px;text-align:center">'+
-        '<div style="font-family:\'DM Sans\',sans-serif;font-size:1rem;color:var(--gold);font-weight:700">Foundation Complete</div>'+
-        '<div style="font-size:0.7rem;color:var(--dim);margin-top:4px">You\'ve built the base. Time to explore the other nodes.</div>'+
-      '</div>';
+function populateJourney() {
+  const el = document.getElementById('journey-content');
+  if (!el) return;
+  
+  const state = getJourneyState();
+  const currentLevel = state.currentLevel || 1;
+  
+  let html = '';
+
+  // ═══ LEVEL PROGRESSION (CENTRAL SPINE) ═══
+  html += '<div style="margin-bottom:24px">';
+  html += '<div style="font-family:JetBrains Mono;font-size:0.55rem;color:var(--gold);letter-spacing:0.15em;margin-bottom:12px">THE CENTRAL SPINE</div>';
+  html += '<div style="display:flex;flex-direction:column;gap:6px">';
+  
+  JOURNEY_LEVELS.forEach((level, i) => {
+    const lvlState = state[level.id] || {};
+    const lessonsDone = lvlState.lessonsDone || 0;
+    const totalLessons = lvlState.totalLessons || 0;
+    const isActive = (level.num === currentLevel);
+    const isComplete = lvlState.complete;
+    const isLocked = level.num > currentLevel && !isComplete;
+    
+    const bgColor = isActive ? 'var(--card)' : 'rgba(26,23,20,0.5)';
+    const borderCol = isActive ? level.color : 'var(--border)';
+    const opacity = isLocked ? '0.35' : '1';
+    
+    html += '<div style="background:' + bgColor + ';border:1px solid ' + borderCol + ';border-radius:8px;padding:12px 14px;opacity:' + opacity + ';cursor:' + (isLocked ? 'default' : 'pointer') + ';transition:all 0.2s"' + (!isLocked ? ' onclick="openJourneyLevel(' + level.num + ')"' : '') + '>';
+    html += '<div style="display:flex;align-items:center;justify-content:space-between">';
+    html += '<div style="display:flex;align-items:center;gap:10px">';
+    html += '<div style="width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:Cinzel;font-size:0.8rem;font-weight:700;' + (isComplete ? 'background:' + level.color + ';color:#0d0b08' : isActive ? 'border:2px solid ' + level.color + ';color:' + level.color : 'border:1.5px solid var(--border);color:var(--dim)') + '">' + level.num + '</div>';
+    html += '<div>';
+    html += '<div style="font-family:Cinzel;font-size:0.8rem;color:' + (isActive ? level.color : 'var(--text)') + ';font-weight:600">' + level.name + '</div>';
+    html += '<div style="font-size:0.6rem;color:var(--dim);margin-top:2px">' + (isLocked ? 'Locked — complete L' + (level.num - 1) + ' to unlock' : isComplete ? 'Complete' : level.tag) + '</div>';
+    html += '</div></div>';
+    
+    if (!isLocked && !isComplete) {
+      const pct = totalLessons > 0 ? Math.round(lessonsDone / totalLessons * 100) : 0;
+      html += '<div style="text-align:right">';
+      html += '<div style="font-family:JetBrains Mono;font-size:0.65rem;color:var(--dim)">' + lessonsDone + (totalLessons > 0 ? '/' + totalLessons : '') + ' lessons</div>';
+      html += '</div>';
     }
+    if (isComplete) {
+      html += '<div style="font-family:JetBrains Mono;font-size:0.65rem;color:' + level.color + '">Done \u2713</div>';
+    }
+    
+    html += '</div>';
+    
+    // Active level: show progress bar
+    if (isActive && !isComplete) {
+      const totalLessons2 = totalLessons || 1;
+      const pct = Math.round(lessonsDone / totalLessons2 * 100);
+      html += '<div style="margin-top:8px;height:3px;background:var(--border);border-radius:2px;overflow:hidden">';
+      html += '<div style="height:100%;width:' + pct + '%;background:' + level.color + ';border-radius:2px;transition:width 0.3s"></div>';
+      html += '</div>';
+    }
+    
+    html += '</div>';
+  });
+  
+  html += '</div></div>';
+
+  // ═══ CURRENT LEVEL: LESSON ENTRY ═══
+  const activeLevel = JOURNEY_LEVELS[currentLevel - 1];
+  if (activeLevel) {
+    html += '<div style="background:var(--card);border:2px solid ' + activeLevel.color + ';border-radius:10px;padding:20px;margin-bottom:16px">';
+    html += '<div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">';
+    html += '<div style="width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:Cinzel;font-size:1.1rem;font-weight:700;border:2px solid ' + activeLevel.color + ';color:' + activeLevel.color + '">' + activeLevel.num + '</div>';
+    html += '<div>';
+    html += '<div style="font-family:Cinzel;font-size:1.1rem;color:' + activeLevel.color + ';font-weight:700">' + activeLevel.name + '</div>';
+    html += '<div style="font-size:0.75rem;color:var(--dim);margin-top:2px">' + activeLevel.desc + '</div>';
+    html += '</div></div>';
+    
+    // 6-step lesson flow preview
+    html += '<div style="font-family:JetBrains Mono;font-size:0.55rem;color:var(--gold);letter-spacing:0.15em;margin-bottom:10px">LESSON FORMULA</div>';
+    html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:16px">';
+    const steps = LESSON_TEMPLATES.L1;
+    const nodeColors = { knowing: '#ff8800', doing: '#e8a020', study: '#f1c40f', practise: '#2ecc71', hearth: '#d4af69', play: '#3498db' };
+    steps.forEach(function(step) {
+      const nc = nodeColors[step.node] || 'var(--dim)';
+      html += '<div style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:10px;display:flex;align-items:center;gap:8px">';
+      html += '<div style="font-size:1rem">' + step.icon + '</div>';
+      html += '<div>';
+      html += '<div style="font-family:JetBrains Mono;font-size:0.5rem;color:' + nc + ';letter-spacing:0.1em">' + step.phase + '</div>';
+      html += '<div style="font-family:DM Sans;font-size:0.75rem;color:var(--text)">' + step.title + '</div>';
+      html += '</div></div>';
+    });
+    html += '</div>';
+    
+    // Start lesson button
+    const lvlState = state[activeLevel.id] || {};
+    const nextLesson = (lvlState.lessonsDone || 0) + 1;
+    html += '<button onclick="startJourneyLesson(' + activeLevel.num + ')" style="width:100%;background:' + activeLevel.color + ';color:#0d0b08;border:none;padding:14px;border-radius:8px;font-family:DM Sans,sans-serif;font-size:0.95rem;font-weight:700;cursor:pointer;letter-spacing:0.02em">Begin Lesson ' + nextLesson + '</button>';
+    html += '</div>';
   }
 
-  el.innerHTML=html;
+  // ═══ DAILY SESSION STRUCTURE INFO ═══
+  html += '<div style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:16px">';
+  html += '<div style="font-family:JetBrains Mono;font-size:0.55rem;color:var(--gold);letter-spacing:0.15em;margin-bottom:10px">DAILY SESSION MIX</div>';
+  html += '<div style="font-size:0.75rem;color:var(--dim);line-height:1.6">Each day on the Journey gives you a mix drawn from all the nodes:</div>';
+  html += '<div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:10px">';
+  const mixItems = [
+    { label: 'Warm-up', from: 'Practise', color: '#2ecc71' },
+    { label: 'Doing', from: 'Doing', color: '#e8a020' },
+    { label: 'Knowing', from: 'Knowing', color: '#ff8800' },
+    { label: 'Practise', from: 'Practise', color: '#2ecc71' },
+    { label: 'Song Bit', from: 'Play', color: '#3498db' },
+    { label: 'Reflect', from: 'Study', color: '#f1c40f' },
+  ];
+  mixItems.forEach(function(item) {
+    html += '<div style="background:var(--bg);border:1px solid ' + item.color + '33;border-radius:4px;padding:6px 10px;font-size:0.7rem;color:' + item.color + '">' + item.label + ' <span style="color:var(--dim);font-size:0.6rem">\u2190 ' + item.from + '</span></div>';
+  });
+  html += '</div>';
+  html += '<div style="font-size:0.65rem;color:var(--dim);margin-top:10px;font-style:italic">Content cycles through until all topics for that level are covered. When complete, the next level unlocks.</div>';
+  html += '</div>';
+
+  el.innerHTML = html;
+}
+
+// Start a lesson for a given level
+function startJourneyLesson(levelNum) {
+  const level = JOURNEY_LEVELS[levelNum - 1];
+  if (!level) return;
+  
+  const state = getJourneyState();
+  if (!state[level.id]) state[level.id] = {};
+  const lvlState = state[level.id];
+  const lessonNum = (lvlState.lessonsDone || 0) + 1;
+  
+  // For now, show lesson flow placeholder
+  const el = document.getElementById('journey-content');
+  if (!el) return;
+  
+  const steps = LESSON_TEMPLATES.L1;
+  const nodeColors = { knowing: '#ff8800', doing: '#e8a020', study: '#f1c40f', practise: '#2ecc71', hearth: '#d4af69', play: '#3498db' };
+  
+  let html = '';
+  html += '<div style="display:flex;align-items:center;gap:10px;margin-bottom:20px">';
+  html += '<button onclick="populateJourney()" style="background:none;border:1px solid var(--border);color:var(--dim);padding:6px 10px;border-radius:4px;cursor:pointer;font-size:0.7rem">\u2190 Back</button>';
+  html += '<div>';
+  html += '<div style="font-family:JetBrains Mono;font-size:0.55rem;color:' + level.color + ';letter-spacing:0.1em">LEVEL ' + level.num + ' \u2014 ' + level.name.toUpperCase() + '</div>';
+  html += '<div style="font-family:Cinzel;font-size:1rem;color:var(--gold);font-weight:700">Lesson ' + lessonNum + '</div>';
+  html += '</div></div>';
+  
+  // Lesson steps
+  html += '<div style="display:flex;flex-direction:column;gap:10px">';
+  steps.forEach(function(step, idx) {
+    const nc = nodeColors[step.node] || 'var(--dim)';
+    const isComplete = (lvlState.currentLesson && lvlState.currentLesson.stepsDone && lvlState.currentLesson.stepsDone >= step.step);
+    html += '<div style="background:var(--card);border:1px solid ' + (isComplete ? nc : 'var(--border)') + ';border-radius:8px;padding:16px;cursor:pointer" onclick="openLessonStep(' + levelNum + ',' + lessonNum + ',' + step.step + ')">';
+    html += '<div style="display:flex;align-items:center;gap:12px">';
+    html += '<div style="width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.1rem;' + (isComplete ? 'background:' + nc + ';color:#0d0b08' : 'border:1.5px solid var(--border);color:var(--dim)') + '">' + (isComplete ? '\u2713' : step.icon) + '</div>';
+    html += '<div style="flex:1">';
+    html += '<div style="font-family:JetBrains Mono;font-size:0.5rem;color:' + nc + ';letter-spacing:0.1em;margin-bottom:2px">STEP ' + step.step + ' \u2014 ' + step.phase + ' <span style="color:var(--dim)">\u2190 ' + step.node.charAt(0).toUpperCase() + step.node.slice(1) + '</span></div>';
+    html += '<div style="font-family:DM Sans;font-size:0.9rem;color:var(--text);font-weight:600">' + step.title + '</div>';
+    html += '<div style="font-size:0.7rem;color:var(--dim);margin-top:2px">' + step.desc + '</div>';
+    html += '</div></div></div>';
+  });
+  html += '</div>';
+  
+  // Complete lesson button
+  html += '<button onclick="completeJourneyLesson(' + levelNum + ')" style="width:100%;margin-top:16px;background:var(--gold);color:var(--bg);border:none;padding:14px;border-radius:8px;font-family:DM Sans,sans-serif;font-size:0.9rem;font-weight:700;cursor:pointer">Complete Lesson ' + lessonNum + '</button>';
+  
+  el.innerHTML = html;
+}
+
+// Open an individual lesson step
+function openLessonStep(levelNum, lessonNum, stepNum) {
+  const step = LESSON_TEMPLATES.L1[stepNum - 1];
+  if (!step) return;
+  const level = JOURNEY_LEVELS[levelNum - 1];
+  
+  const el = document.getElementById('journey-content');
+  if (!el) return;
+  
+  let html = '';
+  html += '<div style="display:flex;align-items:center;gap:10px;margin-bottom:20px">';
+  html += '<button onclick="startJourneyLesson(' + levelNum + ')" style="background:none;border:1px solid var(--border);color:var(--dim);padding:6px 10px;border-radius:4px;cursor:pointer;font-size:0.7rem">\u2190 Back to Lesson</button>';
+  html += '<div>';
+  html += '<div style="font-family:JetBrains Mono;font-size:0.5rem;color:' + level.color + ';letter-spacing:0.1em">STEP ' + step.step + ' OF 6</div>';
+  html += '<div style="font-family:Cinzel;font-size:1rem;color:var(--gold);font-weight:700">' + step.phase + ': ' + step.title + '</div>';
+  html += '</div></div>';
+  
+  // Step content placeholder
+  html += '<div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:24px;text-align:center">';
+  html += '<div style="font-size:2rem;margin-bottom:12px">' + step.icon + '</div>';
+  html += '<div style="font-family:JetBrains Mono;font-size:0.55rem;color:var(--gold);letter-spacing:0.15em;margin-bottom:8px">PULLS FROM: ' + step.node.toUpperCase() + ' NODE</div>';
+  html += '<div style="font-size:0.85rem;color:var(--text);margin-bottom:8px">' + step.desc + '</div>';
+  html += '<div style="font-size:0.7rem;color:var(--dim);font-style:italic;margin-top:12px">Content for this step will be generated from the ' + step.node.charAt(0).toUpperCase() + step.node.slice(1) + ' node data at Level ' + levelNum + '.</div>';
+  
+  // Self-assessment for CHECK step
+  if (step.phase === 'CHECK') {
+    html += '<div style="margin-top:20px;display:flex;gap:8px;justify-content:center">';
+    html += '<button onclick="assessLesson(\'' + level.id + '\',\'nailed\')" style="background:#2ecc71;color:#0d0b08;border:none;padding:10px 20px;border-radius:6px;font-weight:600;cursor:pointer">Nailed It</button>';
+    html += '<button onclick="assessLesson(\'' + level.id + '\',\'getting\')" style="background:#e8a020;color:#0d0b08;border:none;padding:10px 20px;border-radius:6px;font-weight:600;cursor:pointer">Getting There</button>';
+    html += '<button onclick="assessLesson(\'' + level.id + '\',\'need\')" style="background:#cc3344;color:#fff;border:none;padding:10px 20px;border-radius:6px;font-weight:600;cursor:pointer">Need Work</button>';
+    html += '</div>';
+  }
+  
+  html += '</div>';
+  
+  el.innerHTML = html;
+}
+
+// Self-assessment handler
+function assessLesson(levelId, rating) {
+  const state = getJourneyState();
+  if (!state[levelId]) state[levelId] = {};
+  if (!state[levelId].assessments) state[levelId].assessments = [];
+  state[levelId].assessments.push({ rating: rating, date: new Date().toISOString() });
+  saveJourneyState(state);
+}
+
+// Complete a lesson
+function completeJourneyLesson(levelNum) {
+  const level = JOURNEY_LEVELS[levelNum - 1];
+  const state = getJourneyState();
+  if (!state[level.id]) state[level.id] = {};
+  state[level.id].lessonsDone = (state[level.id].lessonsDone || 0) + 1;
+  saveJourneyState(state);
+  populateJourney();
+}
+
+// Open a specific level on the journey
+function openJourneyLevel(levelNum) {
+  const state = getJourneyState();
+  state.currentLevel = levelNum;
+  saveJourneyState(state);
+  populateJourney();
 }
 
 // ═══ NOTEBOOK ═══
