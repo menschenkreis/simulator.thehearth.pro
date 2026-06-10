@@ -1098,6 +1098,84 @@ function showFoundation(){
 }
 
 
+
+// ═══ REUSABLE RAINBOW BLOCKS HELPER ═══
+function rainbowBlocks(items, opts){
+  const rainbow=['#e74c3c','#e67e22','#f1c40f','#2ecc71','#3498db','#9b59b6','#e84393','#1abc9c','#e84393'];
+  const maxWidth=560, minWidth=220;
+  const n=items.length;
+  const step=n>1?(maxWidth-minWidth)/(n-1):0;
+  const doneCount=items.filter(i=>i.done).length;
+  const firstIncomplete=items.findIndex(i=>!i.done);
+  const activeIdx=firstIncomplete===-1?n-1:firstIncomplete;
+
+  let html='<div style="padding:24px;max-width:800px;margin:0 auto">'+
+    '<div style="display:flex;align-items:center;gap:12px;margin-bottom:20px">'+
+      (opts.icon?'<img src="'+opts.icon+'" style="width:64px;height:64px;border-radius:50%;object-fit:cover;border:3px solid var(--gold);box-shadow:0 0 16px rgba(212,175,105,0.12)"/>':'<div style="width:64px;height:64px;border-radius:50%;border:3px solid var(--gold);box-shadow:0 0 16px rgba(212,175,105,0.12);display:flex;align-items:center;justify-content:center;font-family:Cinzel,serif;color:var(--gold);font-size:1.5rem;font-weight:700">'+opts.title.charAt(0)+'</div>')+
+      '<div><h2 style="font-family:\'DM Sans\',sans-serif;color:var(--gold);font-size:1.3rem;margin:0;font-weight:700">'+opts.title+'</h2>'+
+      '<div style="font-family:JetBrains Mono;font-size:0.65rem;color:var(--amber);margin-top:4px">'+doneCount+'/'+n+' blocks</div>'+
+    '</div></div>'+
+    '<div style="display:flex;flex-direction:column;align-items:center;gap:0;margin-top:20px">';
+
+  for(let i=n-1; i>=0; i--){
+    const it=items[i];
+    const w=maxWidth-step*i;
+    const isDone=it.done;
+    const isLocked=it.locked;
+    const num=i+1;
+    const color=rainbow[i%rainbow.length];
+
+    if(isLocked){
+      html+='<div style="'+
+        'width:'+w+'px;padding:10px 16px;'+
+        'background:transparent;'+
+        'border:1px dashed '+color+'40;'+
+        'border-radius:6px;'+
+        'text-align:center;'+
+        'position:relative;'+
+        'z-index:'+(n-i)+
+      '">'+
+        '<div style="display:flex;align-items:center;justify-content:center;gap:8px">'+
+          '<span style="font-family:\'DM Sans\',sans-serif;font-size:1.2rem;color:'+color+'40">'+num+'</span>'+
+          '<span style="font-family:\'DM Sans\',sans-serif;font-size:1rem;color:'+color+'30;font-weight:600">'+it.title+'</span>'+
+          (it.count?'<span style="font-family:JetBrains Mono;font-size:0.55rem;color:'+color+'30">'+it.count+' '+it.countLabel+'</span>':'')+
+        '</div>'+
+      '</div>';
+    } else {
+      const bg=isDone?color:color+'18';
+      const border=isDone?color:color+'60';
+      const textCol=isDone?'#fff':color;
+      const numCol=isDone?'rgba(255,255,255,0.7)':color;
+      const clickAttr=opts.clickFn?'onclick="'+opts.clickFn+'(\''+it.id+'\')"':'';
+      html+='<div '+clickAttr+' style="'+
+        'width:'+w+'px;padding:12px 16px;'+
+        'background:'+bg+';'+
+        'border:2px solid '+border+';'+
+        'border-radius:6px;'+
+        'cursor:pointer;transition:all 0.15s;'+
+        'text-align:center;'+
+        'position:relative;'+
+        'z-index:'+(n-i)+
+      '">'+
+        '<div style="display:flex;align-items:center;justify-content:center;gap:8px">'+
+          '<span style="font-family:\'DM Sans\',sans-serif;font-size:1.6rem;color:'+numCol+';opacity:'+(isDone?'1':'0.6')+';font-weight:700">'+num+'</span>'+
+          '<span style="font-family:\'DM Sans\',sans-serif;font-size:1.05rem;color:'+textCol+';font-weight:700">'+it.title+'</span>'+
+          (it.count?'<span style="font-family:JetBrains Mono;font-size:0.55rem;color:'+(isDone?'rgba(255,255,255,0.6)':color)+'">'+it.count+' '+it.countLabel+'</span>':'')+
+          (isDone?'<span style="font-size:0.8rem;color:rgba(255,255,255,0.8)">&#10003;</span>':'')+
+        '</div>'+
+      '</div>';
+    }
+  }
+
+  html+='</div>'+
+    '<div style="margin-top:24px;padding-top:12px;border-top:1px solid var(--border);text-align:center">'+
+      '<p style="font-size:0.6rem;color:var(--dim)">Sources: '+opts.sources.join(' · ')+'</p>'+
+    '</div>'+
+  '</div>';
+  return html;
+}
+
+// ═══ DOING NODE ═══
 function showDoing(){
   document.querySelectorAll('.pnl').forEach(p=>p.classList.remove('on'));
   document.getElementById('p-foundation').classList.add('on');
@@ -1105,170 +1183,106 @@ function showDoing(){
   const el=document.getElementById('p-foundation');
   const completed=JSON.parse(localStorage.getItem('hearth-doing-progress')||'{}');
 
-  const allStyles=[];
-  D.categories.forEach(c=>c.drills.forEach(d=>{if(!allStyles.includes(d.style))allStyles.push(d.style);}));
-  allStyles.sort();
-
-  let activeStyle='all';
-
-  function render(){
-    let totalDrills=0, doneDrills=0;
-    D.categories.forEach(c=>c.drills.forEach(d=>{
-      if(activeStyle==='all'||d.style===activeStyle){totalDrills++;if(completed[d.id])doneDrills++;}
-    }));
-
-    let html='<div style="margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">'+
-      '<div style="font-family:JetBrains Mono;font-size:0.75rem;color:var(--dim)">'+doneDrills+'/'+totalDrills+' drills</div>'+
-      '<div id="style-filters" style="display:flex;gap:6px;flex-wrap:wrap">';
-    html+='<span class="style-filter'+(activeStyle==='all'?' active':'')+'" data-style="all">All</span>';
-    allStyles.forEach(s=>{
-      html+='<span class="style-filter'+(activeStyle===s?' active':'')+'" data-style="'+s+'">'+s+'</span>';
-    });
-    html+='</div></div>';
-
-    // 6-STRING FRETBOARD
-    // 5 columns between strings: Category | Beginner | Intermediate | Advanced | Master
-    const levels=['','Beginner','Intermediate','Advanced','Master'];
-    const colCount=5;
-
-    html+='<div style="position:relative;margin-top:8px">';
-
-    // String lines (6 vertical lines) — rendered as borders on a grid
-    // Grid: 5 content columns + string borders
-
-    // Header row (string labels for the 4 level columns)
-    html+='<div style="display:grid;grid-template-columns:100px 1fr 1fr 1fr 1fr;border-top:3px solid var(--gold);border-bottom:1px solid var(--border)">';
-    html+='<div style="padding:8px;font-family:JetBrains Mono;font-size:9px;color:var(--gold);opacity:0.5;border-right:2px solid var(--gold);text-align:center">STRING</div>';
-    for(let i=1;i<5;i++){
-      html+='<div style="padding:8px;font-family:JetBrains Mono;font-size:10px;color:var(--gold);text-align:center;border-right:'+(i<4?'1px solid var(--border)':'none')+';opacity:0.7">'+levels[i]+'</div>';
-    }
-    html+='</div>';
-
-    // Category rows
-    D.categories.forEach((cat,fi)=>{
-      const filtered=cat.drills.filter(d=>activeStyle==='all'||d.style===activeStyle);
-      const anyDone=filtered.some(d=>completed[d.id]);
-
-      html+='<div style="display:grid;grid-template-columns:100px 1fr 1fr 1fr 1fr;border-bottom:1px solid var(--border);min-height:80px">';
-
-      // Column 1: Category label (between string 1 and 2)
-      html+='<div style="padding:12px 10px;display:flex;align-items:center;justify-content:center;border-right:2px solid var(--gold);background:var(--card)">'+
-        '<span style="font-family:Cinzel;font-size:11px;color:'+(anyDone?'var(--gold)':'var(--text)')+';font-weight:'+(anyDone?'700':'500')+';text-align:center;line-height:1.3">'+cat.title+'</span>'+
-      '</div>';
-
-      // Columns 2-5: Drill dots (between strings 2-3, 3-4, 4-5, 5-6)
-      [1,2,3,4].forEach(diff=>{
-        const drills=filtered.filter(d=>d.difficulty===diff);
-        html+='<div style="padding:8px;display:flex;flex-wrap:wrap;gap:5px;align-content:flex-start;border-right:'+(diff<4?'1px solid var(--border)':'none')+'">';
-
-        drills.forEach(drill=>{
-          const isDone=completed[drill.id];
-          html+='<div class="drill-dot" data-cat="'+cat.id+'" data-drill="'+drill.id+'" title="'+drill.title+' ['+drill.style+']" style="'+
-            'width:'+(isDone?'26px':'22px')+';height:'+(isDone?'26px':'22px')+';border-radius:50%;'+
-            'background:'+(isDone?'var(--gold)':'var(--card)')+';'+
-            'border:2px solid '+(isDone?'var(--gold)':'var(--border)')+';'+
-            'opacity:'+(isDone?'1':'0.55')+';'+
-            'cursor:pointer;display:flex;align-items:center;justify-content:center;'+
-            'transition:all 0.15s;flex-shrink:0'+
-          '">'+
-            (isDone?'<span style="font-size:9px;color:var(--bg)">&#10003;</span>':'')+
-          '</div>';
-        });
-
-        if(drills.length===0){
-          html+='<div style="font-size:0.55rem;color:var(--dim);opacity:0.2">—</div>';
-        }
-
-        html+='</div>';
-      });
-
-      html+='</div>';
-    });
-
-    // Bottom string (string 6)
-    html+='<div style="border-bottom:3px solid var(--gold)"></div>';
-
-    html+='</div>';
-
-    // Legend
-    html+='<div style="display:flex;gap:16px;margin-top:12px;padding-top:10px;border-top:1px solid var(--border);align-items:center">'+
-      '<div style="display:flex;align-items:center;gap:6px"><div style="width:16px;height:16px;border-radius:50%;background:var(--gold)"></div><span style="font-size:0.7rem;color:var(--dim)">Complete</span></div>'+
-      '<div style="display:flex;align-items:center;gap:6px"><div style="width:16px;height:16px;border-radius:50%;background:var(--card);border:2px solid var(--border);opacity:0.55"></div><span style="font-size:0.7rem;color:var(--dim)">Not started</span></div>'+
-      '<span style="font-size:0.65rem;color:var(--dim);margin-left:auto">Click a dot to open drill</span>'+
-    '</div>';
-
-    return html;
-  }
-
-  window.showDoingDrill=function(catId,drillId){
-    const cat=D.categories.find(c=>c.id===catId);if(!cat)return;
-    const drill=cat.drills.find(d=>d.id===drillId);if(!drill)return;
-    const isDone=completed[drillId];
-    const diffLabel=['','','Beginner','Intermediate','Advanced','Master'][drill.difficulty];
-    el.innerHTML='<div style="padding:20px;max-width:650px;margin:0 auto">'+
-      '<button onclick="showDoing()" style="background:none;border:1px solid var(--border);color:var(--dim);padding:6px 12px;border-radius:4px;cursor:pointer;font-family:inherit;font-size:0.7rem;margin-bottom:16px">&larr; Back to fretboard</button>'+
-      '<div style="margin-bottom:8px">'+
-        '<h2 style="font-family:Cinzel;color:var(--gold);font-size:1.1rem;margin:0">'+drill.title+'</h2>'+
-        '<div style="display:flex;gap:8px;margin-top:4px;flex-wrap:wrap">'+
-          '<span class="tag">'+cat.title+'</span>'+
-          '<span class="tag">'+diffLabel+'</span>'+
-          '<span class="tag">'+drill.style+'</span>'+
-          '<span class="tag">BPM '+drill.bpm+'</span>'+
-          '<span class="tag">'+drill.duration+'</span>'+
-        '</div>'+
-      '</div>'+
-      '<div style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:20px;margin-top:12px;line-height:1.7;font-size:0.85rem;color:var(--text)">'+
-        drill.body+
-      '</div>'+
-      '<div style="margin-top:12px;padding:10px 14px;background:var(--bg);border:1px solid var(--border);border-radius:6px;font-size:0.65rem;color:var(--dim);line-height:1.5">'+
-        '<strong style="color:var(--gold)">Source:</strong> '+drill.source+
-        (drill.page?' · p.'+drill.page:'')+
-      '</div>'+
-      '<div style="margin-top:16px;display:flex;gap:8px">'+
-        '<button onclick="completeDoingDrill(\''+catId+'\',\''+drillId+'\')" style="flex:1;background:'+(isDone?'var(--card)':'var(--gold)')+';color:'+(isDone?'var(--gold)':'var(--bg)')+';border:'+(isDone?'1px solid var(--gold)':'none')+';padding:12px;border-radius:8px;font-family:DM Sans,sans-serif;font-size:0.9rem;font-weight:600;cursor:pointer">'+(isDone?'&#10003; Completed':'Mark Complete')+'</button>'+
-      '</div>'+
-    '</div>';
-  };
-
-  el.innerHTML='<div style="padding:16px;max-width:750px;margin:0 auto">'+
-    '<div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">'+
-      '<div style="display:flex;align-items:center;gap:12px">'+
-        '<img src="images/doing-icon.png" style="width:64px;height:64px;border-radius:50%;object-fit:cover;border:3px solid var(--gold);box-shadow:0 0 16px rgba(212,175,105,0.12);flex-shrink:0"/>'+
-        '<div><h2 style="font-family:Cinzel;color:var(--gold);font-size:1.1rem;margin:0">'+D.title+'</h2>'+
-        '<p style="color:var(--dim);font-size:0.7rem;margin:0">'+D.description+'</p></div>'+
-      '</div>'+
-      '<button onclick="document.querySelectorAll(\'.pnl\').forEach(p=>p.classList.remove(\'on\'));document.getElementById(\'p-map\').classList.add(\'on\')" style="margin-left:auto;background:none;border:1px solid var(--border);color:var(--dim);padding:6px 12px;border-radius:4px;cursor:pointer;font-family:inherit;font-size:0.7rem">&larr; Back</button>'+
-    '</div>'+
-    '<div id="doing-fretboard">'+render()+'</div>'+
-    '<div style="margin-top:12px;padding-top:10px;border-top:1px solid var(--border)">'+
-      '<p style="font-size:0.6rem;color:var(--dim)">Sources: '+D.sources.join(' &middot; ')+'</p>'+
-    '</div>'+
-  '</div>';
-
-  document.getElementById('style-filters').addEventListener('click',function(e){
-    const btn=e.target.closest('.style-filter');
-    if(!btn)return;
-    activeStyle=btn.getAttribute('data-style')||'all';
-    document.getElementById('doing-fretboard').innerHTML=render();
-    bindDots();
+  const items=D.categories.map((c)=>{
+    const doneCount=c.drills.filter(d=>completed[d.id]).length;
+    return {
+      id:c.id, title:c.title,
+      done:doneCount===c.drills.length,
+      locked:false,
+      count:c.drills.length, countLabel:'drills'
+    };
   });
 
-  function bindDots(){
-    el.querySelectorAll('.drill-dot').forEach(dot=>{
-      dot.onclick=function(){showDoingDrill(this.getAttribute('data-cat'),this.getAttribute('data-drill'));};
-    });
-  }
-  bindDots();
+  el.innerHTML=rainbowBlocks(items, {
+    icon:'images/doing-icon.png',
+    title:D.title,
+    sources:D.sources,
+    clickFn:'showDoingCategory'
+  });
 }
 
+window.showDoingCategory=function(catId){
+  const D=window.DOING;if(!D)return;
+  const cat=D.categories.find(c=>c.id===catId);if(!cat)return;
+  const el=document.getElementById('p-foundation');
+  const completed=JSON.parse(localStorage.getItem('hearth-doing-progress')||'{}');
+  const catIdx=D.categories.indexOf(cat);
+  const rainbow=['#e74c3c','#e67e22','#f1c40f','#2ecc71','#3498db','#9b59b6','#e84393','#1abc9c','#e84393'];
+  const color=rainbow[catIdx%rainbow.length];
+
+  let html='<div style="padding:20px;max-width:650px;margin:0 auto">'+
+    '<button onclick="showDoing()" style="background:none;border:1px solid var(--border);color:var(--dim);padding:6px 12px;border-radius:4px;cursor:pointer;font-family:inherit;font-size:0.7rem;margin-bottom:16px">&larr; Back to Doing</button>'+
+    '<div style="border-top:4px solid '+color+';padding-top:16px">'+
+    '<h2 style="font-family:\'DM Sans\',sans-serif;color:'+color+';font-size:1.2rem;margin:0 0 4px 0;font-weight:700">'+cat.title+'</h2>'+
+    '<div style="font-family:JetBrains Mono;font-size:0.65rem;color:var(--dim);margin-bottom:16px">'+cat.drills.filter(d=>completed[d.id]).length+'/'+cat.drills.length+' drills</div>';
+
+  cat.drills.forEach((drill,i)=>{
+    const isDone=completed[drill.id];
+    const diffLabel=['','','Beginner','Intermediate','Advanced','Master'][drill.difficulty];
+    html+='<div onclick="showDoingDrill(\''+catId+'\',\''+drill.id+'\')" style="'+
+      'padding:12px 14px;'+
+      'border-bottom:1px solid var(--border);'+
+      'cursor:pointer;transition:background 0.15s;'+
+      'display:flex;align-items:center;gap:10px;'+
+      'background:'+(isDone?color+'12':'transparent')+
+    '" onmouseover="this.style.background=\''+color+'18\'" onmouseout="this.style.background=\''+(isDone?color+'12':'transparent')+'\'">'+
+      '<span style="font-family:JetBrains Mono;font-size:0.75rem;color:'+(isDone?color:'var(--dim)')+';min-width:20px">'+(i+1)+'</span>'+
+      '<div style="flex:1">'+
+        '<div style="font-family:\'DM Sans\',sans-serif;font-size:0.9rem;color:'+(isDone?color:'var(--text)')+';font-weight:600">'+drill.title+'</div>'+
+        '<div style="font-size:0.6rem;color:var(--dim);margin-top:2px">'+diffLabel+' · '+drill.style+' · BPM '+drill.bpm+'</div>'+
+      '</div>'+
+      '<span style="font-size:0.7rem;color:'+(isDone?color:'var(--dim)')+'">'+(isDone?'&#10003;':'&#8594;')+'</span>'+
+    '</div>';
+  });
+
+  html+='</div></div>';
+  el.innerHTML=html;
+};
+
+window.showDoingDrill=function(catId,drillId){
+  const D=window.DOING;if(!D)return;
+  const cat=D.categories.find(c=>c.id===catId);if(!cat)return;
+  const drill=cat.drills.find(d=>d.id===drillId);if(!drill)return;
+  const completed=JSON.parse(localStorage.getItem('hearth-doing-progress')||'{}');
+  const isDone=completed[drillId];
+  const diffLabel=['','','Beginner','Intermediate','Advanced','Master'][drill.difficulty];
+  const catIdx=D.categories.indexOf(cat);
+  const rainbow=['#e74c3c','#e67e22','#f1c40f','#2ecc71','#3498db','#9b59b6','#e84393','#1abc9c','#e84393'];
+  const color=rainbow[catIdx%rainbow.length];
+  const el=document.getElementById('p-foundation');
+  el.innerHTML='<div style="padding:20px;max-width:650px;margin:0 auto">'+
+    '<button onclick="showDoingCategory(\''+catId+'\')" style="background:none;border:1px solid var(--border);color:var(--dim);padding:6px 12px;border-radius:4px;cursor:pointer;font-family:inherit;font-size:0.7rem;margin-bottom:16px">&larr; Back to '+cat.title+'</button>'+
+    '<div style="margin-bottom:8px">'+
+      '<h2 style="font-family:\'DM Sans\',sans-serif;color:'+color+';font-size:1.1rem;margin:0">'+drill.title+'</h2>'+
+      '<div style="display:flex;gap:8px;margin-top:4px;flex-wrap:wrap">'+
+        '<span class="tag" style="border-color:'+color+'30;color:'+color+'">'+cat.title+'</span>'+
+        '<span class="tag" style="border-color:'+color+'30;color:'+color+'">'+diffLabel+'</span>'+
+        '<span class="tag" style="border-color:'+color+'30;color:'+color+'">'+drill.style+'</span>'+
+        '<span class="tag" style="border-color:'+color+'30;color:'+color+'">BPM '+drill.bpm+'</span>'+
+        '<span class="tag" style="border-color:'+color+'30;color:'+color+'">'+drill.duration+'</span>'+
+      '</div>'+
+    '</div>'+
+    '<div style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:20px;margin-top:12px;line-height:1.7;font-size:0.85rem;color:var(--text)">'+
+      drill.body+
+    '</div>'+
+    '<div style="margin-top:12px;padding:10px 14px;background:var(--bg);border:1px solid var(--border);border-radius:6px;font-size:0.65rem;color:var(--dim);line-height:1.5">'+
+      '<strong style="color:var(--gold)">Source:</strong> '+drill.source+
+      (drill.page?' · p.'+drill.page:'')+
+    '</div>'+
+    '<div style="margin-top:16px;display:flex;gap:8px">'+
+      '<button onclick="completeDoingDrill(\''+catId+'\',\''+drillId+'\')" style="flex:1;background:'+(isDone?color+'18':color)+';color:'+(isDone?color:'white')+';border:2px solid '+color+';padding:12px;border-radius:8px;font-family:DM Sans,sans-serif;font-size:0.9rem;font-weight:600;cursor:pointer">'+(isDone?'&#10003; Completed':'Mark Complete')+'</button>'+
+    '</div>'+
+  '</div>';
+};
 
 window.completeDoingDrill=function(catId,drillId){
   const progress=JSON.parse(localStorage.getItem('hearth-doing-progress')||'{}');
   progress[drillId]=true;
   localStorage.setItem('hearth-doing-progress',JSON.stringify(progress));
-  showDoing();
+  showDoingDrill(catId,drillId);
 };
 
+// ═══ KNOWING NODE ═══
 function showKnowing(){
   document.querySelectorAll('.pnl').forEach(p=>p.classList.remove('on'));
   document.getElementById('p-foundation').classList.add('on');
@@ -1276,60 +1290,22 @@ function showKnowing(){
   const el=document.getElementById('p-foundation');
   const completed=JSON.parse(localStorage.getItem('hearth-knowing-progress')||'{}');
 
-  let html='<div style="padding:24px;max-width:650px;margin:0 auto">'+
-    '<div style="display:flex;align-items:center;gap:12px;margin-bottom:24px">'+
-      '<img src="images/knowing-icon.png" style="width:64px;height:64px;border-radius:50%;object-fit:cover;border:3px solid var(--gold);box-shadow:0 0 16px rgba(212,175,105,0.12)"/>'+
-      '<div><h2 style="font-family:Cinzel;color:var(--gold);font-size:1.1rem;margin:0">'+K.title+'</h2>'+
-      '<p style="color:var(--dim);font-size:0.7rem;margin:0">'+K.description+'</p></div>'+
-      '<button onclick="document.querySelectorAll(\'.pnl\').forEach(p=>p.classList.remove(\'on\'));document.getElementById(\'p-map\').classList.add(\'on\')" style="margin-left:auto;background:none;border:1px solid var(--border);color:var(--dim);padding:6px 12px;border-radius:4px;cursor:pointer;font-family:inherit;font-size:0.7rem">&larr; Back</button>'+
-    '</div>';
-
-  // Bookshelf — books standing on a shelf
-  html+='<div style="display:flex;align-items:flex-end;justify-content:center;gap:8px;padding:20px 16px 0 16px;min-height:200px">';
-
-  const bookColors=['#8B4513','#4A6741','#5B3A6B','#2C5F7C','#8B6914'];
-  const bookWidths=[55,45,50,42,58];
-
-  K.categories.forEach((cat,i)=>{
-    const color=bookColors[i%bookColors.length];
-    const w=bookWidths[i%bookWidths.length];
-    const topicsDone=cat.topics.filter(t=>completed[t.id]).length;
-    const totalTopics=cat.topics.length;
-    const allDone=topicsDone===totalTopics;
-
-    html+='<div onclick="showKnowingBook(\''+cat.id+'\')" style="'+
-      'width:'+w+'px;min-height:160px;'+
-      'background:linear-gradient(135deg,'+color+','+color+'cc);'+
-      'border:2px solid '+(allDone?'var(--gold)':'rgba(255,255,255,0.1)')+';'+
-      'border-radius:3px 6px 6px 3px;'+
-      'cursor:pointer;transition:all 0.2s;'+
-      'display:flex;flex-direction:column;align-items:center;justify-content:center;'+
-      'padding:12px 6px;'+
-      'position:relative;'+
-      'box-shadow:2px 2px 8px rgba(0,0,0,0.3)'+
-    '" onmouseover="this.style.transform=\'translateY(-8px)\'" onmouseout="this.style.transform=\'translateY(0)\'">'+
-      '<div style="writing-mode:vertical-rl;text-orientation:mixed;font-family:Cinzel;font-size:0.75rem;color:rgba(255,255,255,0.9);text-align:center;letter-spacing:0.08em;line-height:1.2">'+cat.title+'</div>'+
-      '<div style="font-family:JetBrains Mono;font-size:0.55rem;color:rgba(255,255,255,0.5);margin-top:8px">'+topicsDone+'/'+totalTopics+'</div>'+
-      (allDone?'<div style="position:absolute;top:6px;right:6px;font-size:0.6rem;color:var(--gold)">&#10003;</div>':'')+
-    '</div>';
+  const items=K.categories.map((c)=>{
+    const doneCount=c.topics.filter(t=>completed[t.id]).length;
+    return {
+      id:c.id, title:c.title,
+      done:doneCount===c.topics.length,
+      locked:false,
+      count:c.topics.length, countLabel:'topics'
+    };
   });
 
-  html+='</div>';
-
-  // Shelf line
-  html+='<div style="height:4px;background:linear-gradient(to right,#5a4a3a,#8a7a6a,#5a4a3a);border-radius:0 0 2px 2px;margin:0 16px;box-shadow:0 2px 6px rgba(0,0,0,0.3)"></div>';
-
-  // Shelf supports
-  html+='<div style="display:flex;justify-content:space-between;padding:0 24px">'+
-    '<div style="width:8px;height:20px;background:#5a4a3a;border-radius:0 0 2px 2px"></div>'+
-    '<div style="width:8px;height:20px;background:#5a4a3a;border-radius:0 0 2px 2px"></div>'+
-  '</div>';
-
-  html+='<div style="margin-top:20px;padding-top:12px;border-top:1px solid var(--border);text-align:center">'+
-    '<p style="font-size:0.6rem;color:var(--dim)">Sources: '+K.sources.join(' · ')+'</p>'+
-  '</div></div>';
-
-  el.innerHTML=html;
+  el.innerHTML=rainbowBlocks(items, {
+    icon:'images/knowing-icon.png',
+    title:K.title,
+    sources:K.sources,
+    clickFn:'showKnowingBook'
+  });
 }
 
 window.showKnowingBook=function(catId){
@@ -1337,42 +1313,37 @@ window.showKnowingBook=function(catId){
   const cat=K.categories.find(c=>c.id===catId);if(!cat)return;
   const el=document.getElementById('p-foundation');
   const completed=JSON.parse(localStorage.getItem('hearth-knowing-progress')||'{}');
+  const catIdx=K.categories.indexOf(cat);
+  const rainbow=['#e74c3c','#e67e22','#f1c40f','#2ecc71','#3498db','#9b59b6','#e84393','#1abc9c','#e84393'];
+  const color=rainbow[catIdx%rainbow.length];
 
-  // Book open view — like reading a book
   let html='<div style="padding:20px;max-width:650px;margin:0 auto">'+
-    '<button onclick="showKnowing()" style="background:none;border:1px solid var(--border);color:var(--dim);padding:6px 12px;border-radius:4px;cursor:pointer;font-family:inherit;font-size:0.7rem;margin-bottom:16px">&larr; Back to shelf</button>'+
-    '<div style="background:var(--card);border:1px solid var(--border);border-radius:8px;overflow:hidden">';
+    '<button onclick="showKnowing()" style="background:none;border:1px solid var(--border);color:var(--dim);padding:6px 12px;border-radius:4px;cursor:pointer;font-family:inherit;font-size:0.7rem;margin-bottom:16px">&larr; Back to Knowing</button>'+
+    '<div style="border-top:4px solid '+color+';padding-top:16px">'+
+    '<h2 style="font-family:\'DM Sans\',sans-serif;color:'+color+';font-size:1.2rem;margin:0 0 4px 0;font-weight:700">'+cat.title+'</h2>'+
+    '<div style="font-size:0.75rem;color:var(--dim);margin-bottom:16px">'+cat.description+'</div>';
 
-  // Book header (like a book cover)
-  html+='<div style="background:linear-gradient(135deg,var(--gold),var(--amber));padding:24px;text-align:center">'+
-    '<h2 style="font-family:Cinzel;color:var(--bg);font-size:1.2rem;margin:0">'+cat.title+'</h2>'+
-    '<p style="font-size:0.7rem;color:rgba(13,11,8,0.6);margin:6px 0 0 0">'+cat.description+'</p>'+
-  '</div>';
-
-  // Topics as pages
-  html+='<div style="padding:16px">';
   cat.topics.forEach((topic,i)=>{
     const isDone=completed[topic.id];
     const diffLabel=['','Beginner','Intermediate','Advanced'][topic.difficulty];
-
-    html+='<div onclick="showKnowingTopic(\''+cat.id+'\',\''+topic.id+'\')" style="'+
+    html+='<div onclick="showKnowingTopic(\''+catId+'\',\''+topic.id+'\')" style="'+
       'padding:12px 14px;'+
       'border-bottom:'+(i<cat.topics.length-1?'1px solid var(--border)':'none')+';'+
       'cursor:pointer;transition:background 0.15s;'+
-      'display:flex;align-items:center;gap:10px'+
-    '" onmouseover="this.style.background=\'var(--bg)\'" onmouseout="this.style.background=\'transparent\'">'+
-      '<span style="font-family:JetBrains Mono;font-size:0.65rem;color:var(--gold);opacity:0.5;min-width:20px">'+String(i+1).padStart(2,'0')+'</span>'+
+      'display:flex;align-items:center;gap:10px;'+
+      'background:'+(isDone?color+'12':'transparent')+
+    '" onmouseover="this.style.background=\''+color+'18\'" onmouseout="this.style.background=\''+(isDone?color+'12':'transparent')+'\'">'+
+      '<span style="font-family:JetBrains Mono;font-size:0.65rem;color:'+(isDone?color:'var(--dim)')+';min-width:20px">'+String(i+1).padStart(2,'0')+'</span>'+
       '<div style="flex:1">'+
-        '<div style="font-family:Cinzel;font-size:0.85rem;color:'+(isDone?'var(--gold)':'var(--text)')+'">'+topic.title+'</div>'+
+        '<div style="font-family:\'DM Sans\',sans-serif;font-size:0.9rem;color:'+(isDone?color:'var(--text)')+';font-weight:600">'+topic.title+'</div>'+
         '<div style="font-size:0.6rem;color:var(--dim);margin-top:2px">'+diffLabel+' · '+topic.source+'</div>'+
       '</div>'+
-      '<span style="font-size:0.7rem;color:'+(isDone?'var(--gold)':'var(--dim)')+'">'+(isDone?'&#10003;':'&#8594;')+'</span>'+
+      '<span style="font-size:0.7rem;color:'+(isDone?color:'var(--dim)')+'">'+(isDone?'&#10003;':'&#8594;')+'</span>'+
     '</div>';
   });
-  html+='</div></div></div>';
-
+  html+='</div></div>';
   el.innerHTML=html;
-}
+};
 
 window.showKnowingTopic=function(catId,topicId){
   const K=window.KNOWING;if(!K)return;
@@ -1384,30 +1355,33 @@ window.showKnowingTopic=function(catId,topicId){
   const diffLabel=['','Beginner','Intermediate','Advanced'][topic.difficulty];
   const topicIdx=cat.topics.indexOf(topic);
   const nextTopic=topicIdx<cat.topics.length-1?cat.topics[topicIdx+1]:null;
+  const catIdx=K.categories.indexOf(cat);
+  const rainbow=['#e74c3c','#e67e22','#f1c40f','#2ecc71','#3498db','#9b59b6','#e84393','#1abc9c','#e84393'];
+  const color=rainbow[catIdx%rainbow.length];
 
   el.innerHTML='<div style="padding:20px;max-width:650px;margin:0 auto">'+
     '<button onclick="showKnowingBook(\''+catId+'\')" style="background:none;border:1px solid var(--border);color:var(--dim);padding:6px 12px;border-radius:4px;cursor:pointer;font-family:inherit;font-size:0.7rem;margin-bottom:16px">&larr; Back to '+cat.title+'</button>'+
-    '<div style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:24px">'+
+    '<div style="border-top:4px solid '+color+';padding-top:16px">'+
       '<div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">'+
-        '<span class="tag">'+cat.title+'</span>'+
-        '<span class="tag">'+diffLabel+'</span>'+
-        '<span class="tag">'+topic.source+'</span>'+
-        (isDone?'<span class="tag" style="color:var(--gold)">&#10003; Complete</span>':'')+
+        '<span class="tag" style="border-color:'+color+'30;color:'+color+'">'+cat.title+'</span>'+
+        '<span class="tag" style="border-color:'+color+'30;color:'+color+'">'+diffLabel+'</span>'+
+        '<span class="tag" style="border-color:'+color+'30;color:'+color+'">'+topic.source+'</span>'+
+        (isDone?'<span class="tag" style="border-color:'+color+'30;color:'+color+'">&#10003; Complete</span>':'')+
       '</div>'+
-      '<h2 style="font-family:Cinzel;color:var(--gold);font-size:1.1rem;margin:0 0 16px 0">'+topic.title+'</h2>'+
-      '<div style="line-height:1.7;font-size:0.85rem;color:var(--text)">'+topic.body+'</div>'+
+      '<h2 style="font-family:\'DM Sans\',sans-serif;color:'+color+';font-size:1.1rem;margin:0 0 16px 0;font-weight:700">'+topic.title+'</h2>'+
+      '<div style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:20px;line-height:1.7;font-size:0.85rem;color:var(--text)">'+topic.body+'</div>'+
       '<div style="margin-top:12px;padding:10px 14px;background:var(--bg);border:1px solid var(--border);border-radius:6px;font-size:0.65rem;color:var(--dim);line-height:1.5">'+
         '<strong style="color:var(--gold)">Source:</strong> '+topic.source+
         (topic.book?' &middot; '+topic.book:'')+
         (topic.page?' &middot; p.'+topic.page:'')+
       '</div>'+
       '<div style="margin-top:16px;display:flex;gap:8px">'+
-        '<button onclick="completeKnowingTopic(\''+topicId+'\')" style="flex:1;background:'+(isDone?'var(--card)':'var(--gold)')+';color:'+(isDone?'var(--gold)':'var(--bg)')+';border:'+(isDone?'1px solid var(--gold)':'none')+';padding:10px;border-radius:8px;font-family:Cinzel;font-size:0.8rem;cursor:pointer">'+(isDone?'&#10003; Completed':'Mark Complete')+'</button>'+
-        (nextTopic?'<button onclick="showKnowingTopic(\''+catId+'\',\''+nextTopic.id+'\')" style="flex:1;background:var(--card);color:var(--gold);border:1px solid var(--gold);padding:10px;border-radius:8px;font-family:Cinzel;font-size:0.8rem;cursor:pointer">Next: '+nextTopic.title.substring(0,20)+' &rarr;</button>':'')+
+        '<button onclick="completeKnowingTopic(\''+topicId+'\')" style="flex:1;background:'+(isDone?color+'18':color)+';color:'+(isDone?color:'white')+';border:2px solid '+color+';padding:12px;border-radius:8px;font-family:DM Sans,sans-serif;font-size:0.9rem;font-weight:600;cursor:pointer">'+(isDone?'&#10003; Completed':'Mark Complete')+'</button>'+
+        (nextTopic?'<button onclick="showKnowingTopic(\''+catId+'\',\''+nextTopic.id+'\')" style="flex:1;background:'+color+'18;color:'+color+';border:2px solid '+color+'40;padding:12px;border-radius:8px;font-family:DM Sans,sans-serif;font-size:0.9rem;font-weight:600;cursor:pointer">Next: '+nextTopic.title.substring(0,20)+' &rarr;</button>':'')+
       '</div>'+
     '</div>'+
   '</div>';
-}
+};
 
 window.completeKnowingTopic=function(topicId){
   const progress=JSON.parse(localStorage.getItem('hearth-knowing-progress')||'{}');
@@ -1420,166 +1394,303 @@ window.completeKnowingTopic=function(topicId){
   else showKnowing();
 };
 
-
+// ═══ PRACTICE NODE ═══
 function showPractice(){
   document.querySelectorAll('.pnl').forEach(p=>p.classList.remove('on'));
   document.getElementById('p-foundation').classList.add('on');
   const P=window.PRACTICE;if(!P)return;
   const el=document.getElementById('p-foundation');
-  let html='<div class="foundation-landing">'+
-    '<div class="fl-hero">'+
-      '<div class="fl-sub">'+P.tag+'</div>'+
-      '<h2>'+P.title+'</h2>'+
-      '<p class="fl-desc">'+P.description+'</p>'+
-    '</div>'+
-    '<div class="fl-topics">'+
-      '<div style="margin-bottom:20px">'+
-        '<h3 style="font-family:Cinzel;color:var(--gold);font-size:0.9rem;margin-bottom:10px">Session Types</h3>'+
-        P.sessionTypes.map(s=>'<div class="fl-topic" onclick="showPracticeSession(\''+s.id+'\')">'+
-          '<div class="fl-topic-num">'+(P.sessionTypes.indexOf(s)+1)+'</div>'+
-          '<div class="fl-topic-content">'+
-            '<h4>'+s.title+' — '+s.duration+'</h4>'+
-            '<div class="fl-t-sub">'+s.description+'</div>'+
-          '</div>'+
-          '<div class="fl-t-status">→</div>'+
-        '</div>').join('')+
-      '</div>'+
-      '<div style="margin-bottom:20px">'+
-        '<h3 style="font-family:Cinzel;color:var(--gold);font-size:0.9rem;margin-bottom:10px">52-Week Programme</h3>'+
-        '<div style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:14px">'+
-          '<p style="font-size:0.75rem;color:var(--text);margin:0 0 8px 0">'+P.weeklyProgramme.description+'</p>'+
-          '<p style="font-size:0.65rem;color:var(--dim);margin:0 0 10px 0">BPM: '+P.weeklyProgramme.bpmRange+' · Styles: '+P.weeklyProgramme.styles+'</p>'+
-          P.weeklyProgramme.schedule.map(d=>'<div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--border)">'+
-            ''+
-            '<span style="font-family:Cinzel;font-size:0.75rem;color:var(--text);width:90px">'+d.day+'</span>'+
-            '<span style="font-size:0.7rem;color:var(--dim)">'+d.technique+'</span>'+
-          '</div>').join('')+
-        '</div>'+
-      '</div>'+
-    '</div>'+
-    '<div class="fl-source"><p class="fl-s-label">SOURCES</p><p>'+P.sources.join('<br>')+'</p></div>'+
-  '</div>';
-  el.innerHTML=html;
+  const completed=JSON.parse(localStorage.getItem('hearth-practice-progress')||'{}');
+
+  const items=P.topics.map((t)=>{
+    return {
+      id:t.id, title:t.title,
+      done:!!completed[t.id],
+      locked:false,
+      count:t.steps.length, countLabel:'steps'
+    };
+  });
+
+  el.innerHTML=rainbowBlocks(items, {
+    icon:'',
+    title:P.title,
+    sources:P.sources,
+    clickFn:'showPracticeTopic'
+  });
 }
 
-function showPracticeSession(id){
+window.showPracticeTopic=function(topicId){
   const P=window.PRACTICE;if(!P)return;
-  const s=P.sessionTypes.find(x=>x.id===id);if(!s)return;
+  const topic=P.topics.find(t=>t.id===topicId);if(!topic)return;
   const el=document.getElementById('p-foundation');
-  el.innerHTML='<div class="lp-lesson">'+
-    '<div class="ls-body">'+
-      '<button onclick="showPractice()" style="background:none;border:1px solid var(--border);color:var(--dim);padding:4px 10px;border-radius:4px;cursor:pointer;font-family:inherit;font-size:0.65rem;margin-bottom:12px">← Sessions</button>'+
-      '<h3>'+s.icon+' '+s.title+' — '+s.duration+'</h3>'+
-      '<p style="font-size:0.8rem;color:var(--dim);margin-bottom:16px">'+s.description+'</p>'+
-      s.drills.map((d,i)=>'<div style="display:flex;align-items:center;gap:10px;padding:10px;background:var(--card);border:1px solid var(--border);border-radius:6px;margin-bottom:6px">'+
-        '<span style="font-family:JetBrains Mono;font-size:0.7rem;color:var(--gold);opacity:0.5">'+d.time+'min</span>'+
-        '<span style="font-size:0.8rem;color:var(--text)">'+d.name+'</span>'+
-      '</div>').join('')+
-      '<div style="margin-top:16px;padding:14px;background:var(--card);border:1px solid var(--gold);border-radius:8px;text-align:center">'+
-        '<p style="font-family:Cinzel;color:var(--gold);font-size:0.85rem;margin:0">Total: '+s.duration+'</p>'+
-        '<p style="font-size:0.65rem;color:var(--dim);margin:4px 0 0 0">Start when ready</p>'+
-      '</div>'+
+  const topicIdx=P.topics.indexOf(topic);
+  const rainbow=['#e74c3c','#e67e22','#f1c40f','#2ecc71','#3498db','#9b59b6','#e84393'];
+  const color=rainbow[topicIdx%rainbow.length];
+  const completed=JSON.parse(localStorage.getItem('hearth-practice-progress')||'{}');
+  const isDone=completed[topicId];
+
+  function renderStep(idx){
+    const s=topic.steps[idx];
+    const isLast=idx===topic.steps.length-1;
+    let html='<div style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:16px">'+
+      '<h3 style="font-family:\'DM Sans\',sans-serif;color:'+color+';font-size:0.95rem;margin:0 0 8px 0;font-weight:700">'+s.title+'</h3>'+
+      s.body;
+    if(isLast){
+      html+='<div style="display:flex;gap:8px;margin-top:16px">'+
+        '<button style="flex:1;background:'+color+';color:white;border:none;padding:12px;border-radius:8px;font-family:DM Sans,sans-serif;font-size:0.9rem;font-weight:600;cursor:pointer" onclick="completePracticeTopic(\''+topicId+'\')">Mark Complete</button>'+
+      '</div>';
+    } else {
+      html+='<button style="background:'+color+'18;color:'+color+';border:2px solid '+color+'40;padding:10px 20px;border-radius:8px;font-family:DM Sans,sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer;margin-top:12px" onclick="goPStep(\''+topicId+'\','+(idx+1)+')">Next: '+topic.steps[idx+1].label+'</button>';
+    }
+    html+='</div>';
+    return html;
+  }
+
+  el.innerHTML='<div style="padding:20px;max-width:650px;margin:0 auto">'+
+    '<button onclick="showPractice()" style="background:none;border:1px solid var(--border);color:var(--dim);padding:6px 12px;border-radius:4px;cursor:pointer;font-family:inherit;font-size:0.7rem;margin-bottom:16px">&larr; Back to Practice</button>'+
+    '<div style="border-top:4px solid '+color+'">'+
+    '<div style="padding:12px 0">'+
+      '<div style="font-family:JetBrains Mono;font-size:0.55rem;color:'+color+';letter-spacing:0.15em;text-transform:uppercase">'+topic.num+' / '+(isDone?'Complete':'')+'</div>'+
+      '<h2 style="font-family:\'DM Sans\',sans-serif;color:'+color+';font-size:1.1rem;margin:4px 0;font-weight:700">'+topic.title+'</h2>'+
+      '<div style="font-size:0.72rem;color:var(--dim)">'+topic.subtitle+'</div>'+
+    '</div>'+
+    '<div style="display:flex;gap:2px;margin-bottom:16px;background:var(--card);border-radius:6px;padding:4px;border:1px solid var(--border)">'+
+      topic.steps.map((s,i)=>'<div class="lp-step'+(i===0?' on':'')+'" onclick="goPStep(\''+topicId+'\','+i+')" style="'+(i===0?'background:'+color+';border-color:'+color+';color:white':'background:'+color+'10;border-color:'+color+'30')+'"><div class="lp-sn" style="color:'+(i===0?'white':color)+'">'+(i+1)+'</div><div class="lp-sl" style="color:'+(i===0?'white':color)+'">'+s.label+'</div></div>').join('')+
+    '</div>'+
+    '<div id="pStepBody">'+renderStep(0)+'</div>'+
     '</div>'+
   '</div>';
+  window._pTopic=topicId;
 }
 
+window.goPStep=function(tid,idx){
+  const P=window.PRACTICE;if(!P)return;
+  const topic=P.topics.find(t=>t.id===tid);if(!topic)return;
+  const topicIdx=P.topics.indexOf(topic);
+  const rainbow=['#e74c3c','#e67e22','#f1c40f','#2ecc71','#3498db','#9b59b6','#e84393'];
+  const color=rainbow[topicIdx%rainbow.length];
+  const s=topic.steps[idx];
+  const isLast=idx===topic.steps.length-1;
+  const body=document.getElementById('pStepBody');
+  if(!body)return;
+
+  let html='<div style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:16px">'+
+    '<h3 style="font-family:\'DM Sans\',sans-serif;color:'+color+';font-size:0.95rem;margin:0 0 8px 0;font-weight:700">'+s.title+'</h3>'+
+    s.body;
+  if(isLast){
+    html+='<div style="display:flex;gap:8px;margin-top:16px">'+
+      '<button style="flex:1;background:'+color+';color:white;border:none;padding:12px;border-radius:8px;font-family:DM Sans,sans-serif;font-size:0.9rem;font-weight:600;cursor:pointer" onclick="completePracticeTopic(\''+tid+'\')">Mark Complete</button>'+
+    '</div>';
+  } else {
+    html+='<button style="background:'+color+'18;color:'+color+';border:2px solid '+color+'40;padding:10px 20px;border-radius:8px;font-family:DM Sans,sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer;margin-top:12px" onclick="goPStep(\''+tid+'\','+(idx+1)+')">Next: '+topic.steps[idx+1].label+'</button>';
+  }
+  html+='</div>';
+  body.innerHTML=html;
+
+  document.querySelectorAll('.lp-step').forEach(function(step,i){
+    if(i===idx){step.style.background=color;step.style.borderColor=color;}
+    else{step.style.background=color+'10';step.style.borderColor=color+'30';}
+    step.querySelector('.lp-sn').style.color=i===idx?'white':color;
+    step.querySelector('.lp-sl').style.color=i===idx?'white':color;
+  });
+};
+
+window.completePracticeTopic=function(tid){
+  const progress=JSON.parse(localStorage.getItem('hearth-practice-progress')||'{}');
+  progress[tid]=true;
+  localStorage.setItem('hearth-practice-progress',JSON.stringify(progress));
+  const P=window.PRACTICE;if(!P)return;
+  const idx=P.topics.findIndex(t=>t.id===tid);
+  const next=P.topics[idx+1];
+  if(next) showPracticeTopic(next.id);
+  else showPractice();
+};
+
+// ═══ PLAY NODE ═══
 function showPlay(){
   document.querySelectorAll('.pnl').forEach(p=>p.classList.remove('on'));
   document.getElementById('p-foundation').classList.add('on');
   const PL=window.PLAY;if(!PL)return;
   const el=document.getElementById('p-foundation');
-  el.innerHTML='<div class="foundation-landing">'+
-    '<div class="fl-hero">'+
-      '<div class="fl-sub">'+PL.tag+'</div>'+
-      '<h2>'+PL.title+'</h2>'+
-      '<p class="fl-desc">'+PL.description+'</p>'+
-    '</div>'+
-    '<div class="fl-topics">'+
-      PL.genres.map(g=>'<div style="margin-bottom:16px">'+
-        '<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">'+
-          ''+
-          '<span style="font-family:Cinzel;font-size:0.9rem;color:'+g.color+'">'+g.title+'</span>'+
-          '<span style="font-size:0.6rem;color:var(--dim);margin-left:auto">'+g.difficulty+'</span>'+
-        '</div>'+
-        '<p style="font-size:0.7rem;color:var(--dim);margin:0 0 8px 0">'+g.description+'</p>'+
-        g.songs.map(s=>'<div class="fl-topic" onclick="showPlaySong(\''+g.id+'\',\''+s.title.replace("'","\\'")+'\')">'+
-          '<div class="fl-topic-content">'+
-            '<h4>'+s.title+'</h4>'+
-            '<div class="fl-t-sub">'+('★'.repeat(s.difficulty))+('☆'.repeat(3-s.difficulty))+' · '+s.source+'</div>'+
-          '</div>'+
-          '<div class="fl-t-status">→</div>'+
-        '</div>').join('')+
-      '</div>').join('')+
-    '</div>'+
-    '<div class="fl-source"><p class="fl-s-label">SOURCES</p><p>'+PL.sources.join('<br>')+'</p></div>'+
-  '</div>';
+
+  const items=PL.genres.map((g)=>{
+    return {
+      id:g.id, title:g.title,
+      done:false,
+      locked:false,
+      count:g.songs.length, countLabel:'songs'
+    };
+  });
+
+  el.innerHTML=rainbowBlocks(items, {
+    icon:'',
+    title:PL.title,
+    sources:PL.sources,
+    clickFn:'showPlayGenre'
+  });
 }
 
-function showPlaySong(genreId, songTitle){
+window.showPlayGenre=function(genreId){
+  const PL=window.PLAY;if(!PL)return;
+  const g=PL.genres.find(x=>x.id===genreId);if(!g)return;
+  const el=document.getElementById('p-foundation');
+  const genreIdx=PL.genres.indexOf(g);
+  const rainbow=['#e74c3c','#e67e22','#f1c40f','#2ecc71','#3498db','#9b59b6','#e84393','#1abc9c','#e84393'];
+  const color=rainbow[genreIdx%rainbow.length];
+
+  let html='<div style="padding:20px;max-width:650px;margin:0 auto">'+
+    '<button onclick="showPlay()" style="background:none;border:1px solid var(--border);color:var(--dim);padding:6px 12px;border-radius:4px;cursor:pointer;font-family:inherit;font-size:0.7rem;margin-bottom:16px">&larr; Back to Play</button>'+
+    '<div style="border-top:4px solid '+color+';padding-top:16px">'+
+    '<h2 style="font-family:\'DM Sans\',sans-serif;color:'+color+';font-size:1.2rem;margin:0 0 4px 0;font-weight:700">'+g.title+'</h2>'+
+    '<div style="font-size:0.75rem;color:var(--dim);margin-bottom:16px">'+g.description+'</div>';
+
+  g.songs.forEach((s,i)=>{
+    html+='<div onclick="showPlaySong(\''+genreId+'\',\''+s.title.replace("'","\\'")+'\')" style="'+
+      'padding:12px 14px;'+
+      'border-bottom:'+(i<g.songs.length-1?'1px solid var(--border)':'none')+';'+
+      'cursor:pointer;transition:background 0.15s;'+
+      'display:flex;align-items:center;gap:10px;'+
+      'background:transparent'+
+    '" onmouseover="this.style.background=\''+color+'18\'" onmouseout="this.style.background=\'transparent\'">'+
+      '<span style="font-family:JetBrains Mono;font-size:0.75rem;color:'+color+';min-width:20px">'+(i+1)+'</span>'+
+      '<div style="flex:1">'+
+        '<div style="font-family:\'DM Sans\',sans-serif;font-size:0.9rem;color:var(--text);font-weight:600">'+s.title+'</div>'+
+        '<div style="font-size:0.6rem;color:var(--dim);margin-top:2px">'+('★'.repeat(s.difficulty))+('☆'.repeat(3-s.difficulty))+' · '+s.source+'</div>'+
+      '</div>'+
+      '<span style="font-size:0.7rem;color:var(--dim)">&#8594;</span>'+
+    '</div>';
+  });
+
+  html+='</div></div>';
+  el.innerHTML=html;
+};
+
+window.showPlaySong=function(genreId, songTitle){
   const PL=window.PLAY;if(!PL)return;
   const g=PL.genres.find(x=>x.id===genreId);if(!g)return;
   const s=g.songs.find(x=>x.title===songTitle);if(!s)return;
   const el=document.getElementById('p-foundation');
-  el.innerHTML='<div class="lp-lesson">'+
-    '<div class="ls-body">'+
-      '<button onclick="showPlay()" style="background:none;border:1px solid var(--border);color:var(--dim);padding:4px 10px;border-radius:4px;cursor:pointer;font-family:inherit;font-size:0.65rem;margin-bottom:12px">← '+g.title+'</button>'+
-      '<h3>'+g.icon+' '+s.title+'</h3>'+
-      '<div style="margin-bottom:10px"><span class="tag">'+('★'.repeat(s.difficulty))+('☆'.repeat(3-s.difficulty))+'</span><span class="tag">'+s.source+'</span></div>'+
-      '<div class="ctx"><p>GENRE: '+g.title+' · SOURCE: '+s.source+'</p></div>'+
-      '<p style="font-size:0.85rem;color:var(--text);line-height:1.6">This song is from the '+g.title.toLowerCase()+' tradition. The full lesson content, sheet music, and backing tracks will be loaded from the source material when you\'re ready to play.</p>'+
-      '<div style="margin-top:16px;padding:14px;background:var(--card);border:1px solid var(--gold);border-radius:8px;text-align:center">'+
-        '<p style="font-family:Cinzel;color:var(--gold);font-size:0.85rem;margin:0">Ready to play?</p>'+
+  const genreIdx=PL.genres.indexOf(g);
+  const rainbow=['#e74c3c','#e67e22','#f1c40f','#2ecc71','#3498db','#9b59b6','#e84393','#1abc9c','#e84393'];
+  const color=rainbow[genreIdx%rainbow.length];
+
+  el.innerHTML='<div style="padding:20px;max-width:650px;margin:0 auto">'+
+    '<button onclick="showPlayGenre(\''+genreId+'\')" style="background:none;border:1px solid var(--border);color:var(--dim);padding:6px 12px;border-radius:4px;cursor:pointer;font-family:inherit;font-size:0.7rem;margin-bottom:16px">&larr; Back to '+g.title+'</button>'+
+    '<div style="border-top:4px solid '+color+';padding-top:16px">'+
+      '<div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">'+
+        '<span class="tag" style="border-color:'+color+'30;color:'+color+'">'+g.title+'</span>'+
+        '<span class="tag" style="border-color:'+color+'30;color:'+color+'">'+('★'.repeat(s.difficulty))+('☆'.repeat(3-s.difficulty))+'</span>'+
+        '<span class="tag" style="border-color:'+color+'30;color:'+color+'">'+s.source+'</span>'+
+      '</div>'+
+      '<h2 style="font-family:\'DM Sans\',sans-serif;color:'+color+';font-size:1.1rem;margin:0 0 16px 0;font-weight:700">'+s.title+'</h2>'+
+      '<div style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:20px;line-height:1.7;font-size:0.85rem;color:var(--text)">'+
+        '<p>This song is from the '+g.title.toLowerCase()+' tradition. The full lesson content, sheet music, and backing tracks will be loaded from the source material when you\'re ready to play.</p>'+
+      '</div>'+
+      '<div style="margin-top:16px;padding:14px;background:var(--card);border:2px solid '+color+';border-radius:8px;text-align:center">'+
+        '<p style="font-family:\'DM Sans\',sans-serif;color:'+color+';font-size:0.85rem;margin:0;font-weight:700">Ready to play?</p>'+
         '<p style="font-size:0.65rem;color:var(--dim);margin:4px 0 0 0">Connect your guitar and let\'s go</p>'+
       '</div>'+
     '</div>'+
   '</div>';
-}
+};
 
+// ═══ CREATE NODE ═══
 function showCreate(){
   document.querySelectorAll('.pnl').forEach(p=>p.classList.remove('on'));
   document.getElementById('p-foundation').classList.add('on');
   const C=window.CREATE;if(!C)return;
   const el=document.getElementById('p-foundation');
-  el.innerHTML='<div class="foundation-landing">'+
-    '<div class="fl-hero">'+
-      '<div class="fl-sub">'+C.tag+'</div>'+
-      '<h2>'+C.title+'</h2>'+
-      '<p class="fl-desc">'+C.description+'</p>'+
-    '</div>'+
-    '<div class="fl-topics">'+
-      C.categories.map(cat=>'<div style="margin-bottom:16px">'+
-        '<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">'+
-          ''+
-          '<span style="font-family:Cinzel;font-size:0.9rem;color:var(--gold)">'+cat.title+'</span>'+
-        '</div>'+
-        '<p style="font-size:0.7rem;color:var(--dim);margin:0 0 8px 0">'+cat.description+'</p>'+
-        cat.topics.map(t=>'<div class="fl-topic" onclick="showCreateTopic(\''+cat.id+'\',\''+t.id+'\')">'+
-          '<div class="fl-topic-content">'+
-            '<h4>'+t.title+'</h4>'+
-            '<div class="fl-t-sub">'+('★'.repeat(t.difficulty))+('☆'.repeat(3-t.difficulty))+' · '+t.source+'</div>'+
-          '</div>'+
-          '<div class="fl-t-status">→</div>'+
-        '</div>').join('')+
-      '</div>').join('')+
-    '</div>'+
-    '<div class="fl-source"><p class="fl-s-label">SOURCES</p><p>'+C.sources.join('<br>')+'</p></div>'+
-  '</div>';
+  const completed=JSON.parse(localStorage.getItem('hearth-create-progress')||'{}');
+
+  const items=C.categories.map((c)=>{
+    const doneCount=c.topics.filter(t=>completed[t.id]).length;
+    return {
+      id:c.id, title:c.title,
+      done:doneCount===c.topics.length,
+      locked:false,
+      count:c.topics.length, countLabel:'topics'
+    };
+  });
+
+  el.innerHTML=rainbowBlocks(items, {
+    icon:''
+    title:C.title,
+    sources:C.sources,
+    clickFn:'showCreateBook'
+  });
 }
 
-function showCreateTopic(catId, topicId){
+window.showCreateBook=function(catId){
+  const C=window.CREATE;if(!C)return;
+  const cat=C.categories.find(c=>c.id===catId);if(!cat)return;
+  const el=document.getElementById('p-foundation');
+  const completed=JSON.parse(localStorage.getItem('hearth-create-progress')||'{}');
+  const catIdx=C.categories.indexOf(cat);
+  const rainbow=['#e74c3c','#e67e22','#f1c40f','#2ecc71','#3498db','#9b59b6','#e84393'];
+  const color=rainbow[catIdx%rainbow.length];
+
+  let html='<div style="padding:20px;max-width:650px;margin:0 auto">'+
+    '<button onclick="showCreate()" style="background:none;border:1px solid var(--border);color:var(--dim);padding:6px 12px;border-radius:4px;cursor:pointer;font-family:inherit;font-size:0.7rem;margin-bottom:16px">&larr; Back to Create</button>'+
+    '<div style="border-top:4px solid '+color+';padding-top:16px">'+
+    '<h2 style="font-family:\'DM Sans\',sans-serif;color:'+color+';font-size:1.2rem;margin:0 0 4px 0;font-weight:700">'+cat.title+'</h2>'+
+    '<div style="font-size:0.75rem;color:var(--dim);margin-bottom:16px">'+cat.description+'</div>';
+
+  cat.topics.forEach((t,i)=>{
+    const isDone=completed[t.id];
+    html+='<div onclick="showCreateTopic(\''+catId+'\',\''+t.id+'\')" style="'+
+      'padding:12px 14px;'+
+      'border-bottom:'+(i<cat.topics.length-1?'1px solid var(--border)':'none')+';'+
+      'cursor:pointer;transition:background 0.15s;'+
+      'display:flex;align-items:center;gap:10px;'+
+      'background:'+(isDone?color+'12':'transparent')+
+    '" onmouseover="this.style.background=\''+color+'18\'" onmouseout="this.style.background=\''+(isDone?color+'12':'transparent')+'\'">'+
+      '<span style="font-family:JetBrains Mono;font-size:0.75rem;color:'+(isDone?color:'var(--dim)')+';min-width:20px">'+(i+1)+'</span>'+
+      '<div style="flex:1">'+
+        '<div style="font-family:\'DM Sans\',sans-serif;font-size:0.9rem;color:'+(isDone?color:'var(--text)')+';font-weight:600">'+t.title+'</div>'+
+        '<div style="font-size:0.6rem;color:var(--dim);margin-top:2px">'+('★'.repeat(t.difficulty))+('☆'.repeat(3-t.difficulty))+' · '+t.source+'</div>'+
+      '</div>'+
+      '<span style="font-size:0.7rem;color:'+(isDone?color:'var(--dim)')+'">'+(isDone?'&#10003;':'&#8594;')+'</span>'+
+    '</div>';
+  });
+
+  html+='</div></div>';
+  el.innerHTML=html;
+};
+
+window.showCreateTopic=function(catId, topicId){
   const C=window.CREATE;if(!C)return;
   const cat=C.categories.find(x=>x.id===catId);if(!cat)return;
   const topic=cat.topics.find(t=>t.id===topicId);if(!topic)return;
   const el=document.getElementById('p-foundation');
-  el.innerHTML='<div class="lp-lesson">'+
-    '<div class="ls-body">'+
-      '<button onclick="showCreate()" style="background:none;border:1px solid var(--border);color:var(--dim);padding:4px 10px;border-radius:4px;cursor:pointer;font-family:inherit;font-size:0.65rem;margin-bottom:12px">← '+cat.title+'</button>'+
-      '<h3>'+topic.title+'</h3>'+
-      '<div style="margin-bottom:10px"><span class="tag">'+('★'.repeat(topic.difficulty))+('☆'.repeat(3-topic.difficulty))+'</span><span class="tag">'+topic.source+'</span></div>'+
-      topic.body+
+  const catIdx=C.categories.indexOf(cat);
+  const rainbow=['#e74c3c','#e67e22','#f1c40f','#2ecc71','#3498db','#9b59b6','#e84393'];
+  const color=rainbow[catIdx%rainbow.length];
+  const completed=JSON.parse(localStorage.getItem('hearth-create-progress')||'{}');
+  const isDone=completed[topicId];
+
+  el.innerHTML='<div style="padding:20px;max-width:650px;margin:0 auto">'+
+    '<button onclick="showCreateBook(\''+catId+'\')" style="background:none;border:1px solid var(--border);color:var(--dim);padding:6px 12px;border-radius:4px;cursor:pointer;font-family:inherit;font-size:0.7rem;margin-bottom:16px">&larr; Back to '+cat.title+'</button>'+
+    '<div style="border-top:4px solid '+color+';padding-top:16px">'+
+      '<div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">'+
+        '<span class="tag" style="border-color:'+color+'30;color:'+color+'">'+cat.title+'</span>'+
+        '<span class="tag" style="border-color:'+color+'30;color:'+color+'">'+('★'.repeat(topic.difficulty))+('☆'.repeat(3-topic.difficulty))+'</span>'+
+        '<span class="tag" style="border-color:'+color+'30;color:'+color+'">'+topic.source+'</span>'+
+      '</div>'+
+      '<h2 style="font-family:\'DM Sans\',sans-serif;color:'+color+';font-size:1.1rem;margin:0 0 16px 0;font-weight:700">'+topic.title+'</h2>'+
+      '<div style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:20px;line-height:1.7;font-size:0.85rem;color:var(--text)">'+topic.body+'</div>'+
+      '<div style="margin-top:16px;display:flex;gap:8px">'+
+        '<button onclick="completeCreateTopic(\''+topicId+'\')" style="flex:1;background:'+(isDone?color+'18':color)+';color:'+(isDone?color:'white')+';border:2px solid '+color+';padding:12px;border-radius:8px;font-family:DM Sans,sans-serif;font-size:0.9rem;font-weight:600;cursor:pointer">'+(isDone?'&#10003; Completed':'Mark Complete')+'</button>'+
+      '</div>'+
     '</div>'+
   '</div>';
-}
+};
+
+window.completeCreateTopic=function(topicId){
+  const progress=JSON.parse(localStorage.getItem('hearth-create-progress')||'{}');
+  progress[topicId]=true;
+  localStorage.setItem('hearth-create-progress',JSON.stringify(progress));
+  showCreate();
+};
 
 function showFoundationTopic(topicId){
   const F=window.FOUNDATION;if(!F)return;
