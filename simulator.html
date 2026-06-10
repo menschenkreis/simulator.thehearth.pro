@@ -341,7 +341,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 .character-float{animation:float 3s ease-in-out infinite}
 .speech-line{opacity:0;animation:speechLine 0.4s ease forwards}
 .foundation-layout{display:flex;gap:32px;align-items:flex-start;margin-top:8px}
-.foundation-char{flex-shrink:0;width:260px;display:flex;flex-direction:column;align-items:center}
+.foundation-char{flex-shrink:0;width:300px;display:flex;flex-direction:column;align-items:center;justify-content:center}
 .foundation-blocks{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px}
 @media(max-width:700px){
   .foundation-layout{flex-direction:column;align-items:center}
@@ -1036,18 +1036,17 @@ function showFoundation(){
       '<div style="font-family:JetBrains Mono;font-size:0.65rem;color:var(--amber);margin-top:4px">'+doneCount+'/'+F.topics.length+' blocks</div>'+
     '</div></div>'+
     '<div class="foundation-layout">'+
-      // Character + speech bubble on the left
+      // Character on the left — bigger, fills the space
       '<div class="foundation-char">'+
-        // Speech bubble
-        '<div id="speech-bubble" style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px 16px;margin-bottom:16px;position:relative;min-height:80px">'+
+        '<img src="images/character-neutral.png" class="character-float" style="width:100%;max-width:320px;height:auto;filter:drop-shadow(0 4px 20px rgba(0,0,0,0.5))"/>'+
+      '</div>'+
+      // Right side: speech bubble above pyramid
+      '<div class="foundation-blocks" style="display:flex;flex-direction:column;align-items:center;gap:0">'+
+        // Speech bubble sitting above the pyramid
+        '<div id="speech-bubble" style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px 18px;margin-bottom:20px;position:relative;max-width:380px;width:100%">'+
           '<div style="position:absolute;bottom:-8px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:8px solid transparent;border-right:8px solid transparent;border-top:8px solid var(--border)"></div>'+
           '<div id="speech-text"></div>'+
-        '</div>'+
-        // Character image floating
-        '<img src="images/character-neutral.png" class="character-float" style="width:220px;height:auto;filter:drop-shadow(0 4px 16px rgba(0,0,0,0.4))"/>'+
-      '</div>'+
-      // Building blocks on the right — pushed down below character
-      '<div class="foundation-blocks" style="display:flex;flex-direction:column;align-items:center;gap:0;padding-top:120px">';
+        '</div>';
 
   // Building blocks — widest at bottom (topic 1), narrowest at top (topic 7)
   const maxWidth=560;
@@ -1124,6 +1123,7 @@ function showFoundation(){
     'Welcome to Foundation.',
     'These are your building blocks.',
     'Each one builds on the last.',
+    'Complete a block to unlock the next one! ✨',
     'Start at the bottom. Work your way up.'
   ];
   const speechEl=document.getElementById('speech-text');
