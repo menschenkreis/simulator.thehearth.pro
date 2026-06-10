@@ -24,7 +24,8 @@ const FOUNDATION = {
       title: 'How to Learn',
       subtitle: 'The meta-skill that comes before everything',
       status: 'open',
-      sources: ['Jamie Andreas — Principles of Correct Practice for Guitar', 'L. Ron Hubbard — Learning How to Learn', 'Beryl Lytton & Marcelle Pincus — English Handbook and Study Guide'],
+      tags: ['Meta-Skill', 'Hubbard', 'Learning'],
+      sources: ['Jamie Andreas', 'L. Ron Hubbard', 'Beryl Lytton & Marcelle Pincus'],
       steps: [
         {
           label: 'Read',
@@ -74,7 +75,8 @@ const FOUNDATION = {
       title: 'Learning a Language',
       subtitle: 'Music is a language. Here\'s what that means.',
       status: 'open',
-      sources: ['Kofi Agawu — Music as Discourse', 'Raen\'s concept — Music as Language'],
+      tags: ['Language', 'Agawu', 'Concept'],
+      sources: ['Kofi Agawu — Music as Discourse', "Raen's concept — Music as Language"],
       steps: [
         {
           label: 'Read',
@@ -125,7 +127,8 @@ const FOUNDATION = {
       title: 'The Language of Music',
       subtitle: '12 notes. That\'s the whole alphabet.',
       status: 'open',
-      sources: ['Michael P. Wolfsohn — Music Theory for Guitar', 'Patrick Stefurak — Guitar Building Blocks'],
+      tags: ['Notes', 'Intervals', 'Theory'],
+      sources: ['Michael P. Wolfsohn', 'Patrick Stefurak'],
       steps: [
         {
           label: 'Read',
@@ -175,7 +178,8 @@ const FOUNDATION = {
       title: 'The Language of Guitar',
       subtitle: 'Where music lives on the fretboard',
       status: 'open',
-      sources: ['Fred Sokolow — Fretboard Roadmaps', 'Patrick Stefurak — Guitar Building Blocks', 'Charles Kim — Teach Yourself VISUALLY Guitar'],
+      tags: ['Fretboard', 'Strings', 'Tuning'],
+      sources: ['Fred Sokolow', 'Patrick Stefurak', 'Charles Kim'],
       steps: [
         {
           label: 'Read',
@@ -227,7 +231,8 @@ const FOUNDATION = {
       title: 'The Tool',
       subtitle: 'Your hands on the wood',
       status: 'open',
-      sources: ['Jamie Andreas — Principles of Correct Practice for Guitar', 'Christopher Parkening — Guitar Method Vol 1', 'Charles Kim — Teach Yourself VISUALLY Guitar'],
+      tags: ['Posture', 'Guitar Parts', 'First Sound'],
+      sources: ['Jamie Andreas', 'Christopher Parkening', 'Charles Kim'],
       steps: [
         {
           label: 'Read',
