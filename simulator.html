@@ -355,14 +355,14 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 .stair-status{font-size:0.7rem;margin-left:auto}
 
 /* ═══ BLOCK INTERIOR STAIRCASE ═══ */
-.lp-steps-stairs{display:flex;flex-direction:column;gap:0;margin:16px 0 24px 0;max-width:400px}
-.lp-stair{display:flex;align-items:stretch;cursor:pointer;transition:all 0.15s}
-.lp-stair:hover{transform:translateX(-3px)}
-.lp-stair-riser{width:8px;border-radius:2px 0 0 2px;flex-shrink:0}
-.lp-stair-tread{padding:10px 16px;border-radius:0 6px 6px 0;display:flex;align-items:center;gap:10px;transition:all 0.15s;border:2px solid;border-left:none}
+.lp-steps-stairs{display:flex;align-items:flex-end;gap:0;margin:20px 0 24px 0;overflow-x:auto;padding-bottom:4px}
+.lp-stair{display:flex;flex-direction:column;cursor:pointer;transition:all 0.15s}
+.lp-stair:hover{transform:translateY(-2px)}
+.lp-stair-tread{padding:12px 20px;border-radius:6px 6px 0 0;display:flex;align-items:center;justify-content:center;gap:8px;transition:all 0.15s;border:2px solid;border-bottom:none;min-width:100px;text-align:center}
 .lp-stair:hover .lp-stair-tread{filter:brightness(1.15)}
+.lp-stair-riser{height:0;border-radius:0 0 6px 6px;transition:all 0.15s}
 .lp-stair-sn{font-family:'DM Sans',sans-serif;font-size:1.1rem;font-weight:700}
-.lp-stair-label{font-family:'DM Sans',sans-serif;font-size:0.85rem;font-weight:600}
+.lp-stair-label{font-family:'DM Sans',sans-serif;font-size:0.8rem;font-weight:600}
 .foundation-layout{display:flex;gap:32px;align-items:flex-end;margin-top:8px}
 .foundation-char{flex-shrink:0;width:300px;display:flex;flex-direction:column;align-items:center;justify-content:flex-end}
 @media(max-width:700px){
@@ -1834,20 +1834,21 @@ function showFoundationTopic(topicId){
       '<h2 style="color:'+color+'">'+topic.title+'</h2>'+
       '<div class="lp-subtitle">'+topic.subtitle+'</div>'+
     '</div>'+
-    // Staircase steps — each one steps up
+    // Staircase steps — ascending left to right
     '<div class="lp-steps-stairs" id="fSteps">'+
       topic.steps.map((s,i)=>{
         const isOn=i===0;
         const bg=isOn?color:color+'10';
         const borderCol=isOn?color:color+'30';
         const textCol=isOn?'white':color;
-        const marginR=i*24;
-        return '<div class="lp-stair'+(isOn?' on':'')+'" onclick="goFStep(\''+topicId+'\','+i+')" style="margin-right:'+marginR+'px">'+
-          '<div class="lp-stair-riser" style="background:'+(isOn?color:color+'40')+'"></div>'+
+        const h=40+i*20;
+        return '<div class="lp-stair'+(isOn?' on':'')+'" onclick="goFStep(\''+topicId+'\','+i+')" style="height:'+h+'px;display:flex;flex-direction:column;justify-content:flex-end">'+
           '<div class="lp-stair-tread" style="background:'+bg+';border-color:'+borderCol+'">'+
             '<span class="lp-stair-sn" style="color:'+textCol+'">'+(i+1)+'</span>'+
             '<span class="lp-stair-label" style="color:'+textCol+'">'+s.label+'</span>'+
-          '</div></div>';
+          '</div>'+
+          '<div class="lp-stair-riser" style="background:'+(isOn?color:color+'40')+';height:6px"></div>'+
+        '</div>';
       }).join('')+
     '</div>'+
     '<div id="fStepBody">'+renderStep(0)+'</div>'+
@@ -1902,20 +1903,20 @@ window.goFStep=function(tid,idx){
     body.scrollTop=0;
     // Update staircase step colors
     document.querySelectorAll('#fSteps .lp-stair').forEach(function(step,i){
-      const riser=step.querySelector('.lp-stair-riser');
       const tread=step.querySelector('.lp-stair-tread');
+      const riser=step.querySelector('.lp-stair-riser');
       const sn=step.querySelector('.lp-stair-sn');
       const label=step.querySelector('.lp-stair-label');
       if(i===idx){
-        riser.style.background=color;
         tread.style.background=color;
         tread.style.borderColor=color;
+        riser.style.background=color;
         sn.style.color='white';
         label.style.color='white';
       } else {
-        riser.style.background=color+'40';
         tread.style.background=color+'10';
         tread.style.borderColor=color+'30';
+        riser.style.background=color+'40';
         sn.style.color=color;
         label.style.color=color;
       }
