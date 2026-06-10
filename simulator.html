@@ -625,7 +625,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
   <!-- DICTIONARY -->
   <div class="pnl" id="p-theory">
     <div style="padding:24px;max-width:600px;margin:0 auto">
-      <button onclick="closeDictionary()" style="background:none;border:1px solid var(--border);color:var(--dim);padding:6px 12px;border-radius:4px;cursor:pointer;font-family:inherit;font-size:0.7rem;margin-bottom:16px">\u2190 Back</button>
+      <button id="dict-back-btn" onclick="closeDictionary()" style="background:none;border:1px solid var(--border);color:var(--dim);padding:6px 12px;border-radius:4px;cursor:pointer;font-family:inherit;font-size:0.7rem;margin-bottom:16px">\u2190 Back</button>
       <h2 style="font-family:'DM Sans',sans-serif;color:var(--gold);font-size:1.3rem;margin:0 0 4px 0;font-weight:700">Dictionary</h2>
       <p style="color:var(--dim);font-size:0.7rem;margin:0 0 16px 0;font-style:italic">If you don't know the word, you can't learn the concept</p>
       <input id="glossary-search" type="text" placeholder="Look up a term..." style="width:100%;padding:10px 14px;background:var(--card);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:DM Sans,sans-serif;font-size:0.85rem;outline:none;margin-bottom:16px" oninput="filterGlossary(this.value)" autofocus>
@@ -1800,7 +1800,16 @@ function sw(t){
   // Populate panels on open
   if(t==='lesson') populateJourney();
   if(t==='drill') populateNotebook();
-  if(t==='theory') populateDictionary();
+  if(t==='theory'){
+    // Set contextual back button text
+    const panelNames={'p-map':'Map','p-foundation':'Foundation','p-lesson':'Journey','p-drill':'Notebook','p-record':'Recorder'};
+    const backBtn=document.getElementById('dict-back-btn');
+    if(backBtn){
+      const name=panelNames[_savedPanel]||'Map';
+      backBtn.textContent='\u2190 Back to '+name;
+    }
+    populateDictionary();
+  }
 }
 
 function closeDictionary(){
@@ -1810,7 +1819,7 @@ function closeDictionary(){
     document.querySelectorAll('.pnl').forEach(p=>p.classList.remove('on'));
     document.getElementById(saved).classList.add('on');
     // Highlight the correct toolbar button based on saved panel
-    const btnMap={'p-map':'map','p-lesson':'lesson','p-drill':'drill','p-record':'record','p-foundation':'map','p-theory':'theory'};
+    const btnMap={'p-map':'map','p-lesson':'lesson','p-drill':'drill','p-record':'record','p-foundation':'map'};
     const btn=btnMap[saved]||'map';
     document.querySelectorAll('.bt').forEach(b=>b.classList.remove('on'));
     const btnEl=document.querySelector('[data-t="'+btn+'"]');
@@ -2001,35 +2010,85 @@ const DICTIONARY = [
 function populateDictionary(){
   const el=document.getElementById('glossary-list');if(!el)return;
   const countEl=document.getElementById('glossary-count');
+  const searchEl=document.getElementById('glossary-search');
   if(countEl) countEl.textContent=DICTIONARY.length+' terms';
+  if(searchEl){searchEl.value='';searchEl.oninput=function(){filterGlossary(this.value);};}
 
-  // Group by chapter
+  // Count terms per chapter
   const chapters={};
+  const chapterOrder=['Foundational Terms','Music Theory','Guitar Anatomy','Technique'];
   DICTIONARY.forEach(g=>{
-    if(!chapters[g.ch]) chapters[g.ch]=[];
-    chapters[g.ch].push(g);
+    if(!chapters[g.ch]) chapters[g.ch]=0;
+    chapters[g.ch]++;
   });
 
-  // Sort each chapter alphabetically
-  Object.values(chapters).forEach(arr=>arr.sort((a,b)=>a.term.localeCompare(b.term)));
-
+  // Show category buttons
   let html='';
-  const chapterOrder=['Foundational Terms','Music Theory','Guitar Anatomy','Technique'];
-  chapterOrder.forEach(ch=>{
+  const colors=['#e74c3c','#e67e22','#f1c40f','#2ecc71','#3498db','#9b59b6'];
+  chapterOrder.forEach((ch,i)=>{
     if(!chapters[ch])return;
-    html+='<div class="dict-chapter" style="margin-bottom:8px">'+
-      '<div style="font-family:Cinzel,serif;font-size:0.7rem;color:var(--amber);letter-spacing:0.15em;text-transform:uppercase;padding:10px 12px 4px 12px;border-bottom:1px solid var(--border)">'+ch+'</div>';
-    chapters[ch].forEach(g=>{
-      html+='<div class="glossary-item" data-term="'+g.term.toLowerCase()+'" data-ch="'+g.ch+'" style="padding:10px 12px;border-bottom:1px solid var(--border);cursor:default">'+
-        '<div style="display:flex;align-items:baseline;gap:8px">'+
-          '<span style="font-family:\'DM Sans\',sans-serif;font-size:0.85rem;color:var(--gold);font-weight:600">'+g.term+'</span>'+
-        '</div>'+
-        '<div style="font-size:0.75rem;color:var(--dim);line-height:1.5;margin-top:2px">'+g.def+'</div>'+
-      '</div>';
-    });
-    html+='</div>';
+    const color=colors[i%colors.length];
+    html+='<div onclick="showDictChapter(\''+ch+'\')" style="'+
+      'padding:14px 16px;'+
+      'background:'+color+'12;'+
+      'border:2px solid '+color+'40;'+
+      'border-radius:8px;'+
+      'cursor:pointer;transition:all 0.15s;'+
+      'display:flex;justify-content:space-between;align-items:center;'+
+      'margin-bottom:8px'+
+    '" onmouseover="this.style.borderColor=\''+color+'\'" onmouseout="this.style.borderColor=\''+color+'40\'">'+
+      '<span style="font-family:Cinzel,serif;font-size:0.85rem;color:'+color+';font-weight:600">'+ch+'</span>'+
+      '<span style="font-family:JetBrains Mono;font-size:0.6rem;color:var(--dim)">'+chapters[ch]+' terms</span>'+
+    '</div>';
   });
   el.innerHTML=html;
+}
+
+function showDictChapter(chapter){
+  const el=document.getElementById('glossary-list');if(!el)return;
+  const countEl=document.getElementById('glossary-count');
+  const searchEl=document.getElementById('glossary-search');
+
+  // Filter terms for this chapter, sort alphabetically
+  const terms=DICTIONARY.filter(g=>g.ch===chapter).sort((a,b)=>a.term.localeCompare(b.term));
+  if(countEl) countEl.textContent=terms.length+' terms';
+
+  const colorMap={'Foundational Terms':'#e74c3c','Music Theory':'#e67e22','Guitar Anatomy':'#f1c40f','Technique':'#2ecc71'};
+  const color=colorMap[chapter]||'var(--gold)';
+
+  let html='<div style="margin-bottom:12px">'+
+    '<button onclick="populateDictionary()" style="background:none;border:1px solid var(--border);color:var(--dim);padding:6px 12px;border-radius:4px;cursor:pointer;font-family:inherit;font-size:0.7rem">\u2190 All Chapters</button>'+
+  '</div>'+
+  '<div style="font-family:Cinzel,serif;font-size:0.7rem;color:'+color+';letter-spacing:0.15em;text-transform:uppercase;padding:10px 12px 4px 12px;border-bottom:1px solid var(--border)">'+chapter+'</div>';
+
+  terms.forEach(g=>{
+    html+='<div class="glossary-item" data-term="'+g.term.toLowerCase()+'" style="padding:10px 12px;border-bottom:1px solid var(--border);cursor:default">'+
+      '<div style="display:flex;align-items:baseline;gap:8px">'+
+        '<span style="font-family:\'DM Sans\',sans-serif;font-size:0.85rem;color:var(--gold);font-weight:600">'+g.term+'</span>'+
+      '</div>'+
+      '<div style="font-size:0.75rem;color:var(--dim);line-height:1.5;margin-top:2px">'+g.def+'</div>'+
+    '</div>';
+  });
+  el.innerHTML=html;
+
+  // Update search to filter within this chapter
+  if(searchEl){
+    searchEl.oninput=function(){
+      const q=this.value.toLowerCase().trim();
+      let visible=0;
+      el.querySelectorAll('.glossary-item').forEach(item=>{
+        const term=item.getAttribute('data-term');
+        const text=item.textContent.toLowerCase();
+        const show=!q||term.includes(q)||text.includes(q);
+        item.style.display=show?'block':'none';
+        if(show) visible++;
+      });
+      if(countEl){
+        if(q) countEl.textContent=visible+' result'+(visible!==1?'s':'')+' for \''+q+'\'';
+        else countEl.textContent=terms.length+' terms';
+      }
+    };
+  }
 }
 
 function filterGlossary(query){
@@ -2042,7 +2101,6 @@ function filterGlossary(query){
     item.style.display=show?'block':'none';
     if(show) visible++;
   });
-  // Show/hide chapter headers based on whether they have visible items
   document.querySelectorAll('.dict-chapter').forEach(ch=>{
     const items=ch.querySelectorAll('.glossary-item');
     const anyVisible=Array.from(items).some(i=>i.style.display!=='none');
@@ -2054,6 +2112,7 @@ function filterGlossary(query){
     else countEl.textContent=DICTIONARY.length+' terms';
   }
 }
+
 
 
 let tS=600,tR=600,tI=null,tO=false;
