@@ -6,6 +6,16 @@ const FOUNDATION = {
   title: 'Foundation',
   tag: 'LEVEL 1',
   description: 'Five layers. Each one builds on the last. Start with how to learn, end with your hands on the wood.',
+  sources: [
+    'Jamie Andreas — Principles of Correct Practice for Guitar',
+    'Kofi Agawu — Music as Discourse',
+    'L. Ron Hubbard — Learning How to Learn',
+    'Beryl Lytton & Marcelle Pincus — English Handbook and Study Guide',
+    'Fred Sokolow — Fretboard Roadmaps',
+    'Christopher Parkening — Guitar Method Vol 1',
+    'Charles Kim — Teach Yourself VISUALLY Guitar',
+    'Michael P. Wolfsohn — Music Theory for Guitar'
+  ],
 
   topics: [
     {
