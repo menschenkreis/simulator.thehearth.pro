@@ -46,7 +46,7 @@
 }
 
 /* SVG connection classes — themed by data-theme */
-#web line{stroke:var(--gold);opacity:0.35;stroke-width:1;transition:opacity 0.3s;}
+#web line{stroke:var(--gold);opacity:0.45;stroke-width:1;transition:opacity 0.3s;}
 #web line:hover{opacity:0.6;}
 .conn-branch{stroke:var(--amber);opacity:0.3;stroke-width:3.5;}
 .conn-alt{stroke:#5a9fd4;opacity:0.25;stroke-width:2.2;}
@@ -65,7 +65,7 @@
 [data-theme="sparks"] .map-svg ellipse{opacity:0.5 !important;}
 [data-theme="sparks"] #connections line{stroke:#FF8C42 !important;}
 [data-theme="sparks"] #connections line[id^=spine]{stroke:#FF8C42 !important;opacity:0.4 !important;}
-[data-theme="sparks"] #web line{stroke:#FF8C42 !important;opacity:0.35 !important;stroke-width:1.1 !important;}
+[data-theme="sparks"] #web line{stroke:#FF8C42 !important;opacity:0.45 !important;stroke-width:1.1 !important;}
 [data-theme="sparks"] .mastery-ring{opacity:0.25 !important;stroke-width:2 !important;}
 [data-theme="sparks"] .mandala circle,.mandala path{stroke:#FF8C42 !important;}
 [data-theme="sparks"] .top{background:var(--panel) !important;border-bottom:2px solid var(--gold) !important;height:56px !important;min-height:56px !important;}
@@ -341,13 +341,25 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 @keyframes blockPulse{0%,100%{box-shadow:0 0 4px var(--gold)}50%{box-shadow:0 0 18px var(--gold)}}
 .character-float{animation:float 3s ease-in-out infinite}
 .speech-line{opacity:0;animation:speechLine 0.4s ease forwards}
-.foundation-layout{display:flex;gap:32px;align-items:flex-start;margin-top:8px}
-.foundation-char{flex-shrink:0;width:300px;display:flex;flex-direction:column;align-items:center;justify-content:center}
-.foundation-blocks{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px}
+/* ═══ FOUNDATION STAIRCASE ═══ */
+.staircase{display:flex;flex-direction:column;align-items:flex-end;gap:0;margin-top:8px}
+.stair-step{display:flex;align-items:stretch;cursor:pointer;transition:all 0.2s}
+.stair-step:hover{transform:translateX(-4px)}
+.stair-riser{width:12px;border-radius:3px 0 0 3px;flex-shrink:0}
+.stair-tread{padding:14px 20px;border-radius:0 8px 8px 0;display:flex;align-items:center;gap:12px;transition:all 0.2s;border:2px solid;border-left:none;min-width:200px}
+.stair-step:hover .stair-tread{filter:brightness(1.2)}
+.stair-step.locked{opacity:0.3;cursor:default}
+.stair-step.locked:hover{transform:none}
+.stair-num{font-family:'DM Sans',sans-serif;font-size:1.5rem;font-weight:700}
+.stair-title{font-family:'DM Sans',sans-serif;font-size:0.95rem;font-weight:600}
+.stair-status{font-size:0.7rem;margin-left:auto}
+.foundation-layout{display:flex;gap:32px;align-items:flex-end;margin-top:8px}
+.foundation-char{flex-shrink:0;width:300px;display:flex;flex-direction:column;align-items:center;justify-content:flex-end}
 @media(max-width:700px){
   .foundation-layout{flex-direction:column;align-items:center}
   .foundation-char{width:100%;max-width:300px}
-  .foundation-blocks{width:100%}
+  .staircase{align-items:center}
+  .stair-step{align-items:center}
 }
 </style>
 </head>
