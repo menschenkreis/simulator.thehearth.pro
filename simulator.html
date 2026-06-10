@@ -335,6 +335,10 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 .lp-ask.revealed .lp-reveal-btn{display:none;}
 .lp-ask.revealed .lp-question{opacity:0.5;font-size:0.95rem;margin-bottom:8px;}
 @keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+@keyframes speechLine{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.character-float{animation:float 3s ease-in-out infinite}
+.speech-line{opacity:0;animation:speechLine 0.4s ease forwards}
 </style>
 </head>
 <body>
@@ -973,14 +977,26 @@ function showFoundation(){
   const firstIncomplete=F.topics.findIndex(t=>!completed[t.id]);
   const activeIdx=firstIncomplete===-1?F.topics.length-1:firstIncomplete;
 
-  let html='<div style="padding:24px;max-width:800px;margin:0 auto">'+
+  let html='<div style="padding:24px;max-width:900px;margin:0 auto">'+
     '<button onclick="document.querySelectorAll(\'.pnl\').forEach(p=>p.classList.remove(\'on\'));document.getElementById(\'p-map\').classList.add(\'on\')" style="background:none;border:1px solid var(--border);color:var(--dim);padding:6px 12px;border-radius:4px;cursor:pointer;font-family:inherit;font-size:0.7rem;margin-bottom:16px">\u2190 Back to Map</button>'+
-    '<div style="display:flex;align-items:center;gap:12px;margin-bottom:20px">'+
+    '<div style="display:flex;align-items:center;gap:12px;margin-bottom:24px">'+
       '<img src="images/foundation-icon.png" style="width:64px;height:64px;border-radius:50%;object-fit:cover;border:3px solid var(--gold);box-shadow:0 0 16px rgba(212,175,105,0.12)"/>'+
       '<div><h2 style="font-family:\'DM Sans\',sans-serif;color:var(--gold);font-size:1.3rem;margin:0;font-weight:700">'+F.title+'</h2>'+
       '<div style="font-family:JetBrains Mono;font-size:0.65rem;color:var(--amber);margin-top:4px">'+doneCount+'/'+F.topics.length+' blocks</div>'+
     '</div></div>'+
-    '<div style="display:flex;flex-direction:column;align-items:center;gap:0;margin-top:20px">';
+    '<div style="display:flex;gap:24px;align-items:flex-start;margin-top:8px">'+
+      // Character + speech bubble on the left
+      '<div style="flex-shrink:0;width:220px;display:flex;flex-direction:column;align-items:center">'+
+        // Speech bubble
+        '<div id="speech-bubble" style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px 14px;margin-bottom:12px;position:relative;min-height:80px">'+
+          '<div style="position:absolute;bottom:-8px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:8px solid transparent;border-right:8px solid transparent;border-top:8px solid var(--border)"></div>'+
+          '<div id="speech-text"></div>'+
+        '</div>'+
+        // Character image floating
+        '<img src="images/character-neutral.png" class="character-float" style="width:160px;height:auto;filter:drop-shadow(0 4px 12px rgba(0,0,0,0.3))"/>'+
+      '</div>'+
+      // Building blocks on the right
+      '<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:0">';
 
   // Building blocks — widest at bottom (topic 1), narrowest at top (topic 7)
   const maxWidth=560;
@@ -1041,13 +1057,36 @@ function showFoundation(){
     }
   }
 
-  html+='</div>'+
+  html+='</div>'+ // close building blocks column
+    '</div>'+ // close flex container (character + blocks)
     '<div style="margin-top:24px;padding-top:12px;border-top:1px solid var(--border);text-align:center">'+
       '<p style="font-size:0.6rem;color:var(--dim)">Sources: '+F.sources.join(' · ')+'</p>'+
     '</div>'+
   '</div>';
 
   el.innerHTML=html;
+
+  // Animate speech bubble text line by line
+  const speechLines=[
+    'Welcome to Foundation.',
+    'These are your building blocks.',
+    'Each one builds on the last.',
+    'Start at the bottom. Work your way up.'
+  ];
+  const speechEl=document.getElementById('speech-text');
+  if(speechEl){
+    speechLines.forEach((line,i)=>{
+      const div=document.createElement('div');
+      div.className='speech-line';
+      div.style.animationDelay=(i*0.8)+'s';
+      div.style.fontSize='0.75rem';
+      div.style.color='var(--text)';
+      div.style.lineHeight='1.5';
+      div.style.marginBottom='2px';
+      div.textContent=line;
+      speechEl.appendChild(div);
+    });
+  }
 }
 
 
