@@ -341,7 +341,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 .speech-line{opacity:0;animation:speechLine 0.4s ease forwards}
 .foundation-layout{display:flex;gap:32px;align-items:flex-start;margin-top:8px}
 .foundation-char{flex-shrink:0;width:260px;display:flex;flex-direction:column;align-items:center}
-.foundation-blocks{flex:1;display:flex;flex-direction:column;align-items:center;gap:0}
+.foundation-blocks{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px}
 @media(max-width:700px){
   .foundation-layout{flex-direction:column;align-items:center}
   .foundation-char{width:100%;max-width:300px}
@@ -1003,8 +1003,8 @@ function showFoundation(){
         // Character image floating
         '<img src="images/character-neutral.png" class="character-float" style="width:220px;height:auto;filter:drop-shadow(0 4px 16px rgba(0,0,0,0.4))"/>'+
       '</div>'+
-      // Building blocks on the right
-      '<div class="foundation-blocks">';
+      // Building blocks on the right — first block at top, aligned with character
+      '<div class="foundation-blocks" style="display:flex;flex-direction:column;align-items:center;gap:0">';
 
   // Building blocks — widest at bottom (topic 1), narrowest at top (topic 7)
   const maxWidth=560;
@@ -1014,8 +1014,9 @@ function showFoundation(){
   // Rainbow colors for blocks (red → violet)
   const rainbow=['#e74c3c','#e67e22','#f1c40f','#2ecc71','#3498db','#9b59b6','#e84393'];
 
-  // Render from last topic (top/smallest) to first topic (bottom/widest)
-  for(let i=F.topics.length-1; i>=0; i--){
+  // Render from first topic (top/widest) to last topic (bottom/narrowest)
+  // so topic 1 is at the top, aligned with the character
+  for(let i=0; i<F.topics.length; i++){
     const t=F.topics[i];
     const w=maxWidth-step*i;
     const isDone=completed[t.id];
