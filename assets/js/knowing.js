@@ -1,6 +1,5 @@
-// Knowing Node — Theory Library
-// Sources: Wolfsohn (Music Theory for Guitar), Bruce Arnold (Music Theory Workbook),
-//          Fowler (Guitar Patterns), Belkadi (Advanced Scale Concepts), Kadmon (Guitar Grimoire)
+// Knowing Node — Theory Library (Bookshelf UI)
+// Sources: Wolfsohn, Arnold, Fowler, Belkadi, Kadmon, Peckham, Facoline, Rooksby, Leavitt, Grimoire
 
 const KNOWING = {
   id: 'knowing',
@@ -12,7 +11,12 @@ const KNOWING = {
     'Bruce Arnold — Music Theory Workbook for Guitar Volume One',
     'William L. Fowler — Guitar Patterns for Improvisation',
     'Jean Marc Belkadi — Advanced Scale Concepts and Licks for Guitar',
-    'Adam Kadmon — The Guitar Grimoire'
+    'Adam Kadmon — The Guitar Grimoire',
+    'Rick Peckham — Berklee Jazz Chord Dictionary',
+    'Phillip Facoline — Ultimate Chord Chart',
+    'Rik Rooksby — How to Write Songs on Guitar',
+    'William Leavitt — Modern Method for Guitar Vol 1',
+    'Aaron Stang — Picture Chord Encyclopedia'
   ],
 
   categories: [
@@ -122,6 +126,19 @@ C → F (1♭) → B♭ (2♭) → E♭ (3♭) → A♭ (4♭) → D♭ (5♭) �
 • <strong>13th</strong> = 6th, one octave up (Cmaj13 adds the A above)</p>
 <p><strong>The rule:</strong> Extensions are stacked on top of 7th chords. You can't have a 9th without a 7th — it's just an "add2" chord. The 7th is the gateway to extensions.</p>
 <p><strong>On the guitar:</strong> Jazz voicings often omit the root (the bass player covers it) and focus on 3rd, 7th, and extensions. This is why jazz chords look "weird" — they're fragments, but they sound complete in context.</p>`
+        },
+        {
+          id: 'chord-voicings',
+          title: 'Movable Voicings & Inversions',
+          difficulty: 2,
+          source: 'Facoline — Ultimate Chord Chart',
+          body: `<p>A chord voicing is HOW you arrange the notes on the fretboard. Same chord, different voicing = different sound.</p>
+<p><strong>Open voicings:</strong> Notes spread across multiple strings with gaps. Sound open and ringy.<br>
+<strong>Closed voicings:</strong> Notes packed close together. Sound dense and focused.</p>
+<p><strong>Inversions:</strong> When a note other than the root is the lowest:<br>
+• C major: C-E-G (root position), E-G-C (1st inversion), G-C-E (2nd inversion)</p>
+<p><strong>Why voicings matter:</strong> The same C chord can sound bright, dark, thin, or full depending on the voicing. Jazz players spend years learning voicings because the RIGHT voicing makes the harmony sing.</p>
+<p><strong>The moveable barre chord:</strong> Play an F barre chord at fret 1. Move it to fret 3 = G. Fret 5 = A. Same shape, different root. This is the power of moveable voicings — one shape, 12 keys.</p>`
         }
       ]
     },
@@ -159,6 +176,42 @@ C → F (1♭) → B♭ (2♭) → E♭ (3♭) → A♭ (4♭) → D♭ (5♭) �
   <div class="lp-co-title">THE SIMPLEST WAY TO THINK ABOUT MODES</div>
   <p>Play C major scale. Now play the same notes but make D your home note. You're playing D Dorian — a minor scale with a bright 6th. The notes are the same, the FEELING is completely different. That's modes.</p>
 </div>`
+        },
+        {
+          id: 'minor-scales',
+          title: 'The 3 Minor Scales',
+          difficulty: 2,
+          source: 'Wolfsohn Ch.8',
+          body: `<p>Minor keys have THREE versions. This confuses people, but it's actually logical:</p>
+<p><strong>Natural minor</strong> (Aeolian mode): A-B-C-D-E-F-G. The "default" minor scale.<br>
+<strong>Harmonic minor</strong>: Natural minor with raised 7th (G→G#). Creates a dominant chord (E7) that resolves to Am. The "exotic" sound.<br>
+<strong>Melodic minor</strong>: Raised 6th AND 7th ascending, natural minor descending. Smooths the melody line.</p>
+<p><strong>Why three versions?</strong> The natural minor has a weak V chord (minor). Raising the 7th creates a strong V7→i resolution. The melodic minor fixes the awkward augmented 2nd interval. Each version solves a different problem.</p>
+<p><strong>On the guitar:</strong> Most rock and pop uses natural minor. Jazz uses melodic minor (especially its modes). Classical and metal use harmonic minor. Know all three.</p>`
+        },
+        {
+          id: 'exotic-scales',
+          title: 'Exotic & World Scales',
+          difficulty: 3,
+          source: 'Kadmon — Guitar Grimoire',
+          body: `<p>Beyond the standard major/minor system lies a world of exotic scales:</p>
+<p><strong>Harmonic Major:</strong> Major scale with a flat 6th. Indian classical music influence.<br>
+<strong>Hungarian Minor:</strong> Harmonic minor with a raised 4th. Gypsy and Middle Eastern.<br>
+<strong>Neapolitan Minor/Major:</strong> Flat 2nd, flat 3rd (minor) or flat 2nd (major). Baroque and Middle Eastern.<br>
+<strong>Persian:</strong> Flat 2nd, major 3rd, flat 4th, flat 6th, flat 7th. Sounds like a snake charmer.<br>
+<strong>Enigmatic:</strong> Ascending chromatic-like gaps. Italian opera mystery.</p>
+<p><strong>5-tone scales:</strong><br>
+• Kumoi — Japanese traditional<br>
+• Hirojoshi — Japanese pentatonic variant<br>
+• Pelog — Indonesian gamelan</p>
+<p><strong>6-tone scales:</strong><br>
+• Whole Tone — dreamy, no root resolution (Debussy)<br>
+• Augmented — alternating half step/minor 3rd<br>
+• Dominant Sus — 7th chord with suspended 4th</p>
+<p><strong>8-tone scales:</strong><br>
+• Diminished — symmetrical, alternating whole/half steps<br>
+• 8-Tone Spanish — the flamenco scale<br>
+• Bebop scales — major/minor/dominant with passing chromatic notes for jazz</p>`
         }
       ]
     },
@@ -202,8 +255,65 @@ C → F (1♭) → B♭ (2♭) → E♭ (3♭) → A♭ (4♭) → D♭ (5♭) �
     },
 
     {
+      id: 'rhythm-theory',
+      title: 'Rhythm & Time',
+      icon: '🥁',
+      description: 'Time signatures, subdivisions, syncopation, polyrhythms. The heartbeat of music.',
+      topics: [
+        {
+          id: 'time-signatures',
+          title: 'Time Signatures — The Pulse',
+          difficulty: 1,
+          source: 'Wolfsohn Ch.4',
+          body: `<p>Time signatures tell you how music is grouped into measures:</p>
+<p><strong>Simple time:</strong> Each beat divides into 2.<br>
+• 4/4 — four quarter-note beats. The "common time" (rock, pop, blues, jazz)<br>
+• 3/4 — three quarter-note beats. Waltz, ballads<br>
+• 2/4 — two quarter-note beats. Marches, polkas</p>
+<p><strong>Compound time:</strong> Each beat divides into 3.<br>
+• 6/8 — two groups of three eighth notes. Irish jigs, power ballads<br>
+• 12/8 — four groups of three. Slow blues (the "shuffle" feel)</p>
+<p><strong>Odd meters:</strong><br>
+• 5/4 — five beats (Take Five, Mission Impossible)<br>
+• 7/8 — seven eighth notes (Balkan folk, progressive rock)</p>`
+        },
+        {
+          id: 'subdivision',
+          title: 'Subdivision — The Grid',
+          difficulty: 2,
+          source: 'Phillips & Chappell — Guitar Exercises For Dummies',
+          body: `<p>The beat is the big pulse. Subdivision is how you divide it:</p>
+<p><strong>8th notes:</strong> Each beat splits in 2. Count: "1-and-2-and-3-and-4-and"<br>
+<strong>16th notes:</strong> Each beat splits in 4. Count: "1-e-and-a-2-e-and-a"<br>
+<strong>Triplets:</strong> Each beat splits in 3. Count: "1-trip-let-2-trip-let"</p>
+<p><strong>Why subdivision matters:</strong> Tight rhythm comes from playing ON the subdivision grid, not just on the beat. A funk guitarist playing 16th notes is playing twice as many rhythmic positions as someone playing 8ths. More grid = more groove options.</p>
+<p><strong>The metronome test:</strong> Set a metronome to 60 BPM. Play quarter notes. Now 8ths. Now 16ths. Now triplets. If any of these feel unsteady, your internal clock needs work. This is fixable — and it's the most important skill in music.</p>`
+        },
+        {
+          id: 'syncopation',
+          title: 'Syncopation — The Off-Beat',
+          difficulty: 2,
+          source: 'Ross Bolton — Funk Guitar',
+          body: `<p>Syncopation is accenting the "and" beats — the spaces between the main beats. This creates groove, tension, and movement.</p>
+<p><strong>On-beat:</strong> Playing on beats 1, 2, 3, 4. Sounds square, march-like.<br>
+<strong>Off-beat:</strong> Playing on the "and" between beats. Sounds bouncy, reggae-like.<br>
+<strong>Syncopated:</strong> Mixing on-beat and off-beat accents. Sounds groovy, funky.</p>
+<p><strong>The funk formula:</strong><br>
+• Mute the strings with your left hand<br>
+• Strum 16th-note patterns with your right hand<br>
+• Accent specific 16ths to create a rhythmic pattern<br>
+• The muted "chick" sounds become a percussion instrument</p>
+<p><strong>Famous syncopation:</strong><br>
+• Reggae: guitar on beats 2 and 4 (off-beats)<br>
+• Bossa nova: syncopated bass pattern against steady guitar<br>
+• Funk: James Brown's "The One" — beat 1 is king, everything else syncopates around it</p>`
+        }
+      ]
+    },
+
+    {
       id: 'song-structure',
-      title: 'Song Structure',
+      title: 'Song Structure & Progressions',
       icon: '🏗️',
       description: 'How songs are built. Verse, chorus, bridge, and the theory behind why they work.',
       topics: [
@@ -221,11 +331,128 @@ C → F (1♭) → B♭ (2♭) → E♭ (3♭) → A♭ (4♭) → D♭ (5♭) �
 • I-IV-V (C-F-G) — the foundation of rock and blues<br>
 • I-V-vi-IV (G-D-Em-C) — used in hundreds of pop songs<br>
 • ii-V-I (Dm7-G7-Cmaj7) — the jazz engine</p>`
+        },
+        {
+          id: 'chord-progressions',
+          title: 'Common Chord Progressions',
+          difficulty: 2,
+          source: 'Rooksby — How to Write Songs on Guitar',
+          body: `<p>Chord progressions are sequences of chords that create emotional movement. Some progressions appear in thousands of songs:</p>
+<p><strong>The "Axis of Awesome" (I-V-vi-IV):</strong><br>
+G-D-Em-C. Used in: Let It Be, No Woman No Cry, With or Without You, Someone Like You, and hundreds more. The most versatile progression in pop music.</p>
+<p><strong>The 12-Bar Blues (I-I-I-I / IV-IV-I-I / V-IV-I-V):</strong><br>
+The foundation of blues, rock and roll, and early R&B. Simple, powerful, endlessly adaptable.</p>
+<p><strong>The Jazz Turnaround (ii-V-I):</strong><br>
+Dm7-G7-Cmaj7. The engine of jazz harmony. Every jazz standard uses dozens of these.</p>
+<p><strong>The Andalusian Cadence (i-VII-VI-V):</strong><br>
+Am-G-F-E. The sound of flamenco and Spanish guitar. Dark, dramatic, passionate.</p>
+<p><strong>The Canon Progression (I-V-vi-iii-IV-I-IV-V):</strong><br>
+Pachelbel's Canon. Used in: Basket Case (Green Day), Don't Stop Believin' (Journey), and countless others.</p>`
+        }
+      ]
+    },
+
+    {
+      id: 'keys',
+      title: 'Keys & Harmony',
+      icon: '🔑',
+      description: 'Major and minor keys, key signatures, relative and parallel relationships.',
+      topics: [
+        {
+          id: 'key-signatures',
+          title: 'Key Signatures',
+          difficulty: 1,
+          source: 'Wolfsohn Ch.4',
+          body: `<p>A key signature tells you which notes are sharp or flat throughout a piece. It appears at the beginning of each staff.</p>
+<p><strong>Sharp keys (clockwise on the circle of fifths):</strong><br>
+G major (1#), D major (2#), A major (3#), E major (4#), B major (5#), F# major (6#)</p>
+<p><strong>Flat keys (counter-clockwise):</strong><br>
+F major (1♭), B♭ major (2♭), E♭ major (3♭), A♭ major (4♭), D♭ major (5♭), G♭ major (6♭)</p>
+<p><strong>Relative minors:</strong> Every major key has a relative minor that shares the same key signature. C major = A minor. G major = E minor. They use the same notes but start on different roots.</p>
+<p><strong>Parallel minors:</strong> Same root, different mode. C major and C minor share the root C but have different notes (C minor has A♭, E♭, B♭).</p>`
+        },
+        {
+          id: 'modulation',
+          title: 'Modulation — Changing Keys',
+          difficulty: 3,
+          source: 'Wolfsohn Ch.12',
+          body: `<p>Modulation is changing the key center within a song. It creates contrast and emotional lift.</p>
+<p><strong>Common modulations:</strong><br>
+• <strong>Pivot chord:</strong> Use a chord that exists in both keys as a bridge. Am exists in C major and G major — use it to shift from C to G.<br>
+• <strong>Direct:</strong> Abrupt key change. The "truck driver's modulation" — go up a half step for the final chorus (Michael Jackson, Whitney Houston).<br>
+• <strong>Relative:</strong> Major to relative minor or vice versa. C major → A minor. Smooth because they share the same notes.<br>
+• <strong>Parallel:</strong> C major → C minor. Dramatic shift in mood.</p>
+<p><strong>Famous modulations:</strong><br>
+• "Livin' on a Prayer" — modulation up a minor 3rd for the final chorus<br>
+• "I Will Always Love You" — modulation up a whole step for the last verse<br>
+• Most jazz standards modulate several times through the form</p>`
+        }
+      ]
+    },
+
+    {
+      id: 'patterns',
+      title: 'Fretboard Patterns',
+      icon: '🗺️',
+      description: 'How scales and chords map across the fretboard. CAGED system, 5 patterns, navigation.',
+      topics: [
+        {
+          id: 'caged-system',
+          title: 'The CAGED System',
+          difficulty: 2,
+          source: 'Fred Sokolow — Fretboard Roadmaps',
+          body: `<p>The CAGED system uses 5 open chord shapes (C, A, G, E, D) to map the entire fretboard. Every chord, scale, and arpeggio can be played in 5 positions.</p>
+<p><strong>How it works:</strong><br>
+• Play a C chord in open position. That's the "C" shape.<br>
+• Play an A chord at fret 3 (barre chord). That's the "A" shape.<br>
+• Move up: G shape, E shape, D shape — each one connects to the next.</p>
+<p><strong>Why it matters:</strong> If you know where the CAGED shapes are for any chord, you know where to find the chord tones for improvisation. You also know the scale patterns that surround each shape. One system unlocks the entire fretboard.</p>
+<p><strong>The connection:</strong> Each shape connects to the next like puzzle pieces. C connects to A, A connects to G, G connects to E, E connects to D, D connects back to C. The fretboard is a repeating loop of these 5 shapes.</p>`
+        },
+        {
+          id: 'pentatonic-boxes',
+          title: 'The 5 Pentatonic Boxes',
+          difficulty: 2,
+          source: 'Fowler — Guitar Patterns for Improvisation',
+          body: `<p>The minor pentatonic scale has 5 movable shapes (boxes) that cover the entire fretboard:</p>
+<p><strong>Box 1:</strong> The most common. Root on 6th string. This is the "rock box" — the first shape most guitarists learn.</p>
+<p><strong>Box 2:</strong> Starts on the 2nd fret above Box 1. Connects to Box 1 on the high strings.</p>
+<p><strong>Box 3:</strong> The "middle" box. Root on the 4th string. Good for blues bending.</p>
+<p><strong>Box 4:</strong> Higher up. Root on the 4th string, one octave above Box 3.</p>
+<p><strong>Box 5:</strong> The "top" box. Connects back to Box 1 an octave up.</p>
+<p><strong>The breakthrough:</strong> These 5 boxes connect end-to-end. Once you can play all 5, you can solo anywhere on the fretboard. The boxes are training wheels — eventually you stop seeing boxes and start seeing the whole neck as one continuous pattern.</p>`
+        }
+      ]
+    },
+
+    {
+      id: 'tetrachords',
+      title: 'Tetrachords & Scale Construction',
+      icon: '🧬',
+      description: 'Building scales from 4-note fragments. The key to understanding ALL scales.',
+      topics: [
+        {
+          id: 'tetrachord-basics',
+          title: 'Tetrachords — The DNA of Scales',
+          difficulty: 2,
+          source: 'Fowler — Guitar Patterns for Improvisation',
+          body: `<p>A tetrachord is a 4-note group. Every scale can be broken into two tetrachords.</p>
+<p><strong>Major tetrachord:</strong> W-W-H (C-D-E-F). This is the first half of the major scale.<br>
+<strong>Minor tetrachord:</strong> W-H-W (A-B-C-D). First half of the natural minor.<br>
+<strong>Phrygian tetrachord:</strong> H-W-W (E-F-G-A). The dark, Spanish sound.</p>
+<p><strong>How to build ANY scale:</strong><br>
+1. Choose two tetrachords<br>
+2. Connect them with either a whole step or half step<br>
+3. You've built a scale</p>
+<p><strong>Examples:</strong><br>
+• Major: Major tetrachord + W + Major tetrachord = W-W-H-W-W-W-H<br>
+• Dorian: Minor tetrachord + W + Major tetrachord = W-H-W-W-W-H-W<br>
+• Phrygian: Phrygian tetrachord + H + Minor tetrachord = H-W-W-W-H-W-W</p>
+<p><strong>This is the Grimoire's approach:</strong> Instead of memorising 100+ scales separately, learn the tetrachord building blocks and construct any scale on demand.</p>`
         }
       ]
     }
   ]
 };
 
-// Register globally
-window.KNOWING = KNOWING;
+if (typeof window !== 'undefined') window.KNOWING = KNOWING;
