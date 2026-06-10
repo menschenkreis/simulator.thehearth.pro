@@ -1902,94 +1902,108 @@ function populateNotebook(){
 }
 
 // ═══ GLOSSARY ═══
-const GLOSSARY=[
-  // From Block 01: How to Learn
-  {term:'Mass',def:'In Hubbard\'s study tech, the physical object or thing you\'re learning about. Without the physical thing in front of you, theory causes confusion.'},
-  {term:'Gradient',def:'The step-by-step progression of difficulty. Too steep a gradient means jumping ahead too fast, which causes overwhelm.'},
-  {term:'Misunderstood Word',def:'A word you didn\'t fully understand. In Hubbard\'s framework, this is the #1 barrier to learning — one unclear term blanks everything after it.'},
-  {term:'Body Scan',def:'A technique of checking your body for tension before and during practice. Shoulders, jaw, hands, breathing.'},
-  {term:'Imagination',def:'In guitar practice, the ability to clearly visualise what your fingers should do before they move. The clearer the mental picture, the cleaner the physical execution.'},
+// ═══ DICTIONARY ═══
+const DICTIONARY = [
+  // Chapter 1: Foundational Terms
+  {ch:'Foundational Terms', term:'Body Scan', def:'A technique of checking your body for tension before and during practice. Shoulders, jaw, hands, breathing.'},
+  {ch:'Foundational Terms', term:'Conversation', def:'In music, the act of playing — using vocabulary and grammar to communicate sound, alone or with others.'},
+  {ch:'Foundational Terms', term:'Gradient', def:'The step-by-step progression of difficulty. Too steep a gradient means jumping ahead too fast, which causes overwhelm.'},
+  {ch:'Foundational Terms', term:'Grammar', def:'In music, the rules that connect notes into meaning — intervals, scales, chords, and how they relate to each other.'},
+  {ch:'Foundational Terms', term:'Imagination', def:'In guitar practice, the ability to clearly visualise what your fingers should do before they move. The clearer the mental picture, the cleaner the physical execution.'},
+  {ch:'Foundational Terms', term:'Mass', def:'In Hubbard\'s study tech, the physical object or thing you\'re learning about. Without the physical thing in front of you, theory causes confusion.'},
+  {ch:'Foundational Terms', term:'Misunderstood Word', def:'A word you didn\'t fully understand. In Hubbard\'s framework, this is the #1 barrier to learning — one unclear term blanks everything after it.'},
+  {ch:'Foundational Terms', term:'Tension', def:'Unnecessary muscular tightness in the body while playing. The enemy of good technique — causes fatigue, pain, and sloppy playing.'},
+  {ch:'Foundational Terms', term:'Vocabulary', def:'In music, the individual notes — A, B, C, D, E, F, G and their sharps/flats. The basic building blocks of all music.'},
 
-  // From Block 02: Learning a Language
-  {term:'Vocabulary',def:'In music, the individual notes — A, B, C, D, E, F, G and their sharps/flats. The basic building blocks of all music.'},
-  {term:'Grammar',def:'In music, the rules that connect notes into meaning — intervals, scales, chords, and how they relate to each other.'},
-  {term:'Conversation',def:'In music, the act of playing — using vocabulary and grammar to communicate sound, alone or with others.'},
+  // Chapter 2: Music Theory
+  {ch:'Music Theory', term:'Arpeggio', def:'The notes of a chord played one at a time in sequence, instead of all together.'},
+  {ch:'Music Theory', term:'Barre Chord', def:'A chord where one finger presses multiple strings across a single fret. Moveable to any position.'},
+  {ch:'Music Theory', term:'BPM', def:'Beats Per Minute. A way to measure tempo. 60 BPM = one beat per second.'},
+  {ch:'Music Theory', term:'Chord', def:'Three or more notes played simultaneously. The foundation of accompaniment.'},
+  {ch:'Music Theory', term:'Flat (b)', def:'A note lowered by one half step. E.g., Bb is one fret lower than B.'},
+  {ch:'Music Theory', term:'Half Step', def:'The smallest interval in Western music. On guitar, one fret = one half step. B to C is a half step.'},
+  {ch:'Music Theory', term:'Interval', def:'The distance between two notes. Named by number (2nd, 3rd, 5th) and quality (major, minor, perfect).'},
+  {ch:'Music Theory', term:'Key', def:'The group of notes that a song is built around. "In the key of G" means G major scale notes are the home base.'},
+  {ch:'Music Theory', term:'Major Scale', def:'The do-re-mi scale. Interval pattern: W-W-H-W-W-W-H (W=whole step, H=half step). Sounds bright and happy.'},
+  {ch:'Music Theory', term:'Minor Scale', def:'A scale with a flattened 3rd, 6th, and 7th. Sounds darker, sadder than major.'},
+  {ch:'Music Theory', term:'Note', def:'A single musical sound with a specific pitch and name. The alphabet of music: A, B, C, D, E, F, G.'},
+  {ch:'Music Theory', term:'Octave', def:'The same note but twice as high (or low). 12 frets up from any note = one octave higher.'},
+  {ch:'Music Theory', term:'Pentatonic Scale', def:'A 5-note scale. The most common scale for guitar improvisation. Removes the "difficult" notes from the major/minor scale.'},
+  {ch:'Music Theory', term:'Power Chord', def:'A 2-note chord (root + 5th). Sounds big and raw. The foundation of rock guitar.'},
+  {ch:'Music Theory', term:'Progression', def:'A sequence of chords played in order. E.g., G-C-D is a I-IV-V progression.'},
+  {ch:'Music Theory', term:'Rhythm', def:'The pattern of beats and timing in music. How sounds are organised in time.'},
+  {ch:'Music Theory', term:'Root', def:'The foundational note of a chord or scale. A chord named "G major" has G as its root. The "home" note.'},
+  {ch:'Music Theory', term:'Scale', def:'A sequence of notes arranged in ascending or descending order following a specific pattern of intervals.'},
+  {ch:'Music Theory', term:'Sharp (#)', def:'A note raised by one half step. E.g., F# is one fret higher than F.'},
+  {ch:'Music Theory', term:'Tempo', def:'The speed of the music, measured in BPM (beats per minute).'},
+  {ch:'Music Theory', term:'Time Signature', def:'The numbers at the start of music (like 4/4) telling you how many beats per measure and what note value gets one beat.'},
+  {ch:'Music Theory', term:'Whole Step', def:'An interval equal to two half steps. On guitar, two frets = one whole step. A to B is a whole step.'},
 
-  // From Block 03: The Language of Music
-  {term:'Note',def:'A single musical sound with a specific pitch and name. The alphabet of music: A, B, C, D, E, F, G.'},
-  {term:'Half Step',def:'The smallest interval in Western music. On guitar, one fret = one half step. B to C is a half step.'},
-  {term:'Whole Step',def:'An interval equal to two half steps. On guitar, two frets = one whole step. A to B is a whole step.'},
-  {term:'Sharp (#)',def:'A note raised by one half step. E.g., F# is one fret higher than F.'},
-  {term:'Flat (b)',def:'A note lowered by one half step. E.g., Bb is one fret lower than B.'},
-  {term:'Interval',def:'The distance between two notes. Named by number (2nd, 3rd, 5th) and quality (major, minor, perfect).'},
-  {term:'Root',def:'The foundational note of a chord or scale. A chord named \"G major\" has G as its root. The \"home\" note.'},
-  {term:'Octave',def:'The same note but twice as high (or low). 12 frets up from any note = one octave higher.'},
-  {term:'Scale',def:'A sequence of notes arranged in ascending or descending order following a specific pattern of intervals.'},
-  {term:'Key',def:'The group of notes that a song is built around. \"In the key of G\" means G major scale notes are the home base.'},
+  // Chapter 3: Guitar Anatomy
+  {ch:'Guitar Anatomy', term:'Body', def:'The large part of the guitar that amplifies the sound. On acoustic guitars it\'s hollow; on electric guitars it\'s solid.'},
+  {ch:'Guitar Anatomy', term:'Bridge', def:'The piece on the guitar body where strings attach. Transfers string vibration to the body.'},
+  {ch:'Guitar Anatomy', term:'Capo', def:'A clamp placed on the fretboard to raise the pitch of all strings. Like a movable nut.'},
+  {ch:'Guitar Anatomy', term:'Fret', def:'A metal strip across the fretboard. Pressing a string against a fret shortens it, raising the pitch by one half step.'},
+  {ch:'Guitar Anatomy', term:'Fretboard', def:'The front face of the guitar neck where you press strings against frets to make notes. Also called the "fingerboard."'},
+  {ch:'Guitar Anatomy', term:'Headstock', def:'The top of the guitar where the tuning pegs are located. Also called the "head."'},
+  {ch:'Guitar Anatomy', term:'Neck', def:'The long part of the guitar connecting the headstock to the body. The fretboard is on the front of the neck.'},
+  {ch:'Guitar Anatomy', term:'Nut', def:'The thin strip at the top of the fretboard where strings rest before reaching the tuning pegs. Defines the string spacing.'},
+  {ch:'Guitar Anatomy', term:'Pickup', def:'A magnet on electric guitars that captures string vibrations and converts them to electrical signals for amplification.'},
+  {ch:'Guitar Anatomy', term:'Sound Hole', def:'The round opening on an acoustic guitar body that projects sound outward.'},
+  {ch:'Guitar Anatomy', term:'Standard Tuning', def:'The default guitar tuning from thick to thin: E-A-D-G-B-E. The most common tuning for guitar.'},
+  {ch:'Guitar Anatomy', term:'Tuning Pegs', def:'The knobs on the headstock used to tighten or loosen strings. Tighter = higher pitch. Looser = lower pitch.'},
 
-  // From Block 04: The Language of Guitar
-  {term:'Fret',def:'A metal strip across the fretboard. Pressing a string against a fret shortens it, raising the pitch by one half step.'},
-  {term:'Fretboard',def:'The front face of the guitar neck where you press strings against frets to make notes. Also called the \"fingerboard.\"'},
-  {term:'Open String',def:'A string played without pressing any fret. Each open string has a specific note name (E, A, D, G, B, E).'},
-  {term:'Standard Tuning',def:'The default guitar tuning from thick to thin: E-A-D-G-B-E. The most common tuning for guitar.'},
-  {term:'Tuning Pegs',def:'The knobs on the headstock used to tighten or loosen strings. Tighter = higher pitch. Looser = lower pitch.'},
-  {term:'Nut',def:'The thin strip at the top of the fretboard where strings rest before reaching the tuning pegs. Defines the string spacing.'},
-
-  // From Block 05: The Tool
-  {term:'Headstock',def:'The top of the guitar where the tuning pegs are located. Also called the \"head.\"'},
-  {term:'Neck',def:'The long part of the guitar connecting the headstock to the body. The fretboard is on the front of the neck.'},
-  {term:'Body',def:'The large part of the guitar that amplifies the sound. On acoustic guitars it\'s hollow; on electric guitars it\'s solid.'},
-  {term:'Sound Hole',def:'The round opening on an acoustic guitar body that projects sound outward.'},
-  {term:'Pickup',def:'A magnet on electric guitars that captures string vibrations and converts them to electrical signals for amplification.'},
-  {term:'Bridge',def:'The piece on the guitar body where strings attach. Transfers string vibration to the body.'},
-  {term:'Rest Stroke',def:'A picking technique where the thumb or finger pushes through a string and comes to rest on the next string. Produces a full, clear sound.'},
-  {term:'Tension',def:'Unnecessary muscular tightness in the body while playing. The enemy of good technique — causes fatigue, pain, and sloppy playing.'},
-
-  // General Music Terms
-  {term:'Chord',def:'Three or more notes played simultaneously. The foundation of accompaniment.'},
-  {term:'Arpeggio',def:'The notes of a chord played one at a time in sequence, instead of all together.'},
-  {term:'Major Scale',def:'The do-re-mi scale. Interval pattern: W-W-H-W-W-W-H (W=whole step, H=half step). Sounds bright and happy.'},
-  {term:'Minor Scale',def:'A scale with a flattened 3rd, 6th, and 7th. Sounds darker, sadder than major.'},
-  {term:'Pentatonic Scale',def:'A 5-note scale. The most common scale for guitar improvisation. Removes the \"difficult\" notes from the major/minor scale.'},
-  {term:'Rhythm',def:'The pattern of beats and timing in music. How sounds are organised in time.'},
-  {term:'Tempo',def:'The speed of the music, measured in BPM (beats per minute).'},
-  {term:'BPM',def:'Beats Per Minute. A way to measure tempo. 60 BPM = one beat per second.'},
-  {term:'Time Signature',def:'The numbers at the start of music (like 4/4) telling you how many beats per measure and what note value gets one beat.'},
-  {term:'Progression',def:'A sequence of chords played in order. E.g., G-C-D is a I-IV-V progression.'},
-  {term:'Strumming',def:'Sweeping the pick or fingers across multiple strings to play a chord.'},
-  {term:'Fingerpicking',def:'Playing individual strings with your fingers instead of a pick. Also called fingerstyle.'},
-  {term:'Tab / Tablature',def:'A notation system showing which frets to play on which strings. 6 lines = 6 strings, numbers = frets.'},
-  {term:'Metronome',def:'A device or app that produces a steady click at a set BPM. Essential for developing timing.'},
-  {term:'Capo',def:'A clamp placed on the fretboard to raise the pitch of all strings. Like a movable nut.'},
-  {term:'Barre Chord',def:'A chord where one finger presses multiple strings across a single fret. Moveable to any position.'},
-  {term:'Power Chord',def:'A 2-note chord (root + 5th). Sounds big and raw. The foundation of rock guitar.'},
-  {term:'Improvisation',def:'Making up music on the spot, usually over a backing chord progression.'},
-  {term:'Backing Track',def:'A recorded accompaniment (drums, bass, chords) that you play along with for practice.'},
-  {term:'Hammer-On',def:'A technique where you press (\"hammer\") a finger onto a fret to sound a note without picking.'},
-  {term:'Pull-Off',def:'The reverse of a hammer-on: lift a finger off a fret to sound a lower note.'},
-  {term:'Bend',def:'Pushing or pulling a string sideways to raise its pitch. Common in blues and rock.'},
-  {term:'Slide',def:'Moving a finger along a string from one fret to another while maintaining pressure.'},
-  {term:'Vibrato',def:'A rapid, small variation in pitch created by bending a string back and forth. Adds expression to a note.'},
-  {term:'Mute',def:'Dampening strings with your palm or fingers to create a percussive, dead sound.'},
-  {term:'Action',def:'The distance between the strings and the fretboard. High action = harder to press. Low action = easier but may buzz.'},
-  {term:'Intonation',def:'How in-tune the guitar is across the whole fretboard. Good intonation = notes are accurate at every fret.'},
-  {term:'Riff',def:'A short, memorable repeated musical phrase. The hook of a song.'},
-  {term:'Lick',def:'A short melodic phrase, often improvised. Like a musical sentence.'},
+  // Chapter 4: Technique
+  {ch:'Technique', term:'Action', def:'The distance between the strings and the fretboard. High action = harder to press. Low action = easier but may buzz.'},
+  {ch:'Technique', term:'Backing Track', def:'A recorded accompaniment (drums, bass, chords) that you play along with for practice.'},
+  {ch:'Technique', term:'Bend', def:'Pushing or pulling a string sideways to raise its pitch. Common in blues and rock.'},
+  {ch:'Technique', term:'Fingerpicking', def:'Playing individual strings with your fingers instead of a pick. Also called fingerstyle.'},
+  {ch:'Technique', term:'Hammer-On', def:'A technique where you press ("hammer") a finger onto a fret to sound a note without picking.'},
+  {ch:'Technique', term:'Improvisation', def:'Making up music on the spot, usually over a backing chord progression.'},
+  {ch:'Technique', term:'Intonation', def:'How in-tune the guitar is across the whole fretboard. Good intonation = notes are accurate at every fret.'},
+  {ch:'Technique', term:'Lick', def:'A short melodic phrase, often improvised. Like a musical sentence.'},
+  {ch:'Technique', term:'Metronome', def:'A device or app that produces a steady click at a set BPM. Essential for developing timing.'},
+  {ch:'Technique', term:'Mute', def:'Dampening strings with your palm or fingers to create a percussive, dead sound.'},
+  {ch:'Technique', term:'Open String', def:'A string played without pressing any fret. Each open string has a specific note name (E, A, D, G, B, E).'},
+  {ch:'Technique', term:'Pull-Off', def:'The reverse of a hammer-on: lift a finger off a fret to sound a lower note.'},
+  {ch:'Technique', term:'Rest Stroke', def:'A picking technique where the thumb or finger pushes through a string and comes to rest on the next string. Produces a full, clear sound.'},
+  {ch:'Technique', term:'Riff', def:'A short, memorable repeated musical phrase. The hook of a song.'},
+  {ch:'Technique', term:'Slide', def:'Moving a finger along a string from one fret to another while maintaining pressure.'},
+  {ch:'Technique', term:'Strumming', def:'Sweeping the pick or fingers across multiple strings to play a chord.'},
+  {ch:'Technique', term:'Tab / Tablature', def:'A notation system showing which frets to play on which strings. 6 lines = 6 strings, numbers = frets.'},
+  {ch:'Technique', term:'Vibrato', def:'A rapid, small variation in pitch created by bending a string back and forth. Adds expression to a note.'},
 ];
 
 function populateDictionary(){
   const el=document.getElementById('glossary-list');if(!el)return;
   const countEl=document.getElementById('glossary-count');
-  if(countEl) countEl.textContent=GLOSSARY.length+' terms';
+  if(countEl) countEl.textContent=DICTIONARY.length+' terms';
+
+  // Group by chapter
+  const chapters={};
+  DICTIONARY.forEach(g=>{
+    if(!chapters[g.ch]) chapters[g.ch]=[];
+    chapters[g.ch].push(g);
+  });
+
+  // Sort each chapter alphabetically
+  Object.values(chapters).forEach(arr=>arr.sort((a,b)=>a.term.localeCompare(b.term)));
+
   let html='';
-  GLOSSARY.forEach(g=>{
-    html+='<div class="glossary-item" data-term="'+g.term.toLowerCase()+'" style="padding:10px 12px;border-bottom:1px solid var(--border);cursor:default">'+
-      '<div style="display:flex;align-items:baseline;gap:8px">'+
-        '<span style="font-family:\'DM Sans\',sans-serif;font-size:0.85rem;color:var(--gold);font-weight:600">'+g.term+'</span>'+
-        '<span style="font-family:JetBrains Mono;font-size:0.5rem;color:var(--dim);opacity:0.5">noun</span>'+
-      '</div>'+
-      '<div style="font-size:0.75rem;color:var(--dim);line-height:1.5;margin-top:2px">'+g.def+'</div>'+
-    '</div>';
+  const chapterOrder=['Foundational Terms','Music Theory','Guitar Anatomy','Technique'];
+  chapterOrder.forEach(ch=>{
+    if(!chapters[ch])return;
+    html+='<div class="dict-chapter" style="margin-bottom:8px">'+
+      '<div style="font-family:Cinzel,serif;font-size:0.7rem;color:var(--amber);letter-spacing:0.15em;text-transform:uppercase;padding:10px 12px 4px 12px;border-bottom:1px solid var(--border)">'+ch+'</div>';
+    chapters[ch].forEach(g=>{
+      html+='<div class="glossary-item" data-term="'+g.term.toLowerCase()+'" data-ch="'+g.ch+'" style="padding:10px 12px;border-bottom:1px solid var(--border);cursor:default">'+
+        '<div style="display:flex;align-items:baseline;gap:8px">'+
+          '<span style="font-family:\'DM Sans\',sans-serif;font-size:0.85rem;color:var(--gold);font-weight:600">'+g.term+'</span>'+
+        '</div>'+
+        '<div style="font-size:0.75rem;color:var(--dim);line-height:1.5;margin-top:2px">'+g.def+'</div>'+
+      '</div>';
+    });
+    html+='</div>';
   });
   el.innerHTML=html;
 }
@@ -2004,10 +2018,16 @@ function filterGlossary(query){
     item.style.display=show?'block':'none';
     if(show) visible++;
   });
+  // Show/hide chapter headers based on whether they have visible items
+  document.querySelectorAll('.dict-chapter').forEach(ch=>{
+    const items=ch.querySelectorAll('.glossary-item');
+    const anyVisible=Array.from(items).some(i=>i.style.display!=='none');
+    ch.style.display=anyVisible?'block':'none';
+  });
   const countEl=document.getElementById('glossary-count');
   if(countEl){
     if(q) countEl.textContent=visible+' result'+(visible!==1?'s':'')+' for \''+q+'\'';
-    else countEl.textContent=GLOSSARY.length+' terms';
+    else countEl.textContent=DICTIONARY.length+' terms';
   }
 }
 
