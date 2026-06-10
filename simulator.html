@@ -138,7 +138,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 .map-svg{width:100%;height:auto;display:block;max-height:calc(100vh - 60px);}
 
 /* Node styling */
-.mn-g{cursor:pointer;transition:filter 0.3s,transform 0.2s;}
+.mn-g{cursor:pointer;transition:filter 0.3s,transform 0.2s;-webkit-tap-highlight-color:transparent;}
 .mn-g:hover{filter:brightness(1.4) drop-shadow(0 0 12px rgba(212,175,105,0.5));}
 .mn-g:active{filter:brightness(1.2);}
 .mn-ring{fill:#0d0b08;stroke-width:2;transition:stroke 0.3s, stroke-width 0.3s;}
@@ -366,10 +366,94 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 .foundation-layout{display:flex;gap:32px;align-items:flex-end;margin-top:8px}
 .foundation-char{flex-shrink:0;width:300px;display:flex;flex-direction:column;align-items:center;justify-content:flex-end}
 @media(max-width:700px){
-  .foundation-layout{flex-direction:column;align-items:center}
-  .foundation-char{width:100%;max-width:300px}
+  /* ═══ LAYOUT: sidebar becomes bottom tab bar ═══ */
+  .main-wrap{flex-direction:column;}
+  .bot{
+    position:fixed;bottom:0;left:0;right:0;
+    width:100%!important;min-width:unset!important;
+    height:60px;min-height:60px;
+    flex-direction:row!important;
+    justify-content:space-around;
+    align-items:center;
+    padding:0 4px!important;gap:0!important;
+    border-right:none!important;
+    border-top:1px solid var(--border);
+    z-index:200;
+    background:var(--panel);
+  }
+  .bt{
+    flex:1;flex-direction:column!important;
+    gap:2px!important;padding:6px 2px!important;
+    width:auto;height:auto;min-width:unset;
+    border-radius:8px!important;
+    border:2px solid transparent!important;
+    border-left:none!important;
+    background:transparent!important;
+    box-shadow:none!important;
+    margin:0!important;
+  }
+  .bt .bl{font-size:0.6rem!important;letter-spacing:0.03em!important;text-transform:none!important;}
+  .bt.on{background:rgba(212,175,105,0.12)!important;border-radius:8px!important;}
+  .bt.on .bl{color:var(--gold)!important;}
+  .center{margin-left:0;padding-bottom:calc(60px + env(safe-area-inset-bottom, 0px));}
+  .bot{padding-bottom:env(safe-area-inset-bottom, 0px)!important;}
+
+  /* ═══ TOP BAR ═══ */
+  .top{height:48px;min-height:48px;padding:0 12px;gap:8px;}
+  .top-title{font-size:0.8rem;letter-spacing:0.05em;}
+  .top-stat{font-size:0.55rem;}
+  #mode-select{min-width:100px;font-size:0.62rem;padding:4px 8px;}
+
+  /* ═══ MAP ═══ */
+  .map{padding:4px;}
+  .map-wrap{padding-top:4px;max-height:calc(100vh - 110px);}
+  .map-svg{max-height:calc(100vh - 110px);}
+  .mn-label{font-size:8px!important;letter-spacing:0.08em;}
+  .mn-sublabel{font-size:6px!important;}
+  .path-btns{gap:4px;padding:4px 8px;}
+  .path-btn{font-size:0.55rem;padding:4px 8px;}
+
+  /* ═══ FOUNDATION ═══ */
+  .foundation-layout{flex-direction:column;align-items:center;gap:16px;}
+  .foundation-char{width:100%;max-width:200px;order:-1;}
+  .foundation-char img{max-width:180px!important;}
+  .foundation-blocks{width:100%;max-width:100%!important;}
   .staircase{align-items:center}
   .stair-step{align-items:center}
+
+  /* ═══ LESSON PAGES ═══ */
+  .lesson-page{padding:16px 12px;}
+  .lp-header h2{font-size:1.15rem;}
+  .lp-body p{font-size:0.88rem;}
+  .lp-body h3{font-size:1.05rem;}
+  .lp-steps{gap:4px;}
+  .lp-step{padding:6px 10px;}
+  .lp-sn{font-size:0.65rem;}
+  .lp-sl{font-size:0.7rem;}
+
+  /* ═══ NODE INFO OVERLAY ═══ */
+  .node-info{margin:8px;padding:16px;}
+  .node-info h4{font-size:1rem;}
+  .node-info p{font-size:0.82rem;}
+
+  /* ═══ HEARTH DASHBOARD ═══ */
+  .ls-body{padding:16px 12px;}
+  .ls-body h3{font-size:1.1rem;}
+  .ls-body p{font-size:0.85rem;}
+
+  /* ═══ GENERAL TOUCH ═══ */
+  .mn-g{min-height:44px;}
+  button,.bt,[onclick]{min-height:44px;}
+}
+
+/* Extra small phones */
+@media(max-width:380px){
+  .top-title{font-size:0.7rem;}
+  .top-stat{font-size:0.5rem;}
+  .mn-label{font-size:7px!important;}
+  .mn-sublabel{display:none;}
+  .foundation-char img{max-width:140px!important;}
+  .lesson-page{padding:12px 8px;}
 }
 </style>
 </head>
