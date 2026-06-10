@@ -357,12 +357,10 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 <!-- TOOLBAR -->
 <div class="bot" style="width:240px;min-width:240px;flex-shrink:0;overflow:visible;">
   <div class="bt on" data-t="map" onclick="sw('map')"><span class="bl">Map</span></div>
-  <div class="bt" data-t="lesson" onclick="sw('lesson')"><span class="bl">Learn</span></div>
-  <div class="bt" data-t="drill" onclick="sw('drill')"><span class="bl">Drill</span></div>
-  <div class="bt" data-t="theory" onclick="sw('theory')"><span class="bl">Theory</span></div>
-  <div class="bt" data-t="play" onclick="sw('play')"><span class="bl">Play</span></div>
-  <div class="bt" data-t="timer" onclick="sw('timer')"><span class="bl">Timer</span></div>
-  <div class="bt" data-t="record" onclick="sw('record')"><span class="bl">Record</span></div>
+  <div class="bt" data-t="lesson" onclick="sw('lesson')"><span class="bl">Journey</span></div>
+  <div class="bt" data-t="theory" onclick="sw('theory')"><span class="bl">Glossary</span></div>
+  <div class="bt" data-t="drill" onclick="sw('drill')"><span class="bl">Notebook</span></div>
+  <div class="bt" data-t="record" onclick="sw('record')"><span class="bl">Recorder</span></div>
 </div>
 
 <div class="center">
@@ -603,97 +601,52 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
   <!-- FOUNDATION NODE -->
   <div class="pnl" id="p-foundation"></div>
 
-  <!-- LESSON -->
-  <div class="pnl ls" id="p-lesson">
-    <div class="ls-steps">
-      <div class="ls-s on" onclick="lsS(this)"><div class="n">01</div><div class="l">Read</div></div>
-      <div class="ls-s" onclick="lsS(this)"><div class="n">02</div><div class="l">Watch</div></div>
-      <div class="ls-s" onclick="lsS(this)"><div class="n">03</div><div class="l">Draw</div></div>
-      <div class="ls-s" onclick="lsS(this)"><div class="n">04</div><div class="l">Do</div></div>
-      <div class="ls-s" onclick="lsS(this)"><div class="n">05</div><div class="l">Check</div></div>
-      <div class="ls-s" onclick="lsS(this)"><div class="n">06</div><div class="l">Deeper</div></div>
-    </div>
-    <div class="ls-body">
-      <h3>Open Chords: C Major</h3>
-      <div style="margin-bottom:8px"><span class="tag">Rhythm</span><span class="tag">L1</span><span class="tag">Chords</span></div>
-      <p>Three fingers, bright full sound, foundational to thousands of songs.</p>
-      <p style="color:var(--dim);font-style:italic">Ring on 3rd fret A string. Middle on 2nd fret D. Index on 1st fret B. Strum from A down.</p>
-      <div class="ctx"><p>WHERE THIS FITS: C major → key of C → no sharps or flats. Connects to G, Am, F. Four chords, thousands of songs.</p></div>
+  <!-- JOURNEY -->
+  <div class="pnl" id="p-lesson">
+    <div style="padding:24px;max-width:600px;margin:0 auto">
+      <h2 style="font-family:'DM Sans',sans-serif;color:var(--gold);font-size:1.3rem;margin:0 0 8px 0;font-weight:700">Your Journey</h2>
+      <p style="color:var(--dim);font-size:0.75rem;margin:0 0 24px 0">Where you are and what\'s next</p>
+      <div id="journey-content" style="display:flex;flex-direction:column;gap:12px">
+        <div style="text-align:center;padding:40px 20px;color:var(--dim);font-size:0.8rem">Loading your path...</div>
+      </div>
     </div>
   </div>
 
-  <!-- DRILL -->
-  <div class="pnl dr" id="p-drill">
-    <div class="dr-cats">
-      <div class="dr-c on" onclick="dC(this)">🥁 Rhythm</div>
-      <div class="dr-c" onclick="dC(this)">🎶 Chords</div>
-      <div class="dr-c" onclick="dC(this)">🎸 Scales</div>
-      <div class="dr-c" onclick="dC(this)">✋ Technique</div>
-      <div class="dr-c" onclick="dC(this)">☝️ Finger</div>
-    </div>
-    <div class="dr-list">
-      <div class="dr-i"><div><div class="dn">Quarter Note Strumming</div><div class="dm">Rhythm · L1 · 3 min</div></div><span class="bd e">Easy</span></div>
-      <div class="dr-i"><div><div class="dn">Alternate Strumming</div><div class="dm">Rhythm · L1 · 5 min</div></div><span class="bd e">Easy</span></div>
-      <div class="dr-i"><div><div class="dn">Down-Up 8th Notes</div><div class="dm">Rhythm · L1 · 5 min</div></div><span class="bd m">Med</span></div>
-      <div class="dr-i"><div><div class="dn">Finger Gymnastics 1-2-3-4</div><div class="dm">Technique · L1 · 5 min</div></div><span class="bd e">Easy</span></div>
+  <!-- NOTEBOOK -->
+  <div class="pnl" id="p-drill">
+    <div style="padding:24px;max-width:600px;margin:0 auto">
+      <h2 style="font-family:'DM Sans',sans-serif;color:var(--gold);font-size:1.3rem;margin:0 0 8px 0;font-weight:700">Notebook</h2>
+      <p style="color:var(--dim);font-size:0.75rem;margin:0 0 24px 0">Your progress across all nodes</p>
+      <div id="notebook-content" style="display:flex;flex-direction:column;gap:12px">
+      </div>
     </div>
   </div>
 
-  <!-- THEORY -->
-  <div class="pnl th" id="p-theory">
-    <div class="th-grid">
-      <div class="th-c"><h4>Notes &amp; Chromatic</h4><p>12 notes. Everything built from these.</p></div>
-      <div class="th-c"><h4>Intervals</h4><p>Distance between two notes.</p></div>
-      <div class="th-c"><h4>Major Scale</h4><p>W-W-H-W-W-W-H.</p></div>
-      <div class="th-c"><h4>Chord Construction</h4><p>Root + 3rd + 5th.</p></div>
-      <div class="th-c"><h4>Keys &amp; Signatures</h4><p>Circle of Fifths.</p></div>
-      <div class="th-c"><h4>Rhythm &amp; Time</h4><p>4/4, 3/4, 6/8.</p></div>
-      <div class="th-c"><h4>Pentatonic</h4><p>5 notes. Gateway to improv.</p></div>
-      <div class="th-c"><h4>Reading Music</h4><p>Staff, clef, notes, rests.</p></div>
+  <!-- GLOSSARY -->
+  <div class="pnl" id="p-theory">
+    <div style="padding:24px;max-width:600px;margin:0 auto">
+      <h2 style="font-family:'DM Sans',sans-serif;color:var(--gold);font-size:1.3rem;margin:0 0 8px 0;font-weight:700">Glossary</h2>
+      <p style="color:var(--dim);font-size:0.75rem;margin:0 0 16px 0">Every term, one click away</p>
+      <input id="glossary-search" type="text" placeholder="Search terms..." style="width:100%;padding:10px 14px;background:var(--card);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:DM Sans,sans-serif;font-size:0.85rem;outline:none;margin-bottom:16px" oninput="filterGlossary(this.value)">
+      <div id="glossary-list" style="display:flex;flex-direction:column;gap:2px">
+      </div>
     </div>
   </div>
 
-  <!-- PLAY -->
-  <div class="pnl pl" id="p-play">
-    <div style="padding:0 0 12px 0">
-      <h3 style="font-family:'Cinzel',serif;color:var(--gold);font-size:0.95rem;margin-bottom:4px;">How the World Plays</h3>
-      <p style="color:var(--dim);font-size:0.72rem;font-family:'JetBrains Mono',monospace;">Explore traditions, styles & sounds from every continent</p>
-    </div>
-    <div class="pl-grid">
-      <div class="pl-c"><div class="pi">🌍</div><div class="pn">West African</div><div class="pl2">Highlife · Palm-wine</div></div>
-      <div class="pl-c"><div class="pi">🇧🇷</div><div class="pn">Brazilian</div><div class="pl2">Samba · Bossa Nova</div></div>
-      <div class="pl-c"><div class="pi">🇯🇵</div><div class="pn">Japanese</div><div class="pl2">Shamisen-inspired</div></div>
-      <div class="pl-c"><div class="pi">🇮🇳</div><div class="pn">Indian</div><div class="pl2">Raga · Drone</div></div>
-      <div class="pl-c"><div class="pi">🇪🇸</div><div class="pn">Flamenco</div><div class="pl2">Rasgueado · Soleá</div></div>
-      <div class="pl-c"><div class="pi">🇺🇸</div><div class="pn">Blues & Roots</div><div class="pl2">Delta · Country</div></div>
-      <div class="pl-c"><div class="pi">🇨🇺</div><div class="pn">Cuban</div><div class="pl2">Son · Trova</div></div>
-      <div class="pl-c"><div class="pi">🇹🇷</div><div class="pn">Turkish</div><div class="pl2">Makam · Bağlama</div></div>
-      <div class="pl-c"><div class="pi">🇦🇷</div><div class="pn">Argentine</div><div class="pl2">Tango · Folklore</div></div>
-      <div class="pl-c"><div class="pi">🇿🇦</div><div class="pn">South African</div><div class="pl2">Maskandi · Marabi</div></div>
-      <div class="pl-c"><div class="pi">🇵🇪</div><div class="pn">Andean</div><div class="pl2">Charango · Folk</div></div>
-      <div class="pl-c"><div class="pi">🌐</div><div class="pn">More</div><div class="pl2">Explore all</div></div>
+  <!-- RECORDER -->
+  <div class="pnl" id="p-record">
+    <div style="padding:24px;max-width:600px;margin:0 auto;text-align:center">
+      <h2 style="font-family:'DM Sans',sans-serif;color:var(--gold);font-size:1.3rem;margin:0 0 8px 0;font-weight:700">Recorder</h2>
+      <p style="color:var(--dim);font-size:0.75rem;margin:0 0 32px 0">Capture yourself. Hear your growth.</p>
+      <div id="rec-btn" onclick="rv()" style="width:120px;height:120px;border-radius:50%;border:3px solid var(--gold);background:var(--card);display:flex;align-items:center;justify-content:center;margin:0 auto;cursor:pointer;transition:all 0.2s">
+        <div style="width:40px;height:40px;border-radius:50%;background:var(--ember)"></div>
+      </div>
+      <div class="rc-st" id="rs" style="margin-top:16px">Tap to record</div>
     </div>
   </div>
+</div>
 
-  <!-- TIMER -->
-  <div class="pnl tm" id="p-timer">
-    <div class="tm-d" id="td">10:00</div>
-    <div class="tm-opts">
-      <div class="tm-o" onclick="ts(300,this)">5m</div>
-      <div class="tm-o on" onclick="ts(600,this)">10m</div>
-      <div class="tm-o" onclick="ts(900,this)">15m</div>
-      <div class="tm-o" onclick="ts(1200,this)">20m</div>
-      <div class="tm-o" onclick="ts(1800,this)">30m</div>
-    </div>
-    <div class="tm-btns">
-      <button class="tm-b go" id="tg" onclick="tt()">Start</button>
-      <button class="tm-b no" onclick="tx()">Reset</button>
-    </div>
-  </div>
-
-  <!-- RECORD -->
-  <div class="pnl rc" id="p-record">
-    <div class="rc-b" id="rb" onclick="rv()">⏺</div>
+</div>
     <div class="rc-st" id="rs">Tap to record</div>
   </div>
 </div>
@@ -1834,9 +1787,192 @@ function sw(t){
   document.querySelector('[data-t="'+t+'"]').classList.add('on');
   document.querySelectorAll('.pnl').forEach(p=>p.classList.remove('on'));
   document.getElementById('p-'+t).classList.add('on');
+  // Populate panels on open
+  if(t==='lesson') populateJourney();
+  if(t==='drill') populateNotebook();
+  if(t==='theory') populateGlossary();
 }
-function lsS(e){document.querySelectorAll('.ls-s').forEach(s=>s.classList.remove('on'));e.classList.add('on');}
-function dC(e){document.querySelectorAll('.dr-c').forEach(c=>c.classList.remove('on'));e.classList.add('on');}
+
+// ═══ JOURNEY ═══
+function populateJourney(){
+  const el=document.getElementById('journey-content');if(!el)return;
+  const nodes=['foundation','doing','knowing','practice','play','create'];
+  const nodeNames=['Foundation','Doing','Knowing','Practice','Play','Create'];
+  const rainbow=['#e74c3c','#e67e22','#f1c40f','#2ecc71','#3498db','#9b59b6'];
+  let html='';
+
+  nodes.forEach((nodeId,i)=>{
+    const progress=JSON.parse(localStorage.getItem('hearth-'+nodeId+'-progress')||'{}');
+    const doneKeys=Object.keys(progress).filter(k=>progress[k]);
+    const color=rainbow[i%rainbow.length];
+
+    // Get total items from data
+    let total=0;
+    if(nodeId==='foundation'&&window.FOUNDATION) total=window.FOUNDATION.topics.length;
+    else if(nodeId==='doing'&&window.DOING) total=window.DOING.categories.length;
+    else if(nodeId==='knowing'&&window.KNOWING) total=window.KNOWING.categories.length;
+    else if(nodeId==='practice'&&window.PRACTICE&&window.PRACTICE.topics) total=window.PRACTICE.topics.length;
+    else if(nodeId==='play'&&window.PLAY) total=window.PLAY.genres.length;
+    else if(nodeId==='create'&&window.CREATE) total=window.CREATE.categories.length;
+
+    const done=doneKeys.length;
+    const pct=total>0?Math.round(done/total*100):0;
+
+    html+='<div style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:14px">'+
+      '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">'+
+        '<span style="font-family:\'DM Sans\',sans-serif;font-size:0.9rem;color:'+color+';font-weight:700">'+nodeNames[i]+'</span>'+
+        '<span style="font-family:JetBrains Mono;font-size:0.65rem;color:var(--dim)">'+done+'/'+total+'</span>'+
+      '</div>'+
+      '<div style="height:4px;background:var(--border);border-radius:2px;overflow:hidden">'+
+        '<div style="height:100%;width:'+pct+'%;background:'+color+';border-radius:2px;transition:width 0.3s"></div>'+
+      '</div>'+
+    '</div>';
+  });
+
+  // Next step suggestion
+  const fProgress=JSON.parse(localStorage.getItem('hearth-foundation-progress')||'{}');
+  const F=window.FOUNDATION;
+  if(F){
+    const next=F.topics.find(t=>!fProgress[t.id]);
+    if(next){
+      html+='<div style="margin-top:16px;padding:16px;background:var(--card);border:2px solid var(--gold);border-radius:8px;text-align:center">'+
+        '<div style="font-family:JetBrains Mono;font-size:0.55rem;color:var(--gold);letter-spacing:0.15em;margin-bottom:6px">NEXT STEP</div>'+
+        '<div style="font-family:\'DM Sans\',sans-serif;font-size:1rem;color:var(--gold);font-weight:700">'+next.title+'</div>'+
+        '<div style="font-size:0.7rem;color:var(--dim);margin-top:4px">'+next.subtitle+'</div>'+
+        '<button onclick="showFoundationTopic(\''+next.id+'\')" style="margin-top:12px;background:var(--gold);color:var(--bg);border:none;padding:10px 24px;border-radius:6px;font-family:DM Sans,sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer">Continue</button>'+
+      '</div>';
+    } else {
+      html+='<div style="margin-top:16px;padding:16px;background:var(--card);border:2px solid var(--gold);border-radius:8px;text-align:center">'+
+        '<div style="font-family:\'DM Sans\',sans-serif;font-size:1rem;color:var(--gold);font-weight:700">Foundation Complete</div>'+
+        '<div style="font-size:0.7rem;color:var(--dim);margin-top:4px">You\'ve built the base. Time to explore the other nodes.</div>'+
+      '</div>';
+    }
+  }
+
+  el.innerHTML=html;
+}
+
+// ═══ NOTEBOOK ═══
+function populateNotebook(){
+  const el=document.getElementById('notebook-content');if(!el)return;
+  const nodes=['foundation','doing','knowing','practice','play','create'];
+  const nodeNames=['Foundation','Doing','Knowing','Practice','Play','Create'];
+  const rainbow=['#e74c3c','#e67e22','#f1c40f','#2ecc71','#3498db','#9b59b6'];
+  let totalDone=0, totalItems=0;
+
+  let html='<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px">';
+
+  nodes.forEach((nodeId,i)=>{
+    const progress=JSON.parse(localStorage.getItem('hearth-'+nodeId+'-progress')||'{}');
+    const doneKeys=Object.keys(progress).filter(k=>progress[k]);
+    const color=rainbow[i%rainbow.length];
+    let total=0;
+    if(nodeId==='foundation'&&window.FOUNDATION) total=window.FOUNDATION.topics.length;
+    else if(nodeId==='doing'&&window.DOING) total=window.DOING.categories.reduce((s,c)=>s+c.drills.length,0);
+    else if(nodeId==='knowing'&&window.KNOWING) total=window.KNOWING.categories.reduce((s,c)=>s+c.topics.length,0);
+    else if(nodeId==='practice'&&window.PRACTICE&&window.PRACTICE.topics) total=window.PRACTICE.topics.length;
+    else if(nodeId==='play'&&window.PLAY) total=window.PLAY.genres.reduce((s,g)=>s+g.songs.length,0);
+    else if(nodeId==='create'&&window.CREATE) total=window.CREATE.categories.reduce((s,c)=>s+c.topics.length,0);
+
+    totalDone+=doneKeys.length;
+    totalItems+=total;
+    const pct=total>0?Math.round(doneKeys.length/total*100):0;
+
+    html+='<div style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:12px;text-align:center">'+
+      '<div style="font-family:\'DM Sans\',sans-serif;font-size:0.75rem;color:'+color+';font-weight:700">'+nodeNames[i]+'</div>'+
+      '<div style="font-family:Cinzel,serif;font-size:1.4rem;color:'+color+';margin:4px 0">'+pct+'%</div>'+
+      '<div style="font-size:0.6rem;color:var(--dim)">'+doneKeys.length+'/'+total+'</div>'+
+    '</div>';
+  });
+
+  html+='</div>';
+
+  // Overall progress
+  const overallPct=totalItems>0?Math.round(totalDone/totalItems*100):0;
+  html+='<div style="background:var(--card);border:2px solid var(--gold);border-radius:8px;padding:16px;text-align:center;margin-bottom:16px">'+
+    '<div style="font-family:JetBrains Mono;font-size:0.55rem;color:var(--gold);letter-spacing:0.15em;margin-bottom:4px">OVERALL PROGRESS</div>'+
+    '<div style="font-family:Cinzel,serif;font-size:2rem;color:var(--gold)">'+overallPct+'%</div>'+
+    '<div style="font-size:0.7rem;color:var(--dim)">'+totalDone+' of '+totalItems+' completed</div>'+
+  '</div>';
+
+  el.innerHTML=html;
+}
+
+// ═══ GLOSSARY ═══
+const GLOSSARY=[
+  {term:'Fret',def:'A metal strip across the fretboard. Pressing a string against a fret shortens it, raising the pitch.'},
+  {term:'Fretboard',def:'The front face of the guitar neck where you press strings against frets to make notes.'},
+  {term:'Nut',def:'The thin strip at the top of the fretboard where strings rest before reaching the tuning pegs.'},
+  {term:'Bridge',def:'The piece on the guitar body where strings attach. Transfers string vibration to the body.'},
+  {term:'Headstock',def:'The top of the guitar where the tuning pegs are located.'},
+  {term:'Tuning Pegs',def:'The knobs on the headstock used to tighten or loosen strings for tuning.'},
+  {term:'Pickup',def:'A magnet on electric guitars that captures string vibrations and converts them to electrical signals.'},
+  {term:'Sound Hole',def:'The round opening on an acoustic guitar body that projects sound outward.'},
+  {term:'Rest Stroke',def:'A picking technique where the thumb or finger pushes through a string and comes to rest on the next string.'},
+  {term:'Open String',def:'A string played without pressing any fret. E.g., the low E string played open produces an E note.'},
+  {term:'Half Step',def:'The smallest interval in Western music. On guitar, one fret = one half step.'},
+  {term:'Whole Step',def:'An interval equal to two half steps. On guitar, two frets = one whole step.'},
+  {term:'Sharp (#)',def:'A note raised by one half step. E.g., F# is one fret higher than F.'},
+  {term:'Flat (b)',def:'A note lowered by one half step. E.g., Bb is one fret lower than B.'},
+  {term:'Chord',def:'Three or more notes played simultaneously. The foundation of accompaniment.'},
+  {term:'Arpeggio',def:'The notes of a chord played one at a time in sequence, instead of all together.'},
+  {term:'Scale',def:'A sequence of notes arranged in ascending or descending order following a specific pattern of intervals.'},
+  {term:'Major Scale',def:'The do-re-mi scale. Interval pattern: W-W-H-W-W-W-H (W=whole step, H=half step). Sounds bright and happy.'},
+  {term:'Minor Scale',def:'A scale with a flattened 3rd, 6th, and 7th. Sounds darker, sadder than major.'},
+  {term:'Pentatonic Scale',def:'A 5-note scale. The most common scale for guitar improvisation. Removes the "difficult" notes from the major/minor scale.'},
+  {term:'Interval',def:'The distance between two notes. Named by number (2nd, 3rd, 5th) and quality (major, minor, perfect).'},
+  {term:'Octave',def:'The same note but twice as high (or low). 12 frets up from any note = one octave higher.'},
+  {term:'Root',def:'The foundational note of a chord or scale. A chord named "G major" has G as its root.'},
+  {term:'Key',def:'The group of notes that a song is built around. "In the key of G" means G major scale notes are the home base.'},
+  {term:'Time Signature',def:'The numbers at the start of music (like 4/4) telling you how many beats per measure and what note value gets one beat.'},
+  {term:'Tempo',def:'The speed of the music, measured in BPM (beats per minute).'},
+  {term:'BPM',def:'Beats Per Minute. A way to measure tempo. 60 BPM = one beat per second.'},
+  {term:'Strumming',def:'Sweeping the pick or fingers across multiple strings to play a chord.'},
+  {term:'Fingerpicking',def:'Playing individual strings with your fingers instead of a pick. Also called fingerstyle.'},
+  {term:'Hammer-On',def:'A technique where you press ("hammer") a finger onto a fret to sound a note without picking.'},
+  {term:'Pull-Off',def:'The reverse of a hammer-on: lift a finger off a fret to sound a lower note.'},
+  {term:'Bend',def:'Pushing or pulling a string sideways to raise its pitch. Common in blues and rock.'},
+  {term:'Slide',def:'Moving a finger along a string from one fret to another while maintaining pressure.'},
+  {term:'Vibrato',def:'A rapid, small variation in pitch created by bending a string back and forth. Adds expression to a note.'},
+  {term:'Mute',def:'Dampening strings with your palm or fingers to create a percussive, dead sound.'},
+  {term:'Barre Chord',def:'A chord where one finger presses multiple strings across a single fret. Moveable to any position.'},
+  {term:'Power Chord',def:'A 2-note chord (root + 5th). Sounds big and raw. The foundation of rock guitar.'},
+  {term:'Tab / Tablature',def:'A notation system showing which frets to play on which strings. 6 lines = 6 strings, numbers = frets.'},
+  {term:'Standard Tuning',def:'The default guitar tuning from low to high: E-A-D-G-B-E.'},
+  {term:'Capo',def:'A clamp placed on the fretboard to raise the pitch of all strings. Like a movable nut.'},
+  {term:'Action',def:'The distance between the strings and the fretboard. High action = harder to press, more buzz-free. Low action = easier but may buzz.'},
+  {term:'Intonation',def:'How in-tune the guitar is across the whole fretboard. Good intonation = notes are accurate at every fret.'},
+  {term:'Progression',def:'A sequence of chords played in order. E.g., G-C-D is a I-IV-V progression.'},
+  {term:'I-IV-V',def:'The most common chord progression in popular music. In G: G-C-D. Thousands of songs use this.'},
+  {term:'Riff',def:'A short, memorable repeated musical phrase. The hook of a song.'},
+  {term:'Lick',def:'A short melodic phrase, often improvised. Like a musical sentence.'},
+  {term:'Improvisation',def:'Making up music on the spot, usually over a backing chord progression.'},
+  {term:'Backing Track',def:'A recorded accompaniment (drums, bass, chords) that you play along with for practice.'},
+  {term:'Metronome',def:'A device or app that produces a steady click at a set BPM. Essential for developing timing.'},
+  {term:'Body Scan',def:'A technique of checking your body for tension before and during practice. Shoulders, jaw, hands, breathing.'},
+];
+
+function populateGlossary(){
+  const el=document.getElementById('glossary-list');if(!el)return;
+  let html='';
+  GLOSSARY.forEach(g=>{
+    html+='<div class="glossary-item" data-term="'+g.term.toLowerCase()+'" style="padding:10px 12px;border-bottom:1px solid var(--border)">'+
+      '<div style="font-family:\'DM Sans\',sans-serif;font-size:0.85rem;color:var(--gold);font-weight:600;margin-bottom:2px">'+g.term+'</div>'+
+      '<div style="font-size:0.75rem;color:var(--dim);line-height:1.5">'+g.def+'</div>'+
+    '</div>';
+  });
+  el.innerHTML=html;
+}
+
+function filterGlossary(query){
+  const q=query.toLowerCase().trim();
+  document.querySelectorAll('.glossary-item').forEach(item=>{
+    const term=item.getAttribute('data-term');
+    const text=item.textContent.toLowerCase();
+    item.style.display=(!q||term.includes(q)||text.includes(q))?'block':'none';
+  });
+}
+
 
 let tS=600,tR=600,tI=null,tO=false;
 function ts(s,e){if(tO)return;tS=s;tR=s;document.querySelectorAll('.tm-o').forEach(o=>o.classList.remove('on'));e.classList.add('on');utd();}
