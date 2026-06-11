@@ -35,7 +35,9 @@ const DOING = {
         { id:'sweep-1', title:'Sweep Picking — 3-String Minor', difficulty:3, bpm:'40-70', duration:'10 min', source:'Guitar Aerobics (Fri)', style:'metal', body:'<p>Not strumming — each note rings individually. 3-string minor arpeggio: pick drags across, each finger lifts before next note.</p>' },
         { id:'sweep-2', title:'Sweep Picking — 5-String Major', difficulty:3, bpm:'40-60', duration:'12 min', source:'Guitar Aerobics (Fri)', style:'metal', body:'<p>Full 5-string major arpeggio sweep. The advanced version. Requires precise left-hand muting.</p>' },
         { id:'flatpick-1', title:'Flatpick Basics — Carter Style', difficulty:1, bpm:'60-80', duration:'5 min', source:'General knowledge', style:'country', body:'<p>The boom-chick pattern. Thumb alternates bass notes, index/middle pick melody on treble strings. The foundation of country and folk flatpicking.</p>' },
-        { id:'gypsy-1', title:'Rest-Stroke Picking — Gypsy Style', difficulty:2, bpm:'60-90', duration:'10 min', source:'Jorgenson — Gypsy Jazz', style:'flamenco', body:'<p>Pick follows through to rest on adjacent string. Produces a powerful, punchy tone. Non-negotiable for Gypsy Jazz.</p>' }
+        { id:'gypsy-1', title:'Rest-Stroke Picking — Gypsy Style', difficulty:2, bpm:'60-90', duration:'10 min', source:'Jorgenson — Gypsy Jazz', style:'flamenco', body:'<p>Pick follows through to rest on adjacent string. Produces a powerful, punchy tone. Non-negotiable for Gypsy Jazz.</p>' },
+        { id:'hybrid-1', title:'Hybrid Picking — Intro', difficulty:2, bpm:'60-90', duration:'8 min', source:'General knowledge', style:'country', body:'<p>Hold the pick with thumb+index, use middle and ring fingers to pluck higher strings simultaneously. Country and rockabilly staple.</p><p><strong>Exercise:</strong> Pick low E, simultaneously pluck G and B strings with fingers. Repeat across chord changes.</p>' },
+        { id:'crosspick-1', title:'Crosspicking — Bluegrass', difficulty:2, bpm:'60-80', duration:'8 min', source:'General knowledge', style:'country', body:'<p>Roll pattern across 3 strings: D-U-U-D-U-U. Creates a banjo-like roll on guitar. The bluegrass secret weapon.</p>' }
       ]
     },
     {
@@ -51,7 +53,9 @@ const DOING = {
         { id:'trill-1', title:'Trill Exercise — Hammer/Pull Endurance', difficulty:2, bpm:'—', duration:'5 min', source:'Stetina — Speed Mechanics', style:'metal', body:'<p>Hammer-on/pull-off between two fingers. 60 seconds each pair: 1-2, 1-3, 1-4, 2-3, 2-4, 3-4. Count the reps. Build stamina.</p>' },
         { id:'legato-1', title:'Legato — Hammer-ons & Pull-offs', difficulty:2, bpm:'60-100', duration:'8 min', source:'Stetina — Speed Mechanics', style:'rock', body:'<p>Pick fret 5, hammer to 7, pull off. Same volume as picked note. Legato = smooth and connected.</p>' },
         { id:'legato-2', title:'Legato — 3-Note-Per-String Runs', difficulty:3, bpm:'50-90', duration:'10 min', source:'Stetina — Speed Mechanics', style:'metal', body:'<p>3NPS legato runs. Pick first note of each string, hammer the other two. The shredder\'s secret.</p>' },
-        { id:'classical-1', title:'Classical Left Hand — PIMA Position', difficulty:1, bpm:'—', duration:'8 min', source:'Parkening Vol 1', style:'classical', body:'<p>Thumb behind neck (not over), fingers curved, fingertips only. Classical position is the foundation of clean fretting.</p>' }
+        { id:'classical-1', title:'Classical Left Hand — PIMA Position', difficulty:1, bpm:'—', duration:'8 min', source:'Parkening Vol 1', style:'classical', body:'<p>Thumb behind neck (not over), fingers curved, fingertips only. Classical position is the foundation of clean fretting.</p>' },
+        { id:'stretch-1', title:'Finger Stretch — 1-2-4 Spread', difficulty:1, bpm:'60-80', duration:'5 min', source:'Exercises For Dummies', style:'rock', body:'<p>Index on fret 1, middle on fret 2, pinky on fret 4. Skip fret 3 intentionally. Builds pinky reach. Do all strings.</p>' },
+        { id:'vibrato-1', title:'Vibrato — Bending in Place', difficulty:2, bpm:'—', duration:'5 min', source:'Ganapes — Blues You Can Use', style:'blues', body:'<p>Bend the string slightly and oscillate. The secret is control — slow and wide for blues, fast and narrow for classical. Practice on one note for 2 minutes.</p>' }
       ]
     },
     {
@@ -67,7 +71,9 @@ const DOING = {
         { id:'strum-1', title:'Basic Strumming — D DU UDU', difficulty:1, bpm:'60-100', duration:'5 min', source:'General knowledge', style:'rock', body:'<p>The universal strum pattern. Down, Down-Up, Up-Down-Up. Works for thousands of songs. G-C-D-Em loop.</p>' },
         { id:'bossa-1', title:'Bossa Nova Rhythm Pattern', difficulty:2, bpm:'60-90', duration:'8 min', source:'Donat — Bossa Nova', style:'latin', body:'<p>The subtle syncopation. Thumb plays bass on beats 1 and 3, fingers comp the off-beats. Gentle, not aggressive.</p>' },
         { id:'reggae-1', title:'Reggae Skank — Offbeat Muting', difficulty:2, bpm:'70-100', duration:'5 min', source:'General knowledge', style:'reggae', body:'<p>Play chords ONLY on beats 2 and 4. Mute on 1 and 3. The guitar becomes a percussion instrument.</p>' },
-        { id:'metronome-1', title:'Metronome Displacement', difficulty:2, bpm:'60-80', duration:'8 min', source:'Jamie Andreas', style:'rock', body:'<p>Set metronome to click on beats 2 and 4 only (not 1 and 3). Forces you to internalize the pulse. Advanced: metronome clicks on the "and" of each beat.</p>' }
+        { id:'metronome-1', title:'Metronome Displacement', difficulty:2, bpm:'60-80', duration:'8 min', source:'Jamie Andreas', style:'rock', body:'<p>Set metronome to click on beats 2 and 4 only (not 1 and 3). Forces you to internalize the pulse. Advanced: metronome clicks on the "and" of each beat.</p>' },
+        { id:'triplet-1', title:'Triplet Feel — Blues Shuffle', difficulty:1, bpm:'60-90', duration:'5 min', source:'Ganapes — Blues You Can Use', style:'blues', body:'<p>Play 3 notes in the space of 2. The triplet feel is what makes blues swing. Count: 1-trip-let, 2-trip-let. Accent beat 1.</p>' },
+        { id:'poly-1', title:'Polyrhythm Intro — 3 Over 2', difficulty:3, bpm:'50-70', duration:'10 min', source:'General knowledge', style:'jazz', body:'<p>Play 3 evenly spaced notes against 2 beats. Say "not difficult" while playing — the syllables map to the rhythm. Advanced rhythm training.</p>' }
       ]
     },
     {
@@ -85,7 +91,10 @@ const DOING = {
         { id:'harm-min-1', title:'Harmonic Minor Scale', difficulty:2, bpm:'50-70', duration:'8 min', source:'Belkadi — Advanced Scales', style:'flamenco', body:'<p>Minor scale with raised 7th. The exotic, Middle Eastern, flamenco sound. Essential for classical and metal.</p>' },
         { id:'phrygian-1', title:'Phrygian Mode — Spanish Sound', difficulty:2, bpm:'50-70', duration:'8 min', source:'Belkadi — Advanced Scales', style:'flamenco', body:'<p>E Phrygian = C major starting on E. The flat 2nd = Spanish/flamenco. Metal uses it heavily too.</p>' },
         { id:'blues-scale-1', title:'Blues Scale — Adding the b5', difficulty:1, bpm:'60-90', duration:'5 min', source:'Ganapes — Blues You Can Use', style:'blues', body:'<p>Minor pentatonic + b5 (the "blue note"). Adds the tension that makes blues sound like blues.</p>' },
-        { id:'dim-scale-1', title:'Diminished Scale — Whole-Half', difficulty:4, bpm:'40-60', duration:'10 min', source:'Belkadi — Advanced Scales', style:'jazz', body:'<p>Alternating whole and half steps. The jazz improvisation secret weapon over dominant 7th chords.</p>' }
+        { id:'minor-nat-1', title:'Natural Minor Scale — Full Neck', difficulty:2, bpm:'50-80', duration:'10 min', source:'Exercises For Dummies', style:'rock', body:'<p>The full Aeolian mode across all positions. Darker than pentatonic — every note matters. Connect all 7 positions up the neck.</p>' },
+        { id:'pent-3', title:'Major Pentatonic — Country & Pop', difficulty:1, bpm:'60-100', duration:'5 min', source:'Exercises For Dummies', style:'country', body:'<p>The happy cousin of minor pentatonic. Same 2-notes-per-string shapes, different root. Country, pop, and Southern rock staple.</p>' },
+        { id:'whole-tone-1', title:'Whole Tone Scale', difficulty:2, bpm:'50-70', duration:'5 min', source:'Belkadi — Advanced Scales', style:'jazz', body:'<p>All whole steps, no half steps. Dreamy, floating sound. Only 2 unique patterns — symmetric. Debussy in guitar form.</p>' },
+        { id:'dim-scale-1', title:'Diminished Scale — Whole-Half', difficulty:3, bpm:'40-60', duration:'10 min', source:'Belkadi — Advanced Scales', style:'jazz', body:'<p>Alternating whole and half steps. The jazz improvisation secret weapon over dominant 7th chords.</p>' }
       ]
     },
     {
@@ -98,7 +107,7 @@ const DOING = {
         { id:'min-arp', title:'Minor Arpeggio — 3 Notes', difficulty:1, bpm:'60-90', duration:'5 min', source:'Guitar Aerobics (Thu)', style:'rock', body:'<p>Root-b3-5th. A-C-E. The sad version. Same shape, different interval.</p>' },
         { id:'dom7-arp', title:'Dominant 7th Arpeggio', difficulty:2, bpm:'50-80', duration:'8 min', source:'Exercises For Dummies', style:'blues', body:'<p>Root-3rd-5th-b7th. A-C#-E-G. The blues/funk sound. Tension wants to resolve.</p>' },
         { id:'maj7-arp', title:'Major 7th Arpeggio', difficulty:2, bpm:'50-80', duration:'8 min', source:'Exercises For Dummies', style:'jazz', body:'<p>Root-3rd-5th-7th. C-E-G-B. Dreamy, jazzy. The "elevator music" arpeggio.</p>' },
-        { id:'dim-arp', title:'Diminished 7th Arpeggio', difficulty:4, bpm:'40-60', duration:'8 min', source:'Fowler — Patterns', style:'jazz', body:'<p>Root-b3-b5-bb7. Symmetrical — same shape every 3 frets. Can resolve to 4 different keys.</p>' },
+        { id:'dim-arp', title:'Diminished 7th Arpeggio', difficulty:3, bpm:'40-60', duration:'8 min', source:'Fowler — Patterns', style:'jazz', body:'<p>Root-b3-b5-bb7. Symmetrical — same shape every 3 frets. Can resolve to 4 different keys.</p>' },
         { id:'sweep-arp', title:'Sweep Arpeggio — Major (5 strings)', difficulty:3, bpm:'40-60', duration:'10 min', source:'Stetina — Speed Mechanics', style:'metal', body:'<p>Full sweep across 5 strings. Pick drags down then up. Each note rings individually.</p>' },
         { id:'classical-arp', title:'Classical Arpeggio Patterns — PIMA', difficulty:2, bpm:'60-80', duration:'8 min', source:'Parkening Vol 1', style:'classical', body:'<p>Right hand arpeggio patterns: P-I-M-A, P-I-M-A-M-I. The classical guitar tone engine.</p>' }
       ]
@@ -114,7 +123,9 @@ const DOING = {
         { id:'skip-1', title:'String Skipping — Pentatonic', difficulty:3, bpm:'40-70', duration:'10 min', source:'Guitar Aerobics (Tue)', style:'rock', body:'<p>Play pentatonic notes but skip strings. Creates wide interval leaps. Sounds more interesting than linear runs.</p>' },
         { id:'tap-1', title:'Tapping — Introduction', difficulty:3, bpm:'50-80', duration:'10 min', source:'Satriani — Guitar Secrets', style:'rock', body:'<p>Right hand taps high notes, pull-off chain. Pick→tap→pull-off→pull-off. Three notes, one pick stroke.</p>' },
         { id:'tap-2', title:'Tapping — Arpeggio Patterns', difficulty:3, bpm:'40-70', duration:'12 min', source:'Satriani — Guitar Secrets', style:'metal', body:'<p>Tapped arpeggios across strings. Eddie Van Halen\'s signature. Tap the 5th, pull to root, pull to 3rd.</p>' },
-        { id:'speed-ramp', title:'Speed Ramp — Progressive BPM', difficulty:2, bpm:'60-140', duration:'10 min', source:'Guitar Aerobics', style:'metal', body:'<p>Start a pattern at 60 BPM. Play it clean 3 times. Bump to 65. Repeat. Find your ceiling. That\'s your current max. Practice 10 BPM below it.</p>' }
+        { id:'speed-ramp', title:'Speed Ramp — Progressive BPM', difficulty:2, bpm:'60-140', duration:'10 min', source:'Guitar Aerobics', style:'metal', body:'<p>Start a pattern at 60 BPM. Play it clean 3 times. Bump to 65. Repeat. Find your ceiling. That\'s your current max. Practice 10 BPM below it.</p>' },
+        { id:'burst-1', title:'Speed Bursts — 4-Note Groupings', difficulty:2, bpm:'80-120', duration:'8 min', source:'Stetina — Speed Mechanics', style:'rock', body:'<p>Play 4 notes fast, then pause. Then 4 more fast, pause. Build speed in bursts rather than sustained runs. The key to breaking speed plateaus.</p>' },
+        { id:'pos-shift-1', title:'Position Shifting — Smooth Transitions', difficulty:2, bpm:'60-80', duration:'8 min', source:'Leavitt — Berklee Phase 2', style:'jazz', body:'<p>Slide from position 1 to position 5 in one smooth motion. No gaps, no hesitation. The fretboard is one connected instrument, not 7 boxes.</p>' }
       ]
     },
     {
@@ -125,7 +136,7 @@ const DOING = {
       drills: [
         { id:'rasg-1', title:'Rasgueado — Flamenco Strum', difficulty:2, bpm:'60-90', duration:'8 min', source:'General knowledge', style:'flamenco', body:'<p>Fingers fire outward in rapid succession: pinky-ring-middle-index. Creates a explosive, percussive strum. The flamenco signature.</p>' },
         { id:'golpe-1', title:'Golpe — Percussive Tap', difficulty:2, bpm:'60-80', duration:'5 min', source:'General knowledge', style:'flamenco', body:'<p>Strike the guitar top with ring finger while playing. Adds percussion to the guitar. Essential flamenco technique.</p>' },
-        { id:'alzap-1', title:'Alzapua — Thumb Technique', difficulty:4, bpm:'50-80', duration:'8 min', source:'General knowledge', style:'flamenco', body:'<p>Thumb plays rapid single-note runs using the flesh and nail. Powerful, driving sound. Advanced flamenco.</p>' },
+        { id:'alzap-1', title:'Alzapua — Thumb Technique', difficulty:3, bpm:'50-80', duration:'8 min', source:'General knowledge', style:'flamenco', body:'<p>Thumb plays rapid single-note runs using the flesh and nail. Powerful, driving sound. Advanced flamenco.</p>' },
         { id:'slide-1', title:'Slide Guitar — Open D Basics', difficulty:2, bpm:'—', duration:'8 min', source:'Hamburger — Slide Basics', style:'slide', body:'<p>Tune to Open D (D-A-D-F#-A-D). Place slide on ring finger. Light touch, right over the fret. Let it sing.</p>' },
         { id:'slide-2', title:'Slide Guitar — Standard Tuning', difficulty:2, bpm:'—', duration:'8 min', source:'Hamburger — Slide Basics', style:'slide', body:'<p>Slide in standard tuning. Target chord tones. Mute behind the slide with index finger.</p>' },
         { id:'pima-1', title:'Classical Right Hand — PIMA Patterns', difficulty:1, bpm:'60-80', duration:'5 min', source:'Parkening Vol 1', style:'classical', body:'<p>P=thumb, I=index, M=middle, A=ring. Basic arpeggio: P-I-M-A-M-I. Classical guitar tone starts here.</p>' },
