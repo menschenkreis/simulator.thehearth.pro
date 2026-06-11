@@ -6,6 +6,7 @@
 <title>The Hearth Mastery</title>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link href="assets/css/foundation.css" rel="stylesheet">
+<link href="assets/css/book-reader.css" rel="stylesheet">
 <style>
 /* ═══ THEME SYSTEM ═══ */
 :root, [data-theme="standard"]{
@@ -773,6 +774,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 <script src="assets/js/foundation.js"></script>
 <script src="assets/js/doing.js"></script>
 <script src="assets/js/knowing.js"></script>
+<script src="assets/js/book-reader.js"></script>
 <script src="assets/js/practice.js"></script>
 <script src="assets/js/practice.js"></script>
 <script src="assets/js/play.js"></script>
@@ -1497,7 +1499,7 @@ function showKnowing(){
     const allDone=topicsDone===totalTopics&&totalTopics>0;
     const minHeight=160+i*8;
 
-    html+='<div onclick="showKnowingBook(\''+cat.id+'\')" style="'+
+    html+='<div onclick="openBook(\''+cat.id+'\')" style="'+
       'width:'+w+'px;min-height:'+minHeight+'px;'+
       'background:linear-gradient(135deg,'+color+','+color+'cc);'+
       'border:2px solid '+(allDone?'var(--gold)':'rgba(255,255,255,0.1)')+';'+
