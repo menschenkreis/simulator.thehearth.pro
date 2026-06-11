@@ -157,7 +157,7 @@
         inner.innerHTML = `
           <div class="book-chapter-title-page">
             <div class="book-chapter-numeral">${toRoman(page.level)}</div>
-            <div class="book-chapter-name">${page.levelName}</div>
+            <div class="book-chapter-name">${page.levelName.split(' — ')[1] || page.levelName}</div>
             <div class="book-cover-divider"></div>
             <p class="book-chapter-subtitle">${page.topicCount} topic${page.topicCount !== 1 ? 's' : ''} in this chapter</p>
           </div>`;
@@ -307,7 +307,7 @@
       html += `
         <div class="book-toc-chapter">
           <div class="book-toc-chapter-title ${chapterDone ? 'completed' : ''}">
-            ${toRoman(group.level)} — ${LEVEL_NAMES[group.level]}
+            ${LEVEL_NAMES[group.level]}
           </div>`;
       group.topics.forEach(topic => {
         const done = !!progress[topic.id];
