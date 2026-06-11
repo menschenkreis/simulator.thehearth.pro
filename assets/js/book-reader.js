@@ -1,852 +1,775 @@
-// ═══════════════════════════════════════════════════
-// THE HEARTH — Digital Book Reader v2
-// Parchment pages, interleaved visuals, ADD-friendly
-// ═══════════════════════════════════════════════════
-
-(function() {
+/* ═══════════════════════════════════════════════════════════════
+   Book Reader — Spread Layout Engine
+   One concept per spread: visual left, text right.
+   ═══════════════════════════════════════════════════════════════ */
+(function () {
   'use strict';
 
-  const BOOK_COLORS = [
-    '#8B4513','#4A6741','#5B3A6B','#2C5F7C',
-    '#8B6914','#6B3A3A','#3A5B6B','#5B4A3A','#6B5B3A'
-  ];
+  const LEVEL_NAMES = ['', 'I — Origin', 'II — Duality', 'III — Creation', 'IV — Structure', 'V — Change', 'VI — Harmony', 'VII — Wisdom', 'VIII — Power'];
+  const STORAGE_KEY = 'hearth-knowing-progress';
 
-  const LEVEL_NAMES = [
-    '', 'I — Origin', 'II — Duality', 'III — Creation',
-    'IV — Structure', 'V — Change', 'VI — Harmony',
-    'VII — Wisdom', 'VIII — Power'
-  ];
-
-  // Inspirational quotes for breathing pages
-  const QUOTES = [
-    { text: 'Music is the space between the notes.', src: 'Claude Debussy' },
-    { text: 'The guitar is a small orchestra.', src: 'Andrés Segovia' },
-    { text: 'Practice slowly, learn quickly.', src: 'Classical proverb' },
-    { text: 'One hour of focused practice beats ten of noodling.', src: 'The Hearth' },
-    { text: 'Rhythm is the soul of music.', src: 'Traditional' },
-    { text: 'The more you sweat in practice, the less you bleed in performance.', src: 'Traditional' },
-    { text: 'Play the music, not the instrument.', src: 'Keith Richards' },
-    { text: 'Every master was once a disaster.', src: 'The Hearth' },
-    { text: 'Your ears are your best teacher.', src: 'Traditional' },
-    { text: 'The silence between the notes is where the magic lives.', src: 'The Hearth' }
-  ];
-
-  let currentBook = null;
-  let currentSpread = 0;
-  let totalSpreads = 0;
+  /* ── State ── */
   let pages = [];
-  let isAnimating = false;
-  let tocOpen = false;
-  let isMobile = false;
+  let current = 0;
+  let animating = false;
+
+  /* ── Quotes for interleaving ── */
+  const QUOTES = [
+    { text: 'Music is the space between the notes.', author: 'Claude Debussy' },
+    { text: 'The guitar is a small orchestra. Each string is a different color.', author: 'Andrés Segovia' },
+    { text: 'I don\'t believe in talent. I believe in curiosity, work, and stubbornness.', author: 'Miles Davis' },
+    { text: 'Learning to play the guitar is learning to listen.', author: 'Andrés Segovia' },
+    { text: 'The only way to learn a new language is by speaking it.', author: 'Miles Davis' },
+    { text: 'One must learn by doing. Though you think you know it, you have no certainty until you try.', author: 'Aristotle' },
+    { text: 'Technique is the ability to translate what you hear in your head to your fingers.', author: 'Joe Pass' },
+    { text: 'Practice slowly. Play fast. Never practice fast.', author: 'John Petrucci' },
+    { text: 'If it sounds good, it is good.', author: 'Duke Ellington' },
+    { text: 'The most important thing I\'ve learned is to keep it simple.', author: 'B.B. King' },
+  ];
   let quoteIdx = 0;
 
-  function checkMobile() {
-    isMobile = window.innerWidth <= 700;
-  }
-  checkMobile();
-  window.addEventListener('resize', checkMobile);
+  /* ── Diagrams per topic ── */
+  const DIAGRAMS = {
+    'time-signatures': () => rhythmGrid(),
+    'rhythm-building-blocks': () => noteValues(),
+    'subdivision': () => subdivisionGrid(),
+    'syncopation': () => syncopationGrid(),
+    'triads': () => chordBox('C', ['X', '3', '2', '0', '1', '0'], ['R', 'R', 'R', '3', 'R', 'R']),
+    'seventh-chords': () => seventhChordDiagram(),
+    'chord-voicings': () => cagedMap(),
+    'chord-progressions': () => progressionMap(),
+    'pentatonic': () => scaleBox('Minor Pentatonic — Box 1', [5, [1, 4], [1, 3], [1, 3], [1, 3], [1, 4], 5]),
+    'major-scale': () => scaleBox('Major Scale — Position 1', [[2, 4], [1, 3], [1, 3], [1, 2], [2, 4], [2, 4], [1]]),
+    'minor-scales': () => scaleBox('Natural Minor — Position 1', [[1, 3], [1, 3], [1, 2], [2, 4], [2, 4], [1]]),
+    'modes': () => modesMap(),
+    'alternate-picking': () => pickingDiagram('alt'),
+    'economy-picking': () => pickingDiagram('econ'),
+    'sweep-picking': () => sweepDiagram(),
+    'what-is-arpeggio': () => chordBox('C', ['X', '3', '2', '0', '1', '0'], ['R', 'R', 'R', '3', 'R', 'R']),
+    'major-arpeggios': () => arpeggioShape('Major'),
+    'pima': () => pimaDiagram(),
+    'fingerpicking-patterns': () => fingerpickDiagram(),
+    'whole-half-steps': () => fretboardMap(),
+    'intervals': () => intervalMap(),
+    'circle-of-fifths': () => circleFifths(),
+    'key-signatures': () => keySigDiagram(),
+    'notation-basics': () => staffDiagram(),
+    'rhythm-notation': () => rhythmValues(),
+    'scale-chord-mapping': () => scaleChordMap(),
+    'tension-release': () => tensionDiagram(),
+    'tetrachords': () => tetrachordDiagram(),
+    'ear-training': () => earDiagram(),
+    'extensions': () => extensionDiagram(),
+    'exotic-scales': () => exoticMap(),
+    'modulation': () => modulationDiagram(),
+    'seventh-arpeggios': () => arpeggioShape('7th'),
+    'reading-on-guitar': () => readingDiagram(),
+  };
 
-  // --- Progress ---
-  function getProgress() {
-    return JSON.parse(localStorage.getItem('hearth-knowing-progress') || '{}');
-  }
-  function markTopicDone(id) {
-    const p = getProgress();
-    p[id] = true;
-    localStorage.setItem('hearth-knowing-progress', JSON.stringify(p));
-  }
-  function isDone(id) { return !!getProgress()[id]; }
-
-  // --- Level mapping ---
-  function diffToLevel(d) {
-    if (d === 1) return 1;
-    if (d === 2) return 3;
-    if (d === 3) return 5;
-    return 1;
-  }
-
-  // --- Roman numerals ---
-  function toRoman(n) {
-    const v = [1000,900,500,400,100,90,50,40,10,9,5,4,1];
-    const s = ['M','CM','D','CD','C','XC','L','XL','X','IX','V','IV','I'];
-    let r = '';
-    for (let i = 0; i < v.length; i++) { while (n >= v[i]) { r += s[i]; n -= v[i]; } }
-    return r;
-  }
-
-  // --- Group topics by level ---
-  function groupTopics(topics) {
-    const levels = {};
-    topics.forEach(t => {
-      const lvl = diffToLevel(t.difficulty);
-      if (!levels[lvl]) levels[lvl] = [];
-      levels[lvl].push(t);
-    });
-    return Object.keys(levels).map(Number).sort((a,b) => a - b).map(l => ({ level: l, topics: levels[l] }));
-  }
-
-  // --- Get next quote ---
-  function nextQuote() {
-    const q = QUOTES[quoteIdx % QUOTES.length];
-    quoteIdx++;
-    return q;
-  }
-
-  // ═══════════════════════════════════════
-  // PAGE BUILDER — The magic happens here
-  // ═══════════════════════════════════════
-
-  function buildPages(category) {
-    const groups = groupTopics(category.topics);
-    const allPages = [];
-
-    // Cover
-    allPages.push({ type: 'cover', title: category.title, desc: category.description, total: category.topics.length });
-
-    // After cover, a breathing quote page
-    allPages.push({ type: 'quote', quote: nextQuote() });
-
-    groups.forEach((group, gi) => {
-      // Chapter title
-      allPages.push({
-        type: 'chapter',
-        level: group.level,
-        name: LEVEL_NAMES[group.level],
-        count: group.topics.length
-      });
-
-      group.topics.forEach((topic, ti) => {
-        // Break topic into sub-pages for ADD-friendly consumption
-        const subPages = breakTopicIntoPages(topic, group.level);
-        subPages.forEach(sp => allPages.push(sp));
-
-        // Between topics: insert a visual/breathing page
-        if (ti < group.topics.length - 1) {
-          allPages.push({ type: 'quote', quote: nextQuote() });
-        }
-      });
-
-      // Between chapters: a quote page
-      if (gi < groups.length - 1) {
-        allPages.push({ type: 'quote', quote: nextQuote() });
+  /* ── Parse body HTML into chunks ── */
+  function chunkBody(bodyHtml) {
+    // Split on <p> tags, keeping content
+    const parts = bodyHtml.split(/(<\/?(?:p|div)[^>]*>)/i).filter(s => s.trim() && !s.match(/^<\/?(?:p|div)[^>]*>$/i));
+    // Group into chunks of ~2-3 items
+    const chunks = [];
+    let buf = '';
+    let count = 0;
+    for (const part of parts) {
+      buf += part;
+      count++;
+      if (count >= 2 && !part.match(/^<div/i)) {
+        chunks.push(buf);
+        buf = '';
+        count = 0;
       }
-    });
-
-    // End page
-    allPages.push({ type: 'end' });
-
-    // Pad to even
-    if (allPages.length % 2 !== 0) {
-      allPages.push({ type: 'end' });
     }
-
-    return allPages;
+    if (buf.trim()) chunks.push(buf);
+    if (chunks.length === 0) chunks.push(bodyHtml);
+    return chunks;
   }
 
-  // --- Break a topic into digestible pages ---
-  function breakTopicIntoPages(topic, level) {
+  /* ── Build pages for a category ── */
+  function buildPages(cat) {
     const result = [];
 
-    // Parse the topic body into paragraphs
-    const bodyHtml = topic.body || '';
-    const paragraphs = parseParagraphs(bodyHtml);
-
-    // Page 1: Concept intro — title + first short explanation
-    const intro = paragraphs.length > 0 ? paragraphs[0] : '';
+    // Cover
     result.push({
-      type: 'concept',
-      topic: topic,
-      level: level,
-      title: topic.title,
-      source: topic.source,
-      body: intro
+      type: 'cover',
+      title: cat.title,
+      description: cat.description,
+      icon: catIcon(cat.id),
     });
 
-    // Page 2: Diagram or video placeholder for this concept
-    result.push({
-      type: 'visual',
-      topic: topic,
-      level: level,
-      title: topic.title,
-      visualType: getVisualType(topic)
+    // Topics grouped by difficulty → level
+    const byLevel = {};
+    cat.topics.forEach(t => {
+      const lvl = t.difficulty <= 1 ? 1 : t.difficulty === 2 ? 3 : 5;
+      if (!byLevel[lvl]) byLevel[lvl] = [];
+      byLevel[lvl].push(t);
     });
 
-    // Page 3+: Remaining content split into digestible chunks (2-3 paragraphs per page)
-    if (paragraphs.length > 1) {
-      const remaining = paragraphs.slice(1);
-      const chunks = chunkArray(remaining, 2);
-      chunks.forEach((chunk, i) => {
-        result.push({
-          type: 'content',
-          topic: topic,
-          level: level,
-          title: i === 0 ? topic.title : null, // only show title on first continuation
-          source: i === 0 ? topic.source : null,
-          body: chunk.join('')
-        });
+    const levels = Object.keys(byLevel).map(Number).sort((a, b) => a - b);
+
+    for (const lvl of levels) {
+      // Level divider
+      result.push({
+        type: 'quote',
+        text: LEVEL_NAMES[lvl] || 'Unknown',
+        author: lvl <= 2 ? 'Foundation' : lvl <= 4 ? 'Development' : 'Advanced',
       });
-    }
 
-    // Final page: "Try it" action + complete button
-    result.push({
-      type: 'action',
-      topic: topic,
-      level: level,
-      title: topic.title,
-      done: isDone(topic.id)
-    });
+      for (const topic of byLevel[lvl]) {
+        const chunks = chunkBody(topic.body);
+        const diagram = DIAGRAMS[topic.id];
+
+        // First chunk gets the diagram on the left
+        result.push({
+          type: 'spread',
+          topicId: topic.id,
+          level: LEVEL_NAMES[lvl],
+          title: topic.title,
+          body: chunks[0],
+          source: topic.source,
+          visual: diagram ? diagram() : null,
+          pageNum: result.length,
+        });
+
+        // Remaining chunks: placeholder visual (clean, not forced)
+        for (let i = 1; i < chunks.length; i++) {
+          result.push({
+            type: 'spread',
+            topicId: topic.id,
+            level: LEVEL_NAMES[lvl],
+            title: topic.title + (chunks.length > 2 ? ` (${i + 1}/${chunks.length})` : ' (continued)'),
+            body: chunks[i],
+            source: i === chunks.length - 1 ? topic.source : null,
+            visual: null,
+            pageNum: result.length,
+          });
+        }
+
+        // Try It page
+        result.push({
+          type: 'action',
+          topicId: topic.id,
+          level: LEVEL_NAMES[lvl],
+          title: 'Try It',
+          steps: buildTrySteps(topic),
+          pageNum: result.length,
+        });
+
+        // Interleaved quote between topics
+        const q = QUOTES[quoteIdx % QUOTES.length];
+        quoteIdx++;
+        result.push({
+          type: 'quote',
+          text: q.text,
+          author: q.author,
+        });
+      }
+    }
 
     return result;
   }
 
-  // --- Parse HTML body into individual paragraphs ---
-  function parseParagraphs(html) {
-    const div = document.createElement('div');
-    div.innerHTML = html;
-    const paras = [];
-    div.querySelectorAll('p').forEach(p => {
-      const text = p.innerHTML.trim();
-      if (text) paras.push('<p>' + text + '</p>');
-    });
-    // If no <p> tags found, treat the whole thing as one paragraph
-    if (paras.length === 0 && html.trim()) {
-      paras.push(html.trim());
-    }
-    return paras;
+  function catIcon(id) {
+    const icons = { rhythm: '🥁', 'chords-harmony': '🎵', scales: '🎼', 'technique-improv': '🔥', picking: '⚡', arpeggios: '🎶', fingerstyle: '🖐️', theory: '📖', 'reading-music': '📝' };
+    return icons[id] || '📚';
   }
 
-  // --- Chunk array into groups ---
-  function chunkArray(arr, size) {
-    const chunks = [];
-    for (let i = 0; i < arr.length; i += size) {
-      chunks.push(arr.slice(i, i + size));
-    }
-    return chunks;
+  function buildTrySteps(topic) {
+    const steps = {
+      'time-signatures': ['Tap your foot in 4/4 time for 30 seconds', 'Switch to 3/4 (waltz feel) — count 1-2-3', 'Try 6/8 — count in two groups of three'],
+      'subdivision': ['Set metronome to 60 BPM', 'Play quarter notes for 8 bars', 'Switch to 8ths, then 16ths', 'Notice where your timing drifts'],
+      'syncopation': ['Mute all strings with your left hand', 'Strum 16th notes steadily', 'Accent only the "and" of beat 2', 'Remove the mute and play a chord on those accents'],
+      'rhythm-building-blocks': ['Clap a whole note (4 beats)', 'Clap quarter notes for 4 bars', 'Clap 8ths, then 16ths', 'Clap a dotted half note (3 beats)'],
+      'triads': ['Play a C major chord — identify the C, E, G notes', 'Play an A minor chord — find the A, C, E', 'Compare: what note changed?', 'Play major → minor → major on one string set'],
+      'seventh-chords': ['Play Cmaj7 (x32000) — hear the dreamy sound', 'Play C7 (x32310) — hear it wants to move to F', 'Play Cm7 (x31311) — hear the smooth mellow', 'Play Cmaj7 → C7 → Cm7 back to back'],
+      'chord-progressions': ['Play I-IV-V in C (C-F-G)', 'Play I-V-vi-IV in G (G-D-Em-C)', 'Play the 12-bar blues pattern', 'Notice which progression feels most natural to you'],
+    };
+    return steps[topic.id] || [
+      `Review "${topic.title}" — read it once more`,
+      'Close your eyes and explain it in your own words',
+      'Pick up your guitar and find the concept on the fretboard',
+      'Teach it to someone (or pretend to)',
+    ];
   }
 
-  // --- Determine visual type for a topic ---
-  function getVisualType(topic) {
-    const id = topic.id || '';
-    if (id.includes('chord') || id.includes('triad')) return 'chord-diagram';
-    if (id.includes('scale') || id.includes('fretboard')) return 'fretboard';
-    if (id.includes('rhythm') || id.includes('time') || id.includes('subdiv')) return 'rhythm-visual';
-    if (id.includes('arpeggio')) return 'arpeggio-diagram';
-    if (id.includes('pick')) return 'technique-visual';
-    if (id.includes('fingerstyle') || id.includes('finger')) return 'technique-visual';
-    return 'video'; // default: show video placeholder
+  /* ── SVG Diagrams ── */
+  function rhythmGrid() {
+    return `<svg viewBox="0 0 200 160" xmlns="http://www.w3.org/2000/svg">
+      <rect x="0" y="0" width="200" height="160" rx="4" fill="#1a1710"/>
+      <text x="100" y="22" text-anchor="middle" fill="#d4af69" font-size="11" font-family="Cinzel,serif">4/4 Time</text>
+      <line x1="20" y1="40" x2="180" y2="40" stroke="rgba(212,175,105,0.3)" stroke-width="1"/>
+      ${[1,2,3,4].map((b,i) => `
+        <circle cx="${40+i*40}" cy="60" r="12" fill="${i===0?'#d4af69':'rgba(212,175,105,0.3)'}"/>
+        <text x="${40+i*40}" y="64" text-anchor="middle" fill="${i===0?'#1a1710':'rgba(212,175,105,0.6)'}" font-size="10" font-weight="600">${b}</text>
+        <text x="${40+i*40}" y="95" text-anchor="middle" fill="rgba(212,175,105,0.4)" font-size="8">beat</text>
+      `).join('')}
+      <text x="100" y="130" text-anchor="middle" fill="rgba(212,175,105,0.5)" font-size="9">Strong — Weak — Medium — Weak</text>
+      <text x="100" y="148" text-anchor="middle" fill="rgba(196,90,32,0.6)" font-size="8">The heartbeat of most popular music</text>
+    </svg>`;
   }
 
-  // ═══════════════════════════════════════
-  // PAGE RENDERER
-  // ═══════════════════════════════════════
-
-  function renderPage(page, pageNum) {
-    const inner = document.createElement('div');
-    inner.className = 'book-page-inner';
-
-    if (!page) return inner;
-
-    switch(page.type) {
-      case 'cover':
-        inner.innerHTML = `
-          <div class="book-cover">
-            <div class="book-cover-ornament">✦</div>
-            <h2>${page.title}</h2>
-            <div class="book-cover-divider"></div>
-            <p class="book-cover-desc">${page.desc}</p>
-            <p class="book-cover-source">${page.total} topics · 8 levels</p>
-          </div>`;
-        break;
-
-      case 'chapter':
-        inner.innerHTML = `
-          <div class="book-chapter-title-page">
-            <div class="book-chapter-numeral">${toRoman(page.level)}</div>
-            <div class="book-chapter-name">${(page.name || '').split(' — ')[1] || page.name}</div>
-            <div class="book-cover-divider"></div>
-            <p class="book-chapter-subtitle">${page.count} topic${page.count !== 1 ? 's' : ''} in this chapter</p>
-          </div>`;
-        break;
-
-      case 'concept':
-        inner.innerHTML = `
-          <div class="book-concept">
-            <div class="book-concept-label">Concept</div>
-            <div class="book-chapter-badge">Level ${page.level}</div>
-            ${page.source ? '<span class="book-source-badge">' + page.source + '</span>' : ''}
-            <h3>${page.title}</h3>
-            ${page.body}
-          </div>`;
-        break;
-
-      case 'visual':
-        inner.innerHTML = renderVisualPage(page);
-        break;
-
-      case 'content':
-        inner.innerHTML = `
-          <div class="book-concept">
-            ${page.title ? '<h3 style="font-size:1rem;color:#5a4a3a">' + page.title + ' (continued)</h3>' : ''}
-            ${page.body}
-          </div>`;
-        break;
-
-      case 'action':
-        inner.innerHTML = renderActionPage(page);
-        break;
-
-      case 'quote':
-        inner.innerHTML = `
-          <div class="book-quote-page">
-            <div class="book-cover-divider" style="margin-bottom:20px"></div>
-            <p class="book-quote-text">"${page.quote.text}"</p>
-            <p class="book-quote-source">— ${page.quote.src}</p>
-            <div class="book-cover-divider" style="margin-top:20px"></div>
-          </div>`;
-        break;
-
-      case 'end':
-        inner.innerHTML = `
-          <div class="book-end-page">
-            <div class="book-cover-ornament">✦</div>
-            <h2 style="font-family:Cinzel;font-size:0.95rem;color:#8a7a6a">End of Book</h2>
-            <p style="font-size:0.75rem;color:#9a8a7a;margin-top:8px">Return to the shelf</p>
-          </div>`;
-        break;
-    }
-
-    // Page number
-    if (['concept','visual','content','action','chapter'].includes(page.type)) {
-      const num = document.createElement('div');
-      num.className = 'book-page-num';
-      num.textContent = pageNum;
-      inner.appendChild(num);
-    }
-
-    return inner;
+  function noteValues() {
+    return `<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+      <rect x="0" y="0" width="200" height="200" rx="4" fill="#1a1710"/>
+      <text x="100" y="22" text-anchor="middle" fill="#d4af69" font-size="11" font-family="Cinzel,serif">Note Values</text>
+      ${[
+        ['𝅝','Whole','4 beats','rgba(212,175,105,1)'],
+        ['𝅗𝅥','Half','2 beats','rgba(212,175,105,0.7)'],
+        ['♩','Quarter','1 beat','rgba(212,175,105,0.5)'],
+        ['♪','8th','½ beat','rgba(212,175,105,0.35)'],
+        ['𝅘𝅥𝅯','16th','¼ beat','rgba(212,175,105,0.25)'],
+      ].map(([n,t,d,c],i) => `
+        <text x="30" y="${52+i*30}" fill="${c}" font-size="18">${n}</text>
+        <text x="60" y="${52+i*30}" fill="${c}" font-size="10">${t}</text>
+        <text x="170" y="${52+i*30}" text-anchor="end" fill="${c}" font-size="9">${d}</text>
+      `).join('')}
+    </svg>`;
   }
 
-  // --- Render visual page ---
-  function renderVisualPage(page) {
-    const vt = page.visualType;
+  function subdivisionGrid() {
+    return `<svg viewBox="0 0 200 180" xmlns="http://www.w3.org/2000/svg">
+      <rect x="0" y="0" width="200" height="180" rx="4" fill="#1a1710"/>
+      <text x="100" y="22" text-anchor="middle" fill="#d4af69" font-size="11" font-family="Cinzel,serif">Subdivision</text>
+      <line x1="15" y1="38" x2="185" y2="38" stroke="rgba(212,175,105,0.2)"/>
+      ${['1   2   3   4', '1 & 2 & 3 & 4 &', '1e&a 2e&a 3e&a 4e&a'].map((row,i) => `
+        <text x="15" y="${62+i*40}" fill="rgba(212,175,105,0.6)" font-size="9" font-family="JetBrains Mono,monospace">${['Quarter','8th','16th'][i]}</text>
+        <text x="60" y="${62+i*40}" fill="rgba(212,175,105,${0.8-i*0.2})" font-size="10" font-family="JetBrains Mono,monospace">${row}</text>
+        <line x1="15" y1="${72+i*40}" x2="185" y2="${72+i*40}" stroke="rgba(212,175,105,0.1)"/>
+      `).join('')}
+      <text x="100" y="170" text-anchor="middle" fill="rgba(196,90,32,0.5)" font-size="8">More dots = more groove</text>
+    </svg>`;
+  }
 
-    if (vt === 'video') {
-      return `
-        <div class="book-video-page">
-          <div class="book-video-page-label">Watch & Listen</div>
-          <div class="book-video-wrap">
-            <div class="book-video-placeholder" onclick="this.style.display='none';this.nextElementSibling.style.display='block'">
-              <div class="book-video-play">▶</div>
-            </div>
-            <div style="display:none;position:absolute;top:0;left:0;width:100%;height:100%">
-              <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#1a1714;color:#8a7a6a;font-family:DM Sans;font-size:0.8rem">
-                Video content coming soon
-              </div>
+  function syncopationGrid() {
+    return `<svg viewBox="0 0 200 140" xmlns="http://www.w3.org/2000/svg">
+      <rect x="0" y="0" width="200" height="140" rx="4" fill="#1a1710"/>
+      <text x="100" y="22" text-anchor="middle" fill="#d4af69" font-size="11" font-family="Cinzel,serif">Syncopation</text>
+      <text x="100" y="45" text-anchor="middle" fill="rgba(212,175,105,0.4)" font-size="9">On-beat vs Off-beat</text>
+      ${[
+        {y:65, accents:[1,0,0,0,1,0,0,0], label:'On-beat'},
+        {y:90, accents:[0,1,0,1,0,1,0,1], label:'Off-beat'},
+        {y:115, accents:[1,0,1,0,0,1,1,0], label:'Funk'},
+      ].map(r => `
+        <text x="12" y="${r.y}" fill="rgba(212,175,105,0.4)" font-size="8">${r.label}</text>
+        ${r.accents.map((a,i) => `<circle cx="${55+i*18}" cy="${r.y-4}" r="${a?5:3}" fill="${a?'#d4af69':'rgba(212,175,105,0.15)'}"/>`).join('')}
+      `).join('')}
+    </svg>`;
+  }
+
+  function chordBox(name, frets, labels) {
+    const sw = 30, fw = 25, sy = 20, nFrets = 5;
+    const W = 180, H = 160;
+    const startX = (W - 5*sw)/2, startY = 30;
+    return `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">
+      <rect x="0" y="0" width="${W}" height="${H}" rx="4" fill="#1a1710"/>
+      <text x="${W/2}" y="18" text-anchor="middle" fill="#d4af69" font-size="12" font-family="Cinzel,serif">${name}</text>
+      ${[0,1,2,3,4,5].map(s => `<line x1="${startX+s*sw}" y1="${startY}" x2="${startX+s*sw}" y2="${startY+nFrets*fw}" class="string"/>`).join('')}
+      ${[0,1,2,3,4,5].map(f => `<line x1="${startX}" y1="${startY+f*fw}" x2="${startX+5*sw}" y2="${startY+f*fw}" class="fret"/>`).join('')}
+      ${frets.map((f,i) => {
+        if (f === 'X' || f === '0') return `<text x="${startX+i*sw}" y="${startY-5}" text-anchor="middle" fill="rgba(212,175,105,0.5)" font-size="10">${f}</text>`;
+        return `<circle cx="${startX+i*sw}" cy="${startY+(parseInt(f)-0.5)*fw}" r="8" class="dot"/>`;
+      }).join('')}
+    </svg>`;
+  }
+
+  function scaleBox(title, pattern) {
+    const W = 200, H = 160;
+    const sw = 24, fw = 20;
+    const startX = 30, startY = 30;
+    return `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">
+      <rect x="0" y="0" width="${W}" height="${H}" rx="4" fill="#1a1710"/>
+      <text x="${W/2}" y="18" text-anchor="middle" fill="#d4af69" font-size="10" font-family="Cinzel,serif">${title}</text>
+      ${[0,1,2,3,4,5].map(s => `<line x1="${startX+s*sw}" y1="${startY}" x2="${startX+s*sw}" y2="${startY+5*fw}" class="string"/>`).join('')}
+      ${[0,1,2,3,4,5].map(f => `<line x1="${startX}" y1="${startY+f*fw}" x2="${startX+5*sw}" y2="${startY+f*fw}" class="fret"/>`).join('')}
+      <text x="${W/2}" y="${H-5}" text-anchor="middle" fill="rgba(196,90,32,0.5)" font-size="8">One shape, 12 keys</text>
+    </svg>`;
+  }
+
+  function seventhChordDiagram() {
+    return `<svg viewBox="0 0 200 160" xmlns="http://www.w3.org/2000/svg">
+      <rect x="0" y="0" width="200" height="160" rx="4" fill="#1a1710"/>
+      <text x="100" y="22" text-anchor="middle" fill="#d4af69" font-size="11" font-family="Cinzel,serif">7th Chord Types</text>
+      ${['maj7 — dreamy','7 — bluesy','m7 — mellow','m7♭5 — dark','dim7 — tense'].map((t,i) => `
+        <rect x="15" y="${38+i*22}" width="170" height="18" rx="3" fill="rgba(212,175,105,${0.15-i*0.02})"/>
+        <text x="25" y="${51+i*22}" fill="rgba(212,175,105,${0.9-i*0.12})" font-size="10">${t}</text>
+      `).join('')}
+      <text x="100" y="155" text-anchor="middle" fill="rgba(196,90,32,0.5)" font-size="8">The 7th changes everything</text>
+    </svg>`;
+  }
+
+  function cagedMap() {
+    return `<svg viewBox="0 0 200 120" xmlns="http://www.w3.org/2000/svg">
+      <rect x="0" y="0" width="200" height="120" rx="4" fill="#1a1710"/>
+      <text x="100" y="22" text-anchor="middle" fill="#d4af69" font-size="11" font-family="Cinzel,serif">CAGED System</text>
+      ${['C','A','G','E','D'].map((l,i) => `
+        <rect x="${15+i*37}" y="40" width="30" height="50" rx="4" fill="rgba(212,175,105,${0.25-i*0.03})"/>
+        <text x="${30+i*37}" y="72" text-anchor="middle" fill="#d4af69" font-size="16" font-family="Cinzel,serif">${l}</text>
+      `).join('')}
+      <text x="100" y="110" text-anchor="middle" fill="rgba(196,90,32,0.5)" font-size="8">5 shapes → entire fretboard</text>
+    </svg>`;
+  }
+
+  function progressionMap() {
+    return `<svg viewBox="0 0 200 140" xmlns="http://www.w3.org/2000/svg">
+      <rect x="0" y="0" width="200" height="140" rx="4" fill="#1a1710"/>
+      <text x="100" y="22" text-anchor="middle" fill="#d4af69" font-size="11" font-family="Cinzel,serif">Key Progressions</text>
+      ${['I-IV-V — Rock/Blues','I-V-vi-IV — Pop','ii-V-I — Jazz','i-VII-VI-V — Flamenco'].map((t,i) => `
+        <text x="20" y="${50+i*22}" fill="rgba(212,175,105,${0.8-i*0.15})" font-size="10">${t}</text>
+      `).join('')}
+      <text x="100" y="135" text-anchor="middle" fill="rgba(196,90,32,0.5)" font-size="8">Most songs use one of these</text>
+    </svg>`;
+  }
+
+  function modesMap() {
+    return `<svg viewBox="0 0 200 180" xmlns="http://www.w3.org/2000/svg">
+      <rect x="0" y="0" width="200" height="180" rx="4" fill="#1a1710"/>
+      <text x="100" y="18" text-anchor="middle" fill="#d4af69" font-size="11" font-family="Cinzel,serif">The 7 Modes</text>
+      ${['Ionian — happy','Dorian — jazzy','Phrygian — Spanish','Lydian — dreamy','Mixolydian — bluesy','Aeolian — sad','Locrian — unstable'].map((m,i) => `
+        <rect x="10" y="${30+i*20}" width="${180-m.length}" height="16" rx="3" fill="rgba(212,175,105,${0.2-i*0.02})"/>
+        <text x="20" y="${42+i*20}" fill="rgba(212,175,105,${0.9-i*0.08})" font-size="9">${m}</text>
+      `).join('')}
+    </svg>`;
+  }
+
+  function pickingDiagram(type) {
+    const label = type === 'alt' ? 'Alternate Picking' : 'Economy Picking';
+    const arrows = type === 'alt' ? '↓ ↑ ↓ ↑ ↓ ↑' : '↓ ↓ ↑ ↓ ↑ ↓';
+    return `<svg viewBox="0 0 200 100" xmlns="http://www.w3.org/2000/svg">
+      <rect x="0" y="0" width="200" height="100" rx="4" fill="#1a1710"/>
+      <text x="100" y="22" text-anchor="middle" fill="#d4af69" font-size="11" font-family="Cinzel,serif">${label}</text>
+      <text x="100" y="55" text-anchor="middle" fill="rgba(212,175,105,0.6)" font-size="14" font-family="JetBrains Mono,monospace">${arrows}</text>
+      <text x="100" y="85" text-anchor="middle" fill="rgba(196,90,32,0.5)" font-size="8">${type === 'alt' ? 'Strict down-up alternation' : 'Sweep in the direction you\'re going'}</text>
+    </svg>`;
+  }
+
+  function sweepDiagram() {
+    return `<svg viewBox="0 0 200 120" xmlns="http://www.w3.org/2000/svg">
+      <rect x="0" y="0" width="200" height="120" rx="4" fill="#1a1710"/>
+      <text x="100" y="22" text-anchor="middle" fill="#d4af69" font-size="11" font-family="Cinzel,serif">Sweep Picking</text>
+      <text x="100" y="55" text-anchor="middle" fill="rgba(212,175,105,0.6)" font-size="14" font-family="JetBrains Mono,monospace">↓ ↓ ↓ ↓ ↓</text>
+      <text x="100" y="80" text-anchor="middle" fill="rgba(212,175,105,0.4)" font-size="9">One fluid motion across strings</text>
+      <text x="100" y="110" text-anchor="middle" fill="rgba(196,90,32,0.5)" font-size="8">Each finger lifts before the next note</text>
+    </svg>`;
+  }
+
+  function arpeggioShape(type) {
+    return `<svg viewBox="0 0 200 120" xmlns="http://www.w3.org/2000/svg">
+      <rect x="0" y="0" width="200" height="120" rx="4" fill="#1a1710"/>
+      <text x="100" y="22" text-anchor="middle" fill="#d4af69" font-size="11" font-family="Cinzel,serif">${type} Arpeggio</text>
+      <text x="100" y="55" text-anchor="middle" fill="rgba(212,175,105,0.5)" font-size="9">Root → 3rd → 5th${type.includes('7') ? ' → 7th' : ''}</text>
+      <text x="100" y="80" text-anchor="middle" fill="rgba(212,175,105,0.35)" font-size="9">Chord notes played one at a time</text>
+      <text x="100" y="110" text-anchor="middle" fill="rgba(196,90,32,0.5)" font-size="8">The bridge between chords and scales</text>
+    </svg>`;
+  }
+
+  function pimaDiagram() {
+    return `<svg viewBox="0 0 200 160" xmlns="http://www.w3.org/2000/svg">
+      <rect x="0" y="0" width="200" height="160" rx="4" fill="#1a1710"/>
+      <text x="100" y="22" text-anchor="middle" fill="#d4af69" font-size="11" font-family="Cinzel,serif">PIMA System</text>
+      ${['P = Thumb (bass)','I = Index (string 3)','M = Middle (string 2)','A = Ring (string 1)'].map((t,i) => `
+        <text x="20" y="${55+i*25}" fill="rgba(212,175,105,${0.9-i*0.15})" font-size="11">${t}</text>
+      `).join('')}
+    </svg>`;
+  }
+
+  function fingerpickDiagram() {
+    return `<svg viewBox="0 0 200 100" xmlns="http://www.w3.org/2000/svg">
+      <rect x="0" y="0" width="200" height="100" rx="4" fill="#1a1710"/>
+      <text x="100" y="22" text-anchor="middle" fill="#d4af69" font-size="11" font-family="Cinzel,serif">Fingerpicking</text>
+      <text x="100" y="55" text-anchor="middle" fill="rgba(212,175,105,0.5)" font-size="10" font-family="JetBrains Mono,monospace">P-I-M-A-M-I</text>
+      <text x="100" y="85" text-anchor="middle" fill="rgba(196,90,32,0.5)" font-size="8">Forward and back pattern</text>
+    </svg>`;
+  }
+
+  function fretboardMap() {
+    return `<svg viewBox="0 0 200 100" xmlns="http://www.w3.org/2000/svg">
+      <rect x="0" y="0" width="200" height="100" rx="4" fill="#1a1710"/>
+      <text x="100" y="18" text-anchor="middle" fill="#d4af69" font-size="11" font-family="Cinzel,serif">Whole & Half Steps</text>
+      <text x="15" y="50" fill="rgba(212,175,105,0.6)" font-size="9">1 fret = half step</text>
+      <text x="15" y="70" fill="rgba(212,175,105,0.5)" font-size="9">2 frets = whole step</text>
+      <text x="100" y="92" text-anchor="middle" fill="rgba(196,90,32,0.5)" font-size="8">E-F and B-C: only half steps</text>
+    </svg>`;
+  }
+
+  function intervalMap() {
+    return `<svg viewBox="0 0 200 180" xmlns="http://www.w3.org/2000/svg">
+      <rect x="0" y="0" width="200" height="180" rx="4" fill="#1a1710"/>
+      <text x="100" y="18" text-anchor="middle" fill="#d4af69" font-size="11" font-family="Cinzel,serif">Intervals</text>
+      ${['m2 — 1 fret','M2 — 2 frets','m3 — 3 frets','M3 — 4 frets','P4 — 5 frets','Tritone — 6','P5 — 7 frets','Octave — 12'].map((t,i) => `
+        <text x="15" y="${40+i*17}" fill="rgba(212,175,105,${0.85-i*0.07})" font-size="9">${t}</text>
+      `).join('')}
+    </svg>`;
+  }
+
+  function circleFifths() {
+    return `<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+      <rect x="0" y="0" width="200" height="200" rx="4" fill="#1a1710"/>
+      <text x="100" y="18" text-anchor="middle" fill="#d4af69" font-size="11" font-family="Cinzel,serif">Circle of Fifths</text>
+      ${['C','G','D','A','E','B','F#','Db','Ab','Eb','Bb','F'].map((n,i) => {
+        const a = (i*30-90)*Math.PI/180, cx=100+65*Math.cos(a), cy=108+65*Math.sin(a);
+        return `<text x="${cx}" y="${cy}" text-anchor="middle" fill="rgba(212,175,105,${0.9-Math.abs(i-6)*0.05})" font-size="11" font-family="Cinzel,serif">${n}</text>`;
+      }).join('')}
+      <text x="100" y="115" text-anchor="middle" fill="rgba(196,90,32,0.5)" font-size="9">12 keys in a circle</text>
+    </svg>`;
+  }
+
+  function keySigDiagram() {
+    return `<svg viewBox="0 0 200 100" xmlns="http://www.w3.org/2000/svg">
+      <rect x="0" y="0" width="200" height="100" rx="4" fill="#1a1710"/>
+      <text x="100" y="22" text-anchor="middle" fill="#d4af69" font-size="11" font-family="Cinzel,serif">Key Signatures</text>
+      <text x="15" y="50" fill="rgba(212,175,105,0.6)" font-size="10">Sharps: G D A E B F#</text>
+      <text x="15" y="72" fill="rgba(212,175,105,0.5)" font-size="10">Flats: F Bb Eb Ab Db Gb</text>
+      <text x="100" y="95" text-anchor="middle" fill="rgba(196,90,32,0.5)" font-size="8">Each key adds one sharp or flat</text>
+    </svg>`;
+  }
+
+  function staffDiagram() {
+    return `<svg viewBox="0 0 200 100" xmlns="http://www.w3.org/2000/svg">
+      <rect x="0" y="0" width="200" height="100" rx="4" fill="#1a1710"/>
+      <text x="100" y="22" text-anchor="middle" fill="#d4af69" font-size="11" font-family="Cinzel,serif">The Staff</text>
+      <text x="15" y="50" fill="rgba(212,175,105,0.6)" font-size="10">Lines: E G B D F</text>
+      <text x="15" y="72" fill="rgba(212,175,105,0.5)" font-size="10">Spaces: F A C E</text>
+      <text x="100" y="95" text-anchor="middle" fill="rgba(196,90,32,0.5)" font-size="8">5 lines, 4 spaces, every note has a home</text>
+    </svg>`;
+  }
+
+  function rhythmValues() {
+    return noteValues();
+  }
+
+  function scaleChordMap() {
+    return `<svg viewBox="0 0 200 140" xmlns="http://www.w3.org/2000/svg">
+      <rect x="0" y="0" width="200" height="140" rx="4" fill="#1a1710"/>
+      <text x="100" y="22" text-anchor="middle" fill="#d4af69" font-size="11" font-family="Cinzel,serif">Scale → Chord Map</text>
+      ${['Major → Major scale','Minor → Nat. minor','Dom7 → Mixolydian','Dim → Diminished scale'].map((t,i) => `
+        <text x="15" y="${52+i*20}" fill="rgba(212,175,105,${0.8-i*0.12})" font-size="10">${t}</text>
+      `).join('')}
+    </svg>`;
+  }
+
+  function tensionDiagram() {
+    return `<svg viewBox="0 0 200 100" xmlns="http://www.w3.org/2000/svg">
+      <rect x="0" y="0" width="200" height="100" rx="4" fill="#1a1710"/>
+      <text x="100" y="22" text-anchor="middle" fill="#d4af69" font-size="11" font-family="Cinzel,serif">Tension & Release</text>
+      <line x1="30" y1="60" x2="170" y2="60" stroke="rgba(212,175,105,0.2)"/>
+      <path d="M 30 60 Q 70 20 100 60 Q 130 100 170 60" fill="none" stroke="#d4af69" stroke-width="2"/>
+      <text x="70" y="85" fill="rgba(196,90,32,0.6)" font-size="8">tension</text>
+      <text x="130" y="85" fill="rgba(196,90,32,0.6)" font-size="8">release</text>
+    </svg>`;
+  }
+
+  function tetrachordDiagram() {
+    return `<svg viewBox="0 0 200 120" xmlns="http://www.w3.org/2000/svg">
+      <rect x="0" y="0" width="200" height="120" rx="4" fill="#1a1710"/>
+      <text x="100" y="22" text-anchor="middle" fill="#d4af69" font-size="11" font-family="Cinzel,serif">Tetrachords</text>
+      <text x="15" y="50" fill="rgba(212,175,105,0.6)" font-size="10">Major: W-W-H</text>
+      <text x="15" y="70" fill="rgba(212,175,105,0.5)" font-size="10">Minor: W-H-W</text>
+      <text x="15" y="90" fill="rgba(212,175,105,0.4)" font-size="10">Phrygian: H-W-W</text>
+      <text x="100" y="115" text-anchor="middle" fill="rgba(196,90,32,0.5)" font-size="8">Two tetrachords = one scale</text>
+    </svg>`;
+  }
+
+  function earDiagram() {
+    return `<svg viewBox="0 0 200 120" xmlns="http://www.w3.org/2000/svg">
+      <rect x="0" y="0" width="200" height="120" rx="4" fill="#1a1710"/>
+      <text x="100" y="22" text-anchor="middle" fill="#d4af69" font-size="11" font-family="Cinzel,serif">Ear Training</text>
+      <text x="100" y="55" text-anchor="middle" fill="rgba(212,175,105,0.5)" font-size="10">Hear → Sing → Play</text>
+      <text x="100" y="85" text-anchor="middle" fill="rgba(196,90,32,0.5)" font-size="8">If you can sing it, you can play it</text>
+    </svg>`;
+  }
+
+  function extensionDiagram() {
+    return `<svg viewBox="0 0 200 140" xmlns="http://www.w3.org/2000/svg">
+      <rect x="0" y="0" width="200" height="140" rx="4" fill="#1a1710"/>
+      <text x="100" y="22" text-anchor="middle" fill="#d4af69" font-size="11" font-family="Cinzel,serif">Extensions</text>
+      ${['Triad: R 3 5','7th: R 3 5 7','9th: R 3 5 7 9','11th: R 3 5 7 9 11','13th: R 3 5 7 9 11 13'].map((t,i) => `
+        <text x="15" y="${48+i*18}" fill="rgba(212,175,105,${0.8-i*0.1})" font-size="10">${t}</text>
+      `).join('')}
+    </svg>`;
+  }
+
+  function exoticMap() {
+    return `<svg viewBox="0 0 200 140" xmlns="http://www.w3.org/2000/svg">
+      <rect x="0" y="0" width="200" height="140" rx="4" fill="#1a1710"/>
+      <text x="100" y="22" text-anchor="middle" fill="#d4af69" font-size="11" font-family="Cinzel,serif">Exotic Scales</text>
+      ${['Harmonic Major','Hungarian Minor','Whole Tone','Diminished','Bebop'].map((t,i) => `
+        <text x="15" y="${50+i*18}" fill="rgba(212,175,105,${0.7-i*0.08})" font-size="10">${t}</text>
+      `).join('')}
+    </svg>`;
+  }
+
+  function modulationDiagram() {
+    return `<svg viewBox="0 0 200 100" xmlns="http://www.w3.org/2000/svg">
+      <rect x="0" y="0" width="200" height="100" rx="4" fill="#1a1710"/>
+      <text x="100" y="22" text-anchor="middle" fill="#d4af69" font-size="11" font-family="Cinzel,serif">Modulation</text>
+      <text x="100" y="55" text-anchor="middle" fill="rgba(212,175,105,0.5)" font-size="10">Key A →→→ Key B</text>
+      <text x="100" y="85" text-anchor="middle" fill="rgba(196,90,32,0.5)" font-size="8">Changing the emotional center</text>
+    </svg>`;
+  }
+
+  function readingDiagram() {
+    return `<svg viewBox="0 0 200 100" xmlns="http://www.w3.org/2000/svg">
+      <rect x="0" y="0" width="200" height="100" rx="4" fill="#1a1710"/>
+      <text x="100" y="22" text-anchor="middle" fill="#d4af69" font-size="11" font-family="Cinzel,serif">Reading on Guitar</text>
+      <text x="100" y="55" text-anchor="middle" fill="rgba(212,175,105,0.5)" font-size="10">Standard + TAB = both</text>
+      <text x="100" y="85" text-anchor="middle" fill="rgba(196,90,32,0.5)" font-size="8">TAB = where. Notation = what.</text>
+    </svg>`;
+  }
+
+  /* ── Render ── */
+  function render() {
+    const page = pages[current];
+    if (!page) return;
+    const spread = document.getElementById('book-spread');
+    if (!spread) return;
+
+    spread.className = 'book-spread';
+    if (page.type === 'cover') spread.classList.add('cover');
+    if (page.type === 'quote') spread.classList.add('quote');
+    if (page.type === 'action') spread.classList.add('action');
+
+    if (page.type === 'cover') {
+      spread.innerHTML = `
+        <div class="book-page-right">
+          <div class="book-cover-icon">${page.icon}</div>
+          <h1 class="book-cover-title">${page.title}</h1>
+          <p class="book-cover-subtitle">${page.description || ''}</p>
+          <p class="book-cover-meta">${pages.length} pages · open book</p>
+        </div>`;
+    } else if (page.type === 'quote') {
+      spread.innerHTML = `
+        <div class="book-page-right">
+          <div class="book-quote-text">"${page.text}"</div>
+          <div class="book-quote-author">— ${page.author}</div>
+          <div class="book-page-num">${current + 1}</div>
+        </div>`;
+    } else if (page.type === 'action') {
+      const progress = getProgress();
+      const marked = progress[page.topicId];
+      spread.innerHTML = `
+        <div class="book-page-left">
+          <div class="book-visual">
+            <div class="book-visual-placeholder">
+              <div class="glyph">🎸</div>
+              <div class="label">your turn</div>
             </div>
           </div>
-          <p class="book-video-caption">Watch this concept in action. Seeing it makes it click.</p>
+        </div>
+        <div class="book-page-right">
+          <div class="book-chapter-label">${page.level || ''}</div>
+          <h2 class="book-page-title">${page.title}</h2>
+          <ol class="book-action-steps">${page.steps.map(s => `<li>${s}</li>`).join('')}</ol>
+          <button class="book-mark-btn ${marked ? 'marked' : ''}" data-topic="${page.topicId}">
+            ${marked ? '✓ Understood' : 'Mark as Understood'}
+          </button>
+          <div class="book-page-num">${current + 1}</div>
+        </div>`;
+      spread.querySelector('.book-mark-btn')?.addEventListener('click', function () {
+        markUnderstood(this.dataset.topic);
+        this.classList.add('marked');
+        this.textContent = '✓ Understood';
+      });
+    } else {
+      // Standard spread: visual left, text right
+      const leftContent = page.visual
+        ? `<div class="book-diagram">${page.visual}</div>`
+        : `<div class="book-visual">
+            <div class="book-visual-placeholder">
+              <div class="glyph">📜</div>
+              <div class="label">${page.title.replace(/ \(.*\)$/, '')}</div>
+            </div>
+          </div>`;
+
+      spread.innerHTML = `
+        <div class="book-page-left">${leftContent}</div>
+        <div class="book-page-right">
+          ${page.level ? `<div class="book-chapter-label">${page.level}</div>` : ''}
+          <h2 class="book-page-title">${page.title}</h2>
+          <div class="book-page-body">${page.body}</div>
+          ${page.source ? `<div class="book-page-source">↳ ${page.source}</div>` : ''}
+          <div class="book-page-num">${current + 1}</div>
         </div>`;
     }
 
-    // SVG diagram types
-    const diagrams = {
-      'chord-diagram': renderChordDiagram(),
-      'fretboard': renderFretboardDiagram(),
-      'rhythm-visual': renderRhythmDiagram(),
-      'arpeggio-diagram': renderArpeggioDiagram(),
-      'technique-visual': renderTechniqueDiagram()
-    };
-
-    return `
-      <div class="book-diagram-page">
-        <div class="book-diagram-label">Visual Reference</div>
-        <div class="book-diagram-box">
-          ${diagrams[vt] || diagrams['chord-diagram']}
-        </div>
-        <p class="book-diagram-caption">Study this diagram, then try it on your guitar.</p>
-      </div>`;
+    // Update nav
+    updateNav();
+    updateTocActive();
   }
 
-  // --- SVG Diagrams ---
-  function renderChordDiagram() {
-    return `<svg viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
-      <rect x="10" y="10" width="100" height="120" fill="none" stroke="#b8963a" stroke-width="1" rx="2"/>
-      <!-- Frets -->
-      <line x1="10" y1="35" x2="110" y2="35" stroke="#b8963a" stroke-width="0.8"/>
-      <line x1="10" y1="60" x2="110" y2="60" stroke="#b8963a" stroke-width="0.5"/>
-      <line x1="10" y1="85" x2="110" y2="85" stroke="#b8963a" stroke-width="0.5"/>
-      <line x1="10" y1="110" x2="110" y2="110" stroke="#b8963a" stroke-width="0.5"/>
-      <!-- Strings -->
-      <line x1="25" y1="10" x2="25" y2="130" stroke="#8a7a6a" stroke-width="0.8"/>
-      <line x1="42" y1="10" x2="42" y2="130" stroke="#8a7a6a" stroke-width="0.7"/>
-      <line x1="59" y1="10" x2="59" y2="130" stroke="#8a7a6a" stroke-width="0.6"/>
-      <line x1="76" y1="10" x2="76" y2="130" stroke="#8a7a6a" stroke-width="0.5"/>
-      <line x1="93" y1="10" x2="93" y2="130" stroke="#8a7a6a" stroke-width="0.4"/>
-      <!-- Example dots -->
-      <circle cx="42" cy="48" r="6" fill="#b8963a" opacity="0.7"/>
-      <circle cx="59" cy="48" r="6" fill="#b8963a" opacity="0.7"/>
-      <circle cx="76" cy="73" r="6" fill="#b8963a" opacity="0.7"/>
-      <!-- Open strings -->
-      <text x="25" y="8" text-anchor="middle" font-size="8" fill="#8a7a6a" font-family="JetBrains Mono">○</text>
-      <text x="93" y="8" text-anchor="middle" font-size="8" fill="#8a7a6a" font-family="JetBrains Mono">○</text>
-      <!-- Label -->
-      <text x="60" y="145" text-anchor="middle" font-size="7" fill="#8a7a6a" font-family="JetBrains Mono">CHORD SHAPE</text>
-    </svg>`;
+  function updateNav() {
+    const prev = document.getElementById('book-prev');
+    const next = document.getElementById('book-next');
+    const ind = document.getElementById('book-indicator');
+    if (prev) prev.disabled = current <= 0;
+    if (next) next.disabled = current >= pages.length - 1;
+    if (ind) ind.textContent = `${current + 1} / ${pages.length}`;
   }
 
-  function renderFretboardDiagram() {
-    return `<svg viewBox="0 0 200 60" xmlns="http://www.w3.org/2000/svg">
-      <!-- Frets -->
-      <line x1="20" y1="10" x2="20" y2="50" stroke="#8a7a6a" stroke-width="1.5"/>
-      <line x1="55" y1="10" x2="55" y2="50" stroke="#b8963a" stroke-width="0.5"/>
-      <line x1="90" y1="10" x2="90" y2="50" stroke="#b8963a" stroke-width="0.5"/>
-      <line x1="125" y1="10" x2="125" y2="50" stroke="#b8963a" stroke-width="0.5"/>
-      <line x1="160" y1="10" x2="160" y2="50" stroke="#b8963a" stroke-width="0.5"/>
-      <line x1="195" y1="10" x2="195" y2="50" stroke="#b8963a" stroke-width="0.5"/>
-      <!-- Strings -->
-      <line x1="20" y1="14" x2="195" y2="14" stroke="#8a7a6a" stroke-width="0.8"/>
-      <line x1="20" y1="22" x2="195" y2="22" stroke="#8a7a6a" stroke-width="0.7"/>
-      <line x1="20" y1="30" x2="195" y2="30" stroke="#8a7a6a" stroke-width="0.6"/>
-      <line x1="20" y1="38" x2="195" y2="38" stroke="#8a7a6a" stroke-width="0.5"/>
-      <line x1="20" y1="46" x2="195" y2="46" stroke="#8a7a6a" stroke-width="0.4"/>
-      <!-- Scale dots -->
-      <circle cx="37" cy="14" r="4" fill="#b8963a" opacity="0.6"/>
-      <circle cx="72" cy="22" r="4" fill="#b8963a" opacity="0.6"/>
-      <circle cx="107" cy="30" r="4" fill="#b8963a" opacity="0.6"/>
-      <circle cx="142" cy="38" r="4" fill="#b8963a" opacity="0.6"/>
-      <circle cx="72" cy="46" r="4" fill="#b8963a" opacity="0.6"/>
-      <!-- Root note -->
-      <circle cx="37" cy="30" r="5" fill="#b8963a"/>
-      <text x="37" y="33" text-anchor="middle" font-size="5" fill="white" font-family="JetBrains Mono" font-weight="bold">R</text>
-      <!-- Label -->
-      <text x="107" y="58" text-anchor="middle" font-size="6" fill="#8a7a6a" font-family="JetBrains Mono">FRETBOARD MAP</text>
-    </svg>`;
-  }
+  /* ── TOC ── */
+  function buildToc() {
+    const list = document.getElementById('book-toc-list');
+    if (!list) return;
+    list.innerHTML = '';
 
-  function renderRhythmDiagram() {
-    return `<svg viewBox="0 0 180 80" xmlns="http://www.w3.org/2000/svg">
-      <!-- Beat markers -->
-      <text x="20" y="20" font-size="8" fill="#8a7a6a" font-family="JetBrains Mono">1</text>
-      <text x="60" y="20" font-size="8" fill="#8a7a6a" font-family="JetBrains Mono">2</text>
-      <text x="100" y="20" font-size="8" fill="#8a7a6a" font-family="JetBrains Mono">3</text>
-      <text x="140" y="20" font-size="8" fill="#8a7a6a" font-family="JetBrains Mono">4</text>
-      <!-- Grid lines -->
-      <line x1="20" y1="25" x2="160" y2="25" stroke="#b8963a" stroke-width="0.3"/>
-      <line x1="20" y1="45" x2="160" y2="45" stroke="#b8963a" stroke-width="0.3"/>
-      <!-- Quarter notes -->
-      <rect x="17" y="26" width="6" height="16" rx="1" fill="#b8963a" opacity="0.7"/>
-      <rect x="57" y="26" width="6" height="16" rx="1" fill="#b8963a" opacity="0.7"/>
-      <rect x="97" y="26" width="6" height="16" rx="1" fill="#b8963a" opacity="0.7"/>
-      <rect x="137" y="26" width="6" height="16" rx="1" fill="#b8963a" opacity="0.7"/>
-      <!-- 8th notes below -->
-      <rect x="17" y="48" width="4" height="12" rx="1" fill="#8a7a6a" opacity="0.5"/>
-      <rect x="37" y="48" width="4" height="12" rx="1" fill="#8a7a6a" opacity="0.5"/>
-      <rect x="57" y="48" width="4" height="12" rx="1" fill="#8a7a6a" opacity="0.5"/>
-      <rect x="77" y="48" width="4" height="12" rx="1" fill="#8a7a6a" opacity="0.5"/>
-      <rect x="97" y="48" width="4" height="12" rx="1" fill="#8a7a6a" opacity="0.5"/>
-      <rect x="117" y="48" width="4" height="12" rx="1" fill="#8a7a6a" opacity="0.5"/>
-      <rect x="137" y="48" width="4" height="12" rx="1" fill="#8a7a6a" opacity="0.5"/>
-      <rect x="157" y="48" width="4" height="12" rx="1" fill="#8a7a6a" opacity="0.5"/>
-      <!-- Labels -->
-      <text x="80" y="38" text-anchor="middle" font-size="5" fill="#b8963a" font-family="JetBrains Mono">Quarter Notes</text>
-      <text x="90" y="70" text-anchor="middle" font-size="5" fill="#8a7a6a" font-family="JetBrains Mono">8th Notes</text>
-    </svg>`;
-  }
-
-  function renderArpeggioDiagram() {
-    return `<svg viewBox="0 0 160 120" xmlns="http://www.w3.org/2000/svg">
-      <!-- Upward arc representing arpeggio shape -->
-      <path d="M 20 100 Q 80 20 140 100" fill="none" stroke="#b8963a" stroke-width="1.5" opacity="0.5"/>
-      <!-- Notes along the arc -->
-      <circle cx="20" cy="100" r="8" fill="#b8963a" opacity="0.7"/>
-      <text x="20" y="103" text-anchor="middle" font-size="6" fill="white" font-family="JetBrains Mono">1</text>
-      <circle cx="50" cy="68" r="8" fill="#b8963a" opacity="0.6"/>
-      <text x="50" y="71" text-anchor="middle" font-size="6" fill="white" font-family="JetBrains Mono">3</text>
-      <circle cx="80" cy="48" r="8" fill="#b8963a" opacity="0.7"/>
-      <text x="80" y="51" text-anchor="middle" font-size="6" fill="white" font-family="JetBrains Mono">5</text>
-      <circle cx="110" cy="68" r="8" fill="#b8963a" opacity="0.6"/>
-      <text x="110" y="71" text-anchor="middle" font-size="6" fill="white" font-family="JetBrains Mono">1</text>
-      <circle cx="140" cy="100" r="8" fill="#b8963a" opacity="0.5"/>
-      <text x="140" y="103" text-anchor="middle" font-size="6" fill="white" font-family="JetBrains Mono">3</text>
-      <!-- Arrows -->
-      <path d="M 30 95 L 45 73" stroke="#8a7a6a" stroke-width="0.5" marker-end="url(#arrow)"/>
-      <path d="M 58 63 L 73 52" stroke="#8a7a6a" stroke-width="0.5"/>
-      <!-- Label -->
-      <text x="80" y="116" text-anchor="middle" font-size="6" fill="#8a7a6a" font-family="JetBrains Mono">1-3-5 ARPEGGIO</text>
-    </svg>`;
-  }
-
-  function renderTechniqueDiagram() {
-    return `<svg viewBox="0 0 160 100" xmlns="http://www.w3.org/2000/svg">
-      <!-- Hand silhouette placeholder -->
-      <ellipse cx="80" cy="50" rx="50" ry="35" fill="none" stroke="#b8963a" stroke-width="1" opacity="0.3"/>
-      <!-- Finger positions -->
-      <circle cx="50" cy="38" r="5" fill="#b8963a" opacity="0.5"/>
-      <circle cx="62" cy="32" r="5" fill="#b8963a" opacity="0.6"/>
-      <circle cx="74" cy="30" r="5" fill="#b8963a" opacity="0.7"/>
-      <circle cx="86" cy="32" r="5" fill="#b8963a" opacity="0.6"/>
-      <circle cx="98" cy="38" r="5" fill="#b8963a" opacity="0.5"/>
-      <!-- Thumb -->
-      <ellipse cx="80" cy="62" rx="12" ry="6" fill="#b8963a" opacity="0.3"/>
-      <!-- Labels -->
-      <text x="50" y="26" text-anchor="middle" font-size="5" fill="#8a7a6a" font-family="JetBrains Mono">i</text>
-      <text x="62" y="24" text-anchor="middle" font-size="5" fill="#8a7a6a" font-family="JetBrains Mono">m</text>
-      <text x="74" y="22" text-anchor="middle" font-size="5" fill="#8a7a6a" font-family="JetBrains Mono">a</text>
-      <text x="80" y="82" text-anchor="middle" font-size="6" fill="#8a7a6a" font-family="JetBrains Mono">TECHNIQUE MAP</text>
-    </svg>`;
-  }
-
-  // --- Render action/try-it page ---
-  function renderActionPage(page) {
-    const done = isDone(page.topic.id);
-    const steps = getActionSteps(page.topic);
-    let stepsHtml = steps.map((s, i) =>
-      `<div class="book-action-step">
-        <div class="book-action-num">${i+1}</div>
-        <div class="book-action-step-text">${s}</div>
-      </div>`
-    ).join('');
-
-    return `
-      <div class="book-action-page">
-        <div class="book-action-icon">🎸</div>
-        <div class="book-action-title">Try It Now</div>
-        <div class="book-action-desc">Pick up your guitar and work through these steps:</div>
-        <div class="book-action-steps">${stepsHtml}</div>
-        <button class="book-complete-btn ${done ? 'done' : ''}"
-          onclick="window._bookMarkComplete('${page.topic.id}')">
-          ${done ? '✓ Understood' : 'Mark as Understood'}
-        </button>
-      </div>`;
-  }
-
-  // --- Generate action steps from topic ---
-  function getActionSteps(topic) {
-    const id = topic.id || '';
-    if (id.includes('time-signature')) return [
-      'Tap your foot in 4/4 time for 30 seconds',
-      'Switch to 3/4 (waltz feel) — count 1-2-3',
-      'Try 6/8 — count in two groups of three'
-    ];
-    if (id.includes('subdiv')) return [
-      'Set metronome to 60 BPM',
-      'Play quarter notes for 1 minute',
-      'Switch to 8th notes, then 16ths',
-      'Notice which subdivision feels wobbly'
-    ];
-    if (id.includes('syncop')) return [
-      'Mute all strings with your fretting hand',
-      'Strum steady 16th notes',
-      'Accent only the "and" beats (off-beats)',
-      'Feel the groove shift'
-    ];
-    if (id.includes('chord') || id.includes('triad')) return [
-      'Play the chord shape slowly',
-      'Hold each note, check it rings clear',
-      'Switch between two chord shapes 10x',
-      'Play along with a slow backing track'
-    ];
-    if (id.includes('scale')) return [
-      'Play the scale ascending, one note at a time',
-      'Use alternate picking (down-up)',
-      'Play it descending',
-      'Try it with a metronome at 60 BPM'
-    ];
-    // Default
-    return [
-      'Read through the concept one more time',
-      'Try it on your guitar right now',
-      'Repeat 3 times slowly',
-      'Come back tomorrow and try again from memory'
-    ];
-  }
-
-  // ═══════════════════════════════════════
-  // BOOK OVERLAY
-  // ═══════════════════════════════════════
-
-  function createBookOverlay(category, colorIdx) {
-    const K = window.KNOWING;
-    if (!K) return;
-
-    currentBook = category;
-    quoteIdx = 0;
-    pages = buildPages(category);
-    currentSpread = 0;
-    totalSpreads = Math.ceil(pages.length / (isMobile ? 1 : 2));
-
-    const existing = document.getElementById('book-overlay');
-    if (existing) existing.remove();
-
-    const overlay = document.createElement('div');
-    overlay.id = 'book-overlay';
-    overlay.className = 'book-overlay';
-
-    // Topbar
-    overlay.innerHTML = `
-      <div class="book-topbar">
-        <button class="book-back-btn" onclick="window._bookClose()">← Shelf</button>
-        <span class="book-topbar-title">${category.title}</span>
-        <div class="book-progress-bar">
-          <div class="book-progress-fill" id="book-progress-fill" style="width:0%"></div>
-        </div>
-        <button class="book-toc-btn" onclick="window._bookToggleToc()">☰</button>
-      </div>
-      <div class="book-toc" id="book-toc">${buildTocHtml(category)}</div>
-      <div class="book-container" id="book-container"></div>
-      <div class="book-bottom-nav">
-        <span class="book-page-indicator" id="book-page-indicator"></span>
-      </div>`;
-
-    document.body.appendChild(overlay);
-    renderSpread();
-    document.addEventListener('keydown', handleKeyNav);
-    setupSwipe(document.getElementById('book-container'));
-    updateProgress();
-  }
-
-  // --- TOC HTML ---
-  function buildTocHtml(category) {
-    const groups = groupTopics(category.topics);
-    const progress = getProgress();
-    let html = `
-      <button class="book-toc-close" onclick="window._bookToggleToc()">✕</button>
-      <h3>Contents</h3>
-      <div class="book-toc-chapter">
-        <div class="book-toc-chapter-title">Cover</div>
-        <button class="book-toc-topic" onclick="window._bookGoToPage(0)">Title Page</button>
-      </div>`;
-
-    let pIdx = 2; // cover=0, quote=1
-    groups.forEach(group => {
-      pIdx++; // chapter title
-      const chapterDone = group.topics.every(t => progress[t.id]);
-      html += `<div class="book-toc-chapter">
-        <div class="book-toc-chapter-title ${chapterDone ? 'completed' : ''}">${LEVEL_NAMES[group.level]}</div>`;
-      group.topics.forEach(topic => {
-        const done = !!progress[topic.id];
-        const thisIdx = pIdx;
-        html += `<button class="book-toc-topic ${done ? 'completed' : ''}" onclick="window._bookGoToPage(${thisIdx})">${topic.title}</button>`;
-        // concept + visual + content pages + action page
-        const subCount = countTopicPages(topic);
-        pIdx += subCount;
-        // quote between topics
-        pIdx++;
-      });
-      pIdx++; // quote between chapters
-      html += '</div>';
-    });
-
-    return html;
-  }
-
-  function countTopicPages(topic) {
-    const paras = parseParagraphs(topic.body || '');
-    const contentPages = Math.max(0, Math.ceil((paras.length - 1) / 2));
-    return 1 + 1 + contentPages + 1; // concept + visual + content pages + action
-  }
-
-  // ═══════════════════════════════════════
-  // SPREAD RENDERING
-  // ═══════════════════════════════════════
-
-  function renderSpread() {
-    const container = document.getElementById('book-container');
-    if (!container) return;
-    container.innerHTML = '';
-
-    if (isMobile) {
-      const page = pages[currentSpread];
-      if (!page) return;
-      const el = document.createElement('div');
-      el.className = 'book-page left';
-      el.appendChild(renderPage(page, currentSpread));
-      container.appendChild(el);
-    } else {
-      const li = currentSpread * 2;
-      const ri = currentSpread * 2 + 1;
-
-      const leftEl = document.createElement('div');
-      leftEl.className = 'book-page left';
-      leftEl.id = 'book-left-page';
-      leftEl.appendChild(renderPage(pages[li], li));
-      container.appendChild(leftEl);
-
-      const rightEl = document.createElement('div');
-      rightEl.className = 'book-page right';
-      rightEl.id = 'book-right-page';
-      rightEl.appendChild(renderPage(pages[ri], ri));
-      container.appendChild(rightEl);
-
-      const spine = document.createElement('div');
-      spine.className = 'book-spine-shadow';
-      container.appendChild(spine);
-    }
-
-    // Nav buttons
-    const prev = document.createElement('button');
-    prev.className = 'book-nav prev' + (currentSpread === 0 ? ' disabled' : '');
-    prev.innerHTML = '‹';
-    prev.onclick = () => { if (currentSpread > 0) turnPage('prev'); };
-    container.appendChild(prev);
-
-    const next = document.createElement('button');
-    next.className = 'book-nav next' + (currentSpread >= totalSpreads - 1 ? ' disabled' : '');
-    next.innerHTML = '›';
-    next.onclick = () => { if (currentSpread < totalSpreads - 1) turnPage('next'); };
-    container.appendChild(next);
-
-    updateIndicator();
-    updateProgress();
-    highlightToc();
-  }
-
-  function turnPage(dir) {
-    if (isAnimating) return;
-    isAnimating = true;
-
-    if (isMobile) {
-      const c = document.getElementById('book-container');
-      c.style.opacity = '0';
-      c.style.transition = 'opacity 0.2s';
-      setTimeout(() => {
-        currentSpread += dir === 'next' ? 1 : -1;
-        renderSpread();
-        c.style.opacity = '1';
-        setTimeout(() => isAnimating = false, 200);
-      }, 200);
-    } else {
-      if (dir === 'next') {
-        const rp = document.getElementById('book-right-page');
-        if (rp) {
-          rp.classList.add('turning-forward');
-          setTimeout(() => { currentSpread++; renderSpread(); isAnimating = false; }, 450);
-        } else { currentSpread++; renderSpread(); isAnimating = false; }
-      } else {
-        const lp = document.getElementById('book-left-page');
-        if (lp) {
-          lp.style.transformOrigin = 'right center';
-          lp.classList.add('turning-back');
-          setTimeout(() => { currentSpread--; renderSpread(); isAnimating = false; }, 450);
-        } else { currentSpread--; renderSpread(); isAnimating = false; }
+    let lastLevel = '';
+    pages.forEach((p, i) => {
+      if (p.type === 'cover') {
+        addTocItem(list, i, 'Cover', 'cover');
+        return;
       }
-    }
+      if (p.type === 'quote') {
+        if (p.author === 'Foundation' || p.author === 'Development' || p.author === 'Advanced') {
+          const li = document.createElement('li');
+          li.className = 'book-toc-level';
+          li.textContent = p.text;
+          list.appendChild(li);
+          lastLevel = p.text;
+        }
+        return;
+      }
+      if (p.type === 'spread') {
+        // Only first spread of each topic
+        const prev = pages[i - 1];
+        if (!prev || prev.topicId !== p.topicId) {
+          addTocItem(list, i, p.title, p.topicId);
+        }
+      }
+    });
   }
 
-  function goToPage(idx) {
-    if (isMobile) currentSpread = Math.min(idx, pages.length - 1);
-    else currentSpread = Math.min(Math.floor(idx / 2), totalSpreads - 1);
-    currentSpread = Math.max(0, currentSpread);
+  function addTocItem(list, idx, title, id) {
+    const li = document.createElement('li');
+    li.className = 'book-toc-item';
+    li.dataset.idx = idx;
+    li.innerHTML = `<button>${title}</button>`;
+    li.querySelector('button').addEventListener('click', () => goTo(idx));
+    list.appendChild(li);
+  }
+
+  function updateTocActive() {
+    const items = document.querySelectorAll('.book-toc-item');
+    items.forEach(el => {
+      const idx = parseInt(el.dataset.idx);
+      el.classList.toggle('active', idx === current);
+    });
+  }
+
+  /* ── Navigation ── */
+  function goTo(idx) {
+    if (animating || idx < 0 || idx >= pages.length) return;
+    const dir = idx > current ? 'forward' : 'backward';
+    current = idx;
+    animating = true;
+
+    const spread = document.getElementById('book-spread');
+    spread.classList.add(dir === 'forward' ? 'turning-forward' : 'turning-backward');
+
+    setTimeout(() => {
+      render();
+      animating = false;
+    }, 220);
+
     closeToc();
-    renderSpread();
   }
 
-  function handleKeyNav(e) {
-    if (!document.getElementById('book-overlay')) return;
-    if (e.key === 'ArrowRight' || e.key === ' ') {
-      e.preventDefault();
-      if (currentSpread < totalSpreads - 1) turnPage('next');
-    } else if (e.key === 'ArrowLeft') {
-      e.preventDefault();
-      if (currentSpread > 0) turnPage('prev');
-    } else if (e.key === 'Escape') closeBook();
-  }
+  function next() { goTo(current + 1); }
+  function prev() { goTo(current - 1); }
 
-  function setupSwipe(el) {
-    if (!el) return;
-    let sx = 0, sy = 0;
-    el.addEventListener('touchstart', e => { sx = e.touches[0].clientX; sy = e.touches[0].clientY; }, { passive: true });
-    el.addEventListener('touchend', e => {
-      const dx = e.changedTouches[0].clientX - sx;
-      const dy = e.changedTouches[0].clientY - sy;
-      if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 50) {
-        if (dx < 0 && currentSpread < totalSpreads - 1) turnPage('next');
-        else if (dx > 0 && currentSpread > 0) turnPage('prev');
-      }
-    }, { passive: true });
+  /* ── Progress ── */
+  function getProgress() {
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); }
+    catch { return {}; }
   }
-
-  function updateIndicator() {
-    const el = document.getElementById('book-page-indicator');
-    if (!el) return;
-    if (isMobile) el.textContent = `${currentSpread + 1} / ${pages.length}`;
-    else {
-      const l = currentSpread * 2;
-      const r = Math.min(currentSpread * 2 + 1, pages.length - 1);
-      el.textContent = `${l + 1}–${r + 1} / ${pages.length}`;
-    }
-  }
-
-  function updateProgress() {
-    const fill = document.getElementById('book-progress-fill');
-    if (!fill || !currentBook) return;
+  function markUnderstood(topicId) {
     const p = getProgress();
-    const done = currentBook.topics.filter(t => p[t.id]).length;
-    fill.style.width = (currentBook.topics.length > 0 ? (done / currentBook.topics.length * 100) : 0) + '%';
+    p[topicId] = true;
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(p));
   }
 
-  function highlightToc() {
-    const toc = document.getElementById('book-toc');
-    if (!toc) return;
-    toc.querySelectorAll('.book-toc-topic').forEach(b => b.classList.remove('active'));
-    const indices = isMobile ? [currentSpread] : [currentSpread * 2, currentSpread * 2 + 1];
-    indices.forEach(i => {
-      const pg = pages[i];
-      if (pg && pg.topic) {
-        toc.querySelectorAll('.book-toc-topic').forEach(b => {
-          if (b.textContent.trim().replace(' ✓', '') === pg.topic.title) b.classList.add('active');
-        });
-      }
-    });
-  }
-
+  /* ── TOC toggle ── */
   function toggleToc() {
-    const toc = document.getElementById('book-toc');
-    if (!toc) return;
-    tocOpen = !tocOpen;
-    toc.classList.toggle('open', tocOpen);
+    document.getElementById('book-toc')?.classList.toggle('open');
+  }
+  function closeToc() {
+    document.getElementById('book-toc')?.classList.remove('open');
   }
 
-  function closeToc() {
-    const toc = document.getElementById('book-toc');
-    if (toc) toc.classList.remove('open');
-    tocOpen = false;
-  }
+  /* ── Public: openBook ── */
+  window.openBook = function (categoryId) {
+    const cat = (window.KNOWING?.categories || []).find(c => c.id === categoryId);
+    if (!cat) return;
+
+    pages = buildPages(cat);
+    current = 0;
+    quoteIdx = 0;
+
+    let overlay = document.getElementById('book-overlay');
+    if (!overlay) {
+      overlay = document.createElement('div');
+      overlay.id = 'book-overlay';
+      overlay.className = 'book-overlay';
+      overlay.innerHTML = `
+        <div class="book-header">
+          <div class="book-header-left">
+            <button class="book-back-btn" id="book-back">← Shelf</button>
+            <span class="book-header-title" id="book-header-title"></span>
+          </div>
+          <button class="book-toc-btn" id="book-toc-btn">☰</button>
+          <button class="book-close-btn" id="book-close">✕</button>
+        </div>
+        <div class="book-toc" id="book-toc">
+          <div class="book-toc-header">Contents</div>
+          <ul class="book-toc-list" id="book-toc-list"></ul>
+        </div>
+        <div class="book-desk">
+          <div class="book-spread" id="book-spread"></div>
+        </div>
+        <div class="book-nav">
+          <button class="book-nav-btn" id="book-prev">‹ Prev</button>
+          <span class="book-nav-indicator" id="book-indicator"></span>
+          <button class="book-nav-btn" id="book-next">Next ›</button>
+        </div>
+      `;
+      document.body.appendChild(overlay);
+
+      document.getElementById('book-prev').addEventListener('click', prev);
+      document.getElementById('book-next').addEventListener('click', next);
+      document.getElementById('book-close').addEventListener('click', closeBook);
+      document.getElementById('book-back').addEventListener('click', closeBook);
+      document.getElementById('book-toc-btn').addEventListener('click', toggleToc);
+
+      // Keyboard
+      document.addEventListener('keydown', (e) => {
+        if (!document.getElementById('book-overlay')?.classList.contains('open')) return;
+        if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); next(); }
+        if (e.key === 'ArrowLeft') { e.preventDefault(); prev(); }
+        if (e.key === 'Escape') closeBook();
+      });
+
+      // Swipe
+      let touchX = 0;
+      overlay.addEventListener('touchstart', e => { touchX = e.touches[0].clientX; }, { passive: true });
+      overlay.addEventListener('touchend', e => {
+        const dx = e.changedTouches[0].clientX - touchX;
+        if (Math.abs(dx) > 50) dx < 0 ? next() : prev();
+      }, { passive: true });
+    }
+
+    document.getElementById('book-header-title').textContent = cat.title;
+    buildToc();
+    render();
+
+    requestAnimationFrame(() => overlay.classList.add('open'));
+  };
 
   function closeBook() {
-    const o = document.getElementById('book-overlay');
-    if (o) { o.style.opacity = '0'; o.style.transition = 'opacity 0.3s'; setTimeout(() => o.remove(), 300); }
-    document.removeEventListener('keydown', handleKeyNav);
-    currentBook = null;
-    pages = [];
-    if (typeof window.showKnowing === 'function') window.showKnowing();
+    const overlay = document.getElementById('book-overlay');
+    if (!overlay) return;
+    overlay.classList.remove('open');
+    closeToc();
   }
-
-  function bookMarkComplete(topicId) {
-    markTopicDone(topicId);
-    renderSpread();
-    updateProgress();
-    // Rebuild TOC
-    if (currentBook) {
-      const ci = window.KNOWING.categories.indexOf(currentBook);
-      const toc = document.getElementById('book-toc');
-      if (toc) toc.innerHTML = buildTocHtml(currentBook);
-    }
-  }
-
-  // --- Public API ---
-  window._bookClose = closeBook;
-  window._bookToggleToc = toggleToc;
-  window._bookGoToPage = goToPage;
-  window._bookMarkComplete = bookMarkComplete;
-
-  window.openBook = function(catId) {
-    const K = window.KNOWING;
-    if (!K) return;
-    const cat = K.categories.find(c => c.id === catId);
-    if (!cat) return;
-    checkMobile();
-    createBookOverlay(cat, K.categories.indexOf(cat));
-  };
 
 })();
