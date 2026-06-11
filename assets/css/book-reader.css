@@ -104,7 +104,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 24px;
+  padding: 48px;
   position: relative;
   overflow: hidden;
 }
@@ -112,8 +112,8 @@
 /* --- Book spread (2 pages on a desk) --- */
 .book-spread {
   position: relative;
-  width: min(85%, 860px);
-  height: min(calc(100vh - 130px), 580px);
+  width: min(70%, 760px);
+  height: min(calc(100vh - 180px), 520px);
   display: flex;
   perspective: 2500px;
   box-shadow:
