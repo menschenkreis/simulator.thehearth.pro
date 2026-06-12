@@ -97,14 +97,23 @@
     return result;
   }
 
-  window.openBook = function (categoryId) {
-    var K = window.KNOWING;
-    if (!K) return;
+  window.openBook = function (categoryId, levelFilter) {
     var cat = K.categories.find(function (c) { return c.id === categoryId; });
     if (!cat) return;
 
-    currentCat = cat;
-    pages = buildPages(cat);
+    // Filter topics by level if specified
+    var filteredCat = cat;
+    if (levelFilter) {
+      filteredCat = {
+        id: cat.id,
+        title: cat.title,
+        description: cat.description,
+        topics: cat.topics.filter(function (t) { return t.difficulty === levelFilter; })
+      };
+    }
+
+    currentCat = filteredCat;
+    pages = buildPages(filteredCat);
 
     // Remove existing overlay
     var existing = document.getElementById('book-overlay');

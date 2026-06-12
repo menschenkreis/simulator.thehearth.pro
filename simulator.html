@@ -1609,66 +1609,137 @@ function showKnowing(){
   const K=window.KNOWING;if(!K)return;
   const el=document.getElementById('p-foundation');
   const completed=JSON.parse(localStorage.getItem('hearth-knowing-progress')||'{}');
+  const kState=JSON.parse(localStorage.getItem('hearth-knowing-state')||'{}');
+  const currentLevel=kState.bookLevel||1;
 
-  let html='<div style="padding:24px;max-width:900px;margin:0 auto">'+
-    '<button onclick="document.querySelectorAll(\'.pnl\').forEach(p=>p.classList.remove(\'on\'));document.getElementById(\'p-map\').classList.add(\'on\')" style="background:none;border:1px solid var(--border);color:var(--dim);padding:6px 12px;border-radius:4px;cursor:pointer;font-family:inherit;font-size:0.7rem;margin-bottom:16px">\u2190 Back to Map</button>'+
-    '<div style="display:flex;align-items:center;gap:12px;margin-bottom:24px">'+
-      '<img src="images/knowing-icon.png" style="width:64px;height:64px;border-radius:50%;object-fit:cover;border:3px solid var(--gold);box-shadow:0 0 16px rgba(212,175,105,0.12)"/>'+
-      '<div><h2 style="font-family:Cinzel;color:var(--gold);font-size:1.3rem;margin:0">'+K.title+'</h2>'+
-      '<p style="color:var(--dim);font-size:0.75rem;margin:4px 0 0 0">'+K.description+'</p></div>'+
-    '</div>';
+  // Group all topics by difficulty level across all categories
+  const levels=[
+    {level:1,label:'Level I',sub:'Foundations',color:'#c47a3a'},
+    {level:2,label:'Level II',sub:'Development',color:'#4A6741'},
+    {level:3,label:'Level III',sub:'Advanced',color:'#5B3A6B'}
+  ];
 
-  // Note: guided study sessions happen in the Study node, not here
-  // This is the encyclopedia — browse freely
-
-  // Bookshelf — books standing on a shelf
-  html+='<div style="display:flex;align-items:flex-end;justify-content:center;gap:10px;padding:20px 16px 0 16px;min-height:240px;flex-wrap:wrap">';
-
-  const bookColors=['#8B4513','#4A6741','#5B3A6B','#2C5F7C','#8B6914','#6B3A3A','#3A5B6B','#5B4A3A','#6B5B3A','#3A4A6B'];
-  const bookWidths=[55,48,52,44,58,50,46,54,42,56];
-
-  K.categories.forEach((cat,i)=>{
-    const color=bookColors[i%bookColors.length];
-    const w=bookWidths[i%bookWidths.length];
-    const topicsDone=cat.topics.filter(t=>completed[t.id]).length;
-    const totalTopics=cat.topics.length;
-    const allDone=topicsDone===totalTopics&&totalTopics>0;
-    const minHeight=160+i*8;
-
-    html+='<div onclick="openBook(\''+cat.id+'\')" style="'+
-      'width:'+w+'px;min-height:'+minHeight+'px;'+
-      'background:linear-gradient(135deg,'+color+','+color+'cc);'+
-      'border:2px solid '+(allDone?'var(--gold)':'rgba(255,255,255,0.1)')+';'+
-      'border-radius:3px 6px 6px 3px;'+
-      'cursor:pointer;transition:all 0.2s;'+
-      'display:flex;flex-direction:column;align-items:center;justify-content:center;'+
-      'padding:12px 6px;'+
-      'position:relative;'+
-      'box-shadow:2px 2px 8px rgba(0,0,0,0.3)'+
-    '" onmouseover="this.style.transform=\'translateY(-8px)\';this.style.boxShadow=\'2px 2px 16px rgba(212,175,105,0.3)\'" onmouseout="this.style.transform=\'translateY(0)\';this.style.boxShadow=\'2px 2px 8px rgba(0,0,0,0.3)\'">'+
-      '<div style="writing-mode:vertical-rl;text-orientation:mixed;font-family:Cinzel;font-size:0.75rem;color:rgba(255,255,255,0.9);text-align:center;letter-spacing:0.08em;line-height:1.2">'+cat.title+'</div>'+
-      '<div style="font-family:JetBrains Mono;font-size:0.55rem;color:rgba(255,255,255,0.5);margin-top:8px">'+topicsDone+'/'+totalTopics+'</div>'+
-      (allDone?'<div style="position:absolute;top:6px;right:6px;font-size:0.6rem;color:var(--gold)">&#10003;</div>':'')+
-    '</div>';
+  // For each level, collect the categories that have topics at that level
+  levels.forEach(lv=>{
+    lv.categories=[];
+    K.categories.forEach(cat=>{
+      const topics=cat.topics.filter(t=>t.difficulty===lv.level);
+      if(topics.length){
+        const done=topics.filter(t=>completed[t.id]).length;
+        lv.categories.push({...cat,topics,done,total:topics.length});
+      }
+    });
+    // Total progress for this level
+    lv.totalTopics=lv.categories.reduce((a,c)=>a+c.total,0);
+    lv.totalDone=lv.categories.reduce((a,c)=>a+c.done,0);
   });
 
-  html+='</div>';
+  // Determine max unlocked level (level 1 always unlocked, next unlocks when 50% of prev is done)
+  let maxUnlocked=1;
+  if(levels[0].totalTopics>0 && levels[0].totalDone/levels[0].totalTopics>=0.5) maxUnlocked=2;
+  if(maxUnlocked>=2 && levels[1].totalTopics>0 && levels[1].totalDone/levels[1].totalTopics>=0.5) maxUnlocked=3;
 
-  // Shelf line
-  html+='<div style="height:4px;background:linear-gradient(to right,#5a4a3a,#8a7a6a,#5a4a3a);border-radius:0 0 2px 2px;margin:0 16px;box-shadow:0 2px 6px rgba(0,0,0,0.3)"></div>';
+  let html='<div style="padding:20px;max-width:900px;margin:0 auto">'+
+    '<button onclick="document.querySelectorAll(\'.pnl\').forEach(p=>p.classList.remove(\'on\'));document.getElementById(\'p-map\').classList.add(\'on\')" style="background:none;border:1px solid var(--border);color:var(--dim);padding:6px 12px;border-radius:4px;cursor:pointer;font-family:inherit;font-size:0.7rem;margin-bottom:16px">\u2190 Back to Map</button>'+
+    '<div style="display:flex;align-items:center;gap:12px;margin-bottom:24px">'+
+      '<img src="images/knowing-icon.png" style="width:56px;height:56px;border-radius:50%;object-fit:cover;border:2px solid var(--gold);box-shadow:0 0 12px rgba(212,175,105,0.1)"/>'+
+      '<div><div style="font-family:Josefin Sans,sans-serif;color:var(--gold);font-size:1.1rem;letter-spacing:2px">'+K.title+'</div>'+
+      '<div style="color:var(--dim);font-size:0.7rem;margin-top:2px">Your reference library. Browse any book, any time.</div></div>'+
+    '</div>';
 
-  // Shelf supports
-  html+='<div style="display:flex;justify-content:space-between;padding:0 24px">'+
-    '<div style="width:8px;height:20px;background:#5a4a3a;border-radius:0 0 2px 2px"></div>'+
-    '<div style="width:8px;height:20px;background:#5a4a3a;border-radius:0 0 2px 2px"></div>'+
-  '</div>';
+  // ── Level shelves ──
+  levels.forEach((lv,li)=>{
+    const isLocked=lv.level>maxUnlocked;
+    const pct=lv.totalTopics?Math.round(lv.totalDone/lv.totalTopics*100):0;
+    const opacity=isLocked?0.3:1;
 
-  html+='<div style="margin-top:20px;padding-top:12px;border-top:1px solid var(--border);text-align:center">'+
-    '<p style="font-size:0.6rem;color:var(--dim)">Sources: '+K.sources.join(' · ')+'</p>'+
+    html+='<div style="margin-bottom:24px;opacity:'+opacity+';transition:opacity 0.4s;'+(isLocked?'filter:grayscale(0.8);':'')+'">'+
+      // Shelf header
+      '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;padding:0 4px">'+
+        '<div>'+
+          '<span style="font-family:Josefin Sans,sans-serif;font-size:0.85rem;color:'+lv.color+';letter-spacing:2px;font-weight:500">'+lv.label+'</span>'+
+          '<span style="font-family:IBM Plex Sans,sans-serif;font-size:0.7rem;color:var(--dim);margin-left:8px">'+lv.sub+'</span>'+
+        '</div>'+
+        (isLocked?
+          '<span style="font-family:Josefin Sans,sans-serif;font-size:0.6rem;color:var(--dim);letter-spacing:1px">\uD83D\uDD12 Complete 50% of Level '+(lv.level-1)+' to unlock</span>':
+          '<span style="font-family:JetBrains Mono,monospace;font-size:0.6rem;color:var(--dim)">'+lv.totalDone+'/'+lv.totalTopics+' read · '+pct+'%</span>'
+        )+
+      '</div>'+
+      // Progress bar
+      '<div style="height:2px;background:var(--border);border-radius:1px;margin-bottom:12px;overflow:hidden">'+
+        '<div style="height:100%;width:'+pct+'%;background:'+lv.color+';border-radius:1px;transition:width 0.4s"></div>'+
+      '</div>';
+
+    // Book carousel
+    html+='<div style="position:relative">';
+    if(!isLocked && lv.categories.length>3){
+      html+='<button onclick="_scrollShelf(\'shelf-l'+lv.level+'\',-1)" style="position:absolute;left:-8px;top:50%;transform:translateY(-50%);z-index:2;background:var(--card);border:1px solid var(--border);color:var(--dim);width:28px;height:28px;border-radius:50%;cursor:pointer;font-size:0.8rem;display:flex;align-items:center;justify-content:center">\u2039</button>';
+    }
+
+    html+='<div id="shelf-l'+lv.level+'" class="book-carousel" style="display:flex;gap:10px;overflow-x:auto;scroll-behavior:smooth;padding:4px 16px 8px;scrollbar-width:none;-ms-overflow-style:none">';
+    // hide scrollbar
+    html+='<style>#shelf-l'+lv.level+'::-webkit-scrollbar{display:none}</style>';
+
+    const bookColors=['#8B4513','#4A6741','#5B3A6B','#2C5F7C','#8B6914','#6B3A3A','#3A5B6B','#5B4A3A','#6B5B3A','#3A4A6B'];
+
+    lv.categories.forEach((cat,ci)=>{
+      const color=bookColors[K.categories.findIndex(c=>c.id===cat.id)%bookColors.length];
+      const allDone=cat.done===cat.total&&cat.total>0;
+      const h=150+ci*4;
+      const w=48+ci%3*4;
+
+      if(isLocked){
+        // Ghost silhouette
+        html+='<div style="width:'+w+'px;min-height:'+h+'px;background:'+color+'20;border:1px dashed '+color+'30;border-radius:3px 6px 6px 3px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px 4px;flex-shrink:0">'+
+          '<div style="writing-mode:vertical-rl;text-orientation:mixed;font-family:Josefin Sans,sans-serif;font-size:0.7rem;color:'+color+'50;text-align:center;letter-spacing:0.05em;line-height:1.2">'+cat.title+'</div>'+
+        '</div>';
+      } else {
+        // Real book
+        html+='<div onclick="openBook(\''+cat.id+'\','+lv.level+')" style="'+
+          'width:'+w+'px;min-height:'+h+'px;'+
+          'background:linear-gradient(145deg,'+color+','+color+'bb);'+
+          'border:2px solid '+(allDone?'var(--gold)':'rgba(255,255,255,0.08)')+';'+
+          'border-radius:3px 6px 6px 3px;'+
+          'cursor:pointer;transition:all 0.25s;'+
+          'display:flex;flex-direction:column;align-items:center;justify-content:center;'+
+          'padding:12px 4px;'+
+          'position:relative;'+
+          'box-shadow:2px 3px 10px rgba(0,0,0,0.35);'+
+          'flex-shrink:0'+
+        '" onmouseover="this.style.transform=\'translateY(-6px) scale(1.02)\';this.style.boxShadow=\'3px 6px 20px rgba(212,175,105,0.25)\'" onmouseout="this.style.transform=\'translateY(0) scale(1)\';this.style.boxShadow=\'2px 3px 10px rgba(0,0,0,0.35)\'">'+
+          '<div style="writing-mode:vertical-rl;text-orientation:mixed;font-family:Josefin Sans,sans-serif;font-size:0.7rem;color:rgba(255,255,255,0.9);text-align:center;letter-spacing:0.05em;line-height:1.2">'+cat.title+'</div>'+
+          '<div style="font-family:JetBrains Mono,monospace;font-size:0.5rem;color:rgba(255,255,255,0.4);margin-top:8px">'+cat.done+'/'+cat.total+'</div>'+
+          (allDone?'<div style="position:absolute;top:4px;right:4px;font-size:0.55rem;color:var(--gold)">\u2713</div>':'')+
+        '</div>';
+      }
+    });
+
+    html+='</div>'; // carousel
+
+    if(!isLocked && lv.categories.length>3){
+      html+='<button onclick="_scrollShelf(\'shelf-l'+lv.level+'\',1)" style="position:absolute;right:-8px;top:50%;transform:translateY(-50%);z-index:2;background:var(--card);border:1px solid var(--border);color:var(--dim);width:28px;height:28px;border-radius:50%;cursor:pointer;font-size:0.8rem;display:flex;align-items:center;justify-content:center">\u203A</button>';
+    }
+
+    html+='</div>'; // relative wrapper
+
+    // Shelf line
+    html+='<div style="height:3px;background:linear-gradient(to right,#3a2e22,'+lv.color+'40,#3a2e22);border-radius:0 0 1px 1px;margin:0 8px"></div>';
+    html+='</div>'; // level container
+  });
+
+  // Sources
+  html+='<div style="margin-top:16px;padding-top:10px;border-top:1px solid var(--border);text-align:center">'+
+    '<p style="font-size:0.55rem;color:var(--dim)">Sources: '+K.sources.join(' \u00B7 ')+'</p>'+
   '</div></div>';
 
   el.innerHTML=html;
 }
+
+// Carousel scroll helper
+window._scrollShelf=function(id,dir){
+  const el=document.getElementById(id);if(!el)return;
+  el.scrollBy({left:dir*200,behavior:'smooth'});
+};
 
 window.showKnowingBook=function(catId){
   const K=window.KNOWING;if(!K)return;
