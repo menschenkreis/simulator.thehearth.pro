@@ -385,11 +385,11 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
   .bot{
     position:fixed;bottom:0;left:0;right:0;
     width:100%!important;min-width:unset!important;
-    height:64px;min-height:64px;
+    height:68px;min-height:68px;
     flex-direction:row!important;
-    justify-content:space-around;
+    justify-content:space-evenly;
     align-items:center;
-    padding:0 8px!important;gap:4px!important;
+    padding:0 12px!important;gap:0!important;
     border-right:none!important;
     border-top:1px solid var(--border);
     z-index:200;
@@ -399,7 +399,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
   }
   .bt{
     flex:1;flex-direction:column!important;
-    gap:3px!important;padding:8px 4px!important;
+    gap:2px!important;padding:10px 6px!important;
     width:auto;height:auto;min-width:unset;
     border-radius:10px!important;
     border:none!important;
@@ -411,15 +411,15 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
     position:relative;
   }
   .bt::after{
-    content:'';position:absolute;bottom:4px;left:50%;transform:translateX(-50%);
+    content:'';position:absolute;bottom:6px;left:50%;transform:translateX(-50%);
     width:0;height:2px;border-radius:1px;
     background:var(--gold);transition:width 0.2s ease;
   }
-  .bt .bl{font-size:0.6rem!important;letter-spacing:0.04em!important;text-transform:none!important;font-weight:500!important;}
+  .bt .bl{font-size:0.62rem!important;letter-spacing:0.06em!important;text-transform:uppercase!important;font-weight:500!important;}
   .bt.on{background:transparent!important;border-radius:10px!important;}
   .bt.on .bl{color:var(--gold)!important;font-weight:600!important;}
-  .bt.on::after{width:16px;}
-  .center{margin-left:0;padding-bottom:calc(64px + env(safe-area-inset-bottom, 0px));}
+  .bt.on::after{width:18px;}
+  .center{margin-left:0;padding-bottom:calc(68px + env(safe-area-inset-bottom, 0px));}
   .bot{padding-bottom:env(safe-area-inset-bottom, 0px)!important;}
 
   /* ═══ TOP BAR ═══ */
@@ -429,9 +429,9 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
   #mode-select{min-width:90px;font-size:0.58rem;padding:3px 6px;flex-shrink:0;}
 
   /* ═══ MAP ═══ */
-  .map{padding:4px;}
-  .map-wrap{padding-top:4px;max-height:calc(100vh - 110px);}
-  .map-svg{max-height:calc(100vh - 110px);}
+  .map{padding:8px;}
+  .map-wrap{padding-top:4px;max-height:calc(100vh - 120px);}
+  .map-svg{max-height:calc(100vh - 120px);}
   .mn-label{font-size:8px!important;letter-spacing:0.08em;}
   .mn-sublabel{font-size:6px!important;}
   .path-btns{gap:4px;padding:4px 8px;}
@@ -589,11 +589,11 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 
 <!-- TOOLBAR -->
 <div class="bot" style="width:240px;min-width:240px;flex-shrink:0;overflow:visible;">
-  <div class="bt on" data-t="map" onclick="sw('map')"><span class="bi" style="font-size:1.1rem">🗺️</span><span class="bl">Map</span></div>
-  <div class="bt" data-t="lesson" onclick="sw('lesson')"><span class="bi" style="font-size:1.1rem">⚔️</span><span class="bl">Journey</span></div>
-  <div class="bt" data-t="theory" onclick="sw('theory')"><span class="bi" style="font-size:1.1rem">📖</span><span class="bl">Dictionary</span></div>
-  <div class="bt" data-t="drill" onclick="sw('drill')"><span class="bi" style="font-size:1.1rem">📓</span><span class="bl">Notebook</span></div>
-  <div class="bt" data-t="record" onclick="sw('record')"><span class="bi" style="font-size:1.1rem">🎙️</span><span class="bl">Recorder</span></div>
+  <div class="bt on" data-t="map" onclick="sw('map')"><span class="bl">Map</span></div>
+  <div class="bt" data-t="lesson" onclick="sw('lesson')"><span class="bl">Journey</span></div>
+  <div class="bt" data-t="theory" onclick="sw('theory')"><span class="bl">Dictionary</span></div>
+  <div class="bt" data-t="drill" onclick="sw('drill')"><span class="bl">Notebook</span></div>
+  <div class="bt" data-t="record" onclick="sw('record')"><span class="bl">Recorder</span></div>
 </div>
 
 <div class="center">
