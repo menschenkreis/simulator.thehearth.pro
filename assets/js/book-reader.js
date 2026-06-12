@@ -181,7 +181,21 @@
     var pageW = isMobile ? Math.min(340, window.innerWidth - 40) : 450;
     var pageH = isMobile ? Math.min(480, window.innerHeight - 160) : 630;
 
-    pageFlip = new St.PageFlip(flipEl, {
+    var PageFlipLib = (typeof St !== 'undefined' && St.PageFlip) ? St.PageFlip : (typeof PageFlip !== 'undefined' ? PageFlip : null);
+    if (!PageFlipLib) {
+      console.error('Page-flip library not loaded. Attempting to continue without flipbook.');
+      // Fallback: show content without flipbook
+      overlay.innerHTML = '<div style="padding:40px;color:#e8c9a0;font-family:IBM Plex Sans,sans-serif;text-align:center">' +
+        '<div style="font-size:1.5rem;margin-bottom:1rem">\uD83D\uDCD6</div>' +
+        '<div style="font-family:Josefin Sans,sans-serif;font-size:1.2rem;margin-bottom:1rem">' + esc(filteredCat.title) + '</div>' +
+        '<div style="font-size:0.8rem;color:rgba(232,201,160,0.5);margin-bottom:2rem">Flipbook library loading... Try refreshing the page.</div>' +
+        '<button onclick="closeBook()" style="background:var(--card);border:1px solid var(--border);color:var(--text);padding:10px 20px;border-radius:6px;cursor:pointer;font-family:DM Sans,sans-serif">Close</button>' +
+      '</div>';
+      overlay.style.opacity = '1';
+      return;
+    }
+
+    pageFlip = new PageFlipLib(flipEl, {
       width: pageW,
       height: pageH,
       size: 'stretch',
