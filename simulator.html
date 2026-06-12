@@ -1718,7 +1718,7 @@ function showPractice(){
       '</div>'+
       '<div style="color:var(--text);font-size:0.85rem;font-weight:600">'+(lastSession.drillTitle||'Practice Session')+'</div>'+
       '<div style="display:flex;gap:16px;margin-top:6px">'+
-        '<div style="font-size:0.7rem;color:var(--dim)">时长 '+lastSession.minutes+'分钟</div>'+
+        '<div style="font-size:0.7rem;color:var(--dim)">'+lastSession.minutes+' min</div>'+
         '<div style="font-size:0.7rem;color:var(--dim)">'+(lastSession.bpm||'—')+' BPM</div>'+
         (lastSession.feeling?('<div style="font-size:0.7rem;color:'+_feelingColor(lastSession.feeling)+'">'+_feelingEmoji(lastSession.feeling)+' '+lastSession.feeling+'</div>'):'')+
       '</div>'+
@@ -1730,7 +1730,7 @@ function showPractice(){
   const statsHtml='<div style="display:flex;gap:12px;margin-bottom:16px">'+
     _statBox('🔥',streak,'Day Streak','')+
     _statBox('⏱',totalMinutes,'Min Total','')+
-    _statBox('✅',completedDrills.length,'Mastered','/'+P.drills.length)+'+
+    _statBox('✅',completedDrills.length,'Mastered','/'+P.drills.length)+
     _statBox('🎸',totalSessions,'Sessions','')+
   '</div>';
 
