@@ -1,0 +1,24 @@
+{
+  "name": "The Hearth Mastery",
+  "short_name": "Hearth",
+  "description": "Guitar Learning Simulator",
+  "start_url": "/simulator.html",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "theme_color": "#0d0b08",
+  "background_color": "#0d0b08",
+  "icons": [
+    {
+      "src": "images/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "images/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "categories": ["education", "music"]
+}
