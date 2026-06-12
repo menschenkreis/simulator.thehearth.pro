@@ -52,11 +52,11 @@
 }
 
 /* SVG connection classes — themed by data-theme */
-#web line{stroke:#6a5e4e;opacity:0.35;stroke-width:0.8;transition:opacity 0.3s;}
+#web line{stroke:#6a5e4e;opacity:0.1;stroke-width:0.5;transition:opacity 0.3s;}
 #web line:hover{opacity:0.6;}
-.conn-branch{stroke:var(--amber);opacity:0.3;stroke-width:3.5;}
-.conn-alt{stroke:#5a9fd4;opacity:0.25;stroke-width:2.2;}
-.conn-spine{stroke:#3a3530;opacity:0.25;stroke-width:3;}
+.conn-branch{stroke:#d4af69;opacity:0.4;stroke-width:3.5;}
+.conn-alt{stroke:#d4af69;opacity:0.3;stroke-width:3;}
+.conn-spine{stroke:#d4af69;opacity:0.2;stroke-width:3;}
 .conn-tick{stroke:var(--gold);opacity:0.4;stroke-width:1;}
 .conn-tick.dim{stroke:#3a3530;opacity:0.3;}
 .conn-label{font-family:'JetBrains Mono',monospace;font-size:7px;fill:var(--gold);opacity:0.6;}
@@ -768,13 +768,6 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
           <text class="mn-label" x="350" y="870">MASTERY</text>
         </g>
 
-        <!-- ═══ PATH SIGN: DOING (LEFT) ═══ -->
-        <g opacity="0.5">
-          <rect x="40" y="168" width="90" height="28" rx="4" fill="#e8a020" fill-opacity="0.1" stroke="#e8a020" stroke-width="0.5" stroke-opacity="0.3"/>
-          <text x="85" y="186" text-anchor="middle" fill="#e8a020" font-family="Cinzel,serif" font-size="9" font-weight="700" letter-spacing="2">DOING</text>
-          <text x="85" y="196" text-anchor="middle" fill="#e8a020" fill-opacity="0.5" font-family="DM Sans,sans-serif" font-size="5.5">hands · drills · play</text>
-        </g>
-
         <!-- ═══ LEFT BRANCH — DOING PATH ═══ -->
 
         <g class="mn-g unlocked" onclick="showNodeInfo('doing')" data-node="doing">
@@ -800,13 +793,6 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
           <text x="88" y="689" text-anchor="middle" font-size="16">🎸</text>
           <text class="mn-label" x="88" y="722">PLAY</text>
           <text class="mn-sublabel" x="88" y="735">songs & collab</text>
-        </g>
-
-        <!-- ═══ PATH SIGN: KNOWING (RIGHT) ═══ -->
-        <g opacity="0.5">
-          <rect x="565" y="168" width="95" height="28" rx="4" fill="#e8a020" fill-opacity="0.1" stroke="#e8a020" stroke-width="0.5" stroke-opacity="0.3"/>
-          <text x="612" y="186" text-anchor="middle" fill="#e8a020" font-family="Cinzel,serif" font-size="9" font-weight="700" letter-spacing="2">KNOWING</text>
-          <text x="612" y="196" text-anchor="middle" fill="#e8a020" fill-opacity="0.5" font-family="DM Sans,sans-serif" font-size="5.5">mind · theory · create</text>
         </g>
 
         <!-- ═══ RIGHT BRANCH — KNOWING PATH ═══ -->
