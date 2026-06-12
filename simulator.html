@@ -385,31 +385,41 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
   .bot{
     position:fixed;bottom:0;left:0;right:0;
     width:100%!important;min-width:unset!important;
-    height:60px;min-height:60px;
+    height:64px;min-height:64px;
     flex-direction:row!important;
     justify-content:space-around;
     align-items:center;
-    padding:0 4px!important;gap:0!important;
+    padding:0 8px!important;gap:4px!important;
     border-right:none!important;
     border-top:1px solid var(--border);
     z-index:200;
     background:var(--panel);
+    backdrop-filter:blur(12px);
+    -webkit-backdrop-filter:blur(12px);
   }
   .bt{
     flex:1;flex-direction:column!important;
-    gap:2px!important;padding:6px 2px!important;
+    gap:3px!important;padding:8px 4px!important;
     width:auto;height:auto;min-width:unset;
-    border-radius:8px!important;
-    border:2px solid transparent!important;
+    border-radius:10px!important;
+    border:none!important;
     border-left:none!important;
     background:transparent!important;
     box-shadow:none!important;
     margin:0!important;
+    transition:all 0.15s ease!important;
+    position:relative;
   }
-  .bt .bl{font-size:0.6rem!important;letter-spacing:0.03em!important;text-transform:none!important;}
-  .bt.on{background:rgba(212,175,105,0.12)!important;border-radius:8px!important;}
-  .bt.on .bl{color:var(--gold)!important;}
-  .center{margin-left:0;padding-bottom:calc(60px + env(safe-area-inset-bottom, 0px));}
+  .bt::after{
+    content:'';position:absolute;bottom:4px;left:50%;transform:translateX(-50%);
+    width:0;height:2px;border-radius:1px;
+    background:var(--gold);transition:width 0.2s ease;
+  }
+  .bt .bl{font-size:0.6rem!important;letter-spacing:0.04em!important;text-transform:none!important;font-weight:500!important;}
+  .bt.on{background:transparent!important;border-radius:10px!important;}
+  .bt.on .bl{color:var(--gold)!important;font-weight:600!important;}
+  .bt.on::after{width:16px;}
+  .center{margin-left:0;padding-bottom:calc(64px + env(safe-area-inset-bottom, 0px));}
   .bot{padding-bottom:env(safe-area-inset-bottom, 0px)!important;}
 
   /* ═══ TOP BAR ═══ */
@@ -486,13 +496,15 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
   /* Floating character */
   .mobile-character{
     position:fixed;
-    bottom:calc(68px + env(safe-area-inset-bottom, 0px));
-    right:12px;width:56px;height:56px;
+    bottom:calc(72px + env(safe-area-inset-bottom, 0px));
+    right:8px;
+    width:80px;height:80px;
     z-index:150;pointer-events:none;
     animation:float 3s ease-in-out infinite;
-    filter:drop-shadow(0 2px 8px rgba(0,0,0,0.5));
+    filter:drop-shadow(0 4px 16px rgba(0,0,0,0.6));
+    transition:opacity 0.3s ease;
   }
-  @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+  @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
 
   /* ═══ GENERAL TOUCH ═══ */
   .mn-g{min-height:44px;}
@@ -577,11 +589,11 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 
 <!-- TOOLBAR -->
 <div class="bot" style="width:240px;min-width:240px;flex-shrink:0;overflow:visible;">
-  <div class="bt on" data-t="map" onclick="sw('map')"><span class="bl">Map</span></div>
-  <div class="bt" data-t="lesson" onclick="sw('lesson')"><span class="bl">Journey</span></div>
-  <div class="bt" data-t="theory" onclick="sw('theory')"><span class="bl">Dictionary</span></div>
-  <div class="bt" data-t="drill" onclick="sw('drill')"><span class="bl">Notebook</span></div>
-  <div class="bt" data-t="record" onclick="sw('record')"><span class="bl">Recorder</span></div>
+  <div class="bt on" data-t="map" onclick="sw('map')"><span class="bi" style="font-size:1.1rem">🗺️</span><span class="bl">Map</span></div>
+  <div class="bt" data-t="lesson" onclick="sw('lesson')"><span class="bi" style="font-size:1.1rem">⚔️</span><span class="bl">Journey</span></div>
+  <div class="bt" data-t="theory" onclick="sw('theory')"><span class="bi" style="font-size:1.1rem">📖</span><span class="bl">Dictionary</span></div>
+  <div class="bt" data-t="drill" onclick="sw('drill')"><span class="bi" style="font-size:1.1rem">📓</span><span class="bl">Notebook</span></div>
+  <div class="bt" data-t="record" onclick="sw('record')"><span class="bi" style="font-size:1.1rem">🎙️</span><span class="bl">Recorder</span></div>
 </div>
 
 <div class="center">
