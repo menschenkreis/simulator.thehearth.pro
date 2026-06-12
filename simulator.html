@@ -1102,150 +1102,245 @@ function moveFlame(targetId) {
 }
 
 
-// ═══ HEARTH DASHBOARD — THE BRAIN ═══
+
+// ═══ HEARTH DASHBOARD — NEURAL CONSTELLATION ═══
 function showHearth(){
   document.querySelectorAll('.pnl').forEach(p=>p.classList.remove('on'));
   document.getElementById('p-hearth').classList.add('on');
-  const el = document.getElementById('p-hearth');
-  const sessions = JSON.parse(localStorage.getItem('hearth-sessions')||'[]');
-  const pLog = JSON.parse(localStorage.getItem('hearth-practice-log')||'[]');
-  const kProgress = JSON.parse(localStorage.getItem('hearth-knowing-progress')||'{}');
-  const fProgress = JSON.parse(localStorage.getItem('hearth-foundation-progress')||'{}');
-  const streak = calcStreak(sessions);
-  const totalTime = sessions.reduce((a,s)=>a+(s.minutes||0),0);
+  const el=document.getElementById('p-hearth');
+  const sessions=JSON.parse(localStorage.getItem('hearth-sessions')||'[]');
+  const pLog=JSON.parse(localStorage.getItem('hearth-practice-log')||'[]');
+  const kProgress=JSON.parse(localStorage.getItem('hearth-knowing-progress')||'{}');
+  const fProgress=JSON.parse(localStorage.getItem('hearth-foundation-progress')||'{}');
+  const streak=calcStreak(sessions);
+  const totalTime=sessions.reduce((a,s)=>a+(s.minutes||0),0);
 
-  const K=window.KNOWING;
-  const P=window.PRACTICE;
-  const brain = {
-    motor: {
-      label:'Motor Cortex', tag:'MOVEMENT & MUSCLE MEMORY', nodes:['doing','practice'], color:'#e8a020',
-      getStats:function(){var d=P?P.drills.length:0;var n=pLog.length;var m=pLog.filter(function(s){return s.feeling==='nailed'}).length;return {drills:d,done:n,mastered:m,label:n+' drills completed'};},
-      desc:['The <strong>Motor Cortex</strong> controls voluntary movement. When you practice chord transitions, alternate picking, or scales with a metronome, you\'re building neural pathways here. Each repetition strengthens the connection between your brain and your fingers.','Your Motor Cortex is forming <strong>myelin sheaths</strong> around neural pathways for guitar movements. Myelin wraps nerve fibres \u2014 the more you repeat, the thicker the sheath, the faster the signal. Slow, correct practice builds speed.','Your motor cortex has consolidated key movements into <strong>procedural memory</strong>. These patterns now run on the basal ganglia \u2014 they\'re automatic. You don\'t think about how to form a G chord anymore. This frees your prefrontal cortex for creative decisions.']
-    },
-    broca: {
-      label:'Broca\'s Area', tag:'EXPRESSION & CREATION', nodes:['play','create'], color:'#c45a20',
-      getStats:function(){return {label:'Awaiting first jam'};},
-      desc:['<strong>Broca\'s Area</strong> handles language production \u2014 and in musicians, it activates when you translate musical thought into sound. Playing a song, improvising, or writing a riff all fire this region.','Your Broca\'s Area is developing musical "vocabulary." Just as a child learns words before sentences, you\'re learning riffs before solos. The pentatonic scale is your first language.','Your Broca\'s Area operates with musical fluency. You hear a phrase in your head and play it without translating through theory. Thought-to-sound is as natural as thought-to-speech.']
-    },
-    visual: {
-      label:'Visual Cortex', tag:'PATTERN RECOGNITION', nodes:['knowing'], color:'#4A6741',
-      getStats:function(){if(!K)return {read:0,total:0,label:'No data'};var t=0,d=0;K.categories.forEach(function(c){c.topics.forEach(function(x){t++;if(kProgress[x.id])d++;});});return {read:d,total:t,label:d+'/'+t+' concepts read'};},
-      desc:['The <strong>Visual Cortex</strong> processes what you see \u2014 chord diagrams, fretboard patterns, notation. When you look at a chord shape and your brain recognises it, that\'s this region connecting visual input to musical meaning.','Your Visual Cortex is developing <strong>chunking</strong> \u2014 seeing groups of notes as one pattern. A chord diagram stops being 6 circles and becomes one shape. This is how sight-reading becomes possible.','Your Visual Cortex has built a rich library of musical patterns. You look at a fretboard and see scales, chords, and intervals as interconnected shapes. Theory has become visual intuition.']
-    },
-    auditory: {
-      label:'Auditory Cortex', tag:'EAR TRAINING', nodes:['knowing','play'], color:'#2C5F7C',
-      getStats:function(){return {label:'Ear training coming soon'};},
-      desc:['The <strong>Auditory Cortex</strong> processes sound \u2014 pitch, rhythm, timbre. When you can tell a note is "wrong" without looking, that\'s this region working.','Your Auditory Cortex is developing <strong>relative pitch</strong> \u2014 identifying intervals by sound quality. A major third sounds "bright," a minor seventh sounds "tense."','Your Auditory Cortex has developed strong discrimination. You hear chord qualities, identify intervals, and transcribe melodies by ear.']
-    },
-    prefrontal: {
-      label:'Prefrontal Cortex', tag:'METACOGNITION & STUDY', nodes:['study'], color:'#5B3A6B',
-      getStats:function(){var q=JSON.parse(localStorage.getItem('hearth-knowing-quiz')||'{}');var p=Object.values(q).filter(function(x){return x.passed}).length;return {passed:p,label:p+' quizzes passed'};},
-      desc:['The <strong>Prefrontal Cortex</strong> is the brain\'s executive \u2014 planning, self-assessment, metacognition. When you study theory and quiz yourself, you\'re training this region.','Your Prefrontal Cortex is developing <strong>metacognitive awareness</strong>. You can identify what you don\'t know and target it. The self-assessment trains your brain to monitor its own understanding.','Your Prefrontal Cortex has developed strong metacognitive control. You diagnose gaps, plan your learning, and adjust your approach. You\'ve learned how to learn.']
-    },
-    hippocampus: {
-      label:'Hippocampus', tag:'MEMORY CONSOLIDATION', nodes:['foundation','study','practice'], color:'#8B6914',
-      getStats:function(){var f=Object.keys(fProgress).length;return {done:f,total:10,label:f+'/10 foundations'};},
-      desc:['The <strong>Hippocampus</strong> converts short-term experiences into long-term memories. Every night after you practice, your hippocampus replays the neural patterns, consolidating them. Sleep isn\'t rest \u2014 it\'s learning.','Your Hippocampus is actively consolidating during sleep. The <strong>spacing effect</strong> works because each replay strengthens the memory trace. Your streak is literally a hippocampus trainer.','Your Hippocampus has consolidated skills into long-term memory. These patterns are permanent \u2014 even after months without playing, your fingers remember.']
-    },
-    limbic: {
-      label:'Limbic System', tag:'SOCIAL & EMOTIONAL', nodes:['collab'], color:'#6B3A3A',
-      getStats:function(){return {label:'Social learning coming soon'};},
-      desc:['The <strong>Limbic System</strong> handles emotion and social connection. Music is inherently social \u2014 even playing alone, you connect with the emotion of the piece.','Your Limbic System is developing <strong>musical empathy</strong> \u2014 the ability to feel what other musicians are playing and respond. Jamming is a neural conversation.','Your Limbic System has developed strong musical social intelligence. You lock in with a drummer, respond to dynamics, and create emotional resonance.']
-    },
-    brainstem: {
-      label:'Brainstem', tag:'FOUNDATIONS', nodes:['foundation'], color:'#5B4A3A',
-      getStats:function(){var f=Object.keys(fProgress).length;return {done:f,total:10,label:Math.round(f/10*100)+'% foundations'};},
-      desc:['The <strong>Brainstem</strong> controls the basics \u2014 things that must work before anything else. Posture, holding the pick, tuning, hand position. Skip this and every advanced skill wobbles.','Your Brainstem functions are becoming automatic. You pick up the guitar and your hands find the right position without thinking. The transition from declarative to procedural memory.','Your Brainstem has fully automated the basics. Posture, hand position, pick grip \u2014 they\'re as natural as breathing. This frees your entire brain for the music.']
-    }
-  };
+  const K=window.KNOWING;const P=window.PRACTICE;
 
-  function getPhase(stats){
-    if(!stats)return 1;
-    if(stats.total){var p=stats.done?Math.round(stats.done/stats.total*100):0;if(p<34)return 1;if(p<67)return 2;return 3;}
-    if(stats.mastered)return stats.mastered>5?3:stats.mastered>2?2:1;
+  // Brain regions as constellation stars
+  // Each has: position (cx,cy), radius, color, label, neuro description
+  const regions=[
+    {id:'motor',label:'Motor Cortex',x:50,y:28,r:14,color:'#e8a020',
+     tag:'VOLUNTARY MOVEMENT',nodes:['doing','practice'],
+     getStats:function(){var n=pLog.length;var m=pLog.filter(function(s){return s.feeling==='nailed'}).length;return {done:n,mastered:m,label:n+' drills · '+m+' mastered'};},
+     desc:[
+       'The <strong>Motor Cortex</strong> (precentral gyrus) sends voluntary movement commands to your muscles via corticospinal tracts. Every chord shape, every pick stroke begins here as an electrical signal.',
+       'Myelination is occurring. <strong>Oligodendrocytes</strong> are wrapping your guitar-specific neural circuits in fatty sheaths. Each correct repetition thickens the myelin, increasing signal speed up to 100x. This is neuroplasticity in action.',
+       'Movements have been consolidated into the <strong>basal ganglia</strong> and <strong>cerebellum</strong>. The motor cortex now fires entire chord progressions as single motor programs. Your fingers move before your conscious mind decides.'
+     ]},
+    {id:'broca',label:"Broca's Area",x:28,y:52,r:11,color:'#c45a20',
+     tag:'EXPRESSIVE OUTPUT',nodes:['play','create'],
+     getStats:function(){return {label:'Awaiting first jam'};},
+     desc:[
+       "<strong>Broca's Area</strong> (left inferior frontal gyrus, BA44/45) orchestrates language production. In musicians, it activates when translating musical thought into physical sound — the bridge between intention and expression.",
+       "Your Broca's region is developing musical syntax. Just as children acquire grammar implicitly, your brain is building <strong>musical phrase structures</strong> — learning which note combinations 'make sense' in a given harmonic context.",
+       "Musical expression is now integrated across Broca's, premotor cortex, and auditory feedback loops. You 'speak' music fluently — improvisation flows without conscious translation through theory."
+     ]},
+    {id:'visual',label:'Visual Cortex',x:73,y:38,r:12,color:'#4A6741',
+     tag:'PATTERN RECOGNITION',nodes:['knowing'],
+     getStats:function(){if(!K)return {read:0,total:0,label:'No data'};var t=0,d=0;K.categories.forEach(function(c){c.topics.forEach(function(x){t++;if(kProgress[x.id])d++;});});return {read:d,total:t,label:d+'/'+t+' concepts read'};},
+     desc:[
+       'The <strong>Visual Cortex</strong> (occipital lobe, V1-V5) processes chord diagrams, fretboard patterns, and notation. V1 extracts edges. V4 recognises shapes. The <strong>ventral stream</strong> ("what" pathway) identifies a cluster of dots as "G major."',
+       '<strong>Neural chunking</strong> is developing — your visual cortex now encodes multi-element patterns as single perceptual units. A chord diagram is no longer 6 dots; it\'s one configural shape. This is the same mechanism experts use to read chess boards at a glance.',
+       'Visual processing has been optimised. Your <strong>fusiform face area</strong> equivalent for music — a specialised region — now recognises chord shapes, scale patterns, and interval geometries in under 200ms. Pattern recognition is automatic.'
+     ]},
+    {id:'auditory',label:'Auditory Cortex',x:72,y:62,r:12,color:'#2C5F7C',
+     tag:'SOUND PROCESSING',nodes:['knowing','play'],
+     getStats:function(){return {label:'Ear training coming soon'};},
+     desc:[
+       'The <strong>Auditory Cortex</strong> (superior temporal gyrus, A1) decomposes sound into frequency, timing, and spatial location. When you hear a note and your A1 fires, it sends signals to Wernicke\'s area for "meaning" and to motor cortex for mimicry.',
+       '<strong>Relative pitch</strong> circuits are forming in the auditory-motor loop. Your brain is learning to categorise interval ratios (3:2 = perfect fifth, 4:5 = major third) not as abstract math but as emotional qualities — "bright," "dark," "tense," "resolved."',
+       'Your auditory cortex now performs <strong>predictive coding</strong> — it anticipates what should come next based on harmonic context. Wrong notes feel "wrong" because they violate your brain\'s prediction, not because of any rule you learned.'
+     ]},
+    {id:'prefrontal',label:'Prefrontal Cortex',x:35,y:18,r:12,color:'#5B3A6B',
+     tag:'EXECUTIVE FUNCTION',nodes:['study'],
+     getStats:function(){var q=JSON.parse(localStorage.getItem('hearth-knowing-quiz')||'{}');var p=Object.values(q).filter(function(x){return x.passed}).length;return {passed:p,label:p+' quizzes passed'};},
+     desc:[
+       'The <strong>Prefrontal Cortex</strong> (PFC, dorsolateral and ventromedial) handles metacognition — thinking about thinking. When you study theory, quiz yourself, and assess "do I actually understand this?", your PFC is monitoring your own comprehension in real time.',
+       'Your PFC is developing <strong>metacognitive accuracy</strong> — the ability to reliably distinguish between "I know this" and "I\'ve seen this before." This is the illusion of competence vs genuine understanding, and it\'s trainable.',
+       'Metacognitive control is consolidated. Your PFC now efficiently allocates attention, identifies knowledge gaps, and regulates study strategy. You\'ve developed <strong>self-regulated learning</strong> — the neuroscience equivalent of "learning how to learn."'
+     ]},
+    {id:'hippocampus',label:'Hippocampus',x:48,y:58,r:10,color:'#8B6914',
+     tag:'MEMORY CONSOLIDATION',nodes:['foundation','study','practice'],
+     getStats:function(){var f=Object.keys(fProgress).length;return {done:f,total:10,label:f+'/10 foundations'};},
+     desc:[
+       'The <strong>Hippocampus</strong> (medial temporal lobe) is your memory engine. During practice, experiences are encoded as temporary traces in the hippocampus. During <strong>slow-wave sleep</strong>, these traces are replayed and transferred to long-term storage in the neocortex.',
+       'Your hippocampus is actively consolidating through <strong>sharp-wave ripples</strong> — bursts of neural activity during rest and sleep that replay the day\'s learning. The spacing effect works because each replay strengthens the synaptic connections (long-term potentiation).',
+       'Procedural memories have been fully transferred from hippocampus-dependent to <strong>neocortical storage</strong>. These patterns are now permanent. Even months without playing, your motor cortex remembers — the same mechanism that means you never forget how to ride a bike.'
+     ]},
+    {id:'limbic',label:'Limbic System',x:55,y:72,r:10,color:'#6B3A3A',
+     tag:'EMOTION & REWARD',nodes:['collab'],
+     getStats:function(){return {label:'Social learning coming soon'};},
+     desc:[
+       'The <strong>Limbic System</strong> (amygdala, nucleus accumbens, ventral tegmental area) processes emotion and reward. When you nail a chord change and feel a rush — that\'s <strong>dopamine</strong> from the VTA hitting the nucleus accumbens. This reward signal reinforces the behaviour.',
+       'Your reward circuitry is being calibrated. The <strong>dopamine prediction error</strong> — the difference between expected and actual reward — is what drives learning. When something sounds better than expected, dopamine spikes, and your brain strengthens whatever produced it.',
+       'Music now activates deep limbic structures consistently. The <strong>amygdala</strong> processes musical emotion. The <strong>insula</strong> integrates bodily feeling with musical experience. Playing music is genuinely regulating your autonomic nervous system.'
+     ]},
+    {id:'brainstem',label:'Brainstem',x:50,y:82,r:10,color:'#5B4A3A',
+     tag:'AUTONOMIC FOUNDATION',nodes:['foundation'],
+     getStats:function(){var f=Object.keys(fProgress).length;return {done:f,total:10,label:Math.round(f/10*100)+'% foundations'};},
+     desc:[
+       'The <strong>Brainstem</strong> (medulla, pons) handles the non-negotiables: posture, breathing, baseline muscle tone. Before any skilled movement, the brainstem sets the foundation. Your sitting position, your breathing pattern, your baseline hand tension — all brainstem-regulated.',
+       'Brainstem automations are stabilising. Postural control has shifted from conscious (cortical) to unconscious (brainstem-cerebellar) loops. You sit correctly without thinking. Your breathing stays steady while playing.',
+       'The brainstem has fully automated foundational functions. Posture, breathing, and baseline muscle tone are optimised subcortically. Your entire cerebral cortex is free for musical processing.'
+     ]}
+  ];
+
+  // Neural pathways as constellation lines
+  const pathways=[
+    {from:'brainstem',to:'motor',label:'Corticospinal tract'},
+    {from:'hippocampus',to:'motor',label:'Memory-motor loop'},
+    {from:'visual',to:'prefrontal',label:'Dorsal visual stream'},
+    {from:'prefrontal',to:'motor',label:'Premotor planning'},
+    {from:'auditory',to:'broca',label:'Audio-motor arcuate fasciculus'},
+    {from:'motor',to:'broca',label:'Expressive motor pathway'},
+    {from:'limbic',to:'hippocampus',label:'Papez circuit (emotion-memory)'},
+    {from:'hippocampus',to:'prefrontal',label:'Thalamic relay'}
+  ];
+
+  function getPhase(s){
+    if(!s)return 1;
+    if(s.total){var p=s.done?Math.round(s.done/s.total*100):0;if(p<34)return 1;if(p<67)return 2;return 3;}
+    if(s.mastered)return s.mastered>5?3:s.mastered>2?2:1;
     return 1;
   }
-  function glowInt(stats){
-    if(!stats)return 0.15;
-    if(stats.total)return Math.max(0.15,Math.min(1,(stats.done||0)/(stats.total||1)));
-    if(stats.done)return Math.min(1,stats.done/10);
+  function glow(s){
+    if(!s)return 0.15;
+    if(s.total)return Math.max(0.15,Math.min(1,(s.done||0)/(s.total||1)));
+    if(s.done)return Math.min(1,s.done/10);
     return 0.15;
   }
 
-  var pos={motor:{x:350,y:110,w:160,h:70},prefrontal:{x:170,y:180,w:130,h:85},broca:{x:200,y:300,w:110,h:65},auditory:{x:530,y:260,w:120,h:75},visual:{x:570,y:170,w:120,h:75},hippocampus:{x:360,y:330,w:100,h:55},limbic:{x:430,y:250,w:100,h:55},brainstem:{x:340,y:420,w:80,h:65}};
-  var paths=[{from:'brainstem',to:'motor',label:'Basics \u2192 Movement'},{from:'hippocampus',to:'motor',label:'Memory \u2192 Muscle'},{from:'visual',to:'prefrontal',label:'Seeing \u2192 Understanding'},{from:'prefrontal',to:'motor',label:'Knowing \u2192 Doing'},{from:'auditory',to:'broca',label:'Hearing \u2192 Playing'},{from:'motor',to:'broca',label:'Technique \u2192 Expression'},{from:'limbic',to:'broca',label:'Feeling \u2192 Music'},{from:'hippocampus',to:'prefrontal',label:'Memory \u2192 Metacognition'}];
+  // Build constellation SVG
+  var starSvg='';
+  var lineSvg='';
+  var pulseSvg='';
 
-  var rSvg='',pSvg='';
-  Object.keys(brain).forEach(function(id){
-    var r=brain[id],s=r.getStats(),g=glowInt(s),p=pos[id];
-    rSvg+='<g onclick="_showBrainRegion(\''+id+'\')" style="cursor:pointer">';
-    rSvg+='<ellipse cx="'+(p.x+p.w/2)+'" cy="'+(p.y+p.h/2)+'" rx="'+(p.w/2)+'" ry="'+(p.h/2)+'" fill="'+r.color+'" fill-opacity="'+(0.08+g*0.35)+'" stroke="'+r.color+'" stroke-width="'+(1+g*2)+'" stroke-opacity="'+(0.25+g*0.5)+'" style="transition:all 0.5s"/>';
-    rSvg+='<text x="'+(p.x+p.w/2)+'" y="'+(p.y+p.h/2-4)+'" text-anchor="middle" fill="'+r.color+'" fill-opacity="'+(0.5+g*0.5)+'" font-family="Josefin Sans,sans-serif" font-size="10" font-weight="600" style="pointer-events:none">'+r.label+'</text>';
-    rSvg+='<text x="'+(p.x+p.w/2)+'" y="'+(p.y+p.h/2+10)+'" text-anchor="middle" fill="'+r.color+'" fill-opacity="'+(0.3+g*0.3)+'" font-family="IBM Plex Sans,sans-serif" font-size="7.5" style="pointer-events:none">'+s.label+'</text>';
-    rSvg+='</g>';
+  // Pathway lines (draw first, behind stars)
+  pathways.forEach(function(pw){
+    var a=regions.find(function(r){return r.id===pw.from});
+    var b=regions.find(function(r){return r.id===pw.to});
+    if(!a||!b)return;
+    var ga=glow(a.getStats());var gb=glow(b.getStats());
+    var active=ga>0.3&&gb>0.3;
+    var op=active?(0.15+Math.min(ga,gb)*0.4):0.06;
+    // Curved line using quadratic bezier
+    var mx=(a.x+b.x)/2;var my=(a.y+b.y)/2;
+    // Offset midpoint perpendicular for curve
+    var dx=b.x-a.x;var dy=b.y-a.y;
+    var cx=mx+dy*0.15;var cy=my-dx*0.15;
+    lineSvg+='<path d="M'+a.x+','+a.y+' Q'+cx+','+cy+' '+b.x+','+b.y+'" fill="none" stroke="'+(active?'#e8a020':'#3a3020')+'" stroke-width="'+(active?1.2:0.4)+'" stroke-opacity="'+op+'" stroke-dasharray="'+(active?'none':'2,4')+'" style="transition:all 0.8s"/>';
+    // Active glow on line
+    if(active){
+      lineSvg+='<path d="M'+a.x+','+a.y+' Q'+cx+','+cy+' '+b.x+','+b.y+'" fill="none" stroke="#e8a020" stroke-width="3" stroke-opacity="0.06" style="transition:all 0.8s"/>';
+    }
   });
-  paths.forEach(function(pw){
-    var f=pos[pw.from],t=pos[pw.to];if(!f||!t)return;
-    var a=glowInt(brain[pw.from].getStats())>0.3&&glowInt(brain[pw.to].getStats())>0.3;
-    pSvg+='<line x1="'+(f.x+f.w/2)+'" y1="'+(f.y+f.h/2)+'" x2="'+(t.x+t.w/2)+'" y2="'+(t.y+t.h/2)+'" stroke="'+(a?'#e8a020':'#333')+'" stroke-width="'+(a?1.5:0.5)+'" stroke-opacity="'+(a?0.5:0.15)+'" stroke-dasharray="'+(a?'none':'4,4')+'" style="transition:all 0.5s"/>';
+
+  // Stars
+  regions.forEach(function(rg){
+    var s=rg.getStats();var g=glow(s);var ph=getPhase(s);
+    // Outer glow
+    starSvg+='<circle cx="'+rg.x+'%" cy="'+rg.y+'%" r="'+(rg.r*2.5)+'" fill="'+rg.color+'" fill-opacity="'+(g*0.08)+'" style="transition:all 0.8s"/>';
+    starSvg+='<circle cx="'+rg.x+'%" cy="'+rg.y+'%" r="'+(rg.r*1.5)+'" fill="'+rg.color+'" fill-opacity="'+(g*0.15)+'" style="transition:all 0.8s"/>';
+    // Core star
+    starSvg+='<circle cx="'+rg.x+'%" cy="'+rg.y+'%" r="'+rg.r+'" fill="'+rg.color+'" fill-opacity="'+(0.15+g*0.6)+'" stroke="'+rg.color+'" stroke-width="'+(0.5+g*1.5)+'" stroke-opacity="'+(0.3+g*0.5)+'" style="cursor:pointer;transition:all 0.5s" onclick="_showBrainRegion(\''+rg.id+'\')"/>';
+    // Bright center
+    starSvg+='<circle cx="'+rg.x+'%" cy="'+rg.y+'%" r="'+(rg.r*0.35)+'" fill="#fff" fill-opacity="'+(0.1+g*0.5)+'" style="pointer-events:none;transition:all 0.5s"/>';
+    // Label
+    starSvg+='<text x="'+rg.x+'%" y="'+(rg.y+rg.r+5)+'%" text-anchor="middle" fill="'+rg.color+'" fill-opacity="'+(0.4+g*0.5)+'" font-family="JetBrains Mono,monospace" font-size="7" font-weight="500" letter-spacing="0.5" style="pointer-events:none;transition:all 0.5s">'+rg.label.toUpperCase()+'</text>';
+    // Pulse animation for active regions
+    if(g>0.3){
+      pulseSvg+='<circle cx="'+rg.x+'%" cy="'+rg.y+'%" r="'+rg.r+'" fill="none" stroke="'+rg.color+'" stroke-width="1" stroke-opacity="0.3"><animate attributeName="r" from="'+rg.r+'" to="'+(rg.r*3)+'" dur="3s" repeatCount="indefinite"/><animate attributeName="stroke-opacity" from="0.3" to="0" dur="3s" repeatCount="indefinite"/></circle>';
+    }
   });
+
+  // Background stars (tiny dots for atmosphere)
+  var bgStars='';
+  for(var i=0;i<60;i++){
+    var sx=(Math.sin(i*137.508)*50+50).toFixed(1);
+    var sy=(Math.cos(i*97.3)*50+50).toFixed(1);
+    var so=(0.03+Math.random()*0.08).toFixed(2);
+    bgStars+='<circle cx="'+sx+'%" cy="'+sy+'%" r="0.5" fill="#e8c9a0" fill-opacity="'+so+'"/>';
+  }
 
   el.innerHTML='<div style="padding:20px;max-width:700px;margin:0 auto">'+
-    '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">'+
+    '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">'+
       '<div style="display:flex;align-items:center;gap:10px">'+
-        '<span style="font-size:1.5rem">\uD83E\uDDE0</span>'+
-        '<div><div style="font-family:Josefin Sans,sans-serif;color:var(--gold);font-size:1.1rem;letter-spacing:2px;font-weight:500">THE HEARTH</div>'+
-        '<div style="font-size:0.65rem;color:var(--dim)">Your learning brain. Tap a region to explore.</div></div>'+
+        '<span style="font-size:1.2rem">🧠</span>'+
+        '<div><div style="font-family:Cinzel,serif;color:var(--gold);font-size:1rem;letter-spacing:2px">NEURAL MAP</div>'+
+        '<div style="font-size:0.6rem;color:var(--dim)">Your brain on guitar. Tap a region.</div></div>'+
       '</div>'+
       '<div style="display:flex;gap:12px;align-items:center">'+
-        '<div style="text-align:center"><div style="font-family:JetBrains Mono;font-size:1rem;color:var(--gold);font-weight:700">'+streak+'\uD83D\uDD25</div><div style="font-size:0.5rem;color:var(--dim);letter-spacing:1px">STREAK</div></div>'+
-        '<div style="text-align:center"><div style="font-family:JetBrains Mono;font-size:1rem;color:var(--amber);font-weight:700">'+totalTime+'m</div><div style="font-size:0.5rem;color:var(--dim);letter-spacing:1px">TOTAL</div></div>'+
-        '<button onclick="document.querySelectorAll(\'.pnl\').forEach(p=>p.classList.remove(\'on\'));document.getElementById(\'p-map\').classList.add(\'on\')" style="background:none;border:1px solid var(--border);color:var(--dim);padding:6px 12px;border-radius:4px;cursor:pointer;font-family:inherit;font-size:0.7rem">\u2190 Map</button>'+
+        '<div style="text-align:center"><div style="font-family:JetBrains Mono;font-size:0.9rem;color:var(--gold);font-weight:700">'+streak+'🔥</div><div style="font-size:0.45rem;color:var(--dim);letter-spacing:1px">STREAK</div></div>'+
+        '<div style="text-align:center"><div style="font-family:JetBrains Mono;font-size:0.9rem;color:var(--amber);font-weight:700">'+totalTime+'m</div><div style="font-size:0.45rem;color:var(--dim);letter-spacing:1px">TOTAL</div></div>'+
+        '<button onclick="document.querySelectorAll(\'.pnl\').forEach(p=>p.classList.remove(\'on\'));document.getElementById(\'p-map\').classList.add(\'on\')" style="background:none;border:1px solid var(--border);color:var(--dim);padding:5px 10px;border-radius:4px;cursor:pointer;font-family:inherit;font-size:0.65rem">← Map</button>'+
       '</div>'+
     '</div>'+
-    '<div style="position:relative;background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:16px">'+
-      '<svg viewBox="0 0 700 520" style="width:100%;display:block" xmlns="http://www.w3.org/2000/svg">'+
-        '<ellipse cx="350" cy="260" rx="300" ry="220" fill="none" stroke="#2a2218" stroke-width="2" stroke-opacity="0.3"/>'+
-        '<ellipse cx="350" cy="260" rx="280" ry="200" fill="none" stroke="#2a2218" stroke-width="1" stroke-opacity="0.15"/>'+
-        '<line x1="350" y1="60" x2="350" y2="480" stroke="#2a2218" stroke-width="0.5" stroke-opacity="0.1"/>'+
-        pSvg+rSvg+
+    '<div style="position:relative;background:#0a0907;border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:12px">'+
+      '<svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet" style="width:100%;display:block" xmlns="http://www.w3.org/2000/svg">'+
+        bgStars+
+        lineSvg+
+        pulseSvg+
+        starSvg+
       '</svg>'+
-      '<div style="font-family:JetBrains Mono;font-size:0.5rem;color:var(--dim);text-align:center;padding:6px;letter-spacing:1px;opacity:0.5">LATERAL CROSS-SECTION \u00B7 TAP A REGION</div>'+
+      '<div style="font-family:JetBrains Mono;font-size:0.45rem;color:var(--dim);text-align:center;padding:4px;letter-spacing:1.5px;opacity:0.4">NEURAL CONSTELLATION · YOUR MUSICAL BRAIN</div>'+
     '</div>'+
     '<div id="brain-overlay" style="display:none"></div>'+
   '</div>';
 
-  window._brainData=brain;window._brainPos=pos;window._brainPaths=paths;window._getPhase=getPhase;window._glowInt=glowInt;
+  window._brainRegions=regions;
+  window._brainPathways=pathways;
+  window._getPhase=getPhase;
+  window._glow=glow;
 }
 
+// Region overlay
 window._showBrainRegion=function(id){
-  var b=window._brainData;if(!b||!b[id])return;
-  var r=b[id],s=r.getStats(),ph=window._getPhase?window._getPhase(s):1,g=window._glowInt?window._glowInt(s):0.3;
-  var desc=ph>0?r.desc[Math.min(ph-1,r.desc.length-1)]:r.desc[0];
+  var regions=window._brainRegions;if(!regions)return;
+  var rg=regions.find(function(r){return r.id===id});if(!rg)return;
+  var s=rg.getStats();var g=window._glow?window._glow(s):0.3;
+  var ph=window._getPhase?window._getPhase(s):1;
+  var desc=ph>0?rg.desc[Math.min(ph-1,rg.desc.length-1)]:rg.desc[0];
   var ov=document.getElementById('brain-overlay');if(!ov)return;
-  var pth=(window._brainPaths||[]).filter(function(p){return p.from===id||p.to===id});
-  ov.style.display='block';
-  ov.innerHTML='<div style="background:var(--card);border:1px solid '+r.color+'40;border-radius:10px;padding:20px;margin-bottom:16px">'+
-    '<button onclick="document.getElementById(\'brain-overlay\').style.display=\'none\'" style="float:right;background:none;border:none;color:var(--dim);font-size:1.2rem;cursor:pointer">\u00D7</button>'+
-    '<div style="font-family:JetBrains Mono;font-size:0.55rem;color:'+r.color+';letter-spacing:0.15em;margin-bottom:6px">'+r.tag+'</div>'+
-    '<div style="font-family:Josefin Sans,sans-serif;font-size:1.1rem;color:'+r.color+';font-weight:600;margin-bottom:12px;letter-spacing:1px">'+r.label+'</div>'+
-    '<div style="display:flex;align-items:center;gap:8px;margin-bottom:16px"><div style="flex:1;height:4px;background:var(--border);border-radius:2px;overflow:hidden"><div style="height:100%;width:'+Math.round(g*100)+'%;background:'+r.color+';border-radius:2px"></div></div><span style="font-family:JetBrains Mono;font-size:0.6rem;color:var(--dim)">'+Math.round(g*100)+'%</span></div>'+
-    '<div style="font-family:IBM Plex Sans,sans-serif;font-size:0.82rem;color:var(--text);line-height:1.7;margin-bottom:16px">'+desc+'</div>'+
-    '<div style="display:flex;gap:6px;margin-bottom:16px">'+
-      '<div style="padding:3px 8px;border-radius:3px;font-family:JetBrains Mono;font-size:0.55rem;letter-spacing:1px;'+(ph>=1?'background:'+r.color+'18;color:'+r.color+';border:1px solid '+r.color+'30':'border:1px solid var(--border);color:var(--dim)')+'">DEVELOPING</div>'+
-      '<div style="padding:3px 8px;border-radius:3px;font-family:JetBrains Mono;font-size:0.55rem;letter-spacing:1px;'+(ph>=2?'background:'+r.color+'18;color:'+r.color+';border:1px solid '+r.color+'30':'border:1px solid var(--border);color:var(--dim)')+'">MYELINATING</div>'+
-      '<div style="padding:3px 8px;border-radius:3px;font-family:JetBrains Mono;font-size:0.55rem;letter-spacing:1px;'+(ph>=3?'background:'+r.color+'18;color:'+r.color+';border:1px solid '+r.color+'30':'border:1px solid var(--border);color:var(--dim)')+'">CONSOLIDATED</div>'+
-    '</div>'+
-    '<div style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:12px;margin-bottom:12px">'+
-      '<div style="font-family:JetBrains Mono;font-size:0.55rem;color:'+r.color+';letter-spacing:0.1em;margin-bottom:8px">STATS</div>'+
-      '<div style="font-family:IBM Plex Sans,sans-serif;font-size:0.8rem;color:var(--text)">'+s.label+'</div>'+
-    '</div>'+
-    (pth.length?'<div style="font-family:JetBrains Mono;font-size:0.55rem;color:var(--dim);letter-spacing:0.1em;margin-bottom:8px">NEURAL PATHWAYS</div><div style="display:flex;flex-wrap:wrap;gap:4px">'+pth.map(function(c){return '<span style="font-family:IBM Plex Sans,sans-serif;font-size:0.65rem;color:var(--dim);background:var(--bg);border:1px solid var(--border);padding:3px 8px;border-radius:3px">'+c.label+'</span>';}).join('')+'</div>':'')+
-    '<div style="display:flex;gap:8px;margin-top:14px">'+
-      r.nodes.map(function(n){var nd=NODE_DATA[n];return nd?'<button onclick="document.getElementById(\'brain-overlay\').style.display=\'none\';enterNodeAction(NODE_DATA[\''+n+'\'])" style="background:'+r.color+'18;border:1px solid '+r.color+'30;color:'+r.color+';padding:8px 14px;border-radius:6px;cursor:pointer;font-family:DM Sans,sans-serif;font-size:0.75rem;font-weight:600">'+nd.title+'</button>':'';}).join('')+
-    '</div></div>';
-};
+  var paths=(window._brainPathways||[]).filter(function(p){return p.from===id||p.to===id});
 
+  ov.style.display='block';
+  ov.innerHTML='<div style="background:var(--card);border:1px solid '+rg.color+'30;border-radius:10px;padding:20px;margin-bottom:12px;animation:fadeIn 0.3s ease">'+
+    '<button onclick="document.getElementById(\'brain-overlay\').style.display=\'none\'" style="float:right;background:none;border:none;color:var(--dim);font-size:1.1rem;cursor:pointer">✕</button>'+
+    '<div style="font-family:JetBrains Mono;font-size:0.5rem;color:'+rg.color+';letter-spacing:0.15em;margin-bottom:4px">'+rg.tag+'</div>'+
+    '<div style="font-family:Cinzel,serif;font-size:1rem;color:'+rg.color+';font-weight:600;margin-bottom:12px;letter-spacing:1px">'+rg.label+'</div>'+
+    // Signal strength bar
+    '<div style="display:flex;align-items:center;gap:8px;margin-bottom:14px">'+
+      '<span style="font-family:JetBrains Mono;font-size:0.5rem;color:var(--dim);letter-spacing:1px">SIGNAL</span>'+
+      '<div style="flex:1;height:3px;background:var(--border);border-radius:2px;overflow:hidden">'+
+        '<div style="height:100%;width:'+Math.round(g*100)+'%;background:'+rg.color+';border-radius:2px;transition:width 0.5s"></div>'+
+      '</div>'+
+      '<span style="font-family:JetBrains Mono;font-size:0.55rem;color:var(--dim)">'+Math.round(g*100)+'%</span>'+
+    '</div>'+
+    // Neuro description
+    '<div style="font-family:DM Sans,sans-serif;font-size:0.78rem;color:var(--text);line-height:1.75;margin-bottom:14px">'+desc+'</div>'+
+    // Phase badges
+    '<div style="display:flex;gap:5px;margin-bottom:14px">'+
+      '<div style="padding:2px 7px;border-radius:3px;font-family:JetBrains Mono;font-size:0.5rem;letter-spacing:1px;'+(ph>=1?'background:'+rg.color+'15;color:'+rg.color+';border:1px solid '+rg.color+'25':'border:1px solid var(--border);color:var(--dim)')+'">DEVELOPING</div>'+
+      '<div style="padding:2px 7px;border-radius:3px;font-family:JetBrains Mono;font-size:0.5rem;letter-spacing:1px;'+(ph>=2?'background:'+rg.color+'15;color:'+rg.color+';border:1px solid '+rg.color+'25':'border:1px solid var(--border);color:var(--dim)')+'">MYELINATING</div>'+
+      '<div style="padding:2px 7px;border-radius:3px;font-family:JetBrains Mono;font-size:0.5rem;letter-spacing:1px;'+(ph>=3?'background:'+rg.color+'15;color:'+rg.color+';border:1px solid '+rg.color+'25':'border:1px solid var(--border);color:var(--dim)')+'">CONSOLIDATED</div>'+
+    '</div>'+
+    // Stats
+    '<div style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:10px;margin-bottom:10px">'+
+      '<div style="font-family:JetBrains Mono;font-size:0.5rem;color:'+rg.color+';letter-spacing:0.1em;margin-bottom:6px">DATA</div>'+
+      '<div style="font-family:DM Sans,sans-serif;font-size:0.75rem;color:var(--text)">'+s.label+'</div>'+
+    '</div>'+
+    // Neural tracts
+    (paths.length?'<div style="font-family:JetBrains Mono;font-size:0.5rem;color:var(--dim);letter-spacing:0.1em;margin-bottom:6px">CONNECTED TRACTS</div>'+
+    '<div style="display:flex;flex-wrap:wrap;gap:4px">'+paths.map(function(c){
+      return '<span style="font-family:DM Sans,sans-serif;font-size:0.6rem;color:var(--dim);background:var(--bg);border:1px solid var(--border);padding:2px 7px;border-radius:3px">'+c.label+'</span>';
+    }).join('')+'</div>':'')+
+    // Node links
+    '<div style="display:flex;gap:6px;margin-top:12px">'+
+      rg.nodes.map(function(n){var nd=NODE_DATA[n];return nd?'<button onclick="document.getElementById(\'brain-overlay\').style.display=\'none\';enterNodeAction(NODE_DATA[\''+n+'\'])" style="background:'+rg.color+'12;border:1px solid '+rg.color+'25;color:'+rg.color+';padding:7px 12px;border-radius:6px;cursor:pointer;font-family:DM Sans,sans-serif;font-size:0.7rem;font-weight:500">'+nd.title+'</button>':'';}).join('')+
+    '</div>'+
+  '</div>';
+};
 function renderPathCard(name, emoji, color, nodes, progress) {
   const nodeList = nodes.split(',');
   const titles = nodeList.map(n => NODE_DATA[n]?.title || n);
