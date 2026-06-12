@@ -27,6 +27,14 @@
 
   function esc(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
+  function ytEmbed(url) {
+    if (!url) return '';
+    // Extract video ID from various YouTube URL formats
+    var m = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|v\/))([\w-]{11})/);
+    if (!m) return '';
+    return 'https://www.youtube.com/embed/' + m[1] + '?rel=0&modestbranding=1';
+  }
+
   function getProgress() {
     return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
   }
@@ -70,6 +78,23 @@
 
       // Interleaved quote
       var q = QUOTES[qi % QUOTES.length]; qi++;
+
+      // Video page (if topic has a video)
+      if (topic.video) {
+        var embedUrl = ytEmbed(topic.video);
+        if (embedUrl) {
+          result.push(
+            '<div class="page">' +
+              '<div class="page-content page-video">' +
+                '<div class="video-label">Watch &amp; Learn</div>' +
+                '<iframe src="' + embedUrl + '" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>' +
+                '<div class="video-title">' + esc(topic.title) + '</div>' +
+              '</div>' +
+            '</div>'
+          );
+        }
+      }
+
       result.push(
         '<div class="page">' +
           '<div class="page-content page-quote">' +
