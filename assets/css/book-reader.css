@@ -1,9 +1,20 @@
 /* ═══════════════════════════════════════════════════════════════
    Book Reader — Portrait Flipbook CSS
-   Dark background, warm paper pages, arrow navigation
+   Styled after thehearth.pro/the-two-trees
+   Dark background, warm paper, Josefin Sans + IBM Plex Sans
    ═══════════════════════════════════════════════════════════════ */
 
-/* ── Overlay container ── */
+:root {
+  --book-page: #fdfaf7;
+  --book-ink: #333;
+  --book-ink-light: #555;
+  --book-ink-dim: #999;
+  --book-accent: #c47a3a;
+  --book-gold: #e8c9a0;
+  --book-dark: #1a1710;
+}
+
+/* ── Overlay ── */
 .flipbook-container {
   position: fixed;
   inset: 0;
@@ -14,22 +25,22 @@
   justify-content: center;
   background: radial-gradient(circle at center, #1a1612 0%, #0f0d0b 100%);
   opacity: 0;
-  transition: opacity 0.4s ease;
+  transition: opacity 0.5s ease;
 }
 
 /* ── Back nav ── */
 .flipbook-container .back-nav {
   position: absolute;
-  top: 1.5rem;
-  left: 1.5rem;
+  top: 2rem;
+  left: 2rem;
   z-index: 100;
 }
 .flipbook-container .back-link {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  font-family: 'Josefin Sans', 'DM Sans', sans-serif;
-  font-size: 0.75rem;
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 0.8rem;
   letter-spacing: 2px;
   text-transform: uppercase;
   color: rgba(232,201,160,0.5);
@@ -47,12 +58,11 @@
 .flipbook-wrapper {
   position: relative;
   width: 90vw;
-  height: 80vh;
+  height: 75vh;
   max-width: 1080px;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0;
 }
 
 /* ── The flipbook ── */
@@ -62,17 +72,215 @@
 
 /* ── Pages ── */
 .page {
-  background-color: #fdfaf7;
+  background-color: var(--book-page);
   overflow: hidden;
-  box-shadow: inset 0 0 60px rgba(0,0,0,0.04);
+  box-shadow: inset 0 0 100px rgba(0,0,0,0.05);
 }
 
-/* Spine shadows on pages */
+.page-content {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  border-left: 1px solid rgba(0,0,0,0.04);
+  border-right: 1px solid rgba(0,0,0,0.04);
+}
+
+/* Spine shadows */
 .stf__item.page--left {
   box-shadow: inset -10px 0 30px rgba(0,0,0,0.05);
 }
 .stf__item.page--right {
   box-shadow: inset 10px 0 30px rgba(0,0,0,0.05);
+}
+
+/* ── Cover page ── */
+.page-cover {
+  padding: 3rem 2.5rem;
+  background: linear-gradient(160deg, #1a1710 0%, #0f0d0b 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  height: 100%;
+  box-sizing: border-box;
+}
+.page-cover .cover-glyph {
+  font-size: 2.5rem;
+  margin-bottom: 1.5rem;
+  opacity: 0.6;
+}
+.page-cover .cover-title {
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 1.3rem;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+  color: var(--book-gold);
+  margin-bottom: 0.5rem;
+}
+.page-cover .cover-rule {
+  width: 50px;
+  height: 1px;
+  background: var(--book-accent);
+  margin: 1.2rem auto;
+  opacity: 0.4;
+}
+.page-cover .cover-desc {
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 0.8rem;
+  color: rgba(232,201,160,0.4);
+  line-height: 1.7;
+  max-width: 300px;
+  letter-spacing: 0.5px;
+}
+.page-cover .cover-meta {
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 0.6rem;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: rgba(232,201,160,0.2);
+  margin-top: 2rem;
+}
+
+/* ── Topic page ── */
+.page-topic {
+  padding: 2.5rem 2rem 2rem;
+  font-family: 'IBM Plex Sans', sans-serif;
+  color: var(--book-ink);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+.page-topic .topic-label {
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 0.6rem;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--book-accent);
+  opacity: 0.7;
+  margin-bottom: 0.6rem;
+}
+.page-topic .topic-title {
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 1.1rem;
+  letter-spacing: 1px;
+  color: var(--book-ink);
+  margin-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(196,122,58,0.2);
+  padding-bottom: 0.5rem;
+}
+.page-topic .topic-diff {
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 0.6rem;
+  letter-spacing: 2px;
+  color: var(--book-ink-dim);
+  margin-bottom: 1.2rem;
+}
+.page-topic .topic-body {
+  flex: 1;
+  overflow-y: auto;
+  font-size: 0.88rem;
+  line-height: 1.8;
+  color: var(--book-ink-light);
+  text-align: justify;
+  padding-right: 4px;
+}
+.page-topic .topic-body p {
+  margin-bottom: 1rem;
+}
+.page-topic .topic-body strong {
+  color: var(--book-ink);
+  font-weight: 600;
+}
+.page-topic .topic-footer {
+  margin-top: auto;
+  padding-top: 0.8rem;
+  border-top: 1px solid rgba(0,0,0,0.06);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.page-topic .topic-source {
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 0.55rem;
+  letter-spacing: 1px;
+  color: rgba(0,0,0,0.2);
+}
+.page-topic .topic-num {
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 0.6rem;
+  color: rgba(0,0,0,0.12);
+}
+
+/* ── Quote page ── */
+.page-quote {
+  background: var(--book-dark);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 2.5rem;
+  text-align: center;
+  height: 100%;
+  box-sizing: border-box;
+}
+.page-quote .quote-mark {
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+  opacity: 0.15;
+  color: var(--book-gold);
+}
+.page-quote .quote-text {
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-style: italic;
+  font-size: 0.9rem;
+  line-height: 1.8;
+  color: rgba(232,201,160,0.5);
+  max-width: 320px;
+}
+.page-quote .quote-author {
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 0.6rem;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: rgba(232,201,160,0.25);
+  margin-top: 1.2rem;
+}
+
+/* ── Back cover ── */
+.page-back {
+  background: linear-gradient(160deg, #1a1710 0%, #0f0d0b 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 2rem;
+  text-align: center;
+  height: 100%;
+  box-sizing: border-box;
+}
+.page-back .back-icon {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  opacity: 0.6;
+}
+.page-back .back-title {
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 0.9rem;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: rgba(232,201,160,0.4);
+}
+.page-back .back-progress {
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 0.6rem;
+  letter-spacing: 2px;
+  color: rgba(232,201,160,0.2);
+  margin-top: 0.8rem;
 }
 
 /* ── Navigation arrows ── */
@@ -82,11 +290,11 @@
   transform: translateY(-50%);
   background: none;
   border: none;
-  color: rgba(232,201,160,0.3);
+  color: rgba(232,201,160,0.25);
   cursor: pointer;
   padding: 1rem;
   z-index: 10;
-  transition: all 0.3s ease;
+  transition: color 0.3s ease;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -97,40 +305,37 @@
 .nav-btn.prev { left: 0; }
 .nav-btn.next { right: 0; }
 
-@media (max-width: 768px) {
-  .flipbook-wrapper { height: 70vh; }
-  .nav-btn svg { width: 28px; height: 28px; }
-
-  .flipbook-container .back-nav {
-    top: 1rem;
-    left: 1rem;
-  }
+/* ── Page scrollbar ── */
+.topic-body::-webkit-scrollbar { width: 3px; }
+.topic-body::-webkit-scrollbar-track { background: transparent; }
+.topic-body::-webkit-scrollbar-thumb {
+  background: rgba(0,0,0,0.08);
+  border-radius: 3px;
 }
 
-/* ── Page content styling ── */
-.page strong {
-  color: #2a2218;
-}
-
-.page .lp-callout {
-  background: rgba(196,90,32,0.06);
-  border: 1px solid rgba(196,90,32,0.15);
-  border-radius: 6px;
+/* ── Callout boxes inside topic body ── */
+.topic-body .lp-callout {
+  background: rgba(196,122,58,0.05);
+  border: 1px solid rgba(196,122,58,0.12);
+  border-radius: 4px;
   padding: 12px;
   margin: 16px 0;
 }
-.page .lp-co-title {
-  font-family: 'JetBrains Mono', monospace;
+.topic-body .lp-co-title {
+  font-family: 'Josefin Sans', sans-serif;
   font-size: 0.6rem;
   letter-spacing: 2px;
-  color: #c45a20;
+  text-transform: uppercase;
+  color: var(--book-accent);
   margin-bottom: 6px;
 }
 
-/* ── Page scrollbar ── */
-.page ::-webkit-scrollbar { width: 3px; }
-.page ::-webkit-scrollbar-track { background: transparent; }
-.page ::-webkit-scrollbar-thumb {
-  background: rgba(0,0,0,0.1);
-  border-radius: 3px;
+/* ── Mobile ── */
+@media (max-width: 768px) {
+  .flipbook-wrapper { height: 70vh; }
+  .nav-btn svg { width: 28px; height: 28px; }
+  .flipbook-container .back-nav { top: 1rem; left: 1rem; }
+  .page-topic { padding: 2rem 1.5rem 1.5rem; }
+  .page-cover { padding: 2rem 1.5rem; }
+  .page-cover .cover-title { font-size: 1.1rem; letter-spacing: 3px; }
 }
