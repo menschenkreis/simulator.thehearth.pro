@@ -697,6 +697,175 @@ The best approach: learn both. Use TAB as a shortcut for fingerings, and standar
         }
       ]
     }
+,
+    {
+      id: 'fretboard',
+      title: 'Fretboard Navigation',
+      description: 'Learn the geography of the guitar neck. Every note, every position, every pattern.',
+      topics: [
+        {
+          id: 'note-locations',
+          title: 'Every Note on Every String',
+          difficulty: 1,
+          source: 'Leavitt Vol 1 / QJam L1',
+          body: '<p>The guitar has 6 strings and (typically) 20+ frets. That\u2019s over 120 note locations. But many are duplicates \u2014 the same note appears in multiple places. The open 1st string (high E) is the same pitch as the 5th string, 7th fret.</p><p><strong>The octave pattern:</strong> Learn the shape: same string, 12 frets up = one octave. Next string, 5 frets up (or 4 for G\u2192B) = same note. These two patterns let you find any note from any reference point.</p><p><strong>Start with the markers:</strong> Learn the natural notes on frets 0, 3, 5, 7, 10, 12 on each string. The dots on your fretboard are there for a reason \u2014 they\u2019re landmarks.</p>'
+        },
+        {
+          id: 'caged-system',
+          title: 'The CAGED System',
+          difficulty: 2,
+          source: 'Fretboard Roadmaps / QJam L2',
+          body: '<p>CAGED isn\u2019t a single concept \u2014 it\u2019s five open chord shapes (C, A, G, E, D) used as a navigation system for the entire fretboard. Each shape can be moved up the neck to create movable versions of any chord.</p><p><strong>Why it matters:</strong> It connects chord shapes to scale patterns to arpeggio fingerings. The C shape connects to the A shape which connects to the G shape \u2014 they overlap like tiles. Master CAGED and you see the fretboard as one connected map, not isolated positions.</p><p><strong>The sequence:</strong> C \u2192 A \u2192 G \u2192 E \u2192 D \u2192 C (it cycles). Starting from any chord, the next shape in the sequence gives you the same chord higher up the neck.</p>'
+        },
+        {
+          id: 'fretboard-intervals',
+          title: 'Seeing Intervals on the Neck',
+          difficulty: 2,
+          source: 'Fowler / Grimoire',
+          body: '<p>Intervals have consistent shapes on the guitar. A major 3rd is always the same physical distance (same string, 4 frets up, or next string, same fret for most string pairs). Once you know the interval shapes, you can build any chord or scale from any root note.</p><p><strong>The key shapes:</strong> Minor 2nd = 1 fret. Major 2nd = 2 frets. Minor 3rd = 3 frets. Major 3rd = 4 frets. Perfect 4th = 5 frets. Perfect 5th = 7 frets (or next string, 2 frets up).</p><p><strong>The G-B string trap:</strong> The tuning gap between G and B strings is 3 semitones (not 4 like the others). This shifts all interval shapes across that boundary. It\u2019s the #1 source of fretboard confusion.</p>'
+        }
+      ]
+    },
+    {
+      id: 'dynamics-expression',
+      title: 'Dynamics & Expression',
+      description: 'Music isn\u2019t just notes \u2014 it\u2019s how you play them. Loud, soft, smooth, sharp, fast, slow.',
+      topics: [
+        {
+          id: 'loudness-velocity',
+          title: 'Loudness & Velocity',
+          difficulty: 1,
+          source: 'Andreas / QJam L1',
+          body: '<p><strong>Dynamics</strong> are the volume changes in music. The Italian terms are standard: <em>piano</em> (soft), <em>forte</em> (loud), <em>mezzo</em> (medium), <em>crescendo</em> (getting louder), <em>diminuendo</em> (getting softer).</p><p>On guitar, dynamics come from your picking hand. Hit harder = louder. Brush lightly = softer. Simple, but most beginners play everything at one volume. This is what separates \"meh\" and \"wow\" \u2014 dynamic contrast.</p><p><strong>Velocity</strong> in guitar terms means how hard you pick or press. Hard pick attack = bright, loud tone. Light touch = warm, soft tone. Your right hand is your volume knob.</p>'
+        },
+        {
+          id: 'articulation',
+          title: 'Articulation: Hammer-ons, Pull-offs, Bends',
+          difficulty: 1,
+          source: 'Guitar Tricks / QJam L1',
+          body: '<p><strong>Articulation</strong> is how you connect or separate notes. On guitar, the main techniques are:</p><p><strong>Hammer-on:</strong> Pick a note, then slam a finger down on a higher fret without picking again. The second note sounds from the impact alone.</p><p><strong>Pull-off:</strong> The reverse \u2014 you\u2019re on a higher fret, lift your finger to reveal a lower note. The plucking motion of your lifting finger creates the sound.</p><p><strong>Bend:</strong> Push or pull the string sideways to raise the pitch. A full bend raises the note by 2 semitones. Bends are what make the guitar \"sing\" \u2014 they\u2019re the vocal quality of the instrument.</p>'
+        },
+        {
+          id: 'vibrato',
+          title: 'Vibrato \u2014 Your Signature',
+          difficulty: 2,
+          source: 'Satriani / Guitar Secrets',
+          body: '<p><strong>Vibrato</strong> is a small, repeated pitch fluctuation on a sustained note. It\u2019s the most personal element of your playing \u2014 your vibrato is as unique as your voice. B.B. King\u2019s wide, slow vibrato is instantly recognisable. David Gilmour\u2019s is different. Yours will be too.</p><p><strong>Types:</strong> Wrist vibrato (classical, side-to-side), finger vibrato (rock/blues, up-and-down bending), and arm vibrato (wide, dramatic). Each has a different character.</p><p><strong>The secret:</strong> Vibrato should be rhythmic and controlled, not random shaking. Practice with a metronome: bend to pitch, return, bend, return \u2014 in time. A good vibrato at the right moment is worth more than a thousand notes.</p>'
+        },
+        {
+          id: 'tone-timbre',
+          title: 'Tone & Timbre',
+          difficulty: 2,
+          source: 'Guitar Tricks / Satriani',
+          body: '<p><strong>Tone</strong> is your sound \u2014 bright vs dark, clean vs distorted, thin vs full. <strong>Timbre</strong> is the quality that makes the same note sound different on guitar vs piano vs flute.</p><p><strong>Pick position:</strong> Near the bridge = bright, treble-heavy. Near the neck = warm, bass-heavy. Middle = balanced. Just moving your pick hand changes your sound completely.</p><p><strong>Pick thickness:</strong> Thin = soft attack, good for strumming. Thick = sharp attack, good for lead. Most professionals use heavy picks (0.88mm+) for lead work.</p><p><strong>Finger angle:</strong> The angle of your pick relative to the string affects how much \"bite\" you get. Slight angle = warmer. Perpendicular = brighter.</p>'
+        }
+      ]
+    },
+    {
+      id: 'song-structure',
+      title: 'Song Structure',
+      description: 'How songs are built. Verse, chorus, bridge, and the patterns that make music feel like a journey.',
+      topics: [
+        {
+          id: 'parts-of-a-song',
+          title: 'Parts of a Song',
+          difficulty: 1,
+          source: 'Rooksby / QJam L1',
+          body: '<p>Most songs in Western popular music follow a structure built from these sections:</p><p><strong>Verse:</strong> The storytelling section. Lyrics change each time, but the music stays the same. The verse sets up the story and builds toward the chorus.</p><p><strong>Chorus:</strong> The hook \u2014 the part everyone remembers. Lyrics repeat, melody is strongest, energy peaks.</p><p><strong>Bridge:</strong> A contrasting section that breaks the verse-chorus pattern. New chords, new melody, new energy. The bridge creates tension that makes the final chorus feel like a release.</p><p><strong>Intro/Outro:</strong> Bookend sections. The intro sets the mood. The outro closes the song.</p><p><strong>Pre-chorus:</strong> A short build between verse and chorus. Not always present, but it adds anticipation.</p>'
+        },
+        {
+          id: 'common-forms',
+          title: 'Common Song Forms',
+          difficulty: 1,
+          source: 'Rooksby / QJam L2',
+          body: '<p><strong>AABA Form (32-bar):</strong> The classic American songbook form. A = verse (8 bars), A = verse repeat, B = bridge (new material), A = verse return.</p><p><strong>Verse-Chorus (ABAB):</strong> The dominant pop/rock form. Verse \u2192 Chorus \u2192 Verse \u2192 Chorus \u2192 Bridge \u2192 Chorus. Most radio songs follow this.</p><p><strong>Strophic (AAA):</strong> Same music repeats with different lyrics. Folk songs, hymns, and ballads often use this.</p><p><strong>Through-composed:</strong> New music for each section \u2014 no repetition. Rare in pop but common in classical. Example: Bohemian Rhapsody (loosely).</p><p><strong>12-Bar Blues:</strong> The foundation of blues, rock, and jazz. 12 measures, 3 chords (I-IV-V). A structural framework that underpins thousands of songs.</p>'
+        },
+        {
+          id: 'arrangement',
+          title: 'Arrangement for Guitar',
+          difficulty: 2,
+          source: 'Rooksby / Fisher',
+          body: '<p><strong>Arrangement</strong> is deciding what happens where. Which instrument plays what. Where the dynamics shift. When the guitar solo comes in.</p><p><strong>For solo guitar:</strong> You\u2019re the entire band. Bass notes (thumb), chords (fingers), melody (high strings). Making one instrument sound like three.</p><p><strong>For a band:</strong> Your guitar part should leave space. Don\u2019t play over the vocalist. Don\u2019t clash with the bass. Find the gap \u2014 that\u2019s where your part lives.</p><p><strong>The rule of contrast:</strong> If the verse is busy, the chorus should be open. If the verse is sparse, fill the chorus. Contrast creates interest. Sameness creates boredom.</p>'
+        }
+      ]
+    },
+    {
+      id: 'voice-leading',
+      title: 'Voice Leading',
+      description: 'How individual notes move from chord to chord. The secret to smooth, musical changes.',
+      topics: [
+        {
+          id: 'what-is-voice-leading',
+          title: 'What is Voice Leading?',
+          difficulty: 2,
+          source: 'Peckham / Wolfsohn',
+          body: '<p><strong>Voice leading</strong> is how individual notes (\"voices\") move from one chord to the next. Good voice leading means each note moves as little as possible \u2014 smooth, logical transitions.</p><p><strong>Example:</strong> C major (C-E-G) \u2192 A minor (A-C-E). The C stays put, the E stays put, only the G moves down to A. Two notes didn\u2019t move at all.</p><p><strong>Why it matters:</strong> Poor voice leading sounds choppy. Good voice leading sounds flowing and professional. It\u2019s the difference between beginner chord changes and advanced comping.</p><p><strong>The principle:</strong> Common tones stay. Moving voices go to the nearest available chord tone. Avoid big jumps unless intentional.</p>'
+        },
+        {
+          id: 'guide-tones',
+          title: 'Guide Tones',
+          difficulty: 3,
+          source: 'Peckham / Berklee',
+          body: '<p><strong>Guide tones</strong> are the 3rd and 7th of any chord. They define the chord\u2019s quality (major, minor, dominant). If you only play the 3rd and 7th of each chord, you\u2019ve captured the essential harmony.</p><p><strong>In a ii-V-I:</strong> Dm7 (F and C) \u2192 G7 (B and F) \u2192 Cmaj7 (E and B). Notice how F stays, B stays. The guide tones barely move \u2014 that\u2019s voice leading in action.</p><p><strong>Application:</strong> When comping, use guide tones as your foundation. You don\u2019t need full 6-string chords. Two notes tell the whole story. This is how jazz guitarists comp with just 2-3 notes and sound complete.</p>'
+        }
+      ]
+    },
+    {
+      id: 'world-music',
+      title: 'World Music Traditions',
+      description: 'Guitar traditions from around the globe. Flamenco, bossa nova, Celtic, and more.',
+      topics: [
+        {
+          id: 'flamenco-basics',
+          title: 'Flamenco Guitar Basics',
+          difficulty: 2,
+          source: 'Source collection / QJam L3',
+          body: '<p><strong>Flamenco</strong> is a Spanish art form combining guitar, singing, dance, and handclapping. The guitar tradition is centuries old with its own techniques, scales, and rhythmic system.</p><p><strong>Key techniques:</strong> <em>Rasgueado</em> (rapid strumming with multiple fingers), <em>picado</em> (fast rest-stroke scales), <em>alzap\u00faa</em> (thumb technique), <em>tremolo</em> (4 notes instead of the classical 3).</p><p><strong>Flamenco scales:</strong> The <strong>Phrygian dominant</strong> (E-F-G\u266F-A-B-C-D-E) is the most characteristic flamenco sound. The raised 3rd gives it that unmistakable Spanish flavour.</p><p><strong>Comp\u00e1s:</strong> Flamenco rhythms are cyclical, often in 12-beat patterns with accents on specific beats that define the style (sole\u00e1, buler\u00eda, alegr\u00edas, etc.).</p>'
+        },
+        {
+          id: 'bossa-nova',
+          title: 'Bossa Nova Guitar',
+          difficulty: 2,
+          source: 'Donat / Hodel / QJam L2',
+          body: '<p><strong>Bossa nova</strong> emerged in late 1950s Brazil \u2014 a fusion of samba rhythm with jazz harmony. The guitar is the heart of bossa nova. Jo\u00e3o Gilberto\u2019s playing defined the style.</p><p><strong>The thumb-finger pattern:</strong> Thumb plays the bass note on beats 1 and 3. Fingers pluck the chord on the syncopated rhythm. The pattern creates the illusion of two instruments from one guitar.</p><p><strong>The clave rhythm:</strong> The signature bossa rhythm is a 2-bar syncopated pattern against the steady bass. This syncopation is what gives bossa its gentle, swaying feel.</p><p><strong>Harmony:</strong> Bossa uses extended jazz chords \u2014 maj7, min7, 9ths, 11ths, 13ths \u2014 but played softly and rhythmically. \"Garota de Ipanema\" by Jobim is the essential reference.</p>'
+        },
+        {
+          id: 'celtic-guitar',
+          title: 'Celtic Guitar Traditions',
+          difficulty: 2,
+          source: 'Weiser / Celtic Encyclopedia',
+          body: '<p><strong>Celtic music</strong> on guitar includes Irish, Scottish, Welsh, and Breton traditions. The guitar arrived relatively late to Celtic music but has become central in modern arrangements.</p><p><strong>Tuning:</strong> DADGAD is the most popular Celtic guitar tuning. It creates open drone strings that naturally suggest the modal harmony of Celtic music.</p><p><strong>Tune types:</strong> Jigs (6/8, lively), Reels (4/4, fast), Hornpipes (4/4, dotted), Slip jigs (9/8), Airs (slow, lyrical), Strathspeys (Scottish, with snaps). Each has its own rhythmic character.</p><p><strong>Melody + accompaniment:</strong> Celtic guitarists often play the melody with fingers while the thumb provides bass. Like fingerstyle but with a rhythmic drive specific to dance music.</p>'
+        }
+      ]
+    },
+    {
+      id: 'practice-theory',
+      title: 'The Science of Practice',
+      description: 'How your brain learns. Study techniques, spaced repetition, myelin, and the neuroscience of skill.',
+      topics: [
+        {
+          id: 'how-practice-works',
+          title: 'How Practice Works in the Brain',
+          difficulty: 1,
+          source: 'Andreas / Hubbard / QJam L1',
+          body: '<p>Every time you repeat a physical action, your brain wraps the neural pathway in <strong>myelin</strong> \u2014 a fatty substance that insulates nerve fibres. More myelin = faster signal = smoother movement. This is why repetition works.</p><p><strong>Slow practice is fastest.</strong> When you play slowly and correctly, you build clean neural pathways. When you play fast and sloppy, you build sloppy pathways you have to unlearn.</p><p><strong>The three barriers to study</strong> (from Hubbard\u2019s Study Technology):</p><p>1. <strong>Absence of mass</strong> \u2014 theory without the physical thing. Solution: always have a guitar in hand when studying theory.</p><p>2. <strong>Too steep a gradient</strong> \u2014 jumping ahead too fast. Solution: one pentatonic shape at a time.</p><p>3. <strong>The misunderstood word</strong> \u2014 one unclear term blanks everything after it. Solution: every technical term links to a definition.</p>'
+        },
+        {
+          id: 'spaced-repetition',
+          title: 'Spaced Repetition & The Forgetting Curve',
+          difficulty: 1,
+          source: 'Learning Science / QJam L1',
+          body: '<p><strong>Ebbinghaus\u2019s Forgetting Curve:</strong> You forget about 70% of new information within 24 hours unless you review it. But each review strengthens the memory. The trick is WHEN you review.</p><p><strong>Optimal spacing:</strong> Review after 1 day \u2192 3 days \u2192 7 days \u2192 21 days. Each successful review extends the interval. This is <strong>spaced repetition</strong>, the most efficient learning method known to science.</p><p><strong>How this applies to guitar:</strong> Don\u2019t practice the same thing for 3 hours. Practice it for 20 minutes today, 15 tomorrow, 10 in 3 days, 5 in a week. Your hippocampus consolidates during sleep \u2014 the gap between sessions is where the real learning happens.</p><p><strong>Your streak counter</strong> isn\u2019t motivation fluff \u2014 it\u2019s a spaced repetition trainer. Showing up daily is the single most powerful thing you can do.</p>'
+        },
+        {
+          id: 'deliberate-practice',
+          title: 'Deliberate Practice',
+          difficulty: 2,
+          source: 'Andreas / Ericsson / QJam L2',
+          body: '<p><strong>Deliberate practice</strong> (Anders Ericsson) is not just \"practice\" \u2014 it\u2019s structured, intentional practice with specific goals. The difference between 10 years of experience and 1 year of experience repeated 10 times.</p><p><strong>The elements:</strong></p><p>1. <strong>Specific goal</strong> \u2014 not \"practice guitar\" but \"clean up the G\u2192C change to under 1 second\"</p><p>2. <strong>Full attention</strong> \u2014 no TV, no distractions</p><p>3. <strong>Immediate feedback</strong> \u2014 metronome tells you if you\u2019re in time</p><p>4. <strong>Comfort zone edge</strong> \u2014 not easy, not impossible</p><p><strong>The metronome is your best friend</strong> because it provides immediate, objective feedback. No opinions \u2014 just: were you on time or not? That\u2019s the feedback loop that builds skill.</p>'
+        }
+      ]
+    }
   ]
 };
 

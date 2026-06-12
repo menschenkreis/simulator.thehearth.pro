@@ -11,7 +11,7 @@
 <title>The Hearth Mastery</title>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&family=Josefin+Sans:wght@300;400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <link href="assets/css/foundation.css" rel="stylesheet">
-<link href="assets/css/book-reader.css?v=4" rel="stylesheet">
+<link href="assets/css/book-reader.css?v=5" rel="stylesheet">
 <style>
 /* ═══ THEME SYSTEM ═══ */
 :root, [data-theme="standard"]{
@@ -891,9 +891,9 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 
 <script src="assets/js/foundation.js"></script>
 <script src="assets/js/doing.js?v=6"></script>
-<script src="assets/js/knowing.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/page-flip/dist/js/page-flip.browser.min.js"></script>
-<script src="assets/js/book-reader.js?v=4"></script>
+<script src="assets/js/knowing.js?v=5"></script>
+<script src="assets/js/page-flip.browser.min.js"></script>
+<script src="assets/js/book-reader.js?v=5"></script>
 <script src="assets/js/practice.js?v=2"></script>
 
 <script src="assets/js/play.js"></script>
@@ -1729,8 +1729,25 @@ function showKnowing(){
     lv.categories.forEach((cat,ci)=>{
       const color=bookColors[K.categories.findIndex(c=>c.id===cat.id)%bookColors.length];
       const allDone=cat.done===cat.total&&cat.total>0;
-      const h=150+ci*4;
-      const w=48+ci%3*4;
+      const bookSizeMap={
+        rhythm:[162,50],
+        'chords-harmony':[174,52],
+        scales:[158,48],
+        'technique-improv':[170,50],
+        picking:[148,46],
+        arpeggios:[166,48],
+        fingerstyle:[154,46],
+        theory:[178,54],
+        'reading-music':[144,44],
+        fretboard:[168,50],
+        'dynamics-expression':[156,48],
+        'song-structure':[172,52],
+        'voice-leading':[152,46],
+        'world-music':[164,50],
+        'practice-theory':[160,48]
+      };
+      const size=bookSizeMap[cat.id]||[155+ci*3,48+ci%3*3];
+      const h=size[0]; const w=size[1];
 
       if(isLocked){
         // Ghost silhouette
@@ -1740,18 +1757,22 @@ function showKnowing(){
       } else {
         // Real book
         html+='<div onclick="openBook(\''+cat.id+'\','+lv.level+')" style="'+
-          'width:'+w+'px;min-height:'+h+'px;'+
-          'background:linear-gradient(145deg,'+color+','+color+'bb);'+
+          'width:'+w+'px;height:'+h+'px;'+
+          'background:linear-gradient(90deg,'+color+'dd 0%,'+color+' 6%,'+color+'ee 8%,'+color+'bb 100%);'+
           'border:2px solid '+(allDone?'var(--gold)':'rgba(255,255,255,0.08)')+';'+
           'border-radius:3px 6px 6px 3px;'+
           'cursor:pointer;transition:all 0.25s;'+
           'display:flex;flex-direction:column;align-items:center;justify-content:center;'+
-          'padding:12px 4px;'+
+          'padding:12px 6px 12px 8px;'+
           'position:relative;'+
-          'box-shadow:2px 3px 10px rgba(0,0,0,0.35);'+
+          'box-shadow:inset 3px 0 6px rgba(0,0,0,0.2),inset -2px 0 3px rgba(255,255,255,0.05),2px 3px 10px rgba(0,0,0,0.35);'+
           'flex-shrink:0'+
-        '" onmouseover="this.style.transform=\'translateY(-6px) scale(1.02)\';this.style.boxShadow=\'3px 6px 20px rgba(212,175,105,0.25)\'" onmouseout="this.style.transform=\'translateY(0) scale(1)\';this.style.boxShadow=\'2px 3px 10px rgba(0,0,0,0.35)\'">'+
+        '" onmouseover="this.style.transform=\'translateY(-6px) scale(1.02)\';this.style.boxShadow=\'inset 3px 0 6px rgba(0,0,0,0.2),inset -2px 0 3px rgba(255,255,255,0.05),3px 6px 20px rgba(212,175,105,0.25)\'" onmouseout="this.style.transform=\'translateY(0) scale(1)\';this.style.boxShadow=\'inset 3px 0 6px rgba(0,0,0,0.2),inset -2px 0 3px rgba(255,255,255,0.05),2px 3px 10px rgba(0,0,0,0.35)\'">'+
+          // Spine ridge
+          '<div style="position:absolute;left:5px;top:8px;bottom:8px;width:1px;background:rgba(255,255,255,0.1)"></div>'+
+          // Title
           '<div style="writing-mode:vertical-rl;text-orientation:mixed;font-family:Josefin Sans,sans-serif;font-size:0.7rem;color:rgba(255,255,255,0.9);text-align:center;letter-spacing:0.05em;line-height:1.2">'+cat.title+'</div>'+
+          // Page count
           '<div style="font-family:JetBrains Mono,monospace;font-size:0.5rem;color:rgba(255,255,255,0.4);margin-top:8px">'+cat.done+'/'+cat.total+'</div>'+
           (allDone?'<div style="position:absolute;top:4px;right:4px;font-size:0.55rem;color:var(--gold)">\u2713</div>':'')+
         '</div>';
