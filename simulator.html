@@ -784,7 +784,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 <script src="assets/js/knowing.js"></script>
 <script src="assets/js/book-reader.js?v=3"></script>
 <script src="assets/js/practice.js"></script>
-<script src="assets/js/practice.js"></script>
+
 <script src="assets/js/play.js"></script>
 <script src="assets/js/create.js"></script>
 <script src="assets/js/references.js"></script>
@@ -1649,117 +1649,415 @@ window.completeKnowingTopic=function(catId,topicId){
   else showKnowingBook(catId);
 };
 
-// ═══ PRACTICE NODE ═══
+// ═══ PRACTICE NODE — THE TEMPLE ═══
+// Flow: Dashboard → Review → Deepen → Learn → Drill (Metronome) → Self-Assess
+
+const CANDLE='#e8a020';
+const CANDLE_DIM='#e8a02030';
+
+function _getPracticeState(){
+  return JSON.parse(localStorage.getItem('hearth-practice-state')||'{}');
+}
+function _savePracticeState(s){
+  localStorage.setItem('hearth-practice-state',JSON.stringify(s));
+}
+function _getSessionLog(){
+  return JSON.parse(localStorage.getItem('hearth-practice-log')||'[]');
+}
+function _saveSessionLog(l){
+  localStorage.setItem('hearth-practice-log',JSON.stringify(l));
+}
+
 function showPractice(){
   document.querySelectorAll('.pnl').forEach(p=>p.classList.remove('on'));
   document.getElementById('p-foundation').classList.add('on');
   const P=window.PRACTICE;if(!P)return;
   const el=document.getElementById('p-foundation');
-  const completed=JSON.parse(localStorage.getItem('hearth-practice-progress')||'{}');
+  const state=_getPracticeState();
+  const log=_getSessionLog();
 
-  const items=P.topics.map((t)=>{
-    return {
-      id:t.id, title:t.title,
-      done:!!completed[t.id],
-      locked:false,
-      count:t.steps.length, countLabel:'steps'
-    };
-  });
+  // ── Stats ──
+  const totalSessions=log.length;
+  const totalMinutes=log.reduce((a,s)=>a+(s.minutes||0),0);
+  const streak=_calcStreak(log);
+  const lastSession=log.length?log[log.length-1]:null;
 
-  el.innerHTML=rainbowBlocks(items, {
-    icon:'',
-    title:P.title,
-    sources:P.sources,
-    clickFn:'showPracticeTopic'
-  });
-}
+  // ── Where am I? Onion skin ──
+  const currentDrill=state.currentDrill||null;
+  const drillObj=currentDrill?P.drills.find(d=>d.id===currentDrill):null;
+  const completedDrills=Object.keys(state.completed||{});
+  const drillIdx=currentDrill?P.drills.findIndex(d=>d.id===currentDrill):-1;
+  const prevDrill=drillIdx>0?P.drills[drillIdx-1]:null;
+  const nextDrill=drillIdx>=0&&drillIdx<P.drills.length-1?P.drills[drillIdx+1]:P.drills[0];
 
-window.showPracticeTopic=function(topicId){
-  const P=window.PRACTICE;if(!P)return;
-  const topic=P.topics.find(t=>t.id===topicId);if(!topic)return;
-  const el=document.getElementById('p-foundation');
-  const topicIdx=P.topics.indexOf(topic);
-  const rainbow=['#e74c3c','#e67e22','#f1c40f','#2ecc71','#3498db','#9b59b6','#e84393'];
-  const color=rainbow[topicIdx%rainbow.length];
-  const completed=JSON.parse(localStorage.getItem('hearth-practice-progress')||'{}');
-  const isDone=completed[topicId];
-
-  function renderStep(idx){
-    const s=topic.steps[idx];
-    const isLast=idx===topic.steps.length-1;
-    let html='<div style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:16px">'+
-      '<h3 style="font-family:\'DM Sans\',sans-serif;color:'+color+';font-size:0.95rem;margin:0 0 8px 0;font-weight:700">'+s.title+'</h3>'+
-      s.body;
-    if(isLast){
-      html+='<div style="display:flex;gap:8px;margin-top:16px">'+
-        '<button style="flex:1;background:'+color+';color:white;border:none;padding:12px;border-radius:8px;font-family:DM Sans,sans-serif;font-size:0.9rem;font-weight:600;cursor:pointer" onclick="completePracticeTopic(\''+topicId+'\')">Mark Complete</button>'+
-      '</div>';
-    } else {
-      html+='<button style="background:'+color+'18;color:'+color+';border:2px solid '+color+'40;padding:10px 20px;border-radius:8px;font-family:DM Sans,sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer;margin-top:12px" onclick="goPStep(\''+topicId+'\','+(idx+1)+')">Next: '+topic.steps[idx+1].label+'</button>';
-    }
-    html+='</div>';
-    return html;
+  // Build the onion-skin nav (previous → current → next)
+  let onionHtml='';
+  function drillCard(d,label,isCurrent){
+    if(!d) return '<div style="flex:1;opacity:0.25;padding:12px;border:1px dashed '+CANDLE_DIM+';border-radius:8px;text-align:center"><div style="font-size:0.6rem;color:var(--dim);font-family:JetBrains Mono;letter-spacing:0.1em">'+label.toUpperCase()+'</div><div style="color:var(--dim);font-size:0.75rem">—</div></div>';
+    return '<div onclick="showPracticeDrill(\''+d.id+'\')" style="flex:1;cursor:pointer;padding:12px;border:1px solid '+(isCurrent?CANDLE:'var(--border)')+';border-radius:8px;background:'+(isCurrent?CANDLE+'12':'var(--card)')+';transition:all 0.2s" onmouseover="this.style.borderColor='+CANDLE+'" onmouseout="this.style.borderColor='+(isCurrent?CANDLE:'var(--border)')+'">'+
+      '<div style="font-size:0.6rem;color:'+(isCurrent?CANDLE:'var(--dim)')+';font-family:JetBrains Mono;letter-spacing:0.1em">'+label.toUpperCase()+'</div>'+
+      '<div style="color:var(--text);font-size:0.8rem;font-weight:600;margin-top:4px">'+d.title+'</div>'+
+      '<div style="font-size:0.65rem;color:var(--dim)">'+d.category+' · '+d.duration+'</div>'+
+    '</div>';
   }
+  onionHtml='<div style="display:flex;gap:10px;margin-bottom:20px">'+
+    drillCard(prevDrill,'where you were',false)+
+    drillCard(drillObj||nextDrill,'you are here',true)+
+    drillCard(nextDrill,'where you\'re going',false)+
+  '</div>';
+
+  // ── Last session review ──
+  let lastHtml='';
+  if(lastSession){
+    const when=new Date(lastSession.ts);
+    const timeAgo=_timeAgo(when);
+    lastHtml='<div style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:16px">'+
+      '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">'+
+        '<div style="font-family:JetBrains Mono;font-size:0.6rem;color:'+CANDLE+';letter-spacing:0.12em">LAST SESSION</div>'+
+        '<div style="font-size:0.65rem;color:var(--dim)">'+timeAgo+'</div>'+
+      '</div>'+
+      '<div style="color:var(--text);font-size:0.85rem;font-weight:600">'+(lastSession.drillTitle||'Practice Session')+'</div>'+
+      '<div style="display:flex;gap:16px;margin-top:6px">'+
+        '<div style="font-size:0.7rem;color:var(--dim)">时长 '+lastSession.minutes+'分钟</div>'+
+        '<div style="font-size:0.7rem;color:var(--dim)">'+(lastSession.bpm||'—')+' BPM</div>'+
+        (lastSession.feeling?('<div style="font-size:0.7rem;color:'+_feelingColor(lastSession.feeling)+'">'+_feelingEmoji(lastSession.feeling)+' '+lastSession.feeling+'</div>'):'')+
+      '</div>'+
+      '<button onclick="startDrillPractice(\''+(lastSession.drillId||'pd-chromatic')+'\')" style="margin-top:10px;background:'+CANDLE+'18;border:1px solid '+CANDLE+'40;color:'+CANDLE+';padding:8px 16px;border-radius:6px;cursor:pointer;font-family:DM Sans,sans-serif;font-size:0.75rem;font-weight:600">Continue Practising</button>'+
+    '</div>';
+  }
+
+  // ── Stats row ──
+  const statsHtml='<div style="display:flex;gap:12px;margin-bottom:16px">'+
+    _statBox('🔥',streak,'Day Streak','')+
+    _statBox('⏱',totalMinutes,'Min Total','')+
+    _statBox('✅',completedDrills.length,'Mastered','/'+P.drills.length)+'+
+    _statBox('🎸',totalSessions,'Sessions','')+
+  '</div>';
+
+  // ── Quick sessions ──
+  let sessionsHtml='<div style="font-family:JetBrains Mono;font-size:0.6rem;color:'+CANDLE+';letter-spacing:0.12em;margin-bottom:10px">QUICK START</div>'+
+    '<div style="display:flex;gap:8px;margin-bottom:20px">'+
+    P.sessions.map(s=>
+      '<button onclick="startQuickSession(\''+s.id+'\')" style="flex:1;background:var(--card);border:1px solid var(--border);color:var(--text);padding:14px 10px;border-radius:8px;cursor:pointer;font-family:DM Sans,sans-serif;text-align:center;transition:all 0.2s" onmouseover="this.style.borderColor='+CANDLE+'" onmouseout="this.style.borderColor=\'var(--border)\'">'+
+        '<div style="font-size:0.85rem;font-weight:700">'+s.title+'</div>'+
+        '<div style="font-size:0.65rem;color:var(--dim)">'+s.duration+' min · '+s.drills.length+' drills</div>'+
+      '</button>'
+    ).join('')+
+    '</div>';
+
+  // ── All drills ──
+  const cats=[...new Set(P.drills.map(d=>d.category))];
+  let drillsHtml='<div style="font-family:JetBrains Mono;font-size:0.6rem;color:'+CANDLE+';letter-spacing:0.12em;margin-bottom:10px">ALL DRILLS</div>';
+  cats.forEach(cat=>{
+    const catDrills=P.drills.filter(d=>d.category===cat);
+    drillsHtml+='<div style="font-size:0.7rem;color:var(--dim);margin:10px 0 6px;font-weight:600">'+cat+'</div>'+
+      '<div style="display:flex;flex-direction:column;gap:4px">'+
+      catDrills.map(d=>{
+        const done=completedDrills.includes(d.id);
+        return '<div onclick="showPracticeDrill(\''+d.id+'\')" style="cursor:pointer;padding:10px 14px;border:1px solid '+(done?CANDLE+'60':'var(--border)')+';border-radius:6px;background:'+(done?CANDLE+'08':'var(--card)')+';display:flex;justify-content:space-between;align-items:center;transition:all 0.2s" onmouseover="this.style.borderColor=\''+CANDLE+'\'" onmouseout="this.style.borderColor=\''+(done?CANDLE+'60':'var(--border)')+'\'">'+
+          '<div>'+
+            '<div style="font-size:0.8rem;color:var(--text);font-weight:600">'+d.title+'</div>'+
+            '<div style="font-size:0.65rem;color:var(--dim)">'+d.duration+' · Difficulty '+d.difficulty+'</div>'+
+          '</div>'+
+          '<div style="font-size:0.8rem">'+(done?'✅':'→')+'</div>'+
+        '</div>';
+      }).join('')+
+      '</div>';
+  });
 
   el.innerHTML='<div style="padding:20px;max-width:650px;margin:0 auto">'+
-    '<button onclick="showPractice()" style="background:none;border:1px solid var(--border);color:var(--dim);padding:6px 12px;border-radius:4px;cursor:pointer;font-family:inherit;font-size:0.7rem;margin-bottom:16px">&larr; Back to Practice</button>'+
-    '<div style="border-top:4px solid '+color+'">'+
-    '<div style="padding:12px 0">'+
-      '<div style="font-family:JetBrains Mono;font-size:0.55rem;color:'+color+';letter-spacing:0.15em;text-transform:uppercase">'+topic.num+' / '+(isDone?'Complete':'')+'</div>'+
-      '<h2 style="font-family:\'DM Sans\',sans-serif;color:'+color+';font-size:1.1rem;margin:4px 0;font-weight:700">'+topic.title+'</h2>'+
-      '<div style="font-size:0.72rem;color:var(--dim)">'+topic.subtitle+'</div>'+
+    '<div style="text-align:center;margin-bottom:24px">'+
+      '<div style="font-size:2rem;margin-bottom:6px">🕯</div>'+
+      '<div style="font-family:Cinzel,serif;color:'+CANDLE+';font-size:1.3rem;font-weight:700">Practice Temple</div>'+
+      '<div style="font-size:0.7rem;color:var(--dim);margin-top:4px">Set your intention. Focus. Practice. Reflect.</div>'+
     '</div>'+
-    '<div style="display:flex;gap:2px;margin-bottom:16px;background:var(--card);border-radius:6px;padding:4px;border:1px solid var(--border)">'+
-      topic.steps.map((s,i)=>'<div class="lp-step'+(i===0?' on':'')+'" onclick="goPStep(\''+topicId+'\','+i+')" style="'+(i===0?'background:'+color+';border-color:'+color+';color:white':'background:'+color+'10;border-color:'+color+'30')+'"><div class="lp-sn" style="color:'+(i===0?'white':color)+'">'+(i+1)+'</div><div class="lp-sl" style="color:'+(i===0?'white':color)+'">'+s.label+'</div></div>').join('')+
-    '</div>'+
-    '<div id="pStepBody">'+renderStep(0)+'</div>'+
-    '</div>'+
+    statsHtml+
+    onionHtml+
+    lastHtml+
+    sessionsHtml+
+    drillsHtml+
   '</div>';
-  window._pTopic=topicId;
 }
 
-window.goPStep=function(tid,idx){
+// ── Drill detail page ──
+window.showPracticeDrill=function(drillId){
   const P=window.PRACTICE;if(!P)return;
-  const topic=P.topics.find(t=>t.id===tid);if(!topic)return;
-  const topicIdx=P.topics.indexOf(topic);
-  const rainbow=['#e74c3c','#e67e22','#f1c40f','#2ecc71','#3498db','#9b59b6','#e84393'];
-  const color=rainbow[topicIdx%rainbow.length];
-  const s=topic.steps[idx];
-  const isLast=idx===topic.steps.length-1;
-  const body=document.getElementById('pStepBody');
-  if(!body)return;
+  const drill=P.drills.find(d=>d.id===drillId);if(!drill)return;
+  const el=document.getElementById('p-foundation');
+  const state=_getPracticeState();
+  const done=!!(state.completed&&state.completed[drillId]);
+  const prevAttempts=_getSessionLog().filter(s=>s.drillId===drillId);
 
-  let html='<div style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:16px">'+
-    '<h3 style="font-family:\'DM Sans\',sans-serif;color:'+color+';font-size:0.95rem;margin:0 0 8px 0;font-weight:700">'+s.title+'</h3>'+
-    s.body;
-  if(isLast){
-    html+='<div style="display:flex;gap:8px;margin-top:16px">'+
-      '<button style="flex:1;background:'+color+';color:white;border:none;padding:12px;border-radius:8px;font-family:DM Sans,sans-serif;font-size:0.9rem;font-weight:600;cursor:pointer" onclick="completePracticeTopic(\''+tid+'\')">Mark Complete</button>'+
-    '</div>';
+  el.innerHTML='<div style="padding:20px;max-width:600px;margin:0 auto">'+
+    '<button onclick="showPractice()" style="background:none;border:1px solid var(--border);color:var(--dim);padding:6px 12px;border-radius:4px;cursor:pointer;font-family:inherit;font-size:0.7rem;margin-bottom:16px">&larr; Back to Dashboard</button>'+
+    '<div style="border-top:4px solid '+CANDLE+';padding-top:16px;margin-bottom:20px">'+
+      '<div style="font-family:JetBrains Mono;font-size:0.55rem;color:'+CANDLE+';letter-spacing:0.15em;text-transform:uppercase">'+drill.category.toUpperCase()+(done?' · MASTERED':'')+'</div>'+
+      '<h2 style="font-family:Cinzel,serif;color:var(--text);font-size:1.2rem;margin:6px 0;font-weight:700">'+drill.title+'</h2>'+
+      '<div style="font-size:0.75rem;color:var(--dim)">'+drill.description+'</div>'+
+      '<div style="display:flex;gap:12px;margin-top:8px">'+
+        '<div style="font-size:0.7rem;color:'+CANDLE+'">⏱ '+drill.duration+'</div>'+
+        '<div style="font-size:0.7rem;color:var(--dim)">Difficulty '+drill.difficulty+'</div>'+
+      '</div>'+
+    '</div>'+
+    '<div style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:16px;margin-bottom:20px">'+
+      '<div style="font-family:JetBrains Mono;font-size:0.6rem;color:'+CANDLE+';letter-spacing:0.1em;margin-bottom:8px">HOW TO PRACTICE</div>'+
+      '<div style="font-size:0.82rem;color:var(--text);line-height:1.6">'+drill.instructions+'</div>'+
+    '</div>'+
+    (prevAttempts.length?(
+      '<div style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:16px;margin-bottom:20px">'+
+        '<div style="font-family:JetBrains Mono;font-size:0.6rem;color:'+CANDLE+';letter-spacing:0.1em;margin-bottom:8px">HISTORY ('+prevAttempts.length+')</div>'+
+        prevAttempts.slice(-3).reverse().map(a=>
+          '<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border)">'+
+            '<div style="font-size:0.75rem;color:var(--dim)">'+_timeAgo(new Date(a.ts))+'</div>'+
+            '<div style="font-size:0.75rem;color:var(--dim)">'+a.bpm+' BPM · '+a.minutes+' min</div>'+
+            '<div style="font-size:0.75rem">'+_feelingEmoji(a.feeling)+'</div>'+
+          '</div>'
+        ).join('')+
+      '</div>'
+    ):'')+
+    '<div style="text-align:center">'+
+      '<button onclick="startDrillPractice(\''+drillId+'\')" style="background:'+CANDLE+';color:#0d0b08;border:none;padding:16px 40px;border-radius:8px;font-family:Cinzel,serif;font-size:1rem;font-weight:700;cursor:pointer;letter-spacing:0.05em">🕯 Start Practising</button>'+
+    '</div>'+
+  '</div>';
+}
+
+// ── Practice mode (with metronome) ──
+window.startDrillPractice=function(drillId){
+  const P=window.PRACTICE;if(!P)return;
+  const drill=P.drills.find(d=>d.id===drillId);if(!drill)return;
+  const el=document.getElementById('p-foundation');
+  const startBpm=drill.defaultBpm||60;
+
+  const state=_getPracticeState();
+  state.currentDrill=drillId;
+  _savePracticeState(state);
+
+  el.innerHTML='<div style="padding:20px;max-width:550px;margin:0 auto">'+
+    '<div style="text-align:center;margin-bottom:24px">'+
+      '<div style="font-size:2rem;margin-bottom:4px">🕯</div>'+
+      '<div style="font-family:Cinzel,serif;color:var(--text);font-size:1.1rem;font-weight:700">'+drill.title+'</div>'+
+      '<div style="font-size:0.7rem;color:var(--dim)">'+drill.category+'</div>'+
+    '</div>'+
+    '<div style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:20px;font-size:0.78rem;color:var(--text);line-height:1.5">'+
+      drill.instructions+
+    '</div>'+
+    // Metronome
+    '<div id="metro-panel" style="background:var(--card);border:1px solid '+CANDLE+'40;border-radius:8px;padding:20px;margin-bottom:20px;text-align:center">'+
+      '<div style="font-family:JetBrains Mono;font-size:0.6rem;color:'+CANDLE+';letter-spacing:0.15em;margin-bottom:12px">METRONOME</div>'+
+      '<div style="margin-bottom:16px">'+
+        '<div id="bpm-display" style="font-family:Cinzel,serif;font-size:3.5rem;color:'+CANDLE+';line-height:1">'+startBpm+'</div>'+
+        '<div style="font-size:0.7rem;color:var(--dim)">BPM</div>'+
+      '</div>'+
+      '<div style="display:flex;justify-content:center;gap:8px;margin-bottom:16px">'+
+        '<button onclick="_metroBpm(-10)" style="width:44px;height:44px;border-radius:50%;background:var(--card);border:1px solid var(--border);color:var(--text);font-size:1rem;cursor:pointer">-10</button>'+
+        '<button onclick="_metroBpm(-5)" style="width:44px;height:44px;border-radius:50%;background:var(--card);border:1px solid var(--border);color:var(--text);font-size:0.85rem;cursor:pointer">-5</button>'+
+        '<button id="metro-toggle" onclick="_metroToggle()" style="width:64px;height:64px;border-radius:50%;background:'+CANDLE+';border:none;color:#0d0b08;font-size:1.4rem;cursor:pointer">▶</button>'+
+        '<button onclick="_metroBpm(5)" style="width:44px;height:44px;border-radius:50%;background:var(--card);border:1px solid var(--border);color:var(--text);font-size:0.85rem;cursor:pointer">+5</button>'+
+        '<button onclick="_metroBpm(10)" style="width:44px;height:44px;border-radius:50%;background:var(--card);border:1px solid var(--border);color:var(--text);font-size:1rem;cursor:pointer">+10</button>'+
+      '</div>'+
+      '<div style="display:flex;justify-content:center;gap:8px">'+
+        '<button id="ts-4" onclick="_metroTs(4)" style="padding:6px 14px;border-radius:4px;border:1px solid '+CANDLE+';background:'+CANDLE+'20;color:'+CANDLE+';font-size:0.7rem;font-family:JetBrains Mono;cursor:pointer">4/4</button>'+
+        '<button id="ts-3" onclick="_metroTs(3)" style="padding:6px 14px;border-radius:4px;border:1px solid var(--border);background:var(--card);color:var(--dim);font-size:0.7rem;font-family:JetBrains Mono;cursor:pointer">3/4</button>'+
+        '<button id="ts-6" onclick="_metroTs(6)" style="padding:6px 14px;border-radius:4px;border:1px solid var(--border);background:var(--card);color:var(--dim);font-size:0.7rem;font-family:JetBrains Mono;cursor:pointer">6/8</button>'+
+      '</div>'+
+    '</div>'+
+    '<div style="text-align:center;margin-bottom:20px">'+
+      '<div id="timer-display" style="font-family:JetBrains Mono;font-size:1.5rem;color:var(--text)">00:00</div>'+
+      '<div style="font-size:0.65rem;color:var(--dim)">Practice Time</div>'+
+    '</div>'+
+    // Self-assessment buttons
+    '<div style="font-family:JetBrains Mono;font-size:0.6rem;color:'+CANDLE+';letter-spacing:0.12em;text-align:center;margin-bottom:10px">HOW DID THAT FEEL?</div>'+
+    '<div style="display:flex;gap:8px;margin-bottom:20px">'+
+      '<button onclick="_finishDrill(\''+drillId+'\',\'nailed\')" style="flex:1;background:#2ecc7118;border:2px solid #2ecc7140;color:#2ecc71;padding:14px 8px;border-radius:8px;cursor:pointer;font-family:DM Sans,sans-serif;text-align:center;transition:all 0.2s" onmouseover="this.style.borderColor=\'#2ecc71\'" onmouseout="this.style.borderColor=\'#2ecc7140\'">'+
+        '<div style="font-size:1.3rem">🔥</div>'+
+        '<div style="font-size:0.75rem;font-weight:700">Nailed It</div>'+
+        '<div style="font-size:0.6rem;color:var(--dim)">Easy, move on</div>'+
+      '</button>'+
+      '<button onclick="_finishDrill(\''+drillId+'\',\'getting\')" style="flex:1;background:'+CANDLE+'12;border:2px solid '+CANDLE+'30;color:'+CANDLE+';padding:14px 8px;border-radius:8px;cursor:pointer;font-family:DM Sans,sans-serif;text-align:center;transition:all 0.2s" onmouseover="this.style.borderColor=\''+CANDLE+'\'" onmouseout="this.style.borderColor=\''+CANDLE+'30\'">'+
+        '<div style="font-size:1.3rem">💪</div>'+
+        '<div style="font-size:0.75rem;font-weight:700">Getting It</div>'+
+        '<div style="font-size:0.6rem;color:var(--dim)">Need more practice</div>'+
+      '</button>'+
+      '<button onclick="_finishDrill(\''+drillId+'\',\'stuck\')" style="flex:1;background:#e74c3c10;border:2px solid #e74c3c30;color:#e74c3c;padding:14px 8px;border-radius:8px;cursor:pointer;font-family:DM Sans,sans-serif;text-align:center;transition:all 0.2s" onmouseover="this.style.borderColor=\'#e74c3c\'" onmouseout="this.style.borderColor=\'#e74c3c30\'">'+
+        '<div style="font-size:1.3rem">🤔</div>'+
+        '<div style="font-size:0.75rem;font-weight:700">Not Getting It</div>'+
+        '<div style="font-size:0.6rem;color:var(--dim)">Stepped too far, go back</div>'+
+      '</button>'+
+    '</div>'+
+    '<button onclick="showPractice()" style="display:block;margin:0 auto;background:none;border:1px solid var(--border);color:var(--dim);padding:6px 12px;border-radius:4px;cursor:pointer;font-family:inherit;font-size:0.7rem">Cancel</button>'+
+  '</div>';
+
+  window._metro={playing:false,bpm:startBpm,ts:4,beat:0,interval:null,ctx:null,timerStart:Date.now(),timerInterval:null};
+  _startTimer();
+}
+
+// ── Metronome engine (Web Audio API) ──
+window._metroToggle=function(){
+  const m=window._metro;if(!m)return;
+  if(m.playing){
+    m.playing=false;
+    clearInterval(m.interval);
+    document.getElementById('metro-toggle').textContent='▶';
   } else {
-    html+='<button style="background:'+color+'18;color:'+color+';border:2px solid '+color+'40;padding:10px 20px;border-radius:8px;font-family:DM Sans,sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer;margin-top:12px" onclick="goPStep(\''+tid+'\','+(idx+1)+')">Next: '+topic.steps[idx+1].label+'</button>';
+    m.playing=true;
+    if(!m.ctx) m.ctx=new (window.AudioContext||window.webkitAudioContext)();
+    m.beat=0;
+    const intervalMs=60000/m.bpm;
+    m.interval=setInterval(()=>_metroTick(),intervalMs);
+    document.getElementById('metro-toggle').textContent='⏸';
   }
-  html+='</div>';
-  body.innerHTML=html;
+};
 
-  document.querySelectorAll('.lp-step').forEach(function(step,i){
-    if(i===idx){step.style.background=color;step.style.borderColor=color;}
-    else{step.style.background=color+'10';step.style.borderColor=color+'30';}
-    step.querySelector('.lp-sn').style.color=i===idx?'white':color;
-    step.querySelector('.lp-sl').style.color=i===idx?'white':color;
+function _metroTick(){
+  const m=window._metro;if(!m||!m.ctx)return;
+  const osc=m.ctx.createOscillator();
+  const gain=m.ctx.createGain();
+  osc.connect(gain);gain.connect(m.ctx.destination);
+  osc.frequency.value=m.beat===0?1000:800;
+  gain.gain.value=0.15;
+  osc.start(m.ctx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.001,m.ctx.currentTime+0.08);
+  osc.stop(m.ctx.currentTime+0.08);
+  m.beat=(m.beat+1)%m.ts;
+}
+
+window._metroBpm=function(delta){
+  const m=window._metro;if(!m)return;
+  m.bpm=Math.max(30,Math.min(220,m.bpm+delta));
+  const d=document.getElementById('bpm-display');if(d)d.textContent=m.bpm;
+  if(m.playing){
+    clearInterval(m.interval);
+    m.interval=setInterval(()=>_metroTick(),60000/m.bpm);
+  }
+};
+
+window._metroTs=function(ts){
+  const m=window._metro;if(!m)return;
+  m.ts=ts;m.beat=0;
+  [4,3,6].forEach(t=>{
+    const btn=document.getElementById('ts-'+t);if(!btn)return;
+    if(t===ts){btn.style.borderColor=CANDLE;btn.style.background=CANDLE+'20';btn.style.color=CANDLE;}
+    else{btn.style.borderColor='var(--border)';btn.style.background='var(--card)';btn.style.color='var(--dim)';}
   });
 };
 
-window.completePracticeTopic=function(tid){
-  const progress=JSON.parse(localStorage.getItem('hearth-practice-progress')||'{}');
-  progress[tid]=true;
-  localStorage.setItem('hearth-practice-progress',JSON.stringify(progress));
+function _startTimer(){
+  const m=window._metro;if(!m)return;
+  m.timerStart=Date.now();
+  m.timerInterval=setInterval(()=>{
+    const elapsed=Math.floor((Date.now()-m.timerStart)/1000);
+    const min=String(Math.floor(elapsed/60)).padStart(2,'0');
+    const sec=String(elapsed%60).padStart(2,'0');
+    const d=document.getElementById('timer-display');if(d)d.textContent=min+':'+sec;
+  },1000);
+}
+
+function _stopTimer(){
+  const m=window._metro;if(!m)return;
+  if(m.interval)clearInterval(m.interval);
+  if(m.timerInterval)clearInterval(m.timerInterval);
+  m.playing=false;
+  const elapsed=m.timerStart?Math.round((Date.now()-m.timerStart)/60000):0;
+  return Math.max(elapsed,1);
+}
+
+// ── Finish drill → self-assessment result ──
+window._finishDrill=function(drillId,feeling){
   const P=window.PRACTICE;if(!P)return;
-  const idx=P.topics.findIndex(t=>t.id===tid);
-  const next=P.topics[idx+1];
-  if(next) showPracticeTopic(next.id);
-  else showPractice();
+  const drill=P.drills.find(d=>d.id===drillId);if(!drill)return;
+  const m=window._metro;
+  const minutes=_stopTimer();
+  const bpm=m?m.bpm:60;
+
+  const log=_getSessionLog();
+  log.push({drillId,drillTitle:drill.title,minutes,bpm,feeling,ts:new Date().toISOString()});
+  _saveSessionLog(log);
+
+  const state=_getPracticeState();
+  if(!state.completed)state.completed={};
+
+  let nextAction='';
+  let nextDrill=null;
+
+  if(feeling==='nailed'){
+    state.completed[drillId]=true;
+    const idx=P.drills.findIndex(d=>d.id===drillId);
+    nextDrill=P.drills[idx+1];
+    nextAction=nextDrill?
+      'Next up: <strong>'+nextDrill.title+'</strong> — ready?':
+      'You\'ve worked through all the drills! Loop back and reinforce.';
+  } else if(feeling==='getting'){
+    nextAction='Good — keep practising <strong>'+drill.title+'</strong>. Repetition is the teacher.';
+    nextDrill=drill;
+  } else if(feeling==='stuck'){
+    const idx=P.drills.findIndex(d=>d.id===drillId);
+    const prevDrill=idx>0?P.drills[idx-1]:null;
+    if(prevDrill){
+      nextAction='Gradient too steep? Totally fine. Drop back to <strong>'+prevDrill.title+'</strong> and strengthen the foundation.';
+      nextDrill=prevDrill;
+    } else {
+      nextAction='Take it slow — there\'s no rush. Try <strong>'+drill.title+'</strong> again at a lower tempo.';
+      nextDrill=drill;
+    }
+  }
+  state.currentDrill=nextDrill?nextDrill.id:drillId;
+  _savePracticeState(state);
+
+  const el=document.getElementById('p-foundation');
+  const emoji=feeling==='nailed'?'🔥':feeling==='getting'?'💪':'🤔';
+  const msg=feeling==='nailed'?'Nailed it!':feeling==='getting'?'Getting there — keep going':'Skipped gradient detected — stepping back';
+
+  el.innerHTML='<div style="padding:20px;max-width:500px;margin:0 auto;text-align:center">'+
+    '<div style="font-size:3rem;margin-bottom:12px">'+emoji+'</div>'+
+    '<div style="font-family:Cinzel,serif;color:var(--text);font-size:1.2rem;font-weight:700;margin-bottom:8px">'+msg+'</div>'+
+    '<div style="font-size:0.8rem;color:var(--dim);margin-bottom:8px">'+drill.title+' · '+minutes+' min · '+bpm+' BPM</div>'+
+    '<div style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:16px;margin:16px 0;font-size:0.85rem;color:var(--text)">'+nextAction+'</div>'+
+    '<div style="display:flex;gap:8px;justify-content:center">'+
+      (nextDrill?'<button onclick="startDrillPractice(\''+nextDrill.id+'\')" style="background:'+CANDLE+';color:#0d0b08;border:none;padding:12px 24px;border-radius:8px;font-family:DM Sans,sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer">Keep Practising</button>':'')+
+      '<button onclick="showPractice()" style="background:var(--card);border:1px solid var(--border);color:var(--text);padding:12px 24px;border-radius:8px;font-family:DM Sans,sans-serif;font-size:0.85rem;cursor:pointer">Back to Dashboard</button>'+
+    '</div>'+
+  '</div>';
 };
+
+// ── Quick session launcher ──
+window.startQuickSession=function(sessionId){
+  const P=window.PRACTICE;if(!P)return;
+  const session=P.sessions.find(s=>s.id===sessionId);if(!session)return;
+  startDrillPractice(session.drills[0]);
+};
+
+// ── Helpers ──
+function _statBox(icon,value,label,extra){
+  return '<div style="flex:1;background:var(--card);border:1px solid var(--border);border-radius:8px;padding:12px 8px;text-align:center">'+
+    '<div style="font-size:1.2rem;margin-bottom:2px">'+icon+'</div>'+
+    '<div style="font-family:Cinzel,serif;color:var(--text);font-size:1.1rem;font-weight:700">'+value+extra+'</div>'+
+    '<div style="font-size:0.6rem;color:var(--dim)">'+label+'</div>'+
+  '</div>';
+}
+
+function _calcStreak(log){
+  if(!log.length)return 0;
+  const days=log.map(s=>new Date(s.ts).toDateString());
+  const unique=[...new Set(days)].sort((a,b)=>new Date(b)-new Date(a));
+  let streak=1;
+  for(let i=1;i<unique.length;i++){
+    const diff=(new Date(unique[i-1])-new Date(unique[i]))/(1000*60*60*24);
+    if(Math.round(diff)===1)streak++;else break;
+  }
+  if(unique[0]!==new Date().toDateString())return 0;
+  return streak;
+}
+
+function _timeAgo(date){
+  const s=Math.floor((Date.now()-date.getTime())/1000);
+  if(s<60)return 'just now';
+  if(s<3600)return Math.floor(s/60)+'m ago';
+  if(s<86400)return Math.floor(s/3600)+'h ago';
+  return Math.floor(s/86400)+'d ago';
+}
+
+function _feelingEmoji(f){return f==='nailed'?'🔥':f==='getting'?'💪':'🤔';}
+function _feelingColor(f){return f==='nailed'?'#2ecc71':f==='getting'?CANDLE:'#e74c3c';}
 
 // ═══ PLAY NODE ═══
 function showPlay(){
