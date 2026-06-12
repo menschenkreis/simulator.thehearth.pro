@@ -181,7 +181,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 .path-btns{display:none;/* Hidden — single journey path now */}
 
 /* Node info popup */
-.node-info-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.6);z-index:199;}
+.node-info-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.6);z-index:249;}
 .node-info-overlay.vis{display:block;}
 .style-filter{display:inline-block;padding:3px 8px;border-radius:12px;font-family:JetBrains Mono;font-size:0.6rem;color:var(--dim);background:var(--card);border:1px solid var(--border);cursor:pointer;text-transform:uppercase;letter-spacing:0.05em;}
 .style-filter:hover{border-color:var(--gold);color:var(--text);}
@@ -471,10 +471,11 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 
   /* Bottom sheet for node info */
   .node-info{
-    top:auto!important;bottom:0!important;left:0!important;right:0!important;
+    top:auto!important;bottom:calc(68px + env(safe-area-inset-bottom, 0px))!important;left:0!important;right:0!important;
     transform:none!important;max-width:100%!important;width:100%!important;
-    border-radius:16px 16px 0 0!important;max-height:70vh;overflow-y:auto;
+    border-radius:16px 16px 0 0!important;max-height:60vh;overflow-y:auto;
     animation:slideUp 0.3s cubic-bezier(0.16,1,0.3,1);
+    z-index:250!important;
   }
   @keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
   .node-info::before{
@@ -893,7 +894,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 <script src="assets/js/knowing.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/page-flip/dist/js/page-flip.browser.min.js"></script>
 <script src="assets/js/book-reader.js?v=4"></script>
-<script src="assets/js/practice.js"></script>
+<script src="assets/js/practice.js?v=2"></script>
 
 <script src="assets/js/play.js"></script>
 <script src="assets/js/create.js"></script>
