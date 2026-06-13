@@ -258,6 +258,27 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 .th-c h4{font-family:'Cinzel',serif;color:var(--gold);font-size:0.75rem;margin-bottom:3px;}
 .th-c p{font-size:0.65rem;color:var(--dim);line-height:1.4;}
 
+/* === MASTERY (Beyond) === */
+.mastery-wrap{padding:16px;max-width:650px;margin:0 auto;overflow-y:auto;height:100%;}
+.mastery-header{margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--border);}
+.mastery-cards{display:flex;flex-direction:column;gap:16px;}
+.mastery-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:20px;border-left:3px solid var(--mc,var(--gold));}
+.mastery-card-tag{font-family:JetBrains Mono,monospace;font-size:0.55rem;color:var(--mc);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:8px;}
+.mastery-card-title{font-family:'Cinzel',serif;font-size:1.2rem;font-weight:700;margin:0 0 4px 0;letter-spacing:0.02em;}
+.mastery-card-artist{font-family:'DM Sans',sans-serif;font-size:0.85rem;color:var(--bright);margin-bottom:12px;font-weight:600;}
+.mastery-card-desc{font-size:0.82rem;color:var(--text);line-height:1.7;margin:0 0 16px 0;}
+.mastery-card-text{font-size:0.8rem;color:var(--text);line-height:1.7;margin:0;}
+.mastery-section{margin-bottom:14px;}
+.mastery-section-label{font-family:JetBrains Mono,monospace;font-size:0.55rem;color:var(--amber);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:6px;}
+.mastery-list{list-style:none;padding:0;margin:0;}
+.mastery-list li{padding:4px 0 4px 16px;font-size:0.78rem;color:var(--text);position:relative;}
+.mastery-list li::before{content:'▸';position:absolute;left:0;color:var(--mc,var(--gold));font-size:0.7rem;}
+.mastery-reflect{margin-top:16px;padding:14px;background:rgba(155,89,182,0.04);border:2px solid;border-radius:8px;}
+.mastery-reflect-label{font-family:'DM Sans',sans-serif;font-size:0.72rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:6px;}
+.mastery-video-link{display:inline-block;margin-top:14px;padding:10px 16px;border-radius:6px;font-family:'DM Sans',sans-serif;font-size:0.78rem;font-weight:600;text-decoration:none;border:1px solid;transition:all 0.15s;}
+.mastery-video-link:hover{transform:translateY(-1px);}
+.mastery-footer{text-align:center;padding:16px 0 8px;}
+
 /* === PLAY (World Map) === */
 .play-world-wrap{padding:16px;max-width:900px;margin:0 auto;display:flex;flex-direction:column;height:100%;}
 .wm-back-btn{background:none;border:1px solid var(--border);color:var(--dim);padding:6px 12px;border-radius:4px;cursor:pointer;font-family:inherit;font-size:0.7rem;margin-bottom:12px;align-self:flex-start;}
@@ -732,7 +753,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
         </g>
 
         <!-- ═══ MASTERY (bottom) with 8 level rings ═══ -->
-        <g class="mn-g locked" onclick="showNodeInfo('mastery')" data-node="mastery">
+        <g class="mn-g unlocked" onclick="showNodeInfo('mastery')" data-node="mastery">
           <!-- 8 concentric level rings (rainbow, outer=L1 red → inner=L8 violet) -->
           <circle class="mastery-ring" id="mring-l8" cx="350" cy="813" r="99" stroke="#cc33ff" stroke-width="1.5" fill="none" opacity="0.15"/>
           <circle class="mastery-ring" id="mring-l7" cx="350" cy="813" r="90" stroke="#6633cc" stroke-width="1.5" fill="none" opacity="0.15"/>
@@ -883,7 +904,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 const NODE_DATA = {
   hearth: { emoji:'', tag:'ORIGIN', title:'The Hearth', desc:'Your progress dashboard. See how you\'re doing across all paths.', enter:true, action:'hearth' },
   foundation: { emoji:'', tag:'HOME NODE', title:'Foundation', desc:'Before you play a note — learn how learning works, how to hold the guitar, tune it, and produce your first clean sound. 7 core topics.', enter:true, action:'foundation', icon:'images/foundation-icon.png' },
-  mastery: { emoji:'', tag:'FINAL', title:'Mastery', desc:'Come home to yourself. What is YOUR sound? The student becomes the artist.', enter:false, locked:true },
+  mastery: { emoji:'', tag:'FINAL', title:'Mastery', desc:'Come home to yourself. What is YOUR sound? The student becomes the artist.', enter:true, action:'mastery' },
   doing: { emoji:'', tag:'DOING PATH', title:'Doing', desc:'Open-world drill library. Every technique, every style. Click a dot to dive in.', enter:true, action:'doing', icon:'images/doing-icon.png' },
   practise: { emoji:'', tag:'DOING PATH', title:'Practise', desc:'Session-based. "How much time have you got?" Select drills, combine variations, timer starts, practise, give feedback.', enter:true, action:'practice' },
   play: { emoji:'', tag:'DOING PATH', title:'Play', desc:'Explore guitar traditions from around the world. Click a region on the world map — Ethiopian jazz, Delta blues, flamenco, bossa nova and more. Discover YOUR sound.', enter:true, action:'play' },
@@ -2854,6 +2875,71 @@ window.wmClick=function(regionId){
     '</div>'+
   '</div>';
 };
+
+// ═══ MASTERY NODE — "BEYOND" ═══
+function showMastery(){
+  document.querySelectorAll('.pnl').forEach(p=>p.classList.remove('on'));
+  document.getElementById('p-foundation').classList.add('on');
+  const el=document.getElementById('p-foundation');
+
+  const beyond=[
+    {
+      id:'microtonal',
+      title:'Microtonal Worlds',
+      artist:'Maddie Ashman',
+      tag:'Beyond 12 Tones',
+      color:'#9b59b6',
+      description:'Maddie Ashman hears the spaces between notes — the microtones that exist in the cracks of the fretboard. This is what mastery looks like: not playing faster or cleaner, but perceiving what others cannot. The 12-tone fretboard is a map. Maddie shows you the territory it leaves out.',
+      why:'When you\'ve mastered the standard fretboard, the next frontier is the infinite gradation between notes. Microtonal music exists in Turkish maqam, Indian raga, blues bends, and the human voice. Maddie Ashman works in this space — composing and performing with notes that don\'t have names in Western theory.',
+      listen:['Instagram: @maddieashman', 'Listen for: notes that feel "wrong" at first, then become undeniable', 'Try: bend a string slowly between two frets — hold it there. That sound? That\'s a microtone.'],
+      reflect:'Mastery isn\'t adding more. It\'s hearing more. The same 12 notes you started with contain universes you couldn\'t perceive at the beginning. Now you can.',
+      videoUrl:'https://www.instagram.com/reel/DXMmtkOAWuI/'
+    }
+  ];
+
+  let cardsHtml=beyond.map(function(b){
+    var listenHtml=(b.listen||[]).map(function(t){return '<li>'+t+'</li>';}).join('');
+    return '<div class="mastery-card" style="--mc:'+b.color+'">'+
+      '<div class="mastery-card-tag">'+b.tag+'</div>'+
+      '<h2 class="mastery-card-title" style="color:'+b.color+'">'+b.title+'</h2>'+
+      '<div class="mastery-card-artist">'+b.artist+'</div>'+
+      '<p class="mastery-card-desc">'+b.description+'</p>'+
+      '<div class="mastery-section">'+
+        '<div class="mastery-section-label">Why This Is Here</div>'+
+        '<p class="mastery-card-text">'+b.why+'</p>'+
+      '</div>'+
+      (listenHtml?'<div class="mastery-section">'+
+        '<div class="mastery-section-label">Listen & Explore</div>'+
+        '<ul class="mastery-list">'+listenHtml+'</ul>'+
+      '</div>':'')+
+      (b.reflect?'<div class="mastery-reflect" style="border-color:'+b.color+'">'+
+        '<div class="mastery-reflect-label" style="color:'+b.color+'">Reflect</div>'+
+        '<p class="mastery-card-text">'+b.reflect+'</p>'+
+      '</div>':'')+
+      (b.videoUrl?'<a href="'+b.videoUrl+'" target="_blank" class="mastery-video-link" style="background:'+b.color+'20;border-color:'+b.color+'50;color:'+b.color+'">'+
+        '▶ Watch on Instagram'+
+      '</a>':'')+
+    '</div>';
+  }).join('');
+
+  el.innerHTML='<div class="mastery-wrap">'+
+    '<div class="mastery-header">'+
+      '<div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">'+
+        '<div style="width:10px;height:10px;border-radius:50%;background:#9b59b6;box-shadow:0 0 12px #9b59b6"></div>'+
+        '<span style="font-family:JetBrains Mono;font-size:0.6rem;color:#9b59b6;letter-spacing:0.12em;text-transform:uppercase">Mastery · Beyond</span>'+
+      '</div>'+
+      '<h2 style="font-family:\'Cinzel\',serif;color:#d4af69;font-size:1.4rem;margin:0;font-weight:700;letter-spacing:0.03em">What Lies Beyond</h2>'+
+      '<p style="font-size:0.8rem;color:var(--dim);margin:8px 0 0 0;line-height:1.6;max-width:500px">'+
+        'These are musicians who have gone beyond technique, beyond theory, beyond what can be written on a page. '+
+        'They hear what most of us are still learning to listen for. This is not a lesson — it is a glimpse.'+
+      '</p>'+
+    '</div>'+
+    '<div class="mastery-cards">'+cardsHtml+'</div>'+
+    '<div class="mastery-footer">'+
+      '<span style="font-family:JetBrains Mono;font-size:0.55rem;color:var(--dim);letter-spacing:0.1em;text-transform:uppercase">More artists coming soon</span>'+
+    '</div>'+
+  '</div>';
+}
 
 // ═══ CREATE NODE ═══
 function showCreate(){
