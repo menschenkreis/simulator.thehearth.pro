@@ -60,14 +60,15 @@
 .gold-conn.dim{stroke:#d4af69;opacity:0.12;stroke-width:1;}
 .gold-conn.hl{opacity:0.5;stroke-width:3;}
 
-/* NODE HOVER PREVIEW — full screen dim + centred icon */
+/* NODE HOVER PREVIEW — dims map, icon appears over the node */
 .map-dim-overlay{position:fixed;inset:0;background:rgba(13,11,8,0.85);z-index:199;opacity:0;pointer-events:none;transition:opacity 0.25s;}
 .map-dim-overlay.show{opacity:1;}
-.node-preview{position:fixed;pointer-events:none;z-index:200;opacity:0;transition:opacity 0.25s;transform:translate(-50%,-50%);top:50%;left:50%;display:flex;flex-direction:column;align-items:center;gap:12px;}
+.node-preview{position:fixed;pointer-events:none;z-index:200;opacity:0;transition:opacity 0.25s;transform:translate(-50%,-50%);}
 .node-preview.show{opacity:1;}
-.node-preview img{width:180px;height:180px;object-fit:contain;filter:drop-shadow(0 0 30px rgba(212,175,105,0.4));}
-.node-preview-emoji{font-size:120px;text-align:center;line-height:1;filter:drop-shadow(0 0 30px rgba(212,175,105,0.4));}
-.node-preview-label{font-family:'Cinzel',serif;font-size:1rem;color:var(--gold);text-align:center;letter-spacing:0.12em;text-transform:uppercase;}
+.node-preview img{width:140px;height:140px;object-fit:contain;}
+.node-preview-emoji{font-size:100px;text-align:center;line-height:1;}
+.node-preview-bg{width:180px;height:180px;border-radius:50%;background:#0d0b08;display:flex;align-items:center;justify-content:center;}
+.node-preview-label{font-family:'Cinzel',serif;font-size:0.85rem;color:var(--gold);text-align:center;letter-spacing:0.12em;text-transform:uppercase;margin-top:10px;}
 .conn-tick{stroke:var(--gold);opacity:0.4;stroke-width:1;}
 .conn-tick.dim{stroke:#3a3530;opacity:0.3;}
 .conn-label{font-family:'JetBrains Mono',monospace;font-size:7px;fill:var(--gold);opacity:0.6;}
@@ -1069,13 +1070,24 @@ const NODE_HOVER_DATA={
 function showNodePreview(nodeId,e){
   var data=NODE_HOVER_DATA[nodeId];if(!data)return;
   var pv=document.getElementById('nodePreview');if(!pv)return;
-  var dim=document.getElementById('mapDim');if(!dim)return;
-  var html='';
-  if(data.img){html='<img src="'+data.img+'" alt="'+data.label+'">';}
-  else if(data.emoji){html='<div class="node-preview-emoji">'+data.emoji+'</div>';}
-  html+='<div class="node-preview-label">'+data.label+'</div>';
-  pv.innerHTML=html;
-  dim.classList.add('show');
+  var dim=document.getElementById('mapDim');if(dim)dim.classList.add('show');
+
+  var inner='';
+  if(data.img){inner='<img src="'+data.img+'" alt="'+data.label+'">';}
+  else if(data.emoji){inner='<div class="node-preview-emoji">'+data.emoji+'</div>';}
+
+  pv.innerHTML='<div class="node-preview-bg">'+inner+'</div>'+
+    '<div class="node-preview-label">'+data.label+'</div>';
+
+  // Position over the node using SVG coords → screen coords
+  var pos=NODE_POS[nodeId];if(!pos)return;
+  var svg=document.querySelector('.map-svg');if(!svg)return;
+  var rect=svg.getBoundingClientRect();
+  var vb=svg.viewBox.baseVal;
+  var scaleX=rect.width/vb.width;
+  var scaleY=rect.height/vb.height;
+  pv.style.left=(rect.left+(pos[0]-vb.x)*scaleX)+'px';
+  pv.style.top=(rect.top+(pos[1]-vb.y)*scaleY)+'px';
   pv.classList.add('show');
 }
 function hideNodePreview(){
