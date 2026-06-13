@@ -3460,12 +3460,10 @@ function closeDictionary(){
     _savedPanel=null;
     document.querySelectorAll('.pnl').forEach(p=>p.classList.remove('on'));
     document.getElementById(saved).classList.add('on');
-    // Highlight the correct toolbar button based on saved panel
-    const btnMap={'p-map':'map','p-lesson':'lesson','p-drill':'drill','p-record':'record','p-foundation':'map'};
-    const btn=btnMap[saved]||'map';
-    document.querySelectorAll('.bt').forEach(b=>b.classList.remove('on'));
-    const btnEl=document.querySelector('[data-t="'+btn+'"]');
-    if(btnEl) btnEl.classList.add('on');
+    // Highlight the correct header tool
+    var toolMap={'p-map':'Map','p-lesson':'Journey','p-drill':'Notes','p-record':'Notes','p-foundation':'Map','p-theory':'Dictionary'};
+    var toolName=toolMap[saved]||'Map';
+    document.querySelectorAll('.top-tool').forEach(function(el){el.classList.toggle('on', el.textContent.trim()===toolName);});
   } else {
     sw('map');
   }
