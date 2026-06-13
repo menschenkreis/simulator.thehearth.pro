@@ -59,6 +59,13 @@
 .gold-conn{stroke:#d4af69;opacity:0.35;stroke-width:2.5;transition:opacity 0.5s,stroke-width 0.5s;}
 .gold-conn.dim{stroke:#d4af69;opacity:0.12;stroke-width:1;}
 .gold-conn.hl{opacity:0.5;stroke-width:3;}
+
+/* NODE HOVER PREVIEW */
+.node-preview{position:fixed;pointer-events:none;z-index:200;opacity:0;transition:opacity 0.2s;transform:translate(-50%,-50%);}
+.node-preview.show{opacity:1;}
+.node-preview img{width:120px;height:120px;object-fit:contain;filter:drop-shadow(0 0 20px rgba(212,175,105,0.3));}
+.node-preview-emoji{font-size:80px;text-align:center;line-height:1;filter:drop-shadow(0 0 20px rgba(212,175,105,0.3));}
+.node-preview-label{font-family:'Cinzel',serif;font-size:0.8rem;color:var(--gold);text-align:center;margin-top:8px;letter-spacing:0.1em;text-transform:uppercase;}
 .conn-tick{stroke:var(--gold);opacity:0.4;stroke-width:1;}
 .conn-tick.dim{stroke:#3a3530;opacity:0.3;}
 .conn-label{font-family:'JetBrains Mono',monospace;font-size:7px;fill:var(--gold);opacity:0.6;}
@@ -672,6 +679,8 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 
 <div class="center">
 
+<div class="node-preview" id="nodePreview"></div>
+
   <!-- MANDALA MAP -->
   <div class="pnl on map" id="p-map">
     <div class="map-wrap">
@@ -699,14 +708,14 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
         <!-- ═══ CONNECTIONS ═══ -->
         <g id="connections">
           <!-- Central spine segments -->
-          <line class="conn-spine" data-path="journey" id="spine-l1" x1="350" y1="155" x2="350" y2="185"/>
-          <line class="conn-spine" data-path="journey" id="spine-l2" x1="350" y1="200" x2="350" y2="220"/>
-          <line class="conn-spine" data-path="journey" id="spine-l3" x1="350" y1="345" x2="350" y2="400"/>
-          <line class="conn-spine" data-path="journey" id="spine-l4" x1="350" y1="415" x2="350" y2="410"/>
-          <line class="conn-spine" data-path="journey" id="spine-l5" x1="350" y1="585" x2="350" y2="595"/>
+          <line class="conn-spine" data-path="journey" id="spine-l1" x1="350" y1="99" x2="350" y2="189"/>
+          <line class="conn-spine" data-path="journey" id="spine-l2" x1="350" y1="200" x2="350" y2="290"/>
+          <line class="conn-spine" data-path="journey" id="spine-l3" x1="350" y1="302" x2="350" y2="369"/>
+          <line class="conn-spine" data-path="journey" id="spine-l4" x1="350" y1="380" x2="350" y2="447"/>
+          <line class="conn-spine" data-path="journey" id="spine-l5" x1="350" y1="540" x2="350" y2="595"/>
           <line class="conn-spine" data-path="journey" id="spine-l6" x1="350" y1="607" x2="350" y2="662"/>
           <line class="conn-spine" data-path="journey" id="spine-l7" x1="350" y1="674" x2="350" y2="729"/>
-          <line class="conn-spine" data-path="journey" id="spine-l8" x1="350" y1="755" x2="350" y2="784"/>
+          <line class="conn-spine" data-path="journey" id="spine-l8" x1="350" y1="740" x2="350" y2="784"/>
 
           <!-- Level tick marks -->
           <line class="conn-tick" x1="338" y1="144" x2="362" y2="144"/>
@@ -731,48 +740,48 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 
         <!-- ═══ BRANCH CONNECTIONS (gold) ═══ -->
         <!-- Foundation → Doing (left fork) -->
-        <line class="gold-conn" data-path="doing" x1="300" y1="120" x2="185" y2="240"/>
+        <line class="gold-conn" data-path="doing" x1="324" y1="88" x2="160" y2="265"/>
         <!-- Foundation → Knowing (right fork) -->
-        <line class="gold-conn" data-path="knowing" x1="400" y1="120" x2="515" y2="240"/>
+        <line class="gold-conn" data-path="knowing" x1="376" y1="88" x2="540" y2="265"/>
         <!-- Doing → Practise → Hearth (straight, left path) -->
-        <line class="gold-conn" data-path="doing" x1="170" y1="340" x2="290" y2="440"/>
+        <line class="gold-conn" data-path="doing" x1="160" y1="305" x2="310" y2="475"/>
         <!-- Practise → Play -->
-        <line class="gold-conn" data-path="doing" x1="248" y1="420" x2="120" y2="635"/>
+        <line class="gold-conn" data-path="doing" x1="248" y1="398" x2="105" y2="666"/>
         <!-- Knowing → Study → Hearth (straight, right path) -->
-        <line class="gold-conn" data-path="knowing" x1="530" y1="340" x2="410" y2="440"/>
+        <line class="gold-conn" data-path="knowing" x1="540" y1="305" x2="390" y2="475"/>
         <!-- Study → Create -->
-        <line class="gold-conn" data-path="knowing" x1="452" y1="420" x2="580" y2="635"/>
+        <line class="gold-conn" data-path="knowing" x1="452" y1="398" x2="595" y2="666"/>
         <!-- Hearth → Play (cross) -->
-        <line class="gold-conn dim" data-path="journey" x1="285" y1="525" x2="130" y2="635"/>
+        <line class="gold-conn dim" data-path="journey" x1="305" y1="512" x2="110" y2="668"/>
         <!-- Hearth → Create (cross) -->
-        <line class="gold-conn dim" data-path="journey" x1="415" y1="525" x2="570" y2="635"/>
+        <line class="gold-conn dim" data-path="journey" x1="395" y1="512" x2="590" y2="668"/>
         <!-- Hearth → Mastery -->
-        <line class="gold-conn dim" data-path="journey" x1="350" y1="585" x2="350" y2="765"/>
+        <line class="gold-conn dim" data-path="journey" x1="350" y1="535" x2="350" y2="786"/>
         <!-- Play → Mastery -->
-        <line class="gold-conn dim" data-path="doing" x1="120" y1="735" x2="300" y2="795"/>
+        <line class="gold-conn dim" data-path="doing" x1="105" y1="706" x2="325" y2="800"/>
         <!-- Create → Mastery -->
-        <line class="gold-conn dim" data-path="knowing" x1="580" y1="735" x2="400" y2="795"/>
+        <line class="gold-conn dim" data-path="knowing" x1="595" y1="706" x2="375" y2="800"/>
 
         <!-- ═══ PERIMETER CURVE (outer ring) ═══ -->
-        <path class="gold-conn dim" data-path="doing" d="M 120,635 Q 50,450 185,240" fill="none"/>
-        <path class="gold-conn dim" data-path="knowing" d="M 580,635 Q 650,450 515,240" fill="none"/>
+        <path class="gold-conn dim" data-path="doing" d="M 88,662 Q 60,450 146,305" fill="none"/>
+        <path class="gold-conn dim" data-path="knowing" d="M 612,662 Q 640,450 554,305" fill="none"/>
 
         <!-- ═══ FOUNDATION (top) ═══ -->
-        <g class="mn-g unlocked" onclick="showNodeInfo('foundation')" data-node="foundation">
-          <clipPath id="clip-foundation"><circle cx="350" cy="73" r="80"/></clipPath>
-          <image href="images/foundation-icon.png" x="270" y="-7" width="160" height="160" clip-path="url(#clip-foundation)"/>
+        <g class="mn-g unlocked" onmouseenter="showNodePreview('foundation',event)" onmouseleave="hideNodePreview()" onclick="showNodeInfo('foundation')" data-node="foundation">
+          <clipPath id="clip-foundation"><circle cx="350" cy="73" r="35"/></clipPath>
+          <image href="images/foundation-icon.png" x="315" y="38" width="70" height="70" clip-path="url(#clip-foundation)"/>
           <text class="mn-label" x="350" y="128" style="font-size:12px;font-weight:700;letter-spacing:0.15em">FOUNDATION</text>
         </g>
 
         <!-- ═══ THE HEARTH (center) ═══ -->
-        <g class="mn-g" onclick="showNodeInfo('hearth')">
-          <clipPath id="clip-hearth"><circle cx="350" cy="494" r="88"/></clipPath>
-          <image href="images/hearth-icon.png" x="262" y="406" width="176" height="176" clip-path="url(#clip-hearth)"/>
+        <g class="mn-g" onmouseenter="showNodePreview('hearth',event)" onmouseleave="hideNodePreview()" onclick="showNodeInfo('hearth')">
+          <clipPath id="clip-hearth"><circle cx="350" cy="494" r="40"/></clipPath>
+          <image href="images/hearth-icon.png" x="310" y="454" width="80" height="80" clip-path="url(#clip-hearth)"/>
           <text class="mn-label" x="350" y="552" fill="#d4af69" font-size="11" style="font-weight:600">THE HEARTH</text>
         </g>
 
         <!-- ═══ MASTERY (bottom) with 8 level rings ═══ -->
-        <g class="mn-g unlocked" onclick="showNodeInfo('mastery')" data-node="mastery">
+        <g class="mn-g unlocked" onmouseenter="showNodePreview('mastery',event)" onmouseleave="hideNodePreview()" onclick="showNodeInfo('mastery')" data-node="mastery">
           <!-- 8 concentric level rings (rainbow, outer=L1 red → inner=L8 violet) -->
           <circle class="mastery-ring" id="mring-l8" cx="350" cy="813" r="99" stroke="#cc33ff" stroke-width="1.5" fill="none" opacity="0.15"/>
           <circle class="mastery-ring" id="mring-l7" cx="350" cy="813" r="90" stroke="#6633cc" stroke-width="1.5" fill="none" opacity="0.15"/>
@@ -783,49 +792,49 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
           <circle class="mastery-ring" id="mring-l2" cx="350" cy="813" r="47" stroke="#ff8800" stroke-width="1.5" fill="none" opacity="0.15"/>
           <circle class="mastery-ring" id="mring-l1" cx="350" cy="813" r="38" stroke="#ff0000" stroke-width="2" fill="none" opacity="0.5"/>
           <!-- Core -->
-          <text x="350" y="825" text-anchor="middle" font-size="44">👑</text>
+          <text x="350" y="822" text-anchor="middle" font-size="20">👑</text>
           <text class="mn-label" x="350" y="870">MASTERY</text>
         </g>
 
         <!-- ═══ LEFT BRANCH — DOING PATH ═══ -->
 
-        <g class="mn-g unlocked" onclick="showNodeInfo('doing')" data-node="doing">
-          <clipPath id="clip-doing"><circle cx="146" cy="283" r="56"/></clipPath>
-          <image href="images/doing-icon.png" x="90" y="227" width="112" height="112" clip-path="url(#clip-doing)"/>
+        <g class="mn-g unlocked" onmouseenter="showNodePreview('doing',event)" onmouseleave="hideNodePreview()" onclick="showNodeInfo('doing')" data-node="doing">
+          <clipPath id="clip-doing"><circle cx="146" cy="283" r="23"/></clipPath>
+          <image href="images/doing-icon.png" x="123" y="260" width="46" height="46" clip-path="url(#clip-doing)"/>
           <text class="mn-label" x="146" y="325">DOING</text>
           <text class="mn-sublabel" x="146" y="338">drills & skills</text>
         </g>
 
-        <g class="mn-g unlocked" onclick="showNodeInfo('practise')" data-node="practise">
-          <text x="248" y="400" text-anchor="middle" font-size="44">🔁</text>
+        <g class="mn-g unlocked" onmouseenter="showNodePreview('practise',event)" onmouseleave="hideNodePreview()" onclick="showNodeInfo('practise')" data-node="practise">
+          <text x="248" y="395" text-anchor="middle" font-size="16">🔁</text>
           <text class="mn-label" x="248" y="425">PRACTISE</text>
           <text class="mn-sublabel" x="248" y="438">timed sessions</text>
         </g>
 
-        <g class="mn-g unlocked" onclick="showNodeInfo('play')" data-node="play">
-          <clipPath id="clip-play"><circle cx="88" cy="682" r="56"/></clipPath>
-          <image href="images/play-icon.png" x="32" y="626" width="112" height="112" clip-path="url(#clip-play)"/>
+        <g class="mn-g unlocked" onmouseenter="showNodePreview('play',event)" onmouseleave="hideNodePreview()" onclick="showNodeInfo('play')" data-node="play">
+          <clipPath id="clip-play"><circle cx="88" cy="682" r="23"/></clipPath>
+          <image href="images/play-icon.png" x="65" y="659" width="46" height="46" clip-path="url(#clip-play)"/>
           <text class="mn-label" x="88" y="725">PLAY</text>
           <text class="mn-sublabel" x="88" y="738">world guitar</text>
         </g>
 
         <!-- ═══ RIGHT BRANCH — KNOWING PATH ═══ -->
 
-        <g class="mn-g unlocked" onclick="showNodeInfo('knowing')" data-node="knowing">
-          <clipPath id="clip-knowing"><circle cx="554" cy="283" r="56"/></clipPath>
-          <image href="images/knowing-icon.png" x="498" y="227" width="112" height="112" clip-path="url(#clip-knowing)"/>
+        <g class="mn-g unlocked" onmouseenter="showNodePreview('knowing',event)" onmouseleave="hideNodePreview()" onclick="showNodeInfo('knowing')" data-node="knowing">
+          <clipPath id="clip-knowing"><circle cx="554" cy="283" r="23"/></clipPath>
+          <image href="images/knowing-icon.png" x="531" y="260" width="46" height="46" clip-path="url(#clip-knowing)"/>
           <text class="mn-label" x="554" y="325">KNOWING</text>
           <text class="mn-sublabel" x="554" y="338">theory library</text>
         </g>
 
-        <g class="mn-g unlocked" onclick="showNodeInfo('study')" data-node="study">
-          <text x="452" y="400" text-anchor="middle" font-size="44">📝</text>
+        <g class="mn-g unlocked" onmouseenter="showNodePreview('study',event)" onmouseleave="hideNodePreview()" onclick="showNodeInfo('study')" data-node="study">
+          <text x="452" y="395" text-anchor="middle" font-size="16">📝</text>
           <text class="mn-label" x="452" y="425">STUDY</text>
           <text class="mn-sublabel" x="452" y="438">your lab</text>
         </g>
 
-        <g class="mn-g unlocked" onclick="showNodeInfo('create')" data-node="create">
-          <text x="612" y="694" text-anchor="middle" font-size="44">✨</text>
+        <g class="mn-g unlocked" onmouseenter="showNodePreview('create',event)" onmouseleave="hideNodePreview()" onclick="showNodeInfo('create')" data-node="create">
+          <text x="612" y="689" text-anchor="middle" font-size="18">✨</text>
           <text class="mn-label" x="612" y="725">CREATE</text>
           <text class="mn-sublabel" x="612" y="738">write & record</text>
         </g>
@@ -1031,6 +1040,36 @@ const NODE_POS = {
   practise: [248,388], study: [452,388],
   play: [88,682], create: [612,682]
 };
+
+// ═══ NODE HOVER PREVIEW ═══
+const NODE_HOVER_DATA={
+  foundation:{img:'images/foundation-icon.png',label:'Foundation'},
+  hearth:{img:'images/hearth-icon.png',label:'The Hearth'},
+  doing:{img:'images/doing-icon.png',label:'Doing'},
+  knowing:{img:'images/knowing-icon.png',label:'Knowing'},
+  play:{img:'images/play-icon.png',label:'Play'},
+  mastery:{emoji:'👑',label:'Mastery'},
+  practise:{emoji:'🔁',label:'Practise'},
+  study:{emoji:'📝',label:'Study'},
+  create:{emoji:'✨',label:'Create'}
+};
+
+function showNodePreview(nodeId,e){
+  var data=NODE_HOVER_DATA[nodeId];if(!data)return;
+  var pv=document.getElementById('nodePreview');if(!pv)return;
+  var html='';
+  if(data.img){html='<img src="'+data.img+'" alt="'+data.label+'">';}
+  else if(data.emoji){html='<div class="node-preview-emoji">'+data.emoji+'</div>';}
+  html+='<div class="node-preview-label">'+data.label+'</div>';
+  pv.innerHTML=html;
+  // Position near mouse
+  pv.style.left=e.clientX+'px';
+  pv.style.top=(e.clientY-80)+'px';
+  pv.classList.add('show');
+}
+function hideNodePreview(){
+  var pv=document.getElementById('nodePreview');if(pv)pv.classList.remove('show');
+}
 
 // Routes: from -> to = array of waypoint node ids
 const FLAME_ROUTES = {
