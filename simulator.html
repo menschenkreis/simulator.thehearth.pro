@@ -148,6 +148,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 .top-logo-letters{height:16px;width:auto;}
 .top-tool{padding:4px 10px;font-family:'JetBrains Mono',monospace;font-size:0.6rem;color:var(--dim);cursor:pointer;border-radius:3px;transition:all 0.15s;letter-spacing:0.08em;text-transform:uppercase;}
 .top-tool:hover{color:var(--gold);background:rgba(212,175,105,0.08);}
+.top-tool.on{color:var(--gold);background:rgba(212,175,105,0.1);}
 
 /* Search panel */
 .search-panel{position:absolute;top:100%;left:0;right:0;background:var(--panel);border-bottom:1px solid var(--border);padding:12px 16px;z-index:50;display:none;}
@@ -557,12 +558,12 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
   .bot{padding-bottom:env(safe-area-inset-bottom, 0px)!important;}
 
   /* ═══ TOP BAR ═══ */
-  .top{height:48px;min-height:48px;padding:0 10px;gap:6px;flex-wrap:nowrap;overflow:hidden;}
+  .top{height:48px;min-height:48px;padding:0 10px;gap:6px;flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;}
+  .top::-webkit-scrollbar{display:none;}
   .top-logo-letters{display:none;}
   .top-logo-icon{height:22px;}
-  .top-title{font-size:0.75rem;letter-spacing:0.04em;flex-shrink:0;}
-  .top-stat{font-size:0.5rem;flex-shrink:0;}
-  #mode-select{min-width:90px;font-size:0.58rem;padding:3px 6px;flex-shrink:0;}
+  .top-brand span{font-size:0.75rem !important;}
+  .top-tool{font-size:0.55rem;padding:4px 6px;flex-shrink:0;}
 
   /* ═══ MAP ═══ */
   .map{padding:8px;}
@@ -721,7 +722,10 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
   </div>
   <div class="top-center">
     <div style="display:flex;gap:4px;">
-      <div class="top-tool" onclick="toggleSearch()">Search</div>
+      <div class="top-tool on" onclick="sw('map')">Map</div>
+      <div class="top-tool" onclick="sw('lesson')">Journey</div>
+      <div class="top-tool" onclick="sw('theory')">Dictionary</div>
+      <div class="top-tool" onclick="sw('drill')">Notes</div>
       <div class="top-tool" onclick="toggleProgress()">Progress</div>
       <div class="top-tool" onclick="toggleSettings()">Settings</div>
     </div>
@@ -1055,14 +1059,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
   </div>
 </div>
 
-<!-- FOOTER NAV -->
-<div class="footer-nav">
-  <div class="bt on" data-t="map" onclick="sw('map')"><span class="bl">Map</span></div>
-  <div class="bt" data-t="lesson" onclick="sw('lesson')"><span class="bl">Journey</span></div>
-  <div class="bt" data-t="theory" onclick="sw('theory')"><span class="bl">Dictionary</span></div>
-  <div class="bt" data-t="drill" onclick="sw('drill')"><span class="bl">Notebook</span></div>
-  <div class="bt" data-t="record" onclick="sw('record')"><span class="bl">Recorder</span></div>
-</div>
+<!-- FOOTER NAV REMOVED — navigation now in header -->
 
 </div>
 
@@ -3440,8 +3437,11 @@ function sw(t){
   const currentPanel = document.querySelector('.pnl.on');
   if(currentPanel && t==='theory') _savedPanel = currentPanel.id;
 
-  document.querySelectorAll('.bt').forEach(b=>b.classList.remove('on'));
-  document.querySelector('[data-t="'+t+'"]').classList.add('on');
+  // Highlight active header tool
+  document.querySelectorAll('.top-tool').forEach(b=>b.classList.remove('on'));
+  var toolMap={'map':'Map','lesson':'Journey','theory':'Dictionary','drill':'Notes','record':'Notes'};
+  document.querySelectorAll('.top-tool').forEach(function(el){if(el.textContent===toolMap[t])el.classList.add('on');});
+
   document.querySelectorAll('.pnl').forEach(p=>p.classList.remove('on'));
   document.getElementById('p-'+t).classList.add('on');
   // Populate panels on open
