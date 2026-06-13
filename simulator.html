@@ -180,8 +180,9 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 @keyframes pulse{0%,100%{opacity:0.06;r:12;}50%{opacity:0.12;r:15;}}
 
 /* Path toggle */
-.path-btns{display:flex;gap:4px;padding:4px 8px;justify-content:center;background:transparent;border-bottom:1px solid var(--border);flex-shrink:0;}
-.path-btn{padding:4px 10px;font-family:'JetBrains Mono',monospace;font-size:0.55rem;color:var(--dim);cursor:pointer;border-radius:3px;letter-spacing:0.08em;text-transform:uppercase;transition:all 0.15s;background:none;border:1px solid transparent;}
+/* HEADER PATH BUTTONS */
+.path-btns{display:flex;gap:4px;padding:0;justify-content:flex-start;background:transparent;border:none;flex-shrink:0;}
+.path-btn{padding:4px 10px;font-family:'JetBrains Mono',monospace;font-size:0.6rem;color:var(--dim);cursor:pointer;border-radius:3px;letter-spacing:0.08em;text-transform:uppercase;transition:all 0.15s;background:none;border:1px solid transparent;}
 .path-btn:hover{color:var(--text);background:rgba(212,175,105,0.04);}
 .path-btn.on{color:var(--gold);background:rgba(212,175,105,0.08);border-color:rgba(212,175,105,0.15);}
 
@@ -332,27 +333,24 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 @keyframes rp{0%,100%{box-shadow:0 0 10px rgba(196,90,90,0.15);}50%{box-shadow:0 0 25px rgba(196,90,90,0.4);}}
 .rc-st{font-family:'JetBrains Mono',monospace;font-size:0.65rem;color:var(--dim);}
 
-/* SIDEBAR / BOTTOM TOOLBAR */
-.bot{height:48px;min-height:48px;background:var(--panel);border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-around;padding:0;flex-shrink:0;width:auto;}
-.bt{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:6px 12px;cursor:pointer;transition:all 0.15s;color:var(--dim);border:none;background:none;flex:1;min-height:48px;}
-.bt:hover{color:var(--text);background:rgba(212,175,105,0.03);}
-.bt.on{color:var(--gold);background:rgba(212,175,105,0.06);}
-.bt .bl{font-size:0.6rem;font-family:'JetBrains Mono',monospace;letter-spacing:0.06em;}
-.bt.on .bl{font-weight:600;}
+/* FOOTER NAV (bottom bar) */
+.footer-nav{height:52px;min-height:52px;background:var(--panel);border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-around;padding:0;flex-shrink:0;}
+.footer-nav .bt{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:6px 12px;cursor:pointer;transition:all 0.15s;color:var(--dim);border:none;background:none;flex:1;min-height:52px;}
+.footer-nav .bt:hover{color:var(--text);background:rgba(212,175,105,0.03);}
+.footer-nav .bt.on{color:var(--gold);background:rgba(212,175,105,0.06);}
+.footer-nav .bt .bl{font-size:0.6rem;font-family:'JetBrains Mono',monospace;letter-spacing:0.06em;}
+.footer-nav .bt.on .bl{font-weight:600;}
 
 @media(min-width:600px){
   body{flex-direction:column;}
-  .top{display:flex;z-index:101;}
-  .main-wrap{display:flex;flex:1;overflow:hidden;}
-  .bot{position:static;width:200px;min-width:200px;height:auto;min-height:0;flex-direction:column;justify-content:flex-start;border-top:none;border-right:1px solid var(--border);border-bottom:none;padding:12px 0;gap:0;box-shadow:none;background:var(--panel);flex-shrink:0;overflow:visible;}
-  .bt{flex-direction:row;gap:10px;padding:12px 18px;width:100%;height:auto;min-height:44px;border-radius:0;border-left:3px solid transparent;transition:all 0.15s;flex:0 0 auto;text-align:left;}
-  .bt:hover{background:rgba(212,175,105,0.04);border-left-color:rgba(212,175,105,0.3);}
-  .bt.on{background:rgba(212,175,105,0.08);border-left-color:var(--gold);}
-  .bt .bl{display:block;font-size:0.72rem;letter-spacing:0.1em;text-transform:uppercase;font-weight:500;}
-  .bt.on .bl{color:var(--gold);font-weight:700;}
-  .center{margin-left:0;flex:1;overflow-y:auto;min-width:0;}
+  .top{display:flex;z-index:101;align-items:center;padding:0 16px;gap:8px;}
+  .main-wrap{display:flex;flex:1;overflow:hidden;flex-direction:column;}
+  .center{flex:1;overflow-y:auto;min-width:0;}
+  .footer-nav{flex-direction:row;justify-content:center;gap:0;}
+  .footer-nav .bt{flex-direction:column;gap:2px;padding:8px 20px;flex:0 0 auto;}
+  .footer-nav .bt .bl{font-size:0.7rem;letter-spacing:0.08em;}
   .map-wrap{max-width:none;width:100%;height:100%;padding:8px;}
-  .map-svg{max-height:calc(100vh - 60px);width:auto;height:100%;max-width:100%;}
+  .map-svg{max-height:calc(100vh - 130px);width:auto;height:100%;max-width:100%;}
   .th-grid{grid-template-columns:repeat(auto-fill,minmax(180px,1fr));}
   .node-info{padding:20px 24px;margin:14px 18px;}
   .node-info h4{font-size:1.05rem;}
@@ -626,7 +624,12 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 <body>
 
 <div class="top">
-  <span class="top-title">The Hearth</span>
+  <div class="path-btns">
+    <div class="path-btn" onclick="hlP('journey')">Journey</div>
+    <div class="path-btn" onclick="hlP('doing')">Doing</div>
+    <div class="path-btn" onclick="hlP('knowing')">Knowing</div>
+    <div class="path-btn on" onclick="hlP('all')">All</div>
+  </div>
   <span class="top-spacer"></span>
   <span class="top-stat">🔥 <span class="v">7d</span></span>
   <span class="top-stat"><span class="v">142</span>h</span>
@@ -636,25 +639,10 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 
 <div class="main-wrap">
 
-<!-- TOOLBAR -->
-<div class="bot" style="width:240px;min-width:240px;flex-shrink:0;overflow:visible;">
-  <div class="bt on" data-t="map" onclick="sw('map')"><span class="bl">Map</span></div>
-  <div class="bt" data-t="lesson" onclick="sw('lesson')"><span class="bl">Quest</span></div>
-  <div class="bt" data-t="theory" onclick="sw('theory')"><span class="bl">Theory</span></div>
-  <div class="bt" data-t="drill" onclick="sw('drill')"><span class="bl">Drills</span></div>
-  <div class="bt" data-t="record" onclick="sw('record')"><span class="bl">Record</span></div>
-</div>
-
 <div class="center">
 
   <!-- MANDALA MAP -->
   <div class="pnl on map" id="p-map">
-    <div class="path-btns">
-      <div class="path-btn" onclick="hlP('journey')">Journey</div>
-      <div class="path-btn" onclick="hlP('doing')">Doing</div>
-      <div class="path-btn" onclick="hlP('knowing')">Knowing</div>
-      <div class="path-btn on" onclick="hlP('all')">All</div>
-    </div>
     <div class="map-wrap">
       <svg class="map-svg" viewBox="0 0 700 900" xmlns="http://www.w3.org/2000/svg">
         <defs>
@@ -885,6 +873,15 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 </div>
     <div class="rc-st" id="rs">Tap to record</div>
   </div>
+</div>
+
+<!-- FOOTER NAV -->
+<div class="footer-nav">
+  <div class="bt on" data-t="map" onclick="sw('map')"><span class="bl">Map</span></div>
+  <div class="bt" data-t="lesson" onclick="sw('lesson')"><span class="bl">Journey</span></div>
+  <div class="bt" data-t="theory" onclick="sw('theory')"><span class="bl">Dictionary</span></div>
+  <div class="bt" data-t="drill" onclick="sw('drill')"><span class="bl">Notebook</span></div>
+  <div class="bt" data-t="record" onclick="sw('record')"><span class="bl">Recorder</span></div>
 </div>
 
 </div>
