@@ -583,8 +583,10 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
   .top-logo-icon{height:18px;}
   .top-brand span{font-size:0.65rem !important;}
   .top-brand{gap:4px;flex:0 0 auto;}
-  .top-tool{font-size:0.5rem;padding:4px 6px;flex-shrink:0;white-space:nowrap;letter-spacing:0.04em;}
+  .top-brand span{display:none;}
+  .top-tool{font-size:0.5rem;padding:4px 5px;flex-shrink:0;white-space:nowrap;letter-spacing:0.03em;}
   .top-right{flex:0 0 auto;}
+  .top-right button{display:none;}
 
   /* ═══ MAP ═══ */
   .map{padding:4px;}
@@ -749,7 +751,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
     <span style="font-family:'Cinzel',serif;color:#fff;font-size:0.9rem;letter-spacing:0.08em;">The Hearth Mastery</span>
   </div>
   <div class="top-center">
-    <div style="display:flex;gap:4px;">
+    <div style="display:flex;gap:2px;">
       <div class="top-tool on" onclick="sw('map')">Map</div>
       <div class="top-tool" onclick="sw('lesson')">Journey</div>
       <div class="top-tool" onclick="sw('theory')">Dictionary</div>
