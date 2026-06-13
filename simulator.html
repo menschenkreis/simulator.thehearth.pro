@@ -780,6 +780,10 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
         <!-- Create → Mastery -->
         <line class="gold-conn dim" data-path="knowing" x1="595" y1="706" x2="375" y2="800"/>
 
+        <!-- ═══ FOUNDATION → PRACTISE / STUDY (thin) ═══ -->
+        <line class="gold-conn dim" data-path="doing" x1="337" y1="115" x2="248" y2="345" stroke-width="1"/>
+        <line class="gold-conn dim" data-path="knowing" x1="363" y1="115" x2="452" y2="345" stroke-width="1"/>
+
         <!-- ═══ PERIMETER CURVE (outer ring) ═══ -->
         <path class="gold-conn dim" data-path="doing" d="M 88,662 Q 60,450 146,305" fill="none"/>
         <path class="gold-conn dim" data-path="knowing" d="M 612,662 Q 640,450 554,305" fill="none"/>
@@ -1121,16 +1125,16 @@ const FLAME_ROUTES = {
   'knowing->play': ['knowing', 'create', 'mastery', 'play'],
   'knowing->create': ['knowing', 'create'],
   'knowing->mastery': ['knowing', 'create', 'mastery'],
-  'practise->foundation': ['practise', 'doing', 'foundation'],
+  'practise->foundation': ['practise', 'foundation'],
   'practise->doing': ['practise', 'doing'],
-  'practise->knowing': ['practise', 'doing', 'foundation', 'knowing'],
-  'practise->study': ['practise', 'doing', 'foundation', 'knowing', 'study'],
+  'practise->knowing': ['practise', 'foundation', 'knowing'],
+  'practise->study': ['practise', 'foundation', 'study'],
   'practise->hearth': ['practise', 'doing', 'hearth'],
   'practise->play': ['practise', 'play'],
   'practise->create': ['practise', 'play', 'mastery', 'create'],
   'practise->mastery': ['practise', 'play', 'mastery'],
-  'study->foundation': ['study', 'knowing', 'foundation'],
-  'study->doing': ['study', 'knowing', 'foundation', 'doing'],
+  'study->foundation': ['study', 'foundation'],
+  'study->doing': ['study', 'foundation', 'doing'],
   'study->knowing': ['study', 'knowing'],
   'study->practise': ['study', 'create', 'mastery', 'play', 'practise'],
   'study->hearth': ['study', 'knowing', 'hearth'],
