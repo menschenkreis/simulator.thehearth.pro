@@ -145,9 +145,46 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 .top-logo-icon{height:28px;width:auto;}
 .top-logo-letters{height:16px;width:auto;}
 .top-center{flex:1;display:flex;justify-content:center;}
-.top-right{display:flex;align-items:center;gap:8px;flex-shrink:0;}
-.top-stat{font-family:'JetBrains Mono',monospace;font-size:0.65rem;color:var(--dim);}
-.top-stat .v{color:var(--amber);}
+.top-right{display:flex;align-items:center;gap:6px;flex-shrink:0;}
+.top-tool{width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-size:1rem;cursor:pointer;border-radius:6px;transition:all 0.15s;opacity:0.6;}
+.top-tool:hover{opacity:1;background:rgba(212,175,105,0.08);}
+
+/* Search panel */
+.search-panel{position:absolute;top:100%;left:0;right:0;background:var(--panel);border-bottom:1px solid var(--border);padding:12px 16px;z-index:50;display:none;}
+.search-panel.show{display:block;}
+.search-panel input{width:100%;background:var(--card);border:1px solid var(--border);border-radius:6px;padding:10px 14px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:0.9rem;outline:none;}
+.search-panel input:focus{border-color:var(--gold);}
+.search-results{margin-top:8px;max-height:300px;overflow-y:auto;}
+.search-result-item{padding:8px 12px;cursor:pointer;border-radius:4px;transition:background 0.1s;}
+.search-result-item:hover{background:rgba(212,175,105,0.06);}
+.search-result-item .sr-title{font-size:0.85rem;color:var(--text);font-weight:600;}
+.search-result-item .sr-tag{font-size:0.6rem;font-family:'JetBrains Mono',monospace;color:var(--dim);text-transform:uppercase;letter-spacing:0.08em;margin-top:2px;}
+
+/* Progress panel */
+.progress-panel{position:absolute;top:100%;left:0;right:0;background:var(--panel);border-bottom:1px solid var(--border);padding:16px;z-index:50;display:none;}
+.progress-panel.show{display:block;}
+.progress-panel h3{font-family:'Cinzel',serif;font-size:0.9rem;color:var(--gold);margin:0 0 12px 0;letter-spacing:0.06em;}
+.progress-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid rgba(212,175,105,0.06);}
+.progress-row:last-child{border:none;}
+.progress-label{font-size:0.8rem;color:var(--text);}
+.progress-bar{flex:1;max-width:140px;height:6px;background:rgba(212,175,105,0.08);border-radius:3px;margin-left:12px;overflow:hidden;}
+.progress-fill{height:100%;background:var(--gold);border-radius:3px;transition:width 0.4s;}
+
+/* Settings panel */
+.settings-panel{position:absolute;top:100%;right:0;background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:12px 16px;z-index:50;display:none;min-width:200px;}
+.settings-panel.show{display:block;}
+.settings-panel h3{font-family:'Cinzel',serif;font-size:0.85rem;color:var(--gold);margin:0 0 10px 0;}
+.settings-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;}
+.settings-label{font-size:0.8rem;color:var(--text);}
+.theme-btn{padding:4px 10px;font-size:0.65rem;font-family:'JetBrains Mono',monospace;border:1px solid var(--border);background:none;color:var(--dim);border-radius:4px;cursor:pointer;text-transform:uppercase;letter-spacing:0.06em;}
+.theme-btn.active{color:var(--gold);border-color:var(--gold);}
+
+/* Map vignette */
+.map-vignette{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at center,transparent 40%,rgba(13,11,8,0.5) 100%);z-index:5;}
+
+/* Flowing dots on connection lines */
+@keyframes flow-dot{0%{offset-distance:0%;opacity:0;}10%{opacity:0.7;}90%{opacity:0.7;}100%{offset-distance:100%;opacity:0;}}
+.flow-dot{width:3px;height:3px;border-radius:50%;background:var(--gold);position:absolute;animation:flow-dot 4s linear infinite;}
 #mode-select{background:var(--btn);color:var(--text);border:1px solid var(--border);border-radius:6px;padding:6px 12px;font-family:inherit;font-size:0.72rem;cursor:pointer;min-width:140px;}
 
 .center{flex:1;overflow-y:auto;position:relative;}
@@ -678,19 +715,37 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
     <img src="images/logo_icon_white.png" alt="The Hearth" class="top-logo-icon">
     <span style="font-family:'Cinzel',serif;color:#fff;font-size:0.9rem;letter-spacing:0.08em;">The Hearth Mastery</span>
   </div>
-  <div class="top-center">
-    <div class="path-btns">
-      <div class="path-btn" onclick="hlP('journey')">Journey</div>
-      <div class="path-btn" onclick="hlP('doing')">Doing</div>
-      <div class="path-btn" onclick="hlP('knowing')">Knowing</div>
-      <div class="path-btn on" onclick="hlP('all')">All</div>
-    </div>
-  </div>
+  <div class="top-center"></div>
   <div class="top-right">
-    <span class="top-stat">🔥 <span class="v">7d</span></span>
-    <span class="top-stat"><span class="v">142</span>h</span>
-    <span class="top-stat">🪙 <span class="v">47</span></span>
+    <div class="top-tool" onclick="toggleSearch()" title="Search">🔍</div>
+    <div class="top-tool" onclick="toggleProgress()" title="Progress">📊</div>
+    <div class="top-tool" onclick="toggleSettings()" title="Settings">⚙️</div>
     <button onclick="toggleCredits()" style="background:none;border:none;color:var(--dim);font-size:0.8rem;cursor:pointer;padding:4px 8px;min-height:unset;" title="Credits">©</button>
+  </div>
+</div>
+
+<!-- Search Panel -->
+<div class="search-panel" id="searchPanel">
+  <input type="text" id="searchInput" placeholder="Search topics, drills, concepts..." oninput="doSearch(this.value)">
+  <div class="search-results" id="searchResults"></div>
+</div>
+
+<!-- Progress Panel -->
+<div class="progress-panel" id="progressPanel">
+  <h3>Your Journey</h3>
+  <div id="progressContent"></div>
+</div>
+
+<!-- Settings Panel -->
+<div class="settings-panel" id="settingsPanel">
+  <h3>Theme</h3>
+  <div class="settings-row">
+    <span class="settings-label">Appearance</span>
+    <div style="display:flex;gap:4px">
+      <button class="theme-btn active" onclick="setTheme('standard',this)">Standard</button>
+      <button class="theme-btn" onclick="setTheme('sparks',this)">Sparks</button>
+      <button class="theme-btn" onclick="setTheme('flames',this)">Flames</button>
+    </div>
   </div>
 </div>
 
@@ -703,7 +758,8 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 
   <!-- MANDALA MAP -->
   <div class="pnl on map" id="p-map">
-    <div class="map-wrap">
+    <div class="map-wrap" style="position:relative;">
+      <div class="map-vignette"></div>
       <svg class="map-svg" viewBox="0 0 700 900" xmlns="http://www.w3.org/2000/svg">
         <defs>
           <filter id="glow"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
@@ -795,6 +851,23 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
         <path class="gold-conn dim" data-path="doing" d="M 88,662 Q 60,450 146,305" fill="none"/>
         <path class="gold-conn dim" data-path="knowing" d="M 612,662 Q 640,450 554,305" fill="none"/>
 
+        <!-- ═══ FLOWING DOTS (journey lines) ═══ -->
+        <circle r="2" fill="#d4af69" opacity="0.6">
+          <animateMotion dur="6s" repeatCount="indefinite" path="M 350,99 L 350,189 L 350,200 L 350,290 L 350,302 L 350,369 L 350,380 L 350,447 L 350,540 L 350,595 L 350,607 L 350,662 L 350,674 L 350,729 L 350,740 L 350,784"/>
+        </circle>
+        <circle r="2" fill="#e8a020" opacity="0.5">
+          <animateMotion dur="5s" repeatCount="indefinite" path="M 324,88 L 160,265 L 160,305 L 310,475"/>
+        </circle>
+        <circle r="2" fill="#e8a020" opacity="0.5">
+          <animateMotion dur="5s" repeatCount="indefinite" path="M 376,88 L 540,265 L 540,305 L 390,475"/>
+        </circle>
+        <circle r="1.5" fill="#d4af69" opacity="0.4">
+          <animateMotion dur="7s" repeatCount="indefinite" path="M 248,398 L 105,666"/>
+        </circle>
+        <circle r="1.5" fill="#d4af69" opacity="0.4">
+          <animateMotion dur="7s" repeatCount="indefinite" path="M 452,398 L 595,666"/>
+        </circle>
+
         <!-- ═══ FOUNDATION (top) ═══ -->
         <g class="mn-g unlocked" onmouseenter="showNodePreview('foundation',event)" onmouseleave="hideNodePreview()" onclick="showNodeInfo('foundation')" data-node="foundation">
           <circle class="mn-ring" cx="350" cy="73" r="48"/>
@@ -870,6 +943,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
         </g>
         <!-- Travelling flame -->
         <g id="travel-flame" style="transform:translate(350px,73px);transition:transform 1.2s cubic-bezier(0.4,0,0.2,1)">
+        <script>/* set flame position on load */(function(){var fn=localStorage.getItem('flameNode');if(fn&&window.NODE_POS&&NODE_POS[fn]){var p=NODE_POS[fn];var f=document.getElementById('travel-flame');if(f)f.style.transform='translate('+p[0]+'px,'p[1]+'px)';}})();</script>
           <text font-size="14" text-anchor="middle" dominant-baseline="central" style="filter:drop-shadow(0 0 4px #e8a020)">🔥</text>
         </g>
 
@@ -1188,7 +1262,7 @@ const FLAME_ROUTES = {
   'mastery->create': ['mastery', 'create'],
 };
 
-let _flameNode = 'foundation';
+let _flameNode = localStorage.getItem('flameNode') || 'foundation';
 let _flameAnimating = false;
 
 // Level completion: light up mastery ring
@@ -1222,7 +1296,7 @@ function moveFlame(targetId) {
     let step = 1; // start from 1, skip the first (current position)
     function nextStep() {
       if (step >= route.length) {
-        _flameNode = targetId;
+        _flameNode = targetId; localStorage.setItem("flameNode",targetId);
         _flameAnimating = false;
         return;
       }
@@ -1236,7 +1310,7 @@ function moveFlame(targetId) {
       } else {
         // Last waypoint done
         setTimeout(function(){
-          _flameNode = targetId;
+          _flameNode = targetId; localStorage.setItem("flameNode",targetId);
           _flameAnimating = false;
         }, 500);
       }
@@ -3222,6 +3296,105 @@ function updateTtsBtn(){
 }
 
 let _savedPanel = null;
+
+// === HEADER TOOLS ===
+function toggleSearch(){
+  var sp=document.getElementById('searchPanel');
+  var pp=document.getElementById('progressPanel');
+  var st=document.getElementById('settingsPanel');
+  pp.classList.remove('show');st.classList.remove('show');
+  sp.classList.toggle('show');
+  if(sp.classList.contains('show')){setTimeout(()=>document.getElementById('searchInput').focus(),100);}
+}
+function toggleProgress(){
+  var sp=document.getElementById('searchPanel');
+  var pp=document.getElementById('progressPanel');
+  var st=document.getElementById('settingsPanel');
+  sp.classList.remove('show');st.classList.remove('show');
+  pp.classList.toggle('show');
+  if(pp.classList.contains('show'))renderProgress();
+}
+function toggleSettings(){
+  var sp=document.getElementById('searchPanel');
+  var pp=document.getElementById('progressPanel');
+  var st=document.getElementById('settingsPanel');
+  sp.classList.remove('show');pp.classList.remove('show');
+  st.classList.toggle('show');
+}
+// Close panels on outside click
+document.addEventListener('click',function(e){
+  if(!e.target.closest('.top')&&!e.target.closest('.search-panel')&&!e.target.closest('.progress-panel')&&!e.target.closest('.settings-panel')){
+    document.getElementById('searchPanel').classList.remove('show');
+    document.getElementById('progressPanel').classList.remove('show');
+    document.getElementById('settingsPanel').classList.remove('show');
+  }
+});
+
+function doSearch(q){
+  var results=document.getElementById('searchResults');
+  if(!q||q.length<2){results.innerHTML='';return;}
+  q=q.toLowerCase();
+  var found=[];
+  // Search foundation topics
+  if(window.FOUNDATION_TOPICS){window.FOUNDATION_TOPICS.forEach(function(t){if(t.title&&t.title.toLowerCase().includes(q))found.push({title:t.title,tag:'Foundation',action:function(){sw('foundation');}});});}
+  // Search knowing categories
+  if(window.KNOWING&&window.KNOWING.categories){window.KNOWING.categories.forEach(function(c){
+    if(c.title&&c.title.toLowerCase().includes(q))found.push({title:c.title,tag:'Know',action:function(){sw('theory');}});
+    if(c.topics)c.topics.forEach(function(t){if(t.title&&t.title.toLowerCase().includes(q))found.push({title:t.title,tag:'Know',action:function(){sw('theory');}});});
+  });}
+  // Search doing drills
+  if(window.DOING&&window.DOING.drills){window.DOING.drills.forEach(function(d){if(d.title&&d.title.toLowerCase().includes(q))found.push({title:d.title,tag:'Do',action:function(){sw('drill');}});});}
+  // Search play regions
+  if(window.PLAY_REGIONS){window.PLAY_REGIONS.forEach(function(r){if(r.name&&r.name.toLowerCase().includes(q))found.push({title:r.name,tag:'Play',action:function(){sw('lesson');}});});}
+  // Limit
+  found=found.slice(0,12);
+  if(found.length===0){results.innerHTML='<div style="padding:12px;color:var(--dim);font-size:0.8rem;">No results</div>';return;}
+  results.innerHTML=found.map(function(r){
+    return '<div class="search-result-item" onclick=\'document.getElementById(\"searchPanel\").classList.remove(\"show\");\'>
+      +'<div class="sr-title">'+r.title+'</div>'
+      +'<div class="sr-tag">'+r.tag+'</div></div>';
+  }).join('');
+  // Store actions for onclick
+  window._searchActions=found.map(function(r){return r.action;});
+  var items=results.querySelectorAll('.search-result-item');
+  items.forEach(function(el,i){el.onclick=function(){document.getElementById('searchPanel').classList.remove('show');window._searchActions[i]();};});
+}
+
+function renderProgress(){
+  var c=document.getElementById('progressContent');
+  var html='';
+  // Foundation progress
+  var fDone=0,fTotal=10;
+  try{fDone=Object.keys(JSON.parse(localStorage.getItem('fProgress')||'{}')).length;}catch(e){}
+  html+='<div class="progress-row"><span class="progress-label">Foundation</span>'
+    +'<div class="progress-bar"><div class="progress-fill" style="width:'+Math.round(fDone/fTotal*100)+'%"></div></div>'
+    +'<span style="font-family:JetBrains Mono;font-size:0.65rem;color:var(--dim)">'+fDone+'/'+fTotal+'</span></div>';
+  // Doing progress
+  var dDone=0,dTotal=48;
+  try{dDone=Object.keys(JSON.parse(localStorage.getItem('dProgress')||'{}')).length;}catch(e){}
+  html+='<div class="progress-row"><span class="progress-label">Doing</span>'
+    +'<div class="progress-bar"><div class="progress-fill" style="width:'+Math.round(dDone/dTotal*100)+'%"></div></div>'
+    +'<span style="font-family:JetBrains Mono;font-size:0.65rem;color:var(--dim)">'+dDone+'/'+dTotal+'</span></div>';
+  // Knowing progress
+  var kDone=0,kTotal=9;
+  try{kDone=Object.keys(JSON.parse(localStorage.getItem('kProgress')||'{}')).length;}catch(e){}
+  html+='<div class="progress-row"><span class="progress-label">Knowing</span>'
+    +'<div class="progress-bar"><div class="progress-fill" style="width:'+Math.round(kDone/kTotal*100)+'%"></div></div>'
+    +'<span style="font-family:JetBrains Mono;font-size:0.65rem;color:var(--dim)">'+kDone+'/'+kTotal+'</span></div>';
+  // Streak
+  var streak=parseInt(localStorage.getItem('streak')||'0');
+  html+='<div class="progress-row"><span class="progress-label">🔥 Streak</span><span style="font-family:JetBrains Mono;font-size:0.65rem;color:var(--amber)">'+streak+' days</span></div>';
+  c.innerHTML=html;
+}
+
+function setTheme(theme,btn){
+  document.body.setAttribute('data-theme',theme);
+  localStorage.setItem('hearthTheme',theme);
+  document.querySelectorAll('.theme-btn').forEach(function(b){b.classList.remove('active');});
+  btn.classList.add('active');
+}
+// Restore theme
+(function(){var t=localStorage.getItem('hearthTheme');if(t){document.body.setAttribute('data-theme',t);document.querySelectorAll('.theme-btn').forEach(function(b){b.classList.remove('active');if(b.textContent.toLowerCase()===t)b.classList.add('active');});}})();
 
 function sw(t){
   // Save current panel before switching (for dictionary overlay)
