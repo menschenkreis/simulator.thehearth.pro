@@ -146,8 +146,8 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 .top-logo-letters{height:16px;width:auto;}
 .top-center{flex:1;display:flex;justify-content:center;}
 .top-right{display:flex;align-items:center;gap:6px;flex-shrink:0;}
-.top-tool{width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-size:1rem;cursor:pointer;border-radius:6px;transition:all 0.15s;opacity:0.6;}
-.top-tool:hover{opacity:1;background:rgba(212,175,105,0.08);}
+.top-tool{padding:4px 10px;font-family:'JetBrains Mono',monospace;font-size:0.6rem;color:var(--dim);cursor:pointer;border-radius:3px;transition:all 0.15s;letter-spacing:0.08em;text-transform:uppercase;}
+.top-tool:hover{color:var(--gold);background:rgba(212,175,105,0.08);}
 
 /* Search panel */
 .search-panel{position:absolute;top:100%;left:0;right:0;background:var(--panel);border-bottom:1px solid var(--border);padding:12px 16px;z-index:50;display:none;}
@@ -719,11 +719,14 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
     <img src="images/logo_icon_white.png" alt="The Hearth" class="top-logo-icon">
     <span style="font-family:'Cinzel',serif;color:#fff;font-size:0.9rem;letter-spacing:0.08em;">The Hearth Mastery</span>
   </div>
-  <div class="top-center"></div>
+  <div class="top-center">
+    <div style="display:flex;gap:4px;">
+      <div class="top-tool" onclick="toggleSearch()">Search</div>
+      <div class="top-tool" onclick="toggleProgress()">Progress</div>
+      <div class="top-tool" onclick="toggleSettings()">Settings</div>
+    </div>
+  </div>
   <div class="top-right">
-    <div class="top-tool" onclick="toggleSearch()" title="Search">🔍</div>
-    <div class="top-tool" onclick="toggleProgress()" title="Progress">📊</div>
-    <div class="top-tool" onclick="toggleSettings()" title="Settings">⚙️</div>
     <button onclick="toggleCredits()" style="background:none;border:none;color:var(--dim);font-size:0.8rem;cursor:pointer;padding:4px 8px;min-height:unset;" title="Credits">©</button>
   </div>
 </div>
