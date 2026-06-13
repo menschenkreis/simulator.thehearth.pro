@@ -833,7 +833,8 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 
         <g class="mn-g unlocked" onmouseenter="showNodePreview('practise',event)" onmouseleave="hideNodePreview()" onclick="showNodeInfo('practise')" data-node="practise">
           <circle class="mn-ring" cx="248" cy="388" r="48"/>
-          <text x="248" y="405" text-anchor="middle" font-size="42">🔁</text>
+          <clipPath id="clip-practise"><circle cx="248" cy="388" r="48"/></clipPath>
+          <image href="images/practise-icon.png" x="200" y="340" width="96" height="96" clip-path="url(#clip-practise)"/>
         </g>
 
         <g class="mn-g unlocked" onmouseenter="showNodePreview('play',event)" onmouseleave="hideNodePreview()" onclick="showNodeInfo('play')" data-node="play">
@@ -1072,7 +1073,7 @@ const NODE_HOVER_DATA={
   knowing:{img:'images/knowing-icon.png',label:'Knowing'},
   play:{img:'images/play-icon.png',label:'Play'},
   mastery:{emoji:'👑',label:'Mastery'},
-  practise:{emoji:'🔁',label:'Practise'},
+  practise:{img:'images/practise-icon.png',label:'Practise'},
   study:{img:'images/study-icon.png',label:'Study'},
   create:{img:'images/create-icon.png',label:'Create'}
 };
