@@ -763,14 +763,8 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
         </g>
 
         <g class="mn-g unlocked" onclick="showNodeInfo('play')" data-node="play">
-          <g transform="translate(88,682)">
-            <circle r="14" fill="none" stroke="#5a9fd4" stroke-width="0.8" opacity="0.3"/>
-            <path d="M 0,-12 L 3,-2 L -3,-2 Z" fill="#5a9fd4" opacity="0.85"/>
-            <path d="M 0,12 L 3,2 L -3,2 Z" fill="#5a9fd4" opacity="0.35"/>
-            <line x1="11" y1="0" x2="7" y2="0" stroke="#5a9fd4" stroke-width="0.8" opacity="0.3"/>
-            <line x1="-11" y1="0" x2="-7" y2="0" stroke="#5a9fd4" stroke-width="0.8" opacity="0.3"/>
-            <circle r="2" fill="#5a9fd4"/>
-          </g>
+          <clipPath id="clip-play"><circle cx="88" cy="682" r="28"/></clipPath>
+          <image href="images/play-icon.png" x="60" y="655" width="56" height="56" clip-path="url(#clip-play)"/>
           <text class="mn-label" x="88" y="725">PLAY</text>
           <text class="mn-sublabel" x="88" y="738">world guitar</text>
         </g>
