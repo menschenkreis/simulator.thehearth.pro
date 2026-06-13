@@ -966,7 +966,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 <script>
 const NODE_DATA = {
   hearth: { emoji:'', tag:'ORIGIN', title:'The Hearth', desc:'Your progress dashboard. See how you\'re doing across all paths.', enter:true, action:'hearth' },
-  foundation: { emoji:'', tag:'HOME NODE', title:'Foundations', desc:'Before you play a note — learn how learning works, how to hold the guitar, tune it, and produce your first clean sound. 7 core topics.', enter:true, action:'foundation', icon:'images/foundation-icon.png' },
+  foundation: { emoji:'', tag:'HOME NODE', title:'Foundation', desc:'Before you play a note — learn how learning works, how to hold the guitar, tune it, and produce your first clean sound. 7 core topics.', enter:true, action:'foundation', icon:'images/foundation-icon.png' },
   mastery: { emoji:'', tag:'FINAL', title:'Mastery', desc:'Come home to yourself. What is YOUR sound? The student becomes the artist.', enter:true, action:'mastery' },
   doing: { emoji:'', tag:'DOING PATH', title:'Do', desc:'Open-world drill library. Every technique, every style. Click a dot to dive in.', enter:true, action:'doing', icon:'images/doing-icon.png' },
   practise: { emoji:'', tag:'DOING PATH', title:'Practise', desc:'Session-based. "How much time have you got?" Select drills, combine variations, timer starts, practise, give feedback.', enter:true, action:'practice' },
@@ -1068,7 +1068,7 @@ const NODE_POS = {
 
 // ═══ NODE HOVER PREVIEW ═══
 const NODE_HOVER_DATA={
-  foundation:{img:'images/foundation-icon.png',label:'Foundations'},
+  foundation:{img:'images/foundation-icon.png',label:'Foundation'},
   hearth:{img:'images/hearth-icon.png',label:'The Hearth'},
   doing:{img:'images/doing-icon.png',label:'Do'},
   knowing:{img:'images/knowing-icon.png',label:'Know'},
@@ -3530,7 +3530,7 @@ function openJourneyLevel(levelNum) {
 function populateNotebook(){
   const el=document.getElementById('notebook-content');if(!el)return;
   const nodes=['foundation','doing','knowing','practice','play','create'];
-  const nodeNames=['Foundations','Do','Know','Practice','Play','Create'];
+  const nodeNames=['Foundation','Do','Know','Practice','Play','Create'];
   const rainbow=['#e74c3c','#e67e22','#f1c40f','#2ecc71','#3498db','#9b59b6'];
   let totalDone=0, totalItems=0;
 
