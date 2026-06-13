@@ -138,6 +138,11 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 }
 .top-title{font-family:'Cinzel',serif;color:var(--gold);font-size:0.9rem;font-weight:700;letter-spacing:0.08em;}
 .top-spacer{flex:1;}
+.top-brand{display:flex;align-items:center;gap:8px;flex-shrink:0;}
+.top-logo-icon{height:28px;width:auto;}
+.top-logo-letters{height:16px;width:auto;}
+.top-center{flex:1;display:flex;justify-content:center;}
+.top-right{display:flex;align-items:center;gap:8px;flex-shrink:0;}
 .top-stat{font-family:'JetBrains Mono',monospace;font-size:0.65rem;color:var(--dim);}
 .top-stat .v{color:var(--amber);}
 #mode-select{background:var(--btn);color:var(--text);border:1px solid var(--border);border-radius:6px;padding:6px 12px;font-family:inherit;font-size:0.72rem;cursor:pointer;min-width:140px;}
@@ -508,6 +513,8 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 
   /* ═══ TOP BAR ═══ */
   .top{height:48px;min-height:48px;padding:0 10px;gap:6px;flex-wrap:nowrap;overflow:hidden;}
+  .top-logo-letters{display:none;}
+  .top-logo-icon{height:22px;}
   .top-title{font-size:0.75rem;letter-spacing:0.04em;flex-shrink:0;}
   .top-stat{font-size:0.5rem;flex-shrink:0;}
   #mode-select{min-width:90px;font-size:0.58rem;padding:3px 6px;flex-shrink:0;}
@@ -662,17 +669,24 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 <body>
 
 <div class="top">
-  <div class="path-btns">
-    <div class="path-btn" onclick="hlP('journey')">Journey</div>
-    <div class="path-btn" onclick="hlP('doing')">Doing</div>
-    <div class="path-btn" onclick="hlP('knowing')">Knowing</div>
-    <div class="path-btn on" onclick="hlP('all')">All</div>
+  <div class="top-brand">
+    <img src="images/logo_icon.png" alt="The Hearth" class="top-logo-icon">
+    <img src="images/logo_letters.png" alt="THE HEARTH" class="top-logo-letters">
   </div>
-  <span class="top-spacer"></span>
-  <span class="top-stat">🔥 <span class="v">7d</span></span>
-  <span class="top-stat"><span class="v">142</span>h</span>
-  <span class="top-stat">🪙 <span class="v">47</span></span>
-  <button onclick="toggleCredits()" style="background:none;border:none;color:var(--dim);font-size:0.8rem;cursor:pointer;padding:4px 8px;min-height:unset;" title="Credits">©</button>
+  <div class="top-center">
+    <div class="path-btns">
+      <div class="path-btn" onclick="hlP('journey')">Journey</div>
+      <div class="path-btn" onclick="hlP('doing')">Doing</div>
+      <div class="path-btn" onclick="hlP('knowing')">Knowing</div>
+      <div class="path-btn on" onclick="hlP('all')">All</div>
+    </div>
+  </div>
+  <div class="top-right">
+    <span class="top-stat">🔥 <span class="v">7d</span></span>
+    <span class="top-stat"><span class="v">142</span>h</span>
+    <span class="top-stat">🪙 <span class="v">47</span></span>
+    <button onclick="toggleCredits()" style="background:none;border:none;color:var(--dim);font-size:0.8rem;cursor:pointer;padding:4px 8px;min-height:unset;" title="Credits">©</button>
+  </div>
 </div>
 
 <div class="main-wrap">
