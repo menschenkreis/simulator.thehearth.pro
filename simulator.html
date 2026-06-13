@@ -1089,19 +1089,32 @@ function showNodeInfo(id) {
   const data = NODE_DATA[id];
   if (!data) return;
   _activeNode = id;
-  // Travel flame to the node, then enter after animation
-  const wasSame = (_flameNode === id);
-  // Calculate delay based on route length BEFORE moving
-  let delay = 0;
-  if (!wasSame) {
-    const routeKey = _flameNode + '->' + id;
-    const route = FLAME_ROUTES[routeKey];
-    const hops = route ? route.length - 1 : 1;
-    delay = hops * 500 + 400;
+
+  // Show info popup
+  document.getElementById('niEmoji').textContent = data.emoji || '';
+  document.getElementById('niTag').textContent = data.tag || '';
+  document.getElementById('niTitle').textContent = data.title || '';
+  document.getElementById('niDesc').textContent = data.desc || '';
+  var enterBtn = document.getElementById('niEnter');
+  if (data.locked || !data.enter) {
+    enterBtn.style.display = 'none';
+  } else {
+    enterBtn.style.display = '';
   }
+  // Show thumbnail if icon exists
+  var thumb = document.getElementById('niThumb');
+  var thumbImg = document.getElementById('niThumbImg');
+  if (data.icon && thumbImg) {
+    thumbImg.src = data.icon;
+    thumb.style.display = 'block';
+  } else if (thumb) {
+    thumb.style.display = 'none';
+  }
+  document.getElementById('ni').classList.add('vis');
+  document.getElementById('niOverlay').classList.add('vis');
+
+  // Travel flame to the node
   moveFlame(id);
-  if (data.locked) return;
-  setTimeout(function() { enterNodeAction(data); }, delay);
 }
 
 function enterNodeAction(data) {
