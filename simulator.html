@@ -892,7 +892,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
           <!-- Dotted white outer ring (mastery boundary) -->
           <circle cx="350" cy="813" r="155" stroke="rgba(255,255,255,0.3)" stroke-width="1" fill="none" stroke-dasharray="3 4"/>
           <!-- 8 concentric level rings (rainbow, outer=L1 red → inner=L8 violet) -->
-          <circle class="mastery-ring" id="mring-l1" cx="350" cy="813" r="140" stroke="#ff0000" stroke-width="2" fill="none" opacity="0.5"/>
+          <circle class="mastery-ring" id="mring-l1" cx="350" cy="813" r="140" stroke="#ff0000" stroke-width="1.5" fill="none" opacity="0.3"/>
           <circle class="mastery-ring" id="mring-l2" cx="350" cy="813" r="125" stroke="#ff8800" stroke-width="1.5" fill="none" opacity="0.15"/>
           <circle class="mastery-ring" id="mring-l3" cx="350" cy="813" r="110" stroke="#ffdd00" stroke-width="1.5" fill="none" opacity="0.15"/>
           <circle class="mastery-ring" id="mring-l4" cx="350" cy="813" r="95" stroke="#00cc44" stroke-width="1.5" fill="none" opacity="0.15"/>
@@ -1274,8 +1274,8 @@ let _flameAnimating = false;
 function lightUpLevel(level) {
   const ring = document.getElementById('mring-l' + level);
   if (!ring) return;
-  ring.setAttribute('opacity', '0.8');
-  ring.setAttribute('stroke-width', '2.5');
+  ring.setAttribute('opacity', '0.45');
+  ring.setAttribute('stroke-width', '2');
   // Also light the spine segment
   const spine = document.getElementById('spine-l' + level);
   if (spine) {
