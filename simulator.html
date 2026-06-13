@@ -3350,15 +3350,16 @@ function doSearch(q){
   // Limit
   found=found.slice(0,12);
   if(found.length===0){results.innerHTML='<div style="padding:12px;color:var(--dim);font-size:0.8rem;">No results</div>';return;}
-  results.innerHTML=found.map(function(r){
-    return '<div class="search-result-item" onclick=\'document.getElementById(\"searchPanel\").classList.remove(\"show\");\'>
+  results.innerHTML=found.map(function(r,i){
+    return '<div class="search-result-item" data-idx="'+i+'">'
       +'<div class="sr-title">'+r.title+'</div>'
       +'<div class="sr-tag">'+r.tag+'</div></div>';
   }).join('');
-  // Store actions for onclick
+  // Wire up click handlers
   window._searchActions=found.map(function(r){return r.action;});
-  var items=results.querySelectorAll('.search-result-item');
-  items.forEach(function(el,i){el.onclick=function(){document.getElementById('searchPanel').classList.remove('show');window._searchActions[i]();};});
+  results.querySelectorAll('.search-result-item').forEach(function(el){
+    el.onclick=function(){document.getElementById('searchPanel').classList.remove('show');var idx=parseInt(el.getAttribute('data-idx'));if(window._searchActions[idx])window._searchActions[idx]();};
+  });
 }
 
 function renderProgress(){
