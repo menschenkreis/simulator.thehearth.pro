@@ -202,11 +202,11 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 .map-svg{width:100%;height:auto;display:block;max-height:calc(100vh - 60px);}
 
 /* Node styling */
-.mn-g{cursor:pointer;transition:all 0.3s ease;-webkit-tap-highlight-color:transparent;}
+.mn-g{cursor:pointer;-webkit-tap-highlight-color:transparent;}
+.mn-g .mn-ring{transition:stroke 0.25s, stroke-width 0.25s, filter 0.25s;}
 .mn-g:hover .mn-ring{stroke:var(--gold);stroke-width:2.5;filter:drop-shadow(0 0 12px rgba(212,175,105,0.5));}
-.mn-g:hover{transform:scale(1.15);transform-origin:center;transform-box:fill-box;}
-.mn-g:hover image,
-.mn-g:hover text{filter:drop-shadow(0 0 8px rgba(212,175,105,0.6));}
+.mn-g image{transition:filter 0.25s;}
+.mn-g:hover image{filter:drop-shadow(0 0 8px rgba(212,175,105,0.6));}
 .mn-g:hover{filter:brightness(1.4) drop-shadow(0 0 12px rgba(212,175,105,0.5));}
 .mn-g:active{filter:brightness(1.2);}
 .mn-ring{fill:#0d0b08;stroke:var(--gold);stroke-width:1.5;transition:stroke 0.3s, stroke-width 0.3s;}
