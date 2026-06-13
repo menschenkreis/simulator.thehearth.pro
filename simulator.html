@@ -385,7 +385,8 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 
 /* === PLAY (World Map) === */
 .play-world-wrap{padding:16px;max-width:900px;margin:0 auto;display:flex;flex-direction:column;height:100%;}
-.wm-back-btn{background:none;border:1px solid var(--border);color:var(--dim);padding:6px 12px;border-radius:4px;cursor:pointer;font-family:inherit;font-size:0.7rem;margin-bottom:12px;align-self:flex-start;}
+.back-btn{position:fixed;top:56px;left:16px;background:var(--card);border:1px solid var(--border);color:var(--dim);padding:6px 14px;border-radius:6px;cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:0.65rem;letter-spacing:0.06em;text-transform:uppercase;z-index:100;transition:all 0.15s;}
+.back-btn:hover{color:var(--gold);border-color:var(--gold);}
 .play-world-header{margin-bottom:8px;}
 .play-world-title{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;}
 .play-world-sub{font-size:0.75rem;color:var(--dim);margin:4px 0 0 0;line-height:1.5;max-width:500px;}
@@ -1648,7 +1649,7 @@ function showFoundation(){
   const activeIdx=firstIncomplete===-1?F.topics.length-1:firstIncomplete;
 
   let html='<div style="padding:24px;max-width:900px;margin:0 auto">'+
-    '<button onclick="document.querySelectorAll(\'.pnl\').forEach(p=>p.classList.remove(\'on\'));document.getElementById(\'p-map\').classList.add(\'on\')" style="background:none;border:1px solid var(--border);color:var(--dim);padding:6px 12px;border-radius:4px;cursor:pointer;font-family:inherit;font-size:0.7rem;margin-bottom:16px">\u2190 Back to Map</button>'+
+    '<button class="back-btn" onclick="backToMap()">← Map</button>'+
     '<div style="display:flex;align-items:center;gap:12px;margin-bottom:24px">'+
       '<img src="images/foundation-icon.png" style="width:64px;height:64px;border-radius:50%;object-fit:cover;border:3px solid var(--gold);box-shadow:0 0 16px rgba(212,175,105,0.12)"/>'+
       '<div style="flex:1"><h2 style="font-family:\'DM Sans\',sans-serif;color:var(--gold);font-size:1.3rem;margin:0;font-weight:700">'+F.title+'</h2>'+
@@ -1748,7 +1749,7 @@ function rainbowBlocks(items, opts){
   const activeIdx=firstIncomplete===-1?n-1:firstIncomplete;
 
   let html='<div style="padding:24px;max-width:800px;margin:0 auto">'+
-    '<button onclick="document.querySelectorAll(\'.pnl\').forEach(p=>p.classList.remove(\'on\'));document.getElementById(\'p-map\').classList.add(\'on\')" style="background:none;border:1px solid var(--border);color:var(--dim);padding:6px 12px;border-radius:4px;cursor:pointer;font-family:inherit;font-size:0.7rem;margin-bottom:16px">\u2190 Back to Map</button>'+
+    '<button class="back-btn" onclick="backToMap()">← Map</button>'+
     '<div style="display:flex;align-items:center;gap:12px;margin-bottom:20px">'+
       (opts.icon?'<img src="'+opts.icon+'" style="width:64px;height:64px;border-radius:50%;object-fit:cover;border:3px solid var(--gold);box-shadow:0 0 16px rgba(212,175,105,0.12)"/>':'<div style="width:64px;height:64px;border-radius:50%;border:3px solid var(--gold);box-shadow:0 0 16px rgba(212,175,105,0.12);display:flex;align-items:center;justify-content:center;font-family:Cinzel,serif;color:var(--gold);font-size:1.5rem;font-weight:700">'+opts.title.charAt(0)+'</div>')+
       '<div><h2 style="font-family:\'DM Sans\',sans-serif;color:var(--gold);font-size:1.3rem;margin:0;font-weight:700">'+opts.title+'</h2>'+
@@ -1927,7 +1928,7 @@ function showDoing(){
     const isDone=completed[drillId];
     const diffLabel=['','','Beginner','Intermediate','Advanced'][drill.difficulty];
     el.innerHTML='<div style="padding:20px;max-width:650px;margin:0 auto">'+
-      '<button onclick="showDoing()" style="background:none;border:1px solid var(--border);color:var(--dim);padding:6px 12px;border-radius:4px;cursor:pointer;font-family:inherit;font-size:0.7rem;margin-bottom:16px">&larr; Back to drills</button>'+
+      '<button class="back-btn" onclick="showDoing()">← Back to drills</button>'+
       '<div style="margin-bottom:8px">'+
         '<h2 style="font-family:Cinzel;color:var(--gold);font-size:1.1rem;margin:0">'+drill.title+'</h2>'+
         '<div style="display:flex;gap:8px;margin-top:4px;flex-wrap:wrap">'+
@@ -2030,7 +2031,7 @@ function showKnowing(){
   if(maxUnlocked>=2 && levels[1].totalTopics>0 && levels[1].totalDone/levels[1].totalTopics>=0.5) maxUnlocked=3;
 
   let html='<div style="padding:20px;max-width:900px;margin:0 auto">'+
-    '<button onclick="document.querySelectorAll(\'.pnl\').forEach(p=>p.classList.remove(\'on\'));document.getElementById(\'p-map\').classList.add(\'on\')" style="background:none;border:1px solid var(--border);color:var(--dim);padding:6px 12px;border-radius:4px;cursor:pointer;font-family:inherit;font-size:0.7rem;margin-bottom:16px">\u2190 Back to Map</button>'+
+    '<button class="back-btn" onclick="backToMap()">← Map</button>'+
     '<div style="display:flex;align-items:center;gap:12px;margin-bottom:24px">'+
       '<img src="images/knowing-icon.png" style="width:56px;height:56px;border-radius:50%;object-fit:cover;border:2px solid var(--gold);box-shadow:0 0 12px rgba(212,175,105,0.1)"/>'+
       '<div><div style="font-family:Josefin Sans,sans-serif;color:var(--gold);font-size:1.1rem;letter-spacing:2px">'+K.title+'</div>'+
@@ -2163,7 +2164,7 @@ window.showKnowingBook=function(catId){
 
   // Book open view - like reading a book
   let html='<div style="padding:20px;max-width:700px;margin:0 auto">'+
-    '<button onclick="showKnowing()" style="background:none;border:1px solid var(--border);color:var(--dim);padding:6px 12px;border-radius:4px;cursor:pointer;font-family:inherit;font-size:0.7rem;margin-bottom:16px">\u2190 Back to shelf</button>'+
+    '<button class="back-btn" onclick="showKnowing()">← Back to shelf</button>'+
     '<div style="background:var(--card);border:1px solid var(--border);border-radius:8px;overflow:hidden">';
 
   // Book header (like a book cover)
@@ -2216,7 +2217,7 @@ window.showKnowingTopic=function(catId,topicId){
 
   // Note: this is the encyclopedia view. For guided study with quizzes, use the Study node.
   el.innerHTML='<div style="padding:20px;max-width:700px;margin:0 auto">'+
-    '<button onclick="showKnowingBook(\''+catId+'\')" style="background:none;border:1px solid var(--border);color:var(--dim);padding:6px 12px;border-radius:4px;cursor:pointer;font-family:inherit;font-size:0.7rem;margin-bottom:16px">\u2190 Back to '+cat.title+'</button>'+
+    '<button class="back-btn" onclick="showKnowingBook(\''+catId+'\')">← Back to '+cat.title+'</button>'+
     '<div style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:24px">'+
       '<div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">'+
         '<span class="tag" style="border-color:'+color+'30;color:'+color+'">'+cat.title+'</span>'+
@@ -2307,7 +2308,7 @@ function showStudy(){
   });
 
   el.innerHTML='<div style="padding:20px;max-width:650px;margin:0 auto">'+
-    '<button onclick="document.querySelectorAll(\'.pnl\').forEach(p=>p.classList.remove(\'on\'));document.getElementById(\'p-map\').classList.add(\'on\')" style="background:none;border:1px solid var(--border);color:var(--dim);padding:6px 12px;border-radius:4px;cursor:pointer;font-family:inherit;font-size:0.7rem;margin-bottom:16px">\u2190 Back to Map</button>'+
+    '<button class="back-btn" onclick="backToMap()">← Map</button>'+
     '<div style="text-align:center;margin-bottom:24px">'+
       '<div style="font-size:2rem;margin-bottom:6px">\uD83D\uDCC4</div>'+
       '<div style="font-family:Cinzel,serif;color:#8a6aaa;font-size:1.3rem;font-weight:700">Study Lab</div>'+
@@ -2419,7 +2420,7 @@ window.showStudySession=function(catId,topicId){
     '</div>';
 
   el.innerHTML='<div style="padding:20px;max-width:700px;margin:0 auto">'+
-    '<button onclick="showStudy()" style="background:none;border:1px solid var(--border);color:var(--dim);padding:6px 12px;border-radius:4px;cursor:pointer;font-family:inherit;font-size:0.7rem;margin-bottom:16px">\u2190 Back to Study Lab</button>'+
+    '<button class="back-btn" onclick="showStudy()">← Back to Study Lab</button>'+
     '<div style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:20px;margin-bottom:16px">'+
       '<div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap">'+
         '<span style="border:1px solid '+color+'30;color:'+color+';padding:3px 8px;border-radius:4px;font-size:0.65rem;font-family:JetBrains Mono">'+cat.title.toUpperCase()+'</span>'+
@@ -2550,7 +2551,7 @@ window._studyAssess=function(catId,topicId,feeling){
       nextBtn='<button onclick="showStudySession(\''+catId+'\',\''+nextTopic.id+'\')" style="background:'+color+';color:white;border:none;padding:12px 24px;border-radius:8px;font-family:DM Sans,sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer">Study Next Concept</button>';
     } else {
       nextAction='You\'ve completed all topics in <strong>'+cat.title+'</strong>! Pick another discipline.';
-      nextBtn='<button onclick="showStudy()" style="background:'+color+';color:white;border:none;padding:12px 24px;border-radius:8px;font-family:DM Sans,sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer">Back to Study Lab</button>';
+      nextBtn='<button class="back-btn" onclick="showStudy()">← Study Lab</button>';
     }
   } else if(feeling==='review'){
     nextAction='Good call. Re-read <strong>'+topic.title+'</strong> - focus on the terms that felt unclear.';
@@ -2574,7 +2575,7 @@ window._studyAssess=function(catId,topicId,feeling){
     '<div style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:16px;margin:16px 0;font-size:0.85rem;color:var(--text)">'+nextAction+'</div>'+
     '<div style="display:flex;gap:8px;justify-content:center">'+
       nextBtn+
-      '<button onclick="showStudy()" style="background:var(--card);border:1px solid var(--border);color:var(--text);padding:12px 24px;border-radius:8px;font-family:DM Sans,sans-serif;font-size:0.85rem;cursor:pointer">Back to Study Lab</button>'+
+      '<button class="back-btn" onclick="showStudy()">← Study Lab</button>'+
     '</div>'+
   '</div>';
 };
@@ -2719,7 +2720,7 @@ window.showPracticeDrill=function(drillId){
   const prevAttempts=_getSessionLog().filter(s=>s.drillId===drillId);
 
   el.innerHTML='<div style="padding:20px;max-width:600px;margin:0 auto">'+
-    '<button onclick="showPractice()" style="background:none;border:1px solid var(--border);color:var(--dim);padding:6px 12px;border-radius:4px;cursor:pointer;font-family:inherit;font-size:0.7rem;margin-bottom:16px">&larr; Back to Dashboard</button>'+
+    '<button class="back-btn" onclick="showPractice()">← Back to Dashboard</button>'+
     '<div style="border-top:4px solid '+CANDLE+';padding-top:16px;margin-bottom:20px">'+
       '<div style="font-family:JetBrains Mono;font-size:0.55rem;color:'+CANDLE+';letter-spacing:0.15em;text-transform:uppercase">'+drill.category.toUpperCase()+(done?' · MASTERED':'')+'</div>'+
       '<h2 style="font-family:Cinzel,serif;color:var(--text);font-size:1.2rem;margin:6px 0;font-weight:700">'+drill.title+'</h2>'+
@@ -2955,7 +2956,7 @@ window._finishDrill=function(drillId,feeling){
     '<div style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:16px;margin:16px 0;font-size:0.85rem;color:var(--text)">'+nextAction+'</div>'+
     '<div style="display:flex;gap:8px;justify-content:center">'+
       (nextDrill?'<button onclick="startDrillPractice(\''+nextDrill.id+'\')" style="background:'+CANDLE+';color:#0d0b08;border:none;padding:12px 24px;border-radius:8px;font-family:DM Sans,sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer">Keep Practising</button>':'')+
-      '<button onclick="showPractice()" style="background:var(--card);border:1px solid var(--border);color:var(--text);padding:12px 24px;border-radius:8px;font-family:DM Sans,sans-serif;font-size:0.85rem;cursor:pointer">Back to Dashboard</button>'+
+      '<button class="back-btn" onclick="showPractice()">← Dashboard</button>'+
     '</div>'+
   '</div>';
 };
@@ -3008,7 +3009,7 @@ function showPlay(){
   const WM=window.WORLD_MAP_REGIONS||[];
 
   let html='<div class="play-world-wrap">'+
-    '<button onclick="document.querySelectorAll(\'.pnl\').forEach(p=>p.classList.remove(\'on\'));document.getElementById(\'p-map\').classList.add(\'on\')" class="wm-back-btn">&larr; Back to Map</button>'+
+    '<button class="back-btn" onclick="backToMap()">← Map</button>'+
     '<div class="play-world-header">'+
       '<div class="play-world-title">'+
         '<span style="font-family:\'Cinzel\',serif;color:var(--gold);font-size:1.4rem;font-weight:700;letter-spacing:0.08em">PLAY</span>'+
@@ -3095,7 +3096,7 @@ window.wmClick=function(regionId){
   var techHtml=(r.techniques||[]).map(function(t){return '<li>'+t+'</li>';}).join('');
 
   el.innerHTML='<div class="wm-region-detail" style="--region-color:'+r.color+'">'+
-    '<button onclick="showPlay()" class="wm-back-btn">&larr; Back to World Map</button>'+
+    '<button onclick="showPlay()" class="back-btn">←  Back to World Map</button>'+
     '<div class="wm-region-header">'+
       '<div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">'+
         '<div style="width:10px;height:10px;border-radius:50%;background:'+r.color+';box-shadow:0 0 12px '+r.color+'"></div>'+
@@ -3415,6 +3416,11 @@ function setTheme(theme,btn){
 // Restore theme
 (function(){var t=localStorage.getItem('hearthTheme');if(t){document.body.setAttribute('data-theme',t);document.querySelectorAll('.theme-btn').forEach(function(b){b.classList.remove('active');if(b.textContent.toLowerCase()===t)b.classList.add('active');});}})();
 
+function backToMap(){
+  document.querySelectorAll('.pnl').forEach(p=>p.classList.remove('on'));
+  document.getElementById('p-map').classList.add('on');
+  document.querySelectorAll('.top-tool').forEach(function(el){el.classList.toggle('on',el.textContent.trim()==='Map');});
+}
 function sw(t){
   // Save current panel before switching (for dictionary overlay)
   const currentPanel = document.querySelector('.pnl.on');
@@ -3670,7 +3676,7 @@ function openLessonStep(levelNum, lessonNum, stepNum) {
 
   let html = '';
   html += '<div style="display:flex;align-items:center;gap:10px;margin-bottom:20px">';
-  html += '<button onclick="startJourneyLesson(' + levelNum + ')" style="background:none;border:1px solid var(--border);color:var(--dim);padding:6px 10px;border-radius:4px;cursor:pointer;font-size:0.7rem">\u2190 Back to Lesson</button>';
+  html += '<button class="back-btn" onclick="startJourneyLesson(' + levelNum + ')">← Back to Lesson</button>';
   html += '<div>';
   html += '<div style="font-family:JetBrains Mono;font-size:0.5rem;color:' + level.color + ';letter-spacing:0.1em">STEP ' + step.step + ' OF 6</div>';
   html += '<div style="font-family:Cinzel;font-size:1rem;color:var(--gold);font-weight:700">' + step.phase + ': ' + step.title + '</div>';
