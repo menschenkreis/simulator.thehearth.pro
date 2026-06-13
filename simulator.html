@@ -209,7 +209,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 
 /* === MANDALA MAP === */
 .map{align-items:center;justify-content:center;padding:8px;position:relative;}
-.map-wrap{width:100%;max-width:none;max-height:100%;position:relative;margin:0 auto;display:flex;align-items:center;justify-content:center;padding-top:8px;}
+.map-wrap{width:100%;max-width:none;max-height:100%;position:relative;margin:0 auto;display:flex;align-items:center;justify-content:center;padding-top:8px;background-color:#0d0b08;}
 /* Map zoom/pan */
 .map-wrap{touch-action:manipulate;}
 .map-svg{width:100%;height:auto;display:block;max-height:calc(100vh - 60px);transform-origin:center center;transition:transform 0.2s;}
@@ -819,7 +819,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
         </defs>
 
         <!-- Background -->
-        <rect width="700" height="900" fill="var(--bg)"/>
+        <rect width="700" height="1000" fill="var(--bg)"/>
         <ellipse cx="350" cy="494" rx="335" ry="406" fill="url(#bgGrad)"/>
 
         <!-- ═══ SUBTLE MANDALA GUIDES ═══ -->
@@ -1235,12 +1235,12 @@ function enterNode() {
 // ═══ THEME SYSTEM ═══
 function setTheme(mode) {
   document.documentElement.setAttribute('data-theme', mode);
+  document.body.setAttribute('data-theme', mode);
   localStorage.setItem('hearth-theme-v2', mode);
-  // SVG background rect needs direct style (SVG rect doesn't use CSS vars)
+  localStorage.setItem('hearthTheme', mode);
   var svgBg = document.querySelector('.map-svg rect');
   var bgColors = {standard:'#0d0b08',sparks:'#FFF8F0',flames:'#F8F5F0'};
   if (svgBg) svgBg.style.fill = bgColors[mode] || bgColors.standard;
-  // Mastery ring opacity
   var rings = document.querySelectorAll('.mastery-ring');
   for (var j = 0; j < rings.length; j++) {
     rings[j].style.opacity = (mode === 'sparks') ? '0.3' : '0.15';
@@ -1249,7 +1249,7 @@ function setTheme(mode) {
 (function(){
   var saved = localStorage.getItem('hearth-theme-v2');
   // If no saved preference, use HTML attribute as default
-  var theme = saved || 'sparks';
+  var theme = saved || 'standard';
   document.documentElement.setAttribute('data-theme', theme);
   localStorage.setItem('hearth-theme-v2', theme);
   var sel = document.getElementById('mode-select');
@@ -3503,13 +3503,15 @@ function renderProgress(){
 }
 
 function setTheme(theme,btn){
+  document.documentElement.setAttribute('data-theme',theme);
   document.body.setAttribute('data-theme',theme);
+  localStorage.setItem('hearth-theme-v2',theme);
   localStorage.setItem('hearthTheme',theme);
   document.querySelectorAll('.theme-btn').forEach(function(b){b.classList.remove('active');});
   btn.classList.add('active');
 }
 // Restore theme
-(function(){var t=localStorage.getItem('hearthTheme');if(t){document.body.setAttribute('data-theme',t);document.querySelectorAll('.theme-btn').forEach(function(b){b.classList.remove('active');if(b.textContent.toLowerCase()===t)b.classList.add('active');});}})();
+(function(){var t=localStorage.getItem('hearth-theme-v2')||localStorage.getItem('hearthTheme');if(t){document.documentElement.setAttribute('data-theme',t);document.body.setAttribute('data-theme',t);document.querySelectorAll('.theme-btn').forEach(function(b){b.classList.remove('active');if(b.textContent.toLowerCase()===t)b.classList.add('active');});}})();
 
 function toggleSound(){
   var audioMuted=localStorage.getItem('hearthSoundMuted')!=='false';
