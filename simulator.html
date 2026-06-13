@@ -1068,10 +1068,10 @@ const NODE_POS = {
 
 // ═══ NODE HOVER PREVIEW ═══
 const NODE_HOVER_DATA={
-  foundation:{img:'images/foundation-icon.png',label:'Foundation'},
+  foundation:{img:'images/foundation-icon.png',label:'Foundations'},
   hearth:{img:'images/hearth-icon.png',label:'The Hearth'},
-  doing:{img:'images/doing-icon.png',label:'Doing'},
-  knowing:{img:'images/knowing-icon.png',label:'Knowing'},
+  doing:{img:'images/doing-icon.png',label:'Do'},
+  knowing:{img:'images/knowing-icon.png',label:'Know'},
   play:{img:'images/play-icon.png',label:'Play'},
   mastery:{img:'images/mastery-icon.png',label:'Mastery'},
   practise:{img:'images/practise-icon.png',label:'Practise'},
@@ -3398,8 +3398,8 @@ function populateJourney() {
   html += '<div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:10px">';
   const mixItems = [
     { label: 'Warm-up', from: 'Practise', color: '#2ecc71' },
-    { label: 'Doing', from: 'Doing', color: '#e8a020' },
-    { label: 'Knowing', from: 'Knowing', color: '#ff8800' },
+    { label: 'Do', from: 'Do', color: '#e8a020' },
+    { label: 'Know', from: 'Know', color: '#ff8800' },
     { label: 'Practise', from: 'Practise', color: '#2ecc71' },
     { label: 'Song Bit', from: 'Play', color: '#3498db' },
     { label: 'Reflect', from: 'Study', color: '#f1c40f' },
@@ -3530,7 +3530,7 @@ function openJourneyLevel(levelNum) {
 function populateNotebook(){
   const el=document.getElementById('notebook-content');if(!el)return;
   const nodes=['foundation','doing','knowing','practice','play','create'];
-  const nodeNames=['Foundation','Doing','Knowing','Practice','Play','Create'];
+  const nodeNames=['Foundations','Do','Know','Practice','Play','Create'];
   const rainbow=['#e74c3c','#e67e22','#f1c40f','#2ecc71','#3498db','#9b59b6'];
   let totalDone=0, totalItems=0;
 
