@@ -1090,6 +1090,7 @@ const NODE_DATA = {
 let _activeNode = null;
 
 function showNodeInfo(id) {
+  try {
   const data = NODE_DATA[id];
   if (!data) return;
   if (data.locked) return;
@@ -1104,7 +1105,11 @@ function showNodeInfo(id) {
     const hops = route ? route.length - 1 : 1;
     delay = hops * 500 + 400;
   }
-  setTimeout(function() { enterNodeAction(data); }, delay);
+  setTimeout(function() {
+    try { enterNodeAction(data); }
+    catch(e){ console.error('enterNodeAction error:',e); alert('Error entering node: '+e.message); }
+  }, delay);
+  } catch(e){ console.error('showNodeInfo error:',e); alert('Error: '+e.message); }
 }
 
 function enterNodeAction(data) {
