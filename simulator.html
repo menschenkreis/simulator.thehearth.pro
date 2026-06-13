@@ -943,7 +943,6 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
         </g>
         <!-- Travelling flame -->
         <g id="travel-flame" style="transform:translate(350px,73px);transition:transform 1.2s cubic-bezier(0.4,0,0.2,1)">
-        <script>/* set flame position on load */(function(){var fn=localStorage.getItem('flameNode');if(fn&&window.NODE_POS&&NODE_POS[fn]){var p=NODE_POS[fn];var f=document.getElementById('travel-flame');if(f)f.style.transform='translate('+p[0]+'px,'p[1]+'px)';}})();</script>
           <text font-size="14" text-anchor="middle" dominant-baseline="central" style="filter:drop-shadow(0 0 4px #e8a020)">🔥</text>
         </g>
 
@@ -1263,6 +1262,8 @@ const FLAME_ROUTES = {
 };
 
 let _flameNode = localStorage.getItem('flameNode') || 'foundation';
+// Restore flame position on load
+window.addEventListener('DOMContentLoaded',function(){var fn=localStorage.getItem('flameNode');if(fn&&window.NODE_POS&&NODE_POS[fn]){var p=NODE_POS[fn];var f=document.getElementById('travel-flame');if(f)f.style.transform='translate('+p[0]+'px,'+p[1]+'px)';}});
 let _flameAnimating = false;
 
 // Level completion: light up mastery ring
