@@ -51,7 +51,7 @@
   --spine-width:3.5px;
 }
 
-/* SVG connection classes — themed by data-theme */
+/* SVG connection classes - themed by data-theme */
 #web line{stroke:#6a5e4e;opacity:0.1;stroke-width:0.5;transition:opacity 0.3s;}
 #web line:hover{opacity:0.6;}
 
@@ -60,7 +60,7 @@
 .gold-conn.dim{stroke:#d4af69;opacity:0.12;stroke-width:1;}
 .gold-conn.hl{opacity:0.5;stroke-width:3;}
 
-/* NODE HOVER PREVIEW — dims map, icon appears over the node */
+/* NODE HOVER PREVIEW - dims map, icon appears over the node */
 .map-dim-overlay{position:fixed;inset:0;background:rgba(13,11,8,0.4);z-index:199;opacity:0;pointer-events:none;transition:opacity 0.25s;}
 .map-dim-overlay.show{opacity:1;}
 .node-preview{position:fixed;pointer-events:none;z-index:200;opacity:0;transition:opacity 0.25s;transform:translate(-50%,-50%);}
@@ -202,7 +202,11 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 .map-svg{width:100%;height:auto;display:block;max-height:calc(100vh - 60px);}
 
 /* Node styling */
-.mn-g{cursor:pointer;transition:filter 0.3s,transform 0.2s;-webkit-tap-highlight-color:transparent;}
+.mn-g{cursor:pointer;transition:all 0.3s ease;-webkit-tap-highlight-color:transparent;}
+.mn-g:hover .mn-ring{stroke:var(--gold);stroke-width:2.5;filter:drop-shadow(0 0 12px rgba(212,175,105,0.5));}
+.mn-g:hover{transform:scale(1.15);transform-origin:center;transform-box:fill-box;}
+.mn-g:hover image,
+.mn-g:hover text{filter:drop-shadow(0 0 8px rgba(212,175,105,0.6));}
 .mn-g:hover{filter:brightness(1.4) drop-shadow(0 0 12px rgba(212,175,105,0.5));}
 .mn-g:active{filter:brightness(1.2);}
 .mn-ring{fill:#0d0b08;stroke:var(--gold);stroke-width:1.5;transition:stroke 0.3s, stroke-width 0.3s;}
@@ -451,7 +455,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
   .mn-sublabel{font-size:9px !important;}
 }
 
-/* Lesson page — learning content */
+/* Lesson page - learning content */
 .lesson-page{max-width:680px;margin:0 auto;padding:20px;font-family:DM Sans,sans-serif;}
 .lp-back{font-family:DM Sans,sans-serif;font-size:0.8rem;color:var(--dim);cursor:pointer;margin-bottom:12px;}
 .lp-header{margin-bottom:16px;}
@@ -660,7 +664,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 }
 @media(min-width:701px){.mobile-character{display:none;}}
 
-/* ═══ PRACTICE TEMPLE — ALTAR + FLICKERING CANDLE ═══ */
+/* ═══ PRACTICE TEMPLE - ALTAR + FLICKERING CANDLE ═══ */
 @keyframes candle-flicker{
   0%,100%{opacity:1;filter:brightness(1.2) drop-shadow(0 0 12px #e8a020) drop-shadow(0 0 24px #e8a02040);}
   10%{opacity:0.92;filter:brightness(1.0) drop-shadow(0 0 8px #e8a020) drop-shadow(0 0 16px #e8a02030);}
@@ -942,7 +946,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
           <image href="images/mastery-icon.png" x="302" y="765" width="96" height="96" clip-path="url(#clip-mastery)"/>
         </g>
 
-        <!-- ═══ LEFT BRANCH — DOING PATH ═══ -->
+        <!-- ═══ LEFT BRANCH - DOING PATH ═══ -->
 
         <g class="mn-g unlocked" onmouseenter="showNodePreview('doing',event)" onmouseleave="hideNodePreview()" onclick="showNodeInfo('doing')" data-node="doing">
           <circle class="mn-ring" cx="146" cy="283" r="48"/>
@@ -962,7 +966,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
           <image href="images/play-icon.png" x="52" y="646" width="72" height="72" clip-path="url(#clip-play)"/>
         </g>
 
-        <!-- ═══ RIGHT BRANCH — KNOWING PATH ═══ -->
+        <!-- ═══ RIGHT BRANCH - KNOWING PATH ═══ -->
 
         <g class="mn-g unlocked" onmouseenter="showNodePreview('knowing',event)" onmouseleave="hideNodePreview()" onclick="showNodeInfo('knowing')" data-node="knowing">
           <circle class="mn-ring" cx="554" cy="283" r="48"/>
@@ -1054,7 +1058,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
   </div>
 </div>
 
-<!-- FOOTER NAV REMOVED — navigation now in header -->
+<!-- FOOTER NAV REMOVED - navigation now in header -->
 
 </div>
 
@@ -1073,11 +1077,11 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 <script>
 const NODE_DATA = {
   hearth: { emoji:'', tag:'ORIGIN', title:'The Hearth', desc:'Your progress dashboard. See how you\'re doing across all paths.', enter:true, action:'hearth' },
-  foundation: { emoji:'', tag:'HOME NODE', title:'Foundation', desc:'Before you play a note — learn how learning works, how to hold the guitar, tune it, and produce your first clean sound. 7 core topics.', enter:true, action:'foundation', icon:'images/foundation-icon.png' },
+  foundation: { emoji:'', tag:'HOME NODE', title:'Foundation', desc:'Before you play a note - learn how learning works, how to hold the guitar, tune it, and produce your first clean sound. 7 core topics.', enter:true, action:'foundation', icon:'images/foundation-icon.png' },
   mastery: { emoji:'', tag:'FINAL', title:'Mastery', desc:'Come home to yourself. What is YOUR sound? The student becomes the artist.', enter:true, action:'mastery' },
   doing: { emoji:'', tag:'DOING PATH', title:'Do', desc:'Open-world drill library. Every technique, every style. Click a dot to dive in.', enter:true, action:'doing', icon:'images/doing-icon.png' },
   practise: { emoji:'', tag:'DOING PATH', title:'Practise', desc:'Session-based. "How much time have you got?" Select drills, combine variations, timer starts, practise, give feedback.', enter:true, action:'practice' },
-  play: { emoji:'', tag:'DOING PATH', title:'Play', desc:'Explore guitar traditions from around the world. Click a region on the world map — Ethiopian jazz, Delta blues, flamenco, bossa nova and more. Discover YOUR sound.', enter:true, action:'play' },
+  play: { emoji:'', tag:'DOING PATH', title:'Play', desc:'Explore guitar traditions from around the world. Click a region on the world map - Ethiopian jazz, Delta blues, flamenco, bossa nova and more. Discover YOUR sound.', enter:true, action:'play' },
   knowing: { emoji:'', tag:'KNOWING PATH', title:'Know', desc:'All music theory, categorised beautifully. Always accessible like an encyclopedia. Understand the why.', enter:true, action:'knowing', icon:'images/knowing-icon.png' },
   study: { emoji:'', tag:'KNOWING PATH', title:'Study', desc:'Your lab. Guided study sessions with context, deepening questions, and self-assessment. Where understanding deepens.', enter:true, action:'study' },
   create: { emoji:'', tag:'KNOWING PATH', title:'Create', desc:'Write your own music. Arrange songs for solo guitar. Record yourself. The student becomes the creator.', enter:true, action:'create' }
@@ -1088,33 +1092,19 @@ let _activeNode = null;
 function showNodeInfo(id) {
   const data = NODE_DATA[id];
   if (!data) return;
+  if (data.locked) return;
   _activeNode = id;
-
-  // Show info popup
-  document.getElementById('niEmoji').textContent = data.emoji || '';
-  document.getElementById('niTag').textContent = data.tag || '';
-  document.getElementById('niTitle').textContent = data.title || '';
-  document.getElementById('niDesc').textContent = data.desc || '';
-  var enterBtn = document.getElementById('niEnter');
-  if (data.locked || !data.enter) {
-    enterBtn.style.display = 'none';
-  } else {
-    enterBtn.style.display = '';
-  }
-  // Show thumbnail if icon exists
-  var thumb = document.getElementById('niThumb');
-  var thumbImg = document.getElementById('niThumbImg');
-  if (data.icon && thumbImg) {
-    thumbImg.src = data.icon;
-    thumb.style.display = 'block';
-  } else if (thumb) {
-    thumb.style.display = 'none';
-  }
-  document.getElementById('ni').classList.add('vis');
-  document.getElementById('niOverlay').classList.add('vis');
-
-  // Travel flame to the node
   moveFlame(id);
+  // Enter the node directly after flame animation
+  const wasSame = (_flameNode === id);
+  let delay = 0;
+  if (!wasSame) {
+    const routeKey = _flameNode + '->' + id;
+    const route = FLAME_ROUTES[routeKey];
+    const hops = route ? route.length - 1 : 1;
+    delay = hops * 500 + 400;
+  }
+  setTimeout(function() { enterNodeAction(data); }, delay);
 }
 
 function enterNodeAction(data) {
@@ -1199,33 +1189,9 @@ const NODE_HOVER_DATA={
   create:{img:'images/create-icon.png',label:'Create'}
 };
 
-function showNodePreview(nodeId,e){
-  var data=NODE_HOVER_DATA[nodeId];if(!data)return;
-  var pv=document.getElementById('nodePreview');if(!pv)return;
-  var dim=document.getElementById('mapDim');if(dim)dim.classList.add('show');
-
-  var inner='';
-  if(data.img){inner='<img src="'+data.img+'" alt="'+data.label+'">';}
-  else if(data.emoji){inner='<div class="node-preview-emoji">'+data.emoji+'</div>';}
-
-  pv.innerHTML='<div class="node-preview-bg">'+inner+'</div>'+
-    '<div class="node-preview-label">'+data.label+'</div>';
-
-  // Position over the node using SVG coords → screen coords
-  var pos=NODE_POS[nodeId];if(!pos)return;
-  var svg=document.querySelector('.map-svg');if(!svg)return;
-  var rect=svg.getBoundingClientRect();
-  var vb=svg.viewBox.baseVal;
-  var scaleX=rect.width/vb.width;
-  var scaleY=rect.height/vb.height;
-  pv.style.left=(rect.left+(pos[0]-vb.x)*scaleX)+'px';
-  pv.style.top=(rect.top+(pos[1]-vb.y)*scaleY)+'px';
-  pv.classList.add('show');
-}
-function hideNodePreview(){
-  var pv=document.getElementById('nodePreview');if(pv)pv.classList.remove('show');
-  var dim=document.getElementById('mapDim');if(dim)dim.classList.remove('show');
-}
+// Hover handled by CSS — grow + glow on the node itself
+function showNodePreview(){}
+function hideNodePreview(){}
 
 // Routes: from -> to = array of waypoint node ids
 const FLAME_ROUTES = {
@@ -1360,18 +1326,18 @@ function moveFlame(targetId) {
     }
     nextStep();
   } else {
-    // No route found — stay put (flame only travels on connection lines)
+    // No route found - stay put (flame only travels on connection lines)
     _flameAnimating = false;
   }
 }
 
 
 
-// ═══ HEARTH DASHBOARD — NEURAL CONSTELLATION ═══
+// ═══ HEARTH DASHBOARD - NEURAL CONSTELLATION ═══
 
-// ═══ HEARTH DASHBOARD — NEURAL CONSTELLATION ═══
+// ═══ HEARTH DASHBOARD - NEURAL CONSTELLATION ═══
 
-// ═══ HEARTH DASHBOARD — NEURAL BRAIN ═══
+// ═══ HEARTH DASHBOARD - NEURAL BRAIN ═══
 function showHearth(){
   document.querySelectorAll('.pnl').forEach(p=>p.classList.remove('on'));
   document.getElementById('p-hearth').classList.add('on');
@@ -1393,14 +1359,14 @@ function showHearth(){
      desc:[
        "The <strong>Motor Cortex</strong> (precentral gyrus, BA4) sends voluntary movement commands via corticospinal tracts. Every chord shape and pick stroke begins here.",
        "<strong>Oligodendrocytes</strong> are wrapping guitar circuits in myelin. Each correct repetition thickens the sheath, increasing signal speed up to 100x.",
-       "Movements consolidated into <strong>basal ganglia</strong> and <strong>cerebellum</strong>. Motor programs fire as single units — fingers move before conscious intent."
+       "Movements consolidated into <strong>basal ganglia</strong> and <strong>cerebellum</strong>. Motor programs fire as single units - fingers move before conscious intent."
      ]},
     {id:'broca',label:"Broca's Area",x:175,y:235,r:14,color:'#c45a20',
      tag:'EXPRESSIVE OUTPUT',nodes:['play','create'],
      getStats:function(){return {label:'Awaiting first jam'};},
      desc:[
        "<strong>Broca's Area</strong> (BA44/45, left inferior frontal gyrus) orchestrates language production. In musicians it activates when translating musical thought into sound.",
-       "Developing <strong>musical syntax</strong> — phrase structures, not individual notes. Your brain learns which combinations 'make sense' in a harmonic context.",
+       "Developing <strong>musical syntax</strong> - phrase structures, not individual notes. Your brain learns which combinations 'make sense' in a harmonic context.",
        "Expression integrated across Broca's, premotor cortex, and auditory feedback loops. Improvisation flows without conscious translation."
      ]},
     {id:'visual',label:'Visual Cortex',x:410,y:190,r:16,color:'#4A6741',
@@ -1408,7 +1374,7 @@ function showHearth(){
      getStats:function(){if(!K)return {read:0,total:0,label:'No data'};var t=0,d=0;K.categories.forEach(function(c){c.topics.forEach(function(x){t++;if(kProgress[x.id])d++;});});return {read:d,total:t,label:d+'/'+t+' concepts read'};},
      desc:[
        "The <strong>Visual Cortex</strong> (occipital lobe, V1-V5) processes chord diagrams and notation. V1 extracts edges, V4 recognises shapes. The <strong>ventral stream</strong> identifies dot clusters as 'G major.'",
-       "<strong>Neural chunking</strong> — multi-element patterns encoded as single perceptual units. A chord diagram is one shape, not 6 dots.",
+       "<strong>Neural chunking</strong> - multi-element patterns encoded as single perceptual units. A chord diagram is one shape, not 6 dots.",
        "A specialised region now recognises chord shapes and interval geometries in under 200ms. Pattern recognition is automatic."
      ]},
     {id:'auditory',label:'Auditory Cortex',x:340,y:305,r:15,color:'#2C5F7C',
@@ -1416,16 +1382,16 @@ function showHearth(){
      getStats:function(){return {label:'Ear training coming soon'};},
      desc:[
        "The <strong>Auditory Cortex</strong> (superior temporal gyrus, A1) decomposes sound into frequency, timing, and spatial location. Signals flow to Wernicke's area for meaning.",
-       "<strong>Relative pitch</strong> circuits forming. Interval ratios categorised as emotional qualities — 'bright,' 'dark,' 'tense,' 'resolved.'",
-       "<strong>Predictive coding</strong> — your auditory cortex anticipates what comes next. Wrong notes feel wrong because they violate predictions, not rules."
+       "<strong>Relative pitch</strong> circuits forming. Interval ratios categorised as emotional qualities - 'bright,' 'dark,' 'tense,' 'resolved.'",
+       "<strong>Predictive coding</strong> - your auditory cortex anticipates what comes next. Wrong notes feel wrong because they violate predictions, not rules."
      ]},
     {id:'prefrontal',label:'Prefrontal Cortex',x:130,y:155,r:16,color:'#5B3A6B',
      tag:'EXECUTIVE FUNCTION',nodes:['study'],
      getStats:function(){var q=JSON.parse(localStorage.getItem('hearth-knowing-quiz')||'{}');var p=Object.values(q).filter(function(x){return x.passed}).length;return {passed:p,label:p+' quizzes passed'};},
      desc:[
        "The <strong>Prefrontal Cortex</strong> (dorsolateral PFC, BA9/46) handles metacognition. When you quiz yourself and assess genuine comprehension, your PFC monitors its own neural activity.",
-       "Developing <strong>metacognitive accuracy</strong> — reliably distinguishing 'I know this' from 'I recognise this.'",
-       "Metacognitive control consolidated. Self-regulated learning — your PFC allocates attention and identifies gaps autonomously."
+       "Developing <strong>metacognitive accuracy</strong> - reliably distinguishing 'I know this' from 'I recognise this.'",
+       "Metacognitive control consolidated. Self-regulated learning - your PFC allocates attention and identifies gaps autonomously."
      ]},
     {id:'hippocampus',label:'Hippocampus',x:275,y:290,r:13,color:'#8B6914',
      tag:'MEMORY CONSOLIDATION',nodes:['foundation','study','practice'],
@@ -1433,14 +1399,14 @@ function showHearth(){
      desc:[
        "The <strong>Hippocampus</strong> (medial temporal lobe) encodes experiences as temporary traces. During <strong>slow-wave sleep</strong>, sharp-wave ripples replay and transfer them to neocortical storage.",
        "Active consolidation via <strong>long-term potentiation</strong>. The spacing effect works because each replay strengthens synaptic connections.",
-       "Procedural memories transferred to <strong>neocortical storage</strong>. Patterns are permanent — your motor cortex remembers even after months without playing."
+       "Procedural memories transferred to <strong>neocortical storage</strong>. Patterns are permanent - your motor cortex remembers even after months without playing."
      ]},
     {id:'limbic',label:'Limbic System',x:235,y:270,r:13,color:'#6B3A3A',
      tag:'EMOTION & REWARD',nodes:['collab'],
      getStats:function(){return {label:'Social learning coming soon'};},
      desc:[
-       "The <strong>Limbic System</strong> (amygdala, nucleus accumbens, VTA) processes reward. When you nail a chord change — that rush is <strong>dopamine</strong> from VTA to nucleus accumbens.",
-       "The <strong>dopamine prediction error</strong> — the gap between expected and actual reward — drives learning. Better than expected = dopamine spike = reinforcement.",
+       "The <strong>Limbic System</strong> (amygdala, nucleus accumbens, VTA) processes reward. When you nail a chord change - that rush is <strong>dopamine</strong> from VTA to nucleus accumbens.",
+       "The <strong>dopamine prediction error</strong> - the gap between expected and actual reward - drives learning. Better than expected = dopamine spike = reinforcement.",
        "Music consistently activates deep limbic structures. The <strong>amygdala</strong> processes musical emotion. Playing regulates your autonomic nervous system."
      ]},
     {id:'brainstem',label:'Brainstem',x:340,y:410,r:14,color:'#5B4A3A',
@@ -1529,7 +1495,7 @@ function showHearth(){
     '</div>'+
     '<div style="position:relative;background:#080704;border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:10px">'+
       '<svg viewBox="0 0 500 480" preserveAspectRatio="xMidYMid meet" style="width:100%;display:block" xmlns="http://www.w3.org/2000/svg">'+
-        // Brain outline — lateral view
+        // Brain outline - lateral view
         // Cerebrum outer contour
         '<path d="'+
           'M 100,240'+    // frontal pole (front, middle height)
@@ -1701,7 +1667,7 @@ function showFoundation(){
         // Building blocks pyramid
         '<div style="display:flex;flex-direction:column;align-items:center;gap:0">';
 
-  // Building blocks — widest at bottom (topic 1), narrowest at top (topic 5)
+  // Building blocks - widest at bottom (topic 1), narrowest at top (topic 5)
   const maxWidth=480;
   const minWidth=220;
   const step=(maxWidth-minWidth)/(F.topics.length-1);
@@ -1774,7 +1740,7 @@ function rainbowBlocks(items, opts){
 
   let html='<div style="padding:24px;max-width:800px;margin:0 auto">'+
     '<button onclick="document.querySelectorAll(\'.pnl\').forEach(p=>p.classList.remove(\'on\'));document.getElementById(\'p-map\').classList.add(\'on\')" style="background:none;border:1px solid var(--border);color:var(--dim);padding:6px 12px;border-radius:4px;cursor:pointer;font-family:inherit;font-size:0.7rem;margin-bottom:16px">\u2190 Back to Map</button>'+
-    '<div style="display:flex;align-items:center;gap:12px;margin-bottom:20px">'+ 
+    '<div style="display:flex;align-items:center;gap:12px;margin-bottom:20px">'+
       (opts.icon?'<img src="'+opts.icon+'" style="width:64px;height:64px;border-radius:50%;object-fit:cover;border:3px solid var(--gold);box-shadow:0 0 16px rgba(212,175,105,0.12)"/>':'<div style="width:64px;height:64px;border-radius:50%;border:3px solid var(--gold);box-shadow:0 0 16px rgba(212,175,105,0.12);display:flex;align-items:center;justify-content:center;font-family:Cinzel,serif;color:var(--gold);font-size:1.5rem;font-weight:700">'+opts.title.charAt(0)+'</div>')+
       '<div><h2 style="font-family:\'DM Sans\',sans-serif;color:var(--gold);font-size:1.3rem;margin:0;font-weight:700">'+opts.title+'</h2>'+
       '<div style="font-family:JetBrains Mono;font-size:0.65rem;color:var(--amber);margin-top:4px">'+doneCount+'/'+n+' blocks</div>'+
@@ -1871,7 +1837,7 @@ function showDoing(){
     });
     html+='</div></div>';
 
-    // FRETBOARD GRID — 3 difficulty levels
+    // FRETBOARD GRID - 3 difficulty levels
     const levels=['','Beginner','Intermediate','Advanced'];
 
     html+='<div style="position:relative;margin-top:8px">';
@@ -1918,11 +1884,11 @@ function showDoing(){
           '">'+
             (isDone?'<span style="font-size:9px;color:var(--bg)">&#10003;</span>':'')+
           '</div>'+
-          '<span class="drill-label" style="font-size:0.6rem;color:var(--dim);line-height:1.1;max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+drill.title.split(' — ')[0].split(' — ')[0]+'</span>';
+          '<span class="drill-label" style="font-size:0.6rem;color:var(--dim);line-height:1.1;max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+drill.title.split(' - ')[0].split(' - ')[0]+'</span>';
         });
 
         if(drills.length===0){
-          html+='<div style="font-size:0.55rem;color:var(--dim);opacity:0.2">—</div>';
+          html+='<div style="font-size:0.55rem;color:var(--dim);opacity:0.2">-</div>';
         }
 
         html+='</div>';
@@ -2017,7 +1983,7 @@ window.completeDoingDrill=function(catId,drillId){
   showDoing();
 };
 
-// ═══ KNOWING NODE — BOOKSHELF UI ═══
+// ═══ KNOWING NODE - BOOKSHELF UI ═══
 function showKnowing(){
   document.querySelectorAll('.pnl').forEach(p=>p.classList.remove('on'));
   document.getElementById('p-foundation').classList.add('on');
@@ -2186,7 +2152,7 @@ window.showKnowingBook=function(catId){
   const bookColors=['#8B4513','#4A6741','#5B3A6B','#2C5F7C','#8B6914','#6B3A3A','#3A5B6B','#5B4A3A','#6B5B3A','#3A4A6B'];
   const color=bookColors[catIdx%bookColors.length];
 
-  // Book open view — like reading a book
+  // Book open view - like reading a book
   let html='<div style="padding:20px;max-width:700px;margin:0 auto">'+
     '<button onclick="showKnowing()" style="background:none;border:1px solid var(--border);color:var(--dim);padding:6px 12px;border-radius:4px;cursor:pointer;font-family:inherit;font-size:0.7rem;margin-bottom:16px">\u2190 Back to shelf</button>'+
     '<div style="background:var(--card);border:1px solid var(--border);border-radius:8px;overflow:hidden">';
@@ -2223,7 +2189,7 @@ window.showKnowingBook=function(catId){
   el.innerHTML=html;
 };
 
-// ═══ KNOWING TOPIC VIEW (encyclopedia — just read, no quiz) ═══
+// ═══ KNOWING TOPIC VIEW (encyclopedia - just read, no quiz) ═══
 
 window.showKnowingTopic=function(catId,topicId){
   const K=window.KNOWING;if(!K)return;
@@ -2261,7 +2227,7 @@ window.showKnowingTopic=function(catId,topicId){
   '</div>';
 };
 
-// ═══ STUDY NODE — GUIDED STUDY SESSIONS ═══
+// ═══ STUDY NODE - GUIDED STUDY SESSIONS ═══
 // Dashboard → Context → Terms → Content → Questions → Self-Assess
 
 function showStudy(){
@@ -2482,27 +2448,27 @@ function _generateQuestions(topic){
       question:'Which of these best relates to: "'+term+'"?',
       options,
       correct:options.indexOf(term),
-      explanation:'The answer is '+term+' — check the section above for details.'
+      explanation:'The answer is '+term+' - check the section above for details.'
     });
   }
 
   qs.push({
     question:'Why does '+topic.title.toLowerCase()+' matter for playing guitar?',
-    options:['It builds understanding that lets you make musical choices consciously','It\'s only required for exams','It doesn\'t really matter — just play by ear','It only matters for reading sheet music'],
+    options:['It builds understanding that lets you make musical choices consciously','It\'s only required for exams','It doesn\'t really matter - just play by ear','It only matters for reading sheet music'],
     correct:0,
     explanation:'Understanding theory gives you the freedom to choose instead of guess.'
   });
 
   qs.push({
     question:'How would you explain '+topic.title.toLowerCase()+' to someone who\'s never played?',
-    options:['Using an everyday analogy — like relating rhythm to a heartbeat','Show them a technical diagram first','Tell them to just feel it','Start with the most advanced definition'],
+    options:['Using an everyday analogy - like relating rhythm to a heartbeat','Show them a technical diagram first','Tell them to just feel it','Start with the most advanced definition'],
     correct:0,
-    explanation:'If you can explain it simply with an analogy, you truly understand it — the Feynman technique.'
+    explanation:'If you can explain it simply with an analogy, you truly understand it - the Feynman technique.'
   });
 
   qs.push({
     question:'What happens if you skip understanding '+topic.title.toLowerCase()+'?',
-    options:['Later concepts won\'t make full sense — gaps create a chain of confusion','Nothing — you can always come back later','You\'ll play better because you\'re not overthinking','It only matters for professional players'],
+    options:['Later concepts won\'t make full sense - gaps create a chain of confusion','Nothing - you can always come back later','You\'ll play better because you\'re not overthinking','It only matters for professional players'],
     correct:0,
     explanation:'This is the "misunderstood word" barrier. One gap creates a chain reaction. Better to get it now.'
   });
@@ -2529,7 +2495,7 @@ window._answerQuiz=function(qIdx,optIdx){
 
   fb.style.display='block';
   fb.style.color=isCorrect?'#2ecc71':'#e74c3c';
-  fb.innerHTML=(isCorrect?'\u2713 Correct!':'\u2717 Not quite — ')+q.explanation;
+  fb.innerHTML=(isCorrect?'\u2713 Correct!':'\u2717 Not quite - ')+q.explanation;
 
   if(!window._quizScore) window._quizScore={correct:0,total:0};
   window._quizScore.total++;
@@ -2545,7 +2511,7 @@ window._answerQuiz=function(qIdx,optIdx){
       result.style.border='1px solid '+(passed?'#2ecc7140':'#e74c3c40');
       result.style.color=passed?'#2ecc71':'#e74c3c';
       result.innerHTML=(passed?'\u2713 ':'\u2717 ')+'Score: '+window._quizScore.correct+'/'+qs.length+' ('+pct+'%)'+
-        (passed?' — Well understood!':' — Review the sections above and try again');
+        (passed?' - Well understood!':' - Review the sections above and try again');
     }
   }
 };
@@ -2578,20 +2544,20 @@ window._studyAssess=function(catId,topicId,feeling){
       nextBtn='<button onclick="showStudy()" style="background:'+color+';color:white;border:none;padding:12px 24px;border-radius:8px;font-family:DM Sans,sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer">Back to Study Lab</button>';
     }
   } else if(feeling==='review'){
-    nextAction='Good call. Re-read <strong>'+topic.title+'</strong> — focus on the terms that felt unclear.';
+    nextAction='Good call. Re-read <strong>'+topic.title+'</strong> - focus on the terms that felt unclear.';
     nextBtn='<button onclick="showStudySession(\''+catId+'\',\''+topicId+'\')" style="background:'+color+';color:white;border:none;padding:12px 24px;border-radius:8px;font-family:DM Sans,sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer">Study Again</button>';
   } else if(feeling==='stuck'){
     if(prevTopic){
-      nextAction='Something didn\'t click. Was there a word in <strong>'+topic.title+'</strong> you didn\'t fully get? Go back to <strong>'+prevTopic.title+'</strong> — gaps are always built on earlier gaps.';
+      nextAction='Something didn\'t click. Was there a word in <strong>'+topic.title+'</strong> you didn\'t fully get? Go back to <strong>'+prevTopic.title+'</strong> - gaps are always built on earlier gaps.';
       nextBtn='<button onclick="showStudySession(\''+catId+'\',\''+prevTopic.id+'\')" style="background:#e74c3c;color:white;border:none;padding:12px 24px;border-radius:8px;font-family:DM Sans,sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer">Go Back: '+prevTopic.title+'</button>';
     } else {
-      nextAction='Something\'s not clicking. Re-read slowly — if a word doesn\'t make sense, look it up. That\'s usually the barrier.';
+      nextAction='Something\'s not clicking. Re-read slowly - if a word doesn\'t make sense, look it up. That\'s usually the barrier.';
       nextBtn='<button onclick="showStudySession(\''+catId+'\',\''+topicId+'\')" style="background:'+color+';color:white;border:none;padding:12px 24px;border-radius:8px;font-family:DM Sans,sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer">Try Again</button>';
     }
   }
 
   const emoji=feeling==='nailed'?'\uD83D\uDCD6':feeling==='review'?'\uD83D\uDD04':'\u2753';
-  const msg=feeling==='nailed'?'Understood!':feeling==='review'?'Let\'s review':'Missing something — going back';
+  const msg=feeling==='nailed'?'Understood!':feeling==='review'?'Let\'s review':'Missing something - going back';
 
   el.innerHTML='<div style="padding:20px;max-width:500px;margin:0 auto;text-align:center">'+
     '<div style="font-size:3rem;margin-bottom:12px">'+emoji+'</div>'+
@@ -2604,7 +2570,7 @@ window._studyAssess=function(catId,topicId,feeling){
   '</div>';
 };
 
-// ═══ PRACTICE NODE — THE TEMPLE ═══
+// ═══ PRACTICE NODE - THE TEMPLE ═══
 // Flow: Dashboard → Review → Deepen → Learn → Drill (Metronome) → Self-Assess
 
 const CANDLE='#e8a020';
@@ -2648,7 +2614,7 @@ function showPractice(){
   // Build the onion-skin nav (previous → current → next)
   let onionHtml='';
   function drillCard(d,label,isCurrent){
-    if(!d) return '<div style="flex:1;opacity:0.25;padding:12px;border:1px dashed '+CANDLE_DIM+';border-radius:8px;text-align:center"><div style="font-size:0.6rem;color:var(--dim);font-family:JetBrains Mono;letter-spacing:0.1em">'+label.toUpperCase()+'</div><div style="color:var(--dim);font-size:0.75rem">—</div></div>';
+    if(!d) return '<div style="flex:1;opacity:0.25;padding:12px;border:1px dashed '+CANDLE_DIM+';border-radius:8px;text-align:center"><div style="font-size:0.6rem;color:var(--dim);font-family:JetBrains Mono;letter-spacing:0.1em">'+label.toUpperCase()+'</div><div style="color:var(--dim);font-size:0.75rem">-</div></div>';
     return '<div onclick="showPracticeDrill(\''+d.id+'\')" style="flex:1;cursor:pointer;padding:12px;border:1px solid '+(isCurrent?CANDLE:'var(--border)')+';border-radius:8px;background:'+(isCurrent?CANDLE+'12':'var(--card)')+';transition:all 0.2s" onmouseover="this.style.borderColor='+CANDLE+'" onmouseout="this.style.borderColor='+(isCurrent?CANDLE:'var(--border)')+'">'+
       '<div style="font-size:0.6rem;color:'+(isCurrent?CANDLE:'var(--dim)')+';font-family:JetBrains Mono;letter-spacing:0.1em">'+label.toUpperCase()+'</div>'+
       '<div style="color:var(--text);font-size:0.8rem;font-weight:600;margin-top:4px">'+d.title+'</div>'+
@@ -2674,7 +2640,7 @@ function showPractice(){
       '<div style="color:var(--text);font-size:0.85rem;font-weight:600">'+(lastSession.drillTitle||'Practice Session')+'</div>'+
       '<div style="display:flex;gap:16px;margin-top:6px">'+
         '<div style="font-size:0.7rem;color:var(--dim)">'+lastSession.minutes+' min</div>'+
-        '<div style="font-size:0.7rem;color:var(--dim)">'+(lastSession.bpm||'—')+' BPM</div>'+
+        '<div style="font-size:0.7rem;color:var(--dim)">'+(lastSession.bpm||'-')+' BPM</div>'+
         (lastSession.feeling?('<div style="font-size:0.7rem;color:'+_feelingColor(lastSession.feeling)+'">'+_feelingEmoji(lastSession.feeling)+' '+lastSession.feeling+'</div>'):'')+
       '</div>'+
       '<button onclick="startDrillPractice(\''+(lastSession.drillId||'pd-chromatic')+'\')" style="margin-top:10px;background:'+CANDLE+'18;border:1px solid '+CANDLE+'40;color:'+CANDLE+';padding:8px 16px;border-radius:6px;cursor:pointer;font-family:DM Sans,sans-serif;font-size:0.75rem;font-weight:600">Continue Practising</button>'+
@@ -2950,10 +2916,10 @@ window._finishDrill=function(drillId,feeling){
     const idx=P.drills.findIndex(d=>d.id===drillId);
     nextDrill=P.drills[idx+1];
     nextAction=nextDrill?
-      'Next up: <strong>'+nextDrill.title+'</strong> — ready?':
+      'Next up: <strong>'+nextDrill.title+'</strong> - ready?':
       'You\'ve worked through all the drills! Loop back and reinforce.';
   } else if(feeling==='getting'){
-    nextAction='Good — keep practising <strong>'+drill.title+'</strong>. Repetition is the teacher.';
+    nextAction='Good - keep practising <strong>'+drill.title+'</strong>. Repetition is the teacher.';
     nextDrill=drill;
   } else if(feeling==='stuck'){
     const idx=P.drills.findIndex(d=>d.id===drillId);
@@ -2962,7 +2928,7 @@ window._finishDrill=function(drillId,feeling){
       nextAction='Gradient too steep? Totally fine. Drop back to <strong>'+prevDrill.title+'</strong> and strengthen the foundation.';
       nextDrill=prevDrill;
     } else {
-      nextAction='Take it slow — there\'s no rush. Try <strong>'+drill.title+'</strong> again at a lower tempo.';
+      nextAction='Take it slow - there\'s no rush. Try <strong>'+drill.title+'</strong> again at a lower tempo.';
       nextDrill=drill;
     }
   }
@@ -2971,7 +2937,7 @@ window._finishDrill=function(drillId,feeling){
 
   const el=document.getElementById('p-foundation');
   const emoji=feeling==='nailed'?'🔥':feeling==='getting'?'💪':'🤔';
-  const msg=feeling==='nailed'?'Nailed it!':feeling==='getting'?'Getting there — keep going':'Skipped gradient detected — stepping back';
+  const msg=feeling==='nailed'?'Nailed it!':feeling==='getting'?'Getting there - keep going':'Skipped gradient detected - stepping back';
 
   el.innerHTML='<div style="padding:20px;max-width:500px;margin:0 auto;text-align:center">'+
     '<div style="font-size:3rem;margin-bottom:12px">'+emoji+'</div>'+
@@ -3025,7 +2991,7 @@ function _timeAgo(date){
 function _feelingEmoji(f){return f==='nailed'?'🔥':f==='getting'?'💪':'🤔';}
 function _feelingColor(f){return f==='nailed'?'#2ecc71':f==='getting'?CANDLE:'#e74c3c';}
 
-// ═══ PLAY NODE — WORLD MAP ═══
+// ═══ PLAY NODE - WORLD MAP ═══
 function showPlay(){
   document.querySelectorAll('.pnl').forEach(p=>p.classList.remove('on'));
   document.getElementById('p-foundation').classList.add('on');
@@ -3039,7 +3005,7 @@ function showPlay(){
         '<span style="font-family:\'Cinzel\',serif;color:var(--gold);font-size:1.4rem;font-weight:700;letter-spacing:0.08em">PLAY</span>'+
         '<span style="font-family:JetBrains Mono;font-size:0.6rem;color:var(--amber);letter-spacing:0.12em;margin-left:8px;text-transform:uppercase">World Map of Guitar</span>'+
       '</div>'+
-      '<p class="play-world-sub">Click a glowing region to discover its guitar tradition. From Ethiopian jazz to Delta blues — the world is yours to explore.</p>'+
+      '<p class="play-world-sub">Click a glowing region to discover its guitar tradition. From Ethiopian jazz to Delta blues - the world is yours to explore.</p>'+
     '</div>'+
     '<div class="play-world-map-container" id="playWorldMap">'+
       '<svg viewBox="0 0 900 600" xmlns="http://www.w3.org/2000/svg" class="world-map-svg" id="worldMapSvg">'+
@@ -3107,7 +3073,7 @@ function showPlay(){
   el.innerHTML=html;
 }
 
-// ═══ World map — click a region ═══
+// ═══ World map - click a region ═══
 window.wmClick=function(regionId){
   const WM=window.WORLD_MAP_REGIONS||[];
   const r=WM.find(function(x){return x.id===regionId;});
@@ -3139,7 +3105,7 @@ window.wmClick=function(regionId){
   '</div>';
 };
 
-// ═══ MASTERY NODE — "BEYOND" ═══
+// ═══ MASTERY NODE - "BEYOND" ═══
 function showMastery(){
   document.querySelectorAll('.pnl').forEach(p=>p.classList.remove('on'));
   document.getElementById('p-foundation').classList.add('on');
@@ -3152,9 +3118,9 @@ function showMastery(){
       artist:'Maddie Ashman',
       tag:'Beyond 12 Tones',
       color:'#9b59b6',
-      description:'Maddie Ashman hears the spaces between notes — the microtones that exist in the cracks of the fretboard. This is what mastery looks like: not playing faster or cleaner, but perceiving what others cannot. The 12-tone fretboard is a map. Maddie shows you the territory it leaves out.',
-      why:'When you\'ve mastered the standard fretboard, the next frontier is the infinite gradation between notes. Microtonal music exists in Turkish maqam, Indian raga, blues bends, and the human voice. Maddie Ashman works in this space — composing and performing with notes that don\'t have names in Western theory.',
-      listen:['Instagram: @maddieashman', 'Listen for: notes that feel "wrong" at first, then become undeniable', 'Try: bend a string slowly between two frets — hold it there. That sound? That\'s a microtone.'],
+      description:'Maddie Ashman hears the spaces between notes - the microtones that exist in the cracks of the fretboard. This is what mastery looks like: not playing faster or cleaner, but perceiving what others cannot. The 12-tone fretboard is a map. Maddie shows you the territory it leaves out.',
+      why:'When you\'ve mastered the standard fretboard, the next frontier is the infinite gradation between notes. Microtonal music exists in Turkish maqam, Indian raga, blues bends, and the human voice. Maddie Ashman works in this space - composing and performing with notes that don\'t have names in Western theory.',
+      listen:['Instagram: @maddieashman', 'Listen for: notes that feel "wrong" at first, then become undeniable', 'Try: bend a string slowly between two frets - hold it there. That sound? That\'s a microtone.'],
       reflect:'Mastery isn\'t adding more. It\'s hearing more. The same 12 notes you started with contain universes you couldn\'t perceive at the beginning. Now you can.',
       videoUrl:'https://www.instagram.com/reel/DXMmtkOAWuI/'
     }
@@ -3194,7 +3160,7 @@ function showMastery(){
       '<h2 style="font-family:\'Cinzel\',serif;color:#d4af69;font-size:1.4rem;margin:0;font-weight:700;letter-spacing:0.03em">What Lies Beyond</h2>'+
       '<p style="font-size:0.8rem;color:var(--dim);margin:8px 0 0 0;line-height:1.6;max-width:500px">'+
         'These are musicians who have gone beyond technique, beyond theory, beyond what can be written on a page. '+
-        'They hear what most of us are still learning to listen for. This is not a lesson — it is a glimpse.'+
+        'They hear what most of us are still learning to listen for. This is not a lesson - it is a glimpse.'+
       '</p>'+
     '</div>'+
     '<div class="mastery-cards">'+cardsHtml+'</div>'+
@@ -3204,7 +3170,7 @@ function showMastery(){
   '</div>';
 }
 
-// ═══ CREATE NODE — THE CAULDRON ═══
+// ═══ CREATE NODE - THE CAULDRON ═══
 function showCreate(){
   document.querySelectorAll('.pnl').forEach(p=>p.classList.remove('on'));
   document.getElementById('p-foundation').classList.add('on');
@@ -3482,7 +3448,7 @@ function closeDictionary(){
   }
 }
 
-// ═══ JOURNEY — LESSON BUILDER ═══
+// ═══ JOURNEY - LESSON BUILDER ═══
 
 // Lesson formula: each lesson pulls content from the 8 nodes
 // Formula per level: Read (Foundation/Knowing) → Watch (Doing) → Integrate (Study) → Do (Doing/Practise) → Check (self-assess) → Dig Deeper (Play/Create)
@@ -3507,7 +3473,7 @@ const LESSON_TEMPLATES = {
     { step: 3, phase: 'INTEGRATE', node: 'study', title: 'Make It Yours', icon: '\u270F\uFE0F', desc: 'Fill in a worksheet, draw a diagram, or map it out.' },
     { step: 4, phase: 'DO', node: 'practise', title: 'Pick Up Your Guitar', icon: '\u{1F3B8}', desc: 'A short physical exercise. Timer starts. Try it for 2 minutes.' },
     { step: 5, phase: 'CHECK', node: 'hearth', title: 'How Did That Go?', icon: '\u2705', desc: 'Self-assessment: Nailed it / Getting there / Need more work.' },
-    { step: 6, phase: 'DIG DEEPER', node: 'play', title: 'Explore Further', icon: '\u{1F50D}', desc: 'Links to songs, drills, theory — go deeper where you want.' },
+    { step: 6, phase: 'DIG DEEPER', node: 'play', title: 'Explore Further', icon: '\u{1F50D}', desc: 'Links to songs, drills, theory - go deeper where you want.' },
   ]
 };
 
@@ -3522,17 +3488,17 @@ function saveJourneyState(state) {
 function populateJourney() {
   const el = document.getElementById('journey-content');
   if (!el) return;
-  
+
   const state = getJourneyState();
   const currentLevel = state.currentLevel || 1;
-  
+
   let html = '';
 
   // ═══ LEVEL PROGRESSION (CENTRAL SPINE) ═══
   html += '<div style="margin-bottom:24px">';
   html += '<div style="font-family:JetBrains Mono;font-size:0.55rem;color:var(--gold);letter-spacing:0.15em;margin-bottom:12px">THE CENTRAL SPINE</div>';
   html += '<div style="display:flex;flex-direction:column;gap:6px">';
-  
+
   JOURNEY_LEVELS.forEach((level, i) => {
     const lvlState = state[level.id] || {};
     const lessonsDone = lvlState.lessonsDone || 0;
@@ -3540,20 +3506,20 @@ function populateJourney() {
     const isActive = (level.num === currentLevel);
     const isComplete = lvlState.complete;
     const isLocked = level.num > currentLevel && !isComplete;
-    
+
     const bgColor = isActive ? 'var(--card)' : 'rgba(26,23,20,0.5)';
     const borderCol = isActive ? level.color : 'var(--border)';
     const opacity = isLocked ? '0.35' : '1';
-    
+
     html += '<div style="background:' + bgColor + ';border:1px solid ' + borderCol + ';border-radius:8px;padding:12px 14px;opacity:' + opacity + ';cursor:' + (isLocked ? 'default' : 'pointer') + ';transition:all 0.2s"' + (!isLocked ? ' onclick="openJourneyLevel(' + level.num + ')"' : '') + '>';
     html += '<div style="display:flex;align-items:center;justify-content:space-between">';
     html += '<div style="display:flex;align-items:center;gap:10px">';
     html += '<div style="width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:Cinzel;font-size:0.8rem;font-weight:700;' + (isComplete ? 'background:' + level.color + ';color:#0d0b08' : isActive ? 'border:2px solid ' + level.color + ';color:' + level.color : 'border:1.5px solid var(--border);color:var(--dim)') + '">' + level.num + '</div>';
     html += '<div>';
     html += '<div style="font-family:Cinzel;font-size:0.8rem;color:' + (isActive ? level.color : 'var(--text)') + ';font-weight:600">' + level.name + '</div>';
-    html += '<div style="font-size:0.6rem;color:var(--dim);margin-top:2px">' + (isLocked ? 'Locked — complete L' + (level.num - 1) + ' to unlock' : isComplete ? 'Complete' : level.tag) + '</div>';
+    html += '<div style="font-size:0.6rem;color:var(--dim);margin-top:2px">' + (isLocked ? 'Locked - complete L' + (level.num - 1) + ' to unlock' : isComplete ? 'Complete' : level.tag) + '</div>';
     html += '</div></div>';
-    
+
     if (!isLocked && !isComplete) {
       const pct = totalLessons > 0 ? Math.round(lessonsDone / totalLessons * 100) : 0;
       html += '<div style="text-align:right">';
@@ -3563,9 +3529,9 @@ function populateJourney() {
     if (isComplete) {
       html += '<div style="font-family:JetBrains Mono;font-size:0.65rem;color:' + level.color + '">Done \u2713</div>';
     }
-    
+
     html += '</div>';
-    
+
     // Active level: show progress bar
     if (isActive && !isComplete) {
       const totalLessons2 = totalLessons || 1;
@@ -3574,10 +3540,10 @@ function populateJourney() {
       html += '<div style="height:100%;width:' + pct + '%;background:' + level.color + ';border-radius:2px;transition:width 0.3s"></div>';
       html += '</div>';
     }
-    
+
     html += '</div>';
   });
-  
+
   html += '</div></div>';
 
   // ═══ CURRENT LEVEL: LESSON ENTRY ═══
@@ -3590,7 +3556,7 @@ function populateJourney() {
     html += '<div style="font-family:Cinzel;font-size:1.1rem;color:' + activeLevel.color + ';font-weight:700">' + activeLevel.name + '</div>';
     html += '<div style="font-size:0.75rem;color:var(--dim);margin-top:2px">' + activeLevel.desc + '</div>';
     html += '</div></div>';
-    
+
     // 6-step lesson flow preview
     html += '<div style="font-family:JetBrains Mono;font-size:0.55rem;color:var(--gold);letter-spacing:0.15em;margin-bottom:10px">LESSON FORMULA</div>';
     html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:16px">';
@@ -3606,7 +3572,7 @@ function populateJourney() {
       html += '</div></div>';
     });
     html += '</div>';
-    
+
     // Start lesson button
     const lvlState = state[activeLevel.id] || {};
     const nextLesson = (lvlState.lessonsDone || 0) + 1;
@@ -3641,19 +3607,19 @@ function populateJourney() {
 function startJourneyLesson(levelNum) {
   const level = JOURNEY_LEVELS[levelNum - 1];
   if (!level) return;
-  
+
   const state = getJourneyState();
   if (!state[level.id]) state[level.id] = {};
   const lvlState = state[level.id];
   const lessonNum = (lvlState.lessonsDone || 0) + 1;
-  
+
   // For now, show lesson flow placeholder
   const el = document.getElementById('journey-content');
   if (!el) return;
-  
+
   const steps = LESSON_TEMPLATES.L1;
   const nodeColors = { knowing: '#ff8800', doing: '#e8a020', study: '#f1c40f', practise: '#2ecc71', hearth: '#d4af69', play: '#3498db' };
-  
+
   let html = '';
   html += '<div style="display:flex;align-items:center;gap:10px;margin-bottom:20px">';
   html += '<button onclick="populateJourney()" style="background:none;border:1px solid var(--border);color:var(--dim);padding:6px 10px;border-radius:4px;cursor:pointer;font-size:0.7rem">\u2190 Back</button>';
@@ -3661,7 +3627,7 @@ function startJourneyLesson(levelNum) {
   html += '<div style="font-family:JetBrains Mono;font-size:0.55rem;color:' + level.color + ';letter-spacing:0.1em">LEVEL ' + level.num + ' \u2014 ' + level.name.toUpperCase() + '</div>';
   html += '<div style="font-family:Cinzel;font-size:1rem;color:var(--gold);font-weight:700">Lesson ' + lessonNum + '</div>';
   html += '</div></div>';
-  
+
   // Lesson steps
   html += '<div style="display:flex;flex-direction:column;gap:10px">';
   steps.forEach(function(step, idx) {
@@ -3677,10 +3643,10 @@ function startJourneyLesson(levelNum) {
     html += '</div></div></div>';
   });
   html += '</div>';
-  
+
   // Complete lesson button
   html += '<button onclick="completeJourneyLesson(' + levelNum + ')" style="width:100%;margin-top:16px;background:var(--gold);color:var(--bg);border:none;padding:14px;border-radius:8px;font-family:DM Sans,sans-serif;font-size:0.9rem;font-weight:700;cursor:pointer">Complete Lesson ' + lessonNum + '</button>';
-  
+
   el.innerHTML = html;
 }
 
@@ -3689,10 +3655,10 @@ function openLessonStep(levelNum, lessonNum, stepNum) {
   const step = LESSON_TEMPLATES.L1[stepNum - 1];
   if (!step) return;
   const level = JOURNEY_LEVELS[levelNum - 1];
-  
+
   const el = document.getElementById('journey-content');
   if (!el) return;
-  
+
   let html = '';
   html += '<div style="display:flex;align-items:center;gap:10px;margin-bottom:20px">';
   html += '<button onclick="startJourneyLesson(' + levelNum + ')" style="background:none;border:1px solid var(--border);color:var(--dim);padding:6px 10px;border-radius:4px;cursor:pointer;font-size:0.7rem">\u2190 Back to Lesson</button>';
@@ -3700,14 +3666,14 @@ function openLessonStep(levelNum, lessonNum, stepNum) {
   html += '<div style="font-family:JetBrains Mono;font-size:0.5rem;color:' + level.color + ';letter-spacing:0.1em">STEP ' + step.step + ' OF 6</div>';
   html += '<div style="font-family:Cinzel;font-size:1rem;color:var(--gold);font-weight:700">' + step.phase + ': ' + step.title + '</div>';
   html += '</div></div>';
-  
+
   // Step content placeholder
   html += '<div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:24px;text-align:center">';
   html += '<div style="font-size:2rem;margin-bottom:12px">' + step.icon + '</div>';
   html += '<div style="font-family:JetBrains Mono;font-size:0.55rem;color:var(--gold);letter-spacing:0.15em;margin-bottom:8px">PULLS FROM: ' + step.node.toUpperCase() + ' NODE</div>';
   html += '<div style="font-size:0.85rem;color:var(--text);margin-bottom:8px">' + step.desc + '</div>';
   html += '<div style="font-size:0.7rem;color:var(--dim);font-style:italic;margin-top:12px">Content for this step will be generated from the ' + step.node.charAt(0).toUpperCase() + step.node.slice(1) + ' node data at Level ' + levelNum + '.</div>';
-  
+
   // Self-assessment for CHECK step
   if (step.phase === 'CHECK') {
     html += '<div style="margin-top:20px;display:flex;gap:8px;justify-content:center">';
@@ -3716,9 +3682,9 @@ function openLessonStep(levelNum, lessonNum, stepNum) {
     html += '<button onclick="assessLesson(\'' + level.id + '\',\'need\')" style="background:#cc3344;color:#fff;border:none;padding:10px 20px;border-radius:6px;font-weight:600;cursor:pointer">Need Work</button>';
     html += '</div>';
   }
-  
+
   html += '</div>';
-  
+
   el.innerHTML = html;
 }
 
@@ -3800,14 +3766,14 @@ function populateNotebook(){
 const DICTIONARY = [
   // Chapter 1: Foundational Terms
   {ch:'Foundational Terms', term:'Body Scan', def:'A technique of checking your body for tension before and during practice. Shoulders, jaw, hands, breathing.'},
-  {ch:'Foundational Terms', term:'Conversation', def:'In music, the act of playing — using vocabulary and grammar to communicate sound, alone or with others.'},
+  {ch:'Foundational Terms', term:'Conversation', def:'In music, the act of playing - using vocabulary and grammar to communicate sound, alone or with others.'},
   {ch:'Foundational Terms', term:'Gradient', def:'The step-by-step progression of difficulty. Too steep a gradient means jumping ahead too fast, which causes overwhelm.'},
-  {ch:'Foundational Terms', term:'Grammar', def:'In music, the rules that connect notes into meaning — intervals, scales, chords, and how they relate to each other.'},
+  {ch:'Foundational Terms', term:'Grammar', def:'In music, the rules that connect notes into meaning - intervals, scales, chords, and how they relate to each other.'},
   {ch:'Foundational Terms', term:'Imagination', def:'In guitar practice, the ability to clearly visualise what your fingers should do before they move. The clearer the mental picture, the cleaner the physical execution.'},
   {ch:'Foundational Terms', term:'Mass', def:'In Hubbard\'s study tech, the physical object or thing you\'re learning about. Without the physical thing in front of you, theory causes confusion.'},
-  {ch:'Foundational Terms', term:'Misunderstood Word', def:'A word you didn\'t fully understand. In Hubbard\'s framework, this is the #1 barrier to learning — one unclear term blanks everything after it.'},
-  {ch:'Foundational Terms', term:'Tension', def:'Unnecessary muscular tightness in the body while playing. The enemy of good technique — causes fatigue, pain, and sloppy playing.'},
-  {ch:'Foundational Terms', term:'Vocabulary', def:'In music, the individual notes — A, B, C, D, E, F, G and their sharps/flats. The basic building blocks of all music.'},
+  {ch:'Foundational Terms', term:'Misunderstood Word', def:'A word you didn\'t fully understand. In Hubbard\'s framework, this is the #1 barrier to learning - one unclear term blanks everything after it.'},
+  {ch:'Foundational Terms', term:'Tension', def:'Unnecessary muscular tightness in the body while playing. The enemy of good technique - causes fatigue, pain, and sloppy playing.'},
+  {ch:'Foundational Terms', term:'Vocabulary', def:'In music, the individual notes - A, B, C, D, E, F, G and their sharps/flats. The basic building blocks of all music.'},
 
   // Chapter 2: Music Theory
   {ch:'Music Theory', term:'Arpeggio', def:'The notes of a chord played one at a time in sequence, instead of all together.'},
@@ -3994,17 +3960,17 @@ function toggleCredits(){
   d.innerHTML=`<div style="max-width:420px;width:100%;text-align:center;color:var(--text);font-family:'DM Sans',sans-serif;">
     <h2 style="font-family:'Cinzel',serif;color:var(--gold);font-size:1.4rem;margin-bottom:24px;">The Hearth Mastery</h2>
     <p style="font-size:0.85rem;line-height:1.8;margin-bottom:16px;">
-      <strong style="color:var(--gold);">Concept & Design</strong> — Ayla Love<br>
-      <strong style="color:var(--gold);">Music as Language</strong> — Raen's Concept<br>
-      <strong style="color:var(--gold);">Learning Science</strong> — Hubbard Study Technology<br>
+      <strong style="color:var(--gold);">Concept & Design</strong> - Ayla Love<br>
+      <strong style="color:var(--gold);">Music as Language</strong> - Raen's Concept<br>
+      <strong style="color:var(--gold);">Learning Science</strong> - Hubbard Study Technology<br>
       <span style="color:var(--dim);">+ Lytton/Pincus frameworks</span>
     </p>
     <p style="font-size:0.9rem;color:var(--amber);margin-bottom:16px;">Built with ♥ at The Hearth</p>
-    <p style="font-family:'JetBrains Mono',monospace;font-size:0.65rem;color:var(--dim);margin-bottom:16px;">Version 0.1 — Mastery Prototype</p>
+    <p style="font-family:'JetBrains Mono',monospace;font-size:0.65rem;color:var(--dim);margin-bottom:16px;">Version 0.1 - Mastery Prototype</p>
     <hr style="border:none;border-top:1px solid var(--border);margin:16px 0;">
     <p style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;color:var(--dim);line-height:1.6;">
       Fonts: Cinzel, DM Sans, JetBrains Mono (Google Fonts)<br>
-      Character illustrations — [artist credit TBD]
+      Character illustrations - [artist credit TBD]
     </p>
     <button onclick="toggleCredits()" style="margin-top:20px;padding:10px 28px;background:var(--btn);color:var(--gold);border:1px solid var(--border);border-radius:8px;font-family:'Cinzel',serif;font-size:0.8rem;cursor:pointer;">Close</button>
   </div>`;
