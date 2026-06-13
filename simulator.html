@@ -1098,15 +1098,15 @@ const NODE_DATA = {
 };
 
 let _activeNode = null;
+let _flameNode = localStorage.getItem('flameNode') || 'foundation';
+let _flameAnimating = false;
 
 function showNodeInfo(id) {
-  try {
   const data = NODE_DATA[id];
   if (!data) return;
   if (data.locked) return;
   _activeNode = id;
   moveFlame(id);
-  // Enter the node directly after flame animation
   const wasSame = (_flameNode === id);
   let delay = 0;
   if (!wasSame) {
@@ -1115,11 +1115,7 @@ function showNodeInfo(id) {
     const hops = route ? route.length - 1 : 1;
     delay = hops * 500 + 400;
   }
-  setTimeout(function() {
-    try { enterNodeAction(data); }
-    catch(e){ console.error('enterNodeAction error:',e); alert('Error entering node: '+e.message); }
-  }, delay);
-  } catch(e){ console.error('showNodeInfo error:',e); alert('Error: '+e.message); }
+  setTimeout(function() { enterNodeAction(data); }, delay);
 }
 
 function enterNodeAction(data) {
@@ -1284,10 +1280,8 @@ const FLAME_ROUTES = {
   'mastery->create': ['mastery', 'create'],
 };
 
-let _flameNode = localStorage.getItem('flameNode') || 'foundation';
 // Restore flame position on load
 window.addEventListener('DOMContentLoaded',function(){var fn=localStorage.getItem('flameNode');if(fn&&window.NODE_POS&&NODE_POS[fn]){var p=NODE_POS[fn];var f=document.getElementById('travel-flame');if(f)f.style.transform='translate('+p[0]+'px,'+p[1]+'px)';}});
-let _flameAnimating = false;
 
 // Level completion: light up mastery ring
 function lightUpLevel(level) {
