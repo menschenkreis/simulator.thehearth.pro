@@ -74,7 +74,7 @@
 .conn-label.dim{fill:#3a3530;opacity:0.4;}
 
 /* ═══ LITTLE SPARKS (5-8) OVERRIDES ═══ */
-[data-theme="sparks"] .mn-ring{stroke-width:3 !important;fill:var(--panel) !important;}
+[data-theme="sparks"] .mn-ring{fill:var(--panel) !important;}
 [data-theme="sparks"] .mn-label{font-size:12px !important;fill:var(--text) !important;font-weight:600 !important;font-family:DM Sans,sans-serif !important;}
 [data-theme="sparks"] .mn-sublabel{font-size:10px !important;fill:var(--dim) !important;font-family:DM Sans,sans-serif !important;}
 [data-theme="sparks"] body{background:var(--bg) !important;}
@@ -163,8 +163,8 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 .mn-g{cursor:pointer;transition:filter 0.3s,transform 0.2s;-webkit-tap-highlight-color:transparent;}
 .mn-g:hover{filter:brightness(1.4) drop-shadow(0 0 12px rgba(212,175,105,0.5));}
 .mn-g:active{filter:brightness(1.2);}
-.mn-ring{fill:#0d0b08;stroke-width:2;transition:stroke 0.3s, stroke-width 0.3s;}
-.mn-g:hover .mn-ring{stroke:var(--gold);stroke-width:2.5;}
+.mn-ring{fill:#0d0b08;stroke:none;transition:fill 0.3s;}
+.mn-g:hover .mn-ring{fill:#0d0b08;}
 .mn-dot{transition:r 0.3s;}
 .mn-g:hover .mn-dot{r:8;}
 .mn-icon{font-size:24px;pointer-events:none;}
@@ -173,12 +173,12 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 .mn-sublabel{fill:var(--dim);font-family:DM Sans,sans-serif;font-size:8px;letter-spacing:0.05em;text-anchor:middle;pointer-events:none;opacity:0.5;transition:opacity 0.3s;}
 .mn-g:hover .mn-sublabel{opacity:0.8;}
 /* Node states */
-.mn-g.unlocked .mn-ring{stroke:var(--gold);}
+.mn-g.unlocked .mn-ring{fill:#0d0b08;}
 .mn-g.unlocked .mn-label{fill:var(--text);}
-.mn-g.locked .mn-ring{stroke:#2a2520;stroke-dasharray:3 3;}
+.mn-g.locked .mn-ring{fill:#0d0b08;opacity:0.5;}
 .mn-g.locked .mn-label{fill:#3a3530;}
 .mn-g.locked .mn-icon{opacity:0.3;}
-.mn-g.active .mn-ring{stroke:var(--amber);stroke-width:3;filter:url(#glow);}
+.mn-g.active .mn-ring{fill:#0d0b08;}
 
 /* Connection curves */
 .mn-conn{fill:none;stroke:var(--gold);stroke-width:0.8;opacity:0.1;transition:opacity 0.5s;}
