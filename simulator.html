@@ -54,8 +54,7 @@
 /* SVG connection classes — themed by data-theme */
 #web line{stroke:#6a5e4e;opacity:0.1;stroke-width:0.5;transition:opacity 0.3s;}
 #web line:hover{opacity:0.6;}
-.conn-branch{stroke:#d4af69;opacity:0.4;stroke-width:3.5;}
-.conn-alt{stroke:#d4af69;opacity:0.3;stroke-width:3;}
+
 .conn-spine{stroke:#d4af69;opacity:0.2;stroke-width:3;}
 .conn-tick{stroke:var(--gold);opacity:0.4;stroke-width:1;}
 .conn-tick.dim{stroke:#3a3530;opacity:0.3;}
@@ -178,7 +177,10 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 @keyframes pulse{0%,100%{opacity:0.06;r:12;}50%{opacity:0.12;r:15;}}
 
 /* Path toggle */
-.path-btns{display:flex;gap:6px;padding:6px 12px;justify-content:center;background:var(--card);border-bottom:1px solid var(--border);}
+.path-btns{display:flex;gap:4px;padding:4px 8px;justify-content:center;background:transparent;border-bottom:1px solid var(--border);flex-shrink:0;}
+.path-btn{padding:4px 10px;font-family:'JetBrains Mono',monospace;font-size:0.55rem;color:var(--dim);cursor:pointer;border-radius:3px;letter-spacing:0.08em;text-transform:uppercase;transition:all 0.15s;background:none;border:1px solid transparent;}
+.path-btn:hover{color:var(--text);background:rgba(212,175,105,0.04);}
+.path-btn.on{color:var(--gold);background:rgba(212,175,105,0.08);border-color:rgba(212,175,105,0.15);}
 
 /* Node info popup */
 .node-info-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.6);z-index:249;}
@@ -282,9 +284,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
   .play-world-sub{font-size:0.7rem;}
   .world-map-svg{font-size:5px;}
 }
-.pl-c .pi{font-size:1.4rem;margin-bottom:4px;}
-.pl-c .pn{font-family:'Cinzel',serif;color:var(--bright);font-size:0.78rem;}
-.pl-c .pl2{font-family:'JetBrains Mono',monospace;font-size:0.52rem;color:var(--dim);margin-top:1px;}
+
 
 /* === TIMER === */
 .tm{align-items:center;justify-content:center;gap:18px;padding:20px;}
@@ -308,28 +308,28 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 @keyframes rp{0%,100%{box-shadow:0 0 10px rgba(196,90,90,0.15);}50%{box-shadow:0 0 25px rgba(196,90,90,0.4);}}
 .rc-st{font-family:'JetBrains Mono',monospace;font-size:0.65rem;color:var(--dim);}
 
-/* BOTTOM TOOLBAR */
-.bot{height:52px;min-height:52px;background:var(--panel);border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-around;padding:0 4px;flex-shrink:0;width:auto;}
-.bt{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;padding:4px 8px;border-radius:4px;cursor:pointer;transition:all 0.1s;color:var(--dim);border:1px solid transparent;min-width:44px;}
-.bt:hover{color:var(--text);}
-.bt:active,.bt.on{color:var(--gold);background:rgba(212,175,105,0.06);border-color:rgba(212,175,105,0.2);}
-.bt .bl{font-size:0.55rem;font-family:'JetBrains Mono',monospace;letter-spacing:0.05em;}
+/* SIDEBAR / BOTTOM TOOLBAR */
+.bot{height:48px;min-height:48px;background:var(--panel);border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-around;padding:0;flex-shrink:0;width:auto;}
+.bt{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:6px 12px;cursor:pointer;transition:all 0.15s;color:var(--dim);border:none;background:none;flex:1;min-height:48px;}
+.bt:hover{color:var(--text);background:rgba(212,175,105,0.03);}
+.bt.on{color:var(--gold);background:rgba(212,175,105,0.06);}
+.bt .bl{font-size:0.6rem;font-family:'JetBrains Mono',monospace;letter-spacing:0.06em;}
+.bt.on .bl{font-weight:600;}
 
 @media(min-width:600px){
   body{flex-direction:column;}
   .top{display:flex;z-index:101;}
   .main-wrap{display:flex;flex:1;overflow:hidden;}
-  .bot{position:static;width:240px;min-width:240px;height:auto;min-height:0;flex-direction:column;justify-content:flex-start;border-top:none;border-right:1px solid var(--border);border-bottom:none;padding:16px 0;gap:0;box-shadow:none;background:var(--panel);flex-shrink:0;overflow:visible;}
-  .bt{flex-direction:row;gap:8px;padding:10px 16px;width:auto;height:auto;min-width:unset;border-radius:8px;justify-content:flex-start;border-left:3px solid transparent;transition:all 0.15s;}
+  .bot{position:static;width:200px;min-width:200px;height:auto;min-height:0;flex-direction:column;justify-content:flex-start;border-top:none;border-right:1px solid var(--border);border-bottom:none;padding:12px 0;gap:0;box-shadow:none;background:var(--panel);flex-shrink:0;overflow:visible;}
+  .bt{flex-direction:row;gap:10px;padding:12px 18px;width:100%;height:auto;min-height:44px;border-radius:0;border-left:3px solid transparent;transition:all 0.15s;flex:0 0 auto;text-align:left;}
   .bt:hover{background:rgba(212,175,105,0.04);border-left-color:rgba(212,175,105,0.3);}
-  .bt:active,.bt.on{background:rgba(212,175,105,0.08);border-left-color:var(--gold);}
-  .bt .bl{display:block;font-size:0.78rem;letter-spacing:0.1em;text-transform:uppercase;}
-  .bt.on .bl{color:var(--gold);font-weight:600;}
+  .bt.on{background:rgba(212,175,105,0.08);border-left-color:var(--gold);}
+  .bt .bl{display:block;font-size:0.72rem;letter-spacing:0.1em;text-transform:uppercase;font-weight:500;}
+  .bt.on .bl{color:var(--gold);font-weight:700;}
   .center{margin-left:0;flex:1;overflow-y:auto;min-width:0;}
   .map-wrap{max-width:none;width:100%;height:100%;padding:8px;}
   .map-svg{max-height:calc(100vh - 60px);width:auto;height:100%;max-width:100%;}
   .th-grid{grid-template-columns:repeat(auto-fill,minmax(180px,1fr));}
-  .pl-grid{grid-template-columns:repeat(auto-fill,minmax(160px,1fr));}
   .node-info{padding:20px 24px;margin:14px 18px;}
   .node-info h4{font-size:1.05rem;}
   .node-info p{font-size:0.85rem;}
@@ -615,10 +615,10 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 <!-- TOOLBAR -->
 <div class="bot" style="width:240px;min-width:240px;flex-shrink:0;overflow:visible;">
   <div class="bt on" data-t="map" onclick="sw('map')"><span class="bl">Map</span></div>
-  <div class="bt" data-t="lesson" onclick="sw('lesson')"><span class="bl">Journey</span></div>
-  <div class="bt" data-t="theory" onclick="sw('theory')"><span class="bl">Dictionary</span></div>
-  <div class="bt" data-t="drill" onclick="sw('drill')"><span class="bl">Notebook</span></div>
-  <div class="bt" data-t="record" onclick="sw('record')"><span class="bl">Recorder</span></div>
+  <div class="bt" data-t="lesson" onclick="sw('lesson')"><span class="bl">Quest</span></div>
+  <div class="bt" data-t="theory" onclick="sw('theory')"><span class="bl">Theory</span></div>
+  <div class="bt" data-t="drill" onclick="sw('drill')"><span class="bl">Drills</span></div>
+  <div class="bt" data-t="record" onclick="sw('record')"><span class="bl">Record</span></div>
 </div>
 
 <div class="center">
@@ -655,63 +655,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 
         <!-- ═══ CONNECTIONS ═══ -->
         <g id="connections">
-
-          <!-- Web: thin lines between all nodes -->
-          <g id="web">
-            <!-- Foundation to all -->
-            <line x1="350" y1="73" x2="146" y2="283"/>
-            <line x1="350" y1="73" x2="554" y2="283"/>
-            <line x1="350" y1="73" x2="248" y2="388"/>
-            <line x1="350" y1="73" x2="452" y2="388"/>
-            <line x1="350" y1="73" x2="350" y2="494"/>
-            <line x1="350" y1="73" x2="88" y2="682"/>
-            <line x1="350" y1="73" x2="612" y2="682"/>
-            <line x1="350" y1="73" x2="350" y2="813"/>
-            <!-- Doing to all -->
-            <line x1="146" y1="283" x2="554" y2="283"/>
-            <line x1="146" y1="283" x2="248" y2="388"/>
-            <line x1="146" y1="283" x2="452" y2="388"/>
-            <line x1="146" y1="283" x2="350" y2="494"/>
-            <line x1="146" y1="283" x2="88" y2="682"/>
-            <line x1="146" y1="283" x2="612" y2="682"/>
-            <line x1="146" y1="283" x2="350" y2="813"/>
-            <!-- Knowing to all -->
-            <line x1="554" y1="283" x2="248" y2="388"/>
-            <line x1="554" y1="283" x2="452" y2="388"/>
-            <line x1="554" y1="283" x2="350" y2="494"/>
-            <line x1="554" y1="283" x2="88" y2="682"/>
-            <line x1="554" y1="283" x2="612" y2="682"/>
-            <line x1="554" y1="283" x2="350" y2="813"/>
-            <!-- Practise to remaining -->
-            <line x1="248" y1="388" x2="452" y2="388"/>
-            <line x1="248" y1="388" x2="350" y2="494"/>
-            <line x1="248" y1="388" x2="612" y2="682"/>
-            <line x1="248" y1="388" x2="350" y2="813"/>
-            <!-- Study to remaining -->
-            <line x1="452" y1="388" x2="350" y2="494"/>
-            <line x1="452" y1="388" x2="88" y2="682"/>
-            <line x1="452" y1="388" x2="350" y2="813"/>
-            <!-- Hearth to all -->
-            <line x1="350" y1="494" x2="88" y2="682"/>
-            <line x1="350" y1="494" x2="612" y2="682"/>
-            <line x1="350" y1="494" x2="350" y2="813"/>
-            <!-- Play to remaining -->
-            <line x1="88" y1="682" x2="612" y2="682"/>
-            <line x1="88" y1="682" x2="350" y2="813"/>
-            <!-- Create to remaining -->
-            <line x1="612" y1="682" x2="350" y2="813"/>
-          </g>
-
-          <!-- FOUNDATION(240,50) → DOING(100,195) -->
-          <line class="conn-branch" x1="324" y1="73" x2="146" y2="283"/>
-          <line class="conn-branch" x1="146" y1="283" x2="350" y2="494"/>
-          <line class="conn-alt" x1="248" y1="388" x2="88" y2="682"/>
-          <line class="conn-branch" x1="376" y1="73" x2="554" y2="283"/>
-          <line class="conn-branch" x1="554" y1="283" x2="350" y2="494"/>
-          <line class="conn-alt" x1="452" y1="388" x2="612" y2="682"/>
-
-          <!-- CENTRAL SPINE — 8 segments through Hearth -->
-          <!-- Before Hearth: 4 segments from y=68 to y=308 -->
+          <!-- Central spine segments -->
           <line class="conn-spine" id="spine-l1" x1="350" y1="99" x2="350" y2="189"/>
           <line class="conn-spine" id="spine-l2" x1="350" y1="200" x2="350" y2="290"/>
           <line class="conn-spine" id="spine-l3" x1="350" y1="302" x2="350" y2="369"/>
@@ -742,15 +686,19 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
           <text class="conn-label dim" x="370" y="766">L8</text>
         </g>
 
-        <!-- ═══ PATH ARROWS (forking from Foundation) ═══ -->
-        <!-- Left fork: Foundation → Doing -->
+        <!-- ═══ BRANCH CONNECTIONS ═══ -->
+        <!-- Foundation → Doing (left fork) -->
         <path d="M 340,99 Q 240,180 146,258" fill="none" stroke="#e8a020" stroke-width="0.8" stroke-opacity="0.12" stroke-dasharray="4,6"/>
-        <!-- Right fork: Foundation → Knowing -->
+        <!-- Foundation → Knowing (right fork) -->
         <path d="M 360,99 Q 460,180 554,258" fill="none" stroke="#e8a020" stroke-width="0.8" stroke-opacity="0.12" stroke-dasharray="4,6"/>
-        <!-- Left branch: Doing → Practice -->
+        <!-- Doing → Practise -->
         <path d="M 146,307 Q 190,345 248,365" fill="none" stroke="#e8a020" stroke-width="0.6" stroke-opacity="0.08" stroke-dasharray="3,5"/>
-        <!-- Right branch: Knowing → Study -->
+        <!-- Knowing → Study -->
         <path d="M 554,307 Q 510,345 452,365" fill="none" stroke="#e8a020" stroke-width="0.6" stroke-opacity="0.08" stroke-dasharray="3,5"/>
+        <!-- Practise → Play -->
+        <path d="M 248,410 Q 170,500 88,660" fill="none" stroke="#e8a020" stroke-width="0.6" stroke-opacity="0.08" stroke-dasharray="3,5"/>
+        <!-- Study → Create -->
+        <path d="M 452,410 Q 530,500 612,660" fill="none" stroke="#e8a020" stroke-width="0.6" stroke-opacity="0.08" stroke-dasharray="3,5"/>
 
         <!-- ═══ FOUNDATION (top) ═══ -->
         <g class="mn-g unlocked" onclick="showNodeInfo('foundation')" data-node="foundation">
@@ -2813,7 +2761,6 @@ function showPlay(){
   document.querySelectorAll('.pnl').forEach(p=>p.classList.remove('on'));
   document.getElementById('p-foundation').classList.add('on');
   const el=document.getElementById('p-foundation');
-  const PL=window.PLAY;if(!PL)return;
   const WM=window.WORLD_MAP_REGIONS||[];
 
   let html='<div class="play-world-wrap">'+
@@ -3170,11 +3117,6 @@ function hlP(p){
     if(p==='doing'&&isDoing){g.style.opacity='1';g.style.filter='none';}
     else if(p==='knowing'&&isKnowing){g.style.opacity='1';g.style.filter='none';}
     else{g.style.opacity='0.15';g.style.filter='grayscale(0.8)';}
-  });
-  // Fade connections too
-  document.querySelectorAll('#web line, .conn-branch, .conn-alt').forEach(l=>{
-    if(p==='all'){l.style.opacity='';l.style.filter='none';return;}
-    l.style.opacity='0.03';l.style.filter='grayscale(1)';
   });
 }
 
@@ -3541,7 +3483,7 @@ function populateNotebook(){
     else if(nodeId==='doing'&&window.DOING) total=window.DOING.categories.reduce((s,c)=>s+c.drills.length,0);
     else if(nodeId==='knowing'&&window.KNOWING) total=window.KNOWING.categories.reduce((s,c)=>s+c.topics.length,0);
     else if(nodeId==='practice'&&window.PRACTICE&&window.PRACTICE.topics) total=window.PRACTICE.topics.length;
-    else if(nodeId==='play'&&window.PLAY) total=window.PLAY.genres.reduce((s,g)=>s+g.songs.length,0);
+    else if(nodeId==='play'&&window.WORLD_MAP_REGIONS) total=window.WORLD_MAP_REGIONS.length;
     else if(nodeId==='create'&&window.CREATE) total=window.CREATE.categories.reduce((s,c)=>s+c.topics.length,0);
 
     totalDone+=doneKeys.length;
