@@ -253,11 +253,35 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 .th-c h4{font-family:'Cinzel',serif;color:var(--gold);font-size:0.75rem;margin-bottom:3px;}
 .th-c p{font-size:0.65rem;color:var(--dim);line-height:1.4;}
 
-/* === PLAY === */
-.pl{padding:16px;}
-.pl-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
-.pl-c{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:16px;text-align:center;cursor:pointer;box-shadow:var(--ris);transition:all 0.15s;}
-.pl-c:active{box-shadow:var(--bev);}
+/* === PLAY (World Map) === */
+.play-world-wrap{padding:16px;max-width:900px;margin:0 auto;display:flex;flex-direction:column;height:100%;}
+.wm-back-btn{background:none;border:1px solid var(--border);color:var(--dim);padding:6px 12px;border-radius:4px;cursor:pointer;font-family:inherit;font-size:0.7rem;margin-bottom:12px;align-self:flex-start;}
+.play-world-header{margin-bottom:8px;}
+.play-world-title{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;}
+.play-world-sub{font-size:0.75rem;color:var(--dim);margin:4px 0 0 0;line-height:1.5;max-width:500px;}
+.play-world-map-container{flex:1;display:flex;align-items:center;justify-content:center;overflow:hidden;min-height:0;}
+.world-map-svg{width:100%;height:auto;max-height:100%;display:block;}
+.wm-hotspot:hover circle:nth-child(2){opacity:0.4!important;}
+.wm-hotspot:hover text{opacity:1!important;font-size:7px!important;}
+.play-world-footer{text-align:center;padding:8px 0 4px;}
+.wm-region-detail{padding:16px;max-width:650px;margin:0 auto;overflow-y:auto;height:100%;}
+.wm-region-header{margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border);}
+.wm-region-body{line-height:1.7;}
+.wm-region-desc{font-size:0.85rem;color:var(--text);margin:0 0 20px 0;line-height:1.7;}
+.wm-section{margin-bottom:16px;}
+.wm-section-label{font-family:'JetBrains Mono',monospace;font-size:0.55rem;color:var(--amber);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:6px;}
+.wm-list{list-style:none;padding:0;margin:0;}
+.wm-list li{padding:4px 0 4px 16px;font-size:0.8rem;color:var(--text);position:relative;}
+.wm-list li::before{content:'▸';position:absolute;left:0;color:var(--region-color,var(--gold));font-size:0.7rem;}
+.wm-artists{display:flex;flex-wrap:wrap;gap:6px;}
+.wm-artist-tag{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:0.6rem;background:rgba(212,175,105,0.06);padding:3px 8px;border-radius:3px;border:1px solid;letter-spacing:0.03em;}
+.wm-cta{margin-top:20px;padding:16px;background:var(--card);border:2px solid;border-radius:8px;}
+.wm-cta-label{font-family:'DM Sans',sans-serif;font-size:0.75rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:6px;}
+.wm-cta-text{font-size:0.85rem;color:var(--text);margin:0;line-height:1.6;}
+@media(max-width:600px){
+  .play-world-sub{font-size:0.7rem;}
+  .world-map-svg{font-size:5px;}
+}
 .pl-c .pi{font-size:1.4rem;margin-bottom:4px;}
 .pl-c .pn{font-family:'Cinzel',serif;color:var(--bright);font-size:0.78rem;}
 .pl-c .pl2{font-family:'JetBrains Mono',monospace;font-size:0.52rem;color:var(--dim);margin-top:1px;}
@@ -790,9 +814,15 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
         <g class="mn-g unlocked" onclick="showNodeInfo('play')" data-node="play">
           <circle cx="88" cy="682" r="29" fill="url(#nodeGlowBlue)"/>
           <circle class="mn-ring" cx="88" cy="682" r="23" stroke="#5a9fd4" stroke-width="1.5"/>
-          <text x="88" y="689" text-anchor="middle" font-size="16">🎸</text>
+          <g transform="translate(88,682)">
+            <!-- Compass / World Map icon -->
+            <circle r="13" fill="none" stroke="#5a9fd4" stroke-width="1" opacity="0.4"/>
+            <path d="M 0,-11 L 3,-3 L 0,0 L -3,-3 Z" fill="#5a9fd4" opacity="0.8"/>
+            <path d="M 0,11 L 3,3 L 0,0 L -3,3 Z" fill="#5a9fd4" opacity="0.4"/>
+            <circle r="2" fill="#5a9fd4"/>
+          </g>
           <text class="mn-label" x="88" y="722">PLAY</text>
-          <text class="mn-sublabel" x="88" y="735">songs & collab</text>
+          <text class="mn-sublabel" x="88" y="735">world guitar</text>
         </g>
 
         <!-- ═══ RIGHT BRANCH — KNOWING PATH ═══ -->
@@ -908,6 +938,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 <script src="assets/js/practice.js?v=2"></script>
 
 <script src="assets/js/play.js"></script>
+<script src="assets/js/play-worldmap.js"></script>
 <script src="assets/js/create.js"></script>
 <script src="assets/js/references.js"></script>
 <script>
@@ -917,7 +948,7 @@ const NODE_DATA = {
   mastery: { emoji:'', tag:'FINAL', title:'Mastery', desc:'Come home to yourself. What is YOUR sound? The student becomes the artist.', enter:false, locked:true },
   doing: { emoji:'', tag:'DOING PATH', title:'Doing', desc:'Open-world drill library. Every technique, every style. Click a dot to dive in.', enter:true, action:'doing', icon:'images/doing-icon.png' },
   practise: { emoji:'', tag:'DOING PATH', title:'Practise', desc:'Session-based. "How much time have you got?" Select drills, combine variations, timer starts, practise, give feedback.', enter:true, action:'practice' },
-  play: { emoji:'', tag:'DOING PATH', title:'Play', desc:'Songs, genres, backing tracks, playing along with other instruments. Discover YOUR sound. Collab lives here.', enter:true, action:'play' },
+  play: { emoji:'', tag:'DOING PATH', title:'Play', desc:'Explore guitar traditions from around the world. Click a region on the world map — Ethiopian jazz, Delta blues, flamenco, bossa nova and more. Discover YOUR sound.', enter:true, action:'play' },
   knowing: { emoji:'', tag:'KNOWING PATH', title:'Knowing', desc:'All music theory, categorised beautifully. Always accessible like an encyclopedia. Understand the why.', enter:true, action:'knowing', icon:'images/knowing-icon.png' },
   study: { emoji:'', tag:'KNOWING PATH', title:'Study', desc:'Your lab. Guided study sessions with context, deepening questions, and self-assessment. Where understanding deepens.', enter:true, action:'study' },
   create: { emoji:'', tag:'KNOWING PATH', title:'Create', desc:'Write your own music. Arrange songs for solo guitar. Record yourself. The student becomes the creator.', enter:true, action:'create' }
@@ -2772,90 +2803,117 @@ function _timeAgo(date){
 function _feelingEmoji(f){return f==='nailed'?'🔥':f==='getting'?'💪':'🤔';}
 function _feelingColor(f){return f==='nailed'?'#2ecc71':f==='getting'?CANDLE:'#e74c3c';}
 
-// ═══ PLAY NODE ═══
+// ═══ PLAY NODE — WORLD MAP ═══
 function showPlay(){
   document.querySelectorAll('.pnl').forEach(p=>p.classList.remove('on'));
   document.getElementById('p-foundation').classList.add('on');
-  const PL=window.PLAY;if(!PL)return;
   const el=document.getElementById('p-foundation');
+  const PL=window.PLAY;if(!PL)return;
+  const WM=window.WORLD_MAP_REGIONS||[];
 
-  const items=PL.genres.map((g)=>{
-    return {
-      id:g.id, title:g.title,
-      done:false,
-      locked:false,
-      count:g.songs.length, countLabel:'songs'
-    };
-  });
+  let html='<div class="play-world-wrap">'+
+    '<button onclick="document.querySelectorAll(\'.pnl\').forEach(p=>p.classList.remove(\'on\'));document.getElementById(\'p-map\').classList.add(\'on\')" class="wm-back-btn">&larr; Back to Map</button>'+
+    '<div class="play-world-header">'+
+      '<div class="play-world-title">'+
+        '<span style="font-family:\'Cinzel\',serif;color:var(--gold);font-size:1.4rem;font-weight:700;letter-spacing:0.08em">PLAY</span>'+
+        '<span style="font-family:JetBrains Mono;font-size:0.6rem;color:var(--amber);letter-spacing:0.12em;margin-left:8px;text-transform:uppercase">World Map of Guitar</span>'+
+      '</div>'+
+      '<p class="play-world-sub">Click a glowing region to discover its guitar tradition. From Ethiopian jazz to Delta blues — the world is yours to explore.</p>'+
+    '</div>'+
+    '<div class="play-world-map-container" id="playWorldMap">'+
+      '<svg viewBox="0 0 900 600" xmlns="http://www.w3.org/2000/svg" class="world-map-svg" id="worldMapSvg">'+
+        '<defs>'+
+          '<filter id="wm-glow"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>'+
+          '<radialGradient id="oceanGrad"><stop offset="0%" stop-color="#1a1510" stop-opacity="0.3"/><stop offset="100%" stop-color="#0d0b08" stop-opacity="0"/></radialGradient>'+
+        '</defs>'+
+        '<rect width="900" height="600" fill="var(--bg)"/>'+
+        '<rect width="900" height="600" fill="url(#oceanGrad)"/>'+
+        // Lat/Lon grid
+        '<g opacity="0.04" stroke="#d4af69" stroke-width="0.3" fill="none">'+
+          '<line x1="0" y1="150" x2="900" y2="150"/>'+
+          '<line x1="0" y1="300" x2="900" y2="300"/>'+
+          '<line x1="0" y1="450" x2="900" y2="450"/>'+
+          '<line x1="150" y1="0" x2="150" y2="600"/>'+
+          '<line x1="300" y1="0" x2="300" y2="600"/>'+
+          '<line x1="450" y1="0" x2="450" y2="600"/>'+
+          '<line x1="600" y1="0" x2="600" y2="600"/>'+
+          '<line x1="750" y1="0" x2="750" y2="600"/>'+
+        '</g>'+
+        // Continents
+        '<g class="wm-continents">'+
+          // North America
+          '<path d="M 80,130 Q 60,200 100,260 L 130,270 L 160,260 Q 200,240 220,210 L 240,200 Q 230,160 200,140 L 180,120 Q 140,100 110,110 Z" fill="#d4af6908" stroke="#d4af6930" stroke-width="0.8"/>'+
+          // South America
+          '<path d="M 250,320 Q 240,380 260,450 Q 290,510 290,540 Q 320,530 310,480 Q 300,400 285,350 Q 275,330 260,320 Z" fill="#d4af6908" stroke="#d4af6930" stroke-width="0.8"/>'+
+          // Europe
+          '<path d="M 440,150 Q 430,180 445,210 L 470,215 Q 490,200 500,180 L 510,165 Q 495,150 475,145 Q 455,142 440,150 Z" fill="#d4af6908" stroke="#d4af6930" stroke-width="0.8"/>'+
+          // Ireland/UK
+          '<path d="M 420,160 Q 415,170 420,182 Q 430,185 435,175 Q 435,165 425,158 Z" fill="#d4af6908" stroke="#d4af6930" stroke-width="0.8"/>'+
+          // Iberia
+          '<path d="M 445,210 Q 440,225 450,245 Q 470,250 490,240 Q 495,220 485,210 Q 465,205 445,210 Z" fill="#d4af6908" stroke="#d4af6930" stroke-width="0.8"/>'+
+          // Africa
+          '<path d="M 460,260 Q 445,310 460,360 Q 475,410 480,440 Q 510,440 520,410 Q 530,360 525,310 Q 515,270 490,255 Q 470,250 460,260 Z" fill="#d4af6908" stroke="#d4af6930" stroke-width="0.8"/>'+
+          // East Africa (Ethiopia zone)
+          '<path d="M 560,295 Q 545,320 555,360 Q 580,375 620,370 Q 635,345 625,315 Q 600,290 560,295 Z" fill="#d4af6908" stroke="#d4af6930" stroke-width="0.8"/>'+
+          // India/Middle East
+          '<path d="M 600,190 Q 630,220 660,245 Q 690,265 720,275 Q 710,235 685,215 Q 660,195 635,188 Q 610,188 600,190 Z" fill="#d4af6908" stroke="#d4af6930" stroke-width="0.8"/>'+
+          // Japan
+          '<path d="M 790,210 Q 785,225 795,240 Q 815,235 820,220 Q 815,205 800,205 Z" fill="#d4af6908" stroke="#d4af6930" stroke-width="0.8"/>'+
+          // Cuba
+          '<ellipse cx="225" cy="370" rx="20" ry="6" fill="#d4af6908" stroke="#d4af6930" stroke-width="0.8"/>'+
+        '</g>'+
+        // Hotspots
+        '<g id="wm-hotspots">'+
+          WM.map(function(r){
+            return '<g class="wm-hotspot" data-region="'+r.id+'" onclick="wmClick(\''+r.id+'\')" style="cursor:pointer">'+
+              '<circle cx="'+r.coords[0]+'" cy="'+r.coords[1]+'" r="14" fill="'+r.color+'" opacity="0.08">'+
+                '<animate attributeName="r" values="10;18;10" dur="2.5s" repeatCount="indefinite"/>'+
+                '<animate attributeName="opacity" values="0.1;0.02;0.1" dur="2.5s" repeatCount="indefinite"/>'+
+              '</circle>'+
+              '<circle cx="'+r.coords[0]+'" cy="'+r.coords[1]+'" r="6" fill="'+r.color+'" opacity="0.25"/>'+
+              '<circle cx="'+r.coords[0]+'" cy="'+r.coords[1]+'" r="3" fill="'+r.color+'" filter="url(#wm-glow)"/>'+
+              '<text x="'+r.coords[0]+'" y="'+(r.coords[1]-12)+'" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="6" fill="'+r.color+'" opacity="0.7" letter-spacing="0.05em">'+r.name.toUpperCase()+'</text>'+
+            '</g>';
+          }).join('')+
+        '</g>'+
+      '</svg>'+
+    '</div>'+
+    '<div class="play-world-footer">'+
+      '<span style="font-family:JetBrains Mono;font-size:0.55rem;color:var(--dim);letter-spacing:0.1em;text-transform:uppercase">'+WM.length+' traditions to explore</span>'+
+    '</div>'+
+  '</div>';
 
-  el.innerHTML=rainbowBlocks(items, {
-    icon:'',
-    title:PL.title,
-    sources:PL.sources,
-    clickFn:'showPlayGenre'
-  });
+  el.innerHTML=html;
 }
 
-window.showPlayGenre=function(genreId){
-  const PL=window.PLAY;if(!PL)return;
-  const g=PL.genres.find(x=>x.id===genreId);if(!g)return;
+// ═══ World map — click a region ═══
+window.wmClick=function(regionId){
+  const WM=window.WORLD_MAP_REGIONS||[];
+  const r=WM.find(function(x){return x.id===regionId;});
+  if(!r)return;
   const el=document.getElementById('p-foundation');
-  const genreIdx=PL.genres.indexOf(g);
-  const rainbow=['#e74c3c','#e67e22','#f1c40f','#2ecc71','#3498db','#9b59b6','#e84393','#1abc9c','#e84393'];
-  const color=rainbow[genreIdx%rainbow.length];
 
-  let html='<div style="padding:20px;max-width:650px;margin:0 auto">'+
-    '<button onclick="showPlay()" style="background:none;border:1px solid var(--border);color:var(--dim);padding:6px 12px;border-radius:4px;cursor:pointer;font-family:inherit;font-size:0.7rem;margin-bottom:16px">&larr; Back to Play</button>'+
-    '<div style="border-top:4px solid '+color+';padding-top:16px">'+
-    '<h2 style="font-family:\'DM Sans\',sans-serif;color:'+color+';font-size:1.2rem;margin:0 0 4px 0;font-weight:700">'+g.title+'</h2>'+
-    '<div style="font-size:0.75rem;color:var(--dim);margin-bottom:16px">'+g.description+'</div>';
+  var listenHtml=(r.listenTo||[]).map(function(t){return '<li>'+t+'</li>';}).join('');
+  var artistsHtml=(r.keyArtists||[]).map(function(a){return '<span class="wm-artist-tag" style="border-color:'+r.color+'30;color:'+r.color+'">'+a+'</span>';}).join('');
+  var scalesHtml=(r.scales||[]).map(function(s){return '<li>'+s+'</li>';}).join('');
+  var techHtml=(r.techniques||[]).map(function(t){return '<li>'+t+'</li>';}).join('');
 
-  g.songs.forEach((s,i)=>{
-    html+='<div onclick="showPlaySong(\''+genreId+'\',\''+s.title.replace("'","\\'")+'\')" style="'+
-      'padding:12px 14px;'+
-      'border-bottom:'+(i<g.songs.length-1?'1px solid var(--border)':'none')+';'+
-      'cursor:pointer;transition:background 0.15s;'+
-      'display:flex;align-items:center;gap:10px;'+
-      'background:transparent'+
-    '" onmouseover="this.style.background=\''+color+'18\'" onmouseout="this.style.background=\'transparent\'">'+
-      '<span style="font-family:JetBrains Mono;font-size:0.75rem;color:'+color+';min-width:20px">'+(i+1)+'</span>'+
-      '<div style="flex:1">'+
-        '<div style="font-family:\'DM Sans\',sans-serif;font-size:0.9rem;color:var(--text);font-weight:600">'+s.title+'</div>'+
-        '<div style="font-size:0.6rem;color:var(--dim);margin-top:2px">'+('★'.repeat(s.difficulty))+('☆'.repeat(3-s.difficulty))+' · '+s.source+'</div>'+
+  el.innerHTML='<div class="wm-region-detail" style="--region-color:'+r.color+'">'+
+    '<button onclick="showPlay()" class="wm-back-btn">&larr; Back to World Map</button>'+
+    '<div class="wm-region-header">'+
+      '<div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">'+
+        '<div style="width:10px;height:10px;border-radius:50%;background:'+r.color+';box-shadow:0 0 12px '+r.color+'"></div>'+
+        '<span style="font-family:JetBrains Mono;font-size:0.6rem;color:'+r.color+';letter-spacing:0.12em;text-transform:uppercase">'+r.name+'</span>'+
       '</div>'+
-      '<span style="font-size:0.7rem;color:var(--dim)">&#8594;</span>'+
-    '</div>';
-  });
-
-  html+='</div></div>';
-  el.innerHTML=html;
-};
-
-window.showPlaySong=function(genreId, songTitle){
-  const PL=window.PLAY;if(!PL)return;
-  const g=PL.genres.find(x=>x.id===genreId);if(!g)return;
-  const s=g.songs.find(x=>x.title===songTitle);if(!s)return;
-  const el=document.getElementById('p-foundation');
-  const genreIdx=PL.genres.indexOf(g);
-  const rainbow=['#e74c3c','#e67e22','#f1c40f','#2ecc71','#3498db','#9b59b6','#e84393','#1abc9c','#e84393'];
-  const color=rainbow[genreIdx%rainbow.length];
-
-  el.innerHTML='<div style="padding:20px;max-width:650px;margin:0 auto">'+
-    '<button onclick="showPlayGenre(\''+genreId+'\')" style="background:none;border:1px solid var(--border);color:var(--dim);padding:6px 12px;border-radius:4px;cursor:pointer;font-family:inherit;font-size:0.7rem;margin-bottom:16px">&larr; Back to '+g.title+'</button>'+
-    '<div style="border-top:4px solid '+color+';padding-top:16px">'+
-      '<div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">'+
-        '<span class="tag" style="border-color:'+color+'30;color:'+color+'">'+g.title+'</span>'+
-        '<span class="tag" style="border-color:'+color+'30;color:'+color+'">'+('★'.repeat(s.difficulty))+('☆'.repeat(3-s.difficulty))+'</span>'+
-        '<span class="tag" style="border-color:'+color+'30;color:'+color+'">'+s.source+'</span>'+
-      '</div>'+
-      '<h2 style="font-family:\'DM Sans\',sans-serif;color:'+color+';font-size:1.1rem;margin:0 0 16px 0;font-weight:700">'+s.title+'</h2>'+
-      '<div style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:20px;line-height:1.7;font-size:0.85rem;color:var(--text)">'+
-        '<p>This song is from the '+g.title.toLowerCase()+' tradition. The full lesson content, sheet music, and backing tracks will be loaded from the source material when you\'re ready to play.</p>'+
-      '</div>'+
-      '<div style="margin-top:16px;padding:14px;background:var(--card);border:2px solid '+color+';border-radius:8px;text-align:center">'+
-        '<p style="font-family:\'DM Sans\',sans-serif;color:'+color+';font-size:0.85rem;margin:0;font-weight:700">Ready to play?</p>'+
-        '<p style="font-size:0.65rem;color:var(--dim);margin:4px 0 0 0">Connect your guitar and let\'s go</p>'+
-      '</div>'+
+      '<h2 style="font-family:\'Cinzel\',serif;color:'+r.color+';font-size:1.4rem;margin:0;font-weight:700;letter-spacing:0.03em">'+r.tradition+'</h2>'+
+    '</div>'+
+    '<div class="wm-region-body">'+
+      '<p class="wm-region-desc">'+r.description+'</p>'+
+      (artistsHtml?'<div class="wm-section"><div class="wm-section-label">Key Artists</div><div class="wm-artists">'+artistsHtml+'</div></div>':'')+
+      (scalesHtml?'<div class="wm-section"><div class="wm-section-label">Scales & Modes</div><ul class="wm-list">'+scalesHtml+'</ul></div>':'')+
+      (techHtml?'<div class="wm-section"><div class="wm-section-label">Techniques</div><ul class="wm-list">'+techHtml+'</ul></div>':'')+
+      (listenHtml?'<div class="wm-section"><div class="wm-section-label">Essential Listening</div><ul class="wm-list">'+listenHtml+'</ul></div>':'')+
+      (r.learnFirst?'<div class="wm-cta" style="border-color:'+r.color+'"><div class="wm-cta-label" style="color:'+r.color+'">Start Here</div><p class="wm-cta-text">'+r.learnFirst+'</p></div>':'')+
     '</div>'+
   '</div>';
 };
