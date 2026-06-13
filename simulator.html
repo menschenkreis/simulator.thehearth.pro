@@ -820,7 +820,8 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
           <circle class="mastery-ring" id="mring-l1" cx="350" cy="813" r="38" stroke="#ff0000" stroke-width="2" fill="none" opacity="0.5"/>
           <!-- Core -->
           <circle class="mn-ring" cx="350" cy="813" r="48"/>
-          <text x="350" y="830" text-anchor="middle" font-size="42">👑</text>
+          <clipPath id="clip-mastery"><circle cx="350" cy="813" r="48"/></clipPath>
+          <image href="images/mastery-icon.png" x="302" y="765" width="96" height="96" clip-path="url(#clip-mastery)"/>
         </g>
 
         <!-- ═══ LEFT BRANCH — DOING PATH ═══ -->
@@ -1072,7 +1073,7 @@ const NODE_HOVER_DATA={
   doing:{img:'images/doing-icon.png',label:'Doing'},
   knowing:{img:'images/knowing-icon.png',label:'Knowing'},
   play:{img:'images/play-icon.png',label:'Play'},
-  mastery:{emoji:'👑',label:'Mastery'},
+  mastery:{img:'images/mastery-icon.png',label:'Mastery'},
   practise:{img:'images/practise-icon.png',label:'Practise'},
   study:{img:'images/study-icon.png',label:'Study'},
   create:{img:'images/create-icon.png',label:'Create'}
