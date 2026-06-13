@@ -199,7 +199,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 /* === MANDALA MAP === */
 .map{align-items:center;justify-content:center;padding:8px;position:relative;}
 .map-wrap{width:100%;max-width:none;max-height:100%;position:relative;margin:0 auto;display:flex;align-items:center;justify-content:center;padding-top:8px;}
-.map-svg{width:100%;height:auto;display:block;max-height:calc(100vh - 60px);position:relative;z-index:1;}
+.map-svg{width:100%;height:auto;display:block;max-height:calc(100vh - 60px);}
 
 /* Node styling */
 .mn-g{cursor:pointer;transition:filter 0.3s,transform 0.2s;-webkit-tap-highlight-color:transparent;}
@@ -770,7 +770,6 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
   <!-- MANDALA MAP -->
   <div class="pnl on map" id="p-map">
     <div class="map-wrap" style="position:relative;">
-      <div class="map-vignette"></div>
       <svg class="map-svg" viewBox="0 0 700 1000" xmlns="http://www.w3.org/2000/svg">
         <defs>
           <filter id="glow"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
@@ -988,6 +987,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
         </g>
 
       </svg>
+      <div class="map-vignette"></div>
     </div>
     <div class="node-info-overlay" id="niOverlay" onclick="hideNodeInfo()"></div>
     <div class="node-info" id="ni">
