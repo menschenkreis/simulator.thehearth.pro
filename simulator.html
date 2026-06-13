@@ -834,7 +834,8 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
         </g>
 
         <g class="mn-g unlocked" onmouseenter="showNodePreview('create',event)" onmouseleave="hideNodePreview()" onclick="showNodeInfo('create')" data-node="create">
-          <text x="612" y="689" text-anchor="middle" font-size="18">✨</text>
+          <clipPath id="clip-create"><circle cx="612" cy="682" r="23"/></clipPath>
+          <image href="images/create-icon.png" x="589" y="659" width="46" height="46" clip-path="url(#clip-create)"/>
           <text class="mn-label" x="612" y="725">CREATE</text>
           <text class="mn-sublabel" x="612" y="738">write & record</text>
         </g>
@@ -1051,7 +1052,7 @@ const NODE_HOVER_DATA={
   mastery:{emoji:'👑',label:'Mastery'},
   practise:{emoji:'🔁',label:'Practise'},
   study:{emoji:'📝',label:'Study'},
-  create:{emoji:'✨',label:'Create'}
+  create:{img:'images/create-icon.png',label:'Create'}
 };
 
 function showNodePreview(nodeId,e){
