@@ -59,6 +59,7 @@
 .gold-conn{stroke:#d4af69;opacity:0.35;stroke-width:2.5;transition:opacity 0.5s,stroke-width 0.5s;}
 .gold-conn.dim{stroke:#d4af69;opacity:0.12;stroke-width:1;}
 .gold-conn.hl{opacity:0.5;stroke-width:3;}
+.gold-conn.travelled{stroke:#e8a020;opacity:0.6;stroke-width:2;filter:drop-shadow(0 0 3px rgba(232,160,32,0.4));}
 
 /* NODE HOVER PREVIEW - dims map, icon appears over the node */
 .map-dim-overlay{position:fixed;inset:0;background:rgba(13,11,8,0.4);z-index:199;opacity:0;pointer-events:none;transition:opacity 0.25s;}
@@ -209,7 +210,9 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 /* === MANDALA MAP === */
 .map{align-items:center;justify-content:center;padding:8px;position:relative;}
 .map-wrap{width:100%;max-width:none;max-height:100%;position:relative;margin:0 auto;display:flex;align-items:center;justify-content:center;padding-top:8px;}
-.map-svg{width:100%;height:auto;display:block;max-height:calc(100vh - 60px);}
+/* Map zoom/pan */
+.map-wrap{touch-action:manipulate;}
+.map-svg{width:100%;height:auto;display:block;max-height:calc(100vh - 60px);transform-origin:center center;transition:transform 0.2s;}
 
 /* Node styling */
 .mn-g{cursor:pointer;-webkit-tap-highlight-color:transparent;}
@@ -729,6 +732,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 </head>
 <body>
 <canvas id="emberCanvas"></canvas>
+<audio id="hearthAudio" loop></audio>
 
 <div class="top">
   <div class="top-brand">
@@ -877,8 +881,18 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
         <path class="gold-conn dim" data-path="knowing" d="M 612,662 Q 640,450 554,305" fill="none"/>
 
         <!-- ═══ FLOWING DOTS (journey lines) ═══ -->
-        <circle r="2" fill="#d4af69" opacity="0.6">
+        <!-- Central spine: ember river (Foundation → Hearth → Mastery) -->
+        <circle r="2.5" fill="#e8a020" opacity="0.6">
           <animateMotion dur="6s" repeatCount="indefinite" path="M 350,99 L 350,189 L 350,200 L 350,290 L 350,302 L 350,369 L 350,380 L 350,447 L 350,540 L 350,595 L 350,607 L 350,662 L 350,674 L 350,729 L 350,740 L 350,784"/>
+        </circle>
+        <circle r="1.5" fill="#ff8c42" opacity="0.5">
+          <animateMotion dur="6s" begin="1s" repeatCount="indefinite" path="M 350,99 L 350,189 L 350,200 L 350,290 L 350,302 L 350,369 L 350,380 L 350,447 L 350,540 L 350,595 L 350,607 L 350,662 L 350,674 L 350,729 L 350,740 L 350,784"/>
+        </circle>
+        <circle r="1" fill="#d4af69" opacity="0.4">
+          <animateMotion dur="6s" begin="2s" repeatCount="indefinite" path="M 350,99 L 350,189 L 350,200 L 350,290 L 350,302 L 350,369 L 350,380 L 350,447 L 350,540 L 350,595 L 350,607 L 350,662 L 350,674 L 350,729 L 350,740 L 350,784"/>
+        </circle>
+        <circle r="1" fill="#ff4500" opacity="0.3">
+          <animateMotion dur="6s" begin="3s" repeatCount="indefinite" path="M 350,99 L 350,189 L 350,200 L 350,290 L 350,302 L 350,369 L 350,380 L 350,447 L 350,540 L 350,595 L 350,607 L 350,662 L 350,674 L 350,729 L 350,740 L 350,784"/>
         </circle>
         <circle r="2" fill="#e8a020" opacity="0.5">
           <animateMotion dur="5s" repeatCount="indefinite" path="M 324,88 L 160,265 L 160,305 L 310,475"/>
@@ -1102,6 +1116,44 @@ let _activeNode = null;
 let _flameNode = localStorage.getItem('flameNode') || 'foundation';
 let _flameAnimating = false;
 
+function markPathTravelled(fromId,toId){
+  try{
+    var travelled=JSON.parse(localStorage.getItem('travelledPaths')||'[]');
+    var key=fromId+'->'+toId;
+    if(travelled.indexOf(key)===-1){travelled.push(key);localStorage.setItem('travelledPaths',JSON.stringify(travelled));}
+    // Light up the segments
+    var route=FLAME_ROUTES[key];
+    if(route){for(var i=0;i<route.length-1;i++){markSegment(route[i],route[i+1]);}}
+  }catch(e){}
+}
+function markSegment(a,b){
+  // Find the connection line matching this segment and mark it
+  var lines=document.querySelectorAll('.gold-conn');
+  lines.forEach(function(l){
+    var x1=parseFloat(l.getAttribute('x1'))||0;
+    var y1=parseFloat(l.getAttribute('y1'))||0;
+    var x2=parseFloat(l.getAttribute('x2'))||0;
+    var y2=parseFloat(l.getAttribute('y2'))||0;
+    var pa=NODE_POS[a],pb=NODE_POS[b];
+    if(!pa||!pb)return;
+    // Check if this line connects these two nodes (either direction)
+    var matchA=(Math.abs(x1-pa[0])<5&&Math.abs(y1-pa[1])<5&&Math.abs(x2-pb[0])<5&&Math.abs(y2-pb[1])<5);
+    var matchB=(Math.abs(x1-pb[0])<5&&Math.abs(y1-pb[1])<5&&Math.abs(x2-pa[0])<5&&Math.abs(y2-pa[1])<5);
+    if(matchA||matchB){l.classList.add('travelled');}
+  });
+}
+function restoreTravelledPaths(){
+  try{
+    var travelled=JSON.parse(localStorage.getItem('travelledPaths')||'[]');
+    travelled.forEach(function(key){
+      var parts=key.split('->');if(parts.length===2){
+        var route=FLAME_ROUTES[key];
+        if(route){for(var i=0;i<route.length-1;i++){markSegment(route[i],route[i+1]);}}
+      }
+    });
+  }catch(e){}
+}
+
 function showNodeInfo(id) {
   const data = NODE_DATA[id];
   if (!data) return;
@@ -1282,7 +1334,11 @@ const FLAME_ROUTES = {
 };
 
 // Restore flame position on load
-window.addEventListener('DOMContentLoaded',function(){var fn=localStorage.getItem('flameNode');if(fn&&window.NODE_POS&&NODE_POS[fn]){var p=NODE_POS[fn];var f=document.getElementById('travel-flame');if(f)f.style.transform='translate('+p[0]+'px,'+p[1]+'px)';}});
+window.addEventListener('DOMContentLoaded',function(){
+  var fn=localStorage.getItem('flameNode');
+  if(fn&&window.NODE_POS&&NODE_POS[fn]){var p=NODE_POS[fn];var f=document.getElementById('travel-flame');if(f)f.style.transform='translate('+p[0]+'px,'+p[1]+'px)';}
+  restoreTravelledPaths();
+});
 
 // Level completion: light up mastery ring
 function lightUpLevel(level) {
@@ -1317,6 +1373,7 @@ function moveFlame(targetId) {
       if (step >= route.length) {
         _flameNode = targetId; localStorage.setItem("flameNode",targetId);
         _flameAnimating = false;
+        markPathTravelled(fromId,targetId);
         return;
       }
       const pos = NODE_POS[route[step]];
@@ -3995,6 +4052,126 @@ function toggleCredits(){
 <img src="images/character-neutral.png" class="mobile-character" alt="Guide" />
 <script>if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js').catch(()=>{})}</script>
 <script>
+// Map zoom and pan
+(function(){
+  var svg=document.querySelector('.map-svg');
+  if(!svg)return;
+  var wrap=svg.closest('.map-wrap');if(!wrap)return;
+  var scale=1,minScale=1,maxScale=2.5;
+  var panX=0,panY=0;
+  var dragging=false,lastX=0,lastY=0;
+  var pinchDist=0;
+
+  function apply(){svg.style.transform='translate('+panX+'px,'+panY+'px) scale('+scale+')';}
+
+  // Wheel zoom (desktop)
+  wrap.addEventListener('wheel',function(e){
+    e.preventDefault();
+    var delta=e.deltaY>0?-0.1:0.1;
+    scale=Math.max(minScale,Math.min(maxScale,scale+delta));
+    if(scale===minScale){panX=0;panY=0;}
+    apply();
+  },{passive:false});
+
+  // Touch pinch zoom (mobile)
+  wrap.addEventListener('touchstart',function(e){
+    if(e.touches.length===2){
+      pinchDist=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);
+    }else if(e.touches.length===1&&scale>1){
+      dragging=true;lastX=e.touches[0].clientX;lastY=e.touches[0].clientY;
+    }
+  },{passive:true});
+
+  wrap.addEventListener('touchmove',function(e){
+    if(e.touches.length===2){
+      e.preventDefault();
+      var d=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);
+      var ratio=d/pinchDist;
+      scale=Math.max(minScale,Math.min(maxScale,scale*ratio));
+      pinchDist=d;
+      if(scale===minScale){panX=0;panY=0;}
+      apply();
+    }else if(dragging&&e.touches.length===1){
+      e.preventDefault();
+      panX+=e.touches[0].clientX-lastX;
+      panY+=e.touches[0].clientY-lastY;
+      lastX=e.touches[0].clientX;lastY=e.touches[0].clientY;
+      apply();
+    }
+  },{passive:false});
+
+  wrap.addEventListener('touchend',function(e){
+    if(e.touches.length<2)pinchDist=0;
+    if(e.touches.length===0)dragging=false;
+  },{passive:true});
+
+  // Double tap to reset
+  var lastTap=0;
+  wrap.addEventListener('touchend',function(){
+    var now=Date.now();
+    if(now-lastTap<300){scale=1;panX=0;panY=0;apply();}
+    lastTap=now;
+  });
+})();
+
+// Ambient hearth sound (generated crackle using Web Audio API)
+(function(){
+  var ctx,playing=false;
+  function startCrackle(){
+    if(playing)return;
+    try{
+      ctx=ctx||new (window.AudioContext||window.webkitAudioContext)();
+      playing=true;
+      // Brown noise base (the low rumble of fire)
+      var bufferSize=ctx.sampleRate*2;
+      var noiseBuf=ctx.createBuffer(1,bufferSize,ctx.sampleRate);
+      var data=noiseBuf.getChannelData(0);
+      var lastOut=0;
+      for(var i=0;i<bufferSize;i++){
+        var white=Math.random()*2-1;
+        data[i]=(lastOut+0.02*white)/1.02;
+        lastOut=data[i];
+        data[i]*=3.5;
+      }
+      var noise=ctx.createBufferSource();
+      noise.buffer=noiseBuf;
+      noise.loop=true;
+      var filter=ctx.createBiquadFilter();
+      filter.type='lowpass';
+      filter.frequency.value=400;
+      var gain=ctx.createGain();
+      gain.gain.value=0.03; // very quiet
+      noise.connect(filter);filter.connect(gain);gain.connect(ctx.destination);
+      noise.start();
+      // Random crackle pops
+      function pop(){
+        if(!playing)return;
+        var osc=ctx.createOscillator();
+        var og=ctx.createGain();
+        var freq=200+Math.random()*600;
+        osc.frequency.value=freq;
+        osc.type='triangle';
+        og.gain.setValueAtTime(0,ctx.currentTime);
+        og.gain.linearRampToValueAtTime(0.015+Math.random()*0.02,ctx.currentTime+0.005);
+        og.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+0.08+Math.random()*0.06);
+        osc.connect(og);og.connect(ctx.destination);
+        osc.start();osc.stop(ctx.currentTime+0.2);
+        setTimeout(pop,300+Math.random()*2000);
+      }
+      setTimeout(pop,500);
+    }catch(e){console.log('Audio not available');}
+  }
+  // Start on first user interaction (browser policy)
+  function tryStart(){
+    if(!playing)startCrackle();
+    document.removeEventListener('click',tryStart);
+    document.removeEventListener('touchstart',tryStart);
+  }
+  document.addEventListener('click',tryStart);
+  document.addEventListener('touchstart',tryStart);
+})();
+</script>
+<script>
 // Ambient ember particles
 (function(){
   var canvas=document.getElementById('emberCanvas');
@@ -4002,7 +4179,12 @@ function toggleCredits(){
   var ctx=canvas.getContext('2d');
   var W,H,particles=[];
   var MAX=40;
-  var colors=['#d4af69','#e8a020','#c45a20','#ff8c42','#d4af69'];
+  // Day/night colour shift
+  var hour=new Date().getHours();
+  var isNight=(hour<7||hour>=19);
+  var colors=isNight
+    ?['#c45a20','#ff6b1a','#e8a020','#ff4500','#c45a20'] // warmer/ember at night
+    :['#d4af69','#e8a020','#c45a20','#ff8c42','#d4af69']; // gold/amber daytime
 
   function resize(){W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight;}
   resize();
