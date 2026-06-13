@@ -532,6 +532,8 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 .lp-stair-label{font-family:'DM Sans',sans-serif;font-size:0.8rem;font-weight:600}
 .foundation-layout{display:flex;gap:32px;align-items:flex-end;margin-top:8px}
 .foundation-char{flex-shrink:0;width:300px;display:flex;flex-direction:column;align-items:center;justify-content:flex-end}
+.foundation-row{display:flex;gap:16px;align-items:flex-start;width:100%;}
+.foundation-col-char{flex:0 0 auto;position:relative;width:160px;flex-shrink:0}
 @media(max-width:700px){
   /* ═══ LAYOUT: sidebar becomes bottom tab bar ═══ */
   .main-wrap{flex-direction:column;}
@@ -591,12 +593,17 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
   .mn-label{font-size:8px!important;letter-spacing:0.08em;}
   .mn-sublabel{font-size:6px!important;}
   .path-btns{gap:4px;padding:4px 8px;}
+  .flow-anim{display:none;}
   .path-btn{font-size:0.55rem;padding:4px 8px;}
 
   /* ═══ FOUNDATION ═══ */
   .foundation-layout{flex-direction:column;align-items:center;gap:16px;}
   .foundation-char{width:100%;max-width:200px;order:-1;}
   .foundation-char img{max-width:180px!important;}
+  .foundation-row{flex-direction:column;align-items:center;gap:12px;}
+  .foundation-col-char{width:140px;margin-bottom:20px;}
+  .foundation-col-char .speech-bubble{position:static !important;margin:8px auto 0 auto !important;width:100% !important;max-width:240px !important;left:auto !important;}
+  .foundation-col-char .speech-bubble div:first-child{display:none !important;} /* hide tail when stacked */
   .foundation-blocks{width:100%;max-width:100%!important;}
   .staircase{align-items:center}
   .stair-step{align-items:center}
@@ -649,6 +656,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 
   /* Prevent text selection on UI */
   .top,.bt,.node-card,.stair-step,.ls-s,.dr-c{-webkit-user-select:none;user-select:none;}
+  .map-svg{touch-action:manipulation;}
 
   /* Floating character */
   .mobile-character{
@@ -892,6 +900,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
         <path class="gold-conn dim" data-path="knowing" d="M 612,662 Q 640,450 554,305" fill="none"/>
 
         <!-- ═══ FLOWING DOTS (journey lines) ═══ -->
+        <g class="flow-anim">
         <!-- Central spine: ember river (Foundation → Hearth → Mastery) -->
         <circle r="2.5" fill="#e8a020" opacity="0.6">
           <animateMotion dur="6s" repeatCount="indefinite" path="M 350,99 L 350,189 L 350,200 L 350,290 L 350,302 L 350,369 L 350,380 L 350,447 L 350,540 L 350,595 L 350,607 L 350,662 L 350,674 L 350,729 L 350,740 L 350,784"/>
@@ -947,6 +956,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
         <circle r="1.5" fill="#d4af69" opacity="0.4">
           <animateMotion dur="10s" repeatCount="indefinite" path="M 612,627 A 55,55 0 1,1 612,737 A 55,55 0 1,1 612,627"/>
         </circle>
+        </g>
 
         <!-- ═══ FOUNDATION (top) ═══ -->
         <g class="mn-g unlocked" onmouseenter="showNodePreview('foundation',event)" onmouseleave="hideNodePreview()" onclick="showNodeInfo('foundation')" data-node="foundation">
@@ -1746,11 +1756,11 @@ function showFoundation(){
       (pct===100?'<span style="margin-left:6px;font-size:0.6rem">✨</span>':'<span style="margin-left:6px;font-size:0.5rem;color:var(--dim)"> 🔒 Complete all foundations</span>')+
     '</div>'+
     // Two-column: character + pyramid
-    '<div style="display:flex;gap:16px;align-items:flex-start">'+
-      // Left: character with speech bubble emerging from his mouth area
-      '<div style="flex:0 0 auto;position:relative;width:160px;flex-shrink:0">'+
+    '<div class="foundation-row">'+
+      // Left: character with speech bubble
+      '<div class="foundation-col-char">'+
         '<img src="images/character-neutral.png" class="character-float" style="width:100%;height:auto"/>'+
-        '<div id="speech-bubble" style="position:absolute;top:10%;left:100%;margin-left:8px;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:8px 12px;width:180px;z-index:5">'+
+        '<div id="speech-bubble" class="speech-bubble" style="position:absolute;top:10%;left:100%;margin-left:8px;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:8px 12px;width:180px;z-index:5">'+
           '<div style="position:absolute;left:-6px;top:50%;transform:translateY(-50%);width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-right:6px solid var(--border)"></div>'+
           '<div id="speech-text" style="font-size:0.7rem;line-height:1.3"></div>'+
         '</div>'+
@@ -4281,7 +4291,11 @@ function toggleCredits(){
     particles.push(p);
   }
 
+  var _fCount=0;
   function tick(){
+    _fCount++;
+    // Throttle on mobile: skip every other frame
+    if(isMobile&&_fCount%2===0){requestAnimationFrame(tick);return;}
     ctx.clearRect(0,0,W,H);
     for(var i=0;i<particles.length;i++){
       var p=particles[i];
