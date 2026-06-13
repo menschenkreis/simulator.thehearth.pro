@@ -1901,7 +1901,7 @@ function showKnowing(){
       if(isLocked){
         // Ghost silhouette
         html+='<div style="width:'+w+'px;min-height:'+h+'px;background:'+color+'20;border:1px dashed '+color+'30;border-radius:3px 6px 6px 3px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px 4px;flex-shrink:0">'+
-          '<div style="writing-mode:vertical-rl;text-orientation:mixed;font-family:Josefin Sans,sans-serif;font-size:0.7rem;color:'+color+'50;text-align:center;letter-spacing:0.05em;line-height:1.2">'+cat.title+'</div>'+
+          '<div style="transform:rotate(-90deg);font-family:Josefin Sans,sans-serif;font-size:0.7rem;color:'+color+'50;text-align:center;letter-spacing:0.05em;line-height:1.2;white-space:nowrap">'+cat.title+'</div>'+
         '</div>';
       } else {
         // Real book
@@ -1919,8 +1919,8 @@ function showKnowing(){
         '" onmouseover="this.style.transform=\'translateY(-6px) scale(1.02)\';this.style.boxShadow=\'inset 3px 0 6px rgba(0,0,0,0.2),inset -2px 0 3px rgba(255,255,255,0.05),3px 6px 20px rgba(212,175,105,0.25)\'" onmouseout="this.style.transform=\'translateY(0) scale(1)\';this.style.boxShadow=\'inset 3px 0 6px rgba(0,0,0,0.2),inset -2px 0 3px rgba(255,255,255,0.05),2px 3px 10px rgba(0,0,0,0.35)\'">'+
           // Spine ridge
           '<div style="position:absolute;left:5px;top:8px;bottom:8px;width:1px;background:rgba(255,255,255,0.1)"></div>'+
-          // Title
-          '<div style="writing-mode:vertical-rl;text-orientation:mixed;font-family:Josefin Sans,sans-serif;font-size:0.7rem;color:rgba(255,255,255,0.9);text-align:center;letter-spacing:0.05em;line-height:1.2">'+cat.title+'</div>'+
+          // Title (book spine reads bottom-to-top, like real books on a shelf)
+          '<div style="transform:rotate(-90deg);font-family:Josefin Sans,sans-serif;font-size:0.7rem;color:rgba(255,255,255,0.9);text-align:center;letter-spacing:0.05em;line-height:1.2;white-space:nowrap">'+cat.title+'</div>'+
           // Page count
           '<div style="font-family:JetBrains Mono,monospace;font-size:0.5rem;color:rgba(255,255,255,0.4);margin-top:8px">'+cat.done+'/'+cat.total+'</div>'+
           (allDone?'<div style="position:absolute;top:4px;right:4px;font-size:0.55rem;color:var(--gold)">\u2713</div>':'')+

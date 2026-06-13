@@ -123,7 +123,7 @@
   }
 
   window.openBook = function (categoryId, levelFilter) {
-    var cat = K.categories.find(function (c) { return c.id === categoryId; });
+    var cat = window.KNOWING.categories.find(function (c) { return c.id === categoryId; });
     if (!cat) return;
 
     // Filter topics by level if specified
@@ -246,5 +246,7 @@
       if (pageFlip) { pageFlip.destroy(); pageFlip = null; }
     }, 500);
   }
+
+  window.closeBook = closeBook;
 
 })();
