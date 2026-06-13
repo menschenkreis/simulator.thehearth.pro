@@ -259,6 +259,37 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 .th-c h4{font-family:'Cinzel',serif;color:var(--gold);font-size:0.75rem;margin-bottom:3px;}
 .th-c p{font-size:0.65rem;color:var(--dim);line-height:1.4;}
 
+/* === CREATE (CAULDRON) === */
+.cauldron-wrap{padding:16px;max-width:600px;margin:0 auto;overflow-y:auto;height:100%;}
+.cauldron-header{margin-bottom:16px;}
+.cauldron-vessel{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:140px;padding:24px 16px;position:relative;margin-bottom:20px;}
+.cauldron-bubble{position:relative;width:100%;min-height:100px;background:radial-gradient(ellipse at center,rgba(196,90,32,0.08) 0%,transparent 70%);border-radius:50%;display:flex;align-items:center;justify-content:center;text-align:center;transition:all 0.3s;}
+.cauldron-bubble-glow{position:absolute;width:100%;height:100%;border-radius:50%;background:radial-gradient(ellipse at center,rgba(196,90,32,0.06) 0%,transparent 60%);opacity:0.5;}
+.cauldron-bubbling{animation:cauldron-bubble-anim 0.6s ease-out;}
+@keyframes cauldron-bubble-anim{0%{transform:scale(1);}30%{transform:scale(1.05);background:radial-gradient(ellipse at center,rgba(196,90,32,0.15) 0%,transparent 70%);}100%{transform:scale(1);}}
+.cauldron-prompt-text{font-family:'DM Sans',sans-serif;font-size:0.9rem;color:var(--dim);line-height:1.7;max-width:400px;transition:color 0.3s;z-index:1;}
+.cauldron-prompt-label{font-family:'JetBrains Mono',monospace;font-size:0.65rem;letter-spacing:0.12em;text-transform:uppercase;display:block;margin-bottom:8px;}
+.cauldron-fire{display:flex;gap:4px;align-items:flex-end;margin-top:8px;}
+.cauldron-flame{font-size:0.8rem;color:#c45a20;opacity:0.4;animation:cauldron-flicker 1.5s ease-in-out infinite;}
+.cauldron-flame-2{font-size:1.1rem;animation-delay:0.3s;opacity:0.6;}
+.cauldron-flame-3{font-size:0.7rem;animation-delay:0.6s;opacity:0.3;}
+@keyframes cauldron-flicker{0%,100%{opacity:0.3;transform:translateY(0) scaleY(1);}50%{opacity:0.6;transform:translateY(-2px) scaleY(1.1);}}
+.cauldron-ingredients{margin-bottom:20px;}
+.cauldron-ingredients-label{font-family:JetBrains Mono,monospace;font-size:0.55rem;color:var(--amber);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:10px;}
+.cauldron-ingredients-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:8px;}
+.cauldron-ingredient{display:flex;flex-direction:column;align-items:center;gap:4px;padding:12px 8px;background:rgba(212,175,105,0.03);border:1px solid var(--border);border-radius:8px;cursor:pointer;transition:all 0.2s;font-family:inherit;color:var(--dim);}
+.cauldron-ingredient:hover{background:color-mix(in srgb,var(--ic) 8%,transparent);border-color:color-mix(in srgb,var(--ic) 30%,transparent);transform:translateY(-2px);}
+.cauldron-ingredient:active{transform:translateY(0);}
+.cauldron-ingredient .ci-symbol{font-size:1.3rem;color:var(--ic);line-height:1;}
+.cauldron-ingredient .ci-name{font-family:JetBrains Mono,monospace;font-size:0.6rem;letter-spacing:0.06em;}
+.cauldron-workstation{margin-top:24px;}
+.cauldron-notes{width:100%;min-height:120px;background:var(--card);border:1px solid var(--border);border-radius:8px;padding:14px;font-family:'DM Sans',sans-serif;font-size:0.85rem;color:var(--text);resize:vertical;line-height:1.6;box-sizing:border-box;}
+.cauldron-notes:focus{outline:none;border-color:rgba(212,175,105,0.3);}
+.cauldron-notes::placeholder{color:var(--dim);opacity:0.6;}
+.cauldron-workstation-tools{display:flex;gap:8px;margin-top:8px;}
+.cauldron-tool-btn{background:none;border:1px solid var(--border);color:var(--dim);padding:6px 14px;border-radius:4px;cursor:pointer;font-family:inherit;font-size:0.7rem;transition:all 0.15s;}
+.cauldron-tool-btn:hover{color:var(--text);border-color:var(--gold);}
+
 /* === MASTERY (Beyond) === */
 .mastery-wrap{padding:16px;max-width:650px;margin:0 auto;overflow-y:auto;height:100%;}
 .mastery-header{margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--border);}
@@ -896,6 +927,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 <script src="assets/js/play.js"></script>
 <script src="assets/js/play-worldmap.js"></script>
 <script src="assets/js/create.js"></script>
+<script src="assets/js/create-cauldron.js"></script>
 <script src="assets/js/references.js"></script>
 <script>
 const NODE_DATA = {
@@ -2938,279 +2970,105 @@ function showMastery(){
   '</div>';
 }
 
-// ═══ CREATE NODE ═══
+// ═══ CREATE NODE — THE CAULDRON ═══
 function showCreate(){
   document.querySelectorAll('.pnl').forEach(p=>p.classList.remove('on'));
   document.getElementById('p-foundation').classList.add('on');
-  const C=window.CREATE;if(!C)return;
   const el=document.getElementById('p-foundation');
-  const completed=JSON.parse(localStorage.getItem('hearth-create-progress')||'{}');
+  const CI=window.CAULDRON_INGREDIENTS||[];
 
-  const items=C.categories.map((c)=>{
-    const doneCount=c.topics.filter(t=>completed[t.id]).length;
-    return {
-      id:c.id, title:c.title,
-      done:doneCount===c.topics.length,
-      locked:false,
-      count:c.topics.length, countLabel:'topics'
-    };
-  });
+  var ingredientsHtml=CI.map(function(ing){
+    return '<button class="cauldron-ingredient" data-id="'+ing.id+'" onclick="cauldronStir(\''+ing.id+'\')" style="--ic:'+ing.color+'">'+
+      '<span class="ci-symbol">'+ing.symbol+'</span>'+
+      '<span class="ci-name">'+ing.name+'</span>'+
+    '</button>';
+  }).join('');
 
-  el.innerHTML=rainbowBlocks(items, {
-    icon:'',
-    title:C.title,
-    sources:C.sources,
-    clickFn:'showCreateBook'
-  });
-}
+  // Load saved notes
+  var savedNotes=localStorage.getItem('cauldron-notes')||'';
 
-window.showCreateBook=function(catId){
-  const C=window.CREATE;if(!C)return;
-  const cat=C.categories.find(c=>c.id===catId);if(!cat)return;
-  const el=document.getElementById('p-foundation');
-  const completed=JSON.parse(localStorage.getItem('hearth-create-progress')||'{}');
-  const catIdx=C.categories.indexOf(cat);
-  const rainbow=['#e74c3c','#e67e22','#f1c40f','#2ecc71','#3498db','#9b59b6','#e84393'];
-  const color=rainbow[catIdx%rainbow.length];
-
-  let html='<div style="padding:20px;max-width:650px;margin:0 auto">'+
-    '<button onclick="showCreate()" style="background:none;border:1px solid var(--border);color:var(--dim);padding:6px 12px;border-radius:4px;cursor:pointer;font-family:inherit;font-size:0.7rem;margin-bottom:16px">&larr; Back to Create</button>'+
-    '<div style="border-top:4px solid '+color+';padding-top:16px">'+
-    '<h2 style="font-family:\'DM Sans\',sans-serif;color:'+color+';font-size:1.2rem;margin:0 0 4px 0;font-weight:700">'+cat.title+'</h2>'+
-    '<div style="font-size:0.75rem;color:var(--dim);margin-bottom:16px">'+cat.description+'</div>';
-
-  cat.topics.forEach((t,i)=>{
-    const isDone=completed[t.id];
-    html+='<div onclick="showCreateTopic(\''+catId+'\',\''+t.id+'\')" style="'+
-      'padding:12px 14px;'+
-      'border-bottom:'+(i<cat.topics.length-1?'1px solid var(--border)':'none')+';'+
-      'cursor:pointer;transition:background 0.15s;'+
-      'display:flex;align-items:center;gap:10px;'+
-      'background:'+(isDone?color+'12':'transparent')+
-    '" onmouseover="this.style.background=\''+color+'18\'" onmouseout="this.style.background=\''+(isDone?color+'12':'transparent')+'\'">'+
-      '<span style="font-family:JetBrains Mono;font-size:0.75rem;color:'+(isDone?color:'var(--dim)')+';min-width:20px">'+(i+1)+'</span>'+
-      '<div style="flex:1">'+
-        '<div style="font-family:\'DM Sans\',sans-serif;font-size:0.9rem;color:'+(isDone?color:'var(--text)')+';font-weight:600">'+t.title+'</div>'+
-        '<div style="font-size:0.6rem;color:var(--dim);margin-top:2px">'+('★'.repeat(t.difficulty))+('☆'.repeat(3-t.difficulty))+' · '+t.source+'</div>'+
+  el.innerHTML='<div class="cauldron-wrap">'+
+    '<div class="cauldron-header">'+
+      '<div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">'+
+        '<div style="width:10px;height:10px;border-radius:50%;background:#c45a20;box-shadow:0 0 12px #c45a20"></div>'+
+        '<span style="font-family:JetBrains Mono;font-size:0.6rem;color:#c45a20;letter-spacing:0.12em;text-transform:uppercase">Create · The Cauldron</span>'+
       '</div>'+
-      '<span style="font-size:0.7rem;color:'+(isDone?color:'var(--dim)')+'">'+(isDone?'&#10003;':'&#8594;')+'</span>'+
-    '</div>';
-  });
+      '<p style="font-size:0.8rem;color:var(--dim);margin:4px 0 0 0;line-height:1.6;max-width:480px">'+
+        'Toss an ingredient into the cauldron. It will bubble up a prompt to push you somewhere you wouldn\'t go alone.'+
+      '</p>'+
+    '</div>'+
 
-  html+='</div></div>';
-  el.innerHTML=html;
-};
-
-window.showCreateTopic=function(catId, topicId){
-  const C=window.CREATE;if(!C)return;
-  const cat=C.categories.find(x=>x.id===catId);if(!cat)return;
-  const topic=cat.topics.find(t=>t.id===topicId);if(!topic)return;
-  const el=document.getElementById('p-foundation');
-  const catIdx=C.categories.indexOf(cat);
-  const rainbow=['#e74c3c','#e67e22','#f1c40f','#2ecc71','#3498db','#9b59b6','#e84393'];
-  const color=rainbow[catIdx%rainbow.length];
-  const completed=JSON.parse(localStorage.getItem('hearth-create-progress')||'{}');
-  const isDone=completed[topicId];
-
-  el.innerHTML='<div style="padding:20px;max-width:650px;margin:0 auto">'+
-    '<button onclick="showCreateBook(\''+catId+'\')" style="background:none;border:1px solid var(--border);color:var(--dim);padding:6px 12px;border-radius:4px;cursor:pointer;font-family:inherit;font-size:0.7rem;margin-bottom:16px">&larr; Back to '+cat.title+'</button>'+
-    '<div style="border-top:4px solid '+color+';padding-top:16px">'+
-      '<div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">'+
-        '<span class="tag" style="border-color:'+color+'30;color:'+color+'">'+cat.title+'</span>'+
-        '<span class="tag" style="border-color:'+color+'30;color:'+color+'">'+('★'.repeat(topic.difficulty))+('☆'.repeat(3-topic.difficulty))+'</span>'+
-        '<span class="tag" style="border-color:'+color+'30;color:'+color+'">'+topic.source+'</span>'+
+    '<div class="cauldron-vessel" id="cauldronVessel">'+
+      '<div class="cauldron-bubble" id="cauldronBubble">'+
+        '<div class="cauldron-bubble-glow"></div>'+
+        '<div class="cauldron-prompt-text" id="cauldronPrompt">The cauldron is still. Add an ingredient.</div>'+
       '</div>'+
-      '<h2 style="font-family:\'DM Sans\',sans-serif;color:'+color+';font-size:1.1rem;margin:0 0 16px 0;font-weight:700">'+topic.title+'</h2>'+
-      '<div style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:20px;line-height:1.7;font-size:0.85rem;color:var(--text)">'+topic.body+'</div>'+
-      '<div style="margin-top:16px;display:flex;gap:8px">'+
-        '<button onclick="completeCreateTopic(\''+topicId+'\')" style="flex:1;background:'+(isDone?color+'18':color)+';color:'+(isDone?color:'white')+';border:2px solid '+color+';padding:12px;border-radius:8px;font-family:DM Sans,sans-serif;font-size:0.9rem;font-weight:600;cursor:pointer">'+(isDone?'&#10003; Completed':'Mark Complete')+'</button>'+
+      '<div class="cauldron-fire">'+
+        '<span class="cauldron-flame cauldron-flame-1">▲</span>'+
+        '<span class="cauldron-flame cauldron-flame-2">▲</span>'+
+        '<span class="cauldron-flame cauldron-flame-3">▲</span>'+
+      '</div>'+
+    '</div>'+
+
+    '<div class="cauldron-ingredients">'+
+      '<div class="cauldron-ingredients-label">Ingredients</div>'+
+      '<div class="cauldron-ingredients-grid">'+ingredientsHtml+'</div>'+
+    '</div>'+
+
+    '<div class="cauldron-workstation">'+
+      '<div class="cauldron-ingredients-label">Workstation</div>'+
+      '<textarea class="cauldron-notes" id="cauldronNotes" placeholder="Write your ideas here..." oninput="saveCauldronNotes()">'+savedNotes+'</textarea>'+
+      '<div class="cauldron-workstation-tools">'+
+        '<button class="cauldron-tool-btn" onclick="cauldronClear()">Clear</button>'+
+        '<button class="cauldron-tool-btn" onclick="cauldronReroll()">Stir Again</button>'+
       '</div>'+
     '</div>'+
   '</div>';
-};
-
-window.completeCreateTopic=function(topicId){
-  const progress=JSON.parse(localStorage.getItem('hearth-create-progress')||'{}');
-  progress[topicId]=true;
-  localStorage.setItem('hearth-create-progress',JSON.stringify(progress));
-  showCreate();
-};
-
-function showFoundationTopic(topicId){
-  const F=window.FOUNDATION;if(!F)return;
-  const topic=F.topics.find(t=>t.id===topicId);if(!topic)return;
-  const el=document.getElementById('p-foundation');
-  const topicIdx=F.topics.indexOf(topic);
-  const nextTopic=topicIdx<F.topics.length-1?F.topics[topicIdx+1]:null;
-  const completed=JSON.parse(localStorage.getItem('hearth-foundation-progress')||'{}');
-  const isCompleted=completed[topicId];
-  const rainbow=['#e74c3c','#e67e22','#f1c40f','#2ecc71','#3498db','#9b59b6','#e84393'];
-  const color=rainbow[topicIdx];
-
-  function renderStep(idx){
-    const s=topic.steps[idx];
-    const isLast=idx===topic.steps.length-1;
-    let html='<div class="lp-body" style="--accent:'+color+'">'+
-      '<div class="lp-tags" style="display:none">'+topic.tags.map(t=>'<span style="border-color:'+color+'30;color:'+color+'">'+t+'</span>').join('')+'</div>'+
-      '<h3 style="color:'+color+'">'+s.title+'</h3>'+
-      s.body;
-    if(isLast){
-      html+='<div style="display:flex;gap:8px;margin-top:16px">'+
-        '<button class="lp-next" style="flex:1;background:'+color+';color:white;border:none;padding:12px;border-radius:8px;font-family:DM Sans,sans-serif;font-size:0.9rem;font-weight:600;cursor:pointer" onclick="completeFoundationTopic(\''+topicId+'\')">Mark Complete</button>';
-      if(nextTopic){
-        const nextColor=rainbow[topicIdx+1];
-        html+='<button class="lp-next" style="flex:1;background:'+nextColor+'18;color:'+nextColor+';border:2px solid '+nextColor+'60;padding:12px;border-radius:8px;font-family:DM Sans,sans-serif;font-size:0.9rem;font-weight:600;cursor:pointer" onclick="showFoundationTopic(\''+nextTopic.id+'\')">Next: '+nextTopic.title+'</button>';
-      }
-      html+='</div>';
-    } else {
-      html+='<button class="lp-next" style="background:'+color+'18;color:'+color+';border:2px solid '+color+'40;padding:10px 20px;border-radius:8px;font-family:DM Sans,sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer" onclick="nextFStep(\''+topicId+'\','+(idx+1)+')">Next: '+topic.steps[idx+1].label+'</button>';
-    }
-    html+='</div>';
-    return html;
-  }
-
-  el.innerHTML='<div class="lesson-page" style="border-top:4px solid '+color+'">'+
-    '<div class="lp-back" onclick="showFoundation()">\u2190 Foundation</div>'+
-    '<div style="display:flex;justify-content:flex-end;margin-bottom:4px"><button id="ttsBtn" onclick="ttsToggle()" style="background:'+color+'18;color:'+color+';border:1px solid '+color+'40;padding:6px 14px;border-radius:6px;cursor:pointer;font-family:inherit;font-size:0.75rem;font-weight:600">Read aloud</button></div>'+
-    '<div class="lp-header">'+
-      '<div class="lp-tag" style="color:'+color+'">'+topic.num+' / '+F.tag+(isCompleted?' · Complete':'')+'</div>'+
-      '<h2 style="color:'+color+'">'+topic.title+'</h2>'+
-      '<div class="lp-subtitle">'+topic.subtitle+'</div>'+
-    '</div>'+
-    // Staircase steps — ascending left to right
-    '<div class="lp-steps-stairs" id="fSteps">'+
-      topic.steps.map((s,i)=>{
-        const isOn=i===0;
-        const bg=isOn?color:color+'10';
-        const borderCol=isOn?color:color+'30';
-        const textCol=isOn?'white':color;
-        const h=40+i*20;
-        return '<div class="lp-stair'+(isOn?' on':'')+'" onclick="goFStep(\''+topicId+'\','+i+')" style="height:'+h+'px;display:flex;flex-direction:column;justify-content:flex-end">'+
-          '<div class="lp-stair-tread" style="background:'+bg+';border-color:'+borderCol+'">'+
-            '<span class="lp-stair-sn" style="color:'+textCol+'">'+(i+1)+'</span>'+
-            '<span class="lp-stair-label" style="color:'+textCol+'">'+s.label+'</span>'+
-          '</div>'+
-          '<div class="lp-stair-riser" style="background:'+(isOn?color:color+'40')+';height:6px"></div>'+
-        '</div>';
-      }).join('')+
-    '</div>'+
-    '<div id="fStepBody">'+renderStep(0)+'</div>'+
-  '</div>';
-  window._fTopic=topicId;
 }
 
-window.completeFoundationTopic=function(tid){
-  const progress=JSON.parse(localStorage.getItem('hearth-foundation-progress')||'{}');
-  progress[tid]=true;
-  localStorage.setItem('hearth-foundation-progress',JSON.stringify(progress));
-  const F=window.FOUNDATION;if(!F)return;
-  const idx=F.topics.findIndex(t=>t.id===tid);
-  const next=F.topics[idx+1];
-  if(next) showFoundationTopic(next.id);
-  else showFoundation();
+// ═══ Cauldron interactions ═══
+var _cauldronLastIngredient=null;
+
+window.cauldronStir=function(ingredientId){
+  var CI=window.CAULDRON_INGREDIENTS||[];
+  var ing=CI.find(function(i){return i.id===ingredientId;});
+  if(!ing)return;
+  _cauldronLastIngredient=ingredientId;
+
+  var prompt=ing.prompts[Math.floor(Math.random()*ing.prompts.length)];
+
+  var vessel=document.getElementById('cauldronBubble');
+  var textEl=document.getElementById('cauldronPrompt');
+
+  // Animate: flash + bubble
+  vessel.classList.add('cauldron-bubbling');
+  textEl.style.color=ing.color;
+
+  setTimeout(function(){
+    textEl.innerHTML='<span class="cauldron-prompt-label" style="color:'+ing.color+'">'+ing.symbol+' '+ing.name+'</span><br>'+prompt;
+  },150);
+
+  setTimeout(function(){
+    vessel.classList.remove('cauldron-bubbling');
+  },600);
 };
 
-window.nextFStep=function(tid,idx){goFStep(tid,idx);};
-window.goFStep=function(tid,idx){
-  if(window.speechSynthesis)window.speechSynthesis.cancel();_ttsPlaying=false;
-  const F=window.FOUNDATION;if(!F)return;
-  const topic=F.topics.find(t=>t.id===tid);if(!topic)return;
-  document.querySelectorAll('#fSteps .lp-step').forEach((s,i)=>s.classList.toggle('on',i===idx));
-  const topicIdx=F.topics.indexOf(topic);
-  const nextTopic=topicIdx<F.topics.length-1?F.topics[topicIdx+1]:null;
-  const completed=JSON.parse(localStorage.getItem('hearth-foundation-progress')||'{}');
-  const isCompleted=completed[tid];
-  const rainbow=['#e74c3c','#e67e22','#f1c40f','#2ecc71','#3498db','#9b59b6','#e84393'];
-  const color=rainbow[topicIdx];
-  const s=topic.steps[idx];
-  const body=document.getElementById('fStepBody');
-  if(body){
-    const isLast=idx===topic.steps.length-1;
-    let html='<div class="lp-body" style="--accent:'+color+'">'+
-      '<div class="lp-tags" style="display:none">'+topic.tags.map(t=>'<span style="border-color:'+color+'30;color:'+color+'">'+t+'</span>').join('')+'</div>'+
-      '<h3 style="color:'+color+'">'+s.title+'</h3>'+
-      s.body;
-    if(isLast){
-      html+='<div style="display:flex;gap:8px;margin-top:16px">'+
-        '<button class="lp-next" style="flex:1;background:'+color+';color:white;border:none;padding:12px;border-radius:8px;font-family:DM Sans,sans-serif;font-size:0.9rem;font-weight:600;cursor:pointer" onclick="completeFoundationTopic(\''+tid+'\')">Mark Complete</button>';
-      if(nextTopic){
-        const nextColor=rainbow[topicIdx+1];
-        html+='<button class="lp-next" style="flex:1;background:'+nextColor+'18;color:'+nextColor+';border:2px solid '+nextColor+'60;padding:12px;border-radius:8px;font-family:DM Sans,sans-serif;font-size:0.9rem;font-weight:600;cursor:pointer" onclick="showFoundationTopic(\''+nextTopic.id+'\')">Next: '+nextTopic.title+'</button>';
-      }
-      html+='</div>';
-    } else {
-      html+='<button class="lp-next" style="background:'+color+'18;color:'+color+';border:2px solid '+color+'40;padding:10px 20px;border-radius:8px;font-family:DM Sans,sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer" onclick="nextFStep(\''+tid+'\','+(idx+1)+')">Next: '+topic.steps[idx+1].label+'</button>';
-    }
-    html+='</div>';
-    body.innerHTML=html;
-    body.scrollTop=0;
-    // Update staircase step colors
-    document.querySelectorAll('#fSteps .lp-stair').forEach(function(step,i){
-      const tread=step.querySelector('.lp-stair-tread');
-      const riser=step.querySelector('.lp-stair-riser');
-      const sn=step.querySelector('.lp-stair-sn');
-      const label=step.querySelector('.lp-stair-label');
-      if(i===idx){
-        tread.style.background=color;
-        tread.style.borderColor=color;
-        riser.style.background=color;
-        sn.style.color='white';
-        label.style.color='white';
-      } else {
-        tread.style.background=color+'10';
-        tread.style.borderColor=color+'30';
-        riser.style.background=color+'40';
-        sn.style.color=color;
-        label.style.color=color;
-      }
-    });
+window.cauldronReroll=function(){
+  if(_cauldronLastIngredient){
+    cauldronStir(_cauldronLastIngredient);
   }
 };
 
-function hlP(p){
-  // Update buttons
-  document.querySelectorAll('.path-btn').forEach(b=>b.classList.remove('on'));
-  event.target.classList.add('on');
+window.saveCauldronNotes=function(){
+  var notes=document.getElementById('cauldronNotes');
+  if(notes) localStorage.setItem('cauldron-notes',notes.value);
+};
 
-  // Node groups per path
-  const doingNodes=['doing','practise','play'];
-  const knowingNodes=['knowing','study','create'];
-  const journeyNodes=['foundation','hearth','mastery'];
-  const allNodes=['foundation','hearth','mastery','doing','practise','play','knowing','study','create'];
-
-  // Which nodes to highlight
-  let activeNodes;
-  if(p==='all') activeNodes=allNodes;
-  else if(p==='doing') activeNodes=[...doingNodes,...journeyNodes];
-  else if(p==='knowing') activeNodes=[...knowingNodes,...journeyNodes];
-  else if(p==='journey') activeNodes=journeyNodes;
-  else activeNodes=allNodes;
-
-  // Dim/light nodes
-  document.querySelectorAll('.mn-g').forEach(g=>{
-    const node=g.dataset.node||g.getAttribute('data-node');
-    if(!node){
-      // Hearth has no data-node, always show
-      g.style.opacity='1';g.style.filter='none';return;
-    }
-    if(p==='all'||activeNodes.includes(node)){g.style.opacity='1';g.style.filter='none';}
-    else{g.style.opacity='0.15';g.style.filter='grayscale(0.8)';}
-  });
-
-  // Dim/light connection lines (gold-conn + spine)
-  // 'doing' lights doing lines + journey (spine/shared)
-  // 'knowing' lights knowing lines + journey
-  // 'journey' lights only journey lines
-  // 'all' resets everything
-  document.querySelectorAll('.gold-conn, .conn-spine').forEach(l=>{
-    const lp=l.dataset.path||'journey';
-    if(p==='all'){l.style.opacity='';l.style.strokeWidth='';return;}
-    // A line lights up if it matches the selected path OR it's a journey line and the selected path is doing/knowing
-    const shouldLight=(lp===p)||(lp==='journey'&&(p==='doing'||p==='knowing'||p==='journey'));
-    if(shouldLight){l.style.opacity='0.5';l.style.strokeWidth='3';}
-    else{l.style.opacity='0.04';l.style.strokeWidth='';}
-  });
-}
+window.cauldronClear=function(){
+  var notes=document.getElementById('cauldronNotes');
+  if(notes) notes.value='';
+  saveCauldronNotes();
+};
 
 // ═══ TEXT-TO-SPEECH ═══
 let _ttsUtterance=null;
