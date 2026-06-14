@@ -3750,8 +3750,8 @@ function toggleParticles(){
 (function(){
   var m=localStorage.getItem('hearthSoundMuted');
   if(m==='true'){var btn=document.getElementById('soundToggle');if(btn)btn.textContent='Off';var a=document.getElementById('hearthAudio');if(a)a.pause();}
-  var p=localStorage.getItem('hearthParticles');
-  if(p==='off'){var btn=document.getElementById('particleToggle');if(btn)btn.textContent='Off';var c=document.getElementById('emberCanvas');if(c)c.style.display='none';}
+  // Always enable particles
+  localStorage.setItem('hearthParticles','on');
 })();
 
 function backToMap(){
