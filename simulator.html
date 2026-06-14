@@ -1970,9 +1970,10 @@ function rainbowBlocks(items, opts){
 
 
 // ═══ FOUNDATION TOPIC VIEWER ═══
-function showFoundationTopic(topicId){setNotebookContext('f-'+topicId,topic.title);
+function showFoundationTopic(topicId){
   const F=window.FOUNDATION;if(!F)return;
   const topic=F.topics.find(t=>t.id===topicId);if(!topic)return;
+  setNotebookContext('f-'+topicId,topic.title);
   const el=document.getElementById('p-foundation');
 
   // ── INTERACTIVE LESSON OVERRIDE ──
@@ -2014,7 +2015,7 @@ function showFoundationTopic(topicId){setNotebookContext('f-'+topicId,topic.titl
       s.body;
     if(isLast){
       html+='<div style="display:flex;gap:8px;margin-top:16px">'+
-        '<button class="lp-next" style="flex:1;background:'+color+';color:white;border:none;padding:12px;border-radius:8px;font-family:DM Sans,sans-serif;font-size:0.9rem;font-weight:600;cursor:pointer" onclick="playSfx('success');completeFoundationTopic(\''+topicId+'\')">Mark Complete</button>';
+        '<button class="lp-next" style="flex:1;background:'+color+';color:white;border:none;padding:12px;border-radius:8px;font-family:DM Sans,sans-serif;font-size:0.9rem;font-weight:600;cursor:pointer" onclick="playSfx(\'success\');completeFoundationTopic(\''+topicId+'\')">Mark Complete</button>';
       if(nextTopic){
         const nextColor=rainbow[topicIdx+1];
         html+='<button class="lp-next" style="flex:1;background:'+nextColor+'18;color:'+nextColor+';border:2px solid '+nextColor+'60;padding:12px;border-radius:8px;font-family:DM Sans,sans-serif;font-size:0.9rem;font-weight:600;cursor:pointer" onclick="showFoundationTopic(\''+nextTopic.id+'\')">Next: '+nextTopic.title+'</button>';
@@ -2070,7 +2071,7 @@ window.goFStep=function(tid,idx){
       s.body;
     if(isLast){
       html+='<div style="display:flex;gap:8px;margin-top:16px">'+
-        '<button class="lp-next" style="flex:1;background:'+color+';color:white;border:none;padding:12px;border-radius:8px;font-family:DM Sans,sans-serif;font-size:0.9rem;font-weight:600;cursor:pointer" onclick="playSfx('success');completeFoundationTopic(\''+tid+'\')">Mark Complete</button>';
+        '<button class="lp-next" style="flex:1;background:'+color+';color:white;border:none;padding:12px;border-radius:8px;font-family:DM Sans,sans-serif;font-size:0.9rem;font-weight:600;cursor:pointer" onclick="playSfx(\'success\');completeFoundationTopic(\''+tid+'\')">Mark Complete</button>';
       if(nextTopic){
         const nextColor=rainbow[topicIdx+1];
         html+='<button class="lp-next" style="flex:1;background:'+nextColor+'18;color:'+nextColor+';border:2px solid '+nextColor+'60;padding:12px;border-radius:8px;font-family:DM Sans,sans-serif;font-size:0.9rem;font-weight:600;cursor:pointer" onclick="showFoundationTopic(\''+nextTopic.id+'\')">Next: '+nextTopic.title+'</button>';
@@ -2369,7 +2370,7 @@ function showKnowing(){
           '<div style="writing-mode:vertical-rl;text-orientation:mixed;font-family:Josefin Sans,sans-serif;font-size:0.6rem;color:#666;text-align:center;line-height:1.1;max-height:'+(h-20)+'px;overflow:hidden;letter-spacing:0.08em;text-transform:uppercase">'+cat.title+'</div>'+
         '</div>';      } else {
         // Real book
-        html+='<div onclick="playSfx('book-open');openBook(\''+cat.id+'\','+lv.level+')" style="'+
+        html+='<div onclick="playSfx(\'book-open\');openBook(\''+cat.id+'\','+lv.level+')" style="'+
           'width:'+w+'px;height:'+h+'px;'+
           'background:linear-gradient(90deg,'+color+'dd 0%,'+color+' 8%,'+color+'ee 10%,'+color+'bb 100%);'+
           'border:2px solid '+(allDone?'var(--gold)':'rgba(255,255,255,0.08)')+';'+
@@ -2417,9 +2418,10 @@ window._scrollShelf=function(id,dir){
   el.scrollBy({left:dir*200,behavior:'smooth'});
 };
 
-window.showKnowingBook=function(catId){setNotebookContext(catId,cat.title);
+window.showKnowingBook=function(catId){
   const K=window.KNOWING;if(!K)return;
   const cat=K.categories.find(c=>c.id===catId);if(!cat)return;
+  setNotebookContext(catId,cat.title);
   const el=document.getElementById('p-foundation');
   const completed=JSON.parse(localStorage.getItem('hearth-knowing-progress')||'{}');
   const catIdx=K.categories.indexOf(cat);
@@ -2428,7 +2430,7 @@ window.showKnowingBook=function(catId){setNotebookContext(catId,cat.title);
 
   // Book open view - white theme with character
   let html='<div style="padding:20px;max-width:900px;margin:0 auto">'+
-    '<button class="back-btn" onclick="playSfx('book-close');showKnowing()">← Back to shelf</button>'+
+    '<button class="back-btn" onclick="playSfx(\'book-close\');showKnowing()">← Back to shelf</button>'+
     '<div style="display:flex;gap:20px;align-items:flex-start">'+
 
     // Left: character giving context
@@ -2453,7 +2455,7 @@ window.showKnowingBook=function(catId){setNotebookContext(catId,cat.title);
     const isDone=completed[topic.id];
     const diffLabel=['','Beginner','Intermediate','Advanced'][topic.difficulty];
 
-    html+='<div onclick="playSfx('click');showKnowingTopic(\''+catId+'\',\''+topic.id+'\')" style="'+
+    html+='<div onclick="playSfx(\'click\');showKnowingTopic(\''+catId+'\',\''+topic.id+'\')" style="'+
       'padding:12px 14px;'+
       'border-bottom:'+(i<cat.topics.length-1?'1px solid var(--border)':'none')+';'+
       'cursor:pointer;transition:background 0.15s;'+
@@ -2474,10 +2476,11 @@ window.showKnowingBook=function(catId){setNotebookContext(catId,cat.title);
 
 // ═══ KNOWING TOPIC VIEW (encyclopedia - just read, no quiz) ═══
 
-window.showKnowingTopic=function(catId,topicId){setNotebookContext(catId+'-'+topicId,topic.title);
+window.showKnowingTopic=function(catId,topicId){
   const K=window.KNOWING;if(!K)return;
   const cat=K.categories.find(c=>c.id===catId);if(!cat)return;
   const topic=cat.topics.find(t=>t.id===topicId);if(!topic)return;
+  setNotebookContext(catId+'-'+topicId,topic.title);
   const el=document.getElementById('p-foundation');
   const completed=JSON.parse(localStorage.getItem('hearth-knowing-progress')||'{}');
   const isDone=completed[topicId];
@@ -4625,12 +4628,7 @@ window.playSfx=function(type){
   }
   draw();
 
-  // Debug: show particle count for 3 seconds
-  var d=document.createElement('div');
-  d.style.cssText='position:fixed;bottom:8px;right:8px;z-index:9999;background:rgba(0,0,0,0.85);color:#ffd700;padding:4px 10px;font:bold 11px monospace;border-radius:4px;pointer-events:none';
-  d.textContent='Embers: '+MAX+' active | '+W+'x'+H;
-  document.body.appendChild(d);
-  setTimeout(function(){d.remove();},3000);
+
 })();
 </script>
 
