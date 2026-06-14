@@ -25,24 +25,18 @@
     { text: 'Music expresses that which cannot be put into words.', author: 'Victor Hugo' },
   ];
 
+  // Keep this list strict: a video should match the exact lesson topic, not just
+  // the broader book category or a nearby idea.
   const TOPIC_VIDEO_REFS = {
     'time-signatures': [{ cat: 'rhythm', level: 'level5', num: 12 }],
-    'subdivision': [{ cat: 'rhythm', level: 'level1', num: 1 }, { cat: 'rhythm', level: 'level2', num: 2 }],
     'triads': [{ cat: 'chords-harmony', level: 'level3', num: 4 }],
     'seventh-chords': [{ cat: 'chords-harmony', level: 'level5', num: 11 }],
     'extensions': [{ cat: 'chords-harmony', level: 'level5', num: 11 }],
-    'chord-voicings': [{ cat: 'chords-harmony', level: 'level4', num: 8 }],
-    'chord-progressions': [{ cat: 'chords-harmony', level: 'level6', num: 16 }],
     'pentatonic': [{ cat: 'scales', level: 'level1', num: 2 }],
-    'minor-scales': [{ cat: 'scales', level: 'level5', num: 13 }],
     'modes': [{ cat: 'scales', level: 'level6', num: 17 }],
-    'exotic-scales': [{ cat: 'scales', level: 'level8', num: 42 }],
     'what-is-arpeggio': [{ cat: 'arpeggios', level: 'level4', num: 9 }],
-    'major-arpeggios': [{ cat: 'arpeggios', level: 'level3', num: 6 }],
-    'seventh-arpeggios': [{ cat: 'arpeggios', level: 'level6', num: 21 }],
     'intervals': [{ cat: 'theory', level: 'level3', num: 7 }],
     'circle-of-fifths': [{ cat: 'theory', level: 'level4', num: 10 }],
-    'key-signatures': [{ cat: 'theory', level: 'level4', num: 47 }],
     'modulation': [{ cat: 'chords-harmony', level: 'level6', num: 51 }]
   };
 
