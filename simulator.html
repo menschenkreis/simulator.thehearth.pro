@@ -782,7 +782,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 </style>
 </head>
 <body>
-<canvas id="emberCanvas"></canvas>
+<canvas id="emberCanvas" style="border:2px solid red;"></canvas>
 <audio id="hearthAudio" loop preload="none"></audio>
 <!-- Ambient crackle sound loaded dynamically -->
 
@@ -2370,7 +2370,7 @@ function showKnowing(){
           '<div style="writing-mode:vertical-rl;text-orientation:mixed;font-family:Josefin Sans,sans-serif;font-size:0.6rem;color:#666;text-align:center;line-height:1.1;max-height:'+(h-20)+'px;overflow:hidden;letter-spacing:0.08em;text-transform:uppercase">'+cat.title+'</div>'+
         '</div>';      } else {
         // Real book
-        html+='<div onclick="playSfx(\'book-open\');openBook(\''+cat.id+'\','+lv.level+')" style="'+
+        html+='<div onclick="playSfx(\'book-open\');showKnowingBook(\''+cat.id+'\','+lv.level+')" style="'+
           'width:'+w+'px;height:'+h+'px;'+
           'background:linear-gradient(90deg,'+color+'dd 0%,'+color+' 8%,'+color+'ee 10%,'+color+'bb 100%);'+
           'border:2px solid '+(allDone?'var(--gold)':'rgba(255,255,255,0.08)')+';'+
@@ -4569,7 +4569,7 @@ window.playSfx=function(type){
 // Ember particles — simple and bright
 (function(){
   var canvas=document.getElementById('emberCanvas');
-  if(!canvas)return;
+  if(!canvas){console.log("EMBER: no canvas element!");return;}console.log("EMBER: canvas found, starting particles");
   var ctx=canvas.getContext('2d');
   var W=window.innerWidth,H=window.innerHeight;
   canvas.width=W;canvas.height=H;
