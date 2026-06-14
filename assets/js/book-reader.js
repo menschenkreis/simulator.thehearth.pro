@@ -65,7 +65,6 @@
 
   function getDirectVideos(topic) {
     var direct = [];
-    if (topic.video) direct.push({ title: topic.title, url: topic.video, source: 'Direct lesson' });
     (TOPIC_VIDEO_REFS[topic.id] || []).forEach(function (ref) {
       var v = getRoadmapVideo(ref);
       if (v) direct.push({ title: v.title, url: v.url, source: 'QJamTracks Roadmap' });
@@ -85,6 +84,23 @@
     var list = titles.join(', ');
     if (cat.topics.length > 3) list += ', and more';
     return 'This book opens the ' + cat.title + ' path. First we will move through ' + list + '. Take it slowly: read, listen, then try the idea on the guitar.';
+  }
+
+  function renderConcepts(topic) {
+    var concepts = window.KNOWING_CONCEPTS && window.KNOWING_CONCEPTS[topic.id];
+    if (!concepts) return '';
+    var keywords = (concepts.keywords || []).map(function (word) {
+      return '<span class="concept-chip">' + esc(word) + '</span>';
+    }).join('');
+    var sources = (concepts.sources || []).map(function (source) {
+      return '<li>' + esc(source) + '</li>';
+    }).join('');
+    return '<div class="topic-concepts">' +
+      '<div class="concept-heading">Key concepts from the library</div>' +
+      '<p class="concept-focus">' + esc(concepts.focus || '') + '</p>' +
+      '<div class="concept-chip-row">' + keywords + '</div>' +
+      (sources ? '<ul class="concept-sources">' + sources + '</ul>' : '') +
+    '</div>';
   }
 
   function getProgress() {
@@ -119,7 +135,7 @@
             '<div class="topic-label">' + esc(cat.title) + '</div>' +
             '<div class="topic-title">' + esc(topic.title) + '</div>' +
             '<div class="topic-diff">' + diffLabel + '  ' + diffDots + '</div>' +
-            '<div class="topic-body">' + topic.body + '</div>' +
+            '<div class="topic-body">' + renderConcepts(topic) + topic.body + '</div>' +
             '<div class="topic-footer">' +
               '<span class="topic-source">' + esc(topic.source) + '</span>' +
               '<span class="topic-num">' + (idx + 1) + '</span>' +

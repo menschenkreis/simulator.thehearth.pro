@@ -59,7 +59,7 @@
   position: relative;
   width: 90vw;
   height: 75vh;
-  max-width: 1080px;
+  max-width: 980px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -68,10 +68,10 @@
 /* ── Floating guide ── */
 .book-guide {
   position: absolute;
-  left: clamp(1.5rem, 5vw, 5rem);
+  left: clamp(1rem, 2.5vw, 3rem);
   top: 50%;
   transform: translateY(-46%);
-  width: min(230px, 23vw);
+  width: min(205px, 18vw);
   z-index: 20;
   display: flex;
   flex-direction: column;
@@ -246,6 +246,54 @@
 .page-topic .topic-body strong {
   color: var(--book-ink);
   font-weight: 600;
+}
+.topic-concepts {
+  background: rgba(196,122,58,0.045);
+  border: 1px solid rgba(196,122,58,0.14);
+  border-radius: 6px;
+  padding: 0.85rem;
+  margin: 0 0 1rem;
+}
+.concept-heading {
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 0.58rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--book-accent);
+  margin-bottom: 0.45rem;
+}
+.concept-focus {
+  margin: 0 0 0.65rem;
+  font-size: 0.78rem;
+  line-height: 1.55;
+  color: #333;
+  text-align: left;
+}
+.concept-chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-bottom: 0.65rem;
+}
+.concept-chip {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid rgba(0,0,0,0.08);
+  border-radius: 999px;
+  padding: 0.18rem 0.5rem;
+  background: rgba(255,255,255,0.72);
+  color: #3b332b;
+  font-size: 0.62rem;
+  line-height: 1.25;
+  white-space: nowrap;
+}
+.concept-sources {
+  margin: 0.2rem 0 0 1rem;
+  padding: 0;
+  color: rgba(0,0,0,0.38);
+  font-size: 0.62rem;
+  line-height: 1.45;
+  text-align: left;
 }
 .page-topic .topic-footer {
   margin-top: auto;
@@ -432,9 +480,16 @@
   .page-cover .cover-title { font-size: 1.1rem; letter-spacing: 3px; }
 }
 
+@media (min-width: 1000px) {
+  .flipbook-wrapper {
+    width: calc(90vw - clamp(120px, 14vw, 220px));
+    transform: translateX(clamp(70px, 7vw, 110px));
+  }
+}
+
 @media (max-width: 1180px) {
   .book-guide {
-    left: 1.25rem;
+    left: 1rem;
     width: 190px;
   }
   .book-guide-img {
