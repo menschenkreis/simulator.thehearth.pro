@@ -201,7 +201,7 @@ function createTeachingEngine(containerEl, opts){
     html += '<div class="teach-cards" style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin:16px 0">';
     step.cards.forEach(card => {
       const icon = card.icon || '📖';
-      html += '<div class="teach-card" style="flex:1 1 '+(100/step.cards.length - 2)+'%;min-width:140px;max-width:220px;background:var(--card);border:2px solid '+(card.color||'var(--gold)')+'40;border-radius:10px;padding:16px 12px;text-align:center;cursor:pointer;transition:all 0.2s" onclick="this.style.borderColor=\''+(card.color||'var(--gold))+'\';this.style.transform=\'scale(1.03)\'">' +
+      html += '<div class="teach-card" style="flex:1 1 '+(100/step.cards.length - 2)+'%;min-width:140px;max-width:220px;background:var(--card);border:2px solid '+(card.color||'var(--gold)')+'40;border-radius:10px;padding:16px 12px;text-align:center;cursor:pointer;transition:all 0.2s" onclick="this.style.borderColor=\''+(card.color||'var(--gold)')+'\';this.style.transform=\'scale(1.03)\'">' +
         '<div style="font-size:2rem;margin-bottom:8px">'+icon+'</div>' +
         '<div style="font-family:Cinzel,serif;font-size:0.75rem;font-weight:700;color:'+(card.color||'var(--gold)')+';margin-bottom:6px">'+card.title+'</div>' +
         '<div style="font-size:0.7rem;color:var(--dim);line-height:1.4">'+card.desc+'</div>' +
