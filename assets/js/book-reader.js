@@ -6,8 +6,6 @@
 (function () {
   'use strict';
 
-  const STORAGE_KEY = 'hearth…ress';
-
   let pageFlip = null;
   let pages = [];
   let pageNotes = [];
@@ -99,8 +97,8 @@
     return 'Pause page: "' + quote.text + '" ' + quote.author + ' is pointing at a way to listen. Carry that idea into the next lesson page.';
   }
 
-  function getBackGuideText(cat, done) {
-    return 'End of this book. You marked ' + done + ' of ' + cat.topics.length + ' topics understood. The next pass should be slower: reread one page, then test it with your hands.';
+  function getBackGuideText(cat) {
+    return 'You reached the end of this book. Choose one idea from these pages and prove it on the guitar before closing the cover.';
   }
 
   function renderConcepts(topic) {
@@ -118,10 +116,6 @@
       '<div class="concept-chip-row">' + keywords + '</div>' +
       (sources ? '<ul class="concept-sources">' + sources + '</ul>' : '') +
     '</div>';
-  }
-
-  function getProgress() {
-    return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
   }
 
   function buildPages(cat) {
@@ -204,16 +198,15 @@
     });
 
     // Back cover
-    var completed = getProgress();
-    var done = cat.topics.filter(function (t) { return completed[t.id]; }).length;
+    var topicWord = cat.topics.length === 1 ? 'topic' : 'topics';
     addPage(
       '<div class="page" data-density="hard">' +
         '<div class="page-content page-back">' +
-          '<div class="back-title">' + (done === cat.topics.length ? 'Complete' : 'End of Book') + '</div>' +
-          '<div class="back-progress">' + done + ' / ' + cat.topics.length + ' topics understood</div>' +
+          '<div class="back-title">End of Book</div>' +
+          '<div class="back-progress">' + cat.topics.length + ' ' + topicWord + ' covered</div>' +
         '</div>' +
       '</div>',
-      getBackGuideText(cat, done)
+      getBackGuideText(cat)
     );
 
     pageNotes = notes;
