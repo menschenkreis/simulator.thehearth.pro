@@ -26,6 +26,7 @@ window.LESSON_HOW_TO_LEARN = {
       type: 'ask',
       concept: 'learning-is-skill',
       char: TeachingCHAR.question,
+      charSize: 'big',
       text: '<p>Did you know that <strong>learning itself is a skill</strong>?</p><p>Not talent. Not genetics. A skill — like riding a bike or cooking a meal.</p>',
       choices: [
         {
@@ -56,6 +57,7 @@ window.LESSON_HOW_TO_LEARN = {
     {
       type: 'speak',
       char: TeachingCHAR.encouraging,
+      charSize: 'big',
       text: '<p>There are <strong>three things</strong> that block learning. Not 10. Not 50. Three.</p><p>Understand these, and you\'ll know why 90% of people quit guitar — and why you won\'t.</p>',
     },
 
@@ -105,6 +107,7 @@ window.LESSON_HOW_TO_LEARN = {
           correct: true,
           response: {
             char: TeachingCHAR.sparks,
+            charSize: 'big',
             text: '<p>Exactly! You can watch videos, read chord charts, study theory — but at some point, your hands need to touch the strings. The simulator will always push you toward the physical act.</p>'
           }
         },
@@ -137,6 +140,7 @@ window.LESSON_HOW_TO_LEARN = {
           correct: true,
           response: {
             char: TeachingCHAR.sparks,
+            charSize: 'big',
             text: '<p>Yes! This is why the simulator breaks everything into small, manageable pieces. One note before one chord. One chord before one song. The gradient stays gentle — and you actually learn.</p>'
           }
         },
@@ -212,6 +216,7 @@ window.LESSON_HOW_TO_LEARN = {
       type: 'ask',
       concept: 'imagination',
       char: TeachingCHAR.question,
+      charSize: 'big',
       text: '<p>Before you play — what should you do first?</p>',
       choices: [
         {
@@ -219,6 +224,7 @@ window.LESSON_HOW_TO_LEARN = {
           correct: true,
           response: {
             char: TeachingCHAR.sparks,
+            charSize: 'big',
             text: '<p>The superpower isn\'t talent. It\'s <strong>imagination</strong>.</p><p>See the fingers pressing the string. Feel it. Hear the note ring out. The clearer the picture in your mind, the cleaner the movement in your hands.</p><p>Your brain is the boss. Your fingers are the workers.</p>'
           }
         },
@@ -238,6 +244,7 @@ window.LESSON_HOW_TO_LEARN = {
     {
       type: 'end',
       char: TeachingCHAR.sparks,
+      charSize: 'big',
       buttonLabel: 'Complete Block 01 →',
       text: '<p style="text-align:center"><strong>You now know the three barriers to learning.</strong></p><p style="text-align:center">Absence of Mass. Too Steep a Gradient. The Misunderstood Word.</p><p style="text-align:center">You know imagination comes before movement. You know how to find and release tension.</p><p style="text-align:center;margin-top:12px;color:var(--gold);font-family:Cinzel,serif">These are tools you\'ll use every time you practise.</p><p style="text-align:center;font-size:0.85rem;color:var(--dim);margin-top:8px">When you hit a wall later, come back here. The barrier will be one of these three.</p>'
     }

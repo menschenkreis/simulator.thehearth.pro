@@ -65,7 +65,7 @@ function createTeachingEngine(containerEl, opts){
     const charLabel = step.charLabel || '';
     const isTyping = step.typing !== false;
 
-    let html = buildCharArea(charImg, charLabel, step.text, isTyping);
+    let html = buildCharArea(charImg, charLabel, step.text, isTyping, step.charSize);
 
     // Buttons if defined
     if(step.buttons){
@@ -116,7 +116,7 @@ function createTeachingEngine(containerEl, opts){
     const charImg = step.char || CHAR.question;
     const charLabel = step.charLabel || '';
 
-    let html = buildCharArea(charImg, charLabel, step.text, true);
+    let html = buildCharArea(charImg, charLabel, step.text, true, step.charSize);
 
     html += '<div class="teach-choices">';
     step.choices.forEach((c, i) => {
@@ -180,7 +180,7 @@ function createTeachingEngine(containerEl, opts){
 
   // ── FOLLOW-UP: Show response text after correct answer, then advance ──
   function showFollowUp(response, step, lesson){
-    var html = buildCharArea(response.char || CHAR.lightbulb, response.charLabel || '', response.text, true);
+    var html = buildCharArea(response.char || CHAR.lightbulb, response.charLabel || '', response.text, true, response.charSize);
     html += '<div style="text-align:center;margin-top:12px"><span style="font-size:0.7rem;color:var(--dim);letter-spacing:0.05em">tap to continue ▸</span></div>';
     container.innerHTML = html;
     var typingDone = false;
@@ -219,7 +219,7 @@ function createTeachingEngine(containerEl, opts){
       }
       const r = reexplain[reIdx];
       reIdx++;
-      const html = buildCharArea(r.char || CHAR.encouraging, r.charLabel || '', r.text, true);
+      const html = buildCharArea(r.char || CHAR.encouraging, r.charLabel || '', r.text, true, r.charSize);
       container.innerHTML = html;
       typewriterEffect();
 
@@ -242,7 +242,7 @@ function createTeachingEngine(containerEl, opts){
     const charImg = step.char || CHAR.neutral;
     const charLabel = step.charLabel || '';
 
-    let html = buildCharArea(charImg, charLabel, step.text, true);
+    let html = buildCharArea(charImg, charLabel, step.text, true, step.charSize);
 
     html += '<div class="teach-cards" style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin:16px 0">';
     step.cards.forEach(card => {
@@ -270,7 +270,7 @@ function createTeachingEngine(containerEl, opts){
     const charImg = step.char || CHAR.lightbulb;
     const charLabel = step.charLabel || '';
 
-    let html = buildCharArea(charImg, charLabel, step.text, true);
+    let html = buildCharArea(charImg, charLabel, step.text, true, step.charSize);
 
     if(step.videoUrl){
       // Real embed
@@ -312,10 +312,12 @@ function createTeachingEngine(containerEl, opts){
   }
 
   // ── Helpers ──
-  function buildCharArea(charImg, charLabel, text, typing){
+  function buildCharArea(charImg, charLabel, text, typing, size){
+    var sz = size || 'normal';
+    var imgClass = sz === 'big' ? 'teach-char-img teach-char-big' : 'teach-char-img';
     return '<div class="teach-scene">' +
       '<div class="teach-char-wrap">' +
-        '<img src="'+charImg+'" class="teach-char-img" />'+
+        '<img src="'+charImg+'" class="'+imgClass+'" />'+
         (charLabel ? '<div class="teach-char-label">'+charLabel+'</div>' : '') +
       '</div>' +
       '<div class="teach-bubble">' +
