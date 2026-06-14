@@ -60,14 +60,14 @@
     getStudentRecords: (studentId) => fetchJSON('journey-records', {student_id: studentId}),
 
     // Write operations
-    saveTopic: (data) => fetch(API + '?a=content-topics', { method: data.id ? 'PUT' : 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(data) }).then(r=>r.json()),
-    saveDrill: (data) => fetch(API + '?a=content-drills', { method: data.id ? 'PUT' : 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(data) }).then(r=>r.json()),
-    saveBook: (data) => fetch(API + '?a=content-books', { method: data.id ? 'PUT' : 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(data) }).then(r=>r.json()),
-    saveRef: (data) => fetch(API + '?a=content-refs', { method: data.id ? 'PUT' : 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(data) }).then(r=>r.json()),
-    saveLesson: (data) => fetch(API + '?a=content-lessons', { method: data.id ? 'PUT' : 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(data) }).then(r=>r.json()),
-    saveStudent: (data) => fetch(API + '?a=journey-students', { method: data.id ? 'PUT' : 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(data) }).then(r=>r.json()),
-    saveProgress: (data) => fetch(API + '?a=journey-progress', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(data) }).then(r=>r.json()),
-    saveRecord: (data) => fetch(API + '?a=journey-records', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(data) }).then(r=>r.json()),
+    saveTopic: (data) => fetch(API + '?a=content-topics', { method: data.id ? 'PUT' : 'POST', headers: Object.assign({'Content-Type':'application/json'}, localStorage.getItem('hearth-admin-token') ? {'Authorization':'Bearer '+localStorage.getItem('hearth-admin-token')} : {}), body: JSON.stringify(data) }).then(r=>r.json()),
+    saveDrill: (data) => fetch(API + '?a=content-drills', { method: data.id ? 'PUT' : 'POST', headers: Object.assign({'Content-Type':'application/json'}, localStorage.getItem('hearth-admin-token') ? {'Authorization':'Bearer '+localStorage.getItem('hearth-admin-token')} : {}), body: JSON.stringify(data) }).then(r=>r.json()),
+    saveBook: (data) => fetch(API + '?a=content-books', { method: data.id ? 'PUT' : 'POST', headers: Object.assign({'Content-Type':'application/json'}, localStorage.getItem('hearth-admin-token') ? {'Authorization':'Bearer '+localStorage.getItem('hearth-admin-token')} : {}), body: JSON.stringify(data) }).then(r=>r.json()),
+    saveRef: (data) => fetch(API + '?a=content-refs', { method: data.id ? 'PUT' : 'POST', headers: Object.assign({'Content-Type':'application/json'}, localStorage.getItem('hearth-admin-token') ? {'Authorization':'Bearer '+localStorage.getItem('hearth-admin-token')} : {}), body: JSON.stringify(data) }).then(r=>r.json()),
+    saveLesson: (data) => fetch(API + '?a=content-lessons', { method: data.id ? 'PUT' : 'POST', headers: Object.assign({'Content-Type':'application/json'}, localStorage.getItem('hearth-admin-token') ? {'Authorization':'Bearer '+localStorage.getItem('hearth-admin-token')} : {}), body: JSON.stringify(data) }).then(r=>r.json()),
+    saveStudent: (data) => fetch(API + '?a=journey-students', { method: data.id ? 'PUT' : 'POST', headers: Object.assign({'Content-Type':'application/json'}, localStorage.getItem('hearth-admin-token') ? {'Authorization':'Bearer '+localStorage.getItem('hearth-admin-token')} : {}), body: JSON.stringify(data) }).then(r=>r.json()),
+    saveProgress: (data) => fetch(API + '?a=journey-progress', { method: 'POST', headers: Object.assign({'Content-Type':'application/json'}, localStorage.getItem('hearth-admin-token') ? {'Authorization':'Bearer '+localStorage.getItem('hearth-admin-token')} : {}), body: JSON.stringify(data) }).then(r=>r.json()),
+    saveRecord: (data) => fetch(API + '?a=journey-records', { method: 'POST', headers: Object.assign({'Content-Type':'application/json'}, localStorage.getItem('hearth-admin-token') ? {'Authorization':'Bearer '+localStorage.getItem('hearth-admin-token')} : {}), body: JSON.stringify(data) }).then(r=>r.json()),
 
     // Utility
     clearCache,
@@ -79,7 +79,7 @@
       if (!state.students) return;
       for (const s of state.students) {
         const res = await fetch(API + '?a=journey-students', {
-          method: 'POST', headers: {'Content-Type':'application/json'},
+          method: 'POST', headers: Object.assign({'Content-Type':'application/json'}, localStorage.getItem('hearth-admin-token') ? {'Authorization':'Bearer '+localStorage.getItem('hearth-admin-token')} : {}),
           body: JSON.stringify({ name: s.name, current_level: s.currentLevel || 1, notes: '' })
         });
         const {id: studentId} = await res.json();
@@ -87,7 +87,7 @@
         for (const [lvlId, ls] of Object.entries(s.levels || {})) {
           const lvlNum = parseInt(lvlId.replace('L','')) || 1;
           await fetch(API + '?a=journey-progress', {
-            method: 'POST', headers: {'Content-Type':'application/json'},
+            method: 'POST', headers: Object.assign({'Content-Type':'application/json'}, localStorage.getItem('hearth-admin-token') ? {'Authorization':'Bearer '+localStorage.getItem('hearth-admin-token')} : {}),
             body: JSON.stringify({
               student_id: studentId, level_num: lvlNum,
               lessons_done: ls.lessonsDone || 0,
@@ -109,7 +109,7 @@
       for (const t of topics) {
         try {
           await fetch(API + '?a=content-topics', {
-            method: 'POST', headers: {'Content-Type':'application/json'},
+            method: 'POST', headers: Object.assign({'Content-Type':'application/json'}, localStorage.getItem('hearth-admin-token') ? {'Authorization':'Bearer '+localStorage.getItem('hearth-admin-token')} : {}),
             body: JSON.stringify({
               key_name: t.id || t.key_name,
               title: t.title,
@@ -133,7 +133,7 @@
       for (const d of drills) {
         try {
           await fetch(API + '?a=content-drills', {
-            method: 'POST', headers: {'Content-Type':'application/json'},
+            method: 'POST', headers: Object.assign({'Content-Type':'application/json'}, localStorage.getItem('hearth-admin-token') ? {'Authorization':'Bearer '+localStorage.getItem('hearth-admin-token')} : {}),
             body: JSON.stringify({
               key_name: d.id || d.key_name,
               title: d.title,
@@ -161,7 +161,7 @@
       for (const b of books) {
         try {
           await fetch(API + '?a=content-books', {
-            method: 'POST', headers: {'Content-Type':'application/json'},
+            method: 'POST', headers: Object.assign({'Content-Type':'application/json'}, localStorage.getItem('hearth-admin-token') ? {'Authorization':'Bearer '+localStorage.getItem('hearth-admin-token')} : {}),
             body: JSON.stringify({
               key_name: b.id || b.key_name,
               title: b.title,

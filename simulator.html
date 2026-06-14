@@ -1232,7 +1232,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
   <!-- YouTube Link Deposit Panel -->
   <div class="settings-panel" id="linkDepositPanel" style="min-width:340px;padding:16px">
     <h3 style="color:var(--gold);margin-bottom:10px">YouTube Link Deposit</h3>
-    <p style="font-size:.7rem;color:var(--dim);margin-bottom:12px">Paste a YouTube link and tag it. Saves to the database instantly.</p>
+    <p style="font-size:.7rem;color:var(--dim);margin-bottom:12px">Paste a YouTube link and tag it. Saves to the database instantly.</p><div id="ytAuthNote" style="font-size:.65rem;color:var(--amber);margin-bottom:8px"></div>
     <label style="display:block;font-family:JetBrains Mono;font-size:.6rem;color:var(--gold);letter-spacing:.1em;text-transform:uppercase;margin:8px 0 4px">YouTube URL</label>
     <input id="linkDepositUrl" type="url" placeholder="https://youtube.com/watch?v=..." style="width:100%;background:#0d0b08;border:1px solid var(--border);border-radius:8px;color:var(--text);padding:8px 10px;font-size:.8rem">
     <label style="display:block;font-family:JetBrains Mono;font-size:.6rem;color:var(--gold);letter-spacing:.1em;text-transform:uppercase;margin:8px 0 4px">Title</label>
@@ -4979,7 +4979,7 @@ async function depositLink(){
   status.textContent='Saving + auto-linking...';status.style.color='var(--dim)';
   try{
     // Save video
-    var r=await fetch('https://thehearth.pro/api/?a=content-videos',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({key_name:key,title:title,youtube_url:url,category:cat,level_num:lvl,description:notes})});
+    var token=localStorage.getItem('hearth-admin-token')||'';var r=await fetch('https://thehearth.pro/api/?a=content-videos',{method:'POST',headers:{'Content-Type':'application/json','Authorization':token?'Bearer '+token:''},body:JSON.stringify({key_name:key,title:title,youtube_url:url,category:cat,level_num:lvl,description:notes})});
     var d=await r.json();
     if(!d.ok){status.textContent='Error: '+(d.error||'unknown');status.style.color='#e74c3c';return;}
     var videoId=d.id;

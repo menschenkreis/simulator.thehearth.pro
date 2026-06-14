@@ -37,9 +37,24 @@ tr:hover td{color:var(--text)}
 </style>
 </head>
 <body>
-<div class="wrap">
-<h1>Hearth Content Admin</h1>
-<p class="sub">Manage simulator content — topics, drills, books, references, lessons</p>
+<div class="wrap" id="loginPage">
+<h1>Hearth Admin</h1>
+<p class="sub">Sign in to manage content</p>
+<div class="card" style="max-width:400px;margin:40px auto">
+  <label>Username</label>
+  <input id="loginUser" placeholder="ayla" style="margin-bottom:10px">
+  <label>Password</label>
+  <input id="loginPass" type="password" placeholder="password" style="margin-bottom:14px">
+  <button class="btn" onclick="doLogin()" style="width:100%">Sign In</button>
+  <div id="loginErr" style="color:#e74c3c;font-size:.75rem;margin-top:8px;text-align:center"></div>
+</div>
+</div>
+
+<div class="wrap" id="adminPage" style="display:none">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+  <div><h1 style="margin:0">Hearth Content Admin</h1><p class="sub" style="margin:2px 0 0">Manage simulator content</p></div>
+  <button class="btn secondary" onclick="doLogout()" style="font-size:.7rem">Sign Out</button>
+</div>
 
 <div class="tabs" id="tabs">
   <div class="tab on" onclick="showTab('topics')">Topics</div>
@@ -58,6 +73,26 @@ tr:hover td{color:var(--text)}
 const API = 'https://thehearth.pro/api/';
 let currentTab = 'topics';
 let editItem = null;
+let authToken = localStorage.getItem('hearth-admin-token') || '';
+
+function checkAuth(){
+  if(authToken){document.getElementById('loginPage').style.display='none';document.getElementById('adminPage').style.display='block';load();}
+  else{document.getElementById('loginPage').style.display='block';document.getElementById('adminPage').style.display='none';}
+}
+async function doLogin(){
+  var u=document.getElementById('loginUser').value.trim();
+  var p=document.getElementById('loginPass').value;
+  var err=document.getElementById('loginErr');
+  if(!u||!p){err.textContent='Enter username and password';return;}
+  try{
+    var r=await fetch(API+'?a=login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({username:u,password:p})});
+    var d=await r.json();
+    if(d.ok&&d.token){authToken=d.token;localStorage.setItem('hearth-admin-token',authToken);checkAuth();}
+    else{err.textContent=d.error||'Login failed';}
+  }catch(e){err.textContent='Network error';}
+}
+function doLogout(){authToken='';localStorage.removeItem('hearth-admin-token');checkAuth();}
+
 
 function msg(text, ok) {
   const el = document.getElementById('msg');
@@ -68,8 +103,10 @@ function msg(text, ok) {
 
 async function api(action, method, body) {
   const opts = { method, headers: { 'Content-Type': 'application/json' } };
+  if (authToken) opts.headers['Authorization'] = 'Bearer ' + authToken;
   if (body) opts.body = JSON.stringify(body);
   const r = await fetch(API + '?a=' + action, opts);
+  if (r.status === 401) { doLogout(); throw new Error('Session expired — sign in again'); }
   const data = await r.json();
   if (!r.ok) throw new Error(data.error || 'API error');
   return data;
@@ -334,7 +371,7 @@ function gv(id) { const el = document.getElementById(id); return el ? el.value.t
 function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
 // Load on start
-load();
+checkAuth();
 </script>
 </body>
 </html>
