@@ -25,6 +25,27 @@
     { text: 'Music expresses that which cannot be put into words.', author: 'Victor Hugo' },
   ];
 
+  const TOPIC_VIDEO_REFS = {
+    'time-signatures': [{ cat: 'rhythm', level: 'level5', num: 12 }],
+    'subdivision': [{ cat: 'rhythm', level: 'level1', num: 1 }, { cat: 'rhythm', level: 'level2', num: 2 }],
+    'triads': [{ cat: 'chords-harmony', level: 'level3', num: 4 }],
+    'seventh-chords': [{ cat: 'chords-harmony', level: 'level5', num: 11 }],
+    'extensions': [{ cat: 'chords-harmony', level: 'level5', num: 11 }],
+    'chord-voicings': [{ cat: 'chords-harmony', level: 'level4', num: 8 }],
+    'chord-progressions': [{ cat: 'chords-harmony', level: 'level6', num: 16 }],
+    'pentatonic': [{ cat: 'scales', level: 'level1', num: 2 }],
+    'minor-scales': [{ cat: 'scales', level: 'level5', num: 13 }],
+    'modes': [{ cat: 'scales', level: 'level6', num: 17 }],
+    'exotic-scales': [{ cat: 'scales', level: 'level8', num: 42 }],
+    'what-is-arpeggio': [{ cat: 'arpeggios', level: 'level4', num: 9 }],
+    'major-arpeggios': [{ cat: 'arpeggios', level: 'level3', num: 6 }],
+    'seventh-arpeggios': [{ cat: 'arpeggios', level: 'level6', num: 21 }],
+    'intervals': [{ cat: 'theory', level: 'level3', num: 7 }],
+    'circle-of-fifths': [{ cat: 'theory', level: 'level4', num: 10 }],
+    'key-signatures': [{ cat: 'theory', level: 'level4', num: 47 }],
+    'modulation': [{ cat: 'chords-harmony', level: 'level6', num: 51 }]
+  };
+
   function esc(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
   function ytEmbed(url) {
@@ -33,6 +54,37 @@
     var m = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|v\/))([\w-]{11})/);
     if (!m) return '';
     return 'https://www.youtube.com/embed/' + m[1] + '?rel=0&modestbranding=1';
+  }
+
+  function getRoadmapVideo(ref) {
+    var road = window.VIDEO_ROADMAP;
+    var levelVideos = road && road[ref.cat] && road[ref.cat][ref.level];
+    if (!levelVideos) return null;
+    return levelVideos.find(function (v) { return v.num === ref.num; }) || null;
+  }
+
+  function getDirectVideos(topic) {
+    var direct = [];
+    if (topic.video) direct.push({ title: topic.title, url: topic.video, source: 'Direct lesson' });
+    (TOPIC_VIDEO_REFS[topic.id] || []).forEach(function (ref) {
+      var v = getRoadmapVideo(ref);
+      if (v) direct.push({ title: v.title, url: v.url, source: 'QJamTracks Roadmap' });
+    });
+    var seen = {};
+    return direct.filter(function (v) {
+      var embed = ytEmbed(v.url);
+      if (!embed || seen[embed]) return false;
+      seen[embed] = true;
+      v.embed = embed;
+      return true;
+    });
+  }
+
+  function getGuideText(cat) {
+    var titles = cat.topics.slice(0, 3).map(function (t) { return t.title; });
+    var list = titles.join(', ');
+    if (cat.topics.length > 3) list += ', and more';
+    return 'This book opens the ' + cat.title + ' path. First we will move through ' + list + '. Take it slowly: read, listen, then try the idea on the guitar.';
   }
 
   function getProgress() {
@@ -47,7 +99,7 @@
     result.push(
       '<div class="page" data-density="hard">' +
         '<div class="page-content page-cover">' +
-          '<div class="cover-glyph">📚</div>' +
+          '<div class="cover-kicker">The Hearth Mastery</div>' +
           '<div class="cover-title">' + esc(cat.title) + '</div>' +
           '<div class="cover-rule"></div>' +
           '<div class="cover-desc">' + esc(cat.description) + '</div>' +
@@ -79,20 +131,21 @@
       // Interleaved quote
       var q = QUOTES[qi % QUOTES.length]; qi++;
 
-      // Video page (if topic has a video)
-      if (topic.video) {
-        var embedUrl = ytEmbed(topic.video);
-        if (embedUrl) {
+      // Video pages are only attached when a topic has an explicit direct match.
+      var directVideos = getDirectVideos(topic);
+      if (directVideos.length) {
+        directVideos.forEach(function (video) {
           result.push(
             '<div class="page">' +
               '<div class="page-content page-video">' +
-                '<div class="video-label">Watch &amp; Learn</div>' +
-                '<iframe src="' + embedUrl + '" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>' +
-                '<div class="video-title">' + esc(topic.title) + '</div>' +
+                '<div class="video-label">' + esc(video.source) + '</div>' +
+                '<iframe src="' + video.embed + '" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>' +
+                '<div class="video-title">' + esc(video.title) + '</div>' +
+                '<div class="video-topic">For: ' + esc(topic.title) + '</div>' +
               '</div>' +
             '</div>'
           );
-        }
+        });
       }
 
       result.push(
@@ -112,7 +165,6 @@
     result.push(
       '<div class="page" data-density="hard">' +
         '<div class="page-content page-back">' +
-          '<div class="back-icon">' + (done === cat.topics.length ? '\u2728' : '\uD83D\uDCD6') + '</div>' +
           '<div class="back-title">' + (done === cat.topics.length ? 'Complete' : 'End of Book') + '</div>' +
           '<div class="back-progress">' + done + ' / ' + cat.topics.length + ' topics understood</div>' +
         '</div>' +
@@ -157,6 +209,13 @@
           ' Back to shelf' +
         '</button>' +
       '</div>' +
+      '<div class="book-guide">' +
+        '<img class="book-guide-img" src="images/character-full/Encouraging.png" alt="">' +
+        '<div class="book-guide-bubble">' +
+          '<div class="book-guide-kicker">Guide</div>' +
+          '<p>' + esc(getGuideText(filteredCat)) + '</p>' +
+        '</div>' +
+      '</div>' +
       '<div class="flipbook-wrapper">' +
         '<button class="nav-btn prev" id="btn-prev">' +
           '<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M15 18l-6-6 6-6"/></svg>' +
@@ -186,7 +245,7 @@
       console.error('Page-flip library not loaded. Attempting to continue without flipbook.');
       // Fallback: show content without flipbook
       overlay.innerHTML = '<div style="padding:40px;color:#e8c9a0;font-family:IBM Plex Sans,sans-serif;text-align:center">' +
-        '<div style="font-size:1.5rem;margin-bottom:1rem">\uD83D\uDCD6</div>' +
+        '<div style="font-family:Josefin Sans,sans-serif;font-size:0.65rem;letter-spacing:3px;text-transform:uppercase;color:rgba(232,201,160,0.45);margin-bottom:1rem">Book reader</div>' +
         '<div style="font-family:Josefin Sans,sans-serif;font-size:1.2rem;margin-bottom:1rem">' + esc(filteredCat.title) + '</div>' +
         '<div style="font-size:0.8rem;color:rgba(232,201,160,0.5);margin-bottom:2rem">Flipbook library loading... Try refreshing the page.</div>' +
         '<button onclick="closeBook()" style="background:var(--card);border:1px solid var(--border);color:var(--text);padding:10px 20px;border-radius:6px;cursor:pointer;font-family:DM Sans,sans-serif">Close</button>' +

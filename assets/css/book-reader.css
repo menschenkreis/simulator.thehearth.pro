@@ -65,6 +65,54 @@
   justify-content: center;
 }
 
+/* ── Floating guide ── */
+.book-guide {
+  position: absolute;
+  left: clamp(1.5rem, 5vw, 5rem);
+  top: 50%;
+  transform: translateY(-46%);
+  width: min(230px, 23vw);
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  pointer-events: none;
+}
+.book-guide-img {
+  width: min(150px, 14vw);
+  height: min(150px, 14vw);
+  object-fit: contain;
+  filter: drop-shadow(0 10px 22px rgba(0,0,0,0.45));
+  animation: bookGuideFloat 3.4s ease-in-out infinite;
+}
+.book-guide-bubble {
+  margin-top: 0.75rem;
+  background: #fdfaf7;
+  border: 1px solid rgba(0,0,0,0.12);
+  border-radius: 8px;
+  padding: 0.85rem 0.9rem;
+  box-shadow: 0 12px 32px rgba(0,0,0,0.28);
+}
+.book-guide-kicker {
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 0.55rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(0,0,0,0.45);
+  margin-bottom: 0.35rem;
+}
+.book-guide-bubble p {
+  margin: 0;
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 0.76rem;
+  line-height: 1.55;
+  color: #222;
+}
+@keyframes bookGuideFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-7px); }
+}
+
 /* ── The flipbook ── */
 #flipbook {
   box-shadow: 0 20px 80px rgba(0,0,0,0.8);
@@ -98,7 +146,7 @@
 /* ── Cover page ── */
 .page-cover {
   padding: 3rem 2.5rem;
-  background: linear-gradient(160deg, #1a1710 0%, #0f0d0b 100%);
+  background: #fdfaf7;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -107,30 +155,33 @@
   height: 100%;
   box-sizing: border-box;
 }
-.page-cover .cover-glyph {
-  font-size: 2.5rem;
-  margin-bottom: 1.5rem;
-  opacity: 0.6;
+.page-cover .cover-kicker {
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 0.62rem;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: rgba(0,0,0,0.42);
+  margin-bottom: 1.35rem;
 }
 .page-cover .cover-title {
   font-family: 'Josefin Sans', sans-serif;
   font-size: 1.3rem;
   letter-spacing: 5px;
   text-transform: uppercase;
-  color: var(--book-gold);
+  color: #111;
   margin-bottom: 0.5rem;
 }
 .page-cover .cover-rule {
   width: 50px;
   height: 1px;
-  background: var(--book-accent);
+  background: #111;
   margin: 1.2rem auto;
-  opacity: 0.4;
+  opacity: 0.25;
 }
 .page-cover .cover-desc {
   font-family: 'IBM Plex Sans', sans-serif;
   font-size: 0.8rem;
-  color: rgba(232,201,160,0.4);
+  color: #333;
   line-height: 1.7;
   max-width: 300px;
   letter-spacing: 0.5px;
@@ -140,7 +191,7 @@
   font-size: 0.6rem;
   letter-spacing: 3px;
   text-transform: uppercase;
-  color: rgba(232,201,160,0.2);
+  color: rgba(0,0,0,0.38);
   margin-top: 2rem;
 }
 
@@ -283,10 +334,17 @@
   font-size: 0.75rem;
   color: rgba(232,201,160,0.5);
 }
+.page-video .video-topic {
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 0.58rem;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: rgba(232,201,160,0.28);
+}
 
 /* ── Back cover ── */
 .page-back {
-  background: linear-gradient(160deg, #1a1710 0%, #0f0d0b 100%);
+  background: #fdfaf7;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -306,13 +364,13 @@
   font-size: 0.9rem;
   letter-spacing: 4px;
   text-transform: uppercase;
-  color: rgba(232,201,160,0.4);
+  color: rgba(0,0,0,0.52);
 }
 .page-back .back-progress {
   font-family: 'Josefin Sans', sans-serif;
   font-size: 0.6rem;
   letter-spacing: 2px;
-  color: rgba(232,201,160,0.2);
+  color: rgba(0,0,0,0.34);
   margin-top: 0.8rem;
 }
 
@@ -366,9 +424,24 @@
 /* ── Mobile ── */
 @media (max-width: 768px) {
   .flipbook-wrapper { height: 70vh; }
+  .book-guide { display: none; }
   .nav-btn svg { width: 28px; height: 28px; }
   .flipbook-container .back-nav { top: 1rem; left: 1rem; }
   .page-topic { padding: 2rem 1.5rem 1.5rem; }
   .page-cover { padding: 2rem 1.5rem; }
   .page-cover .cover-title { font-size: 1.1rem; letter-spacing: 3px; }
+}
+
+@media (max-width: 1180px) {
+  .book-guide {
+    left: 1.25rem;
+    width: 190px;
+  }
+  .book-guide-img {
+    width: 112px;
+    height: 112px;
+  }
+  .book-guide-bubble p {
+    font-size: 0.68rem;
+  }
 }
