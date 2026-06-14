@@ -2264,7 +2264,7 @@ window.completeDoingDrill=function(catId,drillId){
 };
 
 // ═══ KNOWING NODE - BOOKSHELF UI ═══
-function showKnowing(){
+function showKnowing(){console.log('showKnowing called');
   document.querySelectorAll('.pnl').forEach(p=>p.classList.remove('on'));
   document.getElementById('p-foundation').classList.add('on');
   const K=window.KNOWING;if(!K)return;
@@ -2418,7 +2418,7 @@ window._scrollShelf=function(id,dir){
   el.scrollBy({left:dir*200,behavior:'smooth'});
 };
 
-window.showKnowingBook=function(catId){
+window.showKnowingBook=function(catId){console.log('showKnowingBook called:',catId);
   const K=window.KNOWING;if(!K)return;
   const cat=K.categories.find(c=>c.id===catId);if(!cat)return;
   setNotebookContext(catId,cat.title);
