@@ -847,6 +847,336 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
   position:absolute;top:-32px;left:50%;transform:translateX(-50%);
   font-size:1.8rem;
 }
+.practice-temple{
+  max-width:900px;
+  margin:0 auto;
+  padding:22px 16px 32px;
+  color:var(--text);
+}
+.practice-chamber{
+  position:relative;
+  min-height:620px;
+  border:1px solid rgba(212,175,105,0.16);
+  border-radius:8px;
+  overflow:hidden;
+  background:
+    radial-gradient(ellipse at 50% 22%,rgba(232,160,32,0.13),transparent 36%),
+    radial-gradient(ellipse at 50% 100%,rgba(212,175,105,0.08),transparent 42%),
+    linear-gradient(180deg,#100d0a 0%,#17100b 58%,#0d0b08 100%);
+  box-shadow:inset 0 0 58px rgba(0,0,0,0.5),0 18px 44px rgba(0,0,0,0.25);
+}
+.practice-chamber:before{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  background:
+    linear-gradient(90deg,transparent 0 8%,rgba(212,175,105,0.05) 8.2%,transparent 8.8% 91%,rgba(212,175,105,0.05) 91.2%,transparent 92%),
+    repeating-linear-gradient(90deg,transparent 0 118px,rgba(245,237,216,0.025) 120px,transparent 122px);
+}
+.practice-chamber-inner{
+  position:relative;
+  z-index:1;
+  display:grid;
+  grid-template-columns:minmax(0,1fr) 250px;
+  gap:18px;
+  padding:22px;
+}
+.practice-title{
+  text-align:center;
+  margin-bottom:18px;
+}
+.practice-title h2{
+  font-family:Cinzel,serif;
+  color:var(--gold);
+  font-size:1.35rem;
+  letter-spacing:0.08em;
+  margin:0 0 5px;
+}
+.practice-title p{
+  margin:0;
+  color:var(--dim);
+  font-size:0.76rem;
+}
+.practice-altar{
+  position:relative;
+  min-height:380px;
+  border-radius:8px;
+  background:
+    radial-gradient(ellipse at 50% 42%,rgba(232,160,32,0.11),transparent 38%),
+    linear-gradient(180deg,rgba(31,22,14,0.78),rgba(18,13,9,0.92));
+  border:1px solid rgba(212,175,105,0.18);
+  box-shadow:inset 0 -28px 44px rgba(0,0,0,0.34);
+  padding:18px;
+}
+.practice-altar-table{
+  position:absolute;
+  left:24px;
+  right:24px;
+  bottom:40px;
+  height:105px;
+  border-radius:6px;
+  background:linear-gradient(180deg,#3a2414,#1f130b);
+  border:1px solid rgba(212,175,105,0.16);
+  box-shadow:0 24px 34px rgba(0,0,0,0.35),inset 0 8px 20px rgba(245,237,216,0.035);
+}
+.practice-altar-items{
+  position:relative;
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr;
+  gap:16px;
+  align-items:end;
+  min-height:290px;
+}
+.altar-item{
+  position:relative;
+  z-index:2;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:flex-end;
+  min-height:240px;
+}
+.altar-label{
+  margin-top:10px;
+  font-family:JetBrains Mono,monospace;
+  color:var(--dim);
+  font-size:0.58rem;
+  letter-spacing:0.1em;
+  text-transform:uppercase;
+}
+.temple-candle{
+  --burn:100%;
+  position:relative;
+  width:54px;
+  height:154px;
+  border-radius:8px 8px 12px 12px;
+  background:linear-gradient(90deg,#b89d72,#f5edd8 38%,#d6c294 72%,#8d7049);
+  box-shadow:0 12px 22px rgba(0,0,0,0.38),inset -8px 0 18px rgba(0,0,0,0.12);
+  transform:translateY(6px);
+}
+.temple-candle:before{
+  content:"";
+  position:absolute;
+  left:0;
+  right:0;
+  bottom:0;
+  height:var(--burn);
+  border-radius:inherit;
+  background:linear-gradient(90deg,#cdb88e,#fff7df 38%,#d4b87d 72%,#8b6b42);
+  transition:height 0.6s ease;
+}
+.temple-candle:after{
+  content:"";
+  position:absolute;
+  left:50%;
+  bottom:calc(var(--burn) - 4px);
+  width:28px;
+  height:8px;
+  transform:translateX(-50%);
+  border-radius:50%;
+  background:rgba(79,48,22,0.28);
+  transition:bottom 0.6s ease;
+}
+.temple-flame{
+  --flame-bright:1;
+  position:absolute;
+  left:50%;
+  bottom:calc(var(--burn) + 4px);
+  width:26px;
+  height:38px;
+  transform:translateX(-50%);
+  border-radius:50% 50% 46% 46%;
+  background:radial-gradient(circle at 50% 68%,#fff6c9 0 18%,#f4c05a 32%,#e86f20 62%,transparent 68%);
+  filter:brightness(var(--flame-bright)) drop-shadow(0 0 12px rgba(232,160,32,0.8));
+  animation:candle-flicker 2.2s ease-in-out infinite;
+  transition:bottom 0.6s ease,filter 0.6s ease,opacity 0.6s ease;
+}
+.temple-book{
+  width:132px;
+  height:88px;
+  border-radius:4px 8px 8px 4px;
+  background:linear-gradient(90deg,#2b1b10 0 13%,#6b4729 14%,#b2834d 49%,#d4af69 51%,#7a502d 88%,#28170d 100%);
+  border:1px solid rgba(212,175,105,0.36);
+  box-shadow:0 18px 24px rgba(0,0,0,0.35),inset 0 0 18px rgba(0,0,0,0.16);
+  transform:rotate(-5deg);
+}
+.temple-book:before{
+  content:"";
+  position:absolute;
+  top:12px;
+  bottom:12px;
+  left:50%;
+  width:1px;
+  background:rgba(13,11,8,0.52);
+  box-shadow:-34px 0 rgba(245,237,216,0.12),34px 0 rgba(245,237,216,0.12);
+}
+.temple-metronome{
+  width:88px;
+  height:128px;
+  clip-path:polygon(50% 0,92% 100%,8% 100%);
+  background:linear-gradient(180deg,#5f3b1e,#24150b);
+  border:1px solid rgba(212,175,105,0.24);
+  position:relative;
+  box-shadow:0 16px 24px rgba(0,0,0,0.34);
+}
+.temple-metronome:before{
+  content:"";
+  position:absolute;
+  left:50%;
+  top:20px;
+  width:2px;
+  height:82px;
+  background:var(--gold);
+  transform:translateX(-50%) rotate(-10deg);
+  transform-origin:bottom center;
+}
+.practice-side{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+.practice-panel{
+  background:rgba(16,13,10,0.82);
+  border:1px solid rgba(212,175,105,0.14);
+  border-radius:8px;
+  padding:14px;
+}
+.practice-panel-title{
+  font-family:JetBrains Mono,monospace;
+  color:var(--gold);
+  font-size:0.58rem;
+  letter-spacing:0.11em;
+  text-transform:uppercase;
+  margin-bottom:10px;
+}
+.practice-guide-note{
+  color:var(--text);
+  font-size:0.78rem;
+  line-height:1.5;
+}
+.practice-choice-row{display:flex;gap:7px;flex-wrap:wrap;}
+.practice-choice{
+  border:1px solid rgba(212,175,105,0.15);
+  background:rgba(245,237,216,0.035);
+  color:var(--dim);
+  border-radius:5px;
+  padding:7px 9px;
+  cursor:pointer;
+  font-family:JetBrains Mono,monospace;
+  font-size:0.58rem;
+  letter-spacing:0.06em;
+  text-transform:uppercase;
+}
+.practice-choice.active{
+  background:var(--gold);
+  border-color:var(--gold);
+  color:var(--bg);
+  font-weight:700;
+}
+.practice-plan{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:8px;
+  margin-top:12px;
+}
+.practice-bead{
+  min-height:62px;
+  border:1px solid rgba(212,175,105,0.14);
+  border-radius:6px;
+  background:rgba(245,237,216,0.032);
+  padding:9px 7px;
+  text-align:center;
+}
+.practice-bead b{
+  display:block;
+  font-family:JetBrains Mono,monospace;
+  color:var(--gold);
+  font-size:0.54rem;
+  letter-spacing:0.08em;
+  text-transform:uppercase;
+  margin-bottom:5px;
+}
+.practice-bead span{
+  color:var(--dim);
+  font-size:0.66rem;
+  line-height:1.28;
+}
+.practice-scroll-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:8px;
+}
+.practice-stat{
+  border:1px solid rgba(212,175,105,0.12);
+  border-radius:6px;
+  padding:10px 8px;
+  text-align:center;
+  background:rgba(245,237,216,0.03);
+}
+.practice-stat strong{
+  display:block;
+  font-family:Cinzel,serif;
+  color:var(--text);
+  font-size:1rem;
+}
+.practice-stat span{
+  color:var(--dim);
+  font-size:0.58rem;
+}
+.practice-drill-list{
+  display:flex;
+  flex-direction:column;
+  gap:7px;
+  max-height:190px;
+  overflow-y:auto;
+}
+.practice-drill-pick{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  align-items:center;
+  border:1px solid rgba(212,175,105,0.12);
+  border-radius:6px;
+  background:rgba(245,237,216,0.032);
+  padding:9px 10px;
+  cursor:pointer;
+  color:var(--text);
+  text-align:left;
+}
+.practice-drill-pick:hover{border-color:rgba(212,175,105,0.45);}
+.practice-drill-pick b{font-size:0.76rem;}
+.practice-drill-pick span{font-size:0.62rem;color:var(--dim);}
+.practice-start{
+  width:100%;
+  min-height:46px;
+  border:0;
+  border-radius:7px;
+  background:linear-gradient(180deg,#e8c06e,#d4af69);
+  color:#0d0b08;
+  font-family:Cinzel,serif;
+  font-weight:700;
+  letter-spacing:0.06em;
+  cursor:pointer;
+  box-shadow:0 10px 20px rgba(0,0,0,0.24),0 0 16px rgba(212,175,105,0.16);
+}
+.practice-timer-ring{
+  text-align:center;
+  margin-bottom:18px;
+}
+.practice-countdown{
+  font-family:Cinzel,serif;
+  color:var(--gold);
+  font-size:2.15rem;
+  line-height:1;
+}
+@media(max-width:760px){
+  .practice-chamber-inner{grid-template-columns:1fr;padding:14px;}
+  .practice-altar-items{grid-template-columns:1fr;gap:10px;min-height:unset;}
+  .altar-item{min-height:140px;}
+  .practice-altar-table{display:none;}
+  .practice-plan,.practice-scroll-grid{grid-template-columns:repeat(2,1fr);}
+}
 </style>
 </head>
 <body>
@@ -1809,7 +2139,7 @@ window._showBrainRegion=function(id){
     '<div style="display:flex;gap:5px;margin-top:10px">'+
       rg.nodes.map(function(n){var nd=NODE_DATA[n];return nd?'<button onclick="document.getElementById(\'brain-overlay\').style.display=\'none\';enterNodeAction(NODE_DATA[\''+n+'\'])" style="background:'+rg.color+'10;border:1px solid '+rg.color+'20;color:'+rg.color+';padding:6px 10px;border-radius:5px;cursor:pointer;font-family:DM Sans,sans-serif;font-size:0.65rem;font-weight:500">'+nd.title+'</button>':'';}).join('')+
     '</div>'+
-  '</div>';
+  '</div></div></div>';
 };
 function renderPathCard(name, emoji, color, nodes, progress) {
   const nodeList = nodes.split(',');
@@ -3219,6 +3549,82 @@ function _getSessionLog(){
 function _saveSessionLog(l){
   localStorage.setItem('hearth-practice-log',JSON.stringify(l));
 }
+function _practicePrefs(){
+  const s=_getPracticeState();
+  return {
+    time:s.altarTime||20,
+    focus:s.altarFocus||'All',
+    intention:s.altarIntention||'Clean, focused practice'
+  };
+}
+function _practiceCategories(){
+  const P=window.PRACTICE;if(!P)return ['All'];
+  return ['All',...new Set(P.drills.map(d=>d.category))];
+}
+function _practiceFilteredDrills(focus){
+  const P=window.PRACTICE;if(!P)return [];
+  return focus&&focus!=='All'?P.drills.filter(d=>d.category===focus):P.drills;
+}
+function _practiceNextDrill(focus){
+  const P=window.PRACTICE;if(!P)return null;
+  const state=_getPracticeState();
+  const drills=_practiceFilteredDrills(focus);
+  if(!drills.length)return P.drills[0]||null;
+  if(state.currentDrill){
+    const current=drills.find(d=>d.id===state.currentDrill);
+    if(current)return current;
+  }
+  const completed=state.completed||{};
+  return drills.find(d=>!completed[d.id])||drills[0];
+}
+function _practiceGuideText(prefs,log,nextDrill){
+  // Contextual guide comments that change based on state
+  if(log.length){
+    const last=log[log.length-1];
+    if(last.feeling==='stuck'){
+      return 'Last time was a wall. That is not failure — it is information. The gradient was too steep. Today: slower tempo, shorter candle, one movement only. Let the body remember clean before fast.';
+    }
+    if(last.feeling==='nailed'){
+      return 'You left last session with clean hands. Good. Today the temptation is to skip ahead. Resist. Prove it again at the same tempo. Mastery is repetition, not novelty.';
+    }
+    if(last.feeling==='ok'){
+      return 'Last session was somewhere in the middle — not stuck, not clean. That is normal. Today pick one thing from that session and isolate it. Narrow the focus, deepen the work.';
+    }
+  }
+  if(prefs.time<=5){
+    return 'Five minutes. That is enough to wake the hands and remind the fingers where they live. Choose one drill. Play it clean three times. Done. Consistency beats duration.';
+  }
+  if(prefs.time<=10){
+    return 'Short candle. Choose one small movement — a warm-up, a scale shape, a chord change. Leave while the hands still feel clean. The temple rewards discipline, not marathon sessions.';
+  }
+  if(prefs.time>=30){
+    return 'Long candle today. Structure matters: warm-up first, then one focused drill, then musical application (play a song or improvise). End with reflection. Without structure, long sessions become mindless repetition.';
+  }
+  if(prefs.focus!=='All'&&prefs.focus!==''){
+    return 'The book is open to '+prefs.focus+'. Good — the temple is here to narrow attention, not to do everything. One category, one drill, one clear intention. That is how progress happens.';
+  }
+  if(nextDrill){
+    return 'Begin with '+nextDrill.title+'. Set the metronome slow enough that every note is clean. If you hear buzzing, uneven tone, or tension in the shoulders — stop, breathe, go slower. Speed is a byproduct of clean repetition.';
+  }
+  return 'Choose a candle, open the book, and make one clear promise to the hands. The temple does not ask for perfection. It asks for presence.';
+}
+window.setPracticeTime=function(minutes){
+  const s=_getPracticeState();
+  s.altarTime=minutes;
+  _savePracticeState(s);
+  showPractice();
+};
+window.setPracticeFocus=function(focus){
+  const s=_getPracticeState();
+  s.altarFocus=focus;
+  _savePracticeState(s);
+  showPractice();
+};
+window.startTemplePractice=function(){
+  const prefs=_practicePrefs();
+  const drill=_practiceNextDrill(prefs.focus);
+  if(drill)startDrillPractice(drill.id,prefs.time);
+};
 
 function showPractice(){
   document.querySelectorAll('.pnl').forEach(p=>p.classList.remove('on'));
@@ -3228,106 +3634,107 @@ function showPractice(){
   const state=_getPracticeState();
   const log=_getSessionLog();
 
-  // ── Stats ──
   const totalSessions=log.length;
   const totalMinutes=log.reduce((a,s)=>a+(s.minutes||0),0);
   const streak=_calcStreak(log);
   const lastSession=log.length?log[log.length-1]:null;
-
-  // ── Where am I? Onion skin ──
-  const currentDrill=state.currentDrill||null;
-  const drillObj=currentDrill?P.drills.find(d=>d.id===currentDrill):null;
   const completedDrills=Object.keys(state.completed||{});
-  const drillIdx=currentDrill?P.drills.findIndex(d=>d.id===currentDrill):-1;
-  const prevDrill=drillIdx>0?P.drills[drillIdx-1]:null;
-  const nextDrill=drillIdx>=0&&drillIdx<P.drills.length-1?P.drills[drillIdx+1]:P.drills[0];
+  const prefs=_practicePrefs();
+  const categories=_practiceCategories();
+  const nextDrill=_practiceNextDrill(prefs.focus);
+  const focusDrills=_practiceFilteredDrills(prefs.focus);
+  const guide=_practiceGuideText(prefs,log,nextDrill);
+  const timeChoices=[5,10,20,30,45];
+  const visibleDrills=focusDrills.slice(0,6);
+  const lastLine=lastSession?
+    '<div style="color:var(--dim);font-size:0.68rem;margin-top:6px">Last: '+esc(lastSession.drillTitle||'Practice')+' · '+esc(String(lastSession.minutes||1))+' min · '+esc(lastSession.feeling||'logged')+'</div>':
+    '<div style="color:var(--dim);font-size:0.68rem;margin-top:6px">No session logged yet. Light a short candle first.</div>';
+  const plan=[
+    ['Arrive','Body, guitar, breath'],
+    ['Warm','Hands wake up'],
+    ['Work',nextDrill?nextDrill.title:'Chosen drill'],
+    ['Reflect','Mark what changed']
+  ];
 
-  // Build the onion-skin nav (previous → current → next)
-  let onionHtml='';
-  function drillCard(d,label,isCurrent){
-    if(!d) return '<div style="flex:1;opacity:0.25;padding:12px;border:1px dashed '+CANDLE_DIM+';border-radius:8px;text-align:center"><div style="font-size:0.6rem;color:var(--dim);font-family:JetBrains Mono;letter-spacing:0.1em">'+label.toUpperCase()+'</div><div style="color:var(--dim);font-size:0.75rem">-</div></div>';
-    return '<div onclick="showPracticeDrill(\''+d.id+'\')" style="flex:1;cursor:pointer;padding:12px;border:1px solid '+(isCurrent?CANDLE:'var(--border)')+';border-radius:8px;background:'+(isCurrent?CANDLE+'12':'var(--card)')+';transition:all 0.2s" onmouseover="this.style.borderColor='+CANDLE+'" onmouseout="this.style.borderColor='+(isCurrent?CANDLE:'var(--border)')+'">'+
-      '<div style="font-size:0.6rem;color:'+(isCurrent?CANDLE:'var(--dim)')+';font-family:JetBrains Mono;letter-spacing:0.1em">'+label.toUpperCase()+'</div>'+
-      '<div style="color:var(--text);font-size:0.8rem;font-weight:600;margin-top:4px">'+d.title+'</div>'+
-      '<div style="font-size:0.65rem;color:var(--dim)">'+d.category+' · '+d.duration+'</div>'+
-    '</div>';
-  }
-  onionHtml='<div style="display:flex;gap:10px;margin-bottom:20px">'+
-    drillCard(prevDrill,'where you were',false)+
-    drillCard(drillObj||nextDrill,'you are here',true)+
-    drillCard(nextDrill,'where you\'re going',false)+
-  '</div>';
-
-  // ── Last session review ──
-  let lastHtml='';
-  if(lastSession){
-    const when=new Date(lastSession.ts);
-    const timeAgo=_timeAgo(when);
-    lastHtml='<div style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:16px">'+
-      '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">'+
-        '<div style="font-family:JetBrains Mono;font-size:0.6rem;color:'+CANDLE+';letter-spacing:0.12em">LAST SESSION</div>'+
-        '<div style="font-size:0.65rem;color:var(--dim)">'+timeAgo+'</div>'+
-      '</div>'+
-      '<div style="color:var(--text);font-size:0.85rem;font-weight:600">'+(lastSession.drillTitle||'Practice Session')+'</div>'+
-      '<div style="display:flex;gap:16px;margin-top:6px">'+
-        '<div style="font-size:0.7rem;color:var(--dim)">'+lastSession.minutes+' min</div>'+
-        '<div style="font-size:0.7rem;color:var(--dim)">'+(lastSession.bpm||'-')+' BPM</div>'+
-        (lastSession.feeling?('<div style="font-size:0.7rem;color:'+_feelingColor(lastSession.feeling)+'">'+_feelingEmoji(lastSession.feeling)+' '+lastSession.feeling+'</div>'):'')+
-      '</div>'+
-      '<button onclick="startDrillPractice(\''+(lastSession.drillId||'pd-chromatic')+'\')" style="margin-top:10px;background:'+CANDLE+'18;border:1px solid '+CANDLE+'40;color:'+CANDLE+';padding:8px 16px;border-radius:6px;cursor:pointer;font-family:DM Sans,sans-serif;font-size:0.75rem;font-weight:600">Continue Practising</button>'+
-    '</div>';
-  }
-
-  // ── Stats row ──
-  const statsHtml='<div style="display:flex;gap:12px;margin-bottom:16px">'+
-    _statBox('🔥',streak,'Day Streak','')+
-    _statBox('⏱',totalMinutes,'Min Total','')+
-    _statBox('✅',completedDrills.length,'Mastered','/'+P.drills.length)+
-    _statBox('🎸',totalSessions,'Sessions','')+
-  '</div>';
-
-  // ── Quick sessions ──
-  let sessionsHtml='<div style="font-family:JetBrains Mono;font-size:0.6rem;color:'+CANDLE+';letter-spacing:0.12em;margin-bottom:10px">QUICK START</div>'+
-    '<div style="display:flex;gap:8px;margin-bottom:20px">'+
-    P.sessions.map(s=>
-      '<button onclick="startQuickSession(\''+s.id+'\')" style="flex:1;background:var(--card);border:1px solid var(--border);color:var(--text);padding:14px 10px;border-radius:8px;cursor:pointer;font-family:DM Sans,sans-serif;text-align:center;transition:all 0.2s" onmouseover="this.style.borderColor='+CANDLE+'" onmouseout="this.style.borderColor=\'var(--border)\'">'+
-        '<div style="font-size:0.85rem;font-weight:700">'+s.title+'</div>'+
-        '<div style="font-size:0.65rem;color:var(--dim)">'+s.duration+' min · '+s.drills.length+' drills</div>'+
-      '</button>'
-    ).join('')+
-    '</div>';
-
-  // ── All drills ──
-  const cats=[...new Set(P.drills.map(d=>d.category))];
-  let drillsHtml='<div style="font-family:JetBrains Mono;font-size:0.6rem;color:'+CANDLE+';letter-spacing:0.12em;margin-bottom:10px">ALL DRILLS</div>';
-  cats.forEach(cat=>{
-    const catDrills=P.drills.filter(d=>d.category===cat);
-    drillsHtml+='<div style="font-size:0.7rem;color:var(--dim);margin:10px 0 6px;font-weight:600">'+cat+'</div>'+
-      '<div style="display:flex;flex-direction:column;gap:4px">'+
-      catDrills.map(d=>{
-        const done=completedDrills.includes(d.id);
-        return '<div onclick="showPracticeDrill(\''+d.id+'\')" style="cursor:pointer;padding:10px 14px;border:1px solid '+(done?CANDLE+'60':'var(--border)')+';border-radius:6px;background:'+(done?CANDLE+'08':'var(--card)')+';display:flex;justify-content:space-between;align-items:center;transition:all 0.2s" onmouseover="this.style.borderColor=\''+CANDLE+'\'" onmouseout="this.style.borderColor=\''+(done?CANDLE+'60':'var(--border)')+'\'">'+
-          '<div>'+
-            '<div style="font-size:0.8rem;color:var(--text);font-weight:600">'+d.title+'</div>'+
-            '<div style="font-size:0.65rem;color:var(--dim)">'+d.duration+' · Difficulty '+d.difficulty+'</div>'+
-          '</div>'+
-          '<div style="font-size:0.8rem">'+(done?'✅':'→')+'</div>'+
-        '</div>';
-      }).join('')+
-      '</div>';
-  });
-
-  el.innerHTML='<div style="padding:20px;max-width:650px;margin:0 auto">'+
-    '<div style="text-align:center;margin-bottom:24px">'+
-      '<div class="candle-flame" style="font-size:2.5rem;margin-bottom:4px">🕯</div>'+
-      '<div style="font-family:Cinzel,serif;color:'+CANDLE+';font-size:1.4rem;font-weight:700;letter-spacing:0.05em">Practice Temple</div>'+
-      '<div style="font-size:0.7rem;color:var(--dim);margin-top:4px;font-style:italic">Set your intention. Light the candle. Focus.</div>'+
+  el.innerHTML='<div class="practice-temple">'+
+    '<div class="practice-title">'+
+      '<h2>Practice Temple</h2>'+
+      '<p>Choose a candle, open the book, then sit with one clear movement.</p>'+
     '</div>'+
-    statsHtml+
-    onionHtml+
-    lastHtml+
-    sessionsHtml+
-    drillsHtml+
+    '<div class="practice-chamber">'+
+      '<div class="practice-chamber-inner">'+
+        '<div>'+
+          '<div class="practice-altar">'+
+            '<div class="practice-altar-table"></div>'+
+            '<div class="practice-altar-items">'+
+              '<div class="altar-item">'+
+                '<div class="temple-book"></div>'+
+                '<div class="altar-label">Practice Book</div>'+
+              '</div>'+
+              '<div class="altar-item">'+
+                '<div class="temple-candle"><div class="temple-flame"></div></div>'+
+                '<div class="altar-label">'+prefs.time+' minute candle</div>'+
+              '</div>'+
+              '<div class="altar-item">'+
+                '<div class="temple-metronome"></div>'+
+                '<div class="altar-label">Pulse Stone</div>'+
+              '</div>'+
+            '</div>'+
+          '</div>'+
+          '<div class="practice-panel" style="margin-top:14px">'+
+            '<div class="practice-panel-title">Ritual Steps</div>'+
+            '<div class="practice-plan">'+plan.map(p=>'<div class="practice-bead"><b>'+esc(p[0])+'</b><span>'+esc(p[1])+'</span></div>').join('')+'</div>'+
+          '</div>'+
+          '<div class="practice-panel" style="margin-top:14px">'+
+            '<div class="practice-panel-title">Open Book</div>'+
+            '<div class="practice-choice-row">'+categories.map(cat=>
+              '<button class="practice-choice'+(prefs.focus===cat?' active':'')+'" onclick="setPracticeFocus(\''+esc(cat)+'\')">'+esc(cat)+'</button>'
+            ).join('')+'</div>'+
+          '</div>'+
+          '<div class="practice-panel" style="margin-top:14px">'+
+            '<div class="practice-panel-title">Choose A Drill</div>'+
+            '<div class="practice-drill-list">'+visibleDrills.map(d=>
+              '<button class="practice-drill-pick" onclick="showPracticeDrill(\''+esc(d.id)+'\')">'+
+                '<span><b>'+esc(d.title)+'</b><br><span>'+esc(d.category)+' · '+esc(d.duration)+'</span></span>'+
+                '<span>Start</span>'+
+              '</button>'
+            ).join('')+'</div>'+
+          '</div>'+
+        '</div>'+
+        '<div class="practice-side">'+
+          '<div class="practice-panel" style="text-align:center;padding:16px 12px">'+
+            '<img src="images/character-full/Encouraging.png" style="width:100px;height:100px;object-fit:contain;filter:drop-shadow(0 4px 12px rgba(0,0,0,0.4));animation:char-float 3s ease-in-out infinite"/>'+
+            '<div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:10px 12px;margin-top:8px;position:relative">'+
+              '<div style="position:absolute;left:50%;top:-6px;transform:translateX(-50%);width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-bottom:6px solid var(--border)"></div>'+
+              '<div class="practice-guide-note" style="font-size:0.72rem;color:var(--text);line-height:1.4">'+esc(guide)+'</div>'+
+            '</div>'+
+            lastLine+
+          '</div>'+
+
+          '<div class="practice-panel">'+
+            '<div class="practice-panel-title">Candle Length</div>'+
+            '<div class="practice-choice-row">'+timeChoices.map(t=>
+              '<button class="practice-choice'+(prefs.time===t?' active':'')+'" onclick="playSfx('click');setPracticeTime('+t+')">'+t+' min</button>'
+            ).join('')+'</div>'+
+          '</div>'+
+          '<div class="practice-panel">'+
+            '<div class="practice-panel-title">Scroll</div>'+
+            '<div class="practice-scroll-grid">'+
+              '<div class="practice-stat"><strong>'+streak+'</strong><span>streak</span></div>'+
+              '<div class="practice-stat"><strong>'+totalMinutes+'</strong><span>minutes</span></div>'+
+              '<div class="practice-stat"><strong>'+completedDrills.length+'</strong><span>mastered</span></div>'+
+              '<div class="practice-stat"><strong>'+totalSessions+'</strong><span>sessions</span></div>'+
+            '</div>'+
+          '</div>'+
+          '<div class="practice-panel">'+
+            '<div class="practice-panel-title">Next Offering</div>'+
+            '<div style="font-size:0.82rem;color:var(--text);font-weight:700">'+esc(nextDrill?nextDrill.title:'Choose a drill')+'</div>'+
+            '<div style="font-size:0.66rem;color:var(--dim);margin-top:5px">'+esc(nextDrill?(nextDrill.category+' · '+nextDrill.duration):'Open the book first')+'</div>'+
+          '</div>'+
+          '<button class="practice-start" onclick="playSfx('book-open');startTemplePractice()">Light Candle</button>'+
+        '</div>'+
+      '</div>'+
+    '</div>'+
   '</div>';
 }
 
@@ -3340,8 +3747,31 @@ window.showPracticeDrill=function(drillId){
   const done=!!(state.completed&&state.completed[drillId]);
   const prevAttempts=_getSessionLog().filter(s=>s.drillId===drillId);
 
-  el.innerHTML='<div style="padding:20px;max-width:600px;margin:0 auto">'+
-    '<button class="back-btn" onclick="showPractice()">← Back to Dashboard</button>'+
+  // Guide comment based on drill context
+  var drillGuide='';
+  if(drill.category==='Warm-Up')drillGuide='Warm-up is not optional. It is the bridge between rest and play. Start slow, feel the blood flow, then begin.';
+  else if(drill.category==='Technique')drillGuide='Technique is not about speed. It is about control. If you cannot play it slow and clean, you cannot play it fast and clean.';
+  else if(drill.category==='Scales')drillGuide='Scales are not exercises. They are vocabulary. Learn the shape, then learn to speak with it.';
+  else if(drill.category==='Chords')drillGuide='Chords are shapes, but they are also sounds. Listen to each string — is every note ringing?';
+  else if(drill.category==='Rhythm')drillGuide='Rhythm is the foundation. Without it, notes are just noise. Feel the pulse in your body before you play it with your hands.';
+  else if(drill.category==='Speed')drillGuide='Speed is a byproduct of clean repetition. Never practice faster than you can play clean. The speed will come.';
+  else if(drill.category==='Ear Training')drillGuide='The ear is the most important tool. Train it like you train your fingers — daily, patiently, with intention.';
+  else if(drill.category==='Music')drillGuide='This is why we practice. Not to play exercises, but to play music. Apply what you know.';
+  else drillGuide='Sit with this drill. Listen for what changes between the first repetition and the last.';
+
+  el.innerHTML='<div style="padding:20px;max-width:900px;margin:0 auto">'+
+    '<button class="back-btn" onclick="playSfx('+"'"+'book-close'+"'"+');showPractice()">← Back to Temple</button>'+
+    '<div style="display:flex;gap:20px;align-items:flex-start;margin-top:12px">'+
+    // Left: character
+    '<div style="flex:0 0 120px;display:flex;flex-direction:column;align-items:center;position:sticky;top:20px">'+
+      '<img src="images/character-full/Thinking.png" style="width:100px;height:100px;object-fit:contain;filter:drop-shadow(0 4px 12px rgba(0,0,0,0.4));animation:char-float 3s ease-in-out infinite"/>'+
+      '<div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:10px 12px;margin-top:8px;max-width:140px;text-align:center;position:relative">'+
+        '<div style="position:absolute;left:-6px;top:50%;transform:translateY(-50%);width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-right:6px solid var(--border)"></div>'+
+        '<div style="font-size:0.65rem;color:var(--text);line-height:1.4">'+drillGuide+'</div>'+
+      '</div>'+
+    '</div>'+
+    // Right: drill content
+    '<div style="flex:1">'+
     '<div style="border-top:4px solid '+CANDLE+';padding-top:16px;margin-bottom:20px">'+
       '<div style="font-family:JetBrains Mono;font-size:0.55rem;color:'+CANDLE+';letter-spacing:0.15em;text-transform:uppercase">'+drill.category.toUpperCase()+(done?' · MASTERED':'')+'</div>'+
       '<h2 style="font-family:Cinzel,serif;color:var(--text);font-size:1.2rem;margin:6px 0;font-weight:700">'+drill.title+'</h2>'+
@@ -3374,28 +3804,38 @@ window.showPracticeDrill=function(drillId){
 }
 
 // ── Practice mode (with metronome) ──
-window.startDrillPractice=function(drillId){
+window.startDrillPractice=function(drillId,targetMinutes){
   const P=window.PRACTICE;if(!P)return;
   const drill=P.drills.find(d=>d.id===drillId);if(!drill)return;
   const el=document.getElementById('p-foundation');
   const startBpm=drill.defaultBpm||60;
+  const prefs=_practicePrefs();
+  const sessionMinutes=targetMinutes||prefs.time||10;
 
   const state=_getPracticeState();
   state.currentDrill=drillId;
+  state.altarTime=sessionMinutes;
   _savePracticeState(state);
 
-  el.innerHTML='<div class="altar-room" style="padding:20px;max-width:550px;margin:0 auto">'+
-    // Altar candle at top
-    '<div style="text-align:center;margin-bottom:20px">'+
-      '<div class="altar-candle-base">'+
-        '<div class="altar-candle-drip"></div>'+
-        '<div class="flame-wrap"><div id="candle-flame" class="candle-flame" style="font-size:2rem">🕯</div></div>'+
-      '</div>'+
-      '<div style="font-family:Cinzel,serif;color:var(--text);font-size:1.1rem;font-weight:700;margin-top:12px">'+drill.title+'</div>'+
-      '<div style="font-size:0.7rem;color:var(--dim)">'+drill.category+'</div>'+
+  el.innerHTML='<div class="practice-temple">'+
+    '<div class="practice-title">'+
+      '<h2>Candle Practice</h2>'+
+      '<p>'+esc(drill.category)+' · '+sessionMinutes+' minute candle</p>'+
+    '</div>'+
+    '<div class="practice-chamber">'+
+    '<div style="position:relative;z-index:1;padding:22px;max-width:620px;margin:0 auto">'+
+    '<div class="practice-timer-ring">'+
+      '<div class="temple-candle" id="session-candle" style="margin:0 auto 14px"><div id="candle-flame" class="temple-flame"></div></div>'+
+      '<div id="timer-display" class="practice-countdown">'+String(sessionMinutes).padStart(2,'0')+':00</div>'+
+      '<div style="font-size:0.66rem;color:var(--dim);margin-top:5px">candle remaining</div>'+
+    '</div>'+
+    '<div class="practice-panel" style="margin-bottom:14px;text-align:center">'+
+      '<div class="practice-panel-title">Current Offering</div>'+
+      '<div style="font-family:Cinzel,serif;color:var(--text);font-size:1.15rem;font-weight:700">'+esc(drill.title)+'</div>'+
+      '<div style="font-size:0.72rem;color:var(--dim);margin-top:5px">'+esc(drill.description)+'</div>'+
     '</div>'+
     '<div style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:20px;font-size:0.78rem;color:var(--text);line-height:1.5">'+
-      drill.instructions+
+      esc(drill.instructions)+
     '</div>'+
     // Metronome
     '<div id="metro-panel" style="background:var(--card);border:1px solid '+CANDLE+'40;border-radius:8px;padding:20px;margin-bottom:20px;text-align:center">'+
@@ -3417,10 +3857,6 @@ window.startDrillPractice=function(drillId){
         '<button id="ts-6" onclick="_metroTs(6)" style="padding:6px 14px;border-radius:4px;border:1px solid var(--border);background:var(--card);color:var(--dim);font-size:0.7rem;font-family:JetBrains Mono;cursor:pointer">6/8</button>'+
       '</div>'+
     '</div>'+
-    '<div style="text-align:center;margin-bottom:20px">'+
-      '<div id="timer-display" style="font-family:JetBrains Mono;font-size:1.5rem;color:var(--text)">00:00</div>'+
-      '<div style="font-size:0.65rem;color:var(--dim)">Practice Time</div>'+
-    '</div>'+
     // Self-assessment buttons
     '<div style="font-family:JetBrains Mono;font-size:0.6rem;color:'+CANDLE+';letter-spacing:0.12em;text-align:center;margin-bottom:10px">HOW DID THAT FEEL?</div>'+
     '<div style="display:flex;gap:8px;margin-bottom:20px">'+
@@ -3441,9 +3877,9 @@ window.startDrillPractice=function(drillId){
       '</button>'+
     '</div>'+
     '<button onclick="showPractice()" style="display:block;margin:0 auto;background:none;border:1px solid var(--border);color:var(--dim);padding:6px 12px;border-radius:4px;cursor:pointer;font-family:inherit;font-size:0.7rem">Cancel</button>'+
-  '</div>';
+    '</div></div></div>';
 
-  window._metro={playing:false,bpm:startBpm,ts:4,beat:0,interval:null,ctx:null,timerStart:Date.now(),timerInterval:null};
+  window._metro={playing:false,bpm:startBpm,ts:4,beat:0,interval:null,ctx:null,timerStart:Date.now(),timerInterval:null,targetSeconds:sessionMinutes*60,timeUp:false};
   _startTimer();
 }
 
@@ -3502,15 +3938,29 @@ function _startTimer(){
   m.timerStart=Date.now();
   m.timerInterval=setInterval(()=>{
     const elapsed=Math.floor((Date.now()-m.timerStart)/1000);
-    const min=String(Math.floor(elapsed/60)).padStart(2,'0');
-    const sec=String(elapsed%60).padStart(2,'0');
+    const remaining=Math.max(0,(m.targetSeconds||0)-elapsed);
+    const min=String(Math.floor(remaining/60)).padStart(2,'0');
+    const sec=String(remaining%60).padStart(2,'0');
     const d=document.getElementById('timer-display');if(d)d.textContent=min+':'+sec;
-    // Dim candle based on elapsed time (every 2 minutes dim a stage)
-    const mins=Math.floor(elapsed/60);
-    const stage=Math.min(5,Math.floor(mins/2));
+    const progress=m.targetSeconds?Math.min(1,elapsed/m.targetSeconds):0;
+    const burn=Math.max(0.08,1-progress);
+    const brightness=Math.max(0.28,1-progress*0.72);
+    const candle=document.getElementById('session-candle');
+    if(candle){
+      candle.style.setProperty('--burn',(burn*100).toFixed(1)+'%');
+      candle.style.setProperty('--flame-bright',brightness.toFixed(3));
+    }
     const flame=document.getElementById('candle-flame');
     if(flame){
-      flame.className='candle-flame'+(stage>0?' candle-dim-'+stage:'');
+      flame.style.opacity=String(Math.max(0.32,brightness));
+    }
+    if(remaining<=0&&!m.timeUp){
+      m.timeUp=true;
+      if(m.interval)clearInterval(m.interval);
+      m.playing=false;
+      const toggle=document.getElementById('metro-toggle');if(toggle)toggle.textContent='▶';
+      const note=document.querySelector('.practice-panel-title');
+      if(note)note.textContent='Candle Complete';
     }
   },1000);
 }
@@ -3586,7 +4036,7 @@ window._finishDrill=function(drillId,feeling){
 window.startQuickSession=function(sessionId){
   const P=window.PRACTICE;if(!P)return;
   const session=P.sessions.find(s=>s.id===sessionId);if(!session)return;
-  startDrillPractice(session.drills[0]);
+  startDrillPractice(session.drills[0],session.duration);
 };
 
 // ── Helpers ──
