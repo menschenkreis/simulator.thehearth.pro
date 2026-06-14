@@ -67,7 +67,7 @@ function createTeachingEngine(containerEl, opts){
 
     let html = buildCharArea(charImg, charLabel, step.text, isTyping);
 
-    // Any buttons below the speech
+    // Buttons if defined
     if(step.buttons){
       html += '<div class="teach-buttons">';
       step.buttons.forEach(b => {
@@ -76,10 +76,39 @@ function createTeachingEngine(containerEl, opts){
       html += '</div>';
     }
 
+    // Tap-to-continue prompt (shows after typewriter finishes)
+    html += '<div class="teach-continue" style="text-align:center;margin-top:12px;opacity:0;transition:opacity 0.4s">'+
+      '<span style="font-size:0.7rem;color:var(--dim);letter-spacing:0.05em">tap anywhere to continue ▸</span></div>';
+
     container.innerHTML = html;
     bindButtons(step, lesson);
 
-    if(isTyping) typewriterEffect();
+    // Show continue prompt after typewriter finishes, then click to advance
+    var continueEl = container.querySelector('.teach-continue');
+    var typingDone = false;
+
+    function showContinue(){
+      typingDone = true;
+      if(continueEl) continueEl.style.opacity = '1';
+    }
+
+    if(isTyping){
+      typewriterEffect(showContinue);
+    } else {
+      showContinue();
+    }
+
+    // Click anywhere to advance (but not on buttons)
+    function clickAdvance(e){
+      if(!typingDone) return;
+      if(e.target.closest('.teach-btn') || e.target.closest('.teach-choice')) return;
+      container.removeEventListener('click', clickAdvance);
+      advance(lesson);
+    }
+    // Delay binding to avoid accidental advance from the click that opened this step
+    setTimeout(function(){
+      container.addEventListener('click', clickAdvance);
+    }, 300);
   }
 
   // ── ASK: Character asks, player answers ──
@@ -147,6 +176,23 @@ function createTeachingEngine(containerEl, opts){
         }
       });
     });
+  }
+
+  // ── FOLLOW-UP: Show response text after correct answer, then advance ──
+  function showFollowUp(response, step, lesson){
+    var html = buildCharArea(response.char || CHAR.lightbulb, response.charLabel || '', response.text, true);
+    html += '<div style="text-align:center;margin-top:12px"><span style="font-size:0.7rem;color:var(--dim);letter-spacing:0.05em">tap to continue ▸</span></div>';
+    container.innerHTML = html;
+    var typingDone = false;
+    typewriterEffect(function(){ typingDone = true; });
+    setTimeout(function(){
+      container.addEventListener('click', function handler(e){
+        if(!typingDone) return;
+        if(e.target.closest('.teach-btn')) return;
+        container.removeEventListener('click', handler);
+        advance(lesson);
+      });
+    }, 300);
   }
 
   // ── GRADIENT FAILSAFE ──
@@ -279,9 +325,9 @@ function createTeachingEngine(containerEl, opts){
     '</div>';
   }
 
-  function typewriterEffect(){
+  function typewriterEffect(onDone){
     const el = container.querySelector('.teach-text.typewrite');
-    if(!el) return;
+    if(!el){ if(onDone) onDone(); return; }
     const full = el.innerHTML;
     el.innerHTML = '';
     el.style.opacity = '1';
@@ -304,6 +350,8 @@ function createTeachingEngine(containerEl, opts){
         }
         i++;
         setTimeout(tick, inTag ? 0 : 18);
+      } else {
+        if(onDone) onDone();
       }
     }
     tick();
