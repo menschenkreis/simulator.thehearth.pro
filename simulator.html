@@ -1252,6 +1252,7 @@ function showNodeInfo(id) {
   const data = NODE_DATA[id];
   if (!data) return;
   if (data.locked) return;
+  playSfx('node');
   _activeNode = id;
   moveFlame(id);
   const wasSame = (_flameNode === id);
@@ -4542,6 +4543,31 @@ window.playSfx=function(type){
       gain.gain.exponentialRampToValueAtTime(0.001,now+0.08);
       osc.start(now);
       osc.stop(now+0.08);
+    } else if(type==='node'){
+      // Short nylon-string style pluck for map nodes
+      var notes=[196,220,247,294,330,392];
+      var step=(window._nodePluckStep=(window._nodePluckStep||0)+1);
+      var f=notes[step%notes.length];
+      osc.type='triangle';
+      osc.frequency.setValueAtTime(f*1.012,now);
+      osc.frequency.exponentialRampToValueAtTime(f,now+0.04);
+      gain.gain.setValueAtTime(0.0001,now);
+      gain.gain.exponentialRampToValueAtTime(0.13,now+0.008);
+      gain.gain.exponentialRampToValueAtTime(0.001,now+0.62);
+      osc.start(now);
+      osc.stop(now+0.66);
+
+      var overtone=ctx.createOscillator();
+      var overtoneGain=ctx.createGain();
+      overtone.type='sine';
+      overtone.frequency.setValueAtTime(f*2.01,now);
+      overtoneGain.gain.setValueAtTime(0.0001,now);
+      overtoneGain.gain.exponentialRampToValueAtTime(0.035,now+0.006);
+      overtoneGain.gain.exponentialRampToValueAtTime(0.001,now+0.28);
+      overtone.connect(overtoneGain);
+      overtoneGain.connect(ctx.destination);
+      overtone.start(now);
+      overtone.stop(now+0.32);
     } else if(type==='success'){
       // Happy chime
       osc.type='sine';
