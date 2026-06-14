@@ -1195,6 +1195,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
       <div class="top-tool" onclick="sw('lesson')">Journey</div>
       <div class="top-tool" onclick="sw('theory')">Dictionary</div>
       <div class="top-tool" onclick="toggleNotebook()">Notes</div>
+      <div class="top-tool" onclick="toggleLinkDeposit()" title="Save a YouTube link">YT</div>
       <div class="top-tool" onclick="toggleProgress()">Progress</div>
       <div class="top-tool" onclick="toggleSettings()">Settings</div>
       <div class="top-tool" onclick="toggleReferences()">References</div>
@@ -1227,6 +1228,31 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
     </div>
     <h3 style="margin-top:12px">Admin</h3>
     <a href="/admin.html" style="display:block;color:var(--gold);font-size:.8rem;text-decoration:none;padding:6px 0" target="_blank">Open Content Admin →</a>
+  </div>
+  <!-- YouTube Link Deposit Panel -->
+  <div class="settings-panel" id="linkDepositPanel" style="min-width:340px;padding:16px">
+    <h3 style="color:var(--gold);margin-bottom:10px">YouTube Link Deposit</h3>
+    <p style="font-size:.7rem;color:var(--dim);margin-bottom:12px">Paste a YouTube link and tag it. Saves to the database instantly.</p>
+    <label style="display:block;font-family:JetBrains Mono;font-size:.6rem;color:var(--gold);letter-spacing:.1em;text-transform:uppercase;margin:8px 0 4px">YouTube URL</label>
+    <input id="linkDepositUrl" type="url" placeholder="https://youtube.com/watch?v=..." style="width:100%;background:#0d0b08;border:1px solid var(--border);border-radius:8px;color:var(--text);padding:8px 10px;font-size:.8rem">
+    <label style="display:block;font-family:JetBrains Mono;font-size:.6rem;color:var(--gold);letter-spacing:.1em;text-transform:uppercase;margin:8px 0 4px">Title</label>
+    <input id="linkDepositTitle" placeholder="Video title" style="width:100%;background:#0d0b08;border:1px solid var(--border);border-radius:8px;color:var(--text);padding:8px 10px;font-size:.8rem">
+    <label style="display:block;font-family:JetBrains Mono;font-size:.6rem;color:var(--gold);letter-spacing:.1em;text-transform:uppercase;margin:8px 0 4px">Category</label>
+    <select id="linkDepositCat" style="width:100%;background:#0d0b08;border:1px solid var(--border);border-radius:8px;color:var(--text);padding:8px 10px;font-size:.8rem">
+      <option value="rhythm">Rhythm</option><option value="scales">Scales</option><option value="chords">Chords</option>
+      <option value="technique">Technique</option><option value="theory">Theory</option><option value="jazz">Jazz</option>
+      <option value="blues">Blues</option><option value="rock">Rock</option><option value="classical">Classical</option>
+      <option value="songwriting">Songwriting</option><option value="ear-training">Ear Training</option><option value="play">Play</option>
+    </select>
+    <label style="display:block;font-family:JetBrains Mono;font-size:.6rem;color:var(--gold);letter-spacing:.1em;text-transform:uppercase;margin:8px 0 4px">Level (1-8)</label>
+    <input id="linkDepositLevel" type="number" min="1" max="8" value="1" style="width:100%;background:#0d0b08;border:1px solid var(--border);border-radius:8px;color:var(--text);padding:8px 10px;font-size:.8rem">
+    <label style="display:block;font-family:JetBrains Mono;font-size:.6rem;color:var(--gold);letter-spacing:.1em;text-transform:uppercase;margin:8px 0 4px">Notes (optional)</label>
+    <input id="linkDepositNotes" placeholder="What is this video about?" style="width:100%;background:#0d0b08;border:1px solid var(--border);border-radius:8px;color:var(--text);padding:8px 10px;font-size:.8rem">
+    <div style="display:flex;gap:8px;margin-top:12px">
+      <button onclick="depositLink()" style="background:var(--gold);color:#0d0b08;border:none;border-radius:8px;padding:10px 16px;font-weight:700;cursor:pointer;font-size:.8rem;flex:1">Save Link</button>
+      <button onclick="toggleLinkDeposit()" style="background:transparent;color:var(--dim);border:1px solid var(--border);border-radius:8px;padding:10px 16px;cursor:pointer;font-size:.8rem">Close</button>
+    </div>
+    <div id="linkDepositStatus" style="margin-top:8px;font-size:.7rem;color:var(--dim)"></div>
   </div>
   <!-- References Panel -->
   <div class="search-panel" id="refsPanel" style="right:auto;left:auto;max-width:400px;width:90vw">
@@ -4930,7 +4956,59 @@ function toggleCredits(){
 <script src="assets/js/create-workshop.js?v=1"></script>
 <script src="assets/js/scene-first.js?v=1"></script>
 <img src="images/character-neutral.png" class="mobile-character" alt="Guide" />
-<script>if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js').catch(()=>{})}</script>
+<script>// YouTube Link Deposit
+function toggleLinkDeposit(){
+  var p=document.getElementById('linkDepositPanel');
+  var sp=document.getElementById('searchPanel');
+  var pp=document.getElementById('progressPanel');
+  var st=document.getElementById('settingsPanel');
+  sp.classList.remove('show');pp.classList.remove('show');st.classList.remove('show');
+  p.classList.toggle('show');
+  if(p.classList.contains('show')) document.getElementById('linkDepositUrl').focus();
+}
+async function depositLink(){
+  var url=document.getElementById('linkDepositUrl').value.trim();
+  var title=document.getElementById('linkDepositTitle').value.trim();
+  var cat=document.getElementById('linkDepositCat').value;
+  var lvl=parseInt(document.getElementById('linkDepositLevel').value)||1;
+  var notes=document.getElementById('linkDepositNotes').value.trim();
+  var status=document.getElementById('linkDepositStatus');
+  if(!url){status.textContent='Paste a URL first';status.style.color='#e74c3c';return;}
+  if(!title){
+    // Try to extract title from URL
+    var m=url.match(/[?&]v=([^&]+)/);
+    title=m?'YouTube Video '+m[1]:'YouTube Link';
+  }
+  var key='yt-'+Date.now();
+  status.textContent='Saving...';status.style.color='var(--dim)';
+  try{
+    var r=await fetch('https://thehearth.pro/api/?a=content-videos',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({key_name:key,title:title,youtube_url:url,category:cat,level_num:lvl,description:notes})});
+    var d=await r.json();
+    if(d.ok){status.textContent='Saved! ✓';status.style.color='#2ecc71';document.getElementById('linkDepositUrl').value='';document.getElementById('linkDepositTitle').value='';document.getElementById('linkDepositNotes').value='';}
+    else{status.textContent='Error: '+(d.error||'unknown');status.style.color='#e74c3c';}
+  }catch(e){status.textContent='Network error';status.style.color='#e74c3c';}
+}
+// Auto-fill title from YouTube URL
+document.addEventListener('DOMContentLoaded',function(){
+  var urlEl=document.getElementById('linkDepositUrl');
+  if(urlEl){
+    urlEl.addEventListener('paste',function(){
+      setTimeout(function(){
+        var url=urlEl.value.trim();
+        var titleEl=document.getElementById('linkDepositTitle');
+        if(!titleEl.value && url.includes('youtube.com')){
+          // Fetch title via oembed
+          fetch('https://www.youtube.com/oembed?url='+encodeURIComponent(url)+'&format=json')
+            .then(function(r){return r.json();})
+            .then(function(d){if(d.title)titleEl.value=d.title;})
+            .catch(function(){});
+        }
+      },100);
+    });
+  }
+});
+
+if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js').catch(()=>{})}</script>
 <script>
 // Map zoom and pan
 (function(){
