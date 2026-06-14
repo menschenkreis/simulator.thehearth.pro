@@ -304,16 +304,81 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 /* Node info popup */
 .node-info-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.6);z-index:249;}
 .node-info-overlay.vis{display:block;}
-.style-filter{display:inline-block;padding:3px 8px;border-radius:12px;font-family:JetBrains Mono;font-size:0.6rem;color:var(--dim);background:var(--card);border:1px solid var(--border);cursor:pointer;text-transform:uppercase;letter-spacing:0.05em;}
-.style-filter:hover{border-color:var(--gold);color:var(--text);}
-.style-filter.active{background:var(--gold);color:var(--bg);border-color:var(--gold);font-weight:600;}
-.drill-label{display:none;}
-.drill-dot:hover~.drill-label,.drill-dot:focus~.drill-label{display:block;}
-@media(min-width:768px){.drill-label{display:block;}}
-@media(max-width:640px){
-  .doing-grid-header,.doing-grid-row{grid-template-columns:70px 1fr 1fr 1fr!important;}
-  .doing-grid-cell{gap:4px!important;padding:6px!important;}
-  .drill-label{display:none!important;}
+.doing-shell{max-width:1080px;margin:0 auto;padding:18px 18px 28px;}
+.doing-hero{display:grid;grid-template-columns:auto 1fr auto;gap:14px;align-items:center;margin:0 0 16px;}
+.doing-hero-icon{width:68px;height:68px;border-radius:50%;object-fit:cover;border:2px solid rgba(212,175,105,0.55);box-shadow:0 0 26px rgba(212,175,105,0.12);}
+.doing-kicker{font-family:JetBrains Mono,monospace;font-size:0.62rem;color:var(--amber);letter-spacing:0.16em;text-transform:uppercase;margin-bottom:4px;}
+.doing-hero h2{font-family:Cinzel,serif;color:var(--gold);font-size:1.35rem;margin:0;}
+.doing-hero p{color:var(--dim);font-size:0.78rem;line-height:1.45;margin:3px 0 0;max-width:620px;}
+.doing-stat-strip{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;}
+.doing-stat{min-width:74px;padding:8px 10px;border:1px solid var(--border);background:rgba(26,23,20,0.72);border-radius:6px;text-align:center;}
+.doing-stat strong{display:block;font-family:Cinzel,serif;color:var(--gold);font-size:0.95rem;line-height:1;}
+.doing-stat span{display:block;font-family:JetBrains Mono,monospace;color:var(--dim);font-size:0.52rem;letter-spacing:0.08em;text-transform:uppercase;margin-top:4px;}
+.doing-controls{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px;}
+.doing-search{background:var(--card);border:1px solid var(--border);color:var(--text);padding:8px 11px;border-radius:6px;font-family:JetBrains Mono,monospace;font-size:0.68rem;width:190px;outline:none;}
+.doing-search:focus{border-color:rgba(212,175,105,0.6);}
+.style-filter,.doing-level-filter{display:inline-flex;align-items:center;min-height:26px;padding:3px 8px;border-radius:5px;font-family:JetBrains Mono,monospace;font-size:0.58rem;color:var(--dim);background:var(--card);border:1px solid var(--border);cursor:pointer;text-transform:uppercase;letter-spacing:0.06em;}
+.style-filter:hover,.doing-level-filter:hover{border-color:var(--gold);color:var(--text);}
+.style-filter.active,.doing-level-filter.active{background:var(--gold);color:var(--bg);border-color:var(--gold);font-weight:600;}
+.doing-level-rail{display:flex;gap:6px;overflow-x:auto;padding-bottom:6px;margin-bottom:12px;scrollbar-width:none;}
+.doing-level-rail::-webkit-scrollbar{display:none;}
+.doing-fretboard-wrap{position:relative;border:1px solid rgba(212,175,105,0.18);border-radius:8px;background:linear-gradient(90deg,#120d09,#2a1b10 15%,#3a2413 50%,#1b110b);box-shadow:inset 0 0 36px rgba(0,0,0,0.55),0 16px 36px rgba(0,0,0,0.2);overflow-x:auto;}
+.doing-fretboard{min-width:920px;position:relative;}
+.doing-fretboard:before{content:"";position:absolute;inset:48px 0 0;background:repeating-linear-gradient(to bottom,rgba(235,220,190,0.28) 0 2px,transparent 2px calc((100% - 6px)/7));pointer-events:none;}
+.doing-fret-header,.doing-string-row{display:grid;grid-template-columns:112px repeat(8,minmax(92px,1fr));position:relative;}
+.doing-fret-header{background:rgba(13,11,8,0.72);border-bottom:2px solid rgba(212,175,105,0.5);}
+.doing-fret-label,.doing-string-label{border-right:2px solid rgba(212,175,105,0.55);}
+.doing-fret-label{padding:10px 8px;font-family:JetBrains Mono,monospace;font-size:0.58rem;color:var(--gold);letter-spacing:0.12em;text-transform:uppercase;text-align:center;}
+.doing-level-head{position:relative;min-height:48px;padding:8px 7px;border-right:1px solid rgba(212,175,105,0.22);text-align:center;}
+.doing-level-head:before{content:"";position:absolute;left:-2px;top:0;bottom:0;width:4px;background:linear-gradient(180deg,rgba(245,237,216,0.08),rgba(212,175,105,0.5),rgba(245,237,216,0.08));}
+.doing-level-head:last-child{border-right:none;}
+.doing-level-roman{font-family:Cinzel,serif;color:var(--gold);font-size:0.85rem;line-height:1;}
+.doing-level-name{font-family:JetBrains Mono,monospace;color:var(--dim);font-size:0.5rem;letter-spacing:0.08em;text-transform:uppercase;margin-top:4px;white-space:nowrap;}
+.doing-string-row{min-height:92px;border-bottom:1px solid rgba(245,237,216,0.08);}
+.doing-string-row:last-child{border-bottom:none;}
+.doing-string-label{position:sticky;left:0;z-index:2;background:linear-gradient(90deg,#17110d,#21150d);display:flex;align-items:center;justify-content:center;padding:10px 8px;text-align:center;}
+.doing-string-label span{font-family:Cinzel,serif;color:var(--gold);font-size:0.78rem;letter-spacing:0.04em;}
+.doing-fret-cell{position:relative;padding:10px 8px;display:flex;flex-wrap:wrap;gap:7px;align-content:center;justify-content:center;border-right:1px solid rgba(212,175,105,0.16);min-width:0;}
+.doing-fret-cell:before{content:"";position:absolute;left:-1px;top:0;bottom:0;width:2px;background:rgba(245,237,216,0.13);}
+.doing-fret-cell:last-child{border-right:none;}
+.drill-dot{position:relative;width:31px;height:31px;border-radius:50%;background:radial-gradient(circle at 35% 28%,#3a3027,#15110d 62%);border:2px solid rgba(212,175,105,0.38);box-shadow:0 0 0 1px rgba(0,0,0,0.45),0 5px 12px rgba(0,0,0,0.3);cursor:pointer;transition:transform 0.15s,border-color 0.15s,box-shadow 0.15s;display:flex;align-items:center;justify-content:center;}
+.drill-dot:hover{transform:translateY(-2px) scale(1.08);border-color:var(--gold);box-shadow:0 0 14px rgba(212,175,105,0.28),0 7px 14px rgba(0,0,0,0.35);}
+.drill-dot:after{content:attr(data-short);font-family:JetBrains Mono,monospace;font-size:0.52rem;color:var(--dim);}
+.drill-dot[data-state="seen"]{border-color:#8b6914;}
+.drill-dot[data-state="practiced"]{border-color:#c47a3a;}
+.drill-dot[data-state="clean"]{border-color:#e8a020;background:radial-gradient(circle at 35% 28%,#5b3a16,#1c130b 62%);}
+.drill-dot[data-state="comfortable"]{border-color:#d4af69;box-shadow:0 0 14px rgba(212,175,105,0.18);}
+.drill-dot[data-state="mastered"]{background:radial-gradient(circle at 35% 28%,#f5d58f,#d4af69 54%,#755018);border-color:#f5edd8;}
+.drill-dot[data-state="mastered"]:after{content:"✓";color:var(--bg);font-weight:700;}
+.doing-empty-fret{font-family:JetBrains Mono,monospace;font-size:0.62rem;color:rgba(106,94,78,0.34);}
+.doing-legend{display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin-top:12px;color:var(--dim);font-size:0.68rem;}
+.doing-legend span{display:inline-flex;gap:6px;align-items:center;}
+.doing-legend i{width:12px;height:12px;border-radius:50%;border:1px solid rgba(212,175,105,0.5);display:inline-block;background:var(--card);}
+.doing-legend .done i{background:var(--gold);border-color:#f5edd8;}
+.doing-drill-page{max-width:980px;margin:0 auto;padding:20px 18px 28px;}
+.doing-drill-layout{display:grid;grid-template-columns:minmax(0,1fr) 250px;gap:18px;align-items:start;}
+.doing-drill-card{background:rgba(26,23,20,0.9);border:1px solid var(--border);border-radius:8px;padding:20px;box-shadow:0 12px 32px rgba(0,0,0,0.22);}
+.doing-drill-card h2{font-family:Cinzel,serif;color:var(--gold);font-size:1.3rem;margin:0 0 8px;}
+.doing-guide-card{position:sticky;top:72px;background:linear-gradient(180deg,rgba(26,23,20,0.95),rgba(13,11,8,0.95));border:1px solid rgba(212,175,105,0.25);border-radius:8px;padding:14px;text-align:center;}
+.doing-guide-card img{width:118px;max-width:70%;height:auto;margin:0 auto 8px;display:block;filter:drop-shadow(0 8px 18px rgba(0,0,0,0.35));}
+.doing-guide-card p{color:var(--text);font-size:0.76rem;line-height:1.55;margin:0;text-align:left;}
+.doing-practice-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:16px 0;}
+.doing-practice-box{background:rgba(13,11,8,0.42);border:1px solid rgba(212,175,105,0.12);border-radius:6px;padding:12px;}
+.doing-practice-box b{display:block;font-family:JetBrains Mono,monospace;color:var(--amber);font-size:0.58rem;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:6px;}
+.doing-practice-box p{margin:0;color:var(--text);font-size:0.78rem;line-height:1.5;}
+.doing-state-buttons{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:7px;margin-top:16px;}
+.doing-state-btn{border:1px solid var(--border);background:var(--card);color:var(--dim);padding:9px 6px;border-radius:5px;font-family:JetBrains Mono,monospace;font-size:0.56rem;letter-spacing:0.05em;text-transform:uppercase;cursor:pointer;}
+.doing-state-btn:hover,.doing-state-btn.active{border-color:var(--gold);color:var(--gold);background:rgba(212,175,105,0.08);}
+.doing-state-btn.mastered.active{background:var(--gold);color:var(--bg);}
+@media(max-width:780px){
+  .doing-shell{padding:14px 12px 24px;}
+  .doing-hero{grid-template-columns:auto 1fr;}
+  .doing-stat-strip{grid-column:1/-1;justify-content:flex-start;}
+  .doing-drill-layout{grid-template-columns:1fr;}
+  .doing-guide-card{position:relative;top:auto;display:grid;grid-template-columns:86px 1fr;gap:10px;align-items:center;text-align:left;}
+  .doing-guide-card img{width:86px;max-width:86px;margin:0;}
+  .doing-practice-grid{grid-template-columns:1fr;}
+  .doing-state-buttons{grid-template-columns:repeat(2,minmax(0,1fr));}
 }
 .node-info{
   background:var(--card);border:1px solid var(--border);border-radius:10px;
@@ -2093,102 +2158,213 @@ function showDoing(){
   document.getElementById('p-foundation').classList.add('on');
   const D=window.DOING;if(!D)return;
   const el=document.getElementById('p-foundation');
-  const completed=JSON.parse(localStorage.getItem('hearth-doing-progress')||'{}');
+  const progress=JSON.parse(localStorage.getItem('hearth-doing-progress')||'{}');
 
   const allStyles=[];
   D.categories.forEach(c=>c.drills.forEach(d=>{if(!allStyles.includes(d.style))allStyles.push(d.style);}));
   allStyles.sort();
 
   let activeStyle='all';
+  let activeLevel='all';
   let activeSearch='';
+
+  const levels=[
+    {level:1,label:'Level I',name:'Touch',tag:'Clean first contact'},
+    {level:2,label:'Level II',name:'Control',tag:'Two hands agree'},
+    {level:3,label:'Level III',name:'Movement',tag:'Crossings and changes'},
+    {level:4,label:'Level IV',name:'Groove',tag:'Pulse becomes body'},
+    {level:5,label:'Level V',name:'Reach',tag:'Neck opens wider'},
+    {level:6,label:'Level VI',name:'Flow',tag:'Patterns connect'},
+    {level:7,label:'Level VII',name:'Fire',tag:'Advanced mechanics'},
+    {level:8,label:'Level VIII',name:'Voice',tag:'Technique becomes sound'}
+  ];
+
+  const drillLevels={
+    'alt-1':1,'flatpick-1':1,'chrom-1':1,'classical-1':1,'stretch-1':1,'16th-1':1,'funk-1':1,'shuffle-1':1,'strum-1':1,'triplet-1':1,'pent-1':1,'major-1':1,'blues-scale-1':1,'pent-3':1,'maj-arp':1,'min-arp':1,'pima-1':1,'pima-2':1,
+    'alt-2':2,'hybrid-1':2,'spider-1':2,'barre-1':2,'legato-1':2,'vibrato-1':2,'funk-2':2,'reggae-1':2,'metronome-1':2,'pent-2':2,'modes-1':2,'modes-2':2,'dom7-arp':2,'maj7-arp':2,'classical-arp':2,'trem-1':2,'seq-1':2,'speed-ramp':2,'burst-1':2,'slide-1':2,
+    'alt-3':3,'gypsy-1':3,'crosspick-1':3,'barre-2':3,'trill-1':3,'bossa-1':3,'major-2':3,'harm-min-1':3,'phrygian-1':3,'pos-shift-1':3,'slide-2':3,
+    'econ-1':4,'poly-1':4,'minor-nat-1':4,'sweep-arp':4,'tap-1':4,'rasg-1':4,'golpe-1':4,
+    'sweep-1':5,'legato-2':5,'skip-1':5,'dim-arp':5,
+    'tap-2':6,'whole-tone-1':6,'dim-scale-1':6,
+    'sweep-2':7,'alzap-1':7,
+    'gypsy-pick':8,'celtic-1':8
+  };
+
+  const stateOrder=['seen','practiced','clean','comfortable','mastered'];
+  const stateLabels={seen:'Seen',practiced:'Practised',clean:'Clean once',comfortable:'Comfortable',mastered:'Mastered'};
+
+  function esc(s){
+    return String(s||'').replace(/[&<>"']/g,function(ch){
+      return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch];
+    });
+  }
+  function textOnly(html){
+    return String(html||'').replace(/<[^>]*>/g,' ').replace(/\s+/g,' ').trim();
+  }
+  function firstSentence(html){
+    const txt=textOnly(html);
+    const m=txt.match(/^(.{20,160}?[.!?])\s/);
+    return m?m[1]:txt.slice(0,150);
+  }
+  function getDoingLevel(drill){
+    return drill.level||drillLevels[drill.id]||Math.min(8,Math.max(1,drill.difficulty||1));
+  }
+  function getState(drillId){
+    const value=progress[drillId];
+    if(value===true) return 'mastered';
+    if(stateOrder.includes(value)) return value;
+    return '';
+  }
+  function isVisible(cat,drill){
+    if(activeStyle!=='all'&&drill.style!==activeStyle) return false;
+    if(activeLevel!=='all'&&String(getDoingLevel(drill))!==String(activeLevel)) return false;
+    if(activeSearch){
+      const q=activeSearch.toLowerCase();
+      return (drill.title+' '+drill.style+' '+cat.title+' '+drill.source).toLowerCase().includes(q);
+    }
+    return true;
+  }
+  function drillShort(drill){
+    const words=drill.title.replace(/[^\w\s]/g,' ').split(/\s+/).filter(Boolean);
+    return words.slice(0,2).map(w=>w[0]).join('').toUpperCase().slice(0,2)||'D';
+  }
+  function categoryCoaching(cat,drill){
+    const title=drill.title;
+    const defaults={
+      picking:{
+        feel:'Small movement from a relaxed wrist. The pick should travel through the string, not fight it.',
+        listen:'Every note should be the same size. Downstrokes and upstrokes should not sound like two different players.',
+        mistake:'Using the whole arm, gripping the pick too hard, or speeding up before the string crossing is clean.',
+        pass:'Play it clean three times at a steady BPM, then raise the tempo by 5 only if the sound stays even.',
+        guide:'Keep the motion tiny. If the pick is flying far from the string, speed will always feel like a battle.'
+      },
+      fretting:{
+        feel:'Fingertips land close to the fret with just enough pressure. The thumb supports, it does not clamp.',
+        listen:'Each note should speak immediately, with no buzz and no accidental muted neighbour strings.',
+        mistake:'Pressing too hard, lifting fingers too high, or letting the wrist collapse under the neck.',
+        pass:'Move through the pattern twice with relaxed hands and no buzzing before you mark it clean.',
+        guide:'Your fretting hand learns best when it feels easy. Clean pressure beats strong pressure.'
+      },
+      rhythm:{
+        feel:'The hand keeps moving like a pendulum, even when some attacks are muted or skipped.',
+        listen:'The pulse should feel steady before the pattern sounds fancy. The groove lives between the clicks.',
+        mistake:'Freezing the strumming hand, rushing syncopations, or treating muted strokes as throwaway noise.',
+        pass:'Loop it for one full minute without losing the click, then try it with lighter dynamics.',
+        guide:'Do not only count this one. Let the hand become the clock and make the accents sit inside it.'
+      },
+      scales:{
+        feel:'Stay close to the strings and shift positions calmly. The shape is a map, not a race.',
+        listen:'Hear the root when you arrive on it. The scale should start sounding like a colour, not a ladder.',
+        mistake:'Running the pattern mechanically without knowing where the strong notes are.',
+        pass:'Play up, down, then stop on three roots without hunting for them.',
+        guide:'Name the sound while you play it. A scale becomes useful when your ear knows where home is.'
+      },
+      arpeggios:{
+        feel:'One note at a time, with clean separation. Let the chord shape appear without strumming it.',
+        listen:'The chord should be obvious even though the notes are broken apart.',
+        mistake:'Letting notes smear together when the drill asks for separate tones, or losing the root.',
+        pass:'Play the arpeggio in time and call out root, third, fifth, and seventh where relevant.',
+        guide:'Arpeggios are chords turned into movement. Listen for the harmony, not just the fingering.'
+      },
+      speed:{
+        feel:'Short bursts, loose hands, and a clear stop. Speed comes from removing effort.',
+        listen:'Fast notes still need a front edge. If they blur, slow down until the attack returns.',
+        mistake:'Practising mistakes at high tempo and teaching the hands to panic.',
+        pass:'Find the fastest clean tempo, then practise ten BPM below it with control.',
+        guide:'Your ceiling is information, not a challenge. Train just below it until the body trusts the motion.'
+      },
+      styles:{
+        feel:'Copy the physical accent of the style first: attack, muting, swing, weight, and release.',
+        listen:'The technique should sound like a dialect, not just a guitar exercise.',
+        mistake:'Learning the shape without the accent that makes the style speak.',
+        pass:'Record one loop and check whether the style is recognisable before reading the title.',
+        guide:'Style techniques carry culture. Aim for the accent and the feel, not only the notes.'
+      }
+    };
+    const base=defaults[cat.id]||defaults.fretting;
+    return {
+      setup:firstSentence(drill.body)||('Work slowly through '+title+'.'),
+      feel:base.feel,
+      listen:base.listen,
+      mistake:base.mistake,
+      pass:base.pass,
+      guide:base.guide
+    };
+  }
 
   function render(){
     let totalDrills=0, doneDrills=0;
     D.categories.forEach(c=>c.drills.forEach(d=>{
-      if(activeStyle==='all'||d.style===activeStyle){totalDrills++;if(completed[d.id])doneDrills++;}
+      if(isVisible(c,d)){totalDrills++;if(getState(d.id)==='mastered')doneDrills++;}
     }));
 
-    let html='<div style="margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">'+
-      '<div style="font-family:JetBrains Mono;font-size:0.75rem;color:var(--dim)">'+doneDrills+'/'+totalDrills+' drills</div>'+
-      '<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">'+
-        '<input id="doing-search" type="text" placeholder="Search drills..." value="'+activeSearch+'" style="background:var(--card);border:1px solid var(--border);color:var(--text);padding:4px 10px;border-radius:12px;font-family:JetBrains Mono;font-size:0.65rem;width:140px;outline:none">'+
-        '<div id="style-filters" style="display:flex;gap:6px;flex-wrap:wrap">';
-    html+='<span class="style-filter'+(activeStyle==='all'?' active':'')+'" data-style="all">All</span>';
-    allStyles.forEach(s=>{
-      html+='<span class="style-filter'+(activeStyle===s?' active':'')+'" data-style="'+s+'">'+s+'</span>';
+    let totalAll=0, masteredAll=0, touchedAll=0;
+    D.categories.forEach(c=>c.drills.forEach(d=>{
+      totalAll++;
+      const state=getState(d.id);
+      if(state) touchedAll++;
+      if(state==='mastered') masteredAll++;
+    }));
+
+    let html='<div class="doing-controls">'+
+      '<div id="doing-level-filters" class="doing-level-rail">'+
+        '<span class="doing-level-filter'+(activeLevel==='all'?' active':'')+'" data-level="all">All frets</span>';
+    levels.forEach(lv=>{
+      html+='<span class="doing-level-filter'+(String(activeLevel)===String(lv.level)?' active':'')+'" data-level="'+lv.level+'">'+lv.label+'</span>';
     });
-    html+='</div></div>';
+    html+='</div>'+
+      '<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">'+
+        '<input id="doing-search" class="doing-search" type="text" placeholder="Search drills..." value="'+esc(activeSearch)+'">'+
+        '<div id="style-filters" style="display:flex;gap:6px;flex-wrap:wrap">'+
+          '<span class="style-filter'+(activeStyle==='all'?' active':'')+'" data-style="all">All styles</span>';
+    allStyles.forEach(s=>{
+      html+='<span class="style-filter'+(activeStyle===s?' active':'')+'" data-style="'+esc(s)+'">'+esc(s)+'</span>';
+    });
+    html+='</div></div></div>';
 
-    // FRETBOARD GRID - 3 difficulty levels
-    const levels=['','Beginner','Intermediate','Advanced'];
-
-    html+='<div style="position:relative;margin-top:8px">';
-
-    // Header row
-    html+='<div class="doing-grid-header" style="display:grid;grid-template-columns:90px 1fr 1fr 1fr;border-top:3px solid var(--gold);border-bottom:1px solid var(--border)">';
-    html+='<div style="padding:8px;font-family:JetBrains Mono;font-size:9px;color:var(--gold);opacity:0.5;border-right:2px solid var(--gold);text-align:center">PATH</div>';
-    for(let i=1;i<4;i++){
-      html+='<div style="padding:8px;font-family:JetBrains Mono;font-size:10px;color:var(--gold);text-align:center;border-right:'+(i<3?'1px solid var(--border)':'none')+';opacity:0.7">'+levels[i]+'</div>';
-    }
+    html+='<div class="doing-fretboard-wrap"><div class="doing-fretboard">'+
+      '<div class="doing-fret-header">'+
+        '<div class="doing-fret-label">Strings</div>';
+    levels.forEach(lv=>{
+      html+='<div class="doing-level-head" title="'+esc(lv.tag)+'">'+
+        '<div class="doing-level-roman">'+esc(lv.label.replace('Level ',''))+'</div>'+
+        '<div class="doing-level-name">'+esc(lv.name)+'</div>'+
+      '</div>';
+    });
     html+='</div>';
 
-    // Category rows
     D.categories.forEach((cat,fi)=>{
       const filtered=cat.drills.filter(d=>{
-        if(activeStyle!=='all'&&d.style!==activeStyle) return false;
-        if(activeSearch){ const q=activeSearch.toLowerCase(); return d.title.toLowerCase().includes(q)||d.style.toLowerCase().includes(q)||cat.title.toLowerCase().includes(q); }
-        return true;
+        return isVisible(cat,d);
       });
-      const anyDone=filtered.some(d=>completed[d.id]);
       if(filtered.length===0) return; // hide empty categories
 
-      html+='<div class="doing-grid-row" style="display:grid;grid-template-columns:90px 1fr 1fr 1fr;border-bottom:1px solid var(--border);min-height:70px">';
+      html+='<div class="doing-string-row">'+
+        '<div class="doing-string-label"><span>'+esc(cat.title)+'</span></div>';
 
-      // Column 1: Category label
-      html+='<div style="padding:12px 8px;display:flex;align-items:center;justify-content:center;border-right:2px solid var(--gold);background:var(--card)">'+
-        '<span style="font-family:Cinzel;font-size:11px;color:'+(anyDone?'var(--gold)':'var(--text)')+';font-weight:'+(anyDone?'700':'500')+';text-align:center;line-height:1.3">'+cat.title+'</span>'+
-      '</div>';
-
-      // Columns 2-4: Drill dots
-      [1,2,3].forEach(diff=>{
-        const drills=filtered.filter(d=>d.difficulty===diff);
-        html+='<div class="doing-grid-cell" style="padding:8px;display:flex;flex-wrap:wrap;gap:6px;align-content:flex-start;border-right:'+(diff<3?'1px solid var(--border)':'none')+'">';
-
-        drills.forEach(drill=>{
-          const isDone=completed[drill.id];
-          html+='<div class="drill-dot" data-cat="'+cat.id+'" data-drill="'+drill.id+'" title="'+drill.title+'" style="'+
-            'width:'+(isDone?'26px':'22px')+';height:'+(isDone?'26px':'22px')+';border-radius:50%;'+
-            'background:'+(isDone?'var(--gold)':'var(--card)')+';'+
-            'border:2px solid '+(isDone?'var(--gold)':'var(--border)')+';'+
-            'opacity:'+(isDone?'1':'0.55')+';'+
-            'cursor:pointer;display:flex;align-items:center;justify-content:center;'+
-            'transition:all 0.15s;flex-shrink:0'+
-          '">'+
-            (isDone?'<span style="font-size:9px;color:var(--bg)">&#10003;</span>':'')+
-          '</div>'+
-          '<span class="drill-label" style="font-size:0.6rem;color:var(--dim);line-height:1.1;max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+drill.title.split(' - ')[0].split(' - ')[0]+'</span>';
-        });
-
-        if(drills.length===0){
-          html+='<div style="font-size:0.55rem;color:var(--dim);opacity:0.2">-</div>';
+      levels.forEach(lv=>{
+        const drills=filtered.filter(d=>getDoingLevel(d)===lv.level);
+        html+='<div class="doing-fret-cell">';
+        if(drills.length){
+          drills.forEach(drill=>{
+            const state=getState(drill.id);
+            html+='<button class="drill-dot" data-cat="'+esc(cat.id)+'" data-drill="'+esc(drill.id)+'" data-state="'+esc(state)+'" data-short="'+esc(drillShort(drill))+'" title="'+esc(drill.title)+'"></button>';
+          });
+        } else {
+          html+='<span class="doing-empty-fret">-</span>';
         }
-
         html+='</div>';
       });
 
       html+='</div>';
     });
 
-    // Bottom gold line
-    html+='<div style="border-bottom:3px solid var(--gold)"></div>';
-
-    html+='</div>';
-
-    // Legend
-    html+='<div style="display:flex;gap:16px;margin-top:12px;padding-top:10px;border-top:1px solid var(--border);align-items:center">'+
-      '<div style="display:flex;align-items:center;gap:6px"><div style="width:16px;height:16px;border-radius:50%;background:var(--gold)"></div><span style="font-size:0.7rem;color:var(--dim)">Complete</span></div>'+
-      '<div style="display:flex;align-items:center;gap:6px"><div style="width:16px;height:16px;border-radius:50%;background:var(--card);border:2px solid var(--border);opacity:0.55"></div><span style="font-size:0.7rem;color:var(--dim)">Not started</span></div>'+
-      '<span style="font-size:0.65rem;color:var(--dim);margin-left:auto">Click a dot to open drill</span>'+
+    html+='</div></div>'+
+    '<div class="doing-legend">'+
+      '<span><i></i> Untouched</span>'+
+      '<span><i style="border-color:#e8a020"></i> In training</span>'+
+      '<span class="done"><i></i> Mastered</span>'+
+      '<span style="margin-left:auto">'+doneDrills+'/'+totalDrills+' mastered in view · '+touchedAll+'/'+totalAll+' touched overall</span>'+
     '</div>';
 
     return html;
@@ -2197,72 +2373,128 @@ function showDoing(){
   window.showDoingDrill=function(catId,drillId){
     const cat=D.categories.find(c=>c.id===catId);if(!cat)return;
     const drill=cat.drills.find(d=>d.id===drillId);if(!drill)return;
-    const isDone=completed[drillId];
-    const diffLabel=['','','Beginner','Intermediate','Advanced'][drill.difficulty];
-    el.innerHTML='<div style="padding:20px;max-width:650px;margin:0 auto">'+
-      '<button class="back-btn" onclick="showDoing()">← Back to drills</button>'+
-      '<div style="margin-bottom:8px">'+
-        '<h2 style="font-family:Cinzel;color:var(--gold);font-size:1.1rem;margin:0">'+drill.title+'</h2>'+
-        '<div style="display:flex;gap:8px;margin-top:4px;flex-wrap:wrap">'+
-          '<span class="tag">'+cat.title+'</span>'+
-          '<span class="tag">'+diffLabel+'</span>'+
-          '<span class="tag">'+drill.style+'</span>'+
-          '<span class="tag">BPM '+drill.bpm+'</span>'+
-          '<span class="tag">'+drill.duration+'</span>'+
+    const state=getState(drillId);
+    const lv=levels.find(l=>l.level===getDoingLevel(drill))||levels[0];
+    const coach=categoryCoaching(cat,drill);
+    const diffLabel=['','Beginner','Intermediate','Advanced'][drill.difficulty]||'Training';
+    const videoHtml=drill.video?'<a href="'+esc(drill.video)+'" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:7px;color:var(--gold);text-decoration:none;font-size:0.75rem;margin-top:10px">Watch external demo</a>':'';
+    const stateButtons=stateOrder.map(s=>{
+      return '<button class="doing-state-btn '+(s==='mastered'?'mastered ':'')+(state===s?'active':'')+'" onclick="setDoingDrillState(\''+esc(catId)+'\',\''+esc(drillId)+'\',\''+s+'\')">'+stateLabels[s]+'</button>';
+    }).join('');
+
+    el.innerHTML='<div class="doing-drill-page">'+
+      '<button class="back-btn" onclick="showDoing()">&larr; Fretboard</button>'+
+      '<div class="doing-drill-layout">'+
+        '<div class="doing-drill-card">'+
+          '<div class="doing-kicker">'+esc(lv.label)+' · '+esc(lv.name)+'</div>'+
+          '<h2>'+esc(drill.title)+'</h2>'+
+          '<div style="display:flex;gap:7px;margin:8px 0 14px;flex-wrap:wrap">'+
+            '<span class="tag">'+esc(cat.title)+'</span>'+
+            '<span class="tag">'+esc(diffLabel)+'</span>'+
+            '<span class="tag">'+esc(drill.style)+'</span>'+
+            '<span class="tag">BPM '+esc(drill.bpm)+'</span>'+
+            '<span class="tag">'+esc(drill.duration)+'</span>'+
+          '</div>'+
+          '<div style="line-height:1.65;font-size:0.85rem;color:var(--text);border-top:1px solid var(--border);padding-top:14px">'+drill.body+'</div>'+
+          '<div class="doing-practice-grid">'+
+            '<div class="doing-practice-box"><b>Feel</b><p>'+esc(coach.feel)+'</p></div>'+
+            '<div class="doing-practice-box"><b>Listen</b><p>'+esc(coach.listen)+'</p></div>'+
+            '<div class="doing-practice-box"><b>Watch For</b><p>'+esc(coach.mistake)+'</p></div>'+
+            '<div class="doing-practice-box"><b>Pass Condition</b><p>'+esc(coach.pass)+'</p></div>'+
+          '</div>'+
+          '<div style="font-size:0.66rem;color:var(--dim);font-style:italic">Source: '+esc(drill.source)+'</div>'+
+          videoHtml+
+          '<div class="doing-state-buttons">'+stateButtons+'</div>'+
         '</div>'+
-      '</div>'+
-      (drill.video?'<div style="margin:12px 0"><a href="'+drill.video+'" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:6px;background:var(--card);border:1px solid var(--border);padding:8px 14px;border-radius:8px;color:var(--text);text-decoration:none;font-size:0.8rem"><span style="font-size:1.1rem">&#9654;</span> Watch demo</a></div>':'')+
-      '<div style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:20px;margin-top:12px;line-height:1.7;font-size:0.85rem;color:var(--text)">'+
-        drill.body+
-      '</div>'+
-      '<div style="margin-top:8px;font-size:0.65rem;color:var(--dim);font-style:italic">Source: '+drill.source+'</div>'+
-      '<div style="margin-top:16px;display:flex;gap:8px">'+
-        '<button onclick="completeDoingDrill(\''+catId+'\',\''+drillId+'\')" style="flex:1;background:'+(isDone?'var(--card)':'var(--gold)')+';color:'+(isDone?'var(--gold)':'var(--bg)')+';border:'+(isDone?'1px solid var(--gold)':'none')+';padding:12px;border-radius:8px;font-family:Cinzel;font-size:0.85rem;cursor:pointer">'+(isDone?'&#10003; Completed':'Mark Complete')+'</button>'+
+        '<aside class="doing-guide-card">'+
+          '<img src="images/character-full/Thinking.png" alt="">'+
+          '<p>'+esc(coach.guide)+'<br><br>'+esc(coach.setup)+'</p>'+
+        '</aside>'+
       '</div>'+
     '</div>';
   };
 
-  el.innerHTML='<div style="padding:16px;max-width:750px;margin:0 auto">'+
-    '<div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">'+
-      '<div><h2 style="font-family:Cinzel;color:var(--gold);font-size:1.1rem;margin:0">'+D.title+'</h2>'+
-      '<p style="color:var(--dim);font-size:0.7rem;margin:0">'+D.description+'</p></div>'+
-      '<button onclick="document.querySelectorAll(\'.pnl\').forEach(p=>p.classList.remove(\'on\'));document.getElementById(\'p-map\').classList.add(\'on\')" style="margin-left:auto;background:none;border:1px solid var(--border);color:var(--dim);padding:6px 12px;border-radius:4px;cursor:pointer;font-family:inherit;font-size:0.7rem">&larr; Back</button>'+
+  function shell(){
+    let total=0, mastered=0, touched=0;
+    D.categories.forEach(c=>c.drills.forEach(d=>{
+      total++;
+      const s=getState(d.id);
+      if(s) touched++;
+      if(s==='mastered') mastered++;
+    }));
+    el.innerHTML='<div class="doing-shell">'+
+    '<button class="back-btn" onclick="backToMap()">&larr; Map</button>'+
+    '<div class="doing-hero">'+
+      '<img class="doing-hero-icon" src="images/doing-icon.png" alt="">'+
+      '<div><div class="doing-kicker">Do Node · Fretboard Training Chamber</div>'+
+      '<h2>'+esc(D.title)+'</h2>'+
+      '<p>The guitar neck becomes the map: each string is a technique family, each fret is a training level, and every dot opens a coached physical drill.</p></div>'+
+      '<div class="doing-stat-strip">'+
+        '<div class="doing-stat"><strong>'+mastered+'</strong><span>mastered</span></div>'+
+        '<div class="doing-stat"><strong>'+touched+'</strong><span>touched</span></div>'+
+        '<div class="doing-stat"><strong>'+total+'</strong><span>drills</span></div>'+
+      '</div>'+
     '</div>'+
     '<div id="doing-fretboard">'+render()+'</div>'+
   '</div>';
-
-  document.getElementById('style-filters').addEventListener('click',function(e){
-    const btn=e.target.closest('.style-filter');
-    if(!btn)return;
-    activeStyle=btn.getAttribute('data-style')||'all';
-    document.getElementById('doing-fretboard').innerHTML=render();
-    bindDots();
-  });
-
-  // Search listener
-  const searchInput=document.getElementById('doing-search');
-  if(searchInput){
-    searchInput.addEventListener('input',function(){
-      activeSearch=this.value.trim();
-      document.getElementById('doing-fretboard').innerHTML=render();
-      bindDots();
-    });
+    bindControls();
   }
 
-  function bindDots(){
+  function rerenderBoard(refocusSearch){
+    document.getElementById('doing-fretboard').innerHTML=render();
+    bindControls();
+    if(refocusSearch){
+      const nextSearch=document.getElementById('doing-search');
+      if(nextSearch){
+        nextSearch.focus();
+        nextSearch.setSelectionRange(activeSearch.length,activeSearch.length);
+      }
+    }
+  }
+  function bindControls(){
+    const styleFilters=document.getElementById('style-filters');
+    if(styleFilters){
+      styleFilters.addEventListener('click',function(e){
+        const btn=e.target.closest('.style-filter');
+        if(!btn)return;
+        activeStyle=btn.getAttribute('data-style')||'all';
+        rerenderBoard();
+      });
+    }
+    const levelFilters=document.getElementById('doing-level-filters');
+    if(levelFilters){
+      levelFilters.addEventListener('click',function(e){
+        const btn=e.target.closest('.doing-level-filter');
+        if(!btn)return;
+        activeLevel=btn.getAttribute('data-level')||'all';
+        rerenderBoard();
+      });
+    }
+    const searchInput=document.getElementById('doing-search');
+    if(searchInput){
+      searchInput.addEventListener('input',function(){
+        activeSearch=this.value.trim();
+        rerenderBoard(true);
+      });
+    }
     el.querySelectorAll('.drill-dot').forEach(dot=>{
       dot.onclick=function(){showDoingDrill(this.getAttribute('data-cat'),this.getAttribute('data-drill'));};
     });
   }
-  bindDots();
+
+  shell();
 }
 
 
-window.completeDoingDrill=function(catId,drillId){
+window.setDoingDrillState=function(catId,drillId,state){
   const progress=JSON.parse(localStorage.getItem('hearth-doing-progress')||'{}');
-  progress[drillId]=true;
+  progress[drillId]=state;
   localStorage.setItem('hearth-doing-progress',JSON.stringify(progress));
-  showDoing();
+  showDoingDrill(catId,drillId);
+};
+
+window.completeDoingDrill=function(catId,drillId){
+  window.setDoingDrillState(catId,drillId,'mastered');
 };
 
 // ═══ KNOWING NODE - BOOKSHELF UI ═══
