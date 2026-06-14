@@ -4974,18 +4974,46 @@ async function depositLink(){
   var notes=document.getElementById('linkDepositNotes').value.trim();
   var status=document.getElementById('linkDepositStatus');
   if(!url){status.textContent='Paste a URL first';status.style.color='#e74c3c';return;}
-  if(!title){
-    // Try to extract title from URL
-    var m=url.match(/[?&]v=([^&]+)/);
-    title=m?'YouTube Video '+m[1]:'YouTube Link';
-  }
+  if(!title){var m=url.match(/[?&]v=([^&]+)/);title=m?'YouTube Video '+m[1]:'YouTube Link';}
   var key='yt-'+Date.now();
-  status.textContent='Saving...';status.style.color='var(--dim)';
+  status.textContent='Saving + auto-linking...';status.style.color='var(--dim)';
   try{
+    // Save video
     var r=await fetch('https://thehearth.pro/api/?a=content-videos',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({key_name:key,title:title,youtube_url:url,category:cat,level_num:lvl,description:notes})});
     var d=await r.json();
-    if(d.ok){status.textContent='Saved! ✓';status.style.color='#2ecc71';document.getElementById('linkDepositUrl').value='';document.getElementById('linkDepositTitle').value='';document.getElementById('linkDepositNotes').value='';}
-    else{status.textContent='Error: '+(d.error||'unknown');status.style.color='#e74c3c';}
+    if(!d.ok){status.textContent='Error: '+(d.error||'unknown');status.style.color='#e74c3c';return;}
+    var videoId=d.id;
+    // Auto-link to matching content
+    var searchText=(title+' '+notes+' '+cat).toLowerCase();
+    var links=[];
+    try{
+      // Match against topics
+      var topics=await fetch('https://thehearth.pro/api/?a=content-topics').then(r=>r.json());
+      for(var t of topics){
+        var tWords=(t.title+' '+(t.description||'')+' '+(t.category||'')).toLowerCase().split(/[\s,;:\-]+/);
+        var match=tWords.filter(w=>w.length>3 && searchText.includes(w));
+        if(match.length>=1){
+          await fetch('https://thehearth.pro/api/?a=content-videos',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:videoId,topic_id:t.id})});
+          links.push('topic: '+t.title);
+          break;
+        }
+      }
+    }catch(e){}
+    try{
+      // Match against glossary
+      var glossary=await fetch('https://thehearth.pro/api/?a=content-glossary').then(r=>r.json());
+      for(var g of glossary){
+        if(searchText.includes(g.term.toLowerCase())){
+          links.push('term: '+g.term);
+        }
+      }
+    }catch(e){}
+    var linkText=links.length?' Linked to: '+links.join(', '):'';
+    status.textContent='Saved! ✓'+linkText;
+    status.style.color='#2ecc71';
+    document.getElementById('linkDepositUrl').value='';
+    document.getElementById('linkDepositTitle').value='';
+    document.getElementById('linkDepositNotes').value='';
   }catch(e){status.textContent='Network error';status.style.color='#e74c3c';}
 }
 // Auto-fill title from YouTube URL
