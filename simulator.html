@@ -195,6 +195,44 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 /* Map vignette */
 /* Ambient ember canvas */
 #emberCanvas{position:fixed;inset:0;pointer-events:none;z-index:0;opacity:0.9;}
+
+/* ═══ TEACHING ENGINE ═══ */
+.teach-scene{display:flex;align-items:flex-start;gap:16px;padding:20px 16px 12px;max-width:700px;margin:0 auto;}
+.teach-char-wrap{flex:0 0 120px;display:flex;flex-direction:column;align-items:center;position:relative;}
+.teach-char-img{width:120px;height:120px;object-fit:contain;filter:drop-shadow(0 4px 12px rgba(0,0,0,0.4));animation:char-float 3s ease-in-out infinite;}
+@keyframes char-float{0%,100%{transform:translateY(0);}50%{transform:translateY(-6px);}}
+.teach-char-label{font-family:'Cinzel',serif;font-size:0.55rem;color:var(--gold);letter-spacing:0.1em;text-transform:uppercase;margin-top:4px;text-align:center;}
+.teach-bubble{flex:1;position:relative;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px 18px;min-height:60px;}
+.teach-tail{position:absolute;left:-8px;top:24px;width:0;height:0;border-top:6px solid transparent;border-bottom:6px solid transparent;border-right:8px solid var(--border);}
+.teach-tail::after{content:'';position:absolute;left:2px;top:-5px;width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-right:7px solid var(--card);}
+.teach-text{font-size:0.82rem;line-height:1.55;color:var(--text);}
+.teach-text p{margin:0 0 8px 0;}
+.teach-text p:last-child{margin-bottom:0;}
+.teach-text strong{color:var(--gold);}
+.teach-text em{color:var(--amber);font-style:italic;}
+.teach-buttons{display:flex;gap:8px;justify-content:center;padding:8px 16px 16px;max-width:700px;margin:0 auto;}
+.teach-btn{background:var(--btn);color:var(--text);border:2px solid var(--border);border-radius:8px;padding:10px 20px;font-family:'DM Sans',sans-serif;font-size:0.82rem;font-weight:600;cursor:pointer;transition:all 0.15s;}
+.teach-btn:hover{border-color:var(--gold);color:var(--gold);transform:translateY(-1px);}
+.teach-btn.primary{background:var(--gold);color:#0d0b08;border-color:var(--gold);}
+.teach-btn.primary:hover{background:#e8c06a;}
+.teach-choices{display:flex;flex-direction:column;gap:8px;padding:0 16px 20px;max-width:700px;margin:0 auto;}
+.teach-choice{background:var(--card);color:var(--text);border:2px solid var(--border);border-radius:10px;padding:14px 18px;font-family:'DM Sans',sans-serif;font-size:0.82rem;text-align:left;cursor:pointer;transition:all 0.2s;line-height:1.4;}
+.teach-choice:hover{border-color:var(--gold);background:var(--gold)12;transform:translateX(4px);}
+.teach-choice.correct:hover{border-color:#2ecc71;background:#2ecc7112;}
+.teach-choice.wrong:hover{border-color:#e74c3c;background:#e74c3c12;}
+.teach-cards .teach-card:hover{box-shadow:0 4px 20px rgba(0,0,0,0.3);}
+.teach-card.selected{border-color:var(--gold) !important;box-shadow:0 0 20px rgba(212,175,105,0.2);transform:scale(1.03);}
+
+/* Mobile */
+@media(max-width:600px){
+  .teach-scene{flex-direction:column;align-items:center;gap:8px;padding:12px 8px 8px;}
+  .teach-char-wrap{flex:0 0 auto;}
+  .teach-char-img{width:90px;height:90px;}
+  .teach-bubble{width:100%;}
+  .teach-tail{display:none;}
+  .teach-cards{flex-direction:column !important;align-items:stretch !important;}
+  .teach-cards .teach-card{max-width:100% !important;min-width:100% !important;}
+}
 /* Map vignette */
 .map-vignette{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at center,transparent 40%,rgba(13,11,8,0.5) 100%);z-index:0;}
 
@@ -1115,6 +1153,8 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 </div>
 
 <script src="assets/js/foundation.js"></script>
+<script src="assets/js/teaching-engine.js"></script>
+<script src="assets/js/lessons-how-to-learn.js"></script>
 <script src="assets/js/doing.js?v=6"></script>
 <script src="assets/js/knowing.js?v=5"></script>
 <script src="assets/js/page-flip.browser.min.js"></script>
@@ -1910,6 +1950,30 @@ function showFoundationTopic(topicId){
   const F=window.FOUNDATION;if(!F)return;
   const topic=F.topics.find(t=>t.id===topicId);if(!topic)return;
   const el=document.getElementById('p-foundation');
+
+  // ── INTERACTIVE LESSON OVERRIDE ──
+  if(topicId==='f-how-to-learn' && window.LESSON_HOW_TO_LEARN && window.TeachingEngine){
+    document.querySelectorAll('.pnl').forEach(p=>p.classList.remove('on'));
+    el.classList.add('on');
+    el.innerHTML='<div style="padding:16px;max-width:800px;margin:0 auto">'+
+      '<button class="back-btn" onclick="showFoundation()">← Foundation</button>'+
+      '<div style="text-align:center;margin:12px 0 4px"><span style="font-family:Cinzel,serif;color:var(--gold);font-size:0.85rem;letter-spacing:2px">BLOCK 01 — HOW TO LEARN</span></div>'+
+      '<div id="teach-container" style="min-height:300px"></div>'+
+    '</div>';
+    var engine=TeachingEngine(document.getElementById('teach-container'),{
+      onComplete:function(scores){
+        var progress=JSON.parse(localStorage.getItem('hearth-foundation-progress')||'{}');
+        progress['f-how-to-learn']=true;
+        localStorage.setItem('hearth-foundation-progress',JSON.stringify(progress));
+        // Go to next topic or back to foundation
+        var next=F.topics[1];
+        if(next) showFoundationTopic(next.id);
+        else showFoundation();
+      }
+    });
+    engine.start(window.LESSON_HOW_TO_LEARN);
+    return;
+  }
   const topicIdx=F.topics.indexOf(topic);
   const nextTopic=topicIdx<F.topics.length-1?F.topics[topicIdx+1]:null;
   const completed=JSON.parse(localStorage.getItem('hearth-foundation-progress')||'{}');
@@ -4291,15 +4355,15 @@ function toggleCredits(){
   if(!canvas)return;
   var ctx=canvas.getContext('2d');
   var W,H,particles=[];
-  var MAX=30; // reduced from 40 for mobile performance
+  var MAX=40;
   var isMobile=(window.innerWidth<600);
-  if(isMobile)MAX=15;
+  if(isMobile)MAX=20;
   // Day/night colour shift
   var hour=new Date().getHours();
   var isNight=(hour<7||hour>=19);
   var colors=isNight
-    ?['#c45a20','#ff6b1a','#e8a020','#ff4500','#c45a20'] // warmer/ember at night
-    :['#d4af69','#e8a020','#c45a20','#ff8c42','#d4af69']; // gold/amber daytime
+    ?['#c45a20','#ff6b1a','#e8a020','#ff4500','#ff8c42']
+    :['#d4af69','#e8a020','#c45a20','#ff8c42','#ffaa44'];
 
   function resize(){W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight;}
   resize();
@@ -4309,11 +4373,11 @@ function toggleCredits(){
     return{
       x:Math.random()*W,
       y:H+10,
-      vx:(Math.random()-0.5)*0.3,
-      vy:-(0.3+Math.random()*0.8),
-      size:Math.random()*3.5+0.3,
+      vx:(Math.random()-0.5)*0.4,
+      vy:-(0.4+Math.random()*1.0),
+      size:Math.random()*4+1.5,
       life:0,
-      maxLife:200+Math.random()*300,
+      maxLife:180+Math.random()*250,
       color:colors[Math.floor(Math.random()*colors.length)],
       flicker:Math.random()*Math.PI*2
     };
@@ -4329,29 +4393,39 @@ function toggleCredits(){
   var _fCount=0;
   function tick(){
     _fCount++;
-    // Throttle on mobile: skip every other frame
     if(isMobile&&_fCount%2===0){requestAnimationFrame(tick);return;}
     ctx.clearRect(0,0,W,H);
     for(var i=0;i<particles.length;i++){
       var p=particles[i];
-      p.x+=p.vx;
+      p.x+=p.vx+Math.sin(p.flicker*0.7)*0.15;
       p.y+=p.vy;
-      p.vy-=0.002;
+      p.vy-=0.003;
       p.life++;
-      p.flicker+=0.05;
+      p.flicker+=0.06;
 
       var fade=1;
-      if(p.life<30)fade=p.life/30;
-      else if(p.life>p.maxLife-60)fade=Math.max(0,(p.maxLife-p.life)/60);
+      if(p.life<20)fade=p.life/20;
+      else if(p.life>p.maxLife-50)fade=Math.max(0,(p.maxLife-p.life)/50);
 
-      var flick=0.6+Math.sin(p.flicker)*0.4;
-      var alpha=fade*flick*0.5;
+      var flick=0.7+Math.sin(p.flicker)*0.3;
+      var alpha=fade*flick*0.85;
 
+      // Outer glow
+      ctx.beginPath();
+      ctx.arc(p.x,p.y,p.size*3,0,Math.PI*2);
+      var grd=ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,p.size*3);
+      grd.addColorStop(0,p.color+'88');
+      grd.addColorStop(1,p.color+'00');
+      ctx.fillStyle=grd;
+      ctx.globalAlpha=alpha*0.35;
+      ctx.fill();
+
+      // Core ember
       ctx.beginPath();
       ctx.arc(p.x,p.y,p.size,0,Math.PI*2);
       ctx.fillStyle=p.color;
       ctx.globalAlpha=alpha;
-      ctx.shadowBlur=4;
+      ctx.shadowBlur=8;
       ctx.shadowColor=p.color;
       ctx.fill();
 
