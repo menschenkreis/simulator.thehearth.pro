@@ -760,6 +760,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
       <div class="top-tool" onclick="sw('drill')">Notes</div>
       <div class="top-tool" onclick="toggleProgress()">Progress</div>
       <div class="top-tool" onclick="toggleSettings()">Settings</div>
+      <div class="top-tool" onclick="toggleReferences()">References</div>
     </div>
   </div>
   <div class="top-right">
@@ -787,6 +788,10 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
       <span class="settings-label">Particles</span>
       <button class="theme-btn" id="particleToggle" onclick="toggleParticles()">On</button>
     </div>
+  </div>
+  <!-- References Panel -->
+  <div class="search-panel" id="refsPanel" style="right:auto;left:auto;max-width:400px;width:90vw">
+    <div id="refsContent" style="max-height:60vh;overflow-y:auto"></div>
   </div>
 </div>
 
@@ -1727,13 +1732,13 @@ function showFoundation(){
   const firstIncomplete=F.topics.findIndex(t=>!completed[t.id]);
   const activeIdx=firstIncomplete===-1?F.topics.length-1:firstIncomplete;
 
-  let html='<div style="padding:16px;max-width:900px;margin:0 auto">'+
+  let html='<div style="padding:32px 16px 16px;max-width:900px;margin:0 auto">'+
     '<button class="back-btn" onclick="backToMap()">← Map</button>'+
-    // Compact header
-    '<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">'+
-      '<img src="images/foundation-icon.png" style="width:40px;height:40px;border-radius:50%;object-fit:cover;border:2px solid var(--gold)"/>'+
-      '<div style="flex:1"><h2 style="font-family:\'DM Sans\',sans-serif;color:var(--gold);font-size:1rem;margin:0;font-weight:700">'+F.title+'</h2>'+
-        '<div style="display:flex;align-items:center;gap:6px;margin-top:2px">'+
+    // Big node header
+    '<div style="display:flex;align-items:center;gap:14px;margin:12px 0 24px">'+
+      '<img src="images/foundation-icon.png" style="width:56px;height:56px;border-radius:50%;object-fit:cover;border:2px solid var(--gold);box-shadow:0 0 12px rgba(212,175,105,0.1)"/>'+
+      '<div><div style="font-family:Josefin Sans,sans-serif;color:var(--gold);font-size:1.3rem;letter-spacing:2px">'+F.title+'</div>'+
+        '<div style="display:flex;align-items:center;gap:6px;margin-top:4px">'+
           '<span style="font-family:JetBrains Mono;font-size:0.55rem;color:var(--amber)">'+doneCount+'/'+F.topics.length+'</span>'+
           '<div style="flex:1;max-width:120px;height:4px;background:var(--surface);border-radius:2px;overflow:hidden">'+
             '<div style="width:'+pct+'%;height:100%;background:linear-gradient(90deg,var(--gold),var(--amber));border-radius:2px;transition:width 0.5s"></div>'+
@@ -1802,7 +1807,6 @@ function showFoundation(){
   html+='</div></div></div>';
 
   el.innerHTML=html;
-  updateFooterReferences();
 
   const speechLines=['Welcome to Foundation.','These are your building blocks.','Each one builds on the last.','Start at the bottom. Work your way up.'];
   const speechEl=document.getElementById('speech-text');
@@ -4266,22 +4270,38 @@ function toggleCredits(){
     ctx.shadowBlur=0;
     requestAnimationFrame(tick);
   }
-  tick();
-})();
+  });
 </script>
 
-<!-- SITE-WIDE FOOTER -->
-<footer id="app-footer" style="background:var(--panel);border-top:1px solid var(--border);padding:10px 20px;font-size:0.55rem;color:var(--dim);flex-shrink:0;text-align:center;line-height:1.5">
-  <div id="footer-references"></div>
-</footer>
-
 <script>
-function updateFooterReferences(){
-  var el=document.getElementById('footer-references');
+// References panel
+function toggleReferences(){
+  var rp=document.getElementById('refsPanel');
+  if(!rp)return;
+  rp.classList.toggle('show');
+  if(rp.classList.contains('show')){
+    renderReferences();
+    // Close other panels
+    document.getElementById('searchPanel').classList.remove('show');
+    document.getElementById('progressPanel').classList.remove('show');
+    document.getElementById('settingsPanel').classList.remove('show');
+  }
+}
+function renderReferences(){
+  var el=document.getElementById('refsContent');
   if(!el)return;
-  var F=window.FOUNDATION;
-  if(F&&F.sources){el.textContent='Foundation references: '+F.sources.join(' · ');return;}
-  el.textContent='';
+  var html='<h3 style="font-family:Cinzel;font-size:0.85rem;color:var(--gold);margin:0 0 12px 0">References</h3>';
+  var nodes=['FOUNDATION','DOING','KNOWING','PLAY','PRACTICE'];
+  var labels={FOUNDATION:'Foundation',DOING:'Do',KNOWING:'Know',PLAY:'Play',PRACTICE:'Practice'};
+  nodes.forEach(function(k){
+    var data=window[k];
+    if(data&&data.sources&&data.sources.length){
+      html+='<div style="margin-bottom:10px">'+
+        '<div style="font-family:JetBrains Mono;font-size:0.55rem;color:var(--amber);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:4px">'+labels[k]+'</div>'+
+        '<div style="font-size:0.65rem;color:var(--dim);line-height:1.5">'+data.sources.join('<br>')+'</div></div>';
+    }
+  });
+  el.innerHTML=html||'<div style="color:var(--dim);font-size:0.7rem">No references loaded.</div>';
 }
 </script>
 
