@@ -782,16 +782,6 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 </style>
 </head>
 <body>
-<script>
-window.onerror=function(msg,url,line,col,err){
-  var d=document.createElement('div');
-  d.style.cssText='position:fixed;top:0;left:0;right:0;z-index:99999;background:red;color:white;padding:8px 16px;font:12px monospace';
-  d.textContent='JS ERROR: '+msg+' (line '+line+')';
-  document.body.appendChild(d);
-  setTimeout(function(){d.remove();},8000);
-  return false;
-};
-</script>
 <canvas id="emberCanvas"></canvas>
 <audio id="hearthAudio" loop preload="none"></audio>
 <!-- Ambient crackle sound loaded dynamically -->
@@ -3760,8 +3750,8 @@ function toggleParticles(){
 (function(){
   var m=localStorage.getItem('hearthSoundMuted');
   if(m==='true'){var btn=document.getElementById('soundToggle');if(btn)btn.textContent='Off';var a=document.getElementById('hearthAudio');if(a)a.pause();}
-  // Always show particles
-  localStorage.removeItem('hearthParticles');
+  var p=localStorage.getItem('hearthParticles');
+  if(p==='off'){var btn=document.getElementById('particleToggle');if(btn)btn.textContent='Off';var c=document.getElementById('emberCanvas');if(c)c.style.display='none';}
 })();
 
 function backToMap(){
@@ -4576,12 +4566,6 @@ window.playSfx=function(type){
 };
 
 <script>
-// Force canvas visible on load
-window.addEventListener('load',function(){
-  var c=document.getElementById('emberCanvas');
-  if(c){c.style.display='';c.style.cssText='position:fixed;inset:0;pointer-events:none;z-index:5;opacity:0.9;';}
-  localStorage.removeItem('hearthParticles');
-});
 // Ember particles — simple and bright
 (function(){
   var canvas=document.getElementById('emberCanvas');
@@ -4603,7 +4587,7 @@ window.addEventListener('load',function(){
       vy:-(0.3+Math.random()*0.7),
       size:2+Math.random()*3,
       color:colors[Math.floor(Math.random()*colors.length)],
-      alpha:0.2+Math.random()*0.25,
+      alpha:0.35+Math.random()*0.3,
       phase:Math.random()*6.28,
       speed:0.02+Math.random()*0.04
     });
@@ -4624,16 +4608,16 @@ window.addEventListener('load',function(){
       var a=p.alpha*twinkle;
 
       // Glow
-      ctx.globalAlpha=a*0.2;
+      ctx.globalAlpha=a*0.35;
       ctx.fillStyle=p.color;
-      ctx.shadowBlur=8;
+      ctx.shadowBlur=12;
       ctx.shadowColor=p.color;
       ctx.beginPath();
       ctx.arc(p.x,p.y,p.size*2.5,0,6.28);
       ctx.fill();
 
       // Core
-      ctx.globalAlpha=a*0.6;
+      ctx.globalAlpha=a*0.8;
       ctx.beginPath();
       ctx.arc(p.x,p.y,p.size,0,6.28);
       ctx.fill();
