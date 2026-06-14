@@ -533,8 +533,8 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 .lp-stair-label{font-family:'DM Sans',sans-serif;font-size:0.8rem;font-weight:600}
 .foundation-layout{display:flex;gap:32px;align-items:flex-end;margin-top:8px}
 .foundation-char{flex-shrink:0;width:300px;display:flex;flex-direction:column;align-items:center;justify-content:flex-end}
-.foundation-row{display:flex;gap:16px;align-items:flex-start;width:100%;}
-.foundation-col-char{flex:0 0 auto;position:relative;width:160px;flex-shrink:0}
+.foundation-row{display:flex;gap:20px;align-items:flex-start;width:100%;}
+.foundation-col-char{flex:0 0 auto;position:relative;width:220px;flex-shrink:0}
 @media(max-width:700px){
   /* ═══ LAYOUT: sidebar becomes bottom tab bar ═══ */
   .main-wrap{flex-direction:column;}
@@ -604,7 +604,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
   .foundation-char{width:100%;max-width:200px;order:-1;}
   .foundation-char img{max-width:180px!important;}
   .foundation-row{flex-direction:column;align-items:center;gap:12px;}
-  .foundation-col-char{width:140px;margin-bottom:20px;}
+  .foundation-col-char{width:180px;margin-bottom:20px;}
   .foundation-col-char .speech-bubble{position:static !important;margin:8px auto 0 auto !important;width:100% !important;max-width:240px !important;left:auto !important;}
   .foundation-col-char .speech-bubble div:first-child{display:none !important;} /* hide tail when stacked */
   .foundation-blocks{width:100%;max-width:100%!important;}
@@ -764,40 +764,37 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
   <div class="top-right">
     <button onclick="toggleCredits()" style="background:none;border:none;color:var(--dim);font-size:0.8rem;cursor:pointer;padding:4px 8px;min-height:unset;" title="Credits">©</button>
   </div>
-</div>
-
-<!-- Search Panel -->
-<div class="search-panel" id="searchPanel">
-  <input type="text" id="searchInput" placeholder="Search topics, drills, concepts..." oninput="doSearch(this.value)">
-  <div class="search-results" id="searchResults"></div>
-</div>
-
-<!-- Progress Panel -->
-<div class="progress-panel" id="progressPanel">
-  <h3>Your Journey</h3>
-  <div id="progressContent"></div>
-</div>
-
-<!-- Settings Panel -->
-<div class="settings-panel" id="settingsPanel">
-  <h3>Theme</h3>
-  <div class="settings-row">
-    <span class="settings-label">Appearance</span>
-    <div style="display:flex;gap:4px">
-      <button class="theme-btn active" onclick="setTheme('standard',this)">Standard</button>
-      <button class="theme-btn" onclick="setTheme('sparks',this)">Sparks</button>
-      <button class="theme-btn" onclick="setTheme('flames',this)">Flames</button>
+  <!-- Search Panel -->
+  <div class="search-panel" id="searchPanel">
+    <input type="text" id="searchInput" placeholder="Search topics, drills, concepts..." oninput="doSearch(this.value)">
+    <div class="search-results" id="searchResults"></div>
+  </div>
+  <!-- Progress Panel -->
+  <div class="progress-panel" id="progressPanel">
+    <h3>Your Journey</h3>
+    <div id="progressContent"></div>
+  </div>
+  <!-- Settings Panel -->
+  <div class="settings-panel" id="settingsPanel">
+    <h3>Theme</h3>
+    <div class="settings-row">
+      <span class="settings-label">Appearance</span>
+      <div style="display:flex;gap:4px">
+        <button class="theme-btn active" onclick="setTheme('standard',this)">Standard</button>
+        <button class="theme-btn" onclick="setTheme('sparks',this)">Sparks</button>
+        <button class="theme-btn" onclick="setTheme('flames',this)">Flames</button>
+      </div>
     </div>
-  </div>
-  <h3 style="margin-top:12px">Sound</h3>
-  <div class="settings-row">
-    <span class="settings-label">Hearth Crackle</span>
-    <button class="theme-btn" id="soundToggle" onclick="toggleSound()">On</button>
-  </div>
-  <h3 style="margin-top:12px">Performance</h3>
-  <div class="settings-row">
-    <span class="settings-label">Particles</span>
-    <button class="theme-btn" id="particleToggle" onclick="toggleParticles()">On</button>
+    <h3 style="margin-top:12px">Sound</h3>
+    <div class="settings-row">
+      <span class="settings-label">Hearth Crackle</span>
+      <button class="theme-btn" id="soundToggle" onclick="toggleSound()">On</button>
+    </div>
+    <h3 style="margin-top:12px">Performance</h3>
+    <div class="settings-row">
+      <span class="settings-label">Particles</span>
+      <button class="theme-btn" id="particleToggle" onclick="toggleParticles()">On</button>
+    </div>
   </div>
 </div>
 
@@ -1753,11 +1750,6 @@ function showFoundation(){
         '</div>'+
       '</div>'+
     '</div>'+
-    // LEVEL 1 — sits above everything
-    '<div id="level1-skeleton" style="text-align:center;margin-bottom:12px;padding:8px 14px;border:1px solid '+(pct===100?'#d4af69':'rgba(212,175,105,0.12)')+';border-radius:6px;background:'+(pct===100?'rgba(212,175,105,0.06)':'transparent')+'">'+
-      '<span style="font-family:\'Cinzel\',serif;font-size:0.65rem;letter-spacing:0.12em;text-transform:uppercase;color:'+(pct===100?'#d4af69':'var(--dim)')+'">Level 1</span>'+
-      (pct===100?'<span style="margin-left:6px;font-size:0.6rem">✨</span>':'<span style="margin-left:6px;font-size:0.5rem;color:var(--dim)"> 🔒 Complete all foundations</span>')+
-    '</div>'+
     // Two-column: character + pyramid
     '<div class="foundation-row">'+
       // Left: character with speech bubble
@@ -1773,9 +1765,15 @@ function showFoundation(){
         '<div style="display:flex;flex-direction:column;align-items:center">';
 
   // Building blocks - widest at bottom, narrowest at top
-  const maxWidth=340;
-  const minWidth=180;
+  const maxWidth=480;
+  const minWidth=220;
   const step=(maxWidth-minWidth)/(F.topics.length-1);
+  // Level 1 as 6th step (narrowest, above topic 5)
+  const l1w=minWidth-step;
+  html+='<div id="level1-skeleton" onclick="backToMap()" style="cursor:pointer;width:'+l1w+'px;padding:8px 12px;background:transparent;border:1px dashed '+(pct===100?'#d4af69':'rgba(212,175,105,0.3)')+';border-radius:6px;text-align:center;margin-bottom:4px">'+
+    '<span style="font-family:\'Cinzel\',serif;font-size:0.55rem;letter-spacing:0.12em;text-transform:uppercase;color:'+(pct===100?'#d4af69':'rgba(212,175,105,0.5)')+'">Level 1</span>'+
+    (pct===100?'<span style="margin-left:4px;font-size:0.5rem;color:#d4af69">&#10003;</span>':'')+
+  '</div>';
 
   const rainbow=['#e74c3c','#e67e22','#f1c40f','#2ecc71','#3498db','#9b59b6','#e84393'];
 
@@ -1809,14 +1807,10 @@ function showFoundation(){
     }
   }
 
-  html+='</div></div></div>'+
-  // References footer
-  '<div style="margin-top:16px;padding:10px 14px;background:var(--card);border:1px solid var(--border);border-radius:6px">'+
-    '<div style="font-family:\'Cinzel\',serif;font-size:0.6rem;color:var(--gold);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:4px">References</div>'+
-    '<div style="font-size:0.6rem;color:var(--dim);line-height:1.4">'+F.sources.join(' · ')+'</div>'+
-  '</div></div>';
+  html+='</div></div></div>';
 
   el.innerHTML=html;
+  updateFooterReferences();
 
   const speechLines=['Welcome to Foundation.','These are your building blocks.','Each one builds on the last.','Start at the bottom. Work your way up.'];
   const speechEl=document.getElementById('speech-text');
@@ -4336,5 +4330,21 @@ function toggleCredits(){
   tick();
 })();
 </script>
+
+<!-- SITE-WIDE FOOTER -->
+<footer id="app-footer" style="background:var(--panel);border-top:1px solid var(--border);padding:10px 20px;font-size:0.55rem;color:var(--dim);flex-shrink:0;text-align:center;line-height:1.5">
+  <div id="footer-references"></div>
+</footer>
+
+<script>
+function updateFooterReferences(){
+  var el=document.getElementById('footer-references');
+  if(!el)return;
+  var F=window.FOUNDATION;
+  if(F&&F.sources){el.textContent='Foundation references: '+F.sources.join(' · ');return;}
+  el.textContent='';
+}
+</script>
+
 </body>
 </html>
