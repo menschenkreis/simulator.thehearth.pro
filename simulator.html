@@ -3750,8 +3750,8 @@ function toggleParticles(){
 (function(){
   var m=localStorage.getItem('hearthSoundMuted');
   if(m==='true'){var btn=document.getElementById('soundToggle');if(btn)btn.textContent='Off';var a=document.getElementById('hearthAudio');if(a)a.pause();}
-  var p=localStorage.getItem('hearthParticles');
-  if(p==='off'){var btn=document.getElementById('particleToggle');if(btn)btn.textContent='Off';var c=document.getElementById('emberCanvas');if(c)c.style.display='none';}
+  // Always show particles
+  localStorage.removeItem('hearthParticles');
 })();
 
 function backToMap(){
@@ -4566,6 +4566,12 @@ window.playSfx=function(type){
 };
 
 <script>
+// Force canvas visible on load
+window.addEventListener('load',function(){
+  var c=document.getElementById('emberCanvas');
+  if(c){c.style.display='';c.style.cssText='position:fixed;inset:0;pointer-events:none;z-index:5;opacity:0.9;';}
+  localStorage.removeItem('hearthParticles');
+});
 // Ember particles — simple and bright
 (function(){
   var canvas=document.getElementById('emberCanvas');
