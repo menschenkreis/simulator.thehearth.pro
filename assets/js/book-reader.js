@@ -295,6 +295,17 @@
 
     pageFlip.loadFromHTML(document.querySelectorAll('#flipbook .page'));
 
+    function updateCoverMode(pageIndex) {
+      var isLandscape = pageFlip.getOrientation && pageFlip.getOrientation() === 'landscape';
+      overlay.classList.toggle('book-cover-only', pageIndex === 0 && isLandscape);
+    }
+    pageFlip.on('init', function (e) { updateCoverMode(e.data.page); });
+    pageFlip.on('flip', function (e) { updateCoverMode(e.data); });
+    pageFlip.on('changeOrientation', function () {
+      updateCoverMode(pageFlip.getCurrentPageIndex());
+    });
+    updateCoverMode(0);
+
     document.getElementById('btn-prev').addEventListener('click', function () { pageFlip.flipPrev(); });
     document.getElementById('btn-next').addEventListener('click', function () { pageFlip.flipNext(); });
     document.getElementById('book-back').addEventListener('click', closeBook);
