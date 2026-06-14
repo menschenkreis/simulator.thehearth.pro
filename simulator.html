@@ -744,7 +744,8 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 </head>
 <body>
 <canvas id="emberCanvas"></canvas>
-<audio id="hearthAudio" loop></audio>
+<audio id="hearthAudio" loop preload="none"></audio>
+<!-- Ambient crackle sound loaded dynamically -->
 
 <div class="top">
   <div class="top-brand">
@@ -776,16 +777,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
   </div>
   <!-- Settings Panel -->
   <div class="settings-panel" id="settingsPanel">
-    <h3>Theme</h3>
-    <div class="settings-row">
-      <span class="settings-label">Appearance</span>
-      <div style="display:flex;gap:4px">
-        <button class="theme-btn active" onclick="setTheme('standard',this)">Standard</button>
-        <button class="theme-btn" onclick="setTheme('sparks',this)">Sparks</button>
-        <button class="theme-btn" onclick="setTheme('flames',this)">Flames</button>
-      </div>
-    </div>
-    <h3 style="margin-top:12px">Sound</h3>
+    <h3>Sound</h3>
     <div class="settings-row">
       <span class="settings-label">Hearth Crackle</span>
       <button class="theme-btn" id="soundToggle" onclick="toggleSound()">On</button>
@@ -3499,27 +3491,18 @@ function renderProgress(){
   c.innerHTML=html;
 }
 
-function setTheme(theme,btn){
-  document.documentElement.setAttribute('data-theme',theme);
-  document.body.setAttribute('data-theme',theme);
-  localStorage.setItem('hearth-theme-v2',theme);
-  localStorage.setItem('hearthTheme',theme);
-  document.querySelectorAll('.theme-btn').forEach(function(b){b.classList.remove('active');});
-  btn.classList.add('active');
-}
-// Restore theme
-(function(){var t=localStorage.getItem('hearth-theme-v2')||localStorage.getItem('hearthTheme');if(t){document.documentElement.setAttribute('data-theme',t);document.body.setAttribute('data-theme',t);document.querySelectorAll('.theme-btn').forEach(function(b){b.classList.remove('active');if(b.textContent.toLowerCase()===t)b.classList.add('active');});}})();
-
 function toggleSound(){
   var audioMuted=localStorage.getItem('hearthSoundMuted')==='true';
   var newMuted=!audioMuted;
   localStorage.setItem('hearthSoundMuted',newMuted?'true':'false');
   var btn=document.getElementById('soundToggle');
   if(btn)btn.textContent=newMuted?'Off':'On';
+  var audio=document.getElementById('hearthAudio');
+  if(!audio)return;
   if(newMuted){
-    try{if(window._hearthCtx)window._hearthCtx.suspend();}catch(e){}
+    audio.pause();
   } else {
-    try{if(window._hearthCtx)window._hearthCtx.resume();}catch(e){}
+    audio.play().catch(function(){});
   }
 }
 function toggleParticles(){
@@ -3540,7 +3523,7 @@ function toggleParticles(){
 // Restore settings on load
 (function(){
   var m=localStorage.getItem('hearthSoundMuted');
-  if(m==='true'){var btn=document.getElementById('soundToggle');if(btn)btn.textContent='Off';try{if(window._hearthCtx)window._hearthCtx.suspend();}catch(e){}}
+  if(m==='true'){var btn=document.getElementById('soundToggle');if(btn)btn.textContent='Off';var a=document.getElementById('hearthAudio');if(a)a.pause();}
   var p=localStorage.getItem('hearthParticles');
   if(p==='off'){var btn=document.getElementById('particleToggle');if(btn)btn.textContent='Off';var c=document.getElementById('emberCanvas');if(c)c.style.display='none';}
 })();
@@ -4186,66 +4169,22 @@ function toggleCredits(){
   });
 })();
 
-// Ambient hearth sound (generated crackle using Web Audio API)
+// Ambient hearth sound — campfire ambience MP3
 (function(){
-  var ctx,playing=false;
-  window._hearthCtx=null;
-  function startCrackle(){
-    if(playing)return;
-    // Check mute setting
-    var muted=localStorage.getItem('hearthSoundMuted')==='true';
-    if(muted){playing=true;return;}
-    try{
-      ctx=ctx||new (window.AudioContext||window.webkitAudioContext)();
-      window._hearthCtx=ctx;
-      playing=true;
-      // Brown noise base (the low rumble of fire)
-      var bufferSize=ctx.sampleRate*2;
-      var noiseBuf=ctx.createBuffer(1,bufferSize,ctx.sampleRate);
-      var data=noiseBuf.getChannelData(0);
-      var lastOut=0;
-      for(var i=0;i<bufferSize;i++){
-        var white=Math.random()*2-1;
-        data[i]=(lastOut+0.02*white)/1.02;
-        lastOut=data[i];
-        data[i]*=3.5;
-      }
-      var noise=ctx.createBufferSource();
-      noise.buffer=noiseBuf;
-      noise.loop=true;
-      var filter=ctx.createBiquadFilter();
-      filter.type='lowpass';
-      filter.frequency.value=400;
-      var gain=ctx.createGain();
-      gain.gain.value=0.03; // very quiet
-      noise.connect(filter);filter.connect(gain);gain.connect(ctx.destination);
-      noise.start();
-      // Random crackle pops
-      function pop(){
-        if(!playing)return;
-        var osc=ctx.createOscillator();
-        var og=ctx.createGain();
-        var freq=200+Math.random()*600;
-        osc.frequency.value=freq;
-        osc.type='triangle';
-        og.gain.setValueAtTime(0,ctx.currentTime);
-        og.gain.linearRampToValueAtTime(0.015+Math.random()*0.02,ctx.currentTime+0.005);
-        og.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+0.08+Math.random()*0.06);
-        osc.connect(og);og.connect(ctx.destination);
-        osc.start();osc.stop(ctx.currentTime+0.2);
-        setTimeout(pop,300+Math.random()*2000);
-      }
-      setTimeout(pop,500);
-    }catch(e){console.log('Audio not available');}
+  var audio=document.getElementById('hearthAudio');
+  if(!audio)return;
+  audio.src='assets/campfire-ambience.mp3';
+  audio.volume=0.3;
+  var muted=localStorage.getItem('hearthSoundMuted')==='true';
+  if(!muted){
+    function firstPlay(){
+      audio.play().catch(function(){});
+      document.removeEventListener('click',firstPlay);
+      document.removeEventListener('touchstart',firstPlay);
+    }
+    document.addEventListener('click',firstPlay);
+    document.addEventListener('touchstart',firstPlay);
   }
-  // Start on first user interaction (browser policy)
-  function tryStart(){
-    if(!playing)startCrackle();
-    document.removeEventListener('click',tryStart);
-    document.removeEventListener('touchstart',tryStart);
-  }
-  document.addEventListener('click',tryStart);
-  document.addEventListener('touchstart',tryStart);
 })();
 </script>
 <script>
