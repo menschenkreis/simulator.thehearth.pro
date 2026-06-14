@@ -3714,7 +3714,7 @@ function showPractice(){
           '<div class="practice-panel">'+
             '<div class="practice-panel-title">Candle Length</div>'+
             '<div class="practice-choice-row">'+timeChoices.map(t=>
-              '<button class="practice-choice'+(prefs.time===t?' active':'')+'" onclick="playSfx('click');setPracticeTime('+t+')">'+t+' min</button>'
+              '<button class="practice-choice'+(prefs.time===t?' active':'')+'" onclick="playSfx(\'click\');setPracticeTime('+t+')">'+t+' min</button>'
             ).join('')+'</div>'+
           '</div>'+
           '<div class="practice-panel">'+
@@ -3731,7 +3731,7 @@ function showPractice(){
             '<div style="font-size:0.82rem;color:var(--text);font-weight:700">'+esc(nextDrill?nextDrill.title:'Choose a drill')+'</div>'+
             '<div style="font-size:0.66rem;color:var(--dim);margin-top:5px">'+esc(nextDrill?(nextDrill.category+' · '+nextDrill.duration):'Open the book first')+'</div>'+
           '</div>'+
-          '<button class="practice-start" onclick="playSfx('book-open');startTemplePractice()">Light Candle</button>'+
+          '<button class="practice-start" onclick="playSfx(\'book-open\');startTemplePractice()">Light Candle</button>'+
         '</div>'+
       '</div>'+
     '</div>'+
