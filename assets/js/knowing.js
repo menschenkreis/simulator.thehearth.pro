@@ -869,4 +869,30 @@ The best approach: learn both. Use TAB as a shortcut for fingerings, and standar
   ]
 };
 
-if (typeof window !== 'undefined') window.KNOWING = KNOWING;
+const KNOWING_TOPIC_LEVEL_OVERRIDES = {
+  'extensions': 5,
+  'exotic-scales': 8,
+  'tetrachords': 3,
+  'economy-picking': 2,
+  'sweep-picking': 3,
+  'fretboard-intervals': 3,
+  'vibrato': 2,
+  'tone-timbre': 2,
+  'arrangement': 3,
+  'what-is-voice-leading': 5,
+  'guide-tones': 7,
+  'celtic-guitar': 3
+};
+
+function getKnowingTopicLevel(topic) {
+  if (!topic) return 1;
+  if (KNOWING_TOPIC_LEVEL_OVERRIDES[topic.id]) return KNOWING_TOPIC_LEVEL_OVERRIDES[topic.id];
+  var match = String(topic.source || '').match(/\bQJam\s*L([1-8])\b/i);
+  if (match) return parseInt(match[1], 10);
+  return Math.max(1, Math.min(8, topic.difficulty || 1));
+}
+
+if (typeof window !== 'undefined') {
+  window.KNOWING = KNOWING;
+  window.getKnowingTopicLevel = getKnowingTopicLevel;
+}

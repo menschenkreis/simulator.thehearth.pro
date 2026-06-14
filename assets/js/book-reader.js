@@ -121,6 +121,7 @@
     // Topics
     cat.topics.forEach(function (topic, idx) {
       var diffLabel = ['','Beginner','Intermediate','Advanced'][topic.difficulty] || 'Beginner';
+      var topicLevel = window.getKnowingTopicLevel ? window.getKnowingTopicLevel(topic) : topic.difficulty;
       var diffDots = '\u25CF'.repeat(topic.difficulty) + '\u25CB'.repeat(3 - topic.difficulty);
 
       result.push(
@@ -128,7 +129,7 @@
           '<div class="page-content page-topic">' +
             '<div class="topic-label">' + esc(cat.title) + '</div>' +
             '<div class="topic-title">' + esc(topic.title) + '</div>' +
-            '<div class="topic-diff">' + diffLabel + '  ' + diffDots + '</div>' +
+            '<div class="topic-diff">Level ' + topicLevel + '  ' + diffLabel + '  ' + diffDots + '</div>' +
             '<div class="topic-body">' + renderConcepts(topic) + topic.body + '</div>' +
             '<div class="topic-footer">' +
               '<span class="topic-source">' + esc(topic.source) + '</span>' +
@@ -195,7 +196,10 @@
         id: cat.id,
         title: cat.title,
         description: cat.description,
-        topics: cat.topics.filter(function (t) { return t.difficulty === levelFilter; })
+        topics: cat.topics.filter(function (t) {
+          var topicLevel = window.getKnowingTopicLevel ? window.getKnowingTopicLevel(t) : t.difficulty;
+          return topicLevel === levelFilter;
+        })
       };
     }
 

@@ -1183,10 +1183,10 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 <script src="assets/js/lessons-how-to-learn.js"></script>
 <script src="assets/js/video-roadmap.js"></script>
 <script src="assets/js/doing.js?v=6"></script>
-<script src="assets/js/knowing.js?v=5"></script>
+<script src="assets/js/knowing.js?v=6"></script>
 <script src="assets/js/knowing-concepts.js?v=1"></script>
 <script src="assets/js/page-flip.browser.min.js"></script>
-<script src="assets/js/book-reader.js?v=6"></script>
+<script src="assets/js/book-reader.js?v=7"></script>
 <script src="assets/js/practice.js?v=2"></script>
 
 <script src="assets/js/play.js"></script>
@@ -2275,18 +2275,28 @@ function showKnowing(){
   const kState=JSON.parse(localStorage.getItem('hearth-knowing-state')||'{}');
   const currentLevel=kState.bookLevel||1;
 
-  // Group all topics by difficulty level across all categories
+  const getTopicLevel=window.getKnowingTopicLevel||function(topic){
+    const match=String(topic.source||'').match(/\bQJam\s*L([1-8])\b/i);
+    return match?parseInt(match[1],10):Math.max(1,Math.min(8,topic.difficulty||1));
+  };
+
+  // Group all topics by the 8-level QJam roadmap across all categories.
   const levels=[
     {level:1,label:'Level I',sub:'Foundations',color:'#c47a3a'},
     {level:2,label:'Level II',sub:'Development',color:'#4A6741'},
-    {level:3,label:'Level III',sub:'Advanced',color:'#5B3A6B'}
+    {level:3,label:'Level III',sub:'Systems',color:'#5B3A6B'},
+    {level:4,label:'Level IV',sub:'Navigation',color:'#2C5F7C'},
+    {level:5,label:'Level V',sub:'Expansion',color:'#8B6914'},
+    {level:6,label:'Level VI',sub:'Advanced Harmony',color:'#6B3A3A'},
+    {level:7,label:'Level VII',sub:'Modal Fluency',color:'#3A5B6B'},
+    {level:8,label:'Level VIII',sub:'Mastery',color:'#6B5B3A'}
   ];
 
   // For each level, collect the categories that have topics at that level
   levels.forEach(lv=>{
     lv.categories=[];
     K.categories.forEach(cat=>{
-      const topics=cat.topics.filter(t=>t.difficulty===lv.level);
+      const topics=cat.topics.filter(t=>getTopicLevel(t)===lv.level);
       const done=topics.filter(t=>completed[t.id]).length;
       lv.categories.push({...cat,topics,done,total:topics.length,hasTopics:topics.length>0});
     });
@@ -2297,8 +2307,12 @@ function showKnowing(){
 
   // Determine max unlocked level (level 1 always unlocked, next unlocks when 50% of prev is done)
   let maxUnlocked=1;
-  if(levels[0].totalTopics>0 && levels[0].totalDone/levels[0].totalTopics>=0.5) maxUnlocked=2;
-  if(maxUnlocked>=2 && levels[1].totalTopics>0 && levels[1].totalDone/levels[1].totalTopics>=0.5) maxUnlocked=3;
+  for(let i=0;i<levels.length-1;i++){
+    const lv=levels[i];
+    if(maxUnlocked>=lv.level && (lv.totalTopics===0 || lv.totalDone/lv.totalTopics>=0.5)){
+      maxUnlocked=levels[i+1].level;
+    }
+  }
 
   let html='<div style="padding:20px;max-width:900px;margin:0 auto">'+
     '<button class="back-btn" onclick="backToMap()">← Map</button>'+
@@ -2368,7 +2382,8 @@ function showKnowing(){
 
       if(isLocked || !cat.hasTopics){
         // Greyed out book (locked level or no topics at this level)
-        html+='<div style="width:'+w+'px;height:'+h+'px;background:#2a2622;border:2px solid #333;border-radius:4px;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding:8px 4px 10px;flex-shrink:0;opacity:0.35;cursor:not-allowed" title="'+cat.title+' — Complete 50% of Level '+(lv.level-1)+' to unlock">'+
+        const disabledTitle=isLocked?cat.title+' — Complete 50% of Level '+(lv.level-1)+' to unlock':cat.title+' — No Level '+lv.level+' topics yet';
+        html+='<div style="width:'+w+'px;height:'+h+'px;background:#2a2622;border:2px solid #333;border-radius:4px;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding:8px 4px 10px;flex-shrink:0;opacity:0.35;cursor:not-allowed" title="'+disabledTitle+'">'+
           '<div style="writing-mode:vertical-rl;text-orientation:mixed;font-family:Josefin Sans,sans-serif;font-size:0.6rem;color:#666;text-align:center;line-height:1.1;max-height:'+(h-20)+'px;overflow:hidden;letter-spacing:0.08em;text-transform:uppercase">'+cat.title+'</div>'+
         '</div>';      } else {
         // Real book
@@ -2524,28 +2539,7 @@ window.showKnowingTopic=function(catId,topicId){
       '</div>'+
       '<h2 style="font-family:Cinzel;color:'+color+';font-size:1.1rem;margin:0 0 16px 0">'+topic.title+'</h2>'+
       '<div style="background:#fff;border:1px solid #e8e0d4;border-radius:8px;padding:20px;line-height:1.7;font-size:0.85rem;color:#444">'+topic.body+'</div>'+
-      // Video embeds from roadmap
-      (function(){
-        var road=window.VIDEO_ROADMAP;
-        if(!road)return '';
-        var catKey=cat.id;
-        var vids=road[catKey];
-        if(!vids)return '';
-        var levelKey='level'+topic.difficulty;
-        var levelVids=vids[levelKey];
-        if(!levelVids||!levelVids.length)return '';
-        var vidHtml='<div style="margin-top:16px"><div style="font-family:Cinzel;font-size:0.75rem;color:'+color+';margin-bottom:8px;letter-spacing:0.05em">VIDEO LESSONS</div>';
-        levelVids.forEach(function(v){
-          vidHtml+='<div style="margin-bottom:12px;border:1px solid #e8e0d4;border-radius:8px;overflow:hidden;background:#fff">'+
-            '<div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden">'+
-              '<iframe src="https://www.youtube.com/embed/'+v.url.split('v=')[1]+'" style="position:absolute;top:0;left:0;width:100%;height:100%;border:0" allowfullscreen loading="lazy"></iframe>'+
-            '</div>'+
-            '<div style="padding:8px 12px;font-size:0.7rem;color:#555">'+v.title+'</div>'+
-          '</div>';
-        });
-        vidHtml+='</div>';
-        return vidHtml;
-      })()+
+      // Strict topic-matched videos are handled by the flipbook reader.
       '<div style="margin-top:12px;padding:10px 14px;background:#f8f4ee;border:1px solid #e8e0d4;border-radius:6px;font-size:0.65rem;color:#888;line-height:1.5">'+
         '<strong style="color:'+color+'">Source:</strong> '+topic.source+
       '</div>'+
