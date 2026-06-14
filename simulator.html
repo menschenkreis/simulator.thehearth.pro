@@ -194,7 +194,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 
 /* Map vignette */
 /* Ambient ember canvas */
-#emberCanvas{position:fixed;inset:0;pointer-events:none;z-index:0;opacity:0.6;}
+#emberCanvas{position:fixed;inset:0;pointer-events:none;z-index:0;opacity:0.9;}
 /* Map vignette */
 .map-vignette{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at center,transparent 40%,rgba(13,11,8,0.5) 100%);z-index:0;}
 
@@ -816,7 +816,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
         </defs>
 
         <!-- Background -->
-        <rect width="700" height="1000" fill="var(--bg)"/>
+        <rect width="700" height="1000" fill="var(--bg)" fill-opacity="0.85"/>
         <ellipse cx="350" cy="494" rx="335" ry="406" fill="url(#bgGrad)"/>
 
         <!-- ═══ SUBTLE MANDALA GUIDES ═══ -->
@@ -1904,6 +1904,98 @@ function rainbowBlocks(items, opts){
   return html;
 }
 
+
+// ═══ FOUNDATION TOPIC VIEWER ═══
+function showFoundationTopic(topicId){
+  const F=window.FOUNDATION;if(!F)return;
+  const topic=F.topics.find(t=>t.id===topicId);if(!topic)return;
+  const el=document.getElementById('p-foundation');
+  const topicIdx=F.topics.indexOf(topic);
+  const nextTopic=topicIdx<F.topics.length-1?F.topics[topicIdx+1]:null;
+  const completed=JSON.parse(localStorage.getItem('hearth-foundation-progress')||'{}');
+  const isCompleted=completed[topicId];
+  const rainbow=['#e74c3c','#e67e22','#f1c40f','#2ecc71','#3498db','#9b59b6','#e84393'];
+  const color=rainbow[topicIdx];
+
+  function renderStep(idx){
+    const s=topic.steps[idx];
+    const isLast=idx===topic.steps.length-1;
+    let html='<div class="lp-body" style="--accent:'+color+'">'+
+      '<div class="lp-tags" style="display:none">'+topic.tags.map(t=>'<span style="border-color:'+color+'30;color:'+color+'">'+t+'</span>').join('')+'</div>'+
+      '<h3 style="color:'+color+'">'+s.title+'</h3>'+
+      s.body;
+    if(isLast){
+      html+='<div style="display:flex;gap:8px;margin-top:16px">'+
+        '<button class="lp-next" style="flex:1;background:'+color+';color:white;border:none;padding:12px;border-radius:8px;font-family:DM Sans,sans-serif;font-size:0.9rem;font-weight:600;cursor:pointer" onclick="completeFoundationTopic(\''+topicId+'\')">Mark Complete</button>';
+      if(nextTopic){
+        const nextColor=rainbow[topicIdx+1];
+        html+='<button class="lp-next" style="flex:1;background:'+nextColor+'18;color:'+nextColor+';border:2px solid '+nextColor+'60;padding:12px;border-radius:8px;font-family:DM Sans,sans-serif;font-size:0.9rem;font-weight:600;cursor:pointer" onclick="showFoundationTopic(\''+nextTopic.id+'\')">Next: '+nextTopic.title+'</button>';
+      }
+      html+='</div>';
+    } else {
+      html+='<button class="lp-next" style="background:'+color+'18;color:'+color+';border:2px solid '+color+'40;padding:10px 20px;border-radius:8px;font-family:DM Sans,sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer" onclick="nextFStep(\''+topicId+'\','+(idx+1)+')">Next: '+topic.steps[idx+1].label+'</button>';
+    }
+    html+='</div>';
+    return html;
+  }
+
+  el.innerHTML='<div class="lesson-page" style="border-top:4px solid '+color+'">'+
+    '<div class="lp-back" onclick="showFoundation()">\u2190 Foundation</div>'+
+    '<div style="display:flex;justify-content:flex-end;margin-bottom:4px"><button id="ttsBtn" onclick="ttsToggle()" style="background:'+color+'18;color:'+color+';border:1px solid '+color+'40;padding:6px 14px;border-radius:6px;cursor:pointer;font-family:inherit;font-size:0.75rem;font-weight:600">Read aloud</button></div>'+
+    '<div class="lp-header">'+
+      '<div class="lp-tag" style="color:'+color+'">'+topic.num+' / '+F.tag+(isCompleted?' \u00b7 Complete':'')+'</div>'+
+      '<h2 style="color:'+color+'">'+topic.title+'</h2>'+
+      '<div class="lp-subtitle">'+topic.subtitle+'</div>'+
+    '</div>'+
+    '<div id="fStepBody">'+renderStep(0)+'</div>'+
+  '</div>';
+  window._fTopic=topicId;
+}
+
+window.completeFoundationTopic=function(tid){
+  const progress=JSON.parse(localStorage.getItem('hearth-foundation-progress')||'{}');
+  progress[tid]=true;
+  localStorage.setItem('hearth-foundation-progress',JSON.stringify(progress));
+  const F=window.FOUNDATION;if(!F)return;
+  const idx=F.topics.findIndex(t=>t.id===tid);
+  const next=F.topics[idx+1];
+  if(next) showFoundationTopic(next.id);
+  else showFoundation();
+};
+
+window.nextFStep=function(tid,idx){goFStep(tid,idx);};
+window.goFStep=function(tid,idx){
+  if(window.speechSynthesis)window.speechSynthesis.cancel();_ttsPlaying=false;
+  const F=window.FOUNDATION;if(!F)return;
+  const topic=F.topics.find(t=>t.id===tid);if(!topic)return;
+  const topicIdx=F.topics.indexOf(topic);
+  const nextTopic=topicIdx<F.topics.length-1?F.topics[topicIdx+1]:null;
+  const completed=JSON.parse(localStorage.getItem('hearth-foundation-progress')||'{}');
+  const isCompleted=completed[tid];
+  const rainbow=['#e74c3c','#e67e22','#f1c40f','#2ecc71','#3498db','#9b59b6','#e84393'];
+  const color=rainbow[topicIdx];
+  const s=topic.steps[idx];
+  const body=document.getElementById('fStepBody');
+  if(body){
+    const isLast=idx===topic.steps.length-1;
+    let html='<div class="lp-body" style="--accent:'+color+'">'+
+      s.body;
+    if(isLast){
+      html+='<div style="display:flex;gap:8px;margin-top:16px">'+
+        '<button class="lp-next" style="flex:1;background:'+color+';color:white;border:none;padding:12px;border-radius:8px;font-family:DM Sans,sans-serif;font-size:0.9rem;font-weight:600;cursor:pointer" onclick="completeFoundationTopic(\''+tid+'\')">Mark Complete</button>';
+      if(nextTopic){
+        const nextColor=rainbow[topicIdx+1];
+        html+='<button class="lp-next" style="flex:1;background:'+nextColor+'18;color:'+nextColor+';border:2px solid '+nextColor+'60;padding:12px;border-radius:8px;font-family:DM Sans,sans-serif;font-size:0.9rem;font-weight:600;cursor:pointer" onclick="showFoundationTopic(\''+nextTopic.id+'\')">Next: '+nextTopic.title+'</button>';
+      }
+      html+='</div>';
+    } else {
+      html+='<button class="lp-next" style="background:'+color+'18;color:'+color+';border:2px solid '+color+'40;padding:10px 20px;border-radius:8px;font-family:DM Sans,sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer" onclick="nextFStep(\''+tid+'\','+(idx+1)+')">Next: '+topic.steps[idx+1].label+'</button>';
+    }
+    html+='</div>';
+    body.innerHTML=html;
+    body.scrollTop=0;
+  }
+};
 // ═══ DOING NODE ═══
 function showDoing(){
   document.querySelectorAll('.pnl').forEach(p=>p.classList.remove('on'));
@@ -4199,9 +4291,9 @@ function toggleCredits(){
   if(!canvas)return;
   var ctx=canvas.getContext('2d');
   var W,H,particles=[];
-  var MAX=18; // reduced from 40 for mobile performance
+  var MAX=30; // reduced from 40 for mobile performance
   var isMobile=(window.innerWidth<600);
-  if(isMobile)MAX=10;
+  if(isMobile)MAX=15;
   // Day/night colour shift
   var hour=new Date().getHours();
   var isNight=(hour<7||hour>=19);
