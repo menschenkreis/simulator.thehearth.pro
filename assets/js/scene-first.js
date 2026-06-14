@@ -32,13 +32,49 @@
     el.innerHTML=sceneStart('sf-map','World Map of Guitar','Touch a region. Learn how guitar speaks there before choosing any lesson blocks.','Play is a map, not a menu. Click one place and listen for its hand, pulse, scale colour, and story.','images/character-full/Lightbulb.png')+'<div class="sf-stage">'+svg+'</div><div id="sf-drawer" class="sf-drawer">Choose a glowing region.</div></div></div>';
   };
 
-  // STUDY: one key + locked doors first.
+  // STUDY: 8-level key chamber. Rings = levels, doors = current level locks.
+  const STUDY_LEVELS=[
+    {id:'L1',name:'Origin',color:'#ff4444'},{id:'L2',name:'Duality',color:'#ff8800'},
+    {id:'L3',name:'Creation',color:'#ffdd00'},{id:'L4',name:'Structure',color:'#00cc44'},
+    {id:'L5',name:'Change',color:'#00cccc'},{id:'L6',name:'Harmony',color:'#3366ff'},
+    {id:'L7',name:'Wisdom',color:'#6633cc'},{id:'L8',name:'Power',color:'#cc33ff'}
+  ];
+  function studyTopicLevel(item,idx){
+    const src=(item.t.source||'')+' '+(item.t.qjam||'')+' '+(item.t.level||'');
+    const m=src.match(/(?:QJam\s*)?L(?:evel)?\s*(\d)/i); if(m)return Math.max(1,Math.min(8,Number(m[1])));
+    return Math.max(1,Math.min(8,Math.floor(idx/7)+1));
+  }
+  function levelTopics(){
+    const K=window.KNOWING; if(!K||!K.categories)return [];
+    const all=K.categories.flatMap(c=>c.topics.map(t=>({c,t})));
+    return all.map((x,i)=>({...x,level:studyTopicLevel(x,i)}));
+  }
+  function activeStudyLevel(){return Number(localStorage.getItem('hearth-study-active-level')||'1')||1;}
+  function setActiveStudyLevel(n){localStorage.setItem('hearth-study-active-level',String(Math.max(1,Math.min(8,n))));showStudy();}
   window.showStudy=function(){
-    inject(); const el=panel(); if(!el)return; const K=window.KNOWING; if(!K){el.innerHTML='Study data loading';return;} const topics=K.categories.flatMap(c=>c.topics.map(t=>({c,t}))); const st=read('hearth-study-locks',{}); const current=topics.find(x=>st[x.t.id]!=='open'&&st[x.t.id]!=='mastered')||topics[0];
-    const doors=topics.slice(0,8).map((x,i)=>{const a=(i/8)*Math.PI*2, cx=280+170*Math.cos(a), cy=190+115*Math.sin(a), s=st[x.t.id]||'locked', col=s==='mastered'?'#2ecc71':s==='open'?PURPLE:s==='cracked'?AMBER:'#555'; return '<g class="door" onclick="StudyKey.openSession(\''+esc(x.c.id)+'\',\''+esc(x.t.id)+'\')"><rect x="'+(cx-18)+'" y="'+(cy-30)+'" width="36" height="60" rx="14" fill="'+col+'" opacity=".28" stroke="'+col+'"/><circle cx="'+(cx+9)+'" cy="'+cy+'" r="3" fill="'+GOLD+'"/><text x="'+cx+'" y="'+(cy+44)+'" text-anchor="middle" fill="'+col+'" font-family="JetBrains Mono" font-size="7">'+esc(x.c.title.slice(0,10))+'</text></g>';}).join('');
-    const svg='<svg viewBox="0 0 560 380"><circle cx="280" cy="190" r="145" fill="none" stroke="'+PURPLE+'" stroke-opacity=".16"/><circle cx="280" cy="190" r="80" fill="none" stroke="'+GOLD+'" stroke-opacity=".18"/>'+doors+'<text x="280" y="200" text-anchor="middle" font-size="86" fill="'+GOLD+'" opacity=".9">⚿</text></svg>';
-    el.innerHTML=sceneStart('sf-key','The Key Chamber','Study begins with one key and many locked doors. Open a door only when you are ready to define, draw, and do.','A misunderstood word is a locked door. The key is not more reading — it is proof of understanding.','images/character-full/Question.png')+'<div class="sf-stage">'+svg+'</div><div class="sf-drawer"><button class="sf-primary" style="--sf:'+PURPLE+'" onclick="StudyKey.openSession(\''+esc(current.c.id)+'\',\''+esc(current.t.id)+'\')">Turn Today’s Key</button> <span style="color:var(--dim);margin-left:8px">'+esc(current.t.title)+'</span></div></div></div>';
+    inject(); const el=panel(); if(!el)return; const K=window.KNOWING; if(!K){el.innerHTML='Study data loading';return;}
+    const topics=levelTopics(); const st=read('hearth-study-locks',{}); const active=activeStudyLevel();
+    const activeTopics=topics.filter(x=>x.level===active); const current=activeTopics.find(x=>st[x.t.id]!=='open'&&st[x.t.id]!=='mastered')||activeTopics[0]||topics[0];
+    const cx0=280, cy0=190; let rings='', doors='';
+    STUDY_LEVELS.forEach((lvl,i)=>{
+      const n=i+1, r=48+i*18, levelItems=topics.filter(x=>x.level===n), open=levelItems.filter(x=>st[x.t.id]==='open'||st[x.t.id]==='mastered').length, pct=levelItems.length?open/levelItems.length:0;
+      const op=n===active?.62:.16+pct*.25;
+      rings+='<circle onclick="SceneFirst.studyLevel('+n+')" cx="'+cx0+'" cy="'+cy0+'" r="'+r+'" fill="none" stroke="'+lvl.color+'" stroke-opacity="'+op+'" stroke-width="'+(n===active?3:1.4)+'" stroke-dasharray="'+(n===active?'':'5 7')+'" style="cursor:pointer"/>';
+      const lx=cx0+r+18, ly=cy0-4;
+      rings+='<text onclick="SceneFirst.studyLevel('+n+')" x="'+lx+'" y="'+ly+'" fill="'+lvl.color+'" font-family="JetBrains Mono" font-size="8" style="cursor:pointer">'+lvl.id+'</text>';
+    });
+    activeTopics.slice(0,10).forEach((x,i)=>{
+      const a=(i/Math.max(10,activeTopics.slice(0,10).length))*Math.PI*2-Math.PI/2;
+      const r=142, cx=cx0+r*Math.cos(a), cy=cy0+r*Math.sin(a);
+      const s=st[x.t.id]||'locked', col=s==='mastered'?'#2ecc71':s==='open'?STUDY_LEVELS[active-1].color:s==='cracked'?AMBER:'#666';
+      doors+='<g class="door" onclick="StudyKey.openSession(\''+esc(x.c.id)+'\',\''+esc(x.t.id)+'\')"><rect x="'+(cx-17)+'" y="'+(cy-28)+'" width="34" height="56" rx="13" fill="'+col+'" opacity=".30" stroke="'+col+'"/><circle cx="'+(cx+8)+'" cy="'+cy+'" r="3" fill="'+GOLD+'"/><text x="'+cx+'" y="'+(cy+41)+'" text-anchor="middle" fill="'+col+'" font-family="JetBrains Mono" font-size="7">'+esc(x.t.title.slice(0,12))+'</text></g>';
+    });
+    const lvl=STUDY_LEVELS[active-1];
+    const svg='<svg viewBox="0 0 560 400">'+rings+'<circle cx="'+cx0+'" cy="'+cy0+'" r="34" fill="'+lvl.color+'" opacity=".10"/><text x="'+cx0+'" y="'+(cy0+13)+'" text-anchor="middle" font-size="78" fill="'+GOLD+'" opacity=".9">⚿</text>'+doors+'</svg>';
+    const opened=activeTopics.filter(x=>st[x.t.id]==='open'||st[x.t.id]==='mastered').length;
+    el.innerHTML=sceneStart('sf-key','The Key Chamber','Eight concentric rings. Each ring is a level. Move through the doors systematically: define, draw, do, then unlock.','Now the chamber has order: choose a level ring, then open the next lock on that ring. No random study wandering.','images/character-full/Question.png')+'<div class="sf-stage">'+svg+'</div><div class="sf-drawer"><div class="sf-kicker" style="color:'+lvl.color+'">'+lvl.id+' · '+lvl.name+' · '+opened+'/'+activeTopics.length+' opened</div><button class="sf-primary" style="--sf:'+lvl.color+'" onclick="StudyKey.openSession(\''+esc(current?current.c.id:'')+'\',\''+esc(current?current.t.id:'')+'\')">Turn Today’s '+lvl.id+' Key</button> <span style="color:var(--dim);margin-left:8px">'+esc(current?current.t.title:'No lock in this level')+'</span><div class="sf-chiprow">'+STUDY_LEVELS.map((l,i)=>'<button onclick="SceneFirst.studyLevel('+(i+1)+')" style="color:'+l.color+';border-color:'+l.color+'55">'+l.id+'</button>').join('')+'</div></div></div></div>';
   };
+
 
   // CREATE: central cauldron first; workstation appears after ingredient.
   window.showCreate=function(){
@@ -67,6 +103,7 @@
   window.SceneFirst={
     openHearth(node){const el=document.getElementById('sf-drawer');const title=window.NODE_DATA&&NODE_DATA[node]?NODE_DATA[node].title:node;if(el)el.innerHTML='<b>'+esc(title)+'</b><br><span style="color:var(--dim)">This region opens the '+esc(title)+' learning system.</span><div class="sf-chiprow"><button onclick="enterNodeAction(NODE_DATA[\''+node+'\'])">Enter '+esc(title)+'</button></div>';},
     openPlay(id){if(window.PlayWorld&&PlayWorld.detail)return PlayWorld.detail(id);},
+    studyLevel(n){setActiveStudyLevel(n);},
     addCreate(id){const ing=(window.CAULDRON_INGREDIENTS||[]).find(x=>x.id===id);if(!ing)return;const c=read('hearth-create-current',{title:'Untitled Song Seed',ingredients:[],notes:''});const prompt=ing.prompts[Math.floor(Math.random()*ing.prompts.length)];c.ingredients=[...(c.ingredients||[]),ing.name];c.prompt=ing.symbol+' '+ing.name+': '+prompt;write('hearth-create-current',c);showCreate();},
     saveCreate(){const c=read('hearth-create-current',{});const t=document.getElementById('sf-create-title'),n=document.getElementById('sf-create-notes');if(t)c.title=t.value;if(n)c.notes=n.value;write('hearth-create-current',c);const ps=read('hearth-create-projects',[]);ps.push({...c,savedAt:new Date().toISOString()});write('hearth-create-projects',ps);showCreate();},
     newCreate(){write('hearth-create-current',{title:'Untitled Song Seed',ingredients:[],prompt:'Add one ingredient.',notes:''});showCreate();},
