@@ -93,6 +93,12 @@ async function load() {
       case 'refs': await loadList(panel, 'content-refs', refForm, refRow); break;
       case 'lessons': await loadList(panel, 'content-lessons', lessonForm, lessonRow); break;
       case 'students': await loadStudents(panel); break;
+      case 'songs': await loadSimple(panel,'content-songs',songForm,songRow); break;
+      case 'videos': await loadSimple(panel,'content-videos',videoForm,videoRow); break;
+      case 'chords': await loadSimple(panel,'content-chords',chordForm,chordRow); break;
+      case 'scales': await loadSimple(panel,'content-scales',scaleForm,scaleRow); break;
+      case 'glossary': await loadSimple(panel,'content-glossary',glossaryForm,glossaryRow); break;
+      case 'regions': await loadSimple(panel,'content-regions',regionForm,regionRow); break;
     }
   } catch (e) {
     panel.innerHTML = '<div class="card"><p style="color:#e74c3c">Error: ' + e.message + '</p></div>';
@@ -270,6 +276,57 @@ async function loadStudents(panel) {
 async function saveStudent() {
   await api('journey-students', 'POST', { name: gv('f-name'), current_level: +gv('f-lvl') });
   msg('Student created', true); load();
+}
+
+// ─── GENERIC LOADER ───
+async function loadSimple(panel, action, formFn, rowFn) {
+  const items = await api(action, 'GET');
+  let html = '<div class="card">' + formFn(null) + '</div>';
+  html += '<div class="card"><table><thead><tr>' + rowFn.header + '</tr></thead><tbody>';
+  items.forEach(item => { html += '<tr>' + rowFn(item) + '</tr>'; });
+  html += '</tbody></table></div>';
+  panel.innerHTML = html;
+}
+
+// ─── SONGS ───
+function songForm(v) { v=v||{}; return '<h3 style="color:var(--gold);margin-bottom:10px">'+(v.id?'Edit':'New')+' Song</h3><div class="row"><div><label>Title</label><input id="f-title" value="'+esc(v.title||'')+'"></div><div><label>Artist</label><input id="f-artist" value="'+esc(v.artist||'')+'"></div></div><div class="row3"><div><label>Genre</label><input id="f-genre" value="'+esc(v.genre||'')+'"></div><div><label>Key</label><input id="f-key" value="'+esc(v.key_sig||'')+'"></div><div><label>Difficulty</label><input id="f-diff" type="number" min="1" max="4" value="'+(v.difficulty||1)+'"></div></div><label>Chord Progression</label><input id="f-chords" value="'+esc(v.chord_progression||'')+'"><div class="row"><div><label>BPM</label><input id="f-bpm" type="number" value="'+(v.tempo_bpm||0)+'"></div><div><label>Time Sig</label><input id="f-ts" value="'+esc(v.time_sig||'4/4')+'"></div></div><label>Video URL</label><input id="f-vid" value="'+esc(v.video_url||'')+'"><div class="btn-row"><button class="btn" onclick="saveSimple(''content-songs'','+v.id||0+',songForm)">'+(v.id?'Update':'Create')+'</button></div>'; }
+songRow = { header:'<th>Title</th><th>Artist</th><th>Genre</th><th>Key</th><th></th>' };
+songRow = function(item){ return '<td>'+esc(item.title)+'</td><td>'+esc(item.artist)+'</td><td>'+esc(item.genre)+'</td><td>'+esc(item.key_sig)+'</td><td></td>'; };
+
+// ─── VIDEOS ───
+function videoForm(v) { v=v||{}; return '<h3 style="color:var(--gold);margin-bottom:10px">'+(v.id?'Edit':'New')+' Video</h3><div class="row"><div><label>Title</label><input id="f-title" value="'+esc(v.title||'')+'"></div><div><label>YouTube URL</label><input id="f-yt" value="'+esc(v.youtube_url||'')+'"></div></div><div class="row3"><div><label>Category</label><input id="f-cat" value="'+esc(v.category||'')+'"></div><div><label>Level</label><input id="f-lvl" type="number" min="1" max="8" value="'+(v.level_num||1)+'"></div><div><label>Duration (sec)</label><input id="f-dur" type="number" value="'+(v.duration_sec||0)+'"></div></div><div class="btn-row"><button class="btn" onclick="saveSimple(''content-videos'','+v.id||0+',videoForm)">'+(v.id?'Update':'Create')+'</button></div>'; }
+videoRow = { header:'<th>Title</th><th>Category</th><th>Level</th><th></th>' };
+videoRow = function(item){ return '<td>'+esc(item.title)+'</td><td>'+esc(item.category)+'</td><td>L'+item.level_num+'</td><td></td>'; };
+
+// ─── CHORDS ───
+function chordForm(v) { v=v||{}; return '<h3 style="color:var(--gold);margin-bottom:10px">'+(v.id?'Edit':'New')+' Chord</h3><div class="row"><div><label>Name</label><input id="f-name" value="'+esc(v.name||'')+'"></div><div><label>Type</label><input id="f-type" value="'+esc(v.chord_type||'major')+'"></div></div><div class="row"><div><label>Fingering</label><input id="f-finger" value="'+esc(v.fingering||'')+'"></div><div><label>Frets</label><input id="f-frets" value="'+esc(v.frets||'')+'"></div></div><div class="btn-row"><button class="btn" onclick="saveSimple(''content-chords'','+v.id||0+',chordForm)">'+(v.id?'Update':'Create')+'</button></div>'; }
+chordRow = { header:'<th>Name</th><th>Type</th><th>Fingering</th><th></th>' };
+chordRow = function(item){ return '<td>'+esc(item.name)+'</td><td>'+esc(item.chord_type)+'</td><td>'+esc(item.fingering)+'</td><td></td>'; };
+
+// ─── SCALES ───
+function scaleForm(v) { v=v||{}; return '<h3 style="color:var(--gold);margin-bottom:10px">'+(v.id?'Edit':'New')+' Scale</h3><div class="row"><div><label>Name</label><input id="f-name" value="'+esc(v.name||'')+'"></div><div><label>Type</label><input id="f-type" value="'+esc(v.scale_type||'')+'"></div></div><div class="row3"><div><label>Root</label><input id="f-root" value="'+esc(v.root||'C')+'"></div><div><label>Difficulty</label><input id="f-diff" type="number" min="1" max="4" value="'+(v.difficulty||1)+'"></div><div><label>Key Name</label><input id="f-key" value="'+esc(v.key_name||'')+'"></div></div><label>Intervals</label><input id="f-int" value="'+esc(v.intervals||'')+'"><label>Pattern Frets</label><input id="f-pat" value="'+esc(v.pattern_frets||'')+'"><label>Description</label><textarea id="f-desc">'+esc(v.description||'')+'</textarea><div class="btn-row"><button class="btn" onclick="saveSimple(''content-scales'','+v.id||0+',scaleForm)">'+(v.id?'Update':'Create')+'</button></div>'; }
+scaleRow = { header:'<th>Name</th><th>Type</th><th>Root</th><th></th>' };
+scaleRow = function(item){ return '<td>'+esc(item.name)+'</td><td>'+esc(item.scale_type)+'</td><td>'+esc(item.root)+'</td><td></td>'; };
+
+// ─── GLOSSARY ───
+function glossaryForm(v) { v=v||{}; return '<h3 style="color:var(--gold);margin-bottom:10px">'+(v.id?'Edit':'New')+' Term</h3><div class="row"><div><label>Term</label><input id="f-term" value="'+esc(v.term||'')+'"></div><div><label>Category</label><input id="f-cat" value="'+esc(v.category||'general')+'"></div></div><label>Definition</label><textarea id="f-def">'+esc(v.definition||'')+'</textarea><div class="row"><div><label>Topic ID</label><input id="f-tid" type="number" value="'+(v.linked_topic_id||0)+'"></div><div><label>Book ID</label><input id="f-bid" type="number" value="'+(v.linked_book_id||0)+'"></div></div><div class="btn-row"><button class="btn" onclick="saveSimple(''content-glossary'','+v.id||0+',glossaryForm)">'+(v.id?'Update':'Create')+'</button></div>'; }
+glossaryRow = { header:'<th>Term</th><th>Category</th><th>Definition</th><th></th>' };
+glossaryRow = function(item){ return '<td><strong>'+esc(item.term)+'</strong></td><td>'+esc(item.category)+'</td><td style="max-width:300px">'+esc(item.definition).slice(0,80)+'...</td><td></td>'; };
+
+// ─── REGIONS ───
+function regionForm(v) { v=v||{}; return '<h3 style="color:var(--gold);margin-bottom:10px">'+(v.id?'Edit':'New')+' Region</h3><div class="row"><div><label>Name</label><input id="f-name" value="'+esc(v.name||'')+'"></div><div><label>Tradition</label><input id="f-trad" value="'+esc(v.tradition||'')+'"></div></div><label>Description</label><textarea id="f-desc">'+esc(v.description||'')+'</textarea><div class="row"><div><label>Scales</label><input id="f-scales" value="'+esc(v.scales||'')+'"></div><div><label>Techniques</label><input id="f-tech" value="'+esc(v.techniques||'')+'"></div></div><div class="row"><div><label>Key Artists</label><input id="f-art" value="'+esc(v.key_artists||'')+'"></div><div><label>Color</label><input id="f-color" value="'+esc(v.color||'#d4af69')+'"></div></div><div class="btn-row"><button class="btn" onclick="saveSimple(''content-regions'','+v.id||0+',regionForm)">'+(v.id?'Update':'Create')+'</button></div>'; }
+regionRow = { header:'<th>Name</th><th>Tradition</th><th>Artists</th><th></th>' };
+regionRow = function(item){ return '<td>'+esc(item.name)+'</td><td>'+esc(item.tradition)+'</td><td>'+esc(item.key_artists||'').slice(0,50)+'</td><td></td>'; };
+
+// Generic save helper
+async function saveSimple(action, id, formFn) {
+  const body = {};
+  document.querySelectorAll('#panel input, #panel textarea, #panel select').forEach(el => {
+    if (el.id && el.id.startsWith('f-')) body[el.id.replace('f-','').replace(/-/g,'_')] = el.type==='number' ? +el.value : el.value;
+  });
+  if (id) body.id = id;
+  await api(action, id ? 'PUT' : 'POST', body);
+  msg(id ? 'Updated' : 'Created', true); load();
 }
 
 // ─── HELPERS ───
