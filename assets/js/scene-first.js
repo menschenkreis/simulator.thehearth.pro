@@ -142,7 +142,7 @@
   window.showJourney=function(){
     inject(); const el=document.getElementById('journey-content'); if(!el)return;
     const state=journeyState(); const student=journeyStudent(state);
-    const level=student?JOURNEY_LEVELS.find(l=>l.num===(student.currentLevel||1))||LEVELS[0]:LEVELS[0];
+    const level=student?JOURNEY_LEVELS.find(l=>l.num===(student.currentLevel||1))||JOURNEY_LEVELS[0]:JOURNEY_LEVELS[0];
     const lvlState=student?.levels?.[level.id]||{};
     const pct=level.totalLessons?Math.round((lvlState.lessonsDone||0)/level.totalLessons*100):0;
     const nextLesson=(lvlState.lessonsDone||0)+1;
