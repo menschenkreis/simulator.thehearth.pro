@@ -2310,7 +2310,7 @@ function showKnowing(){
       html+='<button onclick="_scrollShelf(\'shelf-l'+lv.level+'\',-1)" style="position:absolute;left:-8px;top:50%;transform:translateY(-50%);z-index:2;background:var(--card);border:1px solid var(--border);color:var(--dim);width:28px;height:28px;border-radius:50%;cursor:pointer;font-size:0.8rem;display:flex;align-items:center;justify-content:center">\u2039</button>';
     }
 
-    html+='<div id="shelf-l'+lv.level+'" class="book-carousel" style="display:flex;gap:10px;overflow-x:auto;scroll-behavior:smooth;padding:4px 16px 8px;scrollbar-width:none;-ms-overflow-style:none">';
+    html+='<div id="shelf-l'+lv.level+'" class="book-carousel" style="display:flex;align-items:flex-end;gap:10px;overflow-x:auto;scroll-behavior:smooth;padding:4px 16px 8px;scrollbar-width:none;-ms-overflow-style:none">';
     // hide scrollbar
     html+='<style>#shelf-l'+lv.level+'::-webkit-scrollbar{display:none}</style>';
 
@@ -2341,30 +2341,28 @@ function showKnowing(){
 
       if(isLocked){
         // Ghost silhouette
-        html+='<div style="width:'+w+'px;min-height:'+h+'px;background:'+color+'20;border:1px dashed '+color+'30;border-radius:3px 6px 6px 3px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px 4px;flex-shrink:0">'+
-          '<div style="transform:rotate(-90deg);font-family:Josefin Sans,sans-serif;font-size:0.7rem;color:'+color+'50;text-align:center;letter-spacing:0.05em;line-height:1.2;white-space:nowrap">'+cat.title+'</div>'+
+        html+='<div style="width:'+w+'px;height:'+h+'px;background:'+color+'20;border:1px dashed '+color+'30;border-radius:4px;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding:8px 4px;flex-shrink:0;opacity:0.4">'+
+          '<div style="writing-mode:vertical-rl;text-orientation:mixed;font-family:Josefin Sans,sans-serif;font-size:0.55rem;color:'+color+'60;text-align:center;line-height:1.1;max-height:'+(h-16)+'px;overflow:hidden">'+cat.title+'</div>'+
         '</div>';
       } else {
         // Real book
         html+='<div onclick="openBook(\''+cat.id+'\','+lv.level+')" style="'+
           'width:'+w+'px;height:'+h+'px;'+
-          'background:linear-gradient(90deg,'+color+'dd 0%,'+color+' 6%,'+color+'ee 8%,'+color+'bb 100%);'+
+          'background:linear-gradient(90deg,'+color+'dd 0%,'+color+' 8%,'+color+'ee 10%,'+color+'bb 100%);'+
           'border:2px solid '+(allDone?'var(--gold)':'rgba(255,255,255,0.08)')+';'+
-          'border-radius:3px 6px 6px 3px;'+
+          'border-radius:4px;'+
           'cursor:pointer;transition:all 0.25s;'+
-          'display:flex;flex-direction:column;align-items:center;justify-content:center;'+
-          'padding:12px 6px 12px 8px;'+
+          'display:flex;flex-direction:column;align-items:center;justify-content:flex-end;'+
+          'padding:8px 4px 10px;'+
           'position:relative;'+
           'box-shadow:inset 3px 0 6px rgba(0,0,0,0.2),inset -2px 0 3px rgba(255,255,255,0.05),2px 3px 10px rgba(0,0,0,0.35);'+
           'flex-shrink:0'+
         '" onmouseover="this.style.transform=\'translateY(-6px) scale(1.02)\';this.style.boxShadow=\'inset 3px 0 6px rgba(0,0,0,0.2),inset -2px 0 3px rgba(255,255,255,0.05),3px 6px 20px rgba(212,175,105,0.25)\'" onmouseout="this.style.transform=\'translateY(0) scale(1)\';this.style.boxShadow=\'inset 3px 0 6px rgba(0,0,0,0.2),inset -2px 0 3px rgba(255,255,255,0.05),2px 3px 10px rgba(0,0,0,0.35)\'">'+
           // Spine ridge
           '<div style="position:absolute;left:5px;top:8px;bottom:8px;width:1px;background:rgba(255,255,255,0.1)"></div>'+
-          // Title (book spine reads bottom-to-top, like real books on a shelf)
-          '<div style="transform:rotate(-90deg);font-family:Josefin Sans,sans-serif;font-size:0.7rem;color:rgba(255,255,255,0.9);text-align:center;letter-spacing:0.05em;line-height:1.2;white-space:nowrap">'+cat.title+'</div>'+
-          // Page count
-          '<div style="font-family:JetBrains Mono,monospace;font-size:0.5rem;color:rgba(255,255,255,0.4);margin-top:8px">'+cat.done+'/'+cat.total+'</div>'+
-          (allDone?'<div style="position:absolute;top:4px;right:4px;font-size:0.55rem;color:var(--gold)">\u2713</div>':'')+
+          // Title (vertical, reading top-to-bottom like a real book spine)
+          '<div style="writing-mode:vertical-rl;text-orientation:mixed;font-family:Josefin Sans,sans-serif;font-size:0.6rem;color:rgba(255,255,255,0.85);text-align:center;line-height:1.1;max-height:'+(h-20)+'px;overflow:hidden;letter-spacing:0.03em">'+cat.title+'</div>'+
+          (allDone?'<div style="position:absolute;top:4px;right:4px;font-size:0.55rem;color:var(--gold)">✓</div>':'')+
         '</div>';
       }
     });
