@@ -194,7 +194,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 
 /* Map vignette */
 /* Ambient ember canvas */
-#emberCanvas{position:fixed;inset:0;pointer-events:none;z-index:0;opacity:0.9;}
+#emberCanvas{position:fixed;inset:0;pointer-events:none;z-index:1;opacity:0.9;}}
 
 /* ═══ TEACHING ENGINE ═══ */
 .teach-scene{display:flex;align-items:flex-start;gap:16px;padding:20px 16px 12px;max-width:700px;margin:0 auto;}
@@ -2400,20 +2400,29 @@ window.showKnowingBook=function(catId){
   const bookColors=['#8B4513','#4A6741','#5B3A6B','#2C5F7C','#8B6914','#6B3A3A','#3A5B6B','#5B4A3A','#6B5B3A','#3A4A6B'];
   const color=bookColors[catIdx%bookColors.length];
 
-  // Book open view - like reading a book
-  let html='<div style="padding:20px;max-width:700px;margin:0 auto">'+
+  // Book open view - white theme with character
+  let html='<div style="padding:20px;max-width:900px;margin:0 auto">'+
     '<button class="back-btn" onclick="showKnowing()">← Back to shelf</button>'+
-    '<div style="background:var(--card);border:1px solid var(--border);border-radius:8px;overflow:hidden">';
+    '<div style="display:flex;gap:20px;align-items:flex-start">'+
 
-  // Book header (like a book cover)
-  html+='<div style="background:linear-gradient(135deg,'+color+','+color+'dd);padding:24px;text-align:center">'+
-    '<div style="font-size:1.8rem;margin-bottom:6px">'+cat.icon+'</div>'+
-    '<h2 style="font-family:Cinzel;color:rgba(255,255,255,0.95);font-size:1.2rem;margin:0">'+cat.title+'</h2>'+
-    '<p style="font-size:0.7rem;color:rgba(255,255,255,0.6);margin:6px 0 0 0">'+cat.description+'</p>'+
+    // Left: character giving context
+    '<div style="flex:0 0 120px;display:flex;flex-direction:column;align-items:center;position:sticky;top:20px">'+
+      '<img src="images/character-full/Encouraging.png" style="width:120px;height:120px;object-fit:contain;filter:drop-shadow(0 4px 12px rgba(0,0,0,0.4));animation:char-float 3s ease-in-out infinite"/>'+
+      '<div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:10px 12px;margin-top:8px;max-width:140px;text-align:center;position:relative">'+
+        '<div style="position:absolute;left:-6px;top:50%;transform:translateY(-50%);width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-right:6px solid var(--border)"></div>'+
+        '<div style="font-size:0.65rem;color:var(--text);line-height:1.4">This is your <strong style="color:var(--gold)">'+cat.title+'</strong> reference. '+cat.description.substring(0,80)+'...</div>'+
+      '</div>'+
+    '</div>'+
+
+    // Right: book content on white
+    '<div style="flex:1;background:#fdfaf7;border:1px solid #e0d8cc;border-radius:8px;overflow:hidden;color:#333">'+
+    '<div style="background:linear-gradient(135deg,'+color+','+color+'dd);padding:20px;text-align:center">'+
+    '<h2 style="font-family:Cinzel;color:rgba(255,255,255,0.95);font-size:1.1rem;margin:0">'+cat.title+'</h2>'+
+    '<p style="font-size:0.65rem;color:rgba(255,255,255,0.6);margin:6px 0 0 0">'+cat.description+'</p>'+
   '</div>';
 
   // Topics as pages
-  html+='<div style="padding:16px">';
+  html+='<div style="padding:12px 16px">';
   cat.topics.forEach((topic,i)=>{
     const isDone=completed[topic.id];
     const diffLabel=['','Beginner','Intermediate','Advanced'][topic.difficulty];
@@ -2453,20 +2462,32 @@ window.showKnowingTopic=function(catId,topicId){
   const bookColors=['#8B4513','#4A6741','#5B3A6B','#2C5F7C','#8B6914','#6B3A3A','#3A5B6B','#5B4A3A','#6B5B3A','#3A4A6B'];
   const color=bookColors[catIdx%bookColors.length];
 
-  // Note: this is the encyclopedia view. For guided study with quizzes, use the Study node.
-  el.innerHTML='<div style="padding:20px;max-width:700px;margin:0 auto">'+
+  // Encyclopedia view - white theme with character
+  el.innerHTML='<div style="padding:20px;max-width:900px;margin:0 auto">'+
     '<button class="back-btn" onclick="showKnowingBook(\''+catId+'\')">← Back to '+cat.title+'</button>'+
-    '<div style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:24px">'+
+    '<div style="display:flex;gap:20px;align-items:flex-start">'+
+
+    // Left: character
+    '<div style="flex:0 0 120px;display:flex;flex-direction:column;align-items:center;position:sticky;top:20px">'+
+      '<img src="images/character-full/Neutral.png" style="width:110px;height:110px;object-fit:contain;filter:drop-shadow(0 4px 12px rgba(0,0,0,0.4));animation:char-float 3s ease-in-out infinite"/>'+
+      '<div style="background:#fdfaf7;border:1px solid #e0d8cc;border-radius:10px;padding:10px 12px;margin-top:8px;max-width:140px;text-align:center;position:relative">'+
+        '<div style="position:absolute;left:-6px;top:50%;transform:translateY(-50%);width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-right:6px solid #e0d8cc"></div>'+
+        '<div style="font-size:0.65rem;color:#555;line-height:1.4">Reading: <strong style="color:'+color+'">'+topic.title+'</strong></div>'+
+      '</div>'+
+    '</div>'+
+
+    // Right: content on white
+    '<div style="flex:1;background:#fdfaf7;border:1px solid #e0d8cc;border-radius:8px;padding:24px;color:#333">'+
       '<div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">'+
-        '<span class="tag" style="border-color:'+color+'30;color:'+color+'">'+cat.title+'</span>'+
-        '<span class="tag" style="border-color:'+color+'30;color:'+color+'">'+diffLabel+'</span>'+
-        '<span class="tag" style="border-color:'+color+'30;color:'+color+'">'+topic.source+'</span>'+
-        (isDone?'<span class="tag" style="border-color:#2ecc7130;color:#2ecc71">\u2713 Understood</span>':'')+
+        '<span style="border:1px solid '+color+'40;color:'+color+';padding:3px 10px;border-radius:12px;font-size:0.6rem">'+cat.title+'</span>'+
+        '<span style="border:1px solid #ccc;color:#888;padding:3px 10px;border-radius:12px;font-size:0.6rem">'+diffLabel+'</span>'+
+        '<span style="border:1px solid #ccc;color:#888;padding:3px 10px;border-radius:12px;font-size:0.6rem">'+topic.source+'</span>'+
+        (isDone?'<span style="border:1px solid #2ecc7140;color:#2ecc71;padding:3px 10px;border-radius:12px;font-size:0.6rem">\u2713 Understood</span>':'')+
       '</div>'+
       '<h2 style="font-family:Cinzel;color:'+color+';font-size:1.1rem;margin:0 0 16px 0">'+topic.title+'</h2>'+
-      '<div style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:20px;line-height:1.7;font-size:0.85rem;color:var(--text)">'+topic.body+'</div>'+
-      '<div style="margin-top:12px;padding:10px 14px;background:var(--card);border:1px solid var(--border);border-radius:6px;font-size:0.65rem;color:var(--dim);line-height:1.5">'+
-        '<strong style="color:var(--gold)">Source:</strong> '+topic.source+
+      '<div style="background:#fff;border:1px solid #e8e0d4;border-radius:8px;padding:20px;line-height:1.7;font-size:0.85rem;color:#444">'+topic.body+'</div>'+
+      '<div style="margin-top:12px;padding:10px 14px;background:#f8f4ee;border:1px solid #e8e0d4;border-radius:6px;font-size:0.65rem;color:#888;line-height:1.5">'+
+        '<strong style="color:'+color+'">Source:</strong> '+topic.source+
       '</div>'+
       '<div style="display:flex;gap:8px;margin-top:16px">'+
         (nextTopic?'<button onclick="showKnowingTopic(\''+catId+'\',\''+nextTopic.id+'\')" style="flex:1;background:'+color+'18;color:'+color+';border:2px solid '+color+'60;padding:12px;border-radius:8px;font-family:DM Sans,sans-serif;font-size:0.9rem;font-weight:600;cursor:pointer">Next: '+nextTopic.title+'</button>':'')+
