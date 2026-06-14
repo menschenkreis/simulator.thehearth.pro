@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hearth Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;800&family=DM+Sans:wght@400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#0d0b08;--card:#1a1714;--border:#2a2520;--gold:#d4af69;--amber:#e8a020;--text:#e8e4de;--dim:#8a8580}
+body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;font-size:14px;line-height:1.5}
+.wrap{max-width:1100px;margin:0 auto;padding:20px}
+h1{font-family:Cinzel;color:var(--gold);font-size:1.6rem;margin-bottom:4px}
+.sub{font-size:.75rem;color:var(--dim);margin-bottom:20px}
+.tabs{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap}
+.tab{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:8px 14px;color:var(--dim);cursor:pointer;font-weight:600;font-size:.75rem}
+.tab.on{border-color:var(--gold);color:var(--gold)}
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:14px}
+label{display:block;font-family:JetBrains Mono;font-size:.6rem;color:var(--gold);letter-spacing:.1em;text-transform:uppercase;margin:10px 0 4px}
+input,textarea,select{width:100%;background:#0d0b08;border:1px solid var(--border);border-radius:8px;color:var(--text);padding:8px 10px;font-family:DM Sans;font-size:.8rem}
+textarea{min-height:80px;resize:vertical}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.btn{background:var(--gold);color:#0d0b08;border:none;border-radius:8px;padding:10px 16px;font-weight:700;cursor:pointer;font-size:.8rem}
+.btn.secondary{background:transparent;color:var(--gold);border:1px solid var(--border)}
+.btn.danger{background:#cc3344;color:white}
+.btn-row{display:flex;gap:8px;margin-top:12px}
+table{width:100%;border-collapse:collapse;font-size:.75rem}
+th{text-align:left;font-family:JetBrains Mono;font-size:.6rem;color:var(--gold);letter-spacing:.1em;text-transform:uppercase;padding:8px;border-bottom:1px solid var(--border)}
+td{padding:8px;border-bottom:1px solid var(--border);color:var(--dim)}
+tr:hover td{color:var(--text)}
+.status{padding:4px 8px;border-radius:999px;font-size:.6rem;font-weight:700}
+.ok{background:#2ecc7122;color:#2ecc71}
+.err{background:#e74c3c22;color:#e74c3c}
+#msg{position:fixed;top:20px;right:20px;padding:12px 18px;border-radius:10px;font-size:.8rem;font-weight:600;z-index:999;opacity:0;transition:.3s}
+#msg.show{opacity:1}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>Hearth Content Admin</h1>
+<p class="sub">Manage simulator content — topics, drills, books, references, lessons</p>
+
+<div class="tabs" id="tabs">
+  <div class="tab on" onclick="showTab('topics')">Topics</div>
+  <div class="tab" onclick="showTab('drills')">Drills</div>
+  <div class="tab" onclick="showTab('books')">Books</div>
+  <div class="tab" onclick="showTab('refs')">References</div>
+  <div class="tab" onclick="showTab('lessons')">Lessons</div>
+  <div class="tab" onclick="showTab('students')">Students</div>
+</div>
+
+<div id="panel"></div>
+</div>
+<div id="msg"></div>
+
+<script>
+const API = 'https://thehearth.pro/api/';
+let currentTab = 'topics';
+let editItem = null;
+
+function msg(text, ok) {
+  const el = document.getElementById('msg');
+  el.textContent = text;
+  el.className = 'show ' + (ok ? 'ok' : 'err');
+  setTimeout(() => el.className = '', 3000);
+}
+
+async function api(action, method, body) {
+  const opts = { method, headers: { 'Content-Type': 'application/json' } };
+  if (body) opts.body = JSON.stringify(body);
+  const r = await fetch(API + '?a=' + action, opts);
+  const data = await r.json();
+  if (!r.ok) throw new Error(data.error || 'API error');
+  return data;
+}
+
+function showTab(tab) {
+  currentTab = tab;
+  editItem = null;
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('on'));
+  document.querySelector(`.tab[onclick="showTab('${tab}')"]`).classList.add('on');
+  load();
+}
+
+async function load() {
+  const panel = document.getElementById('panel');
+  try {
+    switch (currentTab) {
+      case 'topics': await loadList(panel, 'content-topics', topicForm, topicRow); break;
+      case 'drills': await loadList(panel, 'content-drills', drillForm, drillRow); break;
+      case 'books': await loadList(panel, 'content-books', bookForm, bookRow); break;
+      case 'refs': await loadList(panel, 'content-refs', refForm, refRow); break;
+      case 'lessons': await loadList(panel, 'content-lessons', lessonForm, lessonRow); break;
+      case 'students': await loadStudents(panel); break;
+    }
+  } catch (e) {
+    panel.innerHTML = '<div class="card"><p style="color:#e74c3c">Error: ' + e.message + '</p></div>';
+  }
+}
+
+async function loadList(panel, action, formFn, rowFn) {
+  const items = await api(action, 'GET');
+  let html = '<div class="card">' + formFn(editItem) + '</div>';
+  html += '<div class="card"><table><thead><tr>' + rowFn.header + '</tr></thead><tbody>';
+  items.forEach(item => { html += '<tr>' + rowFn(item) + '</tr>'; });
+  html += '</tbody></table></div>';
+  panel.innerHTML = html;
+}
+
+// ─── TOPICS ───
+function topicForm(item) {
+  const v = item || {};
+  return `<h3 style="color:var(--gold);margin-bottom:10px">${item ? 'Edit' : 'New'} Topic</h3>
+    <div class="row"><div><label>Key Name</label><input id="f-key" value="${esc(v.key_name||'')}"></div><div><label>Title</label><input id="f-title" value="${esc(v.title||'')}"></div></div>
+    <div class="row3"><div><label>Category</label><input id="f-cat" value="${esc(v.category||'')}"></div><div><label>Difficulty (1-4)</label><input id="f-diff" type="number" min="1" max="4" value="${v.difficulty||1}"></div><div><label>Level (1-8)</label><input id="f-lvl" type="number" min="1" max="8" value="${v.level_num||1}"></div></div>
+    <label>Description</label><textarea id="f-desc">${esc(v.description||'')}</textarea>
+    <label>Body (HTML)</label><textarea id="f-body" style="min-height:150px">${esc(v.body||'')}</textarea>
+    <div class="row"><div><label>Source</label><input id="f-src" value="${esc(v.source||'')}"></div><div><label>Video URL</label><input id="f-vid" value="${esc(v.video_url||'')}"></div></div>
+    <div class="btn-row"><button class="btn" onclick="saveTopic(${v.id||0})">${item ? 'Update' : 'Create'}</button>${item ? '<button class="btn secondary" onclick="editItem=null;load()">Cancel</button>' : ''}</div>`;
+}
+topicRow.header = '<th>Title</th><th>Category</th><th>Level</th><th>Diff</th><th></th>';
+topicRow = function(item) {
+  return `<td>${esc(item.title)}</td><td>${esc(item.category)}</td><td>L${item.level_num}</td><td>${item.difficulty}</td>
+    <td><button class="btn secondary" onclick='editItem=${JSON.stringify(item)};load()' style="padding:4px 10px;font-size:.65rem">Edit</button></td>`;
+};
+
+async function saveTopic(id) {
+  const body = { key_name:gv('f-key'), title:gv('f-title'), category:gv('f-cat'), difficulty:+gv('f-diff'), level_num:+gv('f-lvl'), description:gv('f-desc'), body:gv('f-body'), source:gv('f-src'), video_url:gv('f-vid') };
+  if (id) body.id = id;
+  await api('content-topics', id ? 'PUT' : 'POST', body);
+  msg(id ? 'Topic updated' : 'Topic created', true);
+  editItem = null; load();
+}
+
+// ─── DRILLS ───
+function drillForm(item) {
+  const v = item || {};
+  return `<h3 style="color:var(--gold);margin-bottom:10px">${item ? 'Edit' : 'New'} Drill</h3>
+    <div class="row"><div><label>Key Name</label><input id="f-key" value="${esc(v.key_name||'')}"></div><div><label>Title</label><input id="f-title" value="${esc(v.title||'')}"></div></div>
+    <div class="row3"><div><label>Category</label><input id="f-cat" value="${esc(v.category||'')}"></div><div><label>Style</label><input id="f-style" value="${esc(v.style||'')}"></div><div><label>Difficulty</label><input id="f-diff" type="number" min="1" max="4" value="${v.difficulty||1}"></div></div>
+    <div class="row3"><div><label>Level (1-8)</label><input id="f-lvl" type="number" min="1" max="8" value="${v.level_num||1}"></div><div><label>String (1-6)</label><input id="f-str" type="number" min="0" max="6" value="${v.string_num||0}"></div><div><label>Fret</label><input id="f-fret" type="number" min="0" max="24" value="${v.fret_num||0}"></div></div>
+    <div class="row"><div><label>Default BPM</label><input id="f-bpm" type="number" value="${v.bpm_default||60}"></div><div><label>Duration</label><input id="f-dur" value="${esc(v.duration||'5 min')}"></div></div>
+    <label>Description</label><textarea id="f-desc">${esc(v.description||'')}</textarea>
+    <label>Instructions</label><textarea id="f-inst">${esc(v.instructions||'')}</textarea>
+    <label>Source</label><input id="f-src" value="${esc(v.source||'')}">
+    <div class="btn-row"><button class="btn" onclick="saveDrill(${v.id||0})">${item ? 'Update' : 'Create'}</button>${item ? '<button class="btn secondary" onclick="editItem=null;load()">Cancel</button>' : ''}</div>`;
+}
+drillRow.header = '<th>Title</th><th>Category</th><th>Style</th><th>Level</th><th>Diff</th><th></th>';
+drillRow = function(item) {
+  return `<td>${esc(item.title)}</td><td>${esc(item.category)}</td><td>${esc(item.style)}</td><td>L${item.level_num}</td><td>${item.difficulty}</td>
+    <td><button class="btn secondary" onclick='editItem=${JSON.stringify(item)};load()' style="padding:4px 10px;font-size:.65rem">Edit</button></td>`;
+};
+
+async function saveDrill(id) {
+  const body = { key_name:gv('f-key'), title:gv('f-title'), category:gv('f-cat'), style:gv('f-style'), difficulty:+gv('f-diff'), level_num:+gv('f-lvl'), string_num:+gv('f-str'), fret_num:+gv('f-fret'), bpm_default:+gv('f-bpm'), duration:gv('f-dur'), description:gv('f-desc'), instructions:gv('f-inst'), source:gv('f-src') };
+  if (id) body.id = id;
+  await api('content-drills', id ? 'PUT' : 'POST', body);
+  msg(id ? 'Drill updated' : 'Drill created', true);
+  editItem = null; load();
+}
+
+// ─── BOOKS ───
+function bookForm(item) {
+  const v = item || {};
+  return `<h3 style="color:var(--gold);margin-bottom:10px">${item ? 'Edit' : 'New'} Book</h3>
+    <div class="row"><div><label>Key Name</label><input id="f-key" value="${esc(v.key_name||'')}"></div><div><label>Title</label><input id="f-title" value="${esc(v.title||'')}"></div></div>
+    <div class="row3"><div><label>Author</label><input id="f-author" value="${esc(v.author||'')}"></div><div><label>Category</label><input id="f-cat" value="${esc(v.category||'guitar')}"></div><div><label>Difficulty</label><input id="f-diff" type="number" min="1" max="4" value="${v.difficulty||1}"></div></div>
+    <label>Description</label><textarea id="f-desc">${esc(v.description||'')}</textarea>
+    <label>PDF URL</label><input id="f-pdf" value="${esc(v.pdf_url||'')}">
+    <div class="btn-row"><button class="btn" onclick="saveBook(${v.id||0})">${item ? 'Update' : 'Create'}</button>${item ? '<button class="btn secondary" onclick="editItem=null;load()">Cancel</button>' : ''}</div>`;
+}
+bookRow.header = '<th>Title</th><th>Author</th><th>Category</th><th></th>';
+bookRow = function(item) {
+  return `<td>${esc(item.title)}</td><td>${esc(item.author)}</td><td>${esc(item.category)}</td>
+    <td><button class="btn secondary" onclick='editItem=${JSON.stringify(item)};load()' style="padding:4px 10px;font-size:.65rem">Edit</button></td>`;
+};
+
+async function saveBook(id) {
+  const body = { key_name:gv('f-key'), title:gv('f-title'), author:gv('f-author'), description:gv('f-desc'), category:gv('f-cat'), difficulty:+gv('f-diff'), pdf_url:gv('f-pdf') };
+  if (id) body.id = id;
+  await api('content-books', id ? 'PUT' : 'POST', body);
+  msg(id ? 'Book updated' : 'Book created', true);
+  editItem = null; load();
+}
+
+// ─── REFERENCES ───
+function refForm(item) {
+  const v = item || {};
+  return `<h3 style="color:var(--gold);margin-bottom:10px">${item ? 'Edit' : 'New'} Reference</h3>
+    <div class="row"><div><label>Source Title</label><input id="f-src" value="${esc(v.source_title||'')}"></div><div><label>Author</label><input id="f-author" value="${esc(v.author||'')}"></div></div>
+    <div class="row3"><div><label>Page Start</label><input id="f-ps" type="number" value="${v.page_start||0}"></div><div><label>Page End</label><input id="f-pe" type="number" value="${v.page_end||0}"></div><div><label>Type</label><select id="f-type"><option value="book" ${v.ref_type==='book'?'selected':''}>Book</option><option value="article" ${v.ref_type==='article'?'selected':''}>Article</option><option value="video" ${v.ref_type==='video'?'selected':''}>Video</option></select></div></div>
+    <div class="row"><div><label>Chapter</label><input id="f-ch" value="${esc(v.chapter||'')}"></div><div><label>Section</label><input id="f-sec" value="${esc(v.section||'')}"></div></div>
+    <label>Quote / Key Text</label><textarea id="f-quote">${esc(v.quote||'')}</textarea>
+    <label>Notes</label><textarea id="f-notes">${esc(v.notes||'')}</textarea>
+    <div class="row3"><div><label>Book ID</label><input id="f-bid" type="number" value="${v.book_id||0}"></div><div><label>Topic ID</label><input id="f-tid" type="number" value="${v.linked_topic_id||0}"></div><div><label>PDF URL</label><input id="f-pdf" value="${esc(v.pdf_url||'')}"></div></div>
+    <div class="btn-row"><button class="btn" onclick="saveRef(${v.id||0})">${item ? 'Update' : 'Create'}</button>${item ? '<button class="btn secondary" onclick="editItem=null;load()">Cancel</button>' : ''}</div>`;
+}
+refRow.header = '<th>Source</th><th>Pages</th><th>Chapter</th><th>Linked</th><th></th>';
+refRow = function(item) {
+  const pages = item.page_start ? (item.page_start === item.page_end ? 'p.'+item.page_start : 'pp.'+item.page_start+'-'+item.page_end) : '';
+  const linked = item.linked_topic_id ? 'Topic #'+item.linked_topic_id : '';
+  return `<td>${esc(item.source_title)}${item.author ? ' — '+esc(item.author) : ''}</td><td>${pages}</td><td>${esc(item.chapter||'')}</td><td>${linked}</td>
+    <td><button class="btn secondary" onclick='editItem=${JSON.stringify(item)};load()' style="padding:4px 10px;font-size:.65rem">Edit</button> <button class="btn danger" onclick="deleteRef(${item.id})" style="padding:4px 10px;font-size:.65rem">×</button></td>`;
+};
+
+async function saveRef(id) {
+  const body = { source_title:gv('f-src'), author:gv('f-author'), page_start:+gv('f-ps'), page_end:+gv('f-pe'), ref_type:gv('f-type'), chapter:gv('f-ch'), section:gv('f-sec'), quote:gv('f-quote'), notes:gv('f-notes'), book_id:+gv('f-bid'), linked_topic_id:+gv('f-tid'), pdf_url:gv('f-pdf') };
+  if (id) body.id = id;
+  await api('content-refs', id ? 'PUT' : 'POST', body);
+  msg(id ? 'Reference updated' : 'Reference created', true);
+  editItem = null; load();
+}
+
+async function deleteRef(id) {
+  if (!confirm('Delete this reference?')) return;
+  await api('content-refs', 'DELETE', { id });
+  msg('Deleted', true); load();
+}
+
+// ─── LESSONS ───
+function lessonForm(item) {
+  const v = item || {};
+  return `<h3 style="color:var(--gold);margin-bottom:10px">${item ? 'Edit' : 'New'} Lesson</h3>
+    <div class="row"><div><label>Key Name</label><input id="f-key" value="${esc(v.key_name||'')}"></div><div><label>Title</label><input id="f-title" value="${esc(v.title||'')}"></div></div>
+    <div class="row3"><div><label>Level (1-8)</label><input id="f-lvl" type="number" min="1" max="8" value="${v.level_num||1}"></div><div><label>Lesson #</label><input id="f-num" type="number" value="${v.lesson_num||1}"></div><div><label>Duration (min)</label><input id="f-dur" type="number" value="${v.duration_min||60}"></div></div>
+    <label>Body (HTML)</label><textarea id="f-body" style="min-height:120px">${esc(v.body||'')}</textarea>
+    <label>Concept Names (comma-sep)</label><input id="f-concepts" value="${esc(v.concept_names||'')}">
+    <label>Task Names (comma-sep)</label><input id="f-tasks" value="${esc(v.task_names||'')}">
+    <div class="btn-row"><button class="btn" onclick="saveLesson(${v.id||0})">${item ? 'Update' : 'Create'}</button>${item ? '<button class="btn secondary" onclick="editItem=null;load()">Cancel</button>' : ''}</div>`;
+}
+lessonRow.header = '<th>Title</th><th>Level</th><th>#</th><th>Duration</th><th></th>';
+lessonRow = function(item) {
+  return `<td>${esc(item.title)}</td><td>L${item.level_num}</td><td>${item.lesson_num}</td><td>${item.duration_min}m</td>
+    <td><button class="btn secondary" onclick='editItem=${JSON.stringify(item)};load()' style="padding:4px 10px;font-size:.65rem">Edit</button></td>`;
+};
+
+async function saveLesson(id) {
+  const body = { key_name:gv('f-key'), title:gv('f-title'), level_num:+gv('f-lvl'), lesson_num:+gv('f-num'), duration_min:+gv('f-dur'), body:gv('f-body'), concept_names:gv('f-concepts'), task_names:gv('f-tasks') };
+  if (id) body.id = id;
+  await api('content-lessons', id ? 'PUT' : 'POST', body);
+  msg(id ? 'Lesson updated' : 'Lesson created', true);
+  editItem = null; load();
+}
+
+// ─── STUDENTS ───
+async function loadStudents(panel) {
+  const students = await api('journey-students', 'GET');
+  let html = '<div class="card"><h3 style="color:var(--gold);margin-bottom:10px">New Student</h3><div class="row"><div><label>Name</label><input id="f-name"></div><div><label>Current Level</label><input id="f-lvl" type="number" min="1" max="8" value="1"></div></div><div class="btn-row"><button class="btn" onclick="saveStudent()">Create</button></div></div>';
+  html += '<div class="card"><table><thead><tr><th>Name</th><th>Level</th><th>Created</th></tr></thead><tbody>';
+  students.forEach(s => { html += `<tr><td>${esc(s.name)}</td><td>L${s.current_level}</td><td>${s.created_at?.slice(0,10)||''}</td></tr>`; });
+  html += '</tbody></table></div>';
+  panel.innerHTML = html;
+}
+
+async function saveStudent() {
+  await api('journey-students', 'POST', { name: gv('f-name'), current_level: +gv('f-lvl') });
+  msg('Student created', true); load();
+}
+
+// ─── HELPERS ───
+function gv(id) { const el = document.getElementById(id); return el ? el.value.trim() : ''; }
+function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+// Load on start
+load();
+</script>
+</body>
+</html>
+</content>
+</function>
+</tool_call>
