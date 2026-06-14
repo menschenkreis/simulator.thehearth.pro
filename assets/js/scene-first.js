@@ -74,7 +74,7 @@
     const lvl=STUDY_LEVELS[active-1];
     const svg='<svg viewBox="0 0 560 400">'+rings+'<circle cx="'+cx0+'" cy="'+cy0+'" r="34" fill="'+lvl.color+'" opacity=".10"/><text x="'+cx0+'" y="'+(cy0+13)+'" text-anchor="middle" font-size="78" fill="'+GOLD+'" opacity=".9">⚿</text>'+doors+'</svg>';
     const opened=activeTopics.filter(x=>st[x.t.id]==='open'||st[x.t.id]==='mastered').length;
-    el.innerHTML=sceneStart('sf-key','The Key Chamber','Eight concentric rings. Each ring is a level. Move through the doors systematically: define, draw, do, then unlock.','Now the chamber has order: choose a level ring, then open the next lock on that ring. No random study wandering.','images/character-symbols/Thinking Question Mark.png','study')+'<div class="sf-stage">'+svg+'</div><div class="sf-drawer"><div class="sf-kicker" style="color:'+lvl.color+'">'+lvl.id+' · '+lvl.name+' · '+opened+'/'+activeTopics.length+' opened</div><button class="sf-primary" style="--sf:'+lvl.color+'" onclick="StudyKey.openSession(\''+esc(current?current.c.id:'')+'\',\''+esc(current?current.t.id:'')+'\')">Turn Today’s '+lvl.id+' Key</button> <span style="color:var(--dim);margin-left:8px">'+esc(current?current.t.title:'No lock in this level')+'</span><div class="sf-chiprow">'+STUDY_LEVELS.map((l,i)=>'<button onclick="SceneFirst.studyLevel('+(i+1)+')" style="color:'+l.color+';border-color:'+l.color+'55">'+l.id+'</button>').join('')+'</div></div></div></div>';
+    el.innerHTML=sceneStart('sf-key','The Key Chamber','Eight concentric rings. Each ring is a level. Move through the doors systematically: define, draw, do, then unlock.','Now the chamber has order: choose a level ring, then open the next lock on that ring. No random study wandering.','images/character-symbols/Thinking Question Mark.png','study')+'<div class="sf-stage">'+svg+'</div><div class="sf-drawer"><div class="sf-kicker" style="color:'+lvl.color+'">'+lvl.id+' · '+lvl.name+' · '+opened+'/'+activeTopics.length+' opened</div><button class="sf-primary" style="--sf:'+lvl.color+'" onclick="StudyKey.openSession(\''+esc(current?current.c.id:'')+'\',\''+esc(current?current.t.id:'')+'\')">Turn Today’s '+lvl.id+' Key</button> <span style="color:var(--dim);margin-left:8px">'+esc(current?current.t.title:'No lock in this level')+'</span><div class="sf-chiprow">'+STUDY_JOURNEY_LEVELS.map((l,i)=>'<button onclick="SceneFirst.studyLevel('+(i+1)+')" style="color:'+l.color+';border-color:'+l.color+'55">'+l.id+'</button>').join('')+'</div></div></div></div>';
   };
 
 
@@ -117,6 +117,18 @@
     el.innerHTML=sceneStart('sf-phoenix','Mastery · Phoenix Rising','Mastery is not just proof. Proof is the floor. Mastery is going beyond: studying those who crossed the boundary, transforming skill into voice, and rising into a new form.','You do not master by finishing. You master by returning, transforming, and going beyond what the map first showed you.','images/character-symbols/Celebrator with sparks.png','mastery')+'<div class="sf-stage">'+phoenix+'</div><div id="sf-drawer" class="sf-drawer">Choose a phoenix seal: hear beyond, find your voice, transform skill, or transmit the fire.</div></div></div>';
   };
 
+  // LEVELS data (must be accessible here since journey.js scopes it internally)
+  const JOURNEY_LEVELS=[
+    {id:'L1',num:1,name:'Origin',tag:'THE SEED',color:'#ff4444',totalLessons:8,unlockAfter:8,focus:'First contact: body, instrument, clean sound, simple rhythm.'},
+    {id:'L2',num:2,name:'Duality',tag:'THE SECOND VOICE',color:'#ff8800',totalLessons:10,unlockAfter:10,focus:'Two hands, chord gaps, pentatonic vocabulary, embellishments.'},
+    {id:'L3',num:3,name:'Creation',tag:'FIRST EXPRESSIONS',color:'#ffcc00',totalLessons:12,unlockAfter:12,focus:'First complete songs, riffs, phrasing, song seeds.'},
+    {id:'L4',num:4,name:'Structure',tag:'FRAMEWORKS',color:'#44cc44',totalLessons:14,unlockAfter:14,focus:'Keys, chord families, fretboard maps, timing systems.'},
+    {id:'L5',num:5,name:'Change',tag:'TRANSFORMATION',color:'#00cccc',totalLessons:16,unlockAfter:16,focus:'New positions, expressive techniques, transposition, variation.'},
+    {id:'L6',num:6,name:'Harmony',tag:'INTEGRATION',color:'#3366ff',totalLessons:18,unlockAfter:18,focus:'Harmony, arrangements, ear-to-hand connection, deeper repertoire.'},
+    {id:'L7',num:7,name:'Wisdom',tag:'THE WHY',color:'#6633cc',totalLessons:20,unlockAfter:20,focus:'Theory becomes intuition; analysis, choice, musical judgement.'},
+    {id:'L8',num:8,name:'Power',tag:'COLLECTIVE FORCE',color:'#cc33ff',totalLessons:24,unlockAfter:24,focus:'Collaboration, performance, creation, personal sound.'}
+  ];
+
   // JOURNEY: ascending path through 8 levels. One student, one current step, one action.
   function journeyState(){try{return JSON.parse(localStorage.getItem('hearth-journey-v2')||'{}')}catch(e){return{}}}
   function journeyStudent(state){return (state.students||[]).find(s=>s.id===state.activeStudentId)||state.students?.[0]||null;}
@@ -130,12 +142,12 @@
   window.showJourney=function(){
     inject(); const el=document.getElementById('journey-content'); if(!el)return;
     const state=journeyState(); const student=journeyStudent(state);
-    const level=student?LEVELS.find(l=>l.num===(student.currentLevel||1))||LEVELS[0]:LEVELS[0];
+    const level=student?JOURNEY_LEVELS.find(l=>l.num===(student.currentLevel||1))||LEVELS[0]:LEVELS[0];
     const lvlState=student?.levels?.[level.id]||{};
     const pct=level.totalLessons?Math.round((lvlState.lessonsDone||0)/level.totalLessons*100):0;
     const nextLesson=(lvlState.lessonsDone||0)+1;
     // Build 8-level ascending path SVG
-    const pathNodes=LEVELS.map((l,i)=>{
+    const pathNodes=JOURNEY_LEVELS.map((l,i)=>{
       const x=280+(i%2===0?-60:60)*(1-i/8);
       const y=60+i*42;
       const active=l.num===level.num;
@@ -145,8 +157,8 @@
       const r=active?14:10;
       return '<circle cx="'+x+'" cy="'+y+'" r="'+r+'" fill="'+col+'" opacity="'+(active?.9:done?.7:.35)+'" '+(unlocked?'onclick="Journey.openLevel('+l.num+')" style="cursor:pointer"':'')+'><animate attributeName="r" values="'+(r-2)+';'+(r+2)+';'+(r-2)+'" dur="3s" repeatCount="indefinite"/></circle><text x="'+x+'" y="'+(y+r+14)+'" text-anchor="middle" fill="'+col+'" font-family="JetBrains Mono" font-size="8">'+l.id+'</text>';
     }).join('');
-    const pathLines=LEVELS.map((l,i)=>{
-      if(i===LEVELS.length-1)return '';
+    const pathLines=JOURNEY_LEVELS.map((l,i)=>{
+      if(i===JOURNEY_LEVELS.length-1)return '';
       const x1=280+(i%2===0?-60:60)*(1-i/8), y1=60+i*42;
       const x2=280+((i+1)%2===0?-60:60)*(1-(i+1)/8), y2=60+(i+1)*42;
       const done=student?.levels?.[l.id]?.complete;
