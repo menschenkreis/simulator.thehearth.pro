@@ -107,6 +107,7 @@
   font-size: 0.76rem;
   line-height: 1.55;
   color: #222;
+  transition: opacity 0.16s ease;
 }
 @keyframes bookGuideFloat {
   0%, 100% { transform: translateY(0); }

@@ -10,6 +10,7 @@
 
   let pageFlip = null;
   let pages = [];
+  let pageNotes = [];
   let currentCat = null;
 
   const QUOTES = [
@@ -80,6 +81,28 @@
     return 'This book opens the ' + cat.title + ' path. First we will move through ' + list + '. Take it slowly: read, listen, then try the idea on the guitar.';
   }
 
+  function getTopicGuideText(cat, topic) {
+    var concepts = window.KNOWING_CONCEPTS && window.KNOWING_CONCEPTS[topic.id];
+    var level = window.getKnowingTopicLevel ? window.getKnowingTopicLevel(topic) : topic.difficulty;
+    if (concepts && concepts.focus) {
+      var keywords = (concepts.keywords || []).slice(0, 3).join(', ');
+      return 'Level ' + level + ' note: ' + concepts.focus + (keywords ? ' Listen for these anchors: ' + keywords + '.' : '');
+    }
+    return 'Level ' + level + ' note: ' + topic.title + ' belongs to ' + cat.title + '. Try to connect the idea to one real sound on the guitar before turning the page.';
+  }
+
+  function getVideoGuideText(topic, video) {
+    return 'This video is here only for ' + topic.title + '. Watch for the part that demonstrates the exact idea on the page, then come back and name what changed in the sound.';
+  }
+
+  function getQuoteGuideText(quote) {
+    return 'Pause page: "' + quote.text + '" ' + quote.author + ' is pointing at a way to listen. Carry that idea into the next lesson page.';
+  }
+
+  function getBackGuideText(cat, done) {
+    return 'End of this book. You marked ' + done + ' of ' + cat.topics.length + ' topics understood. The next pass should be slower: reread one page, then test it with your hands.';
+  }
+
   function renderConcepts(topic) {
     var concepts = window.KNOWING_CONCEPTS && window.KNOWING_CONCEPTS[topic.id];
     if (!concepts) return '';
@@ -103,10 +126,16 @@
 
   function buildPages(cat) {
     const result = [];
+    const notes = [];
     let qi = 0;
 
+    function addPage(html, note) {
+      result.push(html);
+      notes.push(note);
+    }
+
     // Cover
-    result.push(
+    addPage(
       '<div class="page" data-density="hard">' +
         '<div class="page-content page-cover">' +
           '<div class="cover-kicker">The Hearth Mastery</div>' +
@@ -115,7 +144,8 @@
           '<div class="cover-desc">' + esc(cat.description) + '</div>' +
           '<div class="cover-meta">' + cat.topics.length + ' topics</div>' +
         '</div>' +
-      '</div>'
+      '</div>',
+      getGuideText(cat)
     );
 
     // Topics
@@ -124,7 +154,7 @@
       var topicLevel = window.getKnowingTopicLevel ? window.getKnowingTopicLevel(topic) : topic.difficulty;
       var diffDots = '\u25CF'.repeat(topic.difficulty) + '\u25CB'.repeat(3 - topic.difficulty);
 
-      result.push(
+      addPage(
         '<div class="page">' +
           '<div class="page-content page-topic">' +
             '<div class="topic-label">' + esc(cat.title) + '</div>' +
@@ -136,7 +166,8 @@
               '<span class="topic-num">' + (idx + 1) + '</span>' +
             '</div>' +
           '</div>' +
-        '</div>'
+        '</div>',
+        getTopicGuideText(cat, topic)
       );
 
       // Interleaved quote
@@ -146,7 +177,7 @@
       var directVideos = getDirectVideos(topic);
       if (directVideos.length) {
         directVideos.forEach(function (video) {
-          result.push(
+          addPage(
             '<div class="page">' +
               '<div class="page-content page-video">' +
                 '<div class="video-label">' + esc(video.source) + '</div>' +
@@ -154,34 +185,38 @@
                 '<div class="video-title">' + esc(video.title) + '</div>' +
                 '<div class="video-topic">For: ' + esc(topic.title) + '</div>' +
               '</div>' +
-            '</div>'
+            '</div>',
+            getVideoGuideText(topic, video)
           );
         });
       }
 
-      result.push(
+      addPage(
         '<div class="page">' +
           '<div class="page-content page-quote">' +
             '<div class="quote-mark">\u2726</div>' +
             '<div class="quote-text">\u201C' + esc(q.text) + '\u201D</div>' +
             '<div class="quote-author">\u2014 ' + esc(q.author) + '</div>' +
           '</div>' +
-        '</div>'
+        '</div>',
+        getQuoteGuideText(q)
       );
     });
 
     // Back cover
     var completed = getProgress();
     var done = cat.topics.filter(function (t) { return completed[t.id]; }).length;
-    result.push(
+    addPage(
       '<div class="page" data-density="hard">' +
         '<div class="page-content page-back">' +
           '<div class="back-title">' + (done === cat.topics.length ? 'Complete' : 'End of Book') + '</div>' +
           '<div class="back-progress">' + done + ' / ' + cat.topics.length + ' topics understood</div>' +
         '</div>' +
-      '</div>'
+      '</div>',
+      getBackGuideText(cat, done)
     );
 
+    pageNotes = notes;
     return result;
   }
 
@@ -227,7 +262,7 @@
         '<img class="book-guide-img" src="images/character-full/Encouraging.png" alt="">' +
         '<div class="book-guide-bubble">' +
           '<div class="book-guide-kicker">Guide</div>' +
-          '<p>' + esc(getGuideText(filteredCat)) + '</p>' +
+          '<p id="book-guide-text">' + esc(getGuideText(filteredCat)) + '</p>' +
         '</div>' +
       '</div>' +
       '<div class="flipbook-wrapper">' +
@@ -297,12 +332,30 @@
       var isLandscape = pageFlip.getOrientation && pageFlip.getOrientation() === 'landscape';
       overlay.classList.toggle('book-cover-only', pageIndex === 0 && isLandscape);
     }
-    pageFlip.on('init', function (e) { updateCoverMode(e.data.page); });
-    pageFlip.on('flip', function (e) { updateCoverMode(e.data); });
+
+    function updateGuideText(pageIndex) {
+      var guide = document.getElementById('book-guide-text');
+      if (!guide) return;
+      var note = pageNotes[pageIndex] || pageNotes[pageIndex + 1] || getGuideText(filteredCat);
+      guide.style.opacity = '0';
+      setTimeout(function () {
+        if (!document.getElementById('book-overlay')) return;
+        guide.textContent = note;
+        guide.style.opacity = '1';
+      }, 120);
+    }
+
+    function updateBookState(pageIndex) {
+      updateCoverMode(pageIndex);
+      updateGuideText(pageIndex);
+    }
+
+    pageFlip.on('init', function (e) { updateBookState(e.data.page); });
+    pageFlip.on('flip', function (e) { updateBookState(e.data); });
     pageFlip.on('changeOrientation', function () {
-      updateCoverMode(pageFlip.getCurrentPageIndex());
+      updateBookState(pageFlip.getCurrentPageIndex());
     });
-    updateCoverMode(0);
+    updateBookState(0);
 
     document.getElementById('btn-prev').addEventListener('click', function () { pageFlip.flipPrev(); });
     document.getElementById('btn-next').addEventListener('click', function () { pageFlip.flipNext(); });
