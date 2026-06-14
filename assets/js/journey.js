@@ -85,6 +85,50 @@
     const idx = state.students.findIndex(s=>s.id===student.id);
     if(idx >= 0) state.students[idx] = student;
     saveState(state);
+    // Sync to API
+    syncStudentToAPI(student);
+  }
+
+  function syncStudentToAPI(student){
+    if(!window.HearthAPI) return;
+    // Upsert student
+    fetch('https://thehearth.pro/api/?a=journey-students', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({ name:student.name, current_level:student.currentLevel||1, notes:'' })
+    }).then(r=>r.json()).then(res=>{
+      if(!res.id) return;
+      const sid = res.id;
+      // Sync each level's progress
+      LEVELS.forEach(l => {
+        const ls = student.levels[l.id] || {};
+        fetch('https://thehearth.pro/api/?a=journey-progress', {
+          method:'POST', headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({
+            student_id:sid, level_num:l.num,
+            lessons_done:ls.lessonsDone||0,
+            is_complete:ls.complete?1:0,
+            is_unlocked:ls.unlocked?1:0,
+            concept_ratings:JSON.stringify(ls.conceptRatings||{}),
+            task_ratings:JSON.stringify(ls.taskRatings||{}),
+            notes:JSON.stringify(ls.notes||[])
+          })
+        });
+      });
+      // Sync active lesson if exists
+      if(student.activeLesson){
+        fetch('https://thehearth.pro/api/?a=journey-records', {
+          method:'POST', headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({
+            student_id:sid, level_num:getLevel(student.currentLevel||1).num,
+            lesson_num:student.activeLesson.lessonNum||1,
+            status:student.activeLesson.status||'in-progress',
+            block_notes:JSON.stringify(student.activeLesson.blockNotes||{}),
+            feedback:student.activeLesson.feedback||'',
+            teacher_notes:student.activeLesson.teacherNotes||''
+          })
+        });
+      }
+    }).catch(()=>{});
   }
 
   function buildLesson(student, levelNum, lessonNum){

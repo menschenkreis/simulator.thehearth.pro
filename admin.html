@@ -246,10 +246,24 @@ async function saveLesson(id) {
 // ─── STUDENTS ───
 async function loadStudents(panel) {
   const students = await api('journey-students', 'GET');
-  let html = '<div class="card"><h3 style="color:var(--gold);margin-bottom:10px">New Student</h3><div class="row"><div><label>Name</label><input id="f-name"></div><div><label>Current Level</label><input id="f-lvl" type="number" min="1" max="8" value="1"></div></div><div class="btn-row"><button class="btn" onclick="saveStudent()">Create</button></div></div>';
-  html += '<div class="card"><table><thead><tr><th>Name</th><th>Level</th><th>Created</th></tr></thead><tbody>';
-  students.forEach(s => { html += `<tr><td>${esc(s.name)}</td><td>L${s.current_level}</td><td>${s.created_at?.slice(0,10)||''}</td></tr>`; });
-  html += '</tbody></table></div>';
+  let html = '<div class="card"><h3 style="color:var(--gold);margin-bottom:10px">Journey Students</h3><p style="font-size:.72rem;color:var(--dim);margin-bottom:10px">Students sync automatically from the simulator when you create or update them there.</p><div class="row"><div><label>Name</label><input id="f-name"></div><div><label>Current Level</label><input id="f-lvl" type="number" min="1" max="8" value="1"></div></div><div class="btn-row"><button class="btn" onclick="saveStudent()">Add Student</button><button class="btn secondary" onclick="load()">Refresh</button></div></div>';
+  for(const s of students) {
+    let progress = [];
+    try { progress = await api('journey-progress', 'GET') || []; } catch(e){}
+    const studentProg = progress.filter(p => p.student_id === s.id);
+    html += `<div class="card"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px"><div><strong style="font-family:Cinzel;color:var(--gold);font-size:1rem">${esc(s.name)}</strong><span style="font-size:.65rem;color:var(--dim);margin-left:8px">Current: L${s.current_level}</span></div><span style="font-size:.6rem;color:var(--dim)">${s.created_at?.slice(0,10)||''}</span></div>`;
+    html += '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px">';
+    for(let l=1;l<=8;l++){
+      const p = studentProg.find(x=>x.level_num===l);
+      const done = p ? p.lessons_done : 0;
+      const complete = p ? p.is_complete : 0;
+      const unlocked = p ? p.is_unlocked : (l===1);
+      const color = complete ? '#2ecc71' : unlocked ? 'var(--gold)' : '#555';
+      html += `<div style="background:#0d0b08;border:1px solid ${color}40;border-radius:8px;padding:6px 8px;text-align:center"><div style="font-family:JetBrains Mono;font-size:.55rem;color:${color}">L${l}</div><div style="font-size:.75rem;color:var(--text)">${done} lessons</div><div style="font-size:.55rem;color:${complete?'#2ecc71':unlocked?'var(--gold)':'#555'}">${complete?'✓ Complete':unlocked?'Open':'Locked'}</div></div>`;
+    }
+    html += '</div></div>';
+  }
+  if(!students.length) html += '<div class="card"><p style="color:var(--dim)">No students yet. Create one in the simulator Journey node or add one above.</p></div>';
   panel.innerHTML = html;
 }
 
