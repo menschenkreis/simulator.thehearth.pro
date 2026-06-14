@@ -1284,13 +1284,10 @@ function setTheme(mode) {
   }
 }
 (function(){
-  var saved = localStorage.getItem('hearth-theme-v2');
-  // If no saved preference, use HTML attribute as default
-  var theme = saved || 'standard';
+  // Always default to standard (dark). Theme selector was removed.
+  var theme = 'standard';
   document.documentElement.setAttribute('data-theme', theme);
   localStorage.setItem('hearth-theme-v2', theme);
-  var sel = document.getElementById('mode-select');
-  if (sel) sel.value = theme;
   setTheme(theme);
 })();
 
