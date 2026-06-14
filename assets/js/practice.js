@@ -113,8 +113,7 @@ const PRACTICE = {
       duration: '5-8 min',
       description: 'The foundation of Western music. C major, open position.',
       instructions: 'C-D-E-F-G-A-B-C. Play ascending and descending. Say each note name as you play it. This builds the ear-theory connection.'
-    }
-    ,
+    },
     {
       id: 'pd-string-cross',
       title: 'String Crossing',
