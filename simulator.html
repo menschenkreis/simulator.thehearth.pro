@@ -3516,7 +3516,7 @@ function setTheme(theme,btn){
 (function(){var t=localStorage.getItem('hearth-theme-v2')||localStorage.getItem('hearthTheme');if(t){document.documentElement.setAttribute('data-theme',t);document.body.setAttribute('data-theme',t);document.querySelectorAll('.theme-btn').forEach(function(b){b.classList.remove('active');if(b.textContent.toLowerCase()===t)b.classList.add('active');});}})();
 
 function toggleSound(){
-  var audioMuted=localStorage.getItem('hearthSoundMuted')!=='false';
+  var audioMuted=localStorage.getItem('hearthSoundMuted')==='true';
   var newMuted=!audioMuted;
   localStorage.setItem('hearthSoundMuted',newMuted?'true':'false');
   var btn=document.getElementById('soundToggle');
