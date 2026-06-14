@@ -1988,7 +1988,7 @@ function showFoundationTopic(topicId){
       s.body;
     if(isLast){
       html+='<div style="display:flex;gap:8px;margin-top:16px">'+
-        '<button class="lp-next" style="flex:1;background:'+color+';color:white;border:none;padding:12px;border-radius:8px;font-family:DM Sans,sans-serif;font-size:0.9rem;font-weight:600;cursor:pointer" onclick="completeFoundationTopic(\''+topicId+'\')">Mark Complete</button>';
+        '<button class="lp-next" style="flex:1;background:'+color+';color:white;border:none;padding:12px;border-radius:8px;font-family:DM Sans,sans-serif;font-size:0.9rem;font-weight:600;cursor:pointer" onclick="playSfx('success');completeFoundationTopic(\''+topicId+'\')">Mark Complete</button>';
       if(nextTopic){
         const nextColor=rainbow[topicIdx+1];
         html+='<button class="lp-next" style="flex:1;background:'+nextColor+'18;color:'+nextColor+';border:2px solid '+nextColor+'60;padding:12px;border-radius:8px;font-family:DM Sans,sans-serif;font-size:0.9rem;font-weight:600;cursor:pointer" onclick="showFoundationTopic(\''+nextTopic.id+'\')">Next: '+nextTopic.title+'</button>';
@@ -2044,7 +2044,7 @@ window.goFStep=function(tid,idx){
       s.body;
     if(isLast){
       html+='<div style="display:flex;gap:8px;margin-top:16px">'+
-        '<button class="lp-next" style="flex:1;background:'+color+';color:white;border:none;padding:12px;border-radius:8px;font-family:DM Sans,sans-serif;font-size:0.9rem;font-weight:600;cursor:pointer" onclick="completeFoundationTopic(\''+tid+'\')">Mark Complete</button>';
+        '<button class="lp-next" style="flex:1;background:'+color+';color:white;border:none;padding:12px;border-radius:8px;font-family:DM Sans,sans-serif;font-size:0.9rem;font-weight:600;cursor:pointer" onclick="playSfx('success');completeFoundationTopic(\''+tid+'\')">Mark Complete</button>';
       if(nextTopic){
         const nextColor=rainbow[topicIdx+1];
         html+='<button class="lp-next" style="flex:1;background:'+nextColor+'18;color:'+nextColor+';border:2px solid '+nextColor+'60;padding:12px;border-radius:8px;font-family:DM Sans,sans-serif;font-size:0.9rem;font-weight:600;cursor:pointer" onclick="showFoundationTopic(\''+nextTopic.id+'\')">Next: '+nextTopic.title+'</button>';
@@ -2343,7 +2343,7 @@ function showKnowing(){
           '<div style="writing-mode:vertical-rl;text-orientation:mixed;font-family:Josefin Sans,sans-serif;font-size:0.6rem;color:#666;text-align:center;line-height:1.1;max-height:'+(h-20)+'px;overflow:hidden;letter-spacing:0.08em;text-transform:uppercase">'+cat.title+'</div>'+
         '</div>';      } else {
         // Real book
-        html+='<div onclick="openBook(\''+cat.id+'\','+lv.level+')" style="'+
+        html+='<div onclick="playSfx('book-open');openBook(\''+cat.id+'\','+lv.level+')" style="'+
           'width:'+w+'px;height:'+h+'px;'+
           'background:linear-gradient(90deg,'+color+'dd 0%,'+color+' 8%,'+color+'ee 10%,'+color+'bb 100%);'+
           'border:2px solid '+(allDone?'var(--gold)':'rgba(255,255,255,0.08)')+';'+
@@ -2402,7 +2402,7 @@ window.showKnowingBook=function(catId){
 
   // Book open view - white theme with character
   let html='<div style="padding:20px;max-width:900px;margin:0 auto">'+
-    '<button class="back-btn" onclick="showKnowing()">← Back to shelf</button>'+
+    '<button class="back-btn" onclick="playSfx('book-close');showKnowing()">← Back to shelf</button>'+
     '<div style="display:flex;gap:20px;align-items:flex-start">'+
 
     // Left: character giving context
@@ -2427,7 +2427,7 @@ window.showKnowingBook=function(catId){
     const isDone=completed[topic.id];
     const diffLabel=['','Beginner','Intermediate','Advanced'][topic.difficulty];
 
-    html+='<div onclick="showKnowingTopic(\''+catId+'\',\''+topic.id+'\')" style="'+
+    html+='<div onclick="playSfx('click');showKnowingTopic(\''+catId+'\',\''+topic.id+'\')" style="'+
       'padding:12px 14px;'+
       'border-bottom:'+(i<cat.topics.length-1?'1px solid var(--border)':'none')+';'+
       'cursor:pointer;transition:background 0.15s;'+
@@ -4362,6 +4362,76 @@ function toggleCredits(){
   }
 })();
 </script>
+<script>
+// ═══ Sound Effects ═══
+window.playSfx=function(type){
+  var muted=localStorage.getItem('hearthSoundMuted')==='true';
+  if(muted)return;
+  try{
+    var ctx=new(window.AudioContext||window.webkitAudioContext)();
+    var now=ctx.currentTime;
+    var osc=ctx.createOscillator();
+    var gain=ctx.createGain();
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    gain.gain.setValueAtTime(0.15,now);
+
+    if(type==='book-open'){
+      // Warm ascending chime
+      osc.type='sine';
+      osc.frequency.setValueAtTime(523,now);      // C5
+      osc.frequency.setValueAtTime(659,now+0.08);  // E5
+      osc.frequency.setValueAtTime(784,now+0.16);  // G5
+      gain.gain.exponentialRampToValueAtTime(0.001,now+0.5);
+      osc.start(now);
+      osc.stop(now+0.5);
+    } else if(type==='book-close'){
+      // Descending chime
+      osc.type='sine';
+      osc.frequency.setValueAtTime(784,now);      // G5
+      osc.frequency.setValueAtTime(659,now+0.08);  // E5
+      osc.frequency.setValueAtTime(523,now+0.16);  // C5
+      gain.gain.exponentialRampToValueAtTime(0.001,now+0.4);
+      osc.start(now);
+      osc.stop(now+0.4);
+    } else if(type==='click'){
+      // Soft click
+      osc.type='sine';
+      osc.frequency.setValueAtTime(880,now);
+      gain.gain.setValueAtTime(0.08,now);
+      gain.gain.exponentialRampToValueAtTime(0.001,now+0.08);
+      osc.start(now);
+      osc.stop(now+0.08);
+    } else if(type==='success'){
+      // Happy chime
+      osc.type='sine';
+      osc.frequency.setValueAtTime(523,now);      // C5
+      osc.frequency.setValueAtTime(659,now+0.1);   // E5
+      osc.frequency.setValueAtTime(784,now+0.2);   // G5
+      osc.frequency.setValueAtTime(1047,now+0.3);  // C6
+      gain.gain.exponentialRampToValueAtTime(0.001,now+0.6);
+      osc.start(now);
+      osc.stop(now+0.6);
+    } else if(type==='page'){
+      // Paper rustle - noise burst
+      var buf=ctx.createBuffer(1,ctx.sampleRate*0.05,ctx.sampleRate);
+      var data=buf.getChannelData(0);
+      for(var i=0;i<data.length;i++)data[i]=(Math.random()*2-1)*0.3;
+      var src=ctx.createBufferSource();
+      src.buffer=buf;
+      var filter=ctx.createBiquadFilter();
+      filter.type='highpass';
+      filter.frequency.value=3000;
+      src.connect(filter);
+      filter.connect(gain);
+      gain.gain.setValueAtTime(0.06,now);
+      gain.gain.exponentialRampToValueAtTime(0.001,now+0.05);
+      src.start(now);
+      return; // skip osc
+    }
+  }catch(e){}
+};
+
 <script>
 // Ember particles — simple and bright
 (function(){
