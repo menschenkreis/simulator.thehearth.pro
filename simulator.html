@@ -2258,10 +2258,8 @@ function showKnowing(){
     lv.categories=[];
     K.categories.forEach(cat=>{
       const topics=cat.topics.filter(t=>t.difficulty===lv.level);
-      if(topics.length){
-        const done=topics.filter(t=>completed[t.id]).length;
-        lv.categories.push({...cat,topics,done,total:topics.length});
-      }
+      const done=topics.filter(t=>completed[t.id]).length;
+      lv.categories.push({...cat,topics,done,total:topics.length,hasTopics:topics.length>0});
     });
     // Total progress for this level
     lv.totalTopics=lv.categories.reduce((a,c)=>a+c.total,0);
@@ -2285,7 +2283,7 @@ function showKnowing(){
   levels.forEach((lv,li)=>{
     const isLocked=lv.level>maxUnlocked;
     const pct=lv.totalTopics?Math.round(lv.totalDone/lv.totalTopics*100):0;
-    const opacity=isLocked?0.3:1;
+    const opacity=1;
 
     html+='<div style="margin-bottom:24px;opacity:'+opacity+';transition:opacity 0.4s;'+(isLocked?'filter:grayscale(0.8);':'')+'">'+
       // Shelf header
@@ -2339,12 +2337,11 @@ function showKnowing(){
       const size=bookSizeMap[cat.id]||[155+ci*3,48+ci%3*3];
       const h=size[0]; const w=size[1];
 
-      if(isLocked){
-        // Ghost silhouette
-        html+='<div style="width:'+w+'px;height:'+h+'px;background:'+color+'20;border:1px dashed '+color+'30;border-radius:4px;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding:8px 4px;flex-shrink:0;opacity:0.4">'+
-          '<div style="writing-mode:vertical-rl;text-orientation:mixed;font-family:Josefin Sans,sans-serif;font-size:0.55rem;color:'+color+'60;text-align:center;line-height:1.1;max-height:'+(h-16)+'px;overflow:hidden">'+cat.title+'</div>'+
-        '</div>';
-      } else {
+      if(isLocked || !cat.hasTopics){
+        // Greyed out book (locked level or no topics at this level)
+        html+='<div style="width:'+w+'px;height:'+h+'px;background:#2a2622;border:2px solid #333;border-radius:4px;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding:8px 4px 10px;flex-shrink:0;opacity:0.35;cursor:not-allowed" title="'+cat.title+' — Complete 50% of Level '+(lv.level-1)+' to unlock">'+
+          '<div style="writing-mode:vertical-rl;text-orientation:mixed;font-family:Josefin Sans,sans-serif;font-size:0.6rem;color:#666;text-align:center;line-height:1.1;max-height:'+(h-20)+'px;overflow:hidden;letter-spacing:0.08em;text-transform:uppercase">'+cat.title+'</div>'+
+        '</div>';      } else {
         // Real book
         html+='<div onclick="openBook(\''+cat.id+'\','+lv.level+')" style="'+
           'width:'+w+'px;height:'+h+'px;'+
@@ -2361,7 +2358,7 @@ function showKnowing(){
           // Spine ridge
           '<div style="position:absolute;left:5px;top:8px;bottom:8px;width:1px;background:rgba(255,255,255,0.1)"></div>'+
           // Title (vertical, reading top-to-bottom like a real book spine)
-          '<div style="writing-mode:vertical-rl;text-orientation:mixed;font-family:Josefin Sans,sans-serif;font-size:0.6rem;color:rgba(255,255,255,0.85);text-align:center;line-height:1.1;max-height:'+(h-20)+'px;overflow:hidden;letter-spacing:0.03em">'+cat.title+'</div>'+
+          '<div style="writing-mode:vertical-rl;text-orientation:mixed;font-family:Josefin Sans,sans-serif;font-size:0.6rem;color:rgba(255,255,255,0.85);text-align:center;line-height:1.1;max-height:'+(h-20)+'px;overflow:hidden;letter-spacing:0.08em;text-transform:uppercase">'+cat.title+'</div>'+
           (allDone?'<div style="position:absolute;top:4px;right:4px;font-size:0.55rem;color:var(--gold)">✓</div>':'')+
         '</div>';
       }
@@ -4345,139 +4342,75 @@ function toggleCredits(){
 })();
 </script>
 <script>
-// Ember particles
+// Ember particles — simple and bright
 (function(){
   var canvas=document.getElementById('emberCanvas');
-  if(!canvas){console.log("EMBER: no canvas");return;}
-var pState=localStorage.getItem('hearthParticles');
-console.log("EMBER: running",particles.length,"particles, state:",pState,"display:",canvas.style.display);
+  if(!canvas)return;
   var ctx=canvas.getContext('2d');
-  var W,H,particles=[],sparks=[];
-  var MAX=50;
-  var SPARK_MAX=20;
-  var isMobile=(window.innerWidth<600);
-  if(isMobile){MAX=25;SPARK_MAX=10;}
-  var hour=new Date().getHours();
-  var isNight=(hour<7||hour>=19);
-  var colors=isNight
-    ?['#c45a20','#ff6b1a','#e8a020','#ff4500','#ff8c42','#ffd700']
-    :['#d4af69','#e8a020','#c45a20','#ff8c42','#ffaa44','#ffe066'];
+  var W=window.innerWidth,H=window.innerHeight;
+  canvas.width=W;canvas.height=H;
+  window.addEventListener('resize',function(){W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight;});
 
-  function resize(){W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight;}
-  resize();
-  window.addEventListener('resize',resize);
-
-  function spawn(){
-    return{
-      x:Math.random()*W,
-      y:H+10+Math.random()*40,
-      vx:(Math.random()-0.5)*0.4,
-      vy:-(0.6+Math.random()*1.2),
-      size:Math.random()*3+1.2,
-      life:0,
-      maxLife:150+Math.random()*200,
-      color:colors[Math.floor(Math.random()*colors.length)],
-      phase:Math.random()*Math.PI*2,
-      pspeed:0.03+Math.random()*0.05
-    };
-  }
-
-  function spawnSpark(x,y,color){
-    var angle=Math.random()*Math.PI*2;
-    var speed=1+Math.random()*2;
-    return{
-      x:x,y:y,
-      vx:Math.cos(angle)*speed,
-      vy:Math.sin(angle)*speed-1.5,
-      size:Math.random()*1.2+0.3,
-      life:0,
-      maxLife:15+Math.random()*25,
-      color:color
-    };
-  }
+  var particles=[];
+  var MAX=(window.innerWidth<600)?25:50;
+  var colors=['#ff6b1a','#e8a020','#ff4500','#ffd700','#ff8c42','#d4af69'];
 
   for(var i=0;i<MAX;i++){
-    var p=spawn();
-    p.y=Math.random()*H;
-    p.life=Math.random()*p.maxLife;
-    particles.push(p);
+    particles.push({
+      x:Math.random()*W,
+      y:Math.random()*H,
+      vx:(Math.random()-0.5)*0.3,
+      vy:-(0.3+Math.random()*0.7),
+      size:2+Math.random()*3,
+      color:colors[Math.floor(Math.random()*colors.length)],
+      alpha:0.5+Math.random()*0.5,
+      phase:Math.random()*6.28,
+      speed:0.02+Math.random()*0.04
+    });
   }
 
-  var _fCount=0;
-  function tick(){
-    _fCount++;
-    if(isMobile&&_fCount%2===0){requestAnimationFrame(tick);return;}
+  function draw(){
     ctx.clearRect(0,0,W,H);
-
     for(var i=0;i<particles.length;i++){
       var p=particles[i];
-      p.x+=p.vx+Math.sin(p.phase)*0.15;
+      p.x+=p.vx+Math.sin(p.phase)*0.1;
       p.y+=p.vy;
-      p.vy-=0.003;
-      p.life++;
-      p.phase+=p.pspeed;
+      p.phase+=p.speed;
+      if(p.y<-10){p.y=H+10;p.x=Math.random()*W;}
+      if(p.x<-10)p.x=W+10;
+      if(p.x>W+10)p.x=-10;
 
-      var fade=1;
-      if(p.life<15)fade=p.life/15;
-      else if(p.life>p.maxLife-40)fade=Math.max(0,(p.maxLife-p.life)/40);
-
-      var twinkle=0.7+Math.sin(p.phase)*0.3;
-      var alpha=fade*twinkle*0.9;
+      var twinkle=0.7+Math.sin(p.phase*3)*0.3;
+      var a=p.alpha*twinkle;
 
       // Glow
+      ctx.globalAlpha=a*0.4;
+      ctx.fillStyle=p.color;
+      ctx.shadowBlur=16;
+      ctx.shadowColor=p.color;
       ctx.beginPath();
-      ctx.arc(p.x,p.y,p.size*3.5,0,Math.PI*2);
-      var grd=ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,p.size*3.5);
-      grd.addColorStop(0,p.color+'55');
-      grd.addColorStop(1,p.color+'00');
-      ctx.fillStyle=grd;
-      ctx.globalAlpha=alpha*0.5;
+      ctx.arc(p.x,p.y,p.size*2.5,0,6.28);
       ctx.fill();
 
       // Core
+      ctx.globalAlpha=a;
       ctx.beginPath();
-      ctx.arc(p.x,p.y,p.size,0,Math.PI*2);
-      ctx.fillStyle=p.color;
-      ctx.globalAlpha=alpha;
-      ctx.shadowBlur=10;
-      ctx.shadowColor=p.color;
+      ctx.arc(p.x,p.y,p.size,0,6.28);
       ctx.fill();
-
-      // Spark burst
-      if(Math.random()<0.01&&sparks.length<SPARK_MAX){
-        sparks.push(spawnSpark(p.x,p.y,p.color));
-      }
-
-      if(p.life>=p.maxLife||p.y<-20){
-        particles[i]=spawn();
-      }
     }
-
-    // Sparkles
-    for(var i=sparks.length-1;i>=0;i--){
-      var s=sparks[i];
-      s.x+=s.vx;
-      s.y+=s.vy;
-      s.vy+=0.05;
-      s.vx*=0.97;
-      s.life++;
-      var sa=1-(s.life/s.maxLife);
-      ctx.beginPath();
-      ctx.arc(s.x,s.y,s.size,0,Math.PI*2);
-      ctx.fillStyle=s.color;
-      ctx.globalAlpha=sa;
-      ctx.shadowBlur=4;
-      ctx.shadowColor=s.color;
-      ctx.fill();
-      if(s.life>=s.maxLife)sparks.splice(i,1);
-    }
-
     ctx.globalAlpha=1;
     ctx.shadowBlur=0;
-    requestAnimationFrame(tick);
+    requestAnimationFrame(draw);
   }
-  tick();
-  });
+  draw();
+
+  // Debug: show particle count for 3 seconds
+  var d=document.createElement('div');
+  d.style.cssText='position:fixed;bottom:8px;right:8px;z-index:9999;background:rgba(0,0,0,0.85);color:#ffd700;padding:4px 10px;font:bold 11px monospace;border-radius:4px;pointer-events:none';
+  d.textContent='Embers: '+MAX+' active | '+W+'x'+H;
+  document.body.appendChild(d);
+  setTimeout(function(){d.remove();},3000);
+})();
 </script>
 
 <script>
