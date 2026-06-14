@@ -327,7 +327,6 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 .doing-level-rail::-webkit-scrollbar{display:none;}
 .doing-fretboard-wrap{position:relative;border:1px solid rgba(212,175,105,0.18);border-radius:8px;background:linear-gradient(90deg,#120d09,#2a1b10 15%,#3a2413 50%,#1b110b);box-shadow:inset 0 0 36px rgba(0,0,0,0.55),0 16px 36px rgba(0,0,0,0.2);overflow-x:auto;}
 .doing-fretboard{min-width:920px;position:relative;}
-.doing-fretboard:before{content:"";position:absolute;inset:48px 0 0;background:repeating-linear-gradient(to bottom,rgba(235,220,190,0.28) 0 2px,transparent 2px calc((100% - 6px)/7));pointer-events:none;}
 .doing-fret-header,.doing-string-row{display:grid;grid-template-columns:112px repeat(8,minmax(92px,1fr));position:relative;}
 .doing-fret-header{background:rgba(13,11,8,0.72);border-bottom:2px solid rgba(212,175,105,0.5);}
 .doing-fret-label,.doing-string-label{border-right:2px solid rgba(212,175,105,0.55);}
@@ -338,13 +337,15 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 .doing-level-roman{font-family:Cinzel,serif;color:var(--gold);font-size:0.85rem;line-height:1;}
 .doing-level-name{font-family:JetBrains Mono,monospace;color:var(--dim);font-size:0.5rem;letter-spacing:0.08em;text-transform:uppercase;margin-top:4px;white-space:nowrap;}
 .doing-string-row{min-height:92px;border-bottom:1px solid rgba(245,237,216,0.08);}
+.doing-string-row:before{content:"";position:absolute;left:112px;right:0;top:50%;height:var(--string-weight,2px);transform:translateY(-50%);background:linear-gradient(90deg,rgba(245,237,216,0.38),rgba(245,237,216,0.68),rgba(245,237,216,0.28));box-shadow:0 0 7px rgba(245,237,216,0.12);pointer-events:none;z-index:0;}
 .doing-string-row:last-child{border-bottom:none;}
-.doing-string-label{position:sticky;left:0;z-index:2;background:linear-gradient(90deg,#17110d,#21150d);display:flex;align-items:center;justify-content:center;padding:10px 8px;text-align:center;}
-.doing-string-label span{font-family:Cinzel,serif;color:var(--gold);font-size:0.78rem;letter-spacing:0.04em;}
-.doing-fret-cell{position:relative;padding:10px 8px;display:flex;flex-wrap:wrap;gap:7px;align-content:center;justify-content:center;border-right:1px solid rgba(212,175,105,0.16);min-width:0;}
+.doing-string-label{position:sticky;left:0;z-index:2;background:linear-gradient(90deg,#17110d,#21150d);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px 8px;text-align:center;}
+.doing-string-label span{font-family:Cinzel,serif;color:var(--gold);font-size:1rem;letter-spacing:0.04em;display:block;line-height:1;}
+.doing-string-label small{display:block;font-family:JetBrains Mono,monospace;color:var(--dim);font-size:0.46rem;letter-spacing:0.08em;text-transform:uppercase;margin-top:5px;line-height:1.25;}
+.doing-fret-cell{position:relative;z-index:1;padding:10px 8px;display:flex;flex-wrap:wrap;gap:7px;align-content:center;justify-content:center;border-right:1px solid rgba(212,175,105,0.16);min-width:0;}
 .doing-fret-cell:before{content:"";position:absolute;left:-1px;top:0;bottom:0;width:2px;background:rgba(245,237,216,0.13);}
 .doing-fret-cell:last-child{border-right:none;}
-.drill-dot{position:relative;width:31px;height:31px;border-radius:50%;background:radial-gradient(circle at 35% 28%,#3a3027,#15110d 62%);border:2px solid rgba(212,175,105,0.38);box-shadow:0 0 0 1px rgba(0,0,0,0.45),0 5px 12px rgba(0,0,0,0.3);cursor:pointer;transition:transform 0.15s,border-color 0.15s,box-shadow 0.15s;display:flex;align-items:center;justify-content:center;}
+.drill-dot{position:relative;z-index:2;width:31px;height:31px;border-radius:50%;background:radial-gradient(circle at 35% 28%,#3a3027,#15110d 62%);border:2px solid rgba(212,175,105,0.38);box-shadow:0 0 0 1px rgba(0,0,0,0.45),0 5px 12px rgba(0,0,0,0.3);cursor:pointer;transition:transform 0.15s,border-color 0.15s,box-shadow 0.15s;display:flex;align-items:center;justify-content:center;}
 .drill-dot:hover{transform:translateY(-2px) scale(1.08);border-color:var(--gold);box-shadow:0 0 14px rgba(212,175,105,0.28),0 7px 14px rgba(0,0,0,0.35);}
 .drill-dot:after{content:attr(data-short);font-family:JetBrains Mono,monospace;font-size:0.52rem;color:var(--dim);}
 .drill-dot[data-state="seen"]{border-color:#8b6914;}
@@ -2189,6 +2190,15 @@ function showDoing(){
     {level:8,label:'Level VIII',name:'Voice',tag:'Technique becomes sound'}
   ];
 
+  const stringRows=[
+    {id:'high-e',label:'e',hint:'Speed / style',weight:'1.4px',categories:['speed','styles']},
+    {id:'b',label:'B',hint:'Arpeggios / harmony',weight:'1.8px',categories:['arpeggios']},
+    {id:'g',label:'G',hint:'Scales / maps',weight:'2.2px',categories:['scales']},
+    {id:'d',label:'D',hint:'Picking / attack',weight:'2.6px',categories:['picking']},
+    {id:'a',label:'A',hint:'Fretting / grip',weight:'3px',categories:['fretting']},
+    {id:'low-e',label:'E',hint:'Rhythm / pulse',weight:'3.4px',categories:['rhythm']}
+  ];
+
   const drillLevels={
     'alt-1':1,'flatpick-1':1,'chrom-1':1,'classical-1':1,'stretch-1':1,'16th-1':1,'funk-1':1,'shuffle-1':1,'strum-1':1,'triplet-1':1,'pent-1':1,'major-1':1,'blues-scale-1':1,'pent-3':1,'maj-arp':1,'min-arp':1,'pima-1':1,'pima-2':1,
     'alt-2':2,'hybrid-1':2,'spider-1':2,'barre-1':2,'legato-1':2,'vibrato-1':2,'funk-2':2,'reggae-1':2,'metronome-1':2,'pent-2':2,'modes-1':2,'modes-2':2,'dom7-arp':2,'maj7-arp':2,'classical-arp':2,'trem-1':2,'seq-1':2,'speed-ramp':2,'burst-1':2,'slide-1':2,
@@ -2275,6 +2285,16 @@ function showDoing(){
   function drillShort(drill){
     const words=drill.title.replace(/[^\w\s]/g,' ').split(/\s+/).filter(Boolean);
     return words.slice(0,2).map(w=>w[0]).join('').toUpperCase().slice(0,2)||'D';
+  }
+  function rowDrills(row){
+    const items=[];
+    D.categories.forEach(cat=>{
+      if(!row.categories.includes(cat.id)) return;
+      cat.drills.forEach(drill=>{
+        if(isVisible(cat,drill)) items.push({cat,drill});
+      });
+    });
+    return items;
   }
   function categoryCoaching(cat,drill){
     const title=drill.title;
@@ -2375,7 +2395,7 @@ function showDoing(){
 
     html+='<div class="doing-fretboard-wrap"><div class="doing-fretboard">'+
       '<div class="doing-fret-header">'+
-        '<div class="doing-fret-label">Strings</div>';
+        '<div class="doing-fret-label">String</div>';
     levels.forEach(lv=>{
       html+='<div class="doing-level-head" title="'+esc(lv.tag)+'">'+
         '<div class="doing-level-roman">'+esc(lv.label.replace('Level ',''))+'</div>'+
@@ -2384,22 +2404,21 @@ function showDoing(){
     });
     html+='</div>';
 
-    D.categories.forEach((cat,fi)=>{
-      const filtered=cat.drills.filter(d=>{
-        return isVisible(cat,d);
-      });
-      if(filtered.length===0) return; // hide empty categories
+    stringRows.forEach(row=>{
+      const filtered=rowDrills(row);
 
-      html+='<div class="doing-string-row">'+
-        '<div class="doing-string-label"><span>'+esc(cat.title)+'</span></div>';
+      html+='<div class="doing-string-row" data-string="'+esc(row.id)+'" style="--string-weight:'+esc(row.weight)+'">'+
+        '<div class="doing-string-label"><span>'+esc(row.label)+'</span><small>'+esc(row.hint)+'</small></div>';
 
       levels.forEach(lv=>{
-        const drills=filtered.filter(d=>getDoingLevel(d)===lv.level);
+        const drills=filtered.filter(item=>getDoingLevel(item.drill)===lv.level);
         html+='<div class="doing-fret-cell">';
         if(drills.length){
-          drills.forEach(drill=>{
+          drills.forEach(item=>{
+            const drill=item.drill;
+            const cat=item.cat;
             const state=getState(drill.id);
-            html+='<button class="drill-dot" data-cat="'+esc(cat.id)+'" data-drill="'+esc(drill.id)+'" data-state="'+esc(state)+'" data-short="'+esc(drillShort(drill))+'" title="'+esc(drill.title)+'"></button>';
+            html+='<button class="drill-dot" data-cat="'+esc(cat.id)+'" data-drill="'+esc(drill.id)+'" data-state="'+esc(state)+'" data-short="'+esc(drillShort(drill))+'" title="'+esc(cat.title+': '+drill.title)+'"></button>';
           });
         } else {
           html+='<span class="doing-empty-fret">-</span>';
@@ -2410,20 +2429,14 @@ function showDoing(){
       html+='</div>';
     });
 
-    if(totalDrills===0){
-      html+='<div class="doing-string-row">'+
-        '<div class="doing-string-label"><span>No Match</span></div>'+
-        '<div class="doing-fret-cell" style="grid-column:span 8;justify-content:flex-start;color:var(--dim);font-size:0.75rem;line-height:1.5">No drills match this search and filter combination. Clear the search or choose All genres.</div>'+
-      '</div>';
-    }
-
     html+='</div></div>'+
     '<div class="doing-legend">'+
       '<span><i></i> Untouched</span>'+
       '<span><i style="border-color:#e8a020"></i> In training</span>'+
       '<span class="done"><i></i> Mastered</span>'+
       '<span style="margin-left:auto">'+doneDrills+'/'+totalDrills+' mastered in view · '+touchedAll+'/'+totalAll+' touched overall</span>'+
-    '</div>';
+    '</div>'+
+    (totalDrills===0?'<div style="margin-top:10px;color:var(--dim);font-size:0.75rem">No drills match this search and filter combination. Clear the search or choose All genres.</div>':'');
 
     return html;
   }
@@ -2486,7 +2499,7 @@ function showDoing(){
       '<img class="doing-hero-icon" src="images/doing-icon.png" alt="">'+
       '<div><div class="doing-kicker">Do Node · Fretboard Training Chamber</div>'+
       '<h2>'+esc(D.title)+'</h2>'+
-      '<p>The guitar neck becomes the map: each string is a technique family, each fret is a training level, and every dot opens a coached physical drill.</p></div>'+
+      '<p>The guitar neck becomes the map: six real strings, eight training frets, and each dot opens a coached physical drill.</p></div>'+
       '<div class="doing-stat-strip">'+
         '<div class="doing-stat"><strong>'+mastered+'</strong><span>mastered</span></div>'+
         '<div class="doing-stat"><strong>'+touched+'</strong><span>touched</span></div>'+
