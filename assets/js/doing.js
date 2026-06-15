@@ -148,4 +148,7 @@ const DOING = {
   ]
 };
 
+// Flatten drills for api-loader comparison
+DOING.drills = DOING.categories.reduce((all, cat) => all.concat(cat.drills), []);
+
 window.DOING = DOING;
