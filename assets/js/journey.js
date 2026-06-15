@@ -224,49 +224,133 @@
     const level = getLevel(student.currentLevel || 1);
     const lvlState = student.levels[level.id];
     const nextLesson = (lvlState.lessonsDone || 0) + 1;
-    const lesson = buildLesson(student, level.num, nextLesson);
-    const pct = Math.min(100, Math.round((lvlState.lessonsDone || 0) / level.totalLessons * 100));
-    const recentNotes = LEVELS.flatMap(l => (student.levels[l.id].notes || []).map(n => ({...n, level:l.id}))).slice(-3).reverse();
 
-    let html = '<div class="journey-shell">';
-    html += '<div class="journey-hero"><div class="journey-kicker">Central Spine Journey</div><div class="journey-title">'+esc(student.name)+' · '+level.id+' '+esc(level.name)+'</div>';
-    html += '<div class="journey-sub">Guided 1-hour lessons through the 8-level spine. Each lesson pulls from Foundation, Knowing, Do, Practice, Play and Create — with review, notes, ratings, feedback, and unlockable progression.</div>';
-    html += '<div class="journey-students">';
+    // Spine SVG dimensions
+    const svgW = 320, svgH = 700;
+    const cx = 160;
+    const topY = 55;       // Foundation circle center
+    const botY = 645;      // Mastery circle center
+    const firstLevelY = 130;
+    const lastLevelY = 575;
+    const levelSpacing = (lastLevelY - firstLevelY) / 7;
+
+    // Build level positions
+    const levelPositions = LEVELS.map((l, i) => ({
+      ...l,
+      y: firstLevelY + i * levelSpacing,
+      ls: student.levels[l.id] || {},
+      unlocked: i === 0 || !!(student.levels[l.id]?.unlocked) || !!student.levels[LEVELS[i-1]?.id]?.complete
+    }));
+
+    let html = '<div class="journey-shell" style="display:flex;flex-direction:column;align-items:center;padding:20px">';
+
+    // Student chips
+    html += '<div style="display:flex;gap:7px;flex-wrap:wrap;justify-content:center;margin-bottom:16px">';
     state.students.forEach(s => html += '<button class="journey-chip '+(s.id===student.id?'on':'')+'" onclick="Journey.switchStudent(\''+s.id+'\')">'+esc(s.name)+'</button>');
-    html += '<button class="journey-chip" onclick="Journey.addStudent()">+ Add student</button>';
+    html += '<button class="journey-chip" onclick="Journey.addStudent()">+ Add</button>';
     html += '<button class="journey-chip" onclick="Journey.renameStudent()">Rename</button>';
-    html += '</div></div>';
-
-    html += '<div class="journey-grid"><div>';
-    html += '<div class="journey-card journey-guide"><img src="images/character-full/Encouraging.png" alt="Guide"><div class="journey-bubble">'+guideText(student, level, lvlState, recentNotes)+'</div></div>';
-    html += '<div class="journey-card" style="margin-top:14px"><div class="journey-kicker">8 Level Spine</div><div class="journey-spine" style="margin-top:10px">';
-    LEVELS.forEach(l => {
-      const ls = student.levels[l.id];
-      const unlocked = !!ls.unlocked || l.num === 1 || student.levels['L'+(l.num-1)]?.complete;
-      const complete = !!ls.complete;
-      const lpct = Math.min(100, Math.round((ls.lessonsDone || 0) / l.totalLessons * 100));
-      html += '<div class="journey-level '+(unlocked?'unlocked':'locked')+' '+(l.num===level.num?'active':'')+'" style="--lvl:'+l.color+'" '+(unlocked?'onclick="Journey.openLevel('+l.num+')"':'')+'>';
-      html += '<div style="display:flex;justify-content:space-between;gap:8px"><div><div style="font-family:Cinzel;color:'+(l.num===level.num?l.color:'var(--text)')+';font-size:.82rem;font-weight:800">'+l.id+' · '+esc(l.name)+'</div><div style="font-size:.6rem;color:var(--dim)">'+(unlocked?esc(l.tag):'Locked')+'</div></div><div style="font-family:JetBrains Mono;font-size:.62rem;color:var(--dim)">'+(ls.lessonsDone||0)+'/'+l.totalLessons+'</div></div>';
-      html += '<div class="journey-progressbar"><div style="width:'+lpct+'%"></div></div>';
-      if(complete) html += '<div style="font-size:.62rem;color:'+l.color+';margin-top:5px">Level achieved ✓ Next unlocked</div>';
-      html += '</div>';
-    });
-    html += '</div></div></div>';
-
-    html += '<div>';
-    html += '<div class="journey-card"><div style="display:flex;justify-content:space-between;gap:12px;align-items:start"><div><div class="journey-kicker">Current Lesson</div><h3 style="font-family:Cinzel;color:'+level.color+';margin:6px 0 4px">'+esc(lesson.title)+'</h3><div style="font-size:.75rem;color:var(--dim);line-height:1.5">60 minutes · '+esc(level.focus)+'</div></div><div style="text-align:right;font-family:JetBrains Mono;font-size:.65rem;color:var(--dim)">'+pct+'% level</div></div><div class="journey-progressbar"><div style="width:'+pct+'%;background:'+level.color+'"></div></div>';
-    html += '<div class="journey-actions"><button class="journey-btn" onclick="Journey.startLesson()">Begin / Continue 1h Lesson</button><button class="journey-btn secondary" onclick="Journey.openJournal()">Student Notes</button><button class="journey-btn secondary" onclick="Journey.quickJenNote()">Add Jen-style lesson note</button></div></div>';
-
-    html += '<div class="journey-lesson-card"><div class="journey-kicker">Lesson Plan</div>';
-    lesson.blocks.forEach(b => {
-      html += '<div class="journey-block"><div class="journey-block-head"><div><div class="journey-phase">'+esc(b.phase)+' · '+esc(b.source)+'</div><strong style="font-family:Cinzel;color:var(--text);font-size:.88rem">'+esc(b.title)+'</strong></div><div class="journey-min">'+b.min+' min</div></div><div style="font-size:.74rem;color:var(--dim);line-height:1.5">'+esc(b.body)+'</div></div>';
-    });
     html += '</div>';
 
-    html += '<div class="journey-card"><div class="journey-kicker">Recent Notes</div>';
-    if(recentNotes.length) recentNotes.forEach(n => html += '<div class="journey-note"><strong>'+esc(n.level)+' · '+esc(n.date || '')+'</strong><br>'+esc(n.text)+'</div>');
-    else html += '<div style="font-size:.72rem;color:var(--dim);margin-top:8px">No notes yet. Journey notes become the teaching memory for each student.</div>';
-    html += '</div></div></div></div>';
+    // The spine SVG
+    html += '<svg viewBox="0 0 '+svgW+' '+svgH+'" style="width:100%;max-width:320px;height:auto" xmlns="http://www.w3.org/2000/svg">';
+
+    // Defs
+    html += '<defs>';
+    html += '<filter id="glow-gold"><feGaussianBlur stdDeviation="4" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>';
+    html += '<filter id="glow-soft"><feGaussianBlur stdDeviation="2" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>';
+    html += '</defs>';
+
+    // Foundation circle (top)
+    html += '<circle cx="'+cx+'" cy="'+topY+'" r="42" fill="none" stroke="#d4af69" stroke-width="2" filter="url(#glow-gold)"/>';
+    html += '<circle cx="'+cx+'" cy="'+topY+'" r="36" fill="rgba(13,11,8,0.85)" stroke="#d4af69" stroke-width="1.5"/>';
+    html += '<image href="images/foundation-icon.png" x="'+(cx-26)+'" y="'+(topY-26)+'" width="52" height="52"/>';
+    html += '<text x="'+cx+'" y="'+(topY+54)+'" text-anchor="middle" fill="#d4af69" font-family="Cinzel,serif" font-size="10" letter-spacing="0.12em" font-weight="700">FOUNDATION</text>';
+
+    // Dashed spine segments between levels
+    for(let i = 0; i < levelPositions.length; i++){
+      const lp = levelPositions[i];
+      const prevY = i === 0 ? topY + 42 : levelPositions[i-1].y;
+      const curY = lp.y;
+      const lit = i === 0; // Only first segment (to L1) is lit
+      if(lit){
+        // Lit segment: solid gold glow
+        html += '<line x1="'+cx+'" y1="'+prevY+'" x2="'+cx+'" y2="'+curY+'" stroke="#d4af69" stroke-width="2.5" filter="url(#glow-gold)"/>';
+      } else {
+        // Dim dashed
+        html += '<line x1="'+cx+'" y1="'+prevY+'" x2="'+cx+'" y2="'+curY+'" stroke="rgba(212,175,105,0.15)" stroke-width="1.5" stroke-dasharray="4 6"/>';
+      }
+    }
+    // Spine from L8 to mastery
+    const lastLP = levelPositions[levelPositions.length - 1];
+    html += '<line x1="'+cx+'" y1="'+lastLP.y+'" x2="'+cx+'" y2="'+(botY-50)+'" stroke="rgba(212,175,105,0.15)" stroke-width="1.5" stroke-dasharray="4 6"/>';
+
+    // Level nodes along the spine
+    levelPositions.forEach((lp, i) => {
+      const active = lp.num === (student.currentLevel || 1);
+      const complete = !!lp.ls.complete;
+      const lit = lp.unlocked;
+      const r = active ? 22 : 16;
+      const color = complete ? lp.color : (lit ? lp.color : 'rgba(212,175,105,0.15)');
+      const fillC = active ? 'rgba(212,175,105,0.1)' : 'rgba(13,11,8,0.85)';
+      const roman = ['I','II','III','IV','V','VI','VII','VIII'][i];
+
+      // Outer glow ring for active
+      if(active) html += '<circle cx="'+cx+'" cy="'+lp.y+'" r="'+(r+4)+'" fill="none" stroke="#d4af69" stroke-width="1" opacity="0.3" filter="url(#glow-gold)"/>';
+
+      // Level circle
+      html += '<circle cx="'+cx+'" cy="'+lp.y+'" r="'+r+'" fill="'+fillC+'" stroke="'+color+'" stroke-width="'+(active?2.5:(lit?1.5:1))+'" style="cursor:'+(lit?'pointer':'default')+'" '+(active?'filter="url(#glow-gold)"':'')+' '+(lit?'onclick="Journey.openLevel('+lp.num+')"':'')+'/>';
+
+      // Roman numeral
+      html += '<text x="'+cx+'" y="'+(lp.y+4)+'" text-anchor="middle" fill="'+(active?'#d4af69':(lit?color:'rgba(212,175,105,0.2)'))+'" font-family="Cinzel,serif" font-size="'+(active?13:10)+'" font-weight="'+(active?'800':'400')+'">'+roman+'</text>';
+
+      // Level name to the right
+      html += '<text x="'+(cx+28)+'" y="'+(lp.y-3)+'" fill="'+(active?'#d4af69':(lit?'rgba(212,175,105,0.5)':'rgba(212,175,105,0.18)'))+'" font-family="JetBrains Mono,monospace" font-size="8" letter-spacing="0.08em">'+esc(lp.name.toUpperCase())+'</text>';
+
+      // Lesson count below name
+      if(lit){
+        const done = lp.ls.lessonsDone || 0;
+        html += '<text x="'+(cx+28)+'" y="'+(lp.y+8)+'" fill="rgba(212,175,105,0.3)" font-family="JetBrains Mono,monospace" font-size="7">'+done+'/'+lp.totalLessons+'</text>';
+      }
+
+      // Level ID to the left
+      html += '<text x="'+(cx-28)+'" y="'+(lp.y+4)+'" text-anchor="end" fill="'+(active?'rgba(212,175,105,0.6)':(lit?'rgba(212,175,105,0.25)':'rgba(212,175,105,0.1)'))+'" font-family="JetBrains Mono,monospace" font-size="9" font-weight="600">'+lp.id+'</text>';
+    });
+
+    // Mastery circle (bottom) with rainbow rings
+    const mRings = [
+      { r:48, color:'#ff0000' },
+      { r:41, color:'#ff8800' },
+      { r:34, color:'#ffdd00' },
+      { r:28, color:'#00cc44' },
+      { r:22, color:'#00cccc' },
+      { r:17, color:'#3366ff' },
+      { r:13, color:'#6633cc' },
+      { r:10, color:'#cc33ff' }
+    ];
+    html += '<circle cx="'+cx+'" cy="'+botY+'" r="55" fill="none" stroke="rgba(212,175,105,0.12)" stroke-width="1" stroke-dasharray="3 4"/>';
+    mRings.forEach(mr => {
+      html += '<circle cx="'+cx+'" cy="'+botY+'" r="'+mr.r+'" fill="none" stroke="'+mr.color+'" stroke-width="1" opacity="0.18"/>';
+    });
+    html += '<circle cx="'+cx+'" cy="'+botY+'" r="36" fill="rgba(13,11,8,0.85)" stroke="rgba(212,175,105,0.2)" stroke-width="1.5"/>';
+    html += '<image href="images/mastery-icon.png" x="'+(cx-26)+'" y="'+(botY-26)+'" width="52" height="52"/>';
+    html += '<text x="'+cx+'" y="'+(botY+48)+'" text-anchor="middle" fill="rgba(212,175,105,0.25)" font-family="Cinzel,serif" font-size="10" letter-spacing="0.12em" font-weight="700">MASTERY</text>';
+
+    html += '</svg>';
+
+    // Current level info below spine
+    html += '<div style="margin-top:20px;text-align:center;max-width:360px;width:100%">';
+    html += '<div style="font-family:JetBrains Mono,monospace;font-size:0.6rem;color:var(--gold);letter-spacing:0.16em;text-transform:uppercase;margin-bottom:4px">'+esc(student.name)+'</div>';
+    html += '<div style="font-family:Cinzel,serif;font-size:1.1rem;color:'+level.color+';font-weight:800;margin-bottom:4px">'+level.id+' · '+esc(level.name)+'</div>';
+    html += '<div style="font-size:0.72rem;color:var(--dim);line-height:1.5;margin-bottom:14px">'+esc(level.focus)+'</div>';
+
+    const pct = Math.min(100, Math.round((lvlState.lessonsDone || 0) / level.totalLessons * 100));
+    html += '<div style="background:rgba(255,255,255,0.06);border-radius:99px;height:6px;overflow:hidden;margin-bottom:8px"><div style="height:100%;width:'+pct+'%;background:'+level.color+';border-radius:99px;transition:width 0.4s"></div></div>';
+    html += '<div style="font-family:JetBrains Mono,monospace;font-size:0.58rem;color:var(--dim);margin-bottom:16px">'+(lvlState.lessonsDone||0)+' / '+level.totalLessons+' lessons · '+pct+'%</div>';
+
+    html += '<button class="journey-btn" onclick="Journey.startLesson()" style="font-size:0.85rem;padding:12px 28px">Begin Lesson '+nextLesson+'</button>';
+    html += '</div>';
+
+    html += '</div>';
     root.innerHTML = html;
     lightMapSpine(student);
   }
@@ -305,7 +389,7 @@
     const lesson = buildLesson(student, level.num, lessonNum);
     student.activeLesson = student.activeLesson || { levelId:level.id, lessonNum, date:today(), blockNotes:{}, conceptRatings:{}, taskRatings:{}, feedback:'', teacherNotes:'', status:'in-progress' };
     saveStudent(student);
-    let html = '<div class="journey-shell"><div class="journey-hero"><div class="journey-kicker">'+esc(student.name)+' · '+level.id+' Lesson '+lessonNum+'</div><div class="journey-title">'+esc(lesson.title)+'</div><div class="journey-sub">Use this as the live lesson room. Notes autosave when you save/complete. Each block has a reason and a tracking space.</div><div class="journey-actions"><button class="journey-btn secondary" onclick="Journey.render()">← Dashboard</button></div></div>';
+    let html = '<div class="journey-shell"><div class="journey-hero"><div class="journey-kicker">'+esc(student.name)+' · '+level.id+' Lesson '+lessonNum+'</div><div class="journey-title">'+esc(lesson.title)+'</div><div class="journey-sub">Use this as the live lesson room. Notes autosave when you save/complete. Each block has a reason and a tracking space.</div><div class="journey-actions"><button class="journey-btn secondary" onclick="Journey.render()">← Spine</button></div></div>';
     lesson.blocks.forEach(b => {
       const val = student.activeLesson.blockNotes[b.id] || '';
       html += '<div class="journey-block"><div class="journey-block-head"><div><div class="journey-phase">'+esc(b.phase)+' · '+esc(b.source)+'</div><h3 style="font-family:Cinzel;color:var(--gold);margin:4px 0;font-size:1rem">'+esc(b.title)+'</h3></div><div class="journey-min">'+b.min+' min</div></div><div style="font-size:.76rem;color:var(--dim);line-height:1.55;margin-bottom:9px">'+esc(b.body)+'</div><textarea class="journey-input" id="journey-note-'+b.id+'" placeholder="'+esc(b.prompt)+'">'+esc(val)+'</textarea></div>';
