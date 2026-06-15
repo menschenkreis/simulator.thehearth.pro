@@ -265,9 +265,9 @@
     html += '</defs>';
 
     // Foundation circle (top)
-    html += '<circle cx="'+cx+'" cy="'+topY+'" r="42" fill="none" stroke="#d4af69" stroke-width="2" filter="url(#glow-gold)"/>';
-    html += '<circle cx="'+cx+'" cy="'+topY+'" r="36" fill="rgba(13,11,8,0.85)" stroke="#d4af69" stroke-width="1.5"/>';
-    html += '<image href="images/foundation-icon.png" x="'+(cx-26)+'" y="'+(topY-26)+'" width="52" height="52"/>';
+    html += '<circle cx="'+cx+'" cy="'+topY+'" r="42" fill="none" stroke="#d4af69" stroke-width="2" filter="url(#glow-gold)" style="cursor:pointer" onclick="sw(\'foundation\')"/>';
+    html += '<circle cx="'+cx+'" cy="'+topY+'" r="36" fill="rgba(13,11,8,0.85)" stroke="#d4af69" stroke-width="1.5" style="cursor:pointer" onclick="sw(\'foundation\')"/>';
+    html += '<image href="images/foundation-icon.png" x="'+(cx-26)+'" y="'+(topY-26)+'" width="52" height="52" style="cursor:pointer" onclick="sw(\'foundation\')"/>';
 
     // Dashed spine segments between levels
     for(let i = 0; i < levelPositions.length; i++){
