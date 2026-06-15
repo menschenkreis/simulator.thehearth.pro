@@ -86,14 +86,6 @@ function createTeachingEngine(containerEl, opts){
     bindButtons(step, lesson);
     _teachContinueShown = true;
 
-    // Previous button
-    if(state.history.length > 0) {
-      var prevDiv = document.createElement('div');
-      prevDiv.style.cssText = 'text-align:left;padding:0 16px;max-width:700px;margin:0 auto';
-      prevDiv.innerHTML = '<button class="teach-prev-btn" onclick="window._teachEngine&&window._teachEngine.back()">← Previous</button>';
-      container.appendChild(prevDiv);
-    }
-
     // Show continue prompt after typewriter finishes, then click to advance
     var continueEl = container.querySelector('.teach-continue');
     var typingDone = false;
@@ -135,9 +127,6 @@ function createTeachingEngine(containerEl, opts){
       html += '<button class="'+cls+'" data-idx="'+i+'">'+c.label+'</button>';
     });
     html += '</div>';
-
-    // Previous button (only from step 2)
-    if(state.history.length > 0) html += '<div style="text-align:left;padding:0 16px;max-width:700px;margin:0 auto"><button class="teach-prev-btn" onclick="window._teachEngine&&window._teachEngine.back()">← Previous</button></div>';
 
     container.innerHTML = html;
     typewriterEffect();
@@ -340,8 +329,8 @@ function createTeachingEngine(containerEl, opts){
           '<div class="teach-text'+(typing ? ' typewrite' : '')+'">'+text+'</div>' +
         '</div>' +
       '</div>' +
+      '<div class="teach-prev-wrap"><button class="teach-prev-btn" onclick="window._teachEngine&&window._teachEngine.back()">\u2190 Previous</button></div>' +
     '</div>';
-  }
   }
 
   function typewriterEffect(onDone){
