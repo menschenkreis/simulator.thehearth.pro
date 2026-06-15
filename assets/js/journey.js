@@ -345,8 +345,8 @@
     const student = activeStudent(state);
     const level = getLevel(num);
     const lvlState = student.levels[level.id];
-    const nextLesson = (lvlState.lessonsDone || 0) + 1;
-    const pct = Math.min(100, Math.round((lvlState.lessonsDone || 0) / level.totalLessons * 100));
+    const lessonsDone = lvlState.lessonsDone || 0;
+    const pct = Math.min(100, Math.round(lessonsDone / level.totalLessons * 100));
 
     let html = '<div class="journey-shell" style="display:flex;flex-direction:column;align-items:center;padding:20px">';
 
@@ -361,38 +361,89 @@
 
     // Progress bar
     html += '<div style="background:rgba(255,255,255,0.06);border-radius:99px;height:6px;overflow:hidden;margin-bottom:8px"><div style="height:100%;width:'+pct+'%;background:'+level.color+';border-radius:99px;transition:width 0.4s"></div></div>';
-    html += '<div style="font-family:JetBrains Mono,monospace;font-size:0.58rem;color:var(--dim);margin-bottom:18px">'+(lvlState.lessonsDone||0)+' / '+level.totalLessons+' lessons · '+pct+'%</div>';
+    html += '<div style="font-family:JetBrains Mono,monospace;font-size:0.58rem;color:var(--dim);margin-bottom:18px">'+lessonsDone+' / '+level.totalLessons+' lessons · '+pct+'%</div>';
     html += '</div>';
 
-    // Lesson cards
-    const lesson = buildLesson(student, level.num, nextLesson);
+    // List all lessons
+    for(let i = 1; i <= level.totalLessons; i++){
+      const lessonPreview = buildLesson(student, level.num, i);
+      const done = i <= lessonsDone;
+      const current = i === lessonsDone + 1;
+      const locked = i > lessonsDone + 1;
+      const cardBg = done ? 'rgba(0,200,100,0.06)' : current ? 'rgba(212,175,105,0.08)' : 'rgba(255,255,255,0.02)';
+      const cardBorder = done ? 'rgba(0,200,100,0.2)' : current ? 'rgba(212,175,105,0.2)' : 'rgba(255,255,255,0.06)';
+      const statusIcon = done ? '✓' : current ? '→' : '🔒';
+      const statusColor = done ? '#00c864' : current ? level.color : 'rgba(212,175,105,0.2)';
+      const clickable = !locked;
+      const onclick = clickable ? 'onclick="Journey.openLesson('+level.num+','+i+')"' : '';
+      const cursor = clickable ? 'cursor:pointer' : 'cursor:default';
+
+      html += '<div class="journey-card" style="max-width:360px;width:100%;margin-bottom:8px;background:'+cardBg+';border:1px solid '+cardBorder+';'+cursor+'" '+onclick+'>';
+      html += '<div style="display:flex;align-items:center;gap:10px">';
+      html += '<div style="font-family:Cinzel,serif;font-size:0.95rem;font-weight:800;color:'+statusColor+';min-width:28px">'+i+'</div>';
+      html += '<div style="flex:1">';
+      html += '<div style="font-family:Cinzel,serif;font-size:0.82rem;color:'+(locked?'rgba(212,175,105,0.25)':'var(--text)')+';font-weight:700">'+esc(lessonPreview.title)+'</div>';
+      if(!locked) html += '<div style="font-size:0.62rem;color:var(--dim);margin-top:2px">'+lessonPreview.conceptNames.join(' · ')+'</div>';
+      else html += '<div style="font-size:0.62rem;color:rgba(212,175,105,0.2);margin-top:2px">Complete lesson '+(i-1)+' to unlock</div>';
+      html += '</div>';
+      html += '<div style="font-size:0.85rem;color:'+statusColor+'">'+statusIcon+'</div>';
+      html += '</div>';
+      html += '</div>';
+    }
+
+    html += '</div>';
+    root.innerHTML = html;
+  }
+  function renderLevelLesson(levelNum, lessonNum){
+    injectStyles();
+    const root = document.getElementById('journey-content');
+    if(!root) return;
+    const state = loadState();
+    const student = activeStudent(state);
+    const level = getLevel(levelNum);
+    const lvlState = student.levels[level.id];
+    const lesson = buildLesson(student, levelNum, lessonNum);
+    student.activeLesson = student.activeLesson || { levelId:level.id, lessonNum, date:today(), blockNotes:{}, conceptRatings:{}, taskRatings:{}, feedback:'', teacherNotes:'', status:'in-progress' };
+    student.activeLesson.lessonNum = lessonNum;
+    student.activeLesson.levelId = level.id;
+    saveStudent(student);
+
+    let html = '<div class="journey-shell" style="display:flex;flex-direction:column;align-items:center;padding:20px">';
+
+    // Back button
+    html += '<div style="width:100%;max-width:360px;text-align:left;margin-bottom:12px"><button class="journey-btn secondary" onclick="Journey.openLevel('+levelNum+')" style="font-size:0.75rem;padding:8px 14px">← Back to Lessons</button></div>';
+
+    // Lesson header
+    html += '<div style="text-align:center;max-width:360px;width:100%;margin-bottom:16px">';
+    html += '<div style="font-family:JetBrains Mono,monospace;font-size:0.58rem;color:var(--gold);letter-spacing:0.16em;text-transform:uppercase">'+esc(student.name)+' · '+level.id+'</div>';
+    html += '<div style="font-family:Cinzel,serif;font-size:1.1rem;color:'+level.color+';font-weight:800;margin-top:4px">'+esc(lesson.title)+'</div>';
+    html += '<div style="font-size:0.7rem;color:var(--dim);margin-top:4px">Lesson '+lessonNum+' of '+level.totalLessons+' · '+lesson.minutes+' min</div>';
+    html += '</div>';
+
+    // Lesson blocks
     lesson.blocks.forEach(b => {
+      const val = student.activeLesson.blockNotes[b.id] || '';
       html += '<div class="journey-card" style="max-width:360px;width:100%;margin-bottom:10px">';
       html += '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px">';
-      html += '<div><div style="font-family:JetBrains Mono,monospace;font-size:0.55rem;color:var(--gold);text-transform:uppercase;letter-spacing:0.1em">'+esc(b.phase)+'</div>';
+      html += '<div><div style="font-family:JetBrains Mono,monospace;font-size:0.55rem;color:var(--gold);text-transform:uppercase;letter-spacing:0.1em">'+esc(b.phase)+' · '+esc(b.source)+'</div>';
       html += '<div style="font-family:Cinzel,serif;color:var(--gold);font-size:0.9rem;font-weight:700;margin-top:2px">'+esc(b.title)+'</div></div>';
       html += '<div style="font-family:JetBrains Mono,monospace;font-size:0.55rem;color:var(--dim);white-space:nowrap">'+b.min+' min</div></div>';
-      html += '<div style="font-size:0.72rem;color:var(--dim);line-height:1.5">'+esc(b.body)+'</div>';
+      html += '<div style="font-size:0.72rem;color:var(--dim);line-height:1.5;margin-bottom:8px">'+esc(b.body)+'</div>';
+      html += '<textarea class="journey-input" id="journey-note-'+b.id+'" placeholder="'+esc(b.prompt)+'">'+esc(val)+'</textarea>';
       html += '</div>';
     });
 
-    // Concept tags
-    if(lesson.conceptNames && lesson.conceptNames.length){
-      html += '<div style="max-width:360px;width:100%;margin-bottom:14px">';
-      html += '<div style="font-family:JetBrains Mono,monospace;font-size:0.55rem;color:var(--gold);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:6px">Concepts</div>';
-      html += '<div style="display:flex;flex-wrap:wrap;gap:5px">';
-      lesson.conceptNames.forEach(c => {
-        const rated = lvlState.conceptRatings[c];
-        const bg = rated==='got-it'?'rgba(0,200,100,0.15)':rated==='need-work'?'rgba(255,180,50,0.15)':'rgba(212,175,105,0.08)';
-        const bc = rated==='got-it'?'rgba(0,200,100,0.3)':rated==='need-work'?'rgba(255,180,50,0.3)':'rgba(212,175,105,0.15)';
-        html += '<span style="font-family:JetBrains Mono,monospace;font-size:0.55rem;padding:3px 8px;border-radius:99px;background:'+bg+';border:1px solid '+bc+';color:var(--dim)">'+esc(c)+'</span>';
-      });
-      html += '</div></div>';
-    }
+    // Concept status
+    html += '<div class="journey-card" style="max-width:360px;width:100%;margin-bottom:10px"><div class="journey-kicker">Concept status</div>'+ratingButtons('concept', lesson.conceptNames, student.activeLesson.conceptRatings)+'</div>';
 
-    // Start button
-    html += '<div style="max-width:360px;width:100%;text-align:center;margin-top:8px">';
-    html += '<button class="journey-btn" onclick="Journey.startLesson()" style="font-size:0.85rem;padding:12px 28px">Begin Lesson '+nextLesson+'</button>';
+    // Task status
+    html += '<div class="journey-card" style="max-width:360px;width:100%;margin-bottom:10px"><div class="journey-kicker">Task status</div>'+ratingButtons('task', lesson.taskNames, student.activeLesson.taskRatings)+'</div>';
+
+    // Feedback
+    html += '<div class="journey-card" style="max-width:360px;width:100%"><div class="journey-kicker">Feedback / Next Gradient</div>';
+    html += '<textarea class="journey-input" id="journey-feedback" placeholder="How did this contact go?">'+esc(student.activeLesson.feedback || '')+'</textarea>';
+    html += '<textarea class="journey-input" id="journey-teacher-notes" style="margin-top:8px" placeholder="Teacher notes: gaps, interests, attitude, breakthroughs...">'+esc(student.activeLesson.teacherNotes || '')+'</textarea>';
+    html += '<div class="journey-actions" style="margin-top:10px"><button class="journey-btn secondary" onclick="Journey.saveLessonDraft()">Save Draft</button><button class="journey-btn" onclick="Journey.completeLesson()">Complete Lesson</button></div>';
     html += '</div>';
 
     html += '</div>';
@@ -461,12 +512,16 @@
 
   const Journey = {
     render,
-    startLesson: renderLesson,
+    startLesson(){ const state=loadState(); const s=activeStudent(state); const l=getLevel(s.currentLevel||1); const ls=s.levels[l.id]; const num=(ls.lessonsDone||0)+1; renderLevelLesson(l.num, num); },
     openLevel(num){
       const state = loadState(); const s = activeStudent(state); const l = getLevel(num);
       const unlocked = num === 1 || s.levels[l.id].unlocked || s.levels['L'+(num-1)]?.complete;
       if(!unlocked) return;
       s.currentLevel = num; s.activeLesson = null; saveStudent(s); renderLevel(num);
+    },
+    openLesson(levelNum, lessonNum){
+      const state = loadState(); const s = activeStudent(state); const l = getLevel(levelNum);
+      s.currentLevel = levelNum; s.activeLesson = null; saveStudent(s); renderLevelLesson(levelNum, lessonNum);
     },
     switchStudent(id){ const state=loadState(); state.activeStudentId=id; saveState(state); render(); },
     addStudent(){ const name = prompt('Student name?'); if(!name) return; const state=loadState(); const s=blankStudent(name.trim()); state.students.push(s); state.activeStudentId=s.id; saveState(state); render(); },
