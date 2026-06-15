@@ -15,10 +15,10 @@ const CHAR = {
   thinking:   'images/character-face/Thinking.png',
   celebratory:'images/character-face/Celebratory.png',
   // Symbol variants
-  question:   'images/character-symbols/Thinking Question Mark.png',
-  lightbulb:  'images/character-symbols/Encouraging Face Lightbulb.png',
-  exclamation:'images/character-symbols/Think Exclamation Mark.png',
-  sparks:     'images/character-symbols/Celebrator with sparks.png'
+  question:   'images/character-face/Thinking.png',
+  lightbulb:  'images/character-face/Encouraging.png',
+  exclamation:'images/character-face/Thinking.png',
+  sparks:     'images/character-face/Celebratory.png'
 };
 
 // ── Conversation Step Types ──
