@@ -329,7 +329,7 @@ function createTeachingEngine(containerEl, opts){
           '<div class="teach-text'+(typing ? ' typewrite' : '')+'">'+text+'</div>' +
         '</div>' +
       '</div>' +
-      (state.history.length > 0 ? '<div class="teach-prev-wrap"><button class="teach-prev-btn" onclick="window._teachEngine&&window._teachEngine.back()">\u2190 Previous</button></div>' : '') +
+      (state.history.length > 0 ? '<div class="teach-prev-wrap"><button class="teach-prev-btn" onclick="window._teachEngine&&window._teachEngine.back()">← Previous</button></div>' : '') +
     '</div>';
   }
 
