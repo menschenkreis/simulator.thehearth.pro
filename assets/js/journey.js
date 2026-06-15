@@ -341,22 +341,74 @@
 
     html += '</svg>';
 
-    // Current level info below spine
-    html += '<div style="margin-top:20px;text-align:center;max-width:360px;width:100%">';
-    html += '<div style="font-family:JetBrains Mono,monospace;font-size:0.6rem;color:var(--gold);letter-spacing:0.16em;text-transform:uppercase;margin-bottom:4px">'+esc(student.name)+'</div>';
-    html += '<div style="font-family:Cinzel,serif;font-size:1.1rem;color:'+level.color+';font-weight:800;margin-bottom:4px">'+level.id+' · '+esc(level.name)+'</div>';
-    html += '<div style="font-size:0.72rem;color:var(--dim);line-height:1.5;margin-bottom:14px">'+esc(level.focus)+'</div>';
+    // Guide text below spine
+    const notes = lvlState.notes || [];
+    html += '<div style="margin-top:16px;text-align:center;max-width:340px;width:100%;font-size:0.68rem;color:var(--dim);line-height:1.55;font-style:italic">'+esc(guideText(student, level, lvlState, notes))+'</div>';
 
+    html += '</div>';
+    root.innerHTML = html;
+    lightMapSpine(student);
+  }
+  function renderLevel(num){
+    injectStyles();
+    const root = document.getElementById('journey-content');
+    if(!root) return;
+    const state = loadState();
+    const student = activeStudent(state);
+    const level = getLevel(num);
+    const lvlState = student.levels[level.id];
+    const nextLesson = (lvlState.lessonsDone || 0) + 1;
     const pct = Math.min(100, Math.round((lvlState.lessonsDone || 0) / level.totalLessons * 100));
-    html += '<div style="background:rgba(255,255,255,0.06);border-radius:99px;height:6px;overflow:hidden;margin-bottom:8px"><div style="height:100%;width:'+pct+'%;background:'+level.color+';border-radius:99px;transition:width 0.4s"></div></div>';
-    html += '<div style="font-family:JetBrains Mono,monospace;font-size:0.58rem;color:var(--dim);margin-bottom:16px">'+(lvlState.lessonsDone||0)+' / '+level.totalLessons+' lessons · '+pct+'%</div>';
 
+    let html = '<div class="journey-shell" style="display:flex;flex-direction:column;align-items:center;padding:20px">';
+
+    // Back button
+    html += '<div style="width:100%;max-width:360px;text-align:left;margin-bottom:12px"><button class="journey-btn secondary" onclick="Journey.render()" style="font-size:0.75rem;padding:8px 14px">← Back to Spine</button></div>';
+
+    // Level header
+    html += '<div style="text-align:center;max-width:360px;width:100%">';
+    html += '<div style="font-family:JetBrains Mono,monospace;font-size:0.6rem;color:var(--gold);letter-spacing:0.16em;text-transform:uppercase;margin-bottom:4px">'+esc(student.name)+'</div>';
+    html += '<div style="font-family:Cinzel,serif;font-size:1.2rem;color:'+level.color+';font-weight:800;margin-bottom:4px">'+level.id+' · '+esc(level.name)+'</div>';
+    html += '<div style="font-size:0.75rem;color:var(--dim);line-height:1.5;margin-bottom:16px">'+esc(level.focus)+'</div>';
+
+    // Progress bar
+    html += '<div style="background:rgba(255,255,255,0.06);border-radius:99px;height:6px;overflow:hidden;margin-bottom:8px"><div style="height:100%;width:'+pct+'%;background:'+level.color+';border-radius:99px;transition:width 0.4s"></div></div>';
+    html += '<div style="font-family:JetBrains Mono,monospace;font-size:0.58rem;color:var(--dim);margin-bottom:18px">'+(lvlState.lessonsDone||0)+' / '+level.totalLessons+' lessons · '+pct+'%</div>';
+    html += '</div>';
+
+    // Lesson cards
+    const lesson = buildLesson(student, level.num, nextLesson);
+    lesson.blocks.forEach(b => {
+      html += '<div class="journey-card" style="max-width:360px;width:100%;margin-bottom:10px">';
+      html += '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px">';
+      html += '<div><div style="font-family:JetBrains Mono,monospace;font-size:0.55rem;color:var(--gold);text-transform:uppercase;letter-spacing:0.1em">'+esc(b.phase)+'</div>';
+      html += '<div style="font-family:Cinzel,serif;color:var(--gold);font-size:0.9rem;font-weight:700;margin-top:2px">'+esc(b.title)+'</div></div>';
+      html += '<div style="font-family:JetBrains Mono,monospace;font-size:0.55rem;color:var(--dim);white-space:nowrap">'+b.min+' min</div></div>';
+      html += '<div style="font-size:0.72rem;color:var(--dim);line-height:1.5">'+esc(b.body)+'</div>';
+      html += '</div>';
+    });
+
+    // Concept tags
+    if(lesson.conceptNames && lesson.conceptNames.length){
+      html += '<div style="max-width:360px;width:100%;margin-bottom:14px">';
+      html += '<div style="font-family:JetBrains Mono,monospace;font-size:0.55rem;color:var(--gold);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:6px">Concepts</div>';
+      html += '<div style="display:flex;flex-wrap:wrap;gap:5px">';
+      lesson.conceptNames.forEach(c => {
+        const rated = lvlState.conceptRatings[c];
+        const bg = rated==='got-it'?'rgba(0,200,100,0.15)':rated==='need-work'?'rgba(255,180,50,0.15)':'rgba(212,175,105,0.08)';
+        const bc = rated==='got-it'?'rgba(0,200,100,0.3)':rated==='need-work'?'rgba(255,180,50,0.3)':'rgba(212,175,105,0.15)';
+        html += '<span style="font-family:JetBrains Mono,monospace;font-size:0.55rem;padding:3px 8px;border-radius:99px;background:'+bg+';border:1px solid '+bc+';color:var(--dim)">'+esc(c)+'</span>';
+      });
+      html += '</div></div>';
+    }
+
+    // Start button
+    html += '<div style="max-width:360px;width:100%;text-align:center;margin-top:8px">';
     html += '<button class="journey-btn" onclick="Journey.startLesson()" style="font-size:0.85rem;padding:12px 28px">Begin Lesson '+nextLesson+'</button>';
     html += '</div>';
 
     html += '</div>';
     root.innerHTML = html;
-    lightMapSpine(student);
   }
 
   function guideText(student, level, lvlState, notes){
@@ -426,7 +478,7 @@
       const state = loadState(); const s = activeStudent(state); const l = getLevel(num);
       const unlocked = num === 1 || s.levels[l.id].unlocked || s.levels['L'+(num-1)]?.complete;
       if(!unlocked) return;
-      s.currentLevel = num; s.activeLesson = null; saveStudent(s); render();
+      s.currentLevel = num; s.activeLesson = null; saveStudent(s); renderLevel(num);
     },
     switchStudent(id){ const state=loadState(); state.activeStudentId=id; saveState(state); render(); },
     addStudent(){ const name = prompt('Student name?'); if(!name) return; const state=loadState(); const s=blankStudent(name.trim()); state.students.push(s); state.activeStudentId=s.id; saveState(state); render(); },
