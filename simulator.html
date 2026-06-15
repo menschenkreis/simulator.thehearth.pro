@@ -2243,10 +2243,10 @@ function showFoundation(){
     // Character on top of pyramid, centered
     '<div style="display:flex;flex-direction:column;align-items:center;flex:1;justify-content:center">'+
       // Character + speech bubble row
-      '<div style="display:flex;align-items:center;gap:16px;margin-bottom:4px;justify-content:center">'+
+      '<div style="position:relative;display:flex;justify-content:center;margin-bottom:4px">'+
         '<img src="images/character-neutral.png" class="character-float" style="width:180px;height:180px;object-fit:contain"/>'+
-        '<div id="speech-bubble" class="speech-bubble" style="position:relative;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:10px 14px;width:240px;z-index:5">'+
-          '<div style="position:absolute;left:-6px;top:50%;transform:translateY(-50%);width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-right:6px solid var(--border)"></div>'+
+        '<div id="speech-bubble" class="speech-bubble" style="position:absolute;left:calc(50% + 90px);top:20px;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:10px 14px;width:220px;z-index:5">'+
+          '<div style="position:absolute;left:-6px;top:20px;width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-right:6px solid var(--border)"></div>'+
           '<div id="speech-text" style="font-size:0.75rem;line-height:1.45"></div>'+
         '</div>'+
       '</div>'+
