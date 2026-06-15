@@ -2407,9 +2407,9 @@ function showFoundationTopic(topicId){
   if(topicId==='f-how-to-learn' && window.LESSON_HOW_TO_LEARN && window.TeachingEngine){
     document.querySelectorAll('.pnl').forEach(p=>p.classList.remove('on'));
     el.classList.add('on');
-    el.innerHTML='<div style="padding:16px;max-width:800px;margin:0 auto">'+
-      '<button class="back-btn" onclick="showFoundation()">← Foundation</button>'+
-      '<div style="text-align:center;margin:12px 0 4px"><span style="font-family:Cinzel,serif;color:var(--gold);font-size:0.85rem;letter-spacing:2px">BLOCK 01 — HOW TO LEARN</span></div>'+
+    el.innerHTML='<div style="padding:16px;max-width:800px;margin:0 auto;height:100%;display:flex;flex-direction:column;box-sizing:border-box">'+
+      '<button class="back-btn" onclick="showFoundation()" style="flex-shrink:0">← Foundation</button>'+
+      '<div style="text-align:center;margin:12px 0 4px;flex-shrink:0"><span style="font-family:Cinzel,serif;color:var(--gold);font-size:0.85rem;letter-spacing:2px">BLOCK 01 — HOW TO LEARN</span></div>'+
       '<div id="teach-container" style="flex:1;display:flex;align-items:center;justify-content:center;min-height:0"></div>'+
     '</div>';
     var engine=TeachingEngine(document.getElementById('teach-container'),{
