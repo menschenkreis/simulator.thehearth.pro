@@ -268,7 +268,6 @@
     html += '<circle cx="'+cx+'" cy="'+topY+'" r="42" fill="none" stroke="#d4af69" stroke-width="2" filter="url(#glow-gold)"/>';
     html += '<circle cx="'+cx+'" cy="'+topY+'" r="36" fill="rgba(13,11,8,0.85)" stroke="#d4af69" stroke-width="1.5"/>';
     html += '<image href="images/foundation-icon.png" x="'+(cx-26)+'" y="'+(topY-26)+'" width="52" height="52"/>';
-    html += '<text x="'+cx+'" y="'+(topY+54)+'" text-anchor="middle" fill="#d4af69" font-family="Cinzel,serif" font-size="10" letter-spacing="0.12em" font-weight="700">FOUNDATION</text>';
 
     // Dashed spine segments between levels
     for(let i = 0; i < levelPositions.length; i++){
@@ -307,17 +306,7 @@
       // Roman numeral
       html += '<text x="'+cx+'" y="'+(lp.y+4)+'" text-anchor="middle" fill="'+(active?'#d4af69':(lit?color:'rgba(212,175,105,0.2)'))+'" font-family="Cinzel,serif" font-size="'+(active?13:10)+'" font-weight="'+(active?'800':'400')+'">'+roman+'</text>';
 
-      // Level name to the right
-      html += '<text x="'+(cx+28)+'" y="'+(lp.y-3)+'" fill="'+(active?'#d4af69':(lit?'rgba(212,175,105,0.5)':'rgba(212,175,105,0.18)'))+'" font-family="JetBrains Mono,monospace" font-size="8" letter-spacing="0.08em">'+esc(lp.name.toUpperCase())+'</text>';
 
-      // Lesson count below name
-      if(lit){
-        const done = lp.ls.lessonsDone || 0;
-        html += '<text x="'+(cx+28)+'" y="'+(lp.y+8)+'" fill="rgba(212,175,105,0.3)" font-family="JetBrains Mono,monospace" font-size="7">'+done+'/'+lp.totalLessons+'</text>';
-      }
-
-      // Level ID to the left
-      html += '<text x="'+(cx-28)+'" y="'+(lp.y+4)+'" text-anchor="end" fill="'+(active?'rgba(212,175,105,0.6)':(lit?'rgba(212,175,105,0.25)':'rgba(212,175,105,0.1)'))+'" font-family="JetBrains Mono,monospace" font-size="9" font-weight="600">'+lp.id+'</text>';
     });
 
     // Mastery circle (bottom) with rainbow rings
@@ -337,7 +326,6 @@
     });
     html += '<circle cx="'+cx+'" cy="'+botY+'" r="36" fill="rgba(13,11,8,0.85)" stroke="rgba(212,175,105,0.2)" stroke-width="1.5"/>';
     html += '<image href="images/mastery-icon.png" x="'+(cx-26)+'" y="'+(botY-26)+'" width="52" height="52"/>';
-    html += '<text x="'+cx+'" y="'+(botY+48)+'" text-anchor="middle" fill="rgba(212,175,105,0.25)" font-family="Cinzel,serif" font-size="10" letter-spacing="0.12em" font-weight="700">MASTERY</text>';
 
     html += '</svg>';
 
