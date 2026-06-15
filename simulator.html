@@ -1177,6 +1177,20 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
   .practice-altar-table{display:none;}
   .practice-plan,.practice-scroll-grid{grid-template-columns:repeat(2,1fr);}
 }
+
+  @keyframes card-pulse {
+    0% { transform: translateY(0); box-shadow: 0 0 0 0 var(--gold); }
+    50% { transform: translateY(-4px); box-shadow: 0 0 20px 4px var(--gold); }
+    100% { transform: translateY(0); box-shadow: 0 0 0 0 var(--gold); }
+  }
+  @keyframes card-expand {
+    0% { transform: scale(0.8); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+  }
+  @keyframes fade-in {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+  }
 </style>
 </head>
 <body>
@@ -3022,7 +3036,21 @@ function showKnowing(){
 
     html+='<div id="shelf-l'+lv.level+'" class="book-carousel" style="display:flex;align-items:flex-end;gap:10px;overflow-x:auto;scroll-behavior:smooth;padding:4px 16px 8px;scrollbar-width:none;-ms-overflow-style:none">';
     // hide scrollbar
-    html+='<style>#shelf-l'+lv.level+'::-webkit-scrollbar{display:none}</style>';
+    html+='<style>#shelf-l'+lv.level+'::-webkit-scrollbar{display:none}
+  @keyframes card-pulse {
+    0% { transform: translateY(0); box-shadow: 0 0 0 0 var(--gold); }
+    50% { transform: translateY(-4px); box-shadow: 0 0 20px 4px var(--gold); }
+    100% { transform: translateY(0); box-shadow: 0 0 0 0 var(--gold); }
+  }
+  @keyframes card-expand {
+    0% { transform: scale(0.8); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+  }
+  @keyframes fade-in {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+  }
+</style>';
 
     const bookColors=['#8B4513','#4A6741','#5B3A6B','#2C5F7C','#8B6914','#6B3A3A','#3A5B6B','#5B4A3A','#6B5B3A','#3A4A6B'];
 

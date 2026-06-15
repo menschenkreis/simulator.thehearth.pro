@@ -251,10 +251,11 @@ function createTeachingEngine(containerEl, opts){
     let html = buildCharArea(charImg, charLabel, step.text, true, step.charSize);
 
     html += '<div class="teach-cards" style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin:16px 0">';
-    step.cards.forEach(card => {
-      const icon = card.icon || '📖';
-      html += '<div class="teach-card" style="flex:1 1 '+(100/step.cards.length - 2)+'%;min-width:140px;max-width:220px;background:var(--card);border:2px solid '+(card.color||'var(--gold)')+'40;border-radius:10px;padding:16px 12px;text-align:center;cursor:pointer;transition:all 0.2s" onclick="this.style.borderColor=\''+(card.color||'var(--gold)')+'\';this.style.transform=\'scale(1.03)\'">' +
-        '<div style="font-size:2rem;margin-bottom:8px">'+icon+'</div>' +
+    step.cards.forEach((card, i) => {
+      const icon = card.icon || '';
+      const img = card.image ? '<img src="'+card.image+'" style="width:80px;height:80px;object-fit:contain;border-radius:8px;margin-bottom:8px;transition:all 0.3s" />' : '<div style="font-size:2rem;margin-bottom:8px">'+icon+'</div>';
+      html += '<div class="teach-card" data-card-idx="'+i+'" style="flex:1 1 '+(100/step.cards.length - 2)+'%;min-width:140px;max-width:220px;background:var(--card);border:2px solid '+(card.color||'var(--gold)')+'40;border-radius:10px;padding:16px 12px;text-align:center;cursor:pointer;transition:all 0.3s;opacity:0;transform:translateY(20px)" onclick="expandCard(this,'+(card.image?"'"+card.image+"'":'null')+')">' +
+        '<div class="teach-card-img">'+img+'</div>' +
         '<div style="font-family:Cinzel,serif;font-size:0.75rem;font-weight:700;color:'+(card.color||'var(--gold)')+';margin-bottom:6px">'+card.title+'</div>' +
         '<div style="font-size:0.7rem;color:var(--dim);line-height:1.4">'+card.desc+'</div>' +
       '</div>';
@@ -270,6 +271,17 @@ function createTeachingEngine(containerEl, opts){
     container.innerHTML = html;
     bindButtons(step, lesson);
     typewriterEffect();
+
+    // Pulse cards one by one with stagger
+    const cards = container.querySelectorAll('.teach-card');
+    cards.forEach((card, i) => {
+      setTimeout(() => {
+        card.style.opacity = '1';
+        card.style.transform = 'translateY(0)';
+        card.style.animation = 'card-pulse 1.5s ease-in-out';
+        card.addEventListener('animationend', () => { card.style.animation = ''; }, {once:true});
+      }, 300 + i * 400);
+    });
   }
 
   // ── VIDEO: Embedded video placeholder ──
@@ -340,6 +352,18 @@ function createTeachingEngine(containerEl, opts){
     var prev = state.history.length > 0 ? '<div class="teach-prev-wrap"><button class="teach-prev-btn" onclick="window._teachEngine&&window._teachEngine.back()">← Previous</button></div>' : '';
     return prev + '</div>';
   }
+
+
+  function expandCard(el, imgSrc){
+    if(!imgSrc) return;
+    // Create overlay
+    var overlay = document.createElement('div');
+    overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);z-index:9999;display:flex;align-items:center;justify-content:center;cursor:pointer;animation:fade-in 0.3s ease';
+    overlay.innerHTML = '<img src="'+imgSrc+'" style="max-width:90vw;max-height:90vh;object-fit:contain;border-radius:12px;box-shadow:0 8px 40px rgba(0,0,0,0.5);animation:card-expand 0.4s ease" />';
+    overlay.addEventListener('click', function(){ overlay.remove(); });
+    document.body.appendChild(overlay);
+  }
+  window.expandCard = expandCard;
 
   function typewriterEffect(onDone){
     const el = container.querySelector('.teach-text.typewrite');
