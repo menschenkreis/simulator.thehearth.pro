@@ -379,6 +379,15 @@
     html += '<div style="font-family:JetBrains Mono,monospace;font-size:0.58rem;color:var(--dim);margin-bottom:18px">'+lessonsDone+' / '+level.totalLessons+' lessons · '+pct+'%</div>';
     html += '</div>';
 
+    // Guitar guide
+    html += '<div style="display:flex;flex-direction:column;align-items:center;margin-bottom:18px">';
+    html += '<img src="images/character-full/Encouraging.png" style="width:80px;height:80px;object-fit:contain;filter:drop-shadow(0 4px 12px rgba(0,0,0,0.4));animation:char-float 3s ease-in-out infinite"/>';
+    html += '<div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:10px 14px;margin-top:8px;max-width:260px;text-align:center;position:relative">';
+    html += '<div style="position:absolute;left:50%;top:-6px;transform:translateX(-50%);width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-bottom:6px solid var(--border)"></div>';
+    html += '<div style="font-size:0.68rem;color:var(--text);line-height:1.5">'+esc(level.focus)+'</div>';
+    html += '</div>';
+    html += '</div>';
+
     // List all lessons
     for(let i = 1; i <= level.totalLessons; i++){
       const lessonPreview = buildLesson(student, level.num, i);
@@ -398,8 +407,7 @@
       html += '<div style="font-family:Cinzel,serif;font-size:0.95rem;font-weight:800;color:'+statusColor+';min-width:28px">'+i+'</div>';
       html += '<div style="flex:1">';
       html += '<div style="font-family:Cinzel,serif;font-size:0.82rem;color:'+(locked?'rgba(212,175,105,0.25)':'var(--text)')+';font-weight:700">'+esc(lessonPreview.title)+'</div>';
-      if(!locked) html += '<div style="font-size:0.62rem;color:var(--dim);margin-top:2px">'+lessonPreview.conceptNames.join(' · ')+'</div>';
-      else html += '<div style="font-size:0.62rem;color:rgba(212,175,105,0.2);margin-top:2px">Complete lesson '+(i-1)+' to unlock</div>';
+      if(locked) html += '<div style="font-size:0.62rem;color:rgba(212,175,105,0.2);margin-top:2px">Complete lesson '+(i-1)+' to unlock</div>';
       html += '</div>';
       html += '<div style="font-size:0.85rem;color:'+statusColor+'">'+statusIcon+'</div>';
       html += '</div>';
