@@ -160,6 +160,7 @@ const DOING = {
         { id:'gt-parts-fn-5', title:'Guitar Parts & Functions — Lesson 5', difficulty:1, bpm:'—', duration:'8 min', source:'Guitar Tricks', style:'rock', body:'<p>Headstock design, tuning machines, and string tree. How string tension affects tuning stability.</p>', video:'https://youtu.be/cr120WexSos' },
         { id:'gt-parts-fn-6', title:'Guitar Parts & Functions — Lesson 6', difficulty:1, bpm:'—', duration:'8 min', source:'Guitar Tricks', style:'rock', body:'<p>Tying it all together: how every part contributes to tone, sustain, and feel.</p>', video:'https://youtu.be/wBjxaszE_rY' },
         { id:'gt-tuner-1', title:'Using an Electronic Tuner — Part 1', difficulty:1, bpm:'—', duration:'8 min', source:'Guitar Tricks', style:'rock', body:'<p>How to use a clip-on or pedal tuner. Standard tuning: E-A-D-G-B-E. Tune by turning the peg until the needle centers.</p>', video:'https://youtu.be/HCrOJEOA74E' }
+        ,{ id:'gt-tuner-2', title:'Using an Electronic Tuner — Part 2', difficulty:1, bpm:'—', duration:'8 min', source:'Guitar Tricks', style:'rock', body:'<p>Continuing with the electronic tuner: using the display, checking intonation, and tuning in different lighting conditions.</p>', video:'https://youtu.be/xH3A3Cg8yqM' }
       ]
     }
   ]
