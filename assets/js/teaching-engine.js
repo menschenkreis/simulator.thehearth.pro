@@ -317,14 +317,16 @@ function createTeachingEngine(containerEl, opts){
   function buildCharArea(charImg, charLabel, text, typing, size){
     var sz = size || 'normal';
     var imgClass = sz === 'big' ? 'teach-char-img teach-char-big' : 'teach-char-img';
-    return '<div class="teach-scene">' +
-      '<div class="teach-char-wrap">' +
-        '<img src="'+charImg+'" class="'+imgClass+'" />'+
-        (charLabel ? '<div class="teach-char-label">'+charLabel+'</div>' : '') +
-      '</div>' +
-      '<div class="teach-bubble">' +
-        '<div class="teach-tail"></div>' +
-        '<div class="teach-text'+(typing ? ' typewrite' : '')+'">'+text+'</div>' +
+    return '<div class="teach-scene-wrap">' +
+      '<div class="teach-scene">' +
+        '<div class="teach-char-wrap">' +
+          '<img src="'+charImg+'" class="'+imgClass+'" />'+
+          (charLabel ? '<div class="teach-char-label">'+charLabel+'</div>' : '') +
+        '</div>' +
+        '<div class="teach-bubble">' +
+          '<div class="teach-tail"></div>' +
+          '<div class="teach-text'+(typing ? ' typewrite' : '')+'">'+text+'</div>' +
+        '</div>' +
       '</div>' +
     '</div>';
   }
