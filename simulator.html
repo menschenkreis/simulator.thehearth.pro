@@ -2259,12 +2259,12 @@ function showFoundation(){
         '<div style="display:flex;flex-direction:column;align-items:center">';
 
   // Building blocks - widest at bottom, narrowest at top
-  const maxWidth=480;
-  const minWidth=220;
+  const maxWidth=620;
+  const minWidth=300;
   const step=(maxWidth-minWidth)/(F.topics.length-1);
   // Level 1 as 6th step (narrowest, above topic 5)
   const l1w=minWidth-step;
-  html+='<div id="level1-skeleton" onclick="backToMap()" style="cursor:pointer;width:'+l1w+'px;padding:11px 12px;background:transparent;border:1px dashed '+(pct===100?'#d4af69':'rgba(212,175,105,0.3)')+';border-radius:6px;text-align:center;margin-bottom:6px">'+
+  html+='<div id="level1-skeleton" onclick="backToMap()" style="cursor:pointer;width:'+l1w+'px;padding:14px 16px;background:transparent;border:1px dashed '+(pct===100?'#d4af69':'rgba(212,175,105,0.3)')+';border-radius:6px;text-align:center;margin-bottom:6px">'+
     '<span style="font-family:\'Cinzel\',serif;font-size:0.55rem;letter-spacing:0.12em;text-transform:uppercase;color:'+(pct===100?'#d4af69':'rgba(212,175,105,0.5)')+'">Level 1</span>'+
     (pct===100?'<span style="margin-left:4px;font-size:0.5rem;color:#d4af69">&#10003;</span>':'')+
   '</div>';
@@ -2292,10 +2292,10 @@ function showFoundation(){
       const border=isDone?color:color+'60';
       const textCol=isDone?'#fff':color;
       const numCol=isDone?'rgba(255,255,255,0.7)':color;
-      html+='<div onclick="showFoundationTopic(\''+t.id+'\')" style="width:'+w+'px;padding:16px 16px;background:'+bg+';border:2px solid '+border+';border-radius:6px;cursor:pointer;transition:all 0.15s;text-align:center;position:relative;z-index:'+(F.topics.length-i)+'">'+
+      html+='<div onclick="showFoundationTopic(\''+t.id+'\')" style="width:'+w+'px;padding:20px 24px;background:'+bg+';border:2px solid '+border+';border-radius:6px;cursor:pointer;transition:all 0.15s;text-align:center;position:relative;z-index:'+(F.topics.length-i)+'">'+
         '<div style="display:flex;align-items:center;justify-content:center;gap:8px">'+
-          '<span style="font-family:\'DM Sans\',sans-serif;font-size:1.6rem;color:'+numCol+';opacity:'+(isDone?'1':'0.6')+';font-weight:700">'+num+'</span>'+
-          '<span style="font-family:\'DM Sans\',sans-serif;font-size:1.05rem;color:'+textCol+';font-weight:700">'+t.title+'</span>'+
+          '<span style="font-family:\'DM Sans\',sans-serif;font-size:2rem;color:'+numCol+';opacity:'+(isDone?'1':'0.6')+';font-weight:700">'+num+'</span>'+
+          '<span style="font-family:\'DM Sans\',sans-serif;font-size:1.15rem;color:'+textCol+';font-weight:700">'+t.title+'</span>'+
           (isDone?'<span style="font-size:0.8rem;color:rgba(255,255,255,0.8)">&#10003;</span>':'')+
         '</div></div>';
     }
@@ -2383,8 +2383,8 @@ function rainbowBlocks(items, opts){
         'z-index:'+(n-i)+
       '">'+
         '<div style="display:flex;align-items:center;justify-content:center;gap:8px">'+
-          '<span style="font-family:\'DM Sans\',sans-serif;font-size:1.6rem;color:'+numCol+';opacity:'+(isDone?'1':'0.6')+';font-weight:700">'+num+'</span>'+
-          '<span style="font-family:\'DM Sans\',sans-serif;font-size:1.05rem;color:'+textCol+';font-weight:700">'+it.title+'</span>'+
+          '<span style="font-family:\'DM Sans\',sans-serif;font-size:2rem;color:'+numCol+';opacity:'+(isDone?'1':'0.6')+';font-weight:700">'+num+'</span>'+
+          '<span style="font-family:\'DM Sans\',sans-serif;font-size:1.15rem;color:'+textCol+';font-weight:700">'+it.title+'</span>'+
           (it.count?'<span style="font-family:JetBrains Mono;font-size:0.55rem;color:'+(isDone?'rgba(255,255,255,0.6)':color)+'">'+it.count+' '+it.countLabel+'</span>':'')+
           (isDone?'<span style="font-size:0.8rem;color:rgba(255,255,255,0.8)">&#10003;</span>':'')+
         '</div>'+
