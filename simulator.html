@@ -198,10 +198,10 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 
 /* ═══ TEACHING ENGINE ═══ */
 .teach-scene-wrap{max-width:700px;margin:0 auto;}
-.teach-scene{display:flex;align-items:center;gap:20px;padding:20px 16px 12px;}
-.teach-char-wrap{flex:0 0 220px;display:flex;flex-direction:column;align-items:center;position:relative;}
-.teach-char-img{width:220px;height:280px;object-fit:contain;filter:drop-shadow(0 4px 12px rgba(0,0,0,0.4));animation:char-float 3s ease-in-out infinite;transition:all 0.3s;}
-.teach-char-big{width:260px;height:320px;filter:drop-shadow(0 6px 20px rgba(0,0,0,0.5)) drop-shadow(0 0 8px rgba(212,175,105,0.3));}
+.teach-scene{display:flex;align-items:center;gap:16px;padding:16px 16px 8px;}
+.teach-char-wrap{flex:0 0 160px;display:flex;flex-direction:column;align-items:center;position:relative;overflow:hidden;}
+.teach-char-img{width:160px;height:200px;object-fit:cover;object-position:center 20%;filter:drop-shadow(0 4px 12px rgba(0,0,0,0.4));animation:char-float 3s ease-in-out infinite;transition:all 0.3s;}
+.teach-char-big{width:200px;height:260px;object-fit:cover;object-position:center 20%;filter:drop-shadow(0 6px 20px rgba(0,0,0,0.5)) drop-shadow(0 0 8px rgba(212,175,105,0.3));}
 @keyframes char-float{0%,100%{transform:translateY(0);}50%{transform:translateY(-6px);}}
 .teach-char-label{font-family:'Cinzel',serif;font-size:0.55rem;color:var(--gold);letter-spacing:0.1em;text-transform:uppercase;margin-top:4px;text-align:center;}
 .teach-bubble{flex:1;position:relative;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px 18px;min-height:60px;}
@@ -217,7 +217,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 .teach-btn:hover{border-color:var(--gold);color:var(--gold);transform:translateY(-1px);}
 .teach-btn.primary{background:var(--gold);color:#0d0b08;border-color:var(--gold);}
 .teach-btn.primary:hover{background:#e8c06a;}
-.teach-choices{display:flex;flex-direction:column;gap:8px;padding:0 16px 20px;max-width:700px;margin:0 auto;}
+.teach-choices{display:flex;flex-direction:column;gap:8px;padding:8px 16px 20px;max-width:500px;margin:0 auto;
 .teach-choice{background:var(--card);color:var(--text);border:2px solid var(--border);border-radius:10px;padding:14px 18px;font-family:'DM Sans',sans-serif;font-size:0.82rem;text-align:left;cursor:pointer;transition:all 0.2s;line-height:1.4;}
 .teach-choice:hover{border-color:var(--gold);background:var(--gold)12;transform:translateX(4px);}
 .teach-choice.correct:hover{border-color:#2ecc71;background:#2ecc7112;}
@@ -232,7 +232,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 @media(max-width:600px){
   .teach-scene{flex-direction:column;align-items:center;gap:8px;padding:12px 8px 8px;}
   .teach-char-wrap{flex:0 0 auto;}
-  .teach-char-img{width:120px;height:160px;}
+  .teach-char-img{width:120px;height:150px;object-fit:cover;object-position:center 20%;}
   .teach-bubble{width:100%;}
   .teach-tail{display:none;}
   .teach-cards{flex-direction:column !important;align-items:stretch !important;}
@@ -2414,7 +2414,7 @@ function showFoundationTopic(topicId){
     el.innerHTML='<div style="padding:16px;max-width:800px;margin:0 auto;height:100%;display:flex;flex-direction:column;box-sizing:border-box">'+
       '<button class="back-btn" onclick="showFoundation()" style="flex-shrink:0">← Foundation</button>'+
       '<div style="text-align:center;margin:12px 0 4px;flex-shrink:0"><span style="font-family:Cinzel,serif;color:var(--gold);font-size:0.85rem;letter-spacing:2px">BLOCK 01 — HOW TO LEARN</span></div>'+
-      '<div id="teach-container" style="flex:1;display:flex;align-items:center;justify-content:center;min-height:0"></div>'+
+      '<div id="teach-container" style="flex:1;display:flex;flex-direction:column;justify-content:center;min-height:0"></div>'+
     '</div>';
     var engine=window._teachEngine=TeachingEngine(document.getElementById('teach-container'),{
       onComplete:function(scores){
