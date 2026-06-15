@@ -80,27 +80,13 @@ function createTeachingEngine(containerEl, opts){
 
     html += closeCharArea();
 
-    // Tap-to-continue prompt (shows after typewriter finishes, only once)
-    if(!_teachContinueShown) html += '<div class="teach-continue" style="text-align:center;margin-top:8px;opacity:0;transition:opacity 0.4s">'+
-      '<span style="font-size:0.7rem;color:var(--dim);letter-spacing:0.05em">tap anywhere to continue ▸</span></div>';
-
     container.innerHTML = html;
     bindButtons(step, lesson);
     _teachContinueShown = true;
 
-    // Show continue prompt after typewriter finishes, then click to advance
-    var continueEl = container.querySelector('.teach-continue');
-    var typingDone = false;
-
-    function showContinue(){
-      typingDone = true;
-      if(continueEl) continueEl.style.opacity = '1';
-    }
-
+    // Typewriter effect
     if(isTyping){
-      typewriterEffect(showContinue);
-    } else {
-      showContinue();
+      typewriterEffect();
     }
 
     // Click anywhere to advance (but not on buttons)
@@ -350,8 +336,11 @@ function createTeachingEngine(containerEl, opts){
       '</div>';
   }
   function closeCharArea(){
-    var prev = state.history.length > 0 ? '<div class="teach-prev-wrap"><button class="teach-prev-btn" onclick="window._teachEngine&&window._teachEngine.back()">← Previous</button></div>' : '';
-    return prev + '</div>';
+    var prev = state.history.length > 0 ? '<button class="teach-prev-btn" onclick="window._teachEngine&&window._teachEngine.back()">← Previous</button>' : '';
+    return '<div class="teach-nav-wrap" style="display:flex;justify-content:center;gap:12px;padding:8px 16px;max-width:700px;margin:0 auto">' +
+      prev +
+      '<button class="teach-next-btn" onclick="window._teachEngine&&window._teachEngine.advance()">Next →</button>' +
+    '</div></div>';
   }
 
 
@@ -444,6 +433,7 @@ function createTeachingEngine(containerEl, opts){
       renderStep(lesson.steps[0], lesson);
     },
     back: function(){ goBack(currentLesson); },
+    advance: function(){ advance(currentLesson); },
     getState: function(){ return Object.assign({}, state); },
     CHAR: CHAR
   };
