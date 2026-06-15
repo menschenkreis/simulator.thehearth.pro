@@ -222,6 +222,9 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 .teach-choice:hover{border-color:var(--gold);background:var(--gold)12;transform:translateX(4px);}
 .teach-choice.correct:hover{border-color:#2ecc71;background:#2ecc7112;}
 .teach-choice.wrong:hover{border-color:#e74c3c;background:#e74c3c12;}
+.teach-prev-wrap{text-align:left;padding:0 16px;max-width:700px;margin:0 auto;}
+.teach-prev-btn{background:none;border:1px solid var(--border);color:var(--dim);padding:6px 14px;border-radius:6px;cursor:pointer;font-family:DM Sans,sans-serif;font-size:0.75rem;transition:all 0.2s;}
+.teach-prev-btn:hover{border-color:var(--gold);color:var(--gold);}
 .teach-cards .teach-card:hover{box-shadow:0 4px 20px rgba(0,0,0,0.3);}
 .teach-card.selected{border-color:var(--gold) !important;box-shadow:0 0 20px rgba(212,175,105,0.2);transform:scale(1.03);}
 
@@ -2413,7 +2416,7 @@ function showFoundationTopic(topicId){
       '<div style="text-align:center;margin:12px 0 4px;flex-shrink:0"><span style="font-family:Cinzel,serif;color:var(--gold);font-size:0.85rem;letter-spacing:2px">BLOCK 01 — HOW TO LEARN</span></div>'+
       '<div id="teach-container" style="flex:1;display:flex;align-items:center;justify-content:center;min-height:0"></div>'+
     '</div>';
-    var engine=TeachingEngine(document.getElementById('teach-container'),{
+    var engine=window._teachEngine=TeachingEngine(document.getElementById('teach-container'),{
       onComplete:function(scores){
         var progress=JSON.parse(localStorage.getItem('hearth-foundation-progress')||'{}');
         progress['f-how-to-learn']=true;

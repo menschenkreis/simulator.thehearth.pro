@@ -37,6 +37,7 @@ const CHAR = {
 function createTeachingEngine(containerEl, opts){
   const container = containerEl;
   var _teachContinueShown = false;
+  var currentLesson = null;
   const state = {
     stepIdx: 0,
     history: [],      // stack of step indices for back navigation
@@ -328,6 +329,7 @@ function createTeachingEngine(containerEl, opts){
           '<div class="teach-text'+(typing ? ' typewrite' : '')+'">'+text+'</div>' +
         '</div>' +
       '</div>' +
+      '<div class="teach-prev-wrap"><button class="teach-prev-btn" onclick="window._teachEngine&&window._teachEngine.back()">\u2190 Previous</button></div>' +
     '</div>';
   }
 
@@ -390,9 +392,17 @@ function createTeachingEngine(containerEl, opts){
     }
   }
 
+  // ── Back button ──
+  function goBack(lesson){
+    if(state.history.length === 0) return;
+    state.stepIdx = state.history.pop();
+    renderStep(lesson.steps[state.stepIdx], lesson);
+  }
+
   // ── Public API ──
   return {
     start: function(lesson){
+      currentLesson = lesson;
       state.stepIdx = 0;
       state.history = [];
       state.wrongCount = 0;
@@ -400,6 +410,7 @@ function createTeachingEngine(containerEl, opts){
       state.completed = false;
       renderStep(lesson.steps[0], lesson);
     },
+    back: function(){ goBack(currentLesson); },
     getState: function(){ return Object.assign({}, state); },
     CHAR: CHAR
   };
