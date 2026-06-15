@@ -245,10 +245,14 @@
     let html = '<div class="journey-shell" style="display:flex;flex-direction:column;align-items:center;padding:20px">';
 
     // Student chips
-    html += '<div style="display:flex;gap:7px;flex-wrap:wrap;justify-content:center;margin-bottom:16px">';
-    state.students.forEach(s => html += '<button class="journey-chip '+(s.id===student.id?'on':'')+'" onclick="Journey.switchStudent(\''+s.id+'\')">'+esc(s.name)+'</button>');
-    html += '<button class="journey-chip" onclick="Journey.addStudent()">+ Add</button>';
-    html += '<button class="journey-chip" onclick="Journey.renameStudent()">Rename</button>';
+    html += '<div style="display:flex;gap:5px;flex-wrap:wrap;justify-content:center;align-items:center;margin-bottom:16px">';
+    state.students.forEach(s => {
+      html += '<div style="display:flex;align-items:center;gap:2px">';
+      html += '<button class="journey-chip '+(s.id===student.id?'on':'')+'" onclick="Journey.switchStudent(\''+s.id+'\')">'+esc(s.name)+'</button>';
+      if(state.students.length > 1) html += '<button onclick="Journey.removeStudent(\''+s.id+'\')" style="background:none;border:none;color:rgba(212,175,105,0.3);cursor:pointer;font-size:0.65rem;padding:2px 4px" title="Remove">✕</button>';
+      html += '</div>';
+    });
+    html += '<button class="journey-chip" onclick="Journey.addStudent()" style="font-size:0.6rem;padding:6px 9px">+ Add</button>';
     html += '</div>';
 
     // The spine SVG
@@ -427,6 +431,7 @@
     switchStudent(id){ const state=loadState(); state.activeStudentId=id; saveState(state); render(); },
     addStudent(){ const name = prompt('Student name?'); if(!name) return; const state=loadState(); const s=blankStudent(name.trim()); state.students.push(s); state.activeStudentId=s.id; saveState(state); render(); },
     renameStudent(){ const state=loadState(); const s=activeStudent(state); const name=prompt('Rename journey/student:', s.name); if(!name) return; s.name=name.trim(); saveStudent(s); render(); },
+    removeStudent(id){ const state=loadState(); if(state.students.length<=1) return; const s=state.students.find(x=>x.id===id); if(!s) return; if(!confirm('Remove '+s.name+'? This deletes all their journey data.')) return; state.students=state.students.filter(x=>x.id!==id); if(state.activeStudentId===id) state.activeStudentId=state.students[0].id; saveState(state); render(); },
     setDraftRating(kind, encoded, value){
       const s = collectDraft(); if(!s.activeLesson) return;
       const name = decodeURIComponent(encoded); const key = kind==='concept' ? 'conceptRatings' : 'taskRatings';
