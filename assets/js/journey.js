@@ -258,7 +258,6 @@
     // Title
     html += '<div style="text-align:center;margin-bottom:16px">';
     html += '<div style="font-family:Cinzel,serif;font-size:1.6rem;color:var(--gold);font-weight:800;letter-spacing:0.04em">Your Journey</div>';
-    html += '<div style="font-size:0.72rem;color:var(--dim);margin-top:4px;line-height:1.5">Walk the spine. One level at a time.</div>';
     html += '</div>';
 
     // Guitar guide
@@ -420,7 +419,7 @@
     html += '</div>';
     root.innerHTML = html;
   }
-  function renderLevelLesson(levelNum, lessonNum){
+  function renderLevelLesson(levelNum, lessonNum, blockIdx){
     injectStyles();
     const root = document.getElementById('journey-content');
     if(!root) return;
@@ -429,48 +428,102 @@
     const level = getLevel(levelNum);
     const lvlState = student.levels[level.id];
     const lesson = buildLesson(student, levelNum, lessonNum);
-    student.activeLesson = student.activeLesson || { levelId:level.id, lessonNum, date:today(), blockNotes:{}, conceptRatings:{}, taskRatings:{}, feedback:'', teacherNotes:'', status:'in-progress' };
+    student.activeLesson = student.activeLesson || { levelId:level.id, lessonNum, date:today(), blockNotes:{}, conceptRatings:{}, taskRatings:{}, feedback:'', teacherNotes:'', status:'in-progress', blockIdx:0 };
     student.activeLesson.lessonNum = lessonNum;
     student.activeLesson.levelId = level.id;
+    const bi = blockIdx !== undefined ? blockIdx : (student.activeLesson.blockIdx || 0);
+    student.activeLesson.blockIdx = bi;
     saveStudent(student);
 
-    let html = '<div class="journey-shell" style="display:flex;flex-direction:column;align-items:center;padding:20px">';
+    const blocks = lesson.blocks;
+    const isReview = bi === blocks.length; // review/ratings step
+    const isComplete = bi > blocks.length;
+    const b = !isReview ? blocks[bi] : null;
 
-    // Back button
+    // Guide messages per block type
+    const blockGuides = {
+      review: 'Let us start by looking back. What happened last time? What gap showed up? Read your previous notes honestly before moving on.',
+      warmup: 'Time to wake the hands. Small, clean movements — no rush. Focus on one correction from last time.',
+      concept: 'Here is the idea for today. Say it plainly, find it on the guitar, connect it to something you already know.',
+      drill: 'Now we drill. Slow, with a metronome. One clean repetition is worth more than ten sloppy ones.',
+      music: 'Turn the drill into music. Play something real — a riff, a chord progression, a song moment. This is where it sticks.',
+      reflect: 'Last step. Rate what you learned, write one honest note, and name the next small thing to work on.'
+    };
+
+    let html = '<div class="journey-shell" style="display:flex;flex-direction:column;align-items:center;padding:20px">';
     html += '<button class="back-btn" onclick="Journey.openLevel('+levelNum+')">← Back</button>';
 
-    // Lesson header
-    html += '<div style="text-align:center;max-width:360px;width:100%;margin-bottom:16px">';
-    html += '<div style="font-family:JetBrains Mono,monospace;font-size:0.58rem;color:var(--gold);letter-spacing:0.16em;text-transform:uppercase">'+esc(student.name)+' · '+('LEVEL '+level.num)+'</div>';
-    html += '<div style="font-family:Cinzel,serif;font-size:1.1rem;color:'+level.color+';font-weight:800;margin-top:4px">'+esc(lesson.title)+'</div>';
-    html += '<div style="font-size:0.7rem;color:var(--dim);margin-top:4px">Lesson '+lessonNum+' of '+level.totalLessons+' · '+lesson.minutes+' min</div>';
+    // Progress dots
+    html += '<div style="display:flex;gap:6px;margin-bottom:14px">';
+    blocks.forEach((_, i) => {
+      const dotColor = i < bi ? '#00c864' : i === bi ? level.color : 'rgba(212,175,105,0.15)';
+      html += '<div style="width:8px;height:8px;border-radius:50%;background:'+dotColor+'"></div>';
+    });
+    const revDot = isReview ? level.color : (bi > blocks.length ? '#00c864' : 'rgba(212,175,105,0.15)');
+    html += '<div style="width:8px;height:8px;border-radius:50%;background:'+revDot+'"></div>';
     html += '</div>';
 
-    // Lesson blocks
-    lesson.blocks.forEach(b => {
+    // Lesson title
+    html += '<div style="text-align:center;max-width:360px;width:100%;margin-bottom:10px">';
+    html += '<div style="font-family:JetBrains Mono,monospace;font-size:0.55rem;color:var(--gold);letter-spacing:0.14em;text-transform:uppercase">'+esc(student.name)+' · '+('LEVEL '+level.num)+'</div>';
+    html += '<div style="font-family:Cinzel,serif;font-size:1rem;color:'+level.color+';font-weight:800;margin-top:3px">'+esc(lesson.title)+'</div>';
+    html += '<div style="font-size:0.62rem;color:var(--dim);margin-top:3px">Lesson '+lessonNum+' of '+level.totalLessons+'</div>';
+    html += '</div>';
+
+    if(!isReview && b){
+      // Guitar guide for this block
+      const guideMsg = blockGuides[b.id] || b.body;
+      html += '<div style="display:flex;flex-direction:column;align-items:center;margin-bottom:14px">';
+      html += '<img src="images/character-full/Encouraging.png" style="width:72px;height:72px;object-fit:contain;filter:drop-shadow(0 4px 12px rgba(0,0,0,0.4));animation:char-float 3s ease-in-out infinite"/>';
+      html += '<div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:10px 14px;margin-top:8px;max-width:280px;text-align:center;position:relative">';
+      html += '<div style="position:absolute;left:50%;top:-6px;transform:translateX(-50%);width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-bottom:6px solid var(--border)"></div>';
+      html += '<div style="font-size:0.68rem;color:var(--text);line-height:1.5">'+esc(guideMsg)+'</div>';
+      html += '</div></div>';
+
+      // Block card
       const val = student.activeLesson.blockNotes[b.id] || '';
-      html += '<div class="journey-card" style="max-width:360px;width:100%;margin-bottom:10px">';
-      html += '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px">';
-      html += '<div><div style="font-family:JetBrains Mono,monospace;font-size:0.55rem;color:var(--gold);text-transform:uppercase;letter-spacing:0.1em">'+esc(b.phase)+' · '+esc(b.source)+'</div>';
-      html += '<div style="font-family:Cinzel,serif;color:var(--gold);font-size:0.9rem;font-weight:700;margin-top:2px">'+esc(b.title)+'</div></div>';
-      html += '<div style="font-family:JetBrains Mono,monospace;font-size:0.55rem;color:var(--dim);white-space:nowrap">'+b.min+' min</div></div>';
-      html += '<div style="font-size:0.72rem;color:var(--dim);line-height:1.5;margin-bottom:8px">'+esc(b.body)+'</div>';
+      html += '<div class="journey-card" style="max-width:360px;width:100%">';
+      html += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">';
+      html += '<div style="font-family:JetBrains Mono,monospace;font-size:0.55rem;color:var(--gold);text-transform:uppercase;letter-spacing:0.1em">'+esc(b.phase)+'</div>';
+      html += '<div style="font-family:JetBrains Mono,monospace;font-size:0.55rem;color:var(--dim)">'+b.min+' min</div>';
+      html += '</div>';
+      html += '<div style="font-family:Cinzel,serif;color:var(--gold);font-size:0.95rem;font-weight:700;margin-bottom:8px">'+esc(b.title)+'</div>';
+      html += '<div style="font-size:0.72rem;color:var(--dim);line-height:1.5;margin-bottom:10px">'+esc(b.body)+'</div>';
       html += '<textarea class="journey-input" id="journey-note-'+b.id+'" placeholder="'+esc(b.prompt)+'">'+esc(val)+'</textarea>';
       html += '</div>';
-    });
 
-    // Concept status
-    html += '<div class="journey-card" style="max-width:360px;width:100%;margin-bottom:10px"><div class="journey-kicker">Concept status</div>'+ratingButtons('concept', lesson.conceptNames, student.activeLesson.conceptRatings)+'</div>';
+      // Next button
+      html += '<div style="max-width:360px;width:100%;margin-top:12px;text-align:center">';
+      html += '<button class="journey-btn" onclick="Journey.saveAndNext('+levelNum+','+lessonNum+','+(bi+1)+')" style="padding:10px 24px">Next →</button>';
+      html += '</div>';
 
-    // Task status
-    html += '<div class="journey-card" style="max-width:360px;width:100%;margin-bottom:10px"><div class="journey-kicker">Task status</div>'+ratingButtons('task', lesson.taskNames, student.activeLesson.taskRatings)+'</div>';
+    } else if(isReview) {
+      // Review/complete step
+      html += '<div style="display:flex;flex-direction:column;align-items:center;margin-bottom:14px">';
+      html += '<img src="images/character-full/Encouraging.png" style="width:72px;height:72px;object-fit:contain;filter:drop-shadow(0 4px 12px rgba(0,0,0,0.4));animation:char-float 3s ease-in-out infinite"/>';
+      html += '<div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:10px 14px;margin-top:8px;max-width:280px;text-align:center;position:relative">';
+      html += '<div style="position:absolute;left:50%;top:-6px;transform:translateX(-50%);width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-bottom:6px solid var(--border)"></div>';
+      html += '<div style="font-size:0.68rem;color:var(--text);line-height:1.5">Good work. Now take a moment to rate what you learned and leave a note for next time. Honest reflection is part of the practice.</div>';
+      html += '</div></div>';
 
-    // Feedback
-    html += '<div class="journey-card" style="max-width:360px;width:100%"><div class="journey-kicker">Feedback / Next Gradient</div>';
-    html += '<textarea class="journey-input" id="journey-feedback" placeholder="How did this contact go?">'+esc(student.activeLesson.feedback || '')+'</textarea>';
-    html += '<textarea class="journey-input" id="journey-teacher-notes" style="margin-top:8px" placeholder="Teacher notes: gaps, interests, attitude, breakthroughs...">'+esc(student.activeLesson.teacherNotes || '')+'</textarea>';
-    html += '<div class="journey-actions" style="margin-top:10px"><button class="journey-btn secondary" onclick="Journey.saveLessonDraft()">Save Draft</button><button class="journey-btn" onclick="Journey.completeLesson()">Complete Lesson</button></div>';
-    html += '</div>';
+      // Concept status
+      html += '<div class="journey-card" style="max-width:360px;width:100%;margin-bottom:10px"><div class="journey-kicker">Concept status</div>'+ratingButtons('concept', lesson.conceptNames, student.activeLesson.conceptRatings)+'</div>';
+
+      // Task status
+      html += '<div class="journey-card" style="max-width:360px;width:100%;margin-bottom:10px"><div class="journey-kicker">Task status</div>'+ratingButtons('task', lesson.taskNames, student.activeLesson.taskRatings)+'</div>';
+
+      // Feedback
+      html += '<div class="journey-card" style="max-width:360px;width:100%;margin-bottom:10px">';
+      html += '<div class="journey-kicker">Feedback / Next Gradient</div>';
+      html += '<textarea class="journey-input" id="journey-feedback" placeholder="How did this contact go?">'+esc(student.activeLesson.feedback || '')+'</textarea>';
+      html += '<textarea class="journey-input" id="journey-teacher-notes" style="margin-top:8px" placeholder="Teacher notes: gaps, interests, attitude, breakthroughs...">'+esc(student.activeLesson.teacherNotes || '')+'</textarea>';
+      html += '</div>';
+
+      html += '<div style="max-width:360px;width:100%;display:flex;gap:8px;margin-top:4px">';
+      html += '<button class="journey-btn secondary" onclick="Journey.saveLessonDraft()" style="flex:1">Save Draft</button>';
+      html += '<button class="journey-btn" onclick="Journey.completeLesson()" style="flex:1">Complete Lesson</button>';
+      html += '</div>';
+    }
 
     html += '</div>';
     root.innerHTML = html;
@@ -551,6 +604,7 @@
   const Journey = {
     render,
     startLesson(){ const state=loadState(); const s=activeStudent(state); const l=getLevel(s.currentLevel||1); const ls=s.levels[l.id]; const num=(ls.lessonsDone||0)+1; renderLevelLesson(l.num, num); },
+    saveAndNext(levelNum, lessonNum, nextIdx){ const s=collectDraft(); saveStudent(s); renderLevelLesson(levelNum, lessonNum, nextIdx); },
     openLevel(num){
       const state = loadState(); const s = activeStudent(state); const l = getLevel(num);
       const unlocked = num === 1 || s.levels[l.id].unlocked || s.levels['L'+(num-1)]?.complete;
