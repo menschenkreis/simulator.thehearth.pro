@@ -28,7 +28,7 @@ const PLAY = {
     {
       id: 'blues',
       title: 'Blues',
-      icon: '',
+      icon: '🎷',
       color: '#5a9fd4',
       description: 'Where it all starts. 12-bar blues, shuffle rhythms, turnarounds. The foundation of rock, jazz, and soul.',
       difficulty: 'Beginner → Intermediate',
@@ -44,7 +44,7 @@ const PLAY = {
     {
       id: 'jazz',
       title: 'Jazz',
-      icon: '',
+      icon: '🎺',
       color: '#d4af69',
       description: 'The art of improvisation. Chord melody, comping, soloing over changes. The deep end of guitar.',
       difficulty: 'Intermediate → Advanced',
@@ -60,7 +60,7 @@ const PLAY = {
     {
       id: 'classical',
       title: 'Classical',
-      icon: '',
+      icon: '🎻',
       color: '#9b59b6',
       description: 'The ancient tradition. Fingerstyle, reading standard notation, tone production. Renaissance to modern.',
       difficulty: 'Beginner → Advanced',
@@ -76,7 +76,7 @@ const PLAY = {
     {
       id: 'brazilian',
       title: 'Brazilian',
-      icon: '',
+      icon: '🌴',
       color: '#00B894',
       description: 'Bossa nova and samba. The subtle syncopation of Jobim, the rhythmic pulse of Bonfa. Musical sunshine.',
       difficulty: 'Intermediate',
@@ -92,7 +92,7 @@ const PLAY = {
     {
       id: 'celtic',
       title: 'Celtic / Irish',
-      icon: '',
+      icon: '🍀',
       color: '#2ECC71',
       description: 'Jigs, reels, hornpipes, airs. The ancient harp tradition adapted for guitar. Fingerstyle arrangements.',
       difficulty: 'Beginner → Intermediate',
@@ -108,7 +108,7 @@ const PLAY = {
     {
       id: 'funk',
       title: 'Funk',
-      icon: '',
+      icon: '🕺',
       color: '#E17055',
       description: 'Groove is everything. 16th-note mastery, scratch muting, percussive guitar. Playing in the pocket.',
       difficulty: 'Beginner → Intermediate',
@@ -124,7 +124,7 @@ const PLAY = {
     {
       id: 'slide',
       title: 'Slide Guitar',
-      icon: '',
+      icon: '🎸',
       color: '#FDCB6E',
       description: 'Open tunings, bottleneck technique, the voice of the Delta. Raw, expressive, human.',
       difficulty: 'Intermediate',
@@ -140,7 +140,7 @@ const PLAY = {
     {
       id: 'gypsy-jazz',
       title: 'Gypsy Jazz',
-      icon: '',
+      icon: '🎻',
       color: '#E17055',
       description: 'The Django tradition. La Pompe rhythm, rest-stroke picking, arpeggio-based soloing. Swing hard.',
       difficulty: 'Intermediate → Advanced',
@@ -156,7 +156,7 @@ const PLAY = {
     {
       id: 'rock-metal',
       title: 'Rock & Metal',
-      icon: '',
+      icon: '🤘',
       color: '#D63031',
       description: 'Power chords, palm muting, lead guitar. From AC/DC to Metallica. Speed, precision, attitude.',
       difficulty: 'Beginner → Advanced',

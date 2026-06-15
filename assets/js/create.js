@@ -16,7 +16,7 @@ const CREATE = {
     {
       id: 'songwriting',
       title: 'Songwriting',
-      icon: '',
+      icon: '✍️',
       description: 'From first chord progression to finished song. The craft of writing music on guitar.',
       topics: [
         {
@@ -78,7 +78,7 @@ Dm7 → G7 → Cmaj7 — the foundation of jazz. Every jazz standard uses this a
     {
       id: 'arranging',
       title: 'Arranging for Solo Guitar',
-      icon: '',
+      icon: '🎼',
       description: 'Play melody, harmony, and bass simultaneously. The art of chord melody.',
       topics: [
         {
@@ -101,7 +101,7 @@ Dm7 → G7 → Cmaj7 — the foundation of jazz. Every jazz standard uses this a
     {
       id: 'recording',
       title: 'Recording Yourself',
-      icon: '',
+      icon: '🎤',
       description: 'Capture your playing. Listen back. Improve. Share.',
       topics: [
         {
