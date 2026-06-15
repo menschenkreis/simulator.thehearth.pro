@@ -255,6 +255,21 @@
     html += '<button class="journey-chip" onclick="Journey.addStudent()" style="font-size:0.6rem;padding:6px 9px">+ Add</button>';
     html += '</div>';
 
+    // Title
+    html += '<div style="text-align:center;margin-bottom:16px">';
+    html += '<div style="font-family:Cinzel,serif;font-size:1.6rem;color:var(--gold);font-weight:800;letter-spacing:0.04em">Your Journey</div>';
+    html += '<div style="font-size:0.72rem;color:var(--dim);margin-top:4px;line-height:1.5">Walk the spine. One level at a time.</div>';
+    html += '</div>';
+
+    // Guitar guide
+    html += '<div style="display:flex;flex-direction:column;align-items:center;margin-bottom:16px">';
+    html += '<img src="images/character-full/Encouraging.png" style="width:90px;height:90px;object-fit:contain;filter:drop-shadow(0 4px 12px rgba(0,0,0,0.4));animation:char-float 3s ease-in-out infinite"/>';
+    html += '<div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:10px 14px;margin-top:8px;max-width:260px;text-align:center;position:relative">';
+    html += '<div style="position:absolute;left:50%;top:-6px;transform:translateX(-50%);width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-bottom:6px solid var(--border)"></div>';
+    html += '<div style="font-size:0.68rem;color:var(--text);line-height:1.5">This is your learning spine — from <strong style="color:#d4af69">Foundation</strong> to <strong style="color:#d4af69">Mastery</strong>. Click a level to see your lessons.</div>';
+    html += '</div>';
+    html += '</div>';
+
     // The spine SVG
     html += '<svg viewBox="0 0 '+svgW+' '+svgH+'" style="width:100%;max-width:320px;height:auto" xmlns="http://www.w3.org/2000/svg">';
 
