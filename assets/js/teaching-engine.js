@@ -82,6 +82,7 @@ function createTeachingEngine(containerEl, opts){
     if(!_teachContinueShown) html += '<div class="teach-continue" style="text-align:center;margin-top:12px;opacity:0;transition:opacity 0.4s">'+
       '<span style="font-size:0.7rem;color:var(--dim);letter-spacing:0.05em">tap anywhere to continue ▸</span></div>';
 
+    html += closeCharArea();
     container.innerHTML = html;
     bindButtons(step, lesson);
     _teachContinueShown = true;
@@ -127,6 +128,7 @@ function createTeachingEngine(containerEl, opts){
       html += '<button class="'+cls+'" data-idx="'+i+'">'+c.label+'</button>';
     });
     html += '</div>';
+    html += closeCharArea();
 
     container.innerHTML = html;
     typewriterEffect();
@@ -185,6 +187,7 @@ function createTeachingEngine(containerEl, opts){
   function showFollowUp(response, step, lesson){
     var html = buildCharArea(response.char || CHAR.lightbulb, response.charLabel || '', response.text, true, response.charSize);
     html += '<div style="text-align:center;margin-top:12px"><span style="font-size:0.7rem;color:var(--dim);letter-spacing:0.05em">tap to continue ▸</span></div>';
+    html += closeCharArea();
     container.innerHTML = html;
     var typingDone = false;
     typewriterEffect(function(){ typingDone = true; });
@@ -222,7 +225,7 @@ function createTeachingEngine(containerEl, opts){
       }
       const r = reexplain[reIdx];
       reIdx++;
-      const html = buildCharArea(r.char || CHAR.encouraging, r.charLabel || '', r.text, true, r.charSize);
+      const html = buildCharArea(r.char || CHAR.encouraging, r.charLabel || '', r.text, true, r.charSize) + closeCharArea();
       container.innerHTML = html;
       typewriterEffect();
 
@@ -263,6 +266,7 @@ function createTeachingEngine(containerEl, opts){
       html += '<div style="text-align:center;margin-top:12px"><button class="teach-btn primary" data-action="advance">'+step.continueLabel+'</button></div>';
     }
 
+    html += closeCharArea();
     container.innerHTML = html;
     bindButtons(step, lesson);
     typewriterEffect();
@@ -290,6 +294,7 @@ function createTeachingEngine(containerEl, opts){
     }
 
     html += '<div style="text-align:center"><button class="teach-btn primary" data-action="advance">Continue</button></div>';
+    html += closeCharArea();
     container.innerHTML = html;
     bindButtons(step, lesson);
     typewriterEffect();
@@ -301,7 +306,8 @@ function createTeachingEngine(containerEl, opts){
     const html = buildCharArea(charImg, '', step.text, true) +
       '<div style="text-align:center;margin-top:16px">' +
         '<button class="teach-btn primary" data-action="finish">'+(step.buttonLabel || 'Continue →')+'</button>' +
-      '</div>';
+      '</div>' +
+      closeCharArea();
 
     container.innerHTML = html;
     typewriterEffect();
@@ -328,9 +334,11 @@ function createTeachingEngine(containerEl, opts){
           '<div class="teach-tail"></div>' +
           '<div class="teach-text'+(typing ? ' typewrite' : '')+'">'+text+'</div>' +
         '</div>' +
-      '</div>' +
-      '<div class="teach-prev-wrap"><button class="teach-prev-btn" onclick="window._teachEngine&&window._teachEngine.back()">\u2190 Previous</button></div>' +
-    '</div>';
+      '</div>';
+  }
+  function closeCharArea(){
+    var prev = state.history.length > 0 ? '<div class="teach-prev-wrap"><button class="teach-prev-btn" onclick="window._teachEngine&&window._teachEngine.back()">← Previous</button></div>' : '';
+    return prev + '</div>';
   }
 
   function typewriterEffect(onDone){
