@@ -10,10 +10,10 @@
 
 // ── Character Assets ──
 const CHAR = {
-  neutral:    'images/character-neutral.png',
-  encouraging:'images/character-full/Encouraging.png',
-  thinking:   'images/character-full/Thinking.png',
-  celebratory:'images/character-full/Celebratory.png',
+  neutral:    'images/character-face/Neutral.png',
+  encouraging:'images/character-face/Encouraging.png',
+  thinking:   'images/character-face/Thinking.png',
+  celebratory:'images/character-face/Celebratory.png',
   // Symbol variants
   question:   'images/character-symbols/Thinking Question Mark.png',
   lightbulb:  'images/character-symbols/Encouraging Face Lightbulb.png',
