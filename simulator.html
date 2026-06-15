@@ -855,10 +855,10 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 }
 .practice-chamber{
   position:relative;
-  min-height:620px;
+  max-height:calc(100vh - 140px);
+  overflow:auto;
   border:1px solid rgba(212,175,105,0.16);
   border-radius:8px;
-  overflow:hidden;
   background:
     radial-gradient(ellipse at 50% 22%,rgba(232,160,32,0.13),transparent 36%),
     radial-gradient(ellipse at 50% 100%,rgba(212,175,105,0.08),transparent 42%),
@@ -900,7 +900,6 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 }
 .practice-altar{
   position:relative;
-  min-height:380px;
   border-radius:8px;
   background:
     radial-gradient(ellipse at 50% 42%,rgba(232,160,32,0.11),transparent 38%),
@@ -924,9 +923,8 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
   position:relative;
   display:grid;
   grid-template-columns:1fr 1fr 1fr;
-  gap:16px;
+  gap:10px;
   align-items:end;
-  min-height:290px;
 }
 .altar-item{
   position:relative;
@@ -1036,7 +1034,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
   flex-direction:column;
   gap:12px;
 }
-.practice-panel{
+.practice-panel{overflow:auto;
   background:rgba(16,13,10,0.82);
   border:1px solid rgba(212,175,105,0.14);
   border-radius:8px;

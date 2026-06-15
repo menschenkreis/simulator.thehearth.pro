@@ -144,6 +144,23 @@ const DOING = {
         { id:'gypsy-pick', title:'Gypsy Jazz — La Pompe Rhythm', difficulty:2, bpm:'80-140', duration:'8 min', source:'Jorgenson — Gypsy Jazz', style:'gypsy', body:'<p>Percussive swing rhythm. Down-up with a flick. Accents on 2 and 4. The heartbeat of Gypsy Jazz.</p>', video:'https://www.youtube.com/watch?v=SIivOdEojv0' },
         { id:'celtic-1', title:'Celtic Fingerstyle — DADGAD Tuning', difficulty:2, bpm:'60-80', duration:'8 min', source:'Weiser — Celtic Guitar', style:'celtic', body:'<p>DADGAD tuning creates open, droning sound. Celtic music lives in the drone. Play melody over open strings.</p>', video:'https://www.youtube.com/watch?v=fQ0VeScpWhc' }
       ]
+    },
+    {
+      id: 'fundamentals',
+      title: 'Fundamentals',
+      icon: '',
+      styles: ['rock','blues','jazz','classical','country'],
+      drills: [
+        { id:'gt-parts-electric', title:'Parts of the Electric Guitar', difficulty:1, bpm:'—', duration:'10 min', source:'Guitar Tricks', style:'rock', body:'<p>Learn the names and functions of every part of the electric guitar: body, neck, headstock, pickups, bridge, tuners, knobs, and frets. Knowing your instrument is the first step.</p>', video:'https://youtu.be/7IIUai9MKPs' },
+        { id:'gt-parts-acoustic', title:'Parts of the Acoustic Guitar', difficulty:1, bpm:'—', duration:'10 min', source:'Guitar Tricks', style:'acoustic', body:'<p>The acoustic guitar has its own anatomy: sound hole, bracing, saddle, nut, and wooden body. Understand how each part shapes your tone.</p>', video:'https://youtu.be/hltubfj6-pA' },
+        { id:'gt-parts-fn-1', title:'Guitar Parts & Functions — Lesson 1', difficulty:1, bpm:'—', duration:'8 min', source:'Guitar Tricks', style:'rock', body:'<p>A deep dive into how guitar parts work together. The relationship between strings, frets, and vibration.</p>', video:'https://youtu.be/FNlNg_4iOjM' },
+        { id:'gt-parts-fn-2', title:'Guitar Parts & Functions — Lesson 2', difficulty:1, bpm:'—', duration:'8 min', source:'Guitar Tricks', style:'rock', body:'<p>Understanding the bridge, saddle, and how string height affects playability and intonation.</p>', video:'https://youtu.be/5tLkCTMx8lM' },
+        { id:'gt-parts-fn-3', title:'Guitar Parts & Functions — Lesson 3', difficulty:1, bpm:'—', duration:'8 min', source:'Guitar Tricks', style:'rock', body:'<p>Pickups and electronics: how magnetic fields turn string vibration into electrical signal.</p>', video:'https://youtu.be/fQ2SQrk1CE4' },
+        { id:'gt-parts-fn-4', title:'Guitar Parts & Functions — Lesson 4', difficulty:1, bpm:'—', duration:'8 min', source:'Guitar Tricks', style:'rock', body:'<p>The neck, truss rod, and fretboard radius. Why neck relief matters for action and playability.</p>', video:'https://youtu.be/aZpZcbB2ehQ' },
+        { id:'gt-parts-fn-5', title:'Guitar Parts & Functions — Lesson 5', difficulty:1, bpm:'—', duration:'8 min', source:'Guitar Tricks', style:'rock', body:'<p>Headstock design, tuning machines, and string tree. How string tension affects tuning stability.</p>', video:'https://youtu.be/cr120WexSos' },
+        { id:'gt-parts-fn-6', title:'Guitar Parts & Functions — Lesson 6', difficulty:1, bpm:'—', duration:'8 min', source:'Guitar Tricks', style:'rock', body:'<p>Tying it all together: how every part contributes to tone, sustain, and feel.</p>', video:'https://youtu.be/wBjxaszE_rY' },
+        { id:'gt-tuner-1', title:'Using an Electronic Tuner — Part 1', difficulty:1, bpm:'—', duration:'8 min', source:'Guitar Tricks', style:'rock', body:'<p>How to use a clip-on or pedal tuner. Standard tuning: E-A-D-G-B-E. Tune by turning the peg until the needle centers.</p>', video:'https://youtu.be/HCrOJEOA74E' }
+      ]
     }
   ]
 };
