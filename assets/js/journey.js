@@ -351,7 +351,7 @@
     let html = '<div class="journey-shell" style="display:flex;flex-direction:column;align-items:center;padding:20px">';
 
     // Back button
-    html += '<div style="width:100%;max-width:360px;text-align:left;margin-bottom:12px"><button class="journey-btn secondary" onclick="Journey.render()" style="font-size:0.75rem;padding:8px 14px">← Back to Spine</button></div>';
+    html += '<button class="back-btn" onclick="Journey.render()">← Back</button>';
 
     // Level header
     html += '<div style="text-align:center;max-width:360px;width:100%">';
@@ -411,7 +411,7 @@
     let html = '<div class="journey-shell" style="display:flex;flex-direction:column;align-items:center;padding:20px">';
 
     // Back button
-    html += '<div style="width:100%;max-width:360px;text-align:left;margin-bottom:12px"><button class="journey-btn secondary" onclick="Journey.openLevel('+levelNum+')" style="font-size:0.75rem;padding:8px 14px">← Back to Lessons</button></div>';
+    html += '<button class="back-btn" onclick="Journey.openLevel('+levelNum+')">← Back</button>';
 
     // Lesson header
     html += '<div style="text-align:center;max-width:360px;width:100%;margin-bottom:16px">';
