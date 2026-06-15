@@ -4263,6 +4263,28 @@ function showMastery(){
     '</div>';
   }).join('');
 
+  // Masters at Play - Video Library
+  const masters=[
+    {
+      id:'shai-maestro',
+      name:'Shai Maestro',
+      instrument:'Piano',
+      color:'#d4af69',
+      channel:'https://www.youtube.com/@shaimaestroofficial',
+      description:'Israeli jazz pianist. Known for lyrical improvisation, dynamic contrast, and emotional depth that bridges jazz, classical, and Middle Eastern traditions.',
+      why:'Shai Maestro demonstrates what happens when technique disappears into expression. His playing shows that mastery is not about playing more notes - it is about making every note mean something.',
+      listen:['Listen for: the space between notes, not just the notes themselves', 'Watch how his left hand becomes a whole orchestra', 'Notice: he plays softly more than loudly - and it is louder for it']
+    }
+  ];
+
+  // Masters at Play button
+  var mastersBtn='<div style="margin-top:20px;text-align:center">'+
+    '<button onclick="showMastersLibrary()" style="background:linear-gradient(135deg,#9b59b6,#d4af69);border:none;color:#fff;padding:14px 28px;border-radius:10px;font-family:\'Cinzel\',serif;font-size:0.95rem;font-weight:700;cursor:pointer;letter-spacing:0.08em;box-shadow:0 4px 16px rgba(212,175,105,0.2);transition:all 0.2s" onmouseover="this.style.transform=\'translateY(-2px)\'" onmouseout="this.style.transform=\'\'">'+
+      '▶ Masters at Play'+
+    '</button>'+
+    '<div style="font-size:0.65rem;color:var(--dim);margin-top:8px">Watch masters at work. Learn by seeing, not reading.</div>'+
+  '</div>';
+
   el.innerHTML='<div class="mastery-wrap">'+
     '<div class="mastery-header">'+
       '<div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">'+
@@ -4276,9 +4298,58 @@ function showMastery(){
       '</p>'+
     '</div>'+
     '<div class="mastery-cards">'+cardsHtml+'</div>'+
+    mastersBtn+
     '<div class="mastery-footer">'+
       '<span style="font-family:JetBrains Mono;font-size:0.55rem;color:var(--dim);letter-spacing:0.1em;text-transform:uppercase">More artists coming soon</span>'+
     '</div>'+
+  '</div>';
+
+  // Store masters data for library view
+  window._MASTERS_DATA=masters;
+}
+
+// ═══ MASTERS AT PLAY - VIDEO LIBRARY ═══
+function showMastersLibrary(){
+  var masters=window._MASTERS_DATA||[];
+
+  var cardsHtml=masters.map(function(m){
+    var listenHtml=(m.listen||[]).map(function(t){return '<li>'+t+'</li>';}).join('');
+    return '<div class="mastery-card" style="--mc:'+m.color+'">'+
+      '<h2 class="mastery-card-title" style="color:'+m.color+'">'+m.name+'</h2>'+
+      '<div class="mastery-card-artist">'+m.instrument+'</div>'+
+      '<p class="mastery-card-desc">'+m.description+'</p>'+
+      (m.why?'<div class="mastery-section">'+
+        '<div class="mastery-section-label">Why This Is Here</div>'+
+        '<p class="mastery-card-text">'+m.why+'</p>'+
+      '</div>':'')+
+      (listenHtml?'<div class="mastery-section">'+
+        '<div class="mastery-section-label">Listen & Explore</div>'+
+        '<ul class="mastery-list">'+listenHtml+'</ul>'+
+      '</div>':'')+
+      (m.channel?'<a href="'+m.channel+'" target="_blank" class="mastery-video-link" style="background:'+m.color+'20;border-color:'+m.color+'50;color:'+m.color+'">'+
+        '▶ Visit YouTube Channel'+
+      '</a>':'')+
+    '</div>';
+  }).join('');
+
+  document.querySelectorAll('.pnl').forEach(function(p){p.classList.remove('on');});
+  document.getElementById('p-foundation').classList.add('on');
+  var el=document.getElementById('p-foundation');
+
+  el.innerHTML='<div class="mastery-wrap">'+
+    '<div class="mastery-header">'+
+      '<button class="back-btn" onclick="showMastery()">← Mastery</button>'+
+      '<div style="display:flex;align-items:center;gap:10px;margin:12px 0 6px">'+
+        '<div style="width:10px;height:10px;border-radius:50%;background:#d4af69;box-shadow:0 0 12px #d4af69"></div>'+
+        '<span style="font-family:JetBrains Mono;font-size:0.6rem;color:#d4af69;letter-spacing:0.12em;text-transform:uppercase">Masters at Play</span>'+
+      '</div>'+
+      '<h2 style="font-family:\'Cinzel\',serif;color:#d4af69;font-size:1.4rem;margin:0;font-weight:700;letter-spacing:0.03em">Watch Masters at Work</h2>'+
+      '<p style="font-size:0.8rem;color:var(--dim);margin:8px 0 0 0;line-height:1.6;max-width:500px">'+
+        'Learning is not always reading and doing. Sometimes it is watching someone who has already arrived. '+
+        'These are the masters. Watch them. Listen to what they are not playing.'+
+      '</p>'+
+    '</div>'+
+    '<div class="mastery-cards">'+cardsHtml+'</div>'+
   '</div>';
 }
 
