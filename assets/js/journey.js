@@ -380,11 +380,14 @@
     html += '</div>';
 
     // Guitar guide
+    const nextLessonNum = lessonsDone + 1;
+    const nextLesson = buildLesson(student, level.num, nextLessonNum);
+    const guideMsg = levelGuideText(level, lessonsDone, nextLesson);
     html += '<div style="display:flex;flex-direction:column;align-items:center;margin-bottom:18px">';
     html += '<img src="images/character-full/Encouraging.png" style="width:80px;height:80px;object-fit:contain;filter:drop-shadow(0 4px 12px rgba(0,0,0,0.4));animation:char-float 3s ease-in-out infinite"/>';
-    html += '<div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:10px 14px;margin-top:8px;max-width:260px;text-align:center;position:relative">';
+    html += '<div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:10px 14px;margin-top:8px;max-width:280px;text-align:center;position:relative">';
     html += '<div style="position:absolute;left:50%;top:-6px;transform:translateX(-50%);width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-bottom:6px solid var(--border)"></div>';
-    html += '<div style="font-size:0.68rem;color:var(--text);line-height:1.5">'+esc(level.focus)+'</div>';
+    html += '<div style="font-size:0.68rem;color:var(--text);line-height:1.5">'+esc(guideMsg)+'</div>';
     html += '</div>';
     html += '</div>';
 
@@ -471,6 +474,18 @@
 
     html += '</div>';
     root.innerHTML = html;
+  }
+
+  function levelGuideText(level, lessonsDone, lesson){
+    const total = level.totalLessons;
+    const n = lessonsDone + 1;
+    const primary = lesson.conceptNames[0] || 'the core concept';
+    const blocks = lesson.blocks.map(b => b.title);
+    if(lessonsDone === 0) return 'Welcome to ' + level.id + '. Lesson ' + n + ' focuses on ' + primary + '. You will review, warm up, learn the concept, drill it, apply it to music, and reflect. Every lesson follows this shape — one hour, beginning to end.';
+    if(n > total) return 'You have completed all ' + total + ' lessons in ' + level.id + '. The next level is unlocked — keep the momentum going.';
+    if(n === total) return 'This is your final lesson in ' + level.id + '. Lesson ' + n + ' brings together everything you have learned. Focus on ' + primary + ' and lock it in before moving forward.';
+    const prev = lesson.conceptNames[1] || 'last time';
+    return 'Lesson ' + n + ' of ' + total + '. Today you are working on ' + primary + '. You will drill it slowly, apply it to a real musical moment, and leave with clear notes for next time. One honest hour.';
   }
 
   function guideText(student, level, lvlState, notes){
