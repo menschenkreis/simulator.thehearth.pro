@@ -144,6 +144,9 @@
   }
 
   window.SceneFirst={
+    practiceTime(t){practiceSavePrefs({...practicePrefs(),time:t});showPractice();},
+    practiceFocus(f){practiceSavePrefs({...practicePrefs(),focus:f});showPractice();},
+    savePracticeIntention(){const el=document.getElementById('sf-practice-intention');if(el)practiceSavePrefs({...practicePrefs(),intention:el.value});},
     openHearth(node){const el=document.getElementById('sf-drawer');const title=window.NODE_DATA&&NODE_DATA[node]?NODE_DATA[node].title:node;if(el)el.innerHTML='<b>'+esc(title)+'</b><br><span style="color:var(--dim)">This region opens the '+esc(title)+' learning system.</span><div class="sf-chiprow"><button onclick="enterNodeAction(NODE_DATA[\''+node+'\'])">Enter '+esc(title)+'</button></div>';},
     openPlay(id){if(window.PlayWorld&&PlayWorld.detail)return PlayWorld.detail(id);},
     studyLevel(n){setActiveStudyLevel(n);},
