@@ -3663,61 +3663,107 @@ function showPractice(){
   document.getElementById('p-foundation').classList.add('on');
   const P=window.PRACTICE;if(!P)return;
   const el=document.getElementById('p-foundation');
+  const state=_getPracticeState();
+  const log=_getSessionLog();
+
+  const totalSessions=log.length;
+  const totalMinutes=log.reduce((a,s)=>a+(s.minutes||0),0);
+  const streak=_calcStreak(log);
+  const lastSession=log.length?log[log.length-1]:null;
+  const completedDrills=Object.keys(state.completed||{});
   const prefs=_practicePrefs();
   const categories=_practiceCategories();
   const nextDrill=_practiceNextDrill(prefs.focus);
-  const timeChoices=[10,20,30,45,60];
+  const focusDrills=_practiceFilteredDrills(prefs.focus);
+  const guide=_practiceGuideText(prefs,log,nextDrill);
+  const timeChoices=[5,10,20,30,45];
+  const visibleDrills=focusDrills.slice(0,6);
+  const lastLine=lastSession?
+    '<div style="color:var(--dim);font-size:0.68rem;margin-top:6px">Last: '+esc(lastSession.drillTitle||'Practice')+' · '+esc(String(lastSession.minutes||1))+' min · '+esc(lastSession.feeling||'logged')+'</div>':
+    '<div style="color:var(--dim);font-size:0.68rem;margin-top:6px">No session logged yet. Light a short candle first.</div>';
+  const plan=[
+    ['Arrive','Body, guitar, breath'],
+    ['Warm','Hands wake up'],
+    ['Work',nextDrill?nextDrill.title:'Chosen drill'],
+    ['Reflect','Mark what changed']
+  ];
 
-  el.innerHTML='<div style="padding:18px;max-width:980px;margin:0 auto">'+
-    '<button class="back-btn" onclick="backToMap()">\u2190 Map</button>'+
-    '<div style="position:relative;background:radial-gradient(circle at 50% 30%,rgba(212,175,105,.14),rgba(13,11,8,.95) 55%,#080704);border:1px solid var(--border);border-radius:22px;padding:18px;box-shadow:0 20px 60px rgba(0,0,0,.35)">'+
-      '<div style="display:flex;gap:14px;align-items:flex-start;margin-bottom:14px">'+
-        '<div style="flex:1">'+
-          '<div style="font-family:JetBrains Mono;font-size:.58rem;color:var(--gold);letter-spacing:.16em;text-transform:uppercase">Practise Room</div>'+
-          '<h2 style="font-family:Cinzel;color:var(--gold);font-size:1.55rem;font-weight:800;margin:3px 0">Practice Temple</h2>'+
-          '<div style="font-size:.78rem;color:var(--dim);line-height:1.55">Choose a candle, open the book, then sit with one clear movement.</div>'+
-        '</div>'+
-        '<div style="display:flex;gap:9px;align-items:center;max-width:280px;background:rgba(13,11,8,.55);border:1px solid var(--border);border-radius:13px;padding:10px">'+
-          '<img src="images/character-full/Encouraging.png" style="width:68px;height:68px;object-fit:contain;filter:drop-shadow(0 4px 12px rgba(0,0,0,.4));animation:char-float 3s ease-in-out infinite">'+
-          '<div style="font-size:.72rem;color:var(--text);line-height:1.4">Choose one thing. Light the candle. One honest hour.</div>'+
-        '</div>'+
-      '</div>'+
-      // SVG Candle
-      '<div style="text-align:center;margin-bottom:14px">'+
-        '<svg viewBox="0 0 560 390" style="width:100%;max-height:260px">'+
-          '<defs><radialGradient id="altarGlow"><stop offset="0%" stop-color="#e8a020" stop-opacity=".34"/><stop offset="100%" stop-color="#e8a020" stop-opacity="0"/></radialGradient></defs>'+
-          '<ellipse cx="280" cy="300" rx="190" ry="32" fill="#d4af69" opacity=".12"/>'+
-          '<circle cx="280" cy="205" r="150" fill="url(#altarGlow)"/>'+
-          '<path d="M210,285 Q280,245 350,285 L330,315 Q280,335 230,315Z" fill="#1a1510" stroke="#d4af69" stroke-opacity=".35"/>'+
-          '<rect x="250" y="215" width="60" height="88" rx="18" fill="#3a2a18" stroke="#d4af69" stroke-opacity=".45"/>'+
-          '<path d="M280,145 C250,185 258,220 280,238 C305,215 308,185 280,145Z" fill="#e8a020" opacity=".86">'+
-            '<animate attributeName="d" dur="1.4s" repeatCount="indefinite" values="M280,145 C250,185 258,220 280,238 C305,215 308,185 280,145Z;M280,135 C260,180 252,215 280,242 C315,210 300,180 280,135Z;M280,145 C250,185 258,220 280,238 C305,215 308,185 280,145Z"/>'+
-          '</path>'+
-          '<path d="M280,172 C267,198 270,216 282,228 C294,213 294,194 280,172Z" fill="#fff2b8" opacity=".72"/>'+
-          '<text x="280" y="355" text-anchor="middle" fill="#e8a020" font-family="JetBrains Mono" font-size="10">'+esc(prefs.focus)+' \u00b7 '+prefs.time+' MINUTES</text>'+
-        '</svg>'+
-      '</div>'+
-      // Controls row
-      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">'+
-        // Left: Time + Focus
+  el.innerHTML='<div class="practice-temple">'+
+    '<div class="practice-title">'+
+      '<h2>Practice Temple</h2>'+
+      '<p>Choose a candle, open the book, then sit with one clear movement.</p>'+
+    '</div>'+
+    '<div class="practice-chamber">'+
+      '<div class="practice-chamber-inner">'+
         '<div>'+
-          '<div style="font-family:JetBrains Mono;font-size:.55rem;color:var(--gold);letter-spacing:.12em;text-transform:uppercase;margin-bottom:6px">Candle Length</div>'+
-          '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px">'+timeChoices.map(t=>
-            '<button style="padding:6px 12px;border-radius:999px;border:1px solid '+(prefs.time===t?'#e8a020':'var(--border)')+';background:'+(prefs.time===t?'rgba(232,160,32,.15)':'rgba(13,11,8,.6)')+';color:'+(prefs.time===t?'#e8a020':'var(--dim)')+';cursor:pointer;font-size:.72rem" onclick="setPracticeTime('+t+')">'+t+' min</button>'
-          ).join('')+'</div>'+
-          '<div style="font-family:JetBrains Mono;font-size:.55rem;color:var(--gold);letter-spacing:.12em;text-transform:uppercase;margin-bottom:6px">Focus</div>'+
-          '<div style="display:flex;gap:6px;flex-wrap:wrap">'+categories.map(cat=>
-            '<button style="padding:6px 12px;border-radius:999px;border:1px solid '+(prefs.focus===cat?'#e8a020':'var(--border)')+';background:'+(prefs.focus===cat?'rgba(232,160,32,.15)':'rgba(13,11,8,.6)')+';color:'+(prefs.focus===cat?'#e8a020':'var(--dim)')+';cursor:pointer;font-size:.72rem" onclick="setPracticeFocus(\''+esc(cat)+'\')">'+esc(cat)+'</button>'
-          ).join('')+'</div>'+
-        '</div>'+
-        // Right: Intention + Light Candle
-        '<div>'+
-          '<div style="font-family:JetBrains Mono;font-size:.55rem;color:var(--gold);letter-spacing:.12em;text-transform:uppercase;margin-bottom:6px">Intention</div>'+
-          '<textarea id="practice-intention" style="width:100%;box-sizing:border-box;background:#0d0b08;border:1px solid var(--border);border-radius:10px;color:var(--text);padding:9px;min-height:80px;font-family:DM Sans;font-size:.76rem;margin-bottom:8px" placeholder="What is the one clean thing today?">'+esc(prefs.intention||'Clean, focused practice')+'</textarea>'+
-          '<button onclick="var el=document.getElementById(\'practice-intention\');if(el){var s=_getPracticeState();s.intention=el.value;_savePracticeState(s);}" style="font-size:.68rem;padding:5px 10px;background:rgba(13,11,8,.6);border:1px solid var(--border);border-radius:6px;color:var(--dim);cursor:pointer;margin-bottom:12px">Save Intention</button>'+
-          '<div>'+
-            '<button onclick="startTemplePractice()" style="background:#e8a020;color:#0d0b08;border:none;border-radius:999px;padding:12px 24px;font-family:DM Sans;font-weight:900;cursor:pointer;width:100%;font-size:.88rem;box-shadow:0 8px 24px rgba(232,160,32,.3)">\u{1F56F} Light Candle</button>'+
+          '<div class="practice-altar">'+
+            '<div class="practice-altar-table"></div>'+
+            '<div class="practice-altar-items">'+
+              '<div class="altar-item">'+
+                '<div class="temple-book"></div>'+
+                '<div class="altar-label">Practice Book</div>'+
+              '</div>'+
+              '<div class="altar-item">'+
+                '<div class="temple-candle"><div class="temple-flame"></div></div>'+
+                '<div class="altar-label">'+prefs.time+' minute candle</div>'+
+              '</div>'+
+              '<div class="altar-item">'+
+                '<div class="temple-metronome"></div>'+
+                '<div class="altar-label">Pulse Stone</div>'+
+              '</div>'+
+            '</div>'+
           '</div>'+
+          '<div class="practice-panel" style="margin-top:14px">'+
+            '<div class="practice-panel-title">Ritual Steps</div>'+
+            '<div class="practice-plan">'+plan.map(p=>'<div class="practice-bead"><b>'+esc(p[0])+'</b><span>'+esc(p[1])+'</span></div>').join('')+'</div>'+
+          '</div>'+
+          '<div class="practice-panel" style="margin-top:14px">'+
+            '<div class="practice-panel-title">Open Book</div>'+
+            '<div class="practice-choice-row">'+categories.map(cat=>
+              '<button class="practice-choice'+(prefs.focus===cat?' active':'')+'" onclick="setPracticeFocus(\''+esc(cat)+'\')">'+esc(cat)+'</button>'
+            ).join('')+'</div>'+
+          '</div>'+
+          '<div class="practice-panel" style="margin-top:14px">'+
+            '<div class="practice-panel-title">Choose A Drill</div>'+
+            '<div class="practice-drill-list">'+visibleDrills.map(d=>
+              '<button class="practice-drill-pick" onclick="showPracticeDrill(\''+esc(d.id)+'\')">'+
+                '<span><b>'+esc(d.title)+'</b><br><span>'+esc(d.category)+' · '+esc(d.duration)+'</span></span>'+
+                '<span>Start</span>'+
+              '</button>'
+            ).join('')+'</div>'+
+          '</div>'+
+        '</div>'+
+        '<div class="practice-side">'+
+          '<div class="practice-panel" style="text-align:center;padding:16px 12px">'+
+            '<img src="images/character-full/Encouraging.png" style="width:100px;height:100px;object-fit:contain;filter:drop-shadow(0 4px 12px rgba(0,0,0,0.4));animation:char-float 3s ease-in-out infinite"/>'+
+            '<div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:10px 12px;margin-top:8px;position:relative">'+
+              '<div style="position:absolute;left:50%;top:-6px;transform:translateX(-50%);width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-bottom:6px solid var(--border)"></div>'+
+              '<div class="practice-guide-note" style="font-size:0.72rem;color:var(--text);line-height:1.4">'+esc(guide)+'</div>'+
+            '</div>'+
+            lastLine+
+          '</div>'+
+
+          '<div class="practice-panel">'+
+            '<div class="practice-panel-title">Candle Length</div>'+
+            '<div class="practice-choice-row">'+timeChoices.map(t=>
+              '<button class="practice-choice'+(prefs.time===t?' active':'')+'" onclick="playSfx(\'click\');setPracticeTime('+t+')">'+t+' min</button>'
+            ).join('')+'</div>'+
+          '</div>'+
+          '<div class="practice-panel">'+
+            '<div class="practice-panel-title">Scroll</div>'+
+            '<div class="practice-scroll-grid">'+
+              '<div class="practice-stat"><strong>'+streak+'</strong><span>streak</span></div>'+
+              '<div class="practice-stat"><strong>'+totalMinutes+'</strong><span>minutes</span></div>'+
+              '<div class="practice-stat"><strong>'+completedDrills.length+'</strong><span>mastered</span></div>'+
+              '<div class="practice-stat"><strong>'+totalSessions+'</strong><span>sessions</span></div>'+
+            '</div>'+
+          '</div>'+
+          '<div class="practice-panel">'+
+            '<div class="practice-panel-title">Next Offering</div>'+
+            '<div style="font-size:0.82rem;color:var(--text);font-weight:700">'+esc(nextDrill?nextDrill.title:'Choose a drill')+'</div>'+
+            '<div style="font-size:0.66rem;color:var(--dim);margin-top:5px">'+esc(nextDrill?(nextDrill.category+' · '+nextDrill.duration):'Open the book first')+'</div>'+
+          '</div>'+
+          '<button class="practice-start" onclick="playSfx(\'book-open\');startTemplePractice()">Light Candle</button>'+
         '</div>'+
       '</div>'+
     '</div>'+
@@ -4906,7 +4952,7 @@ function toggleCredits(){
 <script src="assets/js/play-world.js?v=1"></script>
 <script src="assets/js/study-key.js?v=1"></script>
 <script src="assets/js/create-workshop.js?v=1"></script>
-<script src="assets/js/scene-first.js?v=2"></script>
+<script src="assets/js/scene-first.js?v=3"></script>
 <img src="images/character-neutral.png" class="mobile-character" alt="Guide" />
 <script>// YouTube Link Deposit
 function toggleLinkDeposit(){
