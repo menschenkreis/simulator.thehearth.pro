@@ -36,6 +36,7 @@ const CHAR = {
 
 function createTeachingEngine(containerEl, opts){
   const container = containerEl;
+  var _teachContinueShown = false;
   const state = {
     stepIdx: 0,
     history: [],      // stack of step indices for back navigation
