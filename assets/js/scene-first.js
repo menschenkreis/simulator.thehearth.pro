@@ -41,6 +41,7 @@
     {id:'L5',name:'Change',color:'#00cccc'},{id:'L6',name:'Harmony',color:'#3366ff'},
     {id:'L7',name:'Wisdom',color:'#6633cc'},{id:'L8',name:'Power',color:'#cc33ff'}
   ];
+  const STUDY_JOURNEY_LEVELS = STUDY_LEVELS;
   function studyTopicLevel(item,idx){
     const src=(item.t.source||'')+' '+(item.t.qjam||'')+' '+(item.t.level||'');
     const m=src.match(/(?:QJam\s*)?L(?:evel)?\s*(\d)/i); if(m)return Math.max(1,Math.min(8,Number(m[1])));
