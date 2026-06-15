@@ -220,4 +220,8 @@ const PRACTICE = {
     }
   ]
 };
+
+// Flatten drills for api-loader comparison
+// drills array already exists at top level — no flattening needed
+
 window.PRACTICE = PRACTICE;

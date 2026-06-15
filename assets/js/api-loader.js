@@ -121,13 +121,15 @@
       }
     }
 
-    // Practice: API overrides if available
+    // Practice: API overrides only if strictly more drills (local has richer fields)
     if(apiPractice && window.PRACTICE){
       const apiCount = apiPractice.drills.length;
       const localCount = window.PRACTICE.drills ? window.PRACTICE.drills.length : 0;
-      if(apiCount >= localCount){
+      if(apiCount > localCount){
         window.PRACTICE = apiPractice;
         console.log('Practice: loaded',apiCount,'drills from API');
+      } else {
+        console.log('Practice: keeping local',localCount,'drills (API has',apiCount,')');
       }
     }
 
