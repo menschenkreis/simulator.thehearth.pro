@@ -3703,22 +3703,19 @@ function showPractice(){
     '<div class="practice-chamber">'+
       '<div class="practice-chamber-inner">'+
         '<div>'+
-          '<div class="practice-altar">'+
-            '<div class="practice-altar-table"></div>'+
-            '<div class="practice-altar-items">'+
-              '<div class="altar-item">'+
-                '<div class="temple-book"></div>'+
-                '<div class="altar-label">Practice Book</div>'+
-              '</div>'+
-              '<div class="altar-item">'+
-                '<div class="temple-candle"><div class="temple-flame"></div></div>'+
-                '<div class="altar-label">'+prefs.time+' minute candle</div>'+
-              '</div>'+
-              '<div class="altar-item">'+
-                '<div class="temple-metronome"></div>'+
-                '<div class="altar-label">Pulse Stone</div>'+
-              '</div>'+
-            '</div>'+
+          '<div class="practice-altar" style="padding:0;display:flex;align-items:center;justify-content:center">'+
+            '<svg viewBox="0 0 560 390" style="width:100%;max-height:200px">'+
+              '<defs><radialGradient id="altarGlow"><stop offset="0%" stop-color="#e8a020" stop-opacity=".34"/><stop offset="100%" stop-color="#e8a020" stop-opacity="0"/></radialGradient></defs>'+
+              '<ellipse cx="280" cy="300" rx="190" ry="32" fill="#d4af69" opacity=".12"/>'+
+              '<circle cx="280" cy="205" r="150" fill="url(#altarGlow)"/>'+
+              '<path d="M210,285 Q280,245 350,285 L330,315 Q280,335 230,315Z" fill="#1a1510" stroke="#d4af69" stroke-opacity=".35"/>'+
+              '<rect x="250" y="215" width="60" height="88" rx="18" fill="#3a2a18" stroke="#d4af69" stroke-opacity=".45"/>'+
+              '<path d="M280,145 C250,185 258,220 280,238 C305,215 308,185 280,145Z" fill="#e8a020" opacity=".86">'+
+                '<animate attributeName="d" dur="1.4s" repeatCount="indefinite" values="M280,145 C250,185 258,220 280,238 C305,215 308,185 280,145Z;M280,135 C260,180 252,215 280,242 C315,210 300,180 280,135Z;M280,145 C250,185 258,220 280,238 C305,215 308,185 280,145Z"/>'+
+              '</path>'+
+              '<path d="M280,172 C267,198 270,216 282,228 C294,213 294,194 280,172Z" fill="#fff2b8" opacity=".72"/>'+
+              '<text x="280" y="355" text-anchor="middle" fill="#e8a020" font-family="JetBrains Mono" font-size="10">'+esc(prefs.focus)+' \u00b7 '+prefs.time+' MINUTES</text>'+
+            '</svg>'+
           '</div>'+
           '<div class="practice-panel" style="margin-top:6px">'+
             '<div class="practice-panel-title">Ritual Steps</div>'+
