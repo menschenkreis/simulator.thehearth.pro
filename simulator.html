@@ -199,9 +199,9 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 /* ═══ TEACHING ENGINE ═══ */
 .teach-scene-wrap{max-width:700px;margin:0 auto;}
 .teach-scene{display:flex;align-items:center;gap:16px;padding:16px 16px 8px;}
-.teach-char-wrap{flex:0 0 180px;display:flex;flex-direction:column;align-items:center;position:relative;}
-.teach-char-img{width:180px;height:240px;object-fit:contain;filter:drop-shadow(0 4px 12px rgba(0,0,0,0.4));animation:char-float 3s ease-in-out infinite;transition:all 0.3s;}
-.teach-char-big{width:220px;height:300px;object-fit:contain;filter:drop-shadow(0 6px 20px rgba(0,0,0,0.5)) drop-shadow(0 0 8px rgba(212,175,105,0.3));}
+.teach-char-wrap{flex:0 0 160px;display:flex;flex-direction:column;align-items:center;position:relative;overflow:hidden;}
+.teach-char-img{width:160px;height:200px;object-fit:cover;object-position:center 20%;filter:drop-shadow(0 4px 12px rgba(0,0,0,0.4));animation:char-float 3s ease-in-out infinite;transition:all 0.3s;}
+.teach-char-big{width:200px;height:260px;object-fit:cover;object-position:center 20%;filter:drop-shadow(0 6px 20px rgba(0,0,0,0.5)) drop-shadow(0 0 8px rgba(212,175,105,0.3));}
 @keyframes char-float{0%,100%{transform:translateY(0);}50%{transform:translateY(-6px);}}
 .teach-char-label{font-family:'Cinzel',serif;font-size:0.55rem;color:var(--gold);letter-spacing:0.1em;text-transform:uppercase;margin-top:4px;text-align:center;}
 .teach-bubble{flex:1;position:relative;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px 18px;min-height:60px;}
@@ -248,7 +248,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 
 .center{flex:1;overflow-y:auto;position:relative;}
 .main-wrap{display:flex;flex:1;overflow:hidden;}
-.pnl{display:none;height:calc(100vh - 52px);overflow:auto;box-sizing:border-box;position:fixed;top:52px;left:0;right:0;bottom:0;z-index:10;}
+.pnl{display:none;height:calc(100vh - 52px);overflow:auto;box-sizing:border-box;}
 .pnl.on{display:flex;flex-direction:column;}
 
 /* === MANDALA MAP === */
@@ -1575,7 +1575,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
   <!-- DICTIONARY -->
   <div class="pnl" id="p-theory">
     <div style="padding:24px;max-width:600px;margin:0 auto">
-      <button id="dict-back-btn" onclick="closeDictionary()" style="background:none;border:1px solid var(--border);color:var(--dim);padding:6px 12px;border-radius:4px;cursor:pointer;font-family:inherit;font-size:0.7rem;margin-bottom:16px">← Back</button>
+      <button id="dict-back-btn" onclick="closeDictionary()" style="background:none;border:1px solid var(--border);color:var(--dim);padding:6px 12px;border-radius:4px;cursor:pointer;font-family:inherit;font-size:0.7rem;margin-bottom:16px">\u2190 Back</button>
       <h2 style="font-family:'DM Sans',sans-serif;color:var(--gold);font-size:1.3rem;margin:0 0 4px 0;font-weight:700">Dictionary</h2>
       <p style="color:var(--dim);font-size:0.7rem;margin:0 0 16px 0;font-style:italic">If you don't know the word, you can't learn the concept</p>
       <input id="glossary-search" type="text" placeholder="Look up a term..." style="width:100%;padding:10px 14px;background:var(--card);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:DM Sans,sans-serif;font-size:0.85rem;outline:none;margin-bottom:16px" oninput="filterGlossary(this.value)" autofocus>
@@ -2460,7 +2460,7 @@ function showFoundationTopic(topicId){
   }
 
   el.innerHTML='<div class="lesson-page" style="border-top:4px solid '+color+'">'+
-    '<div class="lp-back" onclick="showFoundation()">← Foundation</div>'+
+    '<div class="lp-back" onclick="showFoundation()">\u2190 Foundation</div>'+
     '<div style="display:flex;justify-content:flex-end;margin-bottom:4px"><button id="ttsBtn" onclick="ttsToggle()" style="background:'+color+'18;color:'+color+';border:1px solid '+color+'40;padding:6px 14px;border-radius:6px;cursor:pointer;font-family:inherit;font-size:0.75rem;font-weight:600">Read aloud</button></div>'+
     '<div class="lp-header">'+
       '<div class="lp-tag" style="color:'+color+'">'+topic.num+' / '+F.tag+(isCompleted?' \u00b7 Complete':'')+'</div>'+
@@ -4572,7 +4572,7 @@ function sw(t){
     const backBtn=document.getElementById('dict-back-btn');
     if(backBtn){
       const name=panelNames[_savedPanel]||'Map';
-      backBtn.textContent='← Back to '+name;
+      backBtn.textContent='\u2190 Back to '+name;
     }
     populateDictionary();
   }
@@ -4853,7 +4853,7 @@ function showDictChapter(chapter){
   const color=colorMap[chapter]||'var(--gold)';
 
   let html='<div style="margin-bottom:12px">'+
-    '<button onclick="populateDictionary()" style="background:none;border:1px solid var(--border);color:var(--dim);padding:6px 12px;border-radius:4px;cursor:pointer;font-family:inherit;font-size:0.7rem">← All Chapters</button>'+
+    '<button onclick="populateDictionary()" style="background:none;border:1px solid var(--border);color:var(--dim);padding:6px 12px;border-radius:4px;cursor:pointer;font-family:inherit;font-size:0.7rem">\u2190 All Chapters</button>'+
   '</div>'+
   '<div style="font-family:Cinzel,serif;font-size:0.7rem;color:'+color+';letter-spacing:0.15em;text-transform:uppercase;padding:10px 12px 4px 12px;border-bottom:1px solid var(--border)">'+chapter+'</div>';
 
