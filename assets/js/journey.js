@@ -371,7 +371,7 @@
     // Level header
     html += '<div style="text-align:center;max-width:360px;width:100%">';
     html += '<div style="font-family:JetBrains Mono,monospace;font-size:0.6rem;color:var(--gold);letter-spacing:0.16em;text-transform:uppercase;margin-bottom:4px">'+esc(student.name)+'</div>';
-    html += '<div style="font-family:Cinzel,serif;font-size:1.2rem;color:'+level.color+';font-weight:800;margin-bottom:4px">'+level.id+'</div>';
+    html += '<div style="font-family:Cinzel,serif;font-size:1.2rem;color:'+level.color+';font-weight:800;margin-bottom:4px">'+('LEVEL '+level.num)+'</div>';
     html += '<div style="font-size:0.75rem;color:var(--dim);line-height:1.5;margin-bottom:16px">'+esc(level.focus)+'</div>';
 
     // Progress bar
@@ -430,7 +430,7 @@
 
     // Lesson header
     html += '<div style="text-align:center;max-width:360px;width:100%;margin-bottom:16px">';
-    html += '<div style="font-family:JetBrains Mono,monospace;font-size:0.58rem;color:var(--gold);letter-spacing:0.16em;text-transform:uppercase">'+esc(student.name)+' · '+level.id+'</div>';
+    html += '<div style="font-family:JetBrains Mono,monospace;font-size:0.58rem;color:var(--gold);letter-spacing:0.16em;text-transform:uppercase">'+esc(student.name)+' · '+('LEVEL '+level.num)+'</div>';
     html += '<div style="font-family:Cinzel,serif;font-size:1.1rem;color:'+level.color+';font-weight:800;margin-top:4px">'+esc(lesson.title)+'</div>';
     html += '<div style="font-size:0.7rem;color:var(--dim);margin-top:4px">Lesson '+lessonNum+' of '+level.totalLessons+' · '+lesson.minutes+' min</div>';
     html += '</div>';
