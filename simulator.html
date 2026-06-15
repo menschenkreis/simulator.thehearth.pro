@@ -245,7 +245,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 .center{flex:1;overflow-y:auto;position:relative;}
 .main-wrap{display:flex;flex:1;overflow:hidden;}
 .pnl{display:none;height:calc(100vh - 52px);overflow:auto;box-sizing:border-box;}
-.pnl.on{display:flex;flex-direction:column;justify-content:center;}
+.pnl.on{display:flex;flex-direction:column;}
 
 /* === MANDALA MAP === */
 .map{align-items:center;justify-content:center;padding:8px;position:relative;}
@@ -640,7 +640,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 .lp-stair-label{font-family:'DM Sans',sans-serif;font-size:0.8rem;font-weight:600}
 .foundation-layout{display:flex;gap:32px;align-items:flex-end;margin-top:8px}
 .foundation-char{flex-shrink:0;width:300px;display:flex;flex-direction:column;align-items:center;justify-content:flex-end}
-.foundation-row{display:flex;gap:24px;align-items:flex-start;width:100%;}
+.foundation-row{display:flex;gap:24px;align-items:flex-start;width:100%;flex:1;min-height:0;}
 .foundation-col-char{flex:0 0 auto;position:relative;width:260px;flex-shrink:0}
 @media(max-width:700px){
   /* ═══ LAYOUT: sidebar becomes bottom tab bar ═══ */
@@ -2228,10 +2228,10 @@ function showFoundation(){
   const firstIncomplete=F.topics.findIndex(t=>!completed[t.id]);
   const activeIdx=firstIncomplete===-1?F.topics.length-1:firstIncomplete;
 
-  let html='<div style="padding:48px 16px 16px;max-width:900px;margin:0 auto">'+
+  let html='<div style="padding:16px;max-width:900px;margin:0 auto;display:flex;flex-direction:column;height:100%;box-sizing:border-box">'+
     '<button class="back-btn" onclick="backToMap()">← Map</button>'+
     // Big node header
-    '<div style="display:flex;align-items:center;gap:14px;margin:20px 0 32px">'+
+    '<div style="display:flex;align-items:center;gap:14px;margin:0 0 12px;flex-shrink:0">'+
       '<img src="images/foundation-icon.png" style="width:56px;height:56px;border-radius:50%;object-fit:cover;border:2px solid var(--gold);box-shadow:0 0 12px rgba(212,175,105,0.1)"/>'+
       '<div><div style="font-family:Josefin Sans,sans-serif;color:var(--gold);font-size:1.3rem;letter-spacing:2px">'+F.title+'</div>'+
         '<div style="display:flex;align-items:center;gap:6px;margin-top:4px">'+
