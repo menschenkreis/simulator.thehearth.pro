@@ -4598,7 +4598,7 @@ function closeDictionary(){
 
 // ═══ JOURNEY - CENTRAL SPINE MODE ═══
 // Implemented in assets/js/journey.js. Thin wrappers kept for legacy inline handlers.
-function populateJourney(){ if(window.showJourney) window.showJourney(); else if(window.Journey) window.Journey.render(); }
+function populateJourney(){ if(window.Journey) window.Journey.render(); }
 function startJourneyLesson(){ if(window.Journey) window.Journey.startLesson(); }
 function openJourneyLevel(levelNum){ if(window.Journey) window.Journey.openLevel(levelNum); }
 function completeJourneyLesson(){ if(window.Journey) window.Journey.completeLesson(); }

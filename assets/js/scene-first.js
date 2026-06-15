@@ -139,48 +139,7 @@
     if((level?.num||1)>=7)return 'Deep water. Theory becomes intuition here. You are not learning rules — you are hearing why they existed.';
     return student.name+' is in '+level.id+' '+level.name+'. One lesson at a time. One honest note after each.';
   }
-  window.showJourney=function(){
-    inject(); const el=document.getElementById('journey-content'); if(!el)return;
-    const state=journeyState(); const student=journeyStudent(state);
-    const level=student?JOURNEY_LEVELS.find(l=>l.num===(student.currentLevel||1))||JOURNEY_LEVELS[0]:JOURNEY_LEVELS[0];
-    const lvlState=student?.levels?.[level.id]||{};
-    const pct=level.totalLessons?Math.round((lvlState.lessonsDone||0)/level.totalLessons*100):0;
-    const nextLesson=(lvlState.lessonsDone||0)+1;
-    // Build 8-level ascending path SVG
-    const pathNodes=JOURNEY_LEVELS.map((l,i)=>{
-      const x=280+(i%2===0?-60:60)*(1-i/8);
-      const y=60+i*42;
-      const active=l.num===level.num;
-      const done=student?.levels?.[l.id]?.complete;
-      const unlocked=l.num===1||student?.levels?.['L'+(l.num-1)]?.complete||student?.levels?.[l.id]?.unlocked;
-      const col=done?'#2ecc71':active?l.color:unlocked?l.color+'88':'#333';
-      const r=active?14:10;
-      return '<circle cx="'+x+'" cy="'+y+'" r="'+r+'" fill="'+col+'" opacity="'+(active?.9:done?.7:.35)+'" '+(unlocked?'onclick="Journey.openLevel('+l.num+')" style="cursor:pointer"':'')+'><animate attributeName="r" values="'+(r-2)+';'+(r+2)+';'+(r-2)+'" dur="3s" repeatCount="indefinite"/></circle><text x="'+x+'" y="'+(y+r+14)+'" text-anchor="middle" fill="'+col+'" font-family="JetBrains Mono" font-size="8">'+l.id+'</text>';
-    }).join('');
-    const pathLines=JOURNEY_LEVELS.map((l,i)=>{
-      if(i===JOURNEY_LEVELS.length-1)return '';
-      const x1=280+(i%2===0?-60:60)*(1-i/8), y1=60+i*42;
-      const x2=280+((i+1)%2===0?-60:60)*(1-(i+1)/8), y2=60+(i+1)*42;
-      const done=student?.levels?.[l.id]?.complete;
-      return '<line x1="'+x1+'" y1="'+y1+'" x2="'+x2+'" y2="'+y2+'" stroke="'+(done?'#2ecc7155':'#d4af6922')+'" stroke-width="1.5" stroke-dasharray="'+(done?'':'4 4')+'"/>';
-    }).join('');
-    const svg='<svg viewBox="0 0 400 420" style="width:min(400px,100%)">'+pathLines+pathNodes+'</svg>';
-    // Student chips
-    const chips=(state.students||[]).map(s=>'<button class="journey-chip '+(s.id===student?.id?'on':'')+'" onclick="Journey.switchStudent(\''+s.id+'\')">'+esc(s.name)+'</button>').join('');
-    // Scene
-    el.innerHTML='<div style="padding:18px;max-width:980px;margin:0 auto"><div style="position:relative;overflow:hidden;background:radial-gradient(circle at 50% 30%,rgba(212,175,105,.14),rgba(13,11,8,.95) 55%,#080704);border:1px solid var(--border);border-radius:22px;padding:18px;box-shadow:0 20px 60px rgba(0,0,0,.35)"><div style="display:flex;gap:14px;align-items:flex-start;margin-bottom:14px"><div style="flex:1"><div style="font-family:JetBrains Mono;font-size:.58rem;color:var(--gold);letter-spacing:.16em;text-transform:uppercase">Journey · The Path</div><h2 style="font-family:Cinzel;color:var(--gold);font-size:1.55rem;font-weight:800;margin:3px 0">'+esc(student?student.name+' · '+level.id+' '+level.name:'Choose a Student')+'</h2><div style="font-size:.78rem;color:var(--dim);line-height:1.55">'+esc(level.focus||'Walk the path. One lesson at a time.')+'</div></div><div style="display:flex;gap:9px;align-items:center;max-width:280px;background:rgba(13,11,8,.55);border:1px solid var(--border);border-radius:13px;padding:10px"><img src="images/character-full/Encouraging.png" style="width:68px;height:68px;object-fit:contain;filter:drop-shadow(0 4px 12px rgba(0,0,0,.4));animation:char-float 3s ease-in-out infinite"><div style="font-size:.72rem;color:var(--text);line-height:1.4">'+esc(journeyGuide(student,level))+'</div></div></div><div style="display:grid;grid-template-columns:minmax(240px,1fr) 1fr;gap:16px;align-items:center"><div>'+svg+'</div><div><div style="background:rgba(13,11,8,.55);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:12px"><div style="font-family:JetBrains Mono;font-size:.55rem;color:'+level.color+';letter-spacing:.11em;text-transform:uppercase">'+level.id+' · '+level.name+' · '+pct+'%</div><div style="height:4px;background:rgba(255,255,255,.08);border-radius:99px;overflow:hidden;margin:8px 0"><div style="height:100%;width:'+pct+'%;background:'+level.color+';border-radius:99px"></div></div><div style="font-size:.72rem;color:var(--dim)">Lesson '+nextLesson+' of '+level.totalLessons+' · '+(lvlState.lessonsDone||0)+' completed</div></div><div style="display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px">'+chips+'<button class="journey-chip" onclick="Journey.addStudent()">+ Add</button></div><button onclick="Journey.startLesson()" style="background:'+level.color+';color:#0d0b08;border:none;border-radius:999px;padding:12px 18px;font-family:DM Sans;font-weight:900;cursor:pointer;box-shadow:0 8px 24px color-mix(in srgb,'+level.color+',transparent 75%)">Begin Lesson '+nextLesson+'</button></div></div></div><div id="journey-detail" style="margin-top:14px"></div></div>';
-    // Load detail if student exists
-    if(student) loadJourneyDetail(student,level,lvlState,nextLesson);
-  };
-  function loadJourneyDetail(student,level,lvlState,nextLesson){
-    const detail=document.getElementById('journey-detail'); if(!detail)return;
-    const lesson=window.Journey?.buildLesson?window.Journey.buildLesson(student,level.num,nextLesson):null;
-    if(!lesson)return;
-    const blocks=(lesson.blocks||[]).map(b=>'<div style="background:rgba(13,11,8,.5);border:1px solid var(--border);border-radius:12px;padding:12px;margin-bottom:8px"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px"><div style="font-family:JetBrains Mono;font-size:.55rem;color:'+level.color+';letter-spacing:.12em;text-transform:uppercase">'+esc(b.phase)+' · '+esc(b.source)+'</div><div style="font-family:JetBrains Mono;font-size:.58rem;color:var(--dim)">'+b.min+' min</div></div><div style="font-family:Cinzel;font-size:.88rem;color:var(--text);font-weight:700;margin-bottom:4px">'+esc(b.title)+'</div><div style="font-size:.72rem;color:var(--dim);line-height:1.45">'+esc(b.body)+'</div></div>').join('');
-    detail.innerHTML='<div style="background:var(--card);border:1px solid var(--border);border-radius:16px;padding:14px"><div style="font-family:JetBrains Mono;font-size:.55rem;color:'+level.color+';letter-spacing:.12em;text-transform:uppercase;margin-bottom:10px">Lesson '+nextLesson+' Plan · '+esc(lesson.title)+'</div>'+blocks+'<div style="display:flex;gap:8px;margin-top:12px"><button onclick="Journey.startLesson()" style="background:'+level.color+';color:#0d0b08;border:none;border-radius:8px;padding:10px 14px;font-weight:800;cursor:pointer">Begin This Lesson</button><button onclick="Journey.openJournal()" style="background:transparent;color:'+level.color+';border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-weight:800;cursor:pointer">Student Notes</button></div></div>';
-  }
 
-  window.populateJourney=function(){ if(window.showJourney) window.showJourney(); else if(window.Journey) window.Journey.render(); };
   window.SceneFirst={
     openHearth(node){const el=document.getElementById('sf-drawer');const title=window.NODE_DATA&&NODE_DATA[node]?NODE_DATA[node].title:node;if(el)el.innerHTML='<b>'+esc(title)+'</b><br><span style="color:var(--dim)">This region opens the '+esc(title)+' learning system.</span><div class="sf-chiprow"><button onclick="enterNodeAction(NODE_DATA[\''+node+'\'])">Enter '+esc(title)+'</button></div>';},
     openPlay(id){if(window.PlayWorld&&PlayWorld.detail)return PlayWorld.detail(id);},
