@@ -78,11 +78,12 @@ function createTeachingEngine(containerEl, opts){
       html += '</div>';
     }
 
-    // Tap-to-continue prompt (shows after typewriter finishes)
-    if(!_teachContinueShown) html += '<div class="teach-continue" style="text-align:center;margin-top:12px;opacity:0;transition:opacity 0.4s">'+
+    html += closeCharArea();
+
+    // Tap-to-continue prompt (shows after typewriter finishes, only once)
+    if(!_teachContinueShown) html += '<div class="teach-continue" style="text-align:center;margin-top:8px;opacity:0;transition:opacity 0.4s">'+
       '<span style="font-size:0.7rem;color:var(--dim);letter-spacing:0.05em">tap anywhere to continue ▸</span></div>';
 
-    html += closeCharArea();
     container.innerHTML = html;
     bindButtons(step, lesson);
     _teachContinueShown = true;
