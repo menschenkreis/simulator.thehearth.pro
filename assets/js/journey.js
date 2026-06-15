@@ -149,7 +149,7 @@
       levelId: level.id,
       levelNum,
       lessonNum,
-      title: level.name + ' Lesson ' + lessonNum + ': ' + primaryConcept,
+      title: 'Lesson ' + lessonNum + ': ' + primaryConcept,
       minutes: 60,
       conceptNames: [primaryConcept, secondaryConcept],
       taskNames: [warm, conceptTask, drill.title, music, review],
@@ -356,7 +356,7 @@
     // Level header
     html += '<div style="text-align:center;max-width:360px;width:100%">';
     html += '<div style="font-family:JetBrains Mono,monospace;font-size:0.6rem;color:var(--gold);letter-spacing:0.16em;text-transform:uppercase;margin-bottom:4px">'+esc(student.name)+'</div>';
-    html += '<div style="font-family:Cinzel,serif;font-size:1.2rem;color:'+level.color+';font-weight:800;margin-bottom:4px">'+level.id+' · '+esc(level.name)+'</div>';
+    html += '<div style="font-family:Cinzel,serif;font-size:1.2rem;color:'+level.color+';font-weight:800;margin-bottom:4px">'+level.id+'</div>';
     html += '<div style="font-size:0.75rem;color:var(--dim);line-height:1.5;margin-bottom:16px">'+esc(level.focus)+'</div>';
 
     // Progress bar
