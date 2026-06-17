@@ -81,7 +81,7 @@ function createTeachingEngine(containerEl, opts){
     // Click anywhere to advance (but not on buttons)
     function clickAdvance(e){
       if(!typingDone) return;
-      if(e.target.closest('.teach-nav-btn') || e.target.closest('.teach-choice')) return;
+      if(e.target.closest('[data-action]') || e.target.closest('.teach-choice')) return;
       container.removeEventListener('click', clickAdvance);
       advance(lesson);
     }
@@ -169,7 +169,7 @@ function createTeachingEngine(containerEl, opts){
     setTimeout(function(){
       container.addEventListener('click', function handler(e){
         if(!typingDone) return;
-        if(e.target.closest('.teach-nav-btn')) return;
+        if(e.target.closest('[data-action]')) return;
         container.removeEventListener('click', handler);
         advance(lesson);
       });
@@ -322,10 +322,10 @@ function createTeachingEngine(containerEl, opts){
   }
   function closeCharArea(){
     // Single unified nav button: Back (if history) or a contextual Next
-    var navLabel = state.history.length > 0 ? '← Back' : 'Next ▸';
+    var navLabel = state.history.length > 0 ? '\u2190 Back' : 'Next \u25B8';
     var navAction = state.history.length > 0 ? 'back' : 'advance';
-    return '<div class="teach-nav-wrap" style="display:flex;justify-content:center;padding:8px 16px;max-width:700px;margin:0 auto">' +
-      '<button class="teach-nav-btn" data-action="'+navAction+'" onclick="window._teachEngine&&window._teachEngine.'+navAction+'()">'+navLabel+'</button>' +
+    return '<div style="display:flex;justify-content:center;padding:10px 16px;max-width:700px;margin:0 auto">' +
+      '<button data-action="'+navAction+'" style="background:none;border:1px solid #3a2a1a;color:#a89880;padding:8px 24px;border-radius:6px;cursor:pointer;font-family:DM Sans,sans-serif;font-size:0.8rem;font-weight:600;letter-spacing:0.02em;transition:all 0.15s" onmouseenter="this.style.borderColor=\u2018#d4af69\u2019;this.style.color=\u2018#d4af69\u2019" onmouseleave="this.style.borderColor=\u2018#3a2a1a\u2019;this.style.color=\u2018#a89880\u2019">'+navLabel+'</button>' +
     '</div></div>';
   }
 
@@ -374,9 +374,9 @@ function createTeachingEngine(containerEl, opts){
   }
 
   function bindButtons(step, lesson){
-    container.querySelectorAll('.teach-btn, .teach-nav-btn').forEach(btn => {
+    container.querySelectorAll('.teach-btn, [data-action]').forEach(btn => {
       btn.addEventListener('click', function(){
-        var action = this.dataset.action || this.getAttribute('data-action');
+        var action = this.dataset.action;
         if(action === 'advance') advance(lesson);
         else if(action === 'back') back(lesson);
       });
