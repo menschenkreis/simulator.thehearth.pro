@@ -616,6 +616,13 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 @keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 @keyframes fade-in{from{opacity:0}to{opacity:1}}
 .fb-note-btn:hover{transform:scale(1.08) !important;box-shadow:0 0 10px currentColor !important;}
+.fb-note circle{fill:#d4af69;stroke:#1a1410;stroke-width:2;transition:transform 0.12s ease,opacity 0.12s ease}
+.fb-note text{fill:#1a1009;font-size:15px;font-weight:800;text-anchor:middle;dominant-baseline:central;pointer-events:none;font-family:'JetBrains Mono',monospace}
+.fb-note.fb-ghost circle{fill:rgba(255,255,255,0.1);stroke:rgba(255,255,255,0.2)}
+.fb-note.fb-ghost text{opacity:0}
+.fb-note.fb-dimmed{opacity:0.16}
+.fb-note.fb-clickable{cursor:pointer}
+.fb-note.fb-clickable:hover circle{transform:scale(1.08)}
 @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
 @keyframes speechLine{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 @keyframes blockPulse{0%,100%{box-shadow:0 0 4px var(--gold)}50%{box-shadow:0 0 18px var(--gold)}}

@@ -1,238 +1,125 @@
 // ═══════════════════════════════════════════════════════
 // INTERACTIVE SVG GUITAR FRETBOARD
+// Based on GPT-5.5 code, adapted for The Hearth theme
 // 3 modes: All Notes, Individual (by letter), Quiz
 // ═══════════════════════════════════════════════════════
 
 (function(){
 'use strict';
 
-const NOTES = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
-const NATURAL = ['C','D','E','F','G','A','B'];
-const OPEN_STRINGS = ['E','A','D','G','B','E']; // low to high
-const STRING_NAMES = ['6th (Low E)','5th (A)','4th (D)','3rd (G)','2nd (B)','1st (High E)'];
-const FRET_COUNT = 15;
-const DOT_FRETS = [3,5,7,9,12];
-const DOUBLE_DOT = [12];
+const FB_NOTES = ["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"];
+const FB_STRINGS = [
+  { name: "E", midi: 40 },
+  { name: "A", midi: 45 },
+  { name: "D", midi: 50 },
+  { name: "G", midi: 55 },
+  { name: "B", midi: 59 },
+  { name: "E", midi: 64 }
+];
+const FB_FRET_COUNT = 12;
+const FB_LEFT = 72;
+const FB_RIGHT = 1000;
+const FB_TOP = 48;
+const FB_BOTTOM = 270;
 
-const NOTE_COLORS = {
-  'C':'#e74c3c','C#':'#c0392b','D':'#e67e22','D#':'#d35400',
-  'E':'#f1c40f','F':'#2ecc71','F#':'#27ae60','G':'#3498db',
-  'G#':'#2980b9','A':'#9b59b6','A#':'#8e44ad','B':'#e84393'
-};
+function noteNameFromMidi(midi){ return FB_NOTES[((midi % 12) + 12) % 12]; }
+function xForFret(fret){ return FB_LEFT + fret * ((FB_RIGHT - FB_LEFT) / FB_FRET_COUNT); }
+function noteX(fret){ return fret === 0 ? FB_LEFT - 34 : FB_LEFT + (fret - 0.5) * ((FB_RIGHT - FB_LEFT) / FB_FRET_COUNT); }
+function yForString(i){ return FB_TOP + i * ((FB_BOTTOM - FB_TOP) / (FB_STRINGS.length - 1)); }
 
-function getNote(stringIdx, fret){
-  const open = OPEN_STRINGS[stringIdx];
-  const openIdx = NOTES.indexOf(open);
-  return NOTES[(openIdx + fret) % 12];
+function svgEl(tag, attrs){
+  var el = document.createElementNS("http://www.w3.org/2000/svg", tag);
+  if(attrs) Object.entries(attrs).forEach(function(pair){ el.setAttribute(pair[0], pair[1]); });
+  return el;
 }
 
-function createFretboard(container, opts){
-  opts = opts || {};
-  var mode = opts.mode || 'all'; // 'all' | 'individual' | 'quiz'
-  var selectedNote = null;
-  var revealed = {};
+// ── Build the fretboard SVG ──
+function buildFretboardSVG(container, onNoteClick){
+  var svg = svgEl("svg", { viewBox: "0 0 1040 330", role: "img", "aria-label": "Interactive guitar fretboard" });
+  svg.style.cssText = "width:100%;height:auto;display:block";
 
-  // SVG dimensions
-  var fretW = 52;
-  var stringSpacing = 44;
-  var leftPad = 60;
-  var rightPad = 20;
-  var topPad = 30;
-  var bottomPad = 50;
-  var svgW = leftPad + (FRET_COUNT + 1) * fretW + rightPad;
-  var svgH = topPad + (OPEN_STRINGS.length - 1) * stringSpacing + bottomPad;
+  // Wood gradient
+  var defs = svgEl("defs");
+  var grad = svgEl("linearGradient", { id: "fb-wood", x1: "0", x2: "1", y1: "0", y2: "0" });
+  grad.append(svgEl("stop", { offset: "0%", "stop-color": "#2a1d13" }));
+  grad.append(svgEl("stop", { offset: "55%", "stop-color": "#3a2818" }));
+  grad.append(svgEl("stop", { offset: "100%", "stop-color": "#1f140d" }));
+  defs.append(grad);
+  svg.append(defs);
 
-  function buildSVG(){
-    var svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 '+svgW+' '+svgH+'" style="width:100%;max-width:'+svgW+'px;height:auto;display:block;margin:0 auto">';
-    svg += '<defs>';
-    svg += '<filter id="fret-glow"><feGaussianBlur stdDeviation="2" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>';
-    svg += '</defs>';
+  // Board background
+  svg.append(svgEl("rect", {
+    x: FB_LEFT - 52, y: 22, width: FB_RIGHT - FB_LEFT + 78, height: 270,
+    rx: 20, fill: "url(#fb-wood)"
+  }));
 
-    // Background
-    svg += '<rect width="'+svgW+'" height="'+svgH+'" fill="#0d0b08" rx="12"/>';
+  // Fret markers
+  [3,5,7,9].forEach(function(f){
+    svg.append(svgEl("circle", { cx: noteX(f), cy: (FB_TOP+FB_BOTTOM)/2, r: 13, fill: "rgba(212,175,105,0.12)" }));
+  });
+  svg.append(svgEl("circle", { cx: noteX(12), cy: (FB_TOP+FB_BOTTOM)/2 - 26, r: 10, fill: "rgba(212,175,105,0.12)" }));
+  svg.append(svgEl("circle", { cx: noteX(12), cy: (FB_TOP+FB_BOTTOM)/2 + 26, r: 10, fill: "rgba(212,175,105,0.12)" }));
 
-    // Fret markers (dots) — behind everything
-    for(var f=1; f<=FRET_COUNT; f++){
-      var cx = leftPad + (f-0.5) * fretW;
-      if(DOT_FRETS.indexOf(f) !== -1){
-        if(DOUBLE_DOT.indexOf(f) !== -1){
-          svg += '<circle cx="'+(cx)+'" cy="'+(topPad - 14)+'" r="4" fill="#333"/>';
-          svg += '<circle cx="'+(cx)+'" cy="'+(topPad + (OPEN_STRINGS.length-1)*stringSpacing + 14)+'" r="4" fill="#333"/>';
-        } else {
-          var dotY = topPad + (OPEN_STRINGS.length-1)*stringSpacing/2;
-          svg += '<circle cx="'+cx+'" cy="'+dotY+'" r="4" fill="#333"/>';
-        }
-      }
+  // Frets
+  for(var fret = 0; fret <= FB_FRET_COUNT; fret++){
+    svg.append(svgEl("line", {
+      x1: xForFret(fret), y1: FB_TOP - 16,
+      x2: xForFret(fret), y2: FB_BOTTOM + 16,
+      stroke: fret === 0 ? "#d4af69" : "#8a7a62",
+      "stroke-width": fret === 0 ? 9 : 3
+    }));
+    if(fret > 0){
+      var t = svgEl("text", { x: noteX(fret), y: 310, "text-anchor": "middle", fill: "rgba(212,175,105,0.5)", "font-size": "12", "font-family": "JetBrains Mono,monospace" });
+      t.textContent = fret;
+      svg.append(t);
     }
-
-    // Nut
-    svg += '<rect x="'+(leftPad-4)+'" y="'+(topPad-8)+'" width="6" height="'+((OPEN_STRINGS.length-1)*stringSpacing+16)+'" fill="#d4af69" rx="2"/>';
-
-    // Frets
-    for(var f=1; f<=FRET_COUNT; f++){
-      var x = leftPad + f * fretW;
-      svg += '<line x1="'+x+'" y1="'+topPad+'" x2="'+x+'" y2="'+(topPad+(OPEN_STRINGS.length-1)*stringSpacing)+'" stroke="#555" stroke-width="1.5"/>';
-    }
-
-    // Strings
-    for(var s=0; s<OPEN_STRINGS.length; s++){
-      var y = topPad + s * stringSpacing;
-      var thickness = 3 - s * 0.4;
-      svg += '<line x1="'+leftPad+'" y1="'+y+'" x2="'+(leftPad + FRET_COUNT * fretW)+'" y2="'+y+'" stroke="#999" stroke-width="'+thickness+'"/>';
-    }
-
-    // Fret numbers
-    for(var f=1; f<=FRET_COUNT; f++){
-      var x = leftPad + (f-0.5) * fretW;
-      svg += '<text x="'+x+'" y="'+(svgH - 10)+'" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#555">'+f+'</text>';
-    }
-
-    // String labels (left side)
-    for(var s=0; s<OPEN_STRINGS.length; s++){
-      var y = topPad + s * stringSpacing;
-      svg += '<text x="'+(leftPad-18)+'" y="'+(y+4)+'" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="11" font-weight="600" fill="#888">'+OPEN_STRINGS[s]+'</text>';
-    }
-
-    // Notes on frets
-    for(var s=0; s<OPEN_STRINGS.length; s++){
-      for(var f=0; f<=FRET_COUNT; f++){
-        var note = getNote(s, f);
-        var isSharp = note.indexOf('#') !== -1;
-        var x = leftPad + (f === 0 ? -0.5 : f - 0.5) * fretW;
-        var y = topPad + s * stringSpacing;
-        var color = NOTE_COLORS[note];
-        var naturalOnly = NATURAL.indexOf(note) !== -1;
-
-        // Determine visibility based on mode
-        var visible = false;
-        var highlight = false;
-        var revealNote = false;
-
-        if(mode === 'all'){
-          visible = true;
-          highlight = false;
-        } else if(mode === 'individual'){
-          visible = true;
-          highlight = (selectedNote && note === selectedNote);
-        } else if(mode === 'quiz'){
-          var key = s+'-'+f;
-          if(revealed[key]){
-            visible = true;
-            revealNote = true;
-          } else {
-            visible = false;
-          }
-        }
-
-        if(visible){
-          var opacity = '1';
-          var fontSize = '11';
-          var fontWeight = '600';
-          var textColor = '#fff';
-
-          if(mode === 'all'){
-            opacity = naturalOnly ? '1' : '0.7';
-            fontSize = naturalOnly ? '11' : '9';
-          } else if(mode === 'individual'){
-            if(highlight){
-              // Highlighted — bright and large
-              fontSize = '13';
-              fontWeight = '700';
-              opacity = '1';
-            } else {
-              opacity = '0.2';
-              fontSize = '9';
-              textColor = '#666';
-            }
-          } else if(mode === 'quiz' && revealNote){
-            textColor = color;
-            fontWeight = '700';
-          }
-
-          // Background pill for highlighted notes
-          if(mode === 'individual' && highlight){
-            svg += '<rect x="'+(x-14)+'" y="'+(y-10)+'" width="28" height="20" rx="4" fill="'+color+'" opacity="0.9"/>';
-            textColor = '#fff';
-          }
-
-          svg += '<text class="fb-note" data-string="'+s+'" data-fret="'+f+'" x="'+x+'" y="'+(y+4)+'" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="'+fontSize+'" font-weight="'+fontWeight+'" fill="'+textColor+'" opacity="'+opacity+'" style="cursor:pointer;transition:all 0.2s">'+note+'</text>';
-        } else if(mode === 'quiz'){
-          // Clickable dot for quiz mode
-          svg += '<circle class="fb-quiz-dot" data-string="'+s+'" data-fret="'+f+'" cx="'+x+'" cy="'+y+'" r="6" fill="transparent" stroke="#444" stroke-width="1" style="cursor:pointer;transition:all 0.2s"/>';
-        }
-      }
-    }
-
-    // Open strings display
-    if(mode === 'all' || mode === 'individual'){
-      for(var s=0; s<OPEN_STRINGS.length; s++){
-        var note = getNote(s, 0);
-        var y = topPad + s * stringSpacing;
-        var color = NOTE_COLORS[note];
-        var opacity = '1';
-        if(mode === 'individual' && selectedNote){
-          opacity = (note === selectedNote) ? '1' : '0.2';
-        }
-        svg += '<text x="'+(leftPad-36)+'" y="'+(y+4)+'" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" font-weight="700" fill="'+color+'" opacity="'+opacity+'">'+note+'</text>';
-      }
-    }
-
-    svg += '</svg>';
-    return svg;
   }
 
-  function render(){
-    var html = '<div class="fretboard-wrap">';
-    html += buildSVG();
-    html += '</div>';
-    container.innerHTML = html;
-    bindEvents();
-  }
+  // Strings
+  FB_STRINGS.forEach(function(string, i){
+    var y = yForString(i);
+    svg.append(svgEl("line", {
+      x1: FB_LEFT - 42, y1: y, x2: FB_RIGHT, y2: y,
+      stroke: "rgba(255,255,255,0.5)", "stroke-linecap": "round",
+      "stroke-width": 2 + i * 0.55
+    }));
+    var label = svgEl("text", { x: 22, y: y, "text-anchor": "middle", "dominant-baseline": "central", fill: "#d4af69", "font-size": "13", "font-weight": "700", "font-family": "DM Sans,sans-serif" });
+    label.textContent = string.name;
+    svg.append(label);
+  });
 
-  function bindEvents(){
-    if(mode === 'quiz'){
-      container.querySelectorAll('.fb-quiz-dot').forEach(function(dot){
-        dot.addEventListener('click', function(e){
-          e.stopPropagation();
-          var s = parseInt(this.dataset.string);
-          var f = parseInt(this.dataset.fret);
-          revealed[s+'-'+f] = true;
-          render();
-        });
-        dot.addEventListener('mouseenter', function(){
-          this.setAttribute('stroke','#d4af69');
-          this.setAttribute('r','8');
-        });
-        dot.addEventListener('mouseleave', function(){
-          this.setAttribute('stroke','#444');
-          this.setAttribute('r','6');
-        });
+  // Notes
+  FB_STRINGS.forEach(function(string, stringIndex){
+    for(var fret = 0; fret <= FB_FRET_COUNT; fret++){
+      var note = noteNameFromMidi(string.midi + fret);
+      var key = stringIndex + "-" + fret;
+      var group = svgEl("g", {
+        class: "fb-note",
+        transform: "translate(" + noteX(fret) + "," + yForString(stringIndex) + ")",
+        "data-note": note,
+        "data-key": key
       });
+      group.append(svgEl("circle", { r: fret === 0 ? 14 : 16 }));
+      var text = svgEl("text");
+      text.textContent = note;
+      group.append(text);
+      group.addEventListener("click", function(){ if(onNoteClick) onNoteClick(this); });
+      svg.append(group);
     }
-    if(mode === 'individual'){
-      container.querySelectorAll('.fb-note').forEach(function(txt){
-        txt.addEventListener('click', function(e){
-          e.stopPropagation();
-        });
-      });
-    }
-  }
+  });
 
-  // Public API
-  return {
-    setMode: function(m){ mode = m; selectedNote = null; revealed = {}; render(); },
-    setSelectedNote: function(n){ selectedNote = n; render(); },
-    getMode: function(){ return mode; },
-    render: render,
-    reset: function(){ selectedNote = null; revealed = {}; render(); }
-  };
+  container.appendChild(svg);
+  return svg;
 }
 
-// ── UI: Fretboard Panel ──
+// ── Fretboard Panel UI ──
 window.openFretboard = function(){
-  // Check if already open
   var existing = document.getElementById('fretboard-overlay');
   if(existing){ existing.remove(); return; }
+
+  var mode = "all";
+  var selectedNote = "A";
+  var revealed = {};
 
   var overlay = document.createElement('div');
   overlay.id = 'fretboard-overlay';
@@ -240,103 +127,127 @@ window.openFretboard = function(){
 
   // Backdrop
   var backdrop = document.createElement('div');
-  backdrop.style.cssText = 'position:absolute;inset:0;background:rgba(0,0,0,0.7)';
+  backdrop.style.cssText = 'position:absolute;inset:0;background:rgba(0,0,0,0.75)';
   backdrop.addEventListener('click', function(){ overlay.remove(); });
   overlay.appendChild(backdrop);
 
   // Panel
   var panel = document.createElement('div');
-  panel.style.cssText = 'position:relative;z-index:1;background:var(--bg,#0d0b08);border:1px solid var(--border,#222);border-radius:16px;padding:24px;max-width:95vw;max-height:90vh;overflow:auto;box-shadow:0 8px 40px rgba(0,0,0,0.5)';
+  panel.style.cssText = 'position:relative;z-index:1;background:#0d0b08;border:1px solid #2a2218;border-radius:16px;padding:20px 24px 24px;max-width:95vw;width:1100px;box-shadow:0 8px 40px rgba(0,0,0,0.6)';
 
   // Header
-  var header = '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">';
-  header += '<h2 style="font-family:Cinzel,serif;color:var(--gold,#d4af69);font-size:1.1rem;margin:0;font-weight:700">Interactive Fretboard</h2>';
-  header += '<button onclick="document.getElementById(\'fretboard-overlay\').remove()" style="background:none;border:1px solid var(--border,#333);color:var(--dim,#888);width:32px;height:32px;border-radius:6px;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center">&times;</button>';
-  header += '</div>';
+  var header = document.createElement('div');
+  header.style.cssText = 'display:flex;align-items:center;justify-content:space-between;margin-bottom:14px';
+  header.innerHTML = '<h2 style="font-family:Cinzel,serif;color:#d4af69;font-size:1.05rem;margin:0;font-weight:700;letter-spacing:0.04em">Interactive Fretboard</h2>';
 
-  // Mode tabs
-  var tabs = '<div style="display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap">';
-  tabs += '<button class="fb-tab active" data-mode="all" style="background:var(--gold,#d4af69);color:#0d0b08;border:none;padding:8px 16px;border-radius:6px;font-family:DM Sans,sans-serif;font-size:0.78rem;font-weight:600;cursor:pointer">All Notes</button>';
-  tabs += '<button class="fb-tab" data-mode="individual" style="background:var(--card,#1a1714);color:var(--dim,#888);border:1px solid var(--border,#333);padding:8px 16px;border-radius:6px;font-family:DM Sans,sans-serif;font-size:0.78rem;font-weight:600;cursor:pointer">By Note</button>';
-  tabs += '<button class="fb-tab" data-mode="quiz" style="background:var(--card,#1a1714);color:var(--dim,#888);border:1px solid var(--border,#333);padding:8px 16px;border-radius:6px;font-family:DM Sans,sans-serif;font-size:0.78rem;font-weight:600;cursor:pointer">Quiz</button>';
-  tabs += '</div>';
+  var closeBtn = document.createElement('button');
+  closeBtn.innerHTML = '&times;';
+  closeBtn.style.cssText = 'background:none;border:1px solid #333;color:#888;width:30px;height:30px;border-radius:6px;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;transition:all 0.15s';
+  closeBtn.addEventListener('mouseenter', function(){ this.style.borderColor='#d4af69'; this.style.color='#d4af69'; });
+  closeBtn.addEventListener('mouseleave', function(){ this.style.borderColor='#333'; this.style.color='#888'; });
+  closeBtn.addEventListener('click', function(){ overlay.remove(); });
+  header.appendChild(closeBtn);
+  panel.appendChild(header);
 
-  // Note selector (for individual mode)
-  var noteSelector = '<div id="fb-note-selector" style="display:none;margin-bottom:16px">';
-  noteSelector += '<div style="display:flex;gap:4px;flex-wrap:wrap">';
-  var allNotes = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
-  allNotes.forEach(function(n){
-    var col = NOTE_COLORS[n];
-    var isSharp = n.indexOf('#') !== -1;
-    noteSelector += '<button class="fb-note-btn" data-note="'+n+'" style="width:'+(isSharp?'36px':'40px')+';height:36px;border-radius:6px;border:2px solid '+col+'40;background:'+col+'18;color:'+col+';font-family:JetBrains Mono,monospace;font-size:0.75rem;font-weight:700;cursor:pointer;transition:all 0.15s">'+n+'</button>';
+  // Controls
+  var controls = document.createElement('div');
+  controls.style.cssText = 'display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:14px';
+
+  // Mode buttons
+  var modes = [
+    { id: 'all', label: 'All Notes' },
+    { id: 'single', label: 'By Note' },
+    { id: 'quiz', label: 'Quiz' }
+  ];
+  var modeBtns = [];
+  modes.forEach(function(m){
+    var btn = document.createElement('button');
+    btn.textContent = m.label;
+    btn.dataset.mode = m.id;
+    btn.style.cssText = 'border:1px solid #3a2a1a;background:#1a1410;color:#a89880;border-radius:999px;padding:8px 16px;cursor:pointer;font-family:DM Sans,sans-serif;font-size:0.78rem;font-weight:600;transition:all 0.15s';
+    btn.addEventListener('click', function(){
+      mode = m.id;
+      if(mode !== 'quiz') revealed = {};
+      updateMode();
+    });
+    controls.appendChild(btn);
+    modeBtns.push(btn);
   });
-  noteSelector += '</div></div>';
+
+  // Note selector
+  var noteSelect = document.createElement('select');
+  noteSelect.id = 'fb-note-select';
+  noteSelect.style.cssText = 'border:1px solid #3a2a1a;background:#1a1410;color:#a89880;border-radius:999px;padding:8px 12px;cursor:pointer;font-family:DM Sans,sans-serif;font-size:0.78rem;display:none';
+  noteSelect.setAttribute('aria-label', 'Choose note');
+  FB_NOTES.forEach(function(n){
+    var opt = document.createElement('option');
+    opt.value = n;
+    opt.textContent = n;
+    if(n === 'A') opt.selected = true;
+    noteSelect.appendChild(opt);
+  });
+  noteSelect.addEventListener('change', function(){
+    selectedNote = this.value;
+    updateMode();
+  });
+  controls.appendChild(noteSelect);
+  panel.appendChild(controls);
 
   // Fretboard container
-  var fbContainer = '<div id="fb-container" style="overflow-x:auto;padding:8px 0"></div>';
+  var fbWrap = document.createElement('div');
+  fbWrap.style.cssText = 'overflow-x:auto;border-radius:12px';
+  panel.appendChild(fbWrap);
 
-  panel.innerHTML = header + tabs + noteSelector + fbContainer;
   overlay.appendChild(panel);
   document.body.appendChild(overlay);
 
-  // Init fretboard
-  var fb = createFretboard(document.getElementById('fb-container'), {mode:'all'});
-  fb.render();
-
-  // Tab clicks
-  panel.querySelectorAll('.fb-tab').forEach(function(tab){
-    tab.addEventListener('click', function(){
-      panel.querySelectorAll('.fb-tab').forEach(function(t){
-        t.style.background = 'var(--card,#1a1714)';
-        t.style.color = 'var(--dim,#888)';
-        t.style.border = '1px solid var(--border,#333)';
-        t.classList.remove('active');
-      });
-      this.style.background = 'var(--gold,#d4af69)';
-      this.style.color = '#0d0b08';
-      this.style.border = 'none';
-      this.classList.add('active');
-
-      var m = this.dataset.mode;
-      fb.setMode(m);
-
-      var noteSel = document.getElementById('fb-note-selector');
-      noteSel.style.display = m === 'individual' ? 'block' : 'none';
-
-      // Reset note buttons
-      if(m === 'individual'){
-        panel.querySelectorAll('.fb-note-btn').forEach(function(b){
-          b.style.background = NOTE_COLORS[b.dataset.note] + '18';
-          b.style.transform = 'none';
-          b.style.boxShadow = 'none';
-        });
-      }
-    });
+  // Build SVG
+  buildFretboardSVG(fbWrap, function(noteEl){
+    if(mode !== 'quiz') return;
+    var key = noteEl.dataset.key;
+    revealed[key] = true;
+    updateMode();
   });
 
-  // Note button clicks (individual mode)
-  panel.querySelectorAll('.fb-note-btn').forEach(function(btn){
-    btn.addEventListener('click', function(){
-      var note = this.dataset.note;
-      var isActive = this.style.transform === 'scale(1.1)';
-
-      // Reset all buttons
-      panel.querySelectorAll('.fb-note-btn').forEach(function(b){
-        b.style.background = NOTE_COLORS[b.dataset.note] + '18';
-        b.style.transform = 'none';
-        b.style.boxShadow = 'none';
-      });
-
+  function updateMode(){
+    // Update buttons
+    modeBtns.forEach(function(btn){
+      var isActive = btn.dataset.mode === mode;
       if(isActive){
-        fb.setSelectedNote(null);
+        btn.style.background = '#d4af69';
+        btn.style.color = '#0d0b08';
+        btn.style.borderColor = '#e8c06a';
       } else {
-        this.style.background = NOTE_COLORS[note];
-        this.style.transform = 'scale(1.1)';
-        this.style.boxShadow = '0 0 12px ' + NOTE_COLORS[note] + '60';
-        fb.setSelectedNote(note);
+        btn.style.background = '#1a1410';
+        btn.style.color = '#a89880';
+        btn.style.borderColor = '#3a2a1a';
       }
     });
-  });
+
+    // Show/hide note selector
+    noteSelect.style.display = mode === 'single' ? 'inline-block' : 'none';
+
+    // Update note elements
+    var noteEls = fbWrap.querySelectorAll('.fb-note');
+    noteEls.forEach(function(noteEl){
+      var note = noteEl.dataset.note;
+      var key = noteEl.dataset.key;
+      noteEl.classList.remove('fb-hidden', 'fb-ghost', 'fb-dimmed', 'fb-clickable');
+
+      if(mode === 'all'){
+        // show everything
+      }
+      if(mode === 'single'){
+        if(note !== selectedNote) noteEl.classList.add('fb-dimmed');
+      }
+      if(mode === 'quiz'){
+        noteEl.classList.add('fb-clickable');
+        if(!revealed[key]) noteEl.classList.add('fb-ghost');
+      }
+    });
+  }
+
+  updateMode();
 
   // Keyboard: Escape to close
   function onKey(e){
@@ -347,7 +258,5 @@ window.openFretboard = function(){
   }
   document.addEventListener('keydown', onKey);
 };
-
-window.FretboardEngine = createFretboard;
 
 })();
