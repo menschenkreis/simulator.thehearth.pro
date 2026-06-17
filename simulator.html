@@ -101,7 +101,7 @@
 [data-theme="sparks"] .top-title{font-size:1.1rem !important;color:var(--gold) !important;font-family:DM Sans,sans-serif !important;font-weight:700 !important;}
 /* Sims-style sidebar buttons */
 [data-theme="sparks"] .bot{background:var(--panel) !important;border-right:none !important;padding:12px 10px !important;gap:6px !important;}
-[data-theme="sparks"] .bt{padding:8px 14px !important;border-radius:10px !important;border:2px solid #F0E0D0 !important;background:#FFF5EA !important;box-shadow:0 2px 0 #E0C8B0 !important;transition:all 0.1s !important;margin-bottom:4px !important;width:auto !important;}
+[data-theme="sparks"] .bt{padding:8px 14px !important;border-radius:10px !important;border:2px solid #F0E0D0 !important;background:#FFF5EA !important;box-shadow:0 2px 0 #E0C8B0 !important;transition:all 0.1s !important;margin-bottom:2px !important;width:auto !important;}
 [data-theme="sparks"] .bt .bl{font-size:0.75rem !important;color:#1A1A2E !important;font-weight:700 !important;letter-spacing:0 !important;text-transform:none !important;font-family:DM Sans,sans-serif !important;}
 [data-theme="sparks"] .bt:hover{background:#FFE8D0 !important;border-color:#FF8C42 !important;transform:translateY(-1px) !important;box-shadow:0 3px 0 #D0A070 !important;}
 [data-theme="sparks"] .bt:active{transform:translateY(1px) !important;box-shadow:0 1px 0 #D0A070 !important;}
@@ -310,7 +310,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 .doing-shell{max-width:1080px;margin:0 auto;padding:18px 18px 28px;}
 .doing-hero{display:grid;grid-template-columns:auto 1fr auto;gap:14px;align-items:center;margin:0 0 16px;}
 .doing-hero-icon{width:68px;height:68px;border-radius:50%;object-fit:cover;border:2px solid rgba(212,175,105,0.55);box-shadow:0 0 26px rgba(212,175,105,0.12);}
-.doing-kicker{font-family:JetBrains Mono,monospace;font-size:0.62rem;color:var(--amber);letter-spacing:0.16em;text-transform:uppercase;margin-bottom:4px;}
+.doing-kicker{font-family:JetBrains Mono,monospace;font-size:0.62rem;color:var(--amber);letter-spacing:0.16em;text-transform:uppercase;margin-bottom:2px;}
 .doing-hero h2{font-family:Cinzel,serif;color:var(--gold);font-size:1.35rem;margin:0;}
 .doing-hero p{color:var(--dim);font-size:0.78rem;line-height:1.45;margin:3px 0 0;max-width:620px;}
 .doing-stat-strip{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;}
@@ -388,7 +388,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 }
 .node-info{
   background:var(--card);border:1px solid var(--border);border-radius:10px;
-  padding:14px 16px;display:none;position:fixed;
+  padding:10px 14px;display:none;position:fixed;
   top:50%;left:50%;transform:translate(-50%,-50%);
   z-index:200;max-width:420px;width:90%;
   box-shadow:0 8px 32px rgba(0,0,0,0.5);
@@ -397,7 +397,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 .node-info .ni-close{position:absolute;top:8px;right:10px;font-size:0.8rem;color:var(--dim);cursor:pointer;}
 .node-info .ni-close:hover{color:var(--gold);}
 .node-info h4{font-family:'Cinzel',serif;color:var(--gold);font-size:0.88rem;margin-bottom:2px;}
-.node-info .ni-tag{font-family:'JetBrains Mono',monospace;font-size:0.5rem;color:var(--amber);letter-spacing:0.12em;margin-bottom:4px;text-transform:uppercase;}
+.node-info .ni-tag{font-family:'JetBrains Mono',monospace;font-size:0.5rem;color:var(--amber);letter-spacing:0.12em;margin-bottom:2px;text-transform:uppercase;}
 .node-info .ni-emoji{font-size:1.2rem;margin-right:6px;}
 .node-info p{font-size:0.72rem;color:var(--dim);line-height:1.6;}
 .node-info .ni-enter{
@@ -493,7 +493,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 .mastery-list li::before{content:'▸';position:absolute;left:0;color:var(--mc,var(--gold));font-size:0.7rem;}
 .mastery-reflect{margin-top:16px;padding:14px;background:rgba(155,89,182,0.04);border:2px solid;border-radius:8px;}
 .mastery-reflect-label{font-family:'DM Sans',sans-serif;font-size:0.72rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:6px;}
-.mastery-video-link{display:inline-block;margin-top:14px;padding:10px 16px;border-radius:6px;font-family:'DM Sans',sans-serif;font-size:0.78rem;font-weight:600;text-decoration:none;border:1px solid;transition:all 0.15s;}
+.mastery-video-link{display:inline-block;margin-top:14px;padding:8px 12px;border-radius:6px;font-family:'DM Sans',sans-serif;font-size:0.78rem;font-weight:600;text-decoration:none;border:1px solid;transition:all 0.15s;}
 .mastery-video-link:hover{transform:translateY(-1px);}
 .mastery-footer{text-align:center;padding:16px 0 8px;}
 
@@ -570,7 +570,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
   .map-wrap{max-width:none;width:100%;height:100%;padding:8px;}
   .map-svg{max-height:calc(100vh - 130px);width:auto;height:100%;max-width:100%;}
   .th-grid{grid-template-columns:repeat(auto-fill,minmax(180px,1fr));}
-  .node-info{padding:20px 24px;margin:14px 18px;}
+  .node-info{padding:12px 16px;margin:14px 18px;}
   .node-info h4{font-size:1.05rem;}
   .node-info p{font-size:0.85rem;}
   .ls-body{padding:24px;}
@@ -1273,8 +1273,8 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
     <label style="display:block;font-family:JetBrains Mono;font-size:.6rem;color:var(--gold);letter-spacing:.1em;text-transform:uppercase;margin:8px 0 4px">Notes (optional)</label>
     <input id="linkDepositNotes" placeholder="What is this video about?" style="width:100%;background:#0d0b08;border:1px solid var(--border);border-radius:8px;color:var(--text);padding:8px 10px;font-size:.8rem">
     <div style="display:flex;gap:8px;margin-top:12px">
-      <button onclick="depositLink()" style="background:var(--gold);color:#0d0b08;border:none;border-radius:8px;padding:10px 16px;font-weight:700;cursor:pointer;font-size:.8rem;flex:1">Save Link</button>
-      <button onclick="toggleLinkDeposit()" style="background:transparent;color:var(--dim);border:1px solid var(--border);border-radius:8px;padding:10px 16px;cursor:pointer;font-size:.8rem">Close</button>
+      <button onclick="depositLink()" style="background:var(--gold);color:#0d0b08;border:none;border-radius:8px;padding:8px 12px;font-weight:700;cursor:pointer;font-size:.8rem;flex:1">Save Link</button>
+      <button onclick="toggleLinkDeposit()" style="background:transparent;color:var(--dim);border:1px solid var(--border);border-radius:8px;padding:8px 12px;cursor:pointer;font-size:.8rem">Close</button>
     </div>
     <div id="linkDepositStatus" style="margin-top:8px;font-size:.7rem;color:var(--dim)"></div>
   </div>
@@ -2193,7 +2193,7 @@ window._showBrainRegion=function(id){
       '<div style="padding:2px 6px;border-radius:3px;font-family:JetBrains Mono;font-size:0.45rem;letter-spacing:1px;'+(ph>=3?'background:'+rg.color+'15;color:'+rg.color+';border:1px solid '+rg.color+'20':'border:1px solid var(--border);color:var(--dim)')+'">CONSOLIDATED</div>'+
     '</div>'+
     '<div style="background:var(--bg);border:1px solid var(--border);border-radius:5px;padding:8px 10px;margin-bottom:8px">'+
-      '<div style="font-family:JetBrains Mono;font-size:0.45rem;color:'+rg.color+';letter-spacing:0.1em;margin-bottom:4px">DATA</div>'+
+      '<div style="font-family:JetBrains Mono;font-size:0.45rem;color:'+rg.color+';letter-spacing:0.1em;margin-bottom:2px">DATA</div>'+
       '<div style="font-family:DM Sans,sans-serif;font-size:0.7rem;color:var(--text)">'+s.label+'</div>'+
     '</div>'+
     (paths.length?'<div style="font-family:JetBrains Mono;font-size:0.45rem;color:var(--dim);letter-spacing:0.1em;margin-bottom:5px">NEURAL TRACTS</div>'+
@@ -2279,23 +2279,23 @@ function showFoundation(){
     // Character on top of pyramid, centered
     '<div style="display:flex;flex-direction:column;align-items:center;flex:1;justify-content:center">'+
       // Character + speech bubble row
-      '<div style="position:relative;display:flex;justify-content:center;margin-bottom:4px">'+
-        '<img src="images/character-neutral.png" class="character-float" style="width:180px;height:180px;object-fit:contain"/>'+
-        '<div id="speech-bubble" class="speech-bubble" style="position:absolute;left:calc(50% + 90px);top:20px;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:10px 14px;width:220px;z-index:5">'+
+      '<div style="position:relative;display:flex;justify-content:center;margin-bottom:2px">'+
+        '<img src="images/character-neutral.png" class="character-float" style="width:120px;height:120px;object-fit:contain"/>'+
+        '<div id="speech-bubble" class="speech-bubble" style="position:absolute;left:calc(50% + 65px);top:10px;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:8px 12px;width:180px;z-index:5">'+
           '<div style="position:absolute;left:-6px;top:20px;width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-right:6px solid var(--border)"></div>'+
-          '<div id="speech-text" style="font-size:0.75rem;line-height:1.45"></div>'+
+          '<div id="speech-text" style="font-size:0.68rem;line-height:1.4"></div>'+
         '</div>'+
       '</div>'+
       // Pyramid stack
       '<div style="display:flex;flex-direction:column;align-items:center">';
 
   // Building blocks - widest at bottom, narrowest at top
-  const maxWidth=620;
-  const minWidth=300;
+  const maxWidth=520;
+  const minWidth=240;
   const step=(maxWidth-minWidth)/(F.topics.length-1);
   // Level 1 as 6th step (narrowest, above topic 5)
   const l1w=minWidth-step;
-  html+='<div id="level1-skeleton" onclick="backToMap()" style="cursor:pointer;width:'+l1w+'px;padding:14px 16px;background:transparent;border:1px dashed '+(pct===100?'#d4af69':'rgba(212,175,105,0.3)')+';border-radius:6px;text-align:center;margin-bottom:6px">'+
+  html+='<div id="level1-skeleton" onclick="backToMap()" style="cursor:pointer;width:'+l1w+'px;padding:8px 12px;background:transparent;border:1px dashed '+(pct===100?'#d4af69':'rgba(212,175,105,0.3)')+';border-radius:6px;text-align:center;margin-bottom:3px">'+
     '<span style="font-family:\'Cinzel\',serif;font-size:0.55rem;letter-spacing:0.12em;text-transform:uppercase;color:'+(pct===100?'#d4af69':'rgba(212,175,105,0.5)')+'">Level 1</span>'+
     (pct===100?'<span style="margin-left:4px;font-size:0.5rem;color:#d4af69">&#10003;</span>':'')+
   '</div>';
@@ -2313,7 +2313,7 @@ function showFoundation(){
     const color=rainbow[i];
 
     if(isLocked){
-      html+='<div style="width:'+w+'px;padding:14px 16px;background:transparent;border:1px dashed '+color+'40;border-radius:6px;text-align:center;position:relative;z-index:'+(F.topics.length-i)+'">'+
+      html+='<div style="width:'+w+'px;padding:10px 14px;background:transparent;border:1px dashed '+color+'40;border-radius:6px;text-align:center;position:relative;z-index:'+(F.topics.length-i)+'">'+
         '<div style="display:flex;align-items:center;justify-content:center;gap:8px">'+
           '<span style="font-family:\'DM Sans\',sans-serif;font-size:1.2rem;color:'+color+'40">'+num+'</span>'+
           '<span style="font-family:\'DM Sans\',sans-serif;font-size:1rem;color:'+color+'30;font-weight:600">'+t.title+'</span>'+
@@ -2323,7 +2323,7 @@ function showFoundation(){
       const border=isDone?color:color+'60';
       const textCol=isDone?'#fff':color;
       const numCol=isDone?'rgba(255,255,255,0.7)':color;
-      html+='<div onclick="showFoundationTopic(\''+t.id+'\')" style="width:'+w+'px;padding:20px 24px;background:'+bg+';border:2px solid '+border+';border-radius:6px;cursor:pointer;transition:all 0.15s;text-align:center;position:relative;z-index:'+(F.topics.length-i)+'">'+
+      html+='<div onclick="showFoundationTopic(\''+t.id+'\')" style="width:'+w+'px;padding:12px 16px;background:'+bg+';border:2px solid '+border+';border-radius:6px;cursor:pointer;transition:all 0.15s;text-align:center;position:relative;z-index:'+(F.topics.length-i)+'">'+
         '<div style="display:flex;align-items:center;justify-content:center;gap:8px">'+
           '<span style="font-family:\'DM Sans\',sans-serif;font-size:2rem;color:'+numCol+';opacity:'+(isDone?'1':'0.6')+';font-weight:700">'+num+'</span>'+
           '<span style="font-family:\'DM Sans\',sans-serif;font-size:1.15rem;color:'+textCol+';font-weight:700">'+t.title+'</span>'+
@@ -2383,7 +2383,7 @@ function rainbowBlocks(items, opts){
 
     if(isLocked){
       html+='<div style="'+
-        'width:'+w+'px;padding:10px 16px;'+
+        'width:'+w+'px;padding:8px 12px;'+
         'background:transparent;'+
         'border:1px dashed '+color+'40;'+
         'border-radius:6px;'+
@@ -2504,7 +2504,7 @@ function showFoundationTopic(topicId){
 
   el.innerHTML='<div class="lesson-page" style="border-top:4px solid '+color+'">'+
     '<div class="lp-back" onclick="showFoundation()">\u2190 Foundation</div>'+
-    '<div style="display:flex;justify-content:flex-end;margin-bottom:4px"><button id="ttsBtn" onclick="ttsToggle()" style="background:'+color+'18;color:'+color+';border:1px solid '+color+'40;padding:6px 14px;border-radius:6px;cursor:pointer;font-family:inherit;font-size:0.75rem;font-weight:600">Read aloud</button></div>'+
+    '<div style="display:flex;justify-content:flex-end;margin-bottom:2px"><button id="ttsBtn" onclick="ttsToggle()" style="background:'+color+'18;color:'+color+';border:1px solid '+color+'40;padding:6px 14px;border-radius:6px;cursor:pointer;font-family:inherit;font-size:0.75rem;font-weight:600">Read aloud</button></div>'+
     '<div class="lp-header">'+
       '<div class="lp-tag" style="color:'+color+'">'+topic.num+' / '+F.tag+(isCompleted?' \u00b7 Complete':'')+'</div>'+
       '<h2 style="color:'+color+'">'+topic.title+'</h2>'+
@@ -3312,7 +3312,7 @@ function showStudy(){
     nextUpHtml='<div style="background:var(--card);border:1px solid #5B3A6B40;border-radius:8px;padding:16px;margin-bottom:20px">'+
       '<div style="font-family:JetBrains Mono;font-size:0.6rem;color:#8a6aaa;letter-spacing:0.12em;margin-bottom:8px">WHAT\'S NEXT</div>'+
       (prevTopic?'<div style="font-size:0.7rem;color:var(--dim);margin-bottom:6px">From last time: <span style="color:var(--text)">'+prevTopic.title+'</span></div>':'')+
-      '<div style="color:var(--text);font-size:0.95rem;font-weight:700;font-family:Cinzel,serif;margin-bottom:4px">'+currentTopic.title+'</div>'+
+      '<div style="color:var(--text);font-size:0.95rem;font-weight:700;font-family:Cinzel,serif;margin-bottom:2px">'+currentTopic.title+'</div>'+
       '<div style="font-size:0.7rem;color:var(--dim)">'+currentCat.title+' \u00B7 '+currentTopic.source+'</div>'+
       '<button onclick="showStudySession(\''+currentCat.id+'\',\''+currentTopic.id+'\')" style="margin-top:10px;background:#5B3A6B;color:white;border:none;padding:10px 20px;border-radius:6px;cursor:pointer;font-family:DM Sans,sans-serif;font-size:0.8rem;font-weight:600">Begin Study Session</button>'+
     '</div>';
@@ -3323,7 +3323,7 @@ function showStudy(){
   K.categories.forEach(cat=>{
     const catDone=cat.topics.filter(t=>completed[t.id]).length;
     catListHtml+='<div style="margin-bottom:8px">'+
-      '<div style="font-size:0.7rem;color:var(--dim);margin-bottom:4px;font-weight:600">'+cat.title+' <span style="color:#8a6aaa">'+catDone+'/'+cat.topics.length+'</span></div>'+
+      '<div style="font-size:0.7rem;color:var(--dim);margin-bottom:2px;font-weight:600">'+cat.title+' <span style="color:#8a6aaa">'+catDone+'/'+cat.topics.length+'</span></div>'+
       '<div style="display:flex;flex-wrap:wrap;gap:4px">'+
       cat.topics.map(t=>{
         const done=completed[t.id];
@@ -4754,7 +4754,7 @@ function populateNotebook(){
   // Overall progress
   const overallPct=totalItems>0?Math.round(totalDone/totalItems*100):0;
   html+='<div style="background:var(--card);border:2px solid var(--gold);border-radius:8px;padding:16px;text-align:center;margin-bottom:16px">'+
-    '<div style="font-family:JetBrains Mono;font-size:0.55rem;color:var(--gold);letter-spacing:0.15em;margin-bottom:4px">OVERALL PROGRESS</div>'+
+    '<div style="font-family:JetBrains Mono;font-size:0.55rem;color:var(--gold);letter-spacing:0.15em;margin-bottom:2px">OVERALL PROGRESS</div>'+
     '<div style="font-family:Cinzel,serif;font-size:2rem;color:var(--gold)">'+overallPct+'%</div>'+
     '<div style="font-size:0.7rem;color:var(--dim)">'+totalDone+' of '+totalItems+' completed</div>'+
   '</div>';
@@ -4939,7 +4939,7 @@ function populateDictionary(){
     if(!chapters[ch])return;
     const color=colors[i%colors.length];
     html+='<div onclick="showDictChapter(\''+ch+'\')" style="'+
-      'padding:14px 16px;'+
+      'padding:10px 14px;'+
       'background:'+color+'12;'+
       'border:2px solid '+color+'40;'+
       'border-radius:8px;'+
@@ -5479,7 +5479,7 @@ function renderReferences(){
     var data=window[k];
     if(data&&data.sources&&data.sources.length){
       html+='<div style="margin-bottom:10px">'+
-        '<div style="font-family:JetBrains Mono;font-size:0.55rem;color:var(--amber);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:4px">'+labels[k]+'</div>'+
+        '<div style="font-family:JetBrains Mono;font-size:0.55rem;color:var(--amber);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:2px">'+labels[k]+'</div>'+
         '<div style="font-size:0.65rem;color:var(--dim);line-height:1.5">'+data.sources.join('<br>')+'</div></div>';
     }
   });
