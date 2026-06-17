@@ -83,14 +83,14 @@ function buildFretboardSVG(container, onNoteClick){
       stroke: "rgba(255,255,255,0.5)", "stroke-linecap": "round",
       "stroke-width": 2 + i * 0.55
     }));
-    var label = svgEl("text", { x: 22, y: y, "text-anchor": "middle", "dominant-baseline": "central", fill: "#d4af69", "font-size": "13", "font-weight": "700", "font-family": "DM Sans,sans-serif" });
+    var label = svgEl("text", { x: 16, y: y, "text-anchor": "middle", "dominant-baseline": "central", fill: "#d4af69", "font-size": "13", "font-weight": "700", "font-family": "DM Sans,sans-serif" });
     label.textContent = string.name;
     svg.append(label);
   });
 
   // Notes
   FB_STRINGS.forEach(function(string, stringIndex){
-    for(var fret = 0; fret <= FB_FRET_COUNT; fret++){
+    for(var fret = 1; fret <= FB_FRET_COUNT; fret++){
       var note = noteNameFromMidi(string.midi + fret);
       var key = stringIndex + "-" + fret;
       var group = svgEl("g", {
@@ -99,7 +99,7 @@ function buildFretboardSVG(container, onNoteClick){
         "data-note": note,
         "data-key": key
       });
-      group.append(svgEl("circle", { r: fret === 0 ? 14 : 16 }));
+      group.append(svgEl("circle", { r: 16 }));
       var text = svgEl("text");
       text.textContent = note;
       group.append(text);
