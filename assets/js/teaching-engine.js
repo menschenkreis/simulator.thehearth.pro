@@ -73,9 +73,13 @@ function createTeachingEngine(containerEl, opts){
     bindButtons(step, lesson);
     _teachContinueShown = true;
 
+    var typingDone = false;
+
     // Typewriter effect
     if(isTyping){
-      typewriterEffect();
+      typewriterEffect(function(){ typingDone = true; });
+    } else {
+      typingDone = true;
     }
 
     // Click anywhere to advance (but not on buttons)
