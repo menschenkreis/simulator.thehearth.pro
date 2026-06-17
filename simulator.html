@@ -227,7 +227,37 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 .teach-cards .teach-card:hover{box-shadow:0 4px 20px rgba(0,0,0,0.3);}
 .teach-card.selected{border-color:var(--gold) !important;box-shadow:0 0 20px rgba(212,175,105,0.2);transform:scale(1.03);}
 
-/* Mobile */
+/* Insight Star */
+.insight-star{position:fixed;top:60px;right:16px;z-index:800;cursor:pointer;display:flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:50%;background:rgba(26,23,20,0.85);border:1px solid #3a2a1a;transition:all 0.2s;backdrop-filter:blur(6px);}
+.insight-star:hover{border-color:#d4af69;transform:scale(1.08);box-shadow:0 0 16px rgba(212,175,105,0.25);}
+.insight-star .star-icon{font-size:1.3rem;filter:drop-shadow(0 0 3px rgba(212,175,105,0.4));}
+.insight-star .star-count{position:absolute;top:-4px;right:-4px;background:#d4af69;color:#0d0b08;font-size:0.6rem;font-weight:700;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;}
+.insight-star.pulse{animation:insightPulse 0.4s ease;}
+@keyframes insightPulse{0%{transform:scale(1)}50%{transform:scale(1.2)}100%{transform:scale(1)}}
+.insight-panel{position:fixed;top:110px;right:16px;z-index:801;width:320px;max-height:70vh;background:#0d0b08;border:1px solid #2a2218;border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,0.6);overflow:hidden;display:none;animation:fadeUp 0.2s ease;}
+.insight-panel.show{display:block;}
+.insight-panel-header{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid #2a2218;}
+.insight-panel-header h3{margin:0;font-family:Cinzel,serif;color:#d4af69;font-size:0.85rem;font-weight:600;}
+.insight-panel-body{padding:16px;}
+.insight-count-display{text-align:center;margin-bottom:12px;}
+.insight-count-display .count{font-family:Cinzel,serif;color:#d4af69;font-size:1.8rem;font-weight:700;line-height:1;}
+.insight-count-display .label{font-size:0.7rem;color:#888;margin-top:2px;}
+.insight-input{width:100%;background:#1a1410;border:1px solid #3a2a1a;border-radius:8px;padding:10px 12px;color:#d4c8b0;font-family:'DM Sans',sans-serif;font-size:0.8rem;resize:vertical;min-height:60px;box-sizing:border-box;}
+.insight-input:focus{outline:none;border-color:#d4af69;}
+.insight-input::placeholder{color:#555;}
+.insight-save-btn{width:100%;margin-top:8px;padding:10px;background:#d4af69;color:#0d0b08;border:none;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:0.8rem;font-weight:700;cursor:pointer;transition:all 0.15s;}
+.insight-save-btn:hover{background:#e8c06a;}
+.insight-view-btn{width:100%;margin-top:6px;padding:8px;background:none;border:1px solid #3a2a1a;color:#a89880;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:0.75rem;font-weight:600;cursor:pointer;transition:all 0.15s;}
+.insight-view-btn:hover{border-color:#d4af69;color:#d4af69;}
+.insight-list{max-height:300px;overflow-y:auto;}
+.insight-item{padding:10px 0;border-bottom:1px solid #1a1410;}
+.insight-item:last-child{border-bottom:none;}
+.insight-item-time{font-size:0.65rem;color:#666;font-family:'JetBrains Mono',monospace;}
+.insight-item-text{font-size:0.78rem;color:#d4c8b0;margin-top:3px;line-height:1.4;}
+.insight-item-context{font-size:0.65rem;color:#888;margin-top:2px;font-style:italic;}
+.insight-empty{text-align:center;color:#555;font-size:0.78rem;padding:20px 0;}
+.insight-close-btn{background:none;border:none;color:#888;cursor:pointer;font-size:1.1rem;padding:2px 6px;transition:color 0.15s;}
+.insight-close-btn:hover{color:#d4af69;}
 @media(max-width:600px){
   .teach-scene{flex-direction:column;align-items:center;gap:8px;padding:12px 8px 8px;}
   .teach-char-wrap{flex:0 0 auto;}
@@ -1227,6 +1257,27 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
   </div>
   <div class="top-right">
     <button onclick="toggleCredits()" style="background:none;border:none;color:var(--dim);font-size:0.8rem;cursor:pointer;padding:4px 8px;min-height:unset;" title="Credits">©</button>
+  </div>
+  <!-- Insight Star -->
+  <div class="insight-star" id="insightStar" onclick="toggleInsightPanel()">
+    <span class="star-icon">★</span>
+    <span class="star-count" id="insightCount">0</span>
+  </div>
+  <div class="insight-panel" id="insightPanel">
+    <div class="insight-panel-header">
+      <h3>★ Insights Gained</h3>
+      <button class="insight-close-btn" onclick="toggleInsightPanel()">×</button>
+    </div>
+    <div class="insight-panel-body" id="insightPanelBody">
+      <div class="insight-count-display">
+        <div class="count" id="insightCountBig">0</div>
+        <div class="label">insights logged</div>
+      </div>
+      <textarea class="insight-input" id="insightInput" placeholder="What did you just learn? What clicked?"></textarea>
+      <button class="insight-save-btn" onclick="saveInsight()">Log Insight ★</button>
+      <button class="insight-view-btn" id="insightViewBtn" onclick="viewInsights()">View All Insights</button>
+      <div id="insightListContainer"></div>
+    </div>
   </div>
   <!-- Search Panel -->
   <div class="search-panel" id="searchPanel">
@@ -5059,6 +5110,114 @@ function toggleCredits(){
   </div>`;
   document.body.appendChild(d);
 }
+
+// ═══════════════════════════════════════════════════════
+// INSIGHT STAR — Log "aha moments" during learning
+// ═══════════════════════════════════════════════════════
+function getInsights(){
+  try { return JSON.parse(localStorage.getItem('hearth-insights') || '[]'); }
+  catch(e){ return []; }
+}
+function saveInsights(arr){
+  localStorage.setItem('hearth-insights', JSON.stringify(arr));
+}
+function getInsightCount(){
+  return getInsights().length;
+}
+function updateInsightCount(){
+  var count = getInsightCount();
+  document.getElementById('insightCount').textContent = count;
+  document.getElementById('insightCountBig').textContent = count;
+  // Hide count badge when zero
+  document.getElementById('insightCount').style.display = count > 0 ? 'flex' : 'none';
+}
+function toggleInsightPanel(){
+  var panel = document.getElementById('insightPanel');
+  panel.classList.toggle('show');
+  if(panel.classList.contains('show')){
+    document.getElementById('insightInput').focus();
+    // Reset to input view
+    document.getElementById('insightInput').style.display = '';
+    document.querySelector('.insight-save-btn').style.display = '';
+    document.getElementById('insightViewBtn').style.display = '';
+    document.getElementById('insightListContainer').innerHTML = '';
+  }
+}
+function saveInsight(){
+  var input = document.getElementById('insightInput');
+  var text = input.value.trim();
+  if(!text){ input.style.borderColor='#e74c3c'; setTimeout(function(){ input.style.borderColor=''; },1000); return; }
+
+  var insights = getInsights();
+  // Capture context: current page/section
+  var context = '';
+  var activePnl = document.querySelector('.pnl.on');
+  if(activePnl) context = activePnl.id.replace('p-','');
+
+  insights.unshift({
+    text: text,
+    context: context,
+    time: new Date().toISOString(),
+    id: Date.now()
+  });
+  saveInsights(insights);
+
+  // Pulse the star
+  var star = document.getElementById('insightStar');
+  star.classList.remove('pulse');
+  void star.offsetWidth;
+  star.classList.add('pulse');
+
+  // Clear input
+  input.value = '';
+  updateInsightCount();
+
+  // Flash save button
+  var btn = document.querySelector('.insight-save-btn');
+  btn.textContent = '★ Saved!';
+  btn.style.background = '#2ecc71';
+  setTimeout(function(){ btn.textContent = 'Log Insight ★'; btn.style.background = ''; }, 1500);
+}
+function viewInsights(){
+  var insights = getInsights();
+  var container = document.getElementById('insightListContainer');
+  var input = document.getElementById('insightInput');
+  var saveBtn = document.querySelector('.insight-save-btn');
+  var viewBtn = document.getElementById('insightViewBtn');
+
+  if(container.innerHTML){
+    // Toggle back to input view
+    container.innerHTML = '';
+    input.style.display = '';
+    saveBtn.style.display = '';
+    viewBtn.textContent = 'View All Insights';
+    return;
+  }
+
+  input.style.display = 'none';
+  saveBtn.style.display = 'none';
+  viewBtn.textContent = '← Back to Input';
+
+  if(insights.length === 0){
+    container.innerHTML = '<div class="insight-empty">No insights yet. Click the star or use the button above to log your first insight.</div>';
+    return;
+  }
+
+  var html = '<div class="insight-list">';
+  insights.forEach(function(ins){
+    var d = new Date(ins.time);
+    var timeStr = d.toLocaleDateString('en-GB', {day:'numeric',month:'short'}) + ' ' + d.toLocaleTimeString('en-GB', {hour:'2-digit',minute:'2-digit'});
+    html += '<div class="insight-item">';
+    html += '<div class="insight-item-time">' + timeStr + '</div>';
+    html += '<div class="insight-item-text">' + ins.text.replace(/</g,'&lt;') + '</div>';
+    if(ins.context) html += '<div class="insight-item-context">' + ins.context + '</div>';
+    html += '</div>';
+  });
+  html += '</div>';
+  container.innerHTML = html;
+}
+// Init count on load
+updateInsightCount();
 </script>
 <script src="assets/js/practice-room.js?v=1"></script>
 <script src="assets/js/hearth-brain.js?v=1"></script>
