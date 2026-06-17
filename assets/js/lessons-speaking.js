@@ -51,6 +51,11 @@ window.LESSON_SPEAKING = {
       text: '<p>Your right hand has two basic strokes:</p><p><strong>Rest stroke</strong> — push the string down until your finger rests on the next string. <em>Full, round, powerful.</em> Best for notes that need to stand out.</p><p><strong>Free stroke</strong> — pluck and let your finger come back up into the air. <em>Lighter, more open.</em> Best for faster passages and multiple strings.</p><p>Try both on the same string. Hear the difference?</p>'
     },
     {
+      type: 'speak',
+      char: TeachingCHAR.neutral,
+      text: '<p>A note about your right thumb: it should rest on or near the <strong>bass strings</strong> (the thickest 3 strings). It stays ahead of your fingers — closer to the headstock — so when you pluck downward, your thumb and fingers don\'t collide. The thumb moves from its <strong>rear joint</strong>, not the tip. Keep the tip straight.</p><p>Your right hand sits near the soundhole, slightly toward the bridge. Relaxed. Not hovering. Not pressing. Just <em>there</em>.</p>'
+    },
+    {
       type: 'ask',
       concept: 'stroke-types',
       char: TeachingCHAR.thinking,
@@ -78,7 +83,7 @@ window.LESSON_SPEAKING = {
     {
       type: 'speak',
       char: TeachingCHAR.encouraging,
-      text: '<p>Now your left hand joins in. Pick a string — any string, open. Now press down on <strong>fret 1</strong> with your index finger.</p><p>Where? <strong>Right behind the fret wire</strong> — not on top, not in the middle. Just behind it.</p><p>How hard? Just enough to make the note ring clean. If it buzzes, press harder. If your finger hurts, press lighter. The sweet spot is surprisingly gentle.</p>'
+      text: '<p>Now your left hand joins in. Pick a string — any string, open. Now press down on <strong>fret 1</strong> with your index finger.</p><p>Where? <strong>Right behind the fret wire</strong> — not on top, not in the middle. Just behind it.</p><p>How hard? Just enough to make the note ring clean. If it buzzes, press harder. If your finger hurts, press lighter. The sweet spot is surprisingly gentle.</p><p><strong>Thumb check:</strong> while you fret, your left thumb should stay <strong>behind the neck</strong>, roughly opposite your middle finger. It provides counter-pressure — it doesn\'t squeeze. If your thumb creeps over the top of the neck, your fingers lose reach. Keep it behind. The pad of the thumb, not the tip.</p>'
     },
     {
       type: 'ask',

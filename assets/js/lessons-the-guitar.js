@@ -54,6 +54,12 @@ window.LESSON_THE_GUITAR = {
       text: '<p>Now — how to sit with it. This matters more than you think.</p><p>• Sit on the front edge of your chair<br>• Feet flat on the floor<br>• Guitar rests on your right leg<br>• Neck points slightly up<br>• Right arm rests gently over the body<br>• Left hand holds the neck — thumb behind, fingers curved</p><p>The guitar should feel <strong>supported, not clamped</strong>.</p>'
     },
     {
+      type: 'speak',
+      char: TeachingCHAR.encouraging,
+      charSize: 'big',
+      text: '<p><strong>The thumb is everything.</strong></p><p>Your left thumb goes <strong>behind the neck</strong>, roughly opposite your middle finger. It acts as a <em>support</em> — a counter-pressure point for your fingers. It should NOT push hard. Think of it as a shelf your fingers lean against, not a clamp.</p><p>The <strong>pad</strong> (flat part) of the thumb touches the neck, not the tip. Keep the thumb joint straight — don\'t bend the tip joint, as this creates tension that spreads into your palm and fingers.</p><p>Your hand should form a gentle <strong>C shape</strong> — thumb on one side, fingers on the other, with the neck sitting in the middle.</p>'
+    },
+    {
       type: 'ask',
       concept: 'posture',
       char: TeachingCHAR.thinking,

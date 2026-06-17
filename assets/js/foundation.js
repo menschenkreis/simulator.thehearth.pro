@@ -256,6 +256,7 @@ const FOUNDATION = {
 • Your right arm rests gently over the body — its weight holds the guitar in place<br>
 • Your left hand holds the neck — thumb behind it, fingers curved, wrist mostly straight</p>
 <p>The guitar should feel <strong>supported, not clamped</strong>. If you're squeezing, you're doing it wrong.</p>
+<p><strong>Thumb placement:</strong> your left thumb goes behind the neck, roughly opposite your middle finger. Use the pad (flat part), not the tip. Keep the thumb joint straight — don't bend the tip, as this creates tension that spreads into your palm. Your hand forms a gentle C-shape: thumb on one side, fingers on the other, neck in the middle.</p>
 <p>A trick: sit without the guitar. Put a pillow on your right leg. Rest your arm over it. Notice how your arm falls naturally? That's how it should feel on the guitar.</p>`
         },
         {
