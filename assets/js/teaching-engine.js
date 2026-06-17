@@ -107,9 +107,8 @@ function createTeachingEngine(containerEl, opts){
     html += closeCharArea();
 
     container.innerHTML = html;
+    bindButtons(step, lesson);
     typewriterEffect();
-
-    // Bind choice buttons
     container.querySelectorAll('.teach-choice').forEach(btn => {
       btn.addEventListener('click', function(){
         const idx = parseInt(this.dataset.idx);
@@ -321,11 +320,10 @@ function createTeachingEngine(containerEl, opts){
       '</div>';
   }
   function closeCharArea(){
-    // Single unified nav button: Back (if history) or a contextual Next
     var navLabel = state.history.length > 0 ? '\u2190 Back' : 'Next \u25B8';
     var navAction = state.history.length > 0 ? 'back' : 'advance';
     return '<div style="display:flex;justify-content:center;padding:10px 16px;max-width:700px;margin:0 auto">' +
-      '<button data-action="'+navAction+'" style="background:none;border:1px solid #3a2a1a;color:#a89880;padding:8px 24px;border-radius:6px;cursor:pointer;font-family:DM Sans,sans-serif;font-size:0.8rem;font-weight:600;letter-spacing:0.02em;transition:all 0.15s" onmouseenter="this.style.borderColor=\u2018#d4af69\u2019;this.style.color=\u2018#d4af69\u2019" onmouseleave="this.style.borderColor=\u2018#3a2a1a\u2019;this.style.color=\u2018#a89880\u2019">'+navLabel+'</button>' +
+      '<button class="fb-nav-btn" data-action="'+navAction+'" style="background:none;border:1px solid #3a2a1a;color:#a89880;padding:8px 24px;border-radius:6px;cursor:pointer;font-family:DM Sans,sans-serif;font-size:0.8rem;font-weight:600;letter-spacing:0.02em;transition:all 0.15s">'+navLabel+'</button>' +
     '</div></div>';
   }
 
