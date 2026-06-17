@@ -1,0 +1,96 @@
+// ═══════════════════════════════════════════════════════
+// LESSON: Guitar Conversations (Block 07 — Foundation)
+// ═══════════════════════════════════════════════════════
+
+window.LESSON_CONVERSATIONS = {
+  id: 'f-conversations',
+  title: 'Guitar Conversations',
+  completeText: '<p style="text-align:center"><strong>You can make clean notes and move between them.</strong></p><p style="text-align:center">Both hands working together — right hand creating sound, left hand changing pitch.</p><p style="text-align:center;margin-top:16px;font-family:Cinzel,serif;color:var(--gold);font-size:1rem">FOUNDATION COMPLETE</p><p style="text-align:center;font-size:0.85rem;color:var(--dim);margin-top:4px">Seven layers. Each one builds on the last.<br>How to Learn → Language → Music → Guitar → The Instrument → Speaking → Conversations</p>',
+
+  steps: [
+    {
+      type: 'speak',
+      char: TeachingCHAR.neutral,
+      text: '<p>You can make a clean note. Good. But music isn\'t one note — it\'s notes <em>moving</em>.</p><p>This is the last block of Foundation. After this, you\'re ready for everything that comes next.</p>'
+    },
+    {
+      type: 'speak',
+      char: TeachingCHAR.encouraging,
+      charSize: 'big',
+      text: '<p>The moment you play one note, then another, you\'ve created an <strong>interval</strong> — the distance between two sounds.</p><p>This is the DNA of melody. Every song ever written is just intervals — sequences of distances between notes.</p><p>The real skill isn\'t playing one note. It\'s moving from one note to the next <em>cleanly</em>.</p>'
+    },
+    {
+      type: 'ask',
+      concept: 'interval-melody',
+      char: TeachingCHAR.thinking,
+      text: '<p>What is the DNA of melody?</p>',
+      choices: [
+        {
+          label: 'Intervals — distances between notes',
+          correct: true,
+          response: {
+            char: TeachingCHAR.celebratory,
+            charSize: 'big',
+            text: '<p>Yes. Every riff, every solo, every melody is just a sequence of intervals. You\'re about to play your first ones.</p>'
+          }
+        },
+        {
+          label: 'Chords — notes played together',
+          correct: false,
+          reexplain: [
+            { char: TeachingCHAR.encouraging, text: '<p>Chords come later. Right now we\'re talking about melody — notes played one after another.</p>' },
+            { char: TeachingCHAR.neutral, text: '<p>Melody is built from <strong>intervals</strong> — the distance from one note to the next. Chords are notes played simultaneously. Intervals are the DNA of melody. Chords are the harmony.</p>' },
+            { char: TeachingCHAR.thinking, text: '<p>So what is the DNA of melody?</p>' }
+          ]
+        }
+      ]
+    },
+    {
+      type: 'speak',
+      char: TeachingCHAR.encouraging,
+      text: '<p>Here\'s your first real exercise. Put both hands together:</p><p>1. Pick the 3rd string (G) — play it open<br>2. Press fret 2 with your index finger (behind the fret wire)<br>3. Pick it again<br>4. Lift your finger. Play open again.</p><p>Open → Fret 2 → Open. That\'s a whole step up, then back down. Your first two-note sequence.</p><p>Do it 10 times. Listen: does each note ring clean? Is the transition smooth?</p>'
+    },
+    {
+      type: 'ask',
+      concept: 'two-note-sequence',
+      char: TeachingCHAR.thinking,
+      text: '<p>What interval did you just play (open to fret 2)?</p>',
+      choices: [
+        {
+          label: 'A whole step — two frets up',
+          correct: true,
+          response: {
+            char: TeachingCHAR.celebratory,
+            text: '<p>Yes! Fret 0 to fret 2 = two frets = whole step. You just played a real interval with your own hands. Theory you can feel.</p>'
+          }
+        },
+        {
+          label: 'A half step — one fret up',
+          correct: false,
+          reexplain: [
+            { char: TeachingCHAR.encouraging, text: '<p>Close — but count the frets.</p>' },
+            { char: TeachingCHAR.neutral, text: '<p>Open is fret 0. You pressed fret 2. That\'s <strong>two frets</strong> = two half steps = one <strong>whole step</strong>. A half step would be fret 0 to fret 1.</p>' },
+            { char: TeachingCHAR.thinking, text: '<p>So what interval is open to fret 2?</p>' }
+          ]
+        }
+      ]
+    },
+    {
+      type: 'speak',
+      char: TeachingCHAR.encouraging,
+      text: '<p>Now let\'s walk. Same string, one fret at a time:</p><p>Open → Fret 1 → Fret 2 → Fret 3 → Fret 4</p><p>Right hand picks. Left hand frets. One at a time. Slow and clean.</p><p>Now walk back: Fret 4 → Fret 3 → Fret 2 → Fret 1 → Open</p><p>This is the fundamental movement of guitar — <strong>fingers walking along a string</strong>. Every scale, every riff, every melody is built from this.</p>'
+    },
+    {
+      type: 'speak',
+      char: TeachingCHAR.neutral,
+      text: '<p>Try it on a different string tomorrow. Then another. One string per day. Within a week, your hands will start to <em>know</em> the fretboard.</p><p>You\'re not just learning exercises. You\'re building the foundation of every technique you\'ll ever use.</p>'
+    },
+    {
+      type: 'end',
+      char: TeachingCHAR.celebratory,
+      charSize: 'big',
+      buttonLabel: 'Foundation Complete →',
+      text: '<p style="text-align:center"><strong>You can make clean notes and move between them.</strong></p><p style="text-align:center">Both hands working together — right hand creating sound, left hand changing pitch.</p><p style="text-align:center">You can walk up and down a string. You\'ve played your first intervals.</p><p style="text-align:center;margin-top:16px;font-family:Cinzel,serif;color:var(--gold);font-size:1rem">FOUNDATION COMPLETE</p><p style="text-align:center;font-size:0.85rem;color:var(--dim);margin-top:4px">Seven layers. Each one builds on the last.<br>How to Learn → Language → Music → Guitar → The Instrument → Speaking → Conversations</p><p style="text-align:center;font-size:0.85rem;color:var(--dim);margin-top:8px">You now have the foundation for everything that comes next.</p>'
+    }
+  ]
+};
