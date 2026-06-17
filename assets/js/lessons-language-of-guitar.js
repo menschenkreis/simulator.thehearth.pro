@@ -19,7 +19,7 @@ window.LESSON_LANGUAGE_OF_GUITAR = {
     // ── THE STRING NAMES ──
     {
       type: 'speak',
-      char: TeachingCHAR.lightbulb,
+      char: TeachingCHAR.encouraging,
       charSize: 'big',
       text: '<p>The strings, from thickest (closest to you) to thinnest (closest to the floor):</p><p><strong>E — A — D — G — B — E</strong></p><p>A trick to remember them: <em>"Eddie Ate Dynamite, Good Bye Eddie"</em></p><p>Each string is tuned to a specific note. When you play it "open" (without pressing any fret), that\'s its name.</p>',
     },
@@ -28,7 +28,7 @@ window.LESSON_LANGUAGE_OF_GUITAR = {
     {
       type: 'ask',
       concept: 'string-names',
-      char: TeachingCHAR.question,
+      char: TeachingCHAR.thinking,
       charSize: 'big',
       text: '<p>What are the 6 string names, from thickest to thinnest?</p>',
       choices: [
@@ -36,7 +36,7 @@ window.LESSON_LANGUAGE_OF_GUITAR = {
           label: 'E A D G B E',
           correct: true,
           response: {
-            char: TeachingCHAR.sparks,
+            char: TeachingCHAR.celebratory,
             charSize: 'big',
             text: '<p>Nailed it. "Eddie Ate Dynamite, Good Bye Eddie."</p><p>Notice: the thinnest and thickest strings are both E — but different octaves. The high E is higher in pitch. The low E is lower. Same note, different versions.</p>'
           }
@@ -46,7 +46,7 @@ window.LESSON_LANGUAGE_OF_GUITAR = {
           correct: false,
           reexplain: [
             { char: TeachingCHAR.encouraging, text: '<p>Close — you\'ve got the right notes, just reversed.</p>' },
-            { char: TeachingCHAR.lightbulb, text: '<p>From thickest to thinnest: <strong>E A D G B E</strong>. Remember "Eddie Ate Dynamite, Good Bye Eddie." The thickest string (closest to you) is low E. The thinnest (closest to the floor) is high E.</p>' },
+            { char: TeachingCHAR.encouraging, text: '<p>From thickest to thinnest: <strong>E A D G B E</strong>. Remember "Eddie Ate Dynamite, Good Bye Eddie." The thickest string (closest to you) is low E. The thinnest (closest to the floor) is high E.</p>' },
             { char: TeachingCHAR.neutral, text: '<p>So what are the 6 string names, from thickest to thinnest?</p>' }
           ]
         }
@@ -64,14 +64,14 @@ window.LESSON_LANGUAGE_OF_GUITAR = {
     {
       type: 'ask',
       concept: 'fret-movement',
-      char: TeachingCHAR.question,
+      char: TeachingCHAR.thinking,
       text: '<p>If the thickest string is E, what note is at fret 1?</p>',
       choices: [
         {
           label: 'F (one half step up from E)',
           correct: true,
           response: {
-            char: TeachingCHAR.lightbulb,
+            char: TeachingCHAR.encouraging,
             text: '<p>Yes! E → F is one half step — one fret. Remember from Block 03: E to F is one of the "short jumps" (no sharp between them). That\'s why fret 1 on the low E string is F, not E#.</p>'
           }
         },
@@ -80,7 +80,7 @@ window.LESSON_LANGUAGE_OF_GUITAR = {
           correct: false,
           reexplain: [
             { char: TeachingCHAR.encouraging, text: '<p>Almost — but remember the "short jumps" from Block 03?</p>' },
-            { char: TeachingCHAR.lightbulb, text: '<p>E to F is one of the special pairs with no sharp between them. So fret 1 on the low E string is <strong>F</strong>, not E#. One half step up = one fret = F.</p>' },
+            { char: TeachingCHAR.encouraging, text: '<p>E to F is one of the special pairs with no sharp between them. So fret 1 on the low E string is <strong>F</strong>, not E#. One half step up = one fret = F.</p>' },
             { char: TeachingCHAR.neutral, text: '<p>So if the thickest string is E, what note is at fret 1?</p>' }
           ]
         }
@@ -90,7 +90,7 @@ window.LESSON_LANGUAGE_OF_GUITAR = {
     // ── THE OCTAVE ──
     {
       type: 'speak',
-      char: TeachingCHAR.lightbulb,
+      char: TeachingCHAR.encouraging,
       text: '<p>Look at your guitar neck. Around the 12th fret, you\'ll see two dots. This is a special spot.</p><p>Fret 12 is the <strong>octave</strong> — the same note as the open string, but one octave higher. Higher in pitch, same name.</p><p>This means the fretboard repeats. Notes 1-11 are the "lower" version. Notes 12+ are the "higher" version. The pattern is the same — just shifted up.</p>',
     },
 
@@ -98,14 +98,14 @@ window.LESSON_LANGUAGE_OF_GUITAR = {
     {
       type: 'ask',
       concept: 'octave',
-      char: TeachingCHAR.question,
+      char: TeachingCHAR.thinking,
       text: '<p>What happens at fret 12?</p>',
       choices: [
         {
           label: 'The same note as the open string, but one octave higher',
           correct: true,
           response: {
-            char: TeachingCHAR.sparks,
+            char: TeachingCHAR.celebratory,
             charSize: 'big',
             text: '<p>Exactly. The fretboard repeats at fret 12. This is why guitar is powerful: once you learn a pattern in one position, you can move it anywhere. The pattern stays the same — the starting note changes.</p>'
           }
@@ -115,7 +115,7 @@ window.LESSON_LANGUAGE_OF_GUITAR = {
           correct: false,
           reexplain: [
             { char: TeachingCHAR.encouraging, text: '<p>Not quite — the octave is about pitch, not volume.</p>' },
-            { char: TeachingCHAR.lightbulb, text: '<p>Fret 12 is the <strong>octave</strong> — the same note as the open string, but one octave higher. "Octave" means "eight" (there are 8 notes in a scale from root to root). The fretboard pattern repeats at fret 12. Same shape, higher pitch.</p>' },
+            { char: TeachingCHAR.encouraging, text: '<p>Fret 12 is the <strong>octave</strong> — the same note as the open string, but one octave higher. "Octave" means "eight" (there are 8 notes in a scale from root to root). The fretboard pattern repeats at fret 12. Same shape, higher pitch.</p>' },
             { char: TeachingCHAR.neutral, text: '<p>So what happens at fret 12?</p>' }
           ]
         }
@@ -133,14 +133,14 @@ window.LESSON_LANGUAGE_OF_GUITAR = {
     {
       type: 'ask',
       concept: 'note-finding',
-      char: TeachingCHAR.question,
+      char: TeachingCHAR.thinking,
       text: '<p>What\'s the best way to learn the fretboard?</p>',
       choices: [
         {
           label: 'One note per day — find it on every string',
           correct: true,
           response: {
-            char: TeachingCHAR.sparks,
+            char: TeachingCHAR.celebratory,
             charSize: 'big',
             text: '<p>That\'s the way. Don\'t try to memorise the whole fretboard at once — that\'s the steep gradient from Block 01. One note per day. Find every E. Then every A. Then every D. Within a week, you\'ll know the whole fretboard.</p>'
           }
@@ -150,7 +150,7 @@ window.LESSON_LANGUAGE_OF_GUITAR = {
           correct: false,
           reexplain: [
             { char: TeachingCHAR.encouraging, text: '<p>That\'s the steep gradient — trying to learn everything at once.</p>' },
-            { char: TeachingCHAR.lightbulb, text: '<p>Remember Block 01: too steep a gradient blocks learning. Instead, break it down. One note per day. Find every E on every string. Then A. Then D. Within a week, you\'ll know the whole fretboard — and you\'ll actually remember it.</p>' },
+            { char: TeachingCHAR.encouraging, text: '<p>Remember Block 01: too steep a gradient blocks learning. Instead, break it down. One note per day. Find every E on every string. Then A. Then D. Within a week, you\'ll know the whole fretboard — and you\'ll actually remember it.</p>' },
             { char: TeachingCHAR.neutral, text: '<p>So what\'s the best way to learn the fretboard?</p>' }
           ]
         }
@@ -160,7 +160,7 @@ window.LESSON_LANGUAGE_OF_GUITAR = {
     // ── END ──
     {
       type: 'end',
-      char: TeachingCHAR.sparks,
+      char: TeachingCHAR.celebratory,
       charSize: 'big',
       buttonLabel: 'Complete Block 04 →',
       text: '<p style="text-align:center"><strong>You know the 6 string names and the memory trick.</strong></p><p style="text-align:center">You know each fret is one half step. You know fret 12 is the octave — where the map repeats. You can find one note on every string.</p><p style="text-align:center;margin-top:12px;color:var(--gold);font-family:Cinzel,serif">You speak the language of guitar — at least the first few words.</p>'

@@ -13,12 +13,7 @@ const CHAR = {
   neutral:    'images/character-face/Neutral.png',
   encouraging:'images/character-face/Encouraging.png',
   thinking:   'images/character-face/Thinking.png',
-  celebratory:'images/character-face/Celebratory.png',
-  // Symbol variants
-  question:   'images/character-face/Thinking.png',
-  lightbulb:  'images/character-face/Encouraging.png',
-  exclamation:'images/character-face/Thinking.png',
-  sparks:     'images/character-face/Celebratory.png'
+  celebratory:'images/character-face/Celebratory.png'
 };
 
 // ── Conversation Step Types ──
@@ -70,13 +65,7 @@ function createTeachingEngine(containerEl, opts){
     let html = buildCharArea(charImg, charLabel, step.text, isTyping, step.charSize);
 
     // Buttons if defined
-    if(step.buttons){
-      html += '<div class="teach-buttons">';
-      step.buttons.forEach(b => {
-        html += '<button class="teach-btn" data-action="'+(b.action||'advance')+'">'+b.label+'</button>';
-      });
-      html += '</div>';
-    }
+    // (nav handled by closeCharArea — skip custom buttons here)
 
     html += closeCharArea();
 
@@ -92,7 +81,7 @@ function createTeachingEngine(containerEl, opts){
     // Click anywhere to advance (but not on buttons)
     function clickAdvance(e){
       if(!typingDone) return;
-      if(e.target.closest('.teach-btn') || e.target.closest('.teach-choice')) return;
+      if(e.target.closest('.teach-nav-btn') || e.target.closest('.teach-choice')) return;
       container.removeEventListener('click', clickAdvance);
       advance(lesson);
     }
@@ -104,7 +93,7 @@ function createTeachingEngine(containerEl, opts){
 
   // ── ASK: Character asks, player answers ──
   function renderAsk(step, lesson){
-    const charImg = step.char || CHAR.question;
+    const charImg = step.char || CHAR.thinking;
     const charLabel = step.charLabel || '';
 
     let html = buildCharArea(charImg, charLabel, step.text, true, step.charSize);
@@ -172,8 +161,7 @@ function createTeachingEngine(containerEl, opts){
 
   // ── FOLLOW-UP: Show response text after correct answer, then advance ──
   function showFollowUp(response, step, lesson){
-    var html = buildCharArea(response.char || CHAR.lightbulb, response.charLabel || '', response.text, true, response.charSize);
-    html += '<div style="text-align:center;margin-top:12px"><span style="font-size:0.7rem;color:var(--dim);letter-spacing:0.05em">tap to continue ▸</span></div>';
+    var html = buildCharArea(response.char || CHAR.celebratory, response.charLabel || '', response.text, true, response.charSize);
     html += closeCharArea();
     container.innerHTML = html;
     var typingDone = false;
@@ -181,7 +169,7 @@ function createTeachingEngine(containerEl, opts){
     setTimeout(function(){
       container.addEventListener('click', function handler(e){
         if(!typingDone) return;
-        if(e.target.closest('.teach-btn')) return;
+        if(e.target.closest('.teach-nav-btn')) return;
         container.removeEventListener('click', handler);
         advance(lesson);
       });
@@ -197,7 +185,7 @@ function createTeachingEngine(containerEl, opts){
         text: "No worries! Let me explain that differently."
       },
       {
-        char: CHAR.lightbulb,
+        char: CHAR.neutral,
         text: originalStep.failHint || "Think about it this way: " + originalStep.text.replace(/<[^>]+>/g, '').substring(0, 120) + "..."
       }
     ];
@@ -249,10 +237,7 @@ function createTeachingEngine(containerEl, opts){
     });
     html += '</div>';
 
-    // Continue button
-    if(step.continueLabel){
-      html += '<div style="text-align:center;margin-top:12px"><button class="teach-btn primary" data-action="advance">'+step.continueLabel+'</button></div>';
-    }
+    // Continue via nav button in closeCharArea — no extra button needed
 
     html += closeCharArea();
     container.innerHTML = html;
@@ -273,7 +258,7 @@ function createTeachingEngine(containerEl, opts){
 
   // ── VIDEO: Embedded video placeholder ──
   function renderVideo(step, lesson){
-    const charImg = step.char || CHAR.lightbulb;
+    const charImg = step.char || CHAR.encouraging;
     const charLabel = step.charLabel || '';
 
     let html = buildCharArea(charImg, charLabel, step.text, true, step.charSize);
@@ -292,7 +277,7 @@ function createTeachingEngine(containerEl, opts){
       '</div>';
     }
 
-    html += '<div style="text-align:center"><button class="teach-btn primary" data-action="advance">Continue</button></div>';
+    // Nav handled by closeCharArea
     html += closeCharArea();
     container.innerHTML = html;
     bindButtons(step, lesson);
@@ -301,17 +286,17 @@ function createTeachingEngine(containerEl, opts){
 
   // ── END: Lesson complete ──
   function renderEnd(step, lesson){
-    const charImg = step.char || CHAR.sparks;
+    const charImg = step.char || CHAR.celebratory;
     const html = buildCharArea(charImg, '', step.text, true) +
       '<div style="text-align:center;margin-top:16px">' +
-        '<button class="teach-btn primary" data-action="finish">'+(step.buttonLabel || 'Continue →')+'</button>' +
+        '<button class="teach-nav-btn" data-action="finish" style="background:var(--gold);color:var(--bg);border:none;padding:12px 28px;border-radius:8px;font-family:DM Sans,sans-serif;font-size:0.9rem;font-weight:700;cursor:pointer;letter-spacing:0.03em">'+(step.buttonLabel || 'Continue ▸')+'</button>' +
       '</div>' +
       closeCharArea();
 
     container.innerHTML = html;
     typewriterEffect();
 
-    container.querySelectorAll('.teach-btn').forEach(btn => {
+    container.querySelectorAll('.teach-nav-btn').forEach(btn => {
       btn.addEventListener('click', function(){
         state.completed = true;
         if(opts.onComplete) opts.onComplete(state.scores);
@@ -336,10 +321,11 @@ function createTeachingEngine(containerEl, opts){
       '</div>';
   }
   function closeCharArea(){
-    var prev = state.history.length > 0 ? '<button class="teach-prev-btn" onclick="window._teachEngine&&window._teachEngine.back()">← Previous</button>' : '';
-    return '<div class="teach-nav-wrap" style="display:flex;justify-content:center;gap:12px;padding:8px 16px;max-width:700px;margin:0 auto">' +
-      prev +
-      '<button class="teach-next-btn" onclick="window._teachEngine&&window._teachEngine.advance()">Next →</button>' +
+    // Single unified nav button: Back (if history) or a contextual Next
+    var navLabel = state.history.length > 0 ? '← Back' : 'Next ▸';
+    var navAction = state.history.length > 0 ? 'back' : 'advance';
+    return '<div class="teach-nav-wrap" style="display:flex;justify-content:center;padding:8px 16px;max-width:700px;margin:0 auto">' +
+      '<button class="teach-nav-btn" data-action="'+navAction+'" onclick="window._teachEngine&&window._teachEngine.'+navAction+'()">'+navLabel+'</button>' +
     '</div></div>';
   }
 
@@ -388,9 +374,9 @@ function createTeachingEngine(containerEl, opts){
   }
 
   function bindButtons(step, lesson){
-    container.querySelectorAll('.teach-btn').forEach(btn => {
+    container.querySelectorAll('.teach-btn, .teach-nav-btn').forEach(btn => {
       btn.addEventListener('click', function(){
-        const action = this.dataset.action;
+        var action = this.dataset.action || this.getAttribute('data-action');
         if(action === 'advance') advance(lesson);
         else if(action === 'back') back(lesson);
       });

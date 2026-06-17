@@ -20,7 +20,7 @@ window.LESSON_LEARNING_A_LANGUAGE = {
     {
       type: 'ask',
       concept: 'music-is-language',
-      char: TeachingCHAR.question,
+      char: TeachingCHAR.thinking,
       charSize: 'big',
       text: '<p>When I say "music is a language," what do you think I mean?</p>',
       choices: [
@@ -28,7 +28,7 @@ window.LESSON_LEARNING_A_LANGUAGE = {
           label: 'It has words, rules, and you can have conversations with it',
           correct: true,
           response: {
-            char: TeachingCHAR.lightbulb,
+            char: TeachingCHAR.encouraging,
             text: '<p>Exactly. Music has <strong>vocabulary</strong> (notes), <strong>grammar</strong> (intervals, scales, chords), and <strong>conversation</strong> (playing). Just like any language. Let\'s break each one down.</p>'
           }
         },
@@ -37,7 +37,7 @@ window.LESSON_LEARNING_A_LANGUAGE = {
           correct: false,
           reexplain: [
             { char: TeachingCHAR.encouraging, text: '<p>That\'s part of it — but there\'s more structure than you might think.</p>' },
-            { char: TeachingCHAR.lightbulb, text: '<p>Feelings are the <em>result</em> of music. But the building blocks are exactly like a language: notes are words, scales are grammar, and playing is conversation. Let me show you.</p>' },
+            { char: TeachingCHAR.encouraging, text: '<p>Feelings are the <em>result</em> of music. But the building blocks are exactly like a language: notes are words, scales are grammar, and playing is conversation. Let me show you.</p>' },
             { char: TeachingCHAR.neutral, text: '<p>So when I say "music is a language," what do I mean?</p>' }
           ]
         }
@@ -47,7 +47,7 @@ window.LESSON_LEARNING_A_LANGUAGE = {
     // ── CARDS: Vocabulary, Grammar, Conversation ──
     {
       type: 'cards',
-      char: TeachingCHAR.lightbulb,
+      char: TeachingCHAR.encouraging,
       charLabel: 'Music = Language',
       text: '<p>Every language has three parts. Music has the same three.</p>',
       cards: [
@@ -84,14 +84,14 @@ window.LESSON_LEARNING_A_LANGUAGE = {
     {
       type: 'ask',
       concept: 'learning-order',
-      char: TeachingCHAR.question,
+      char: TeachingCHAR.thinking,
       text: '<p>Which comes first in language learning?</p>',
       choices: [
         {
           label: 'Speaking before writing',
           correct: true,
           response: {
-            char: TeachingCHAR.sparks,
+            char: TeachingCHAR.celebratory,
             charSize: 'big',
             text: '<p>Yes! Babies listen for months before they speak. They speak before they write. Music follows the same path.</p><p>That\'s why this simulator starts with <em>listening</em> and <em>playing</em> — not reading sheet music. You learn to speak the language before you learn to write it.</p>'
           }
@@ -101,7 +101,7 @@ window.LESSON_LEARNING_A_LANGUAGE = {
           correct: false,
           reexplain: [
             { char: TeachingCHAR.encouraging, text: '<p>That\'s how school teaches it — but it\'s backwards.</p>' },
-            { char: TeachingCHAR.lightbulb, text: '<p>Think about how you learned your first language. Did your parents hand you a grammar book? No. They talked to you. You listened. Then you spoke. Writing came years later.</p><p>Music works the same way. Listen first. Play next. Read music later.</p>' },
+            { char: TeachingCHAR.encouraging, text: '<p>Think about how you learned your first language. Did your parents hand you a grammar book? No. They talked to you. You listened. Then you spoke. Writing came years later.</p><p>Music works the same way. Listen first. Play next. Read music later.</p>' },
             { char: TeachingCHAR.neutral, text: '<p>So which comes first in language learning?</p>' }
           ]
         }
@@ -111,7 +111,7 @@ window.LESSON_LEARNING_A_LANGUAGE = {
     // ── THE MISUNDERSTOOD WORD ──
     {
       type: 'speak',
-      char: TeachingCHAR.exclamation,
+      char: TeachingCHAR.encouraging,
       charSize: 'big',
       text: '<p>Remember Block 01? <strong>The Misunderstood Word</strong> — the #1 barrier to learning?</p><p>In language learning, this is the #1 killer. If you\'re learning French and you don\'t know what a "verb" is, every grammar lesson after that is gibberish.</p>',
     },
@@ -120,14 +120,14 @@ window.LESSON_LEARNING_A_LANGUAGE = {
     {
       type: 'ask',
       concept: 'misunderstood-word-music',
-      char: TeachingCHAR.question,
+      char: TeachingCHAR.thinking,
       text: '<p>If someone says "play a major third" and you don\'t know what those words mean, what should you do?</p>',
       choices: [
         {
           label: 'Stop and look it up in the Dictionary',
           correct: true,
           response: {
-            char: TeachingCHAR.sparks,
+            char: TeachingCHAR.celebratory,
             charSize: 'big',
             text: '<p>That\'s the move. This simulator has a <strong>Dictionary</strong> in the toolbar. Every term, one click away.</p><p>If you hit a word you don\'t know — stop. Look it up. Clear it. Then continue. This isn\'t slow. This is the <em>fastest</em> way to learn.</p>'
           }
@@ -137,7 +137,7 @@ window.LESSON_LEARNING_A_LANGUAGE = {
           correct: false,
           reexplain: [
             { char: TeachingCHAR.encouraging, text: '<p>That\'s what most people do. And it\'s exactly why they stall.</p>' },
-            { char: TeachingCHAR.lightbulb, text: '<p>If your guess is wrong — even slightly — every concept built on that word is now crooked. It\'s like building a house on a cracked foundation.</p><p>The safe move: if there\'s ANY doubt, look it up. One click. The Dictionary is right there.</p>' },
+            { char: TeachingCHAR.encouraging, text: '<p>If your guess is wrong — even slightly — every concept built on that word is now crooked. It\'s like building a house on a cracked foundation.</p><p>The safe move: if there\'s ANY doubt, look it up. One click. The Dictionary is right there.</p>' },
             { char: TeachingCHAR.neutral, text: '<p>So if someone says "play a major third" and you don\'t know what those words mean, what should you do?</p>' }
           ]
         }
@@ -147,7 +147,7 @@ window.LESSON_LEARNING_A_LANGUAGE = {
     // ── LISTENING EXERCISE ──
     {
       type: 'speak',
-      char: TeachingCHAR.lightbulb,
+      char: TeachingCHAR.encouraging,
       text: '<p>Before you play a single note, just listen.</p><p>Put on any piece of music — anything you like. Close your eyes. Don\'t try to analyse it. Just notice:</p><p>• Does it feel happy or sad?<br>• Fast or slow?<br>Smooth or bumpy?<br>Settled or restless?</p><p>You\'re not looking for right answers. You\'re training your ears to notice. Your ears are learning the language right now.</p>',
     },
 
@@ -155,14 +155,14 @@ window.LESSON_LEARNING_A_LANGUAGE = {
     {
       type: 'ask',
       concept: 'training-ears',
-      char: TeachingCHAR.question,
+      char: TeachingCHAR.thinking,
       text: '<p>When you listen to music without trying to analyse it, what are you actually training?</p>',
       choices: [
         {
           label: 'My ears — to notice patterns and feeling',
           correct: true,
           response: {
-            char: TeachingCHAR.lightbulb,
+            char: TeachingCHAR.encouraging,
             text: '<p>Yes. Your ears are your most important musical tool. Before your fingers learn to play, your ears learn to hear. This is the foundation of everything.</p><p>A musician who can\'t hear can\'t play. A musician who <em>can</em> hear will always find a way to play.</p>'
           }
         },
@@ -171,7 +171,7 @@ window.LESSON_LEARNING_A_LANGUAGE = {
           correct: false,
           reexplain: [
             { char: TeachingCHAR.encouraging, text: '<p>It looks passive, but it\'s the opposite.</p>' },
-            { char: TeachingCHAR.lightbulb, text: '<p>When you listen with intention — even without analysing — your brain is mapping sounds to feelings. Happy. Sad. Tense. Resolved. This mapping is the foundation of musical understanding. You\'re training your ears right now.</p>' },
+            { char: TeachingCHAR.encouraging, text: '<p>When you listen with intention — even without analysing — your brain is mapping sounds to feelings. Happy. Sad. Tense. Resolved. This mapping is the foundation of musical understanding. You\'re training your ears right now.</p>' },
             { char: TeachingCHAR.neutral, text: '<p>So when you listen to music without trying to analyse it, what are you actually training?</p>' }
           ]
         }
@@ -181,7 +181,7 @@ window.LESSON_LEARNING_A_LANGUAGE = {
     // ── END ──
     {
       type: 'end',
-      char: TeachingCHAR.sparks,
+      char: TeachingCHAR.celebratory,
       charSize: 'big',
       buttonLabel: 'Complete Block 02 →',
       text: '<p style="text-align:center"><strong>You understand the shape of what you\'re learning.</strong></p><p style="text-align:center">Music has vocabulary (notes), grammar (intervals, scales, chords), and conversation (playing).</p><p style="text-align:center">You know that listening comes before playing — just like speaking comes before writing.</p><p style="text-align:center;margin-top:12px;color:var(--gold);font-family:Cinzel,serif">You know the shape. Now let\'s fill in the details.</p>'

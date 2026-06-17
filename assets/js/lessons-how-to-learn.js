@@ -25,7 +25,7 @@ window.LESSON_HOW_TO_LEARN = {
     {
       type: 'ask',
       concept: 'learning-is-skill',
-      char: TeachingCHAR.question,
+      char: TeachingCHAR.thinking,
       charSize: 'big',
       text: '<p>Did you know that <strong>learning itself is a skill</strong>?</p><p>Not talent. Not genetics. A skill — like riding a bike or cooking a meal.</p>',
       choices: [
@@ -33,7 +33,7 @@ window.LESSON_HOW_TO_LEARN = {
           label: 'Yes, I knew that',
           correct: true,
           response: {
-            char: TeachingCHAR.lightbulb,
+            char: TeachingCHAR.encouraging,
             text: '<p>Good. Then you already know the most important thing. Most people think some are "naturals" and others aren\'t. That\'s a myth. Let me show you what blocks people — and how to get past it.</p>'
           }
         },
@@ -41,7 +41,7 @@ window.LESSON_HOW_TO_LEARN = {
           label: 'No, really?',
           correct: true,  // Both are "correct" — this is a knowledge question, not a test
           response: {
-            char: TeachingCHAR.lightbulb,
+            char: TeachingCHAR.encouraging,
             text: '<p>Most people don\'t. They think musical talent is something you\'re born with. But learning follows rules — and once you know the rules, you can learn anything. Let me show you the three things that block learning.</p>'
           }
         }
@@ -49,7 +49,7 @@ window.LESSON_HOW_TO_LEARN = {
       // If somehow they pick something else (future-proofing)
       reexplain: [
         { char: TeachingCHAR.encouraging, text: '<p>That\'s an interesting thought, but let me clarify.</p>' },
-        { char: TeachingCHAR.lightbulb, text: '<p>Learning isn\'t magic. It\'s a process — and like any process, it has rules. Follow the rules, you learn. Break them, you stall. Simple as that.</p>' }
+        { char: TeachingCHAR.encouraging, text: '<p>Learning isn\'t magic. It\'s a process — and like any process, it has rules. Follow the rules, you learn. Break them, you stall. Simple as that.</p>' }
       ]
     },
 
@@ -64,7 +64,7 @@ window.LESSON_HOW_TO_LEARN = {
     // ── CARDS: Three barriers ──
     {
       type: 'cards',
-      char: TeachingCHAR.lightbulb,
+      char: TeachingCHAR.encouraging,
       charLabel: 'The Three Barriers',
       text: '<p>These are the three things that block learning. Click each one to understand it.</p>',
       cards: [
@@ -99,14 +99,14 @@ window.LESSON_HOW_TO_LEARN = {
     {
       type: 'ask',
       concept: 'absence-of-mass',
-      char: TeachingCHAR.question,
+      char: TeachingCHAR.thinking,
       text: '<p>So what does this mean for learning guitar?</p>',
       choices: [
         {
           label: 'I need to actually hold and play the guitar',
           correct: true,
           response: {
-            char: TeachingCHAR.sparks,
+            char: TeachingCHAR.celebratory,
             charSize: 'big',
             text: '<p>Exactly! You can watch videos, read chord charts, study theory — but at some point, your hands need to touch the strings. The simulator will always push you toward the physical act.</p>'
           }
@@ -116,7 +116,7 @@ window.LESSON_HOW_TO_LEARN = {
           correct: false,
           reexplain: [
             { char: TeachingCHAR.encouraging, text: '<p>I understand the instinct — but that\'s actually the trap.</p>' },
-            { char: TeachingCHAR.lightbulb, text: '<p>More theory without practice is like reading about swimming without getting in the pool. The "mass" — the physical thing — is the guitar itself. You learn by doing, not by studying more.</p>' },
+            { char: TeachingCHAR.encouraging, text: '<p>More theory without practice is like reading about swimming without getting in the pool. The "mass" — the physical thing — is the guitar itself. You learn by doing, not by studying more.</p>' },
             { char: TeachingCHAR.neutral, text: '<p>So what does this mean for learning guitar? Try again.</p>' }
           ]
         }
@@ -132,14 +132,14 @@ window.LESSON_HOW_TO_LEARN = {
     {
       type: 'ask',
       concept: 'steep-gradient',
-      char: TeachingCHAR.question,
+      char: TeachingCHAR.thinking,
       text: '<p>What\'s the fix for a gradient that\'s too steep?</p>',
       choices: [
         {
           label: 'Go slower — break it into smaller steps',
           correct: true,
           response: {
-            char: TeachingCHAR.sparks,
+            char: TeachingCHAR.celebratory,
             charSize: 'big',
             text: '<p>Yes! This is why the simulator breaks everything into small, manageable pieces. One note before one chord. One chord before one song. The gradient stays gentle — and you actually learn.</p>'
           }
@@ -149,7 +149,7 @@ window.LESSON_HOW_TO_LEARN = {
           correct: false,
           reexplain: [
             { char: TeachingCHAR.encouraging, text: '<p>That\'s the本能 (instinct) — but it\'s the wrong one here.</p>' },
-            { char: TeachingCHAR.lightbulb, text: '<p>Pushing through a steep gradient is how people hurt their hands and quit. The fix isn\'t more effort — it\'s smaller steps. Break it down. One finger, one string, one note at a time.</p>' },
+            { char: TeachingCHAR.encouraging, text: '<p>Pushing through a steep gradient is how people hurt their hands and quit. The fix isn\'t more effort — it\'s smaller steps. Break it down. One finger, one string, one note at a time.</p>' },
             { char: TeachingCHAR.neutral, text: '<p>So what\'s the fix for a gradient that\'s too steep?</p>' }
           ]
         }
@@ -165,14 +165,14 @@ window.LESSON_HOW_TO_LEARN = {
     {
       type: 'ask',
       concept: 'misunderstood-word',
-      char: TeachingCHAR.question,
+      char: TeachingCHAR.thinking,
       text: '<p>What happens after you hit a word you don\'t understand?</p>',
       choices: [
         {
           label: 'Everything after it becomes unclear',
           correct: true,
           response: {
-            char: TeachingCHAR.exclamation,
+            char: TeachingCHAR.encouraging,
             text: '<p><strong>This is the #1 reason people quit.</strong></p><p>Not because guitar is hard. Because one word was undefined, and everything after it was fog. They feel stupid. They lose interest. They quit. And they never knew why.</p><p>That\'s why this simulator has a <strong>Dictionary</strong> in the toolbar. Every term, one click away. If you hit a word you don\'t know — stop. Look it up. Clear it. Then continue.</p>'
           }
         },
@@ -181,8 +181,8 @@ window.LESSON_HOW_TO_LEARN = {
           correct: false,
           reexplain: [
             { char: TeachingCHAR.encouraging, text: '<p>That\'s what most people think. And sometimes you\'re right. But here\'s the danger:</p>' },
-            { char: TeachingCHAR.lightbulb, text: '<p>If your guess is wrong — even slightly — every concept built on that word is now crooked. It\'s like building a house on a cracked foundation. Looks fine at first. Falls apart later.</p>' },
-            { char: TeachingCHAR.exclamation, text: '<p>The safe move: if there\'s ANY doubt, look it up. One click. The Dictionary is right there. It\'s not slow — it\'s the fastest way to learn.</p>' },
+            { char: TeachingCHAR.encouraging, text: '<p>If your guess is wrong — even slightly — every concept built on that word is now crooked. It\'s like building a house on a cracked foundation. Looks fine at first. Falls apart later.</p>' },
+            { char: TeachingCHAR.encouraging, text: '<p>The safe move: if there\'s ANY doubt, look it up. One click. The Dictionary is right there. It\'s not slow — it\'s the fastest way to learn.</p>' },
             { char: TeachingCHAR.neutral, text: '<p>So what happens after you hit a word you don\'t understand?</p>' }
           ]
         }
@@ -192,7 +192,7 @@ window.LESSON_HOW_TO_LEARN = {
     // ── VIDEO MOMENT: Putting it together ──
     {
       type: 'video',
-      char: TeachingCHAR.lightbulb,
+      char: TeachingCHAR.encouraging,
       charLabel: 'Watch this',
       text: '<p>Here\'s a quick summary of the three barriers in action.</p>',
       videoUrl: '',  // To be filled
@@ -207,7 +207,7 @@ window.LESSON_HOW_TO_LEARN = {
     },
     {
       type: 'speak',
-      char: TeachingCHAR.lightbulb,
+      char: TeachingCHAR.encouraging,
       text: '<p>Here\'s a trick. Pick up your guitar. Now scan your body:</p><p>• Is your shoulder up by your ear? Let it drop.<br>• Is your jaw clenched? Open your mouth, then relax.<br>• Is your thumb pressing hard? Ease up.<br>• Are you holding your breath? Breathe.</p><p><strong>Tension is the enemy of learning.</strong> Do this every time you pick up the guitar. It takes 30 seconds. It changes everything.</p>',
     },
 
@@ -215,7 +215,7 @@ window.LESSON_HOW_TO_LEARN = {
     {
       type: 'ask',
       concept: 'imagination',
-      char: TeachingCHAR.question,
+      char: TeachingCHAR.thinking,
       charSize: 'big',
       text: '<p>Before you play — what should you do first?</p>',
       choices: [
@@ -223,7 +223,7 @@ window.LESSON_HOW_TO_LEARN = {
           label: 'Imagine the sound clearly in my mind',
           correct: true,
           response: {
-            char: TeachingCHAR.sparks,
+            char: TeachingCHAR.celebratory,
             charSize: 'big',
             text: '<p>The superpower isn\'t talent. It\'s <strong>imagination</strong>.</p><p>See the fingers pressing the string. Feel it. Hear the note ring out. The clearer the picture in your mind, the cleaner the movement in your hands.</p><p>Your brain is the boss. Your fingers are the workers.</p>'
           }
@@ -233,7 +233,7 @@ window.LESSON_HOW_TO_LEARN = {
           correct: false,
           reexplain: [
             { char: TeachingCHAR.encouraging, text: '<p>Speed without clarity is the steep gradient in disguise.</p>' },
-            { char: TeachingCHAR.lightbulb, text: '<p>The real superpower is imagination. Before your hands move — SEE the note. FEEL the string. HEAR the sound. The clearer the picture in your mind, the cleaner your fingers will play.</p>' },
+            { char: TeachingCHAR.encouraging, text: '<p>The real superpower is imagination. Before your hands move — SEE the note. FEEL the string. HEAR the sound. The clearer the picture in your mind, the cleaner your fingers will play.</p>' },
             { char: TeachingCHAR.neutral, text: '<p>Before you play — what should you do first?</p>' }
           ]
         }
@@ -243,7 +243,7 @@ window.LESSON_HOW_TO_LEARN = {
     // ── END ──
     {
       type: 'end',
-      char: TeachingCHAR.sparks,
+      char: TeachingCHAR.celebratory,
       charSize: 'big',
       buttonLabel: 'Complete Block 01 →',
       text: '<p style="text-align:center"><strong>You now know the three barriers to learning.</strong></p><p style="text-align:center">Absence of Mass. Too Steep a Gradient. The Misunderstood Word.</p><p style="text-align:center">You know imagination comes before movement. You know how to find and release tension.</p><p style="text-align:center;margin-top:12px;color:var(--gold);font-family:Cinzel,serif">These are tools you\'ll use every time you practise.</p><p style="text-align:center;font-size:0.85rem;color:var(--dim);margin-top:8px">When you hit a wall later, come back here. The barrier will be one of these three.</p>'
