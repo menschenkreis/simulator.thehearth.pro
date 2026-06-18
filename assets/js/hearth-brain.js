@@ -76,6 +76,8 @@
     try{
       var resp=await fetch('assets/svg/brain-map.svg');
       var svgText=await resp.text();
+      // Ensure SVG has width/height attrs so it renders at full size
+      svgText=svgText.replace('<svg ', '<svg width="100%" preserveAspectRatio="xMidYMid meet" ');
 
       el.innerHTML='<div style="padding:16px;max-width:1200px;margin:0 auto">'+
         '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">'+
@@ -96,10 +98,6 @@
           '<div style="font-family:JetBrains Mono;font-size:0.4rem;color:var(--dim);text-align:center;padding:4px;letter-spacing:1.5px;opacity:0.35">TAP A SKILL REGION TO EXPLORE</div>'+
         '</div>'+
       '</div>';
-
-      // Force SVG to fill container
-      var svgEl=document.querySelector('#brain-svg-container svg');
-      if(svgEl){svgEl.style.width='100%';svgEl.style.height='auto';}
 
       // Make skill nodes interactive
       attachSkillHandlers();
