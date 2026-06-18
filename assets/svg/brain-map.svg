@@ -1,0 +1,338 @@
+<svg viewBox="0 0 1600 950" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+<title id="title">The Hearth Mastery Guitar Learning Brain Map</title>
+<desc id="desc">A stylised anatomical brain map showing guitar learning skills as glowing neural regions connected by animated pathways.</desc>
+
+<defs>
+<filter id="softGlow" x="-80%" y="-80%" width="260%" height="260%">
+<feGaussianBlur stdDeviation="6" result="blur"/>
+<feMerge>
+<feMergeNode in="blur"/>
+<feMergeNode in="SourceGraphic"/>
+</feMerge>
+</filter>
+
+<filter id="bigGlow" x="-120%" y="-120%" width="340%" height="340%">
+<feGaussianBlur stdDeviation="12" result="blur"/>
+<feMerge>
+<feMergeNode in="blur"/>
+<feMergeNode in="SourceGraphic"/>
+</feMerge>
+</filter>
+
+<radialGradient id="hubGradient" cx="50%" cy="50%" r="50%">
+<stop offset="0%" stop-color="#fff0b8" stop-opacity="1"/>
+<stop offset="38%" stop-color="#e8a020" stop-opacity=".75"/>
+<stop offset="100%" stop-color="#e8a020" stop-opacity="0"/>
+</radialGradient>
+
+<style>
+.bg { fill:#0d0b08; }
+
+.brain-line {
+fill:none;
+stroke:#e8a020;
+stroke-width:2.4;
+stroke-linecap:round;
+stroke-linejoin:round;
+opacity:.88;
+}
+
+.fine-line {
+fill:none;
+stroke:#e8a020;
+stroke-width:1.05;
+stroke-linecap:round;
+stroke-linejoin:round;
+opacity:.34;
+}
+
+.sulcus {
+fill:none;
+stroke:#e8a020;
+stroke-width:1.4;
+stroke-linecap:round;
+stroke-dasharray:7 9;
+opacity:.46;
+}
+
+.lobe-label {
+font-family:"JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+font-size:15px;
+letter-spacing:.16em;
+fill:#e8a020;
+opacity:.15;
+}
+
+.node-title {
+font-family:"JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+font-size:22px;
+font-weight:700;
+letter-spacing:.04em;
+}
+
+.node-desc {
+font-family:"JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+font-size:14px;
+fill:#f3ead8;
+opacity:.82;
+}
+
+.tract-label {
+font-family:"JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+font-size:12px;
+fill:#e8a020;
+opacity:.38;
+letter-spacing:.05em;
+}
+
+.path {
+fill:none;
+stroke-width:2.8;
+stroke-linecap:round;
+stroke-linejoin:round;
+filter:url(#softGlow);
+}
+
+.developing {
+stroke-dasharray:6 12;
+animation: dashFlow 4s linear infinite;
+opacity:.58;
+}
+
+.active {
+opacity:.9;
+}
+
+.icon-circle {
+fill:none;
+stroke-width:2.8;
+filter:url(#softGlow);
+}
+
+.icon-line {
+fill:none;
+stroke-width:2.4;
+stroke-linecap:round;
+stroke-linejoin:round;
+}
+
+.glow-disc { filter:url(#bigGlow); opacity:.24; }
+.centre-dot { filter:url(#softGlow); }
+.pulse { animation:pulse 2.6s ease-in-out infinite; transform-box:fill-box; transform-origin:center; }
+
+@keyframes dashFlow {
+to { stroke-dashoffset:-120; }
+}
+
+@keyframes pulse {
+0%,100% { opacity:.62; transform:scale(1); }
+50% { opacity:1; transform:scale(1.12); }
+}
+</style>
+</defs>
+
+<rect class="bg" width="1600" height="950"/>
+
+<!-- ANATOMICAL BRAIN OUTLINE -->
+<g id="brain" transform="translate(135 45) scale(2.55)">
+<path class="brain-line" d="
+M112 216
+C91 198 88 170 105 151
+C96 125 116 96 145 93
+C154 69 184 57 210 68
+C232 42 275 45 294 72
+C324 57 364 69 376 99
+C411 104 434 132 430 166
+C458 181 465 217 445 242
+C462 274 445 312 412 320
+C404 352 368 369 338 356
+C310 382 263 378 242 347
+C210 365 170 354 156 321
+C127 315 105 290 109 260
+C93 246 94 226 112 216
+Z"/>
+
+<path class="fine-line" d="M134 164 C154 144 188 145 203 169 C222 152 257 159 263 185"/>
+<path class="fine-line" d="M122 209 C154 198 181 211 190 239 C219 218 255 231 263 263"/>
+<path class="fine-line" d="M151 278 C179 263 213 272 226 302 C254 287 285 294 300 321"/>
+<path class="fine-line" d="M238 105 C263 94 292 104 302 128 C333 116 366 129 377 158"/>
+<path class="fine-line" d="M295 193 C324 176 363 184 378 216 C407 207 433 223 438 251"/>
+<path class="fine-line" d="M300 260 C328 249 361 262 373 291 C389 287 405 292 417 306"/>
+<path class="fine-line" d="M169 117 C188 104 215 109 226 131"/>
+<path class="fine-line" d="M335 90 C349 100 357 113 361 130"/>
+<path class="fine-line" d="M124 247 C142 250 155 261 161 279"/>
+<path class="fine-line" d="M276 334 C292 342 308 343 324 337"/>
+
+<path class="brain-line" d="
+M343 334
+C369 319 407 326 424 351
+C443 378 423 411 389 414
+C361 416 336 399 331 373
+C327 357 331 343 343 334
+Z"/>
+<path class="fine-line" d="M350 354 C370 345 397 350 411 369"/>
+<path class="fine-line" d="M344 376 C367 365 401 373 414 395"/>
+<path class="fine-line" d="M362 399 C375 391 393 392 405 404"/>
+
+<path class="brain-line" d="
+M286 336
+C293 354 296 375 291 396
+C286 417 290 439 304 456
+M313 338
+C322 361 323 385 316 410
+C311 428 316 445 331 462"/>
+<path class="fine-line" d="M294 389 C304 394 312 396 320 394"/>
+
+<path class="sulcus" d="M278 82 C255 122 252 162 269 204 C280 232 275 266 255 296"/>
+<path class="sulcus" d="M149 247 C198 235 245 236 291 255 C330 271 370 276 415 266"/>
+
+<text class="lobe-label" x="132" y="146">FRONTAL</text>
+<text class="lobe-label" x="268" y="121">PARIETAL</text>
+<text class="lobe-label" x="362" y="195">OCCIPITAL</text>
+<text class="lobe-label" x="190" y="292">TEMPORAL</text>
+<text class="lobe-label" x="354" y="384">CEREBELLUM</text>
+</g>
+
+<!-- CENTRAL HUB -->
+<g id="central-hub">
+<circle cx="800" cy="475" r="82" fill="none" stroke="#e8a020" stroke-width="2" opacity=".42"/>
+<circle cx="800" cy="475" r="56" fill="none" stroke="#e8a020" stroke-width="1.5" stroke-dasharray="2 8" opacity=".55"/>
+<circle cx="800" cy="475" r="34" fill="url(#hubGradient)" filter="url(#bigGlow)"/>
+<circle cx="800" cy="475" r="6" fill="#fff0b8" class="centre-dot pulse"/>
+</g>
+
+<!-- PATHWAYS -->
+<g id="pathways">
+<path class="path developing" stroke="#8d5cff" d="M250 170 C330 170 330 230 460 260 C570 285 620 370 800 475"/>
+<path class="path active" stroke="#4da3ff" d="M602 235 C642 270 650 350 720 405 C750 430 770 450 800 475"/>
+<path class="path developing" stroke="#4da3ff" d="M515 200 C575 230 570 330 670 410 C715 445 755 460 800 475"/>
+<path class="path developing" stroke="#8d5cff" d="M400 380 C500 375 565 430 665 455 C715 468 760 472 800 475"/>
+<path class="path active" stroke="#2fffe6" d="M465 545 C585 545 650 508 720 485 C755 474 780 472 800 475"/>
+<path class="path developing" stroke="#d9f45a" d="M1190 420 C1070 420 960 455 875 470 C845 475 822 475 800 475"/>
+<path class="path active" stroke="#ff9d2e" d="M895 560 C875 535 850 500 800 475"/>
+<path class="path developing" stroke="#ff654d" d="M605 670 C665 632 690 575 735 520 C758 492 780 480 800 475"/>
+<path class="path active" stroke="#8d5cff" d="M800 475 C800 585 800 680 800 795"/>
+</g>
+
+<!-- SKILL CATEGORY NODES -->
+<g id="skill-nodes">
+
+<!-- EAR TRAINING (left, purple) -->
+<g transform="translate(250 170)">
+<circle r="42" class="icon-circle" stroke="#8d5cff"/>
+<circle r="14" fill="#8d5cff" class="glow-disc"/>
+<!-- ear icon -->
+<path class="icon-line" stroke="#8d5cff" d="M-8 -8 C-16 -8 -16 8 -8 8 C0 8 0 -2 4 -2 C8 -2 8 6 4 10 C0 14 -12 14 -12 -4"/>
+<circle cx="0" cy="0" r="2.5" fill="#8d5cff"/>
+</g>
+<text class="node-title" x="250" y="228" fill="#a875ff">EAR TRAINING</text>
+<text class="node-desc" x="250" y="248">Sharpen your listening</text>
+<text class="node-desc" x="250" y="266">and note recognition.</text>
+
+<!-- RHYTHM (left, blue) -->
+<g transform="translate(515 200)">
+<circle r="42" class="icon-circle" stroke="#4da3ff"/>
+<circle r="14" fill="#4da3ff" class="glow-disc"/>
+<!-- metronome icon -->
+<line class="icon-line" stroke="#4da3ff" x1="-8" y1="12" x2="0" y2="-14"/>
+<line class="icon-line" stroke="#4da3ff" x1="0" y1="-14" x2="8" y2="12"/>
+<circle cx="0" cy="-14" r="3" fill="#4da3ff"/>
+</g>
+<text class="node-title" x="515" y="258" fill="#4da3ff">RHYTHM</text>
+<text class="node-desc" x="515" y="278">Build timing, groove</text>
+<text class="node-desc" x="515" y="296">and rhythmic control.</text>
+
+<!-- TECHNIQUE (left, blue) -->
+<g transform="translate(602 235)">
+<circle r="42" class="icon-circle" stroke="#4da3ff"/>
+<circle r="14" fill="#4da3ff" class="glow-disc"/>
+<!-- hand/fingers icon -->
+<line class="icon-line" stroke="#4da3ff" x1="-10" y1="8" x2="-10" y2="-8"/>
+<line class="icon-line" stroke="#4da3ff" x1="-4" y1="8" x2="-4" y2="-12"/>
+<line class="icon-line" stroke="#4da3ff" x1="2" y1="8" x2="2" y2="-10"/>
+<line class="icon-line" stroke="#4da3ff" x1="8" y1="8" x2="8" y2="-6"/>
+</g>
+<text class="node-title" x="602" y="293" fill="#4da3ff">TECHNIQUE</text>
+<text class="node-desc" x="602" y="313">Develop strength,</text>
+<text class="node-desc" x="602" y="331">coordination and</text>
+<text class="node-desc" x="602" y="349">fretboard mastery.</text>
+
+<!-- THEORY (left, purple) -->
+<g transform="translate(400 380)">
+<circle r="42" class="icon-circle" stroke="#8d5cff"/>
+<circle r="14" fill="#8d5cff" class="glow-disc"/>
+<!-- book icon -->
+<rect x="-12" y="-10" width="24" height="20" rx="2" class="icon-line" stroke="#8d5cff"/>
+<line class="icon-line" stroke="#8d5cff" x1="0" y1="-10" x2="0" y2="10"/>
+</g>
+<text class="node-title" x="400" y="438" fill="#a875ff">THEORY</text>
+<text class="node-desc" x="400" y="458">Understand the language</text>
+<text class="node-desc" x="400" y="476">that powers the music.</text>
+
+<!-- IMPROVISATION (right, cyan) -->
+<g transform="translate(1190 170)">
+<circle r="42" class="icon-circle" stroke="#2fffe6"/>
+<circle r="14" fill="#2fffe6" class="glow-disc"/>
+<!-- lightning/wave icon -->
+<path class="icon-line" stroke="#2fffe6" d="M-10 0 C-6 -8 2 -8 6 0 C10 8 -2 8 -6 0"/>
+</g>
+<text class="node-title" x="1190" y="228" fill="#2fffe6">IMPROVISATION</text>
+<text class="node-desc" x="1190" y="248">Explore, create and express</text>
+<text class="node-desc" x="1190" y="266">your musical ideas.</text>
+
+<!-- CHORDS (right, yellow) -->
+<g transform="translate(1190 420)">
+<circle r="42" class="icon-circle" stroke="#d9f45a"/>
+<circle r="14" fill="#d9f45a" class="glow-disc"/>
+<!-- grid/chord diagram icon -->
+<rect x="-10" y="-10" width="20" height="20" class="icon-line" stroke="#d9f45a"/>
+<line class="icon-line" stroke="#d9f45a" x1="-10" y1="-3" x2="10" y2="-3"/>
+<line class="icon-line" stroke="#d9f45a" x1="-10" y1="4" x2="10" y2="4"/>
+<line class="icon-line" stroke="#d9f45a" x1="-3" y1="-10" x2="-3" y2="10"/>
+<line class="icon-line" stroke="#d9f45a" x1="4" y1="-10" x2="4" y2="10"/>
+</g>
+<text class="node-title" x="1190" y="478" fill="#d9f45a">CHORDS</text>
+<text class="node-desc" x="1190" y="498">Learn shapes, voicings</text>
+<text class="node-desc" x="1190" y="516">and progressions.</text>
+
+<!-- SONG LEARNING (right, orange) -->
+<g transform="translate(895 560)">
+<circle r="42" class="icon-circle" stroke="#ff9d2e"/>
+<circle r="14" fill="#ff9d2e" class="glow-disc"/>
+<!-- music note icon -->
+<circle cx="-4" cy="8" r="4" class="icon-line" stroke="#ff9d2e"/>
+<line class="icon-line" stroke="#ff9d2e" x1="0" y1="8" x2="0" y2="-10"/>
+<path class="icon-line" stroke="#ff9d2e" d="M0 -10 C8 -14 8 -6 0 -2"/>
+</g>
+<text class="node-title" x="895" y="618" fill="#ff9d2e">SONG LEARNING</text>
+<text class="node-desc" x="895" y="638">Apply your skills to real</text>
+<text class="node-desc" x="895" y="656">songs you love.</text>
+
+<!-- PERFORMANCE (right, red) -->
+<g transform="translate(605 670)">
+<circle r="42" class="icon-circle" stroke="#ff654d"/>
+<circle r="14" fill="#ff654d" class="glow-disc"/>
+<!-- star/performance icon -->
+<path class="icon-line" stroke="#ff654d" d="M0 -12 L3 -4 L12 -4 L5 2 L7 10 L0 5 L-7 10 L-5 2 L-12 -4 L-3 -4 Z"/>
+</g>
+<text class="node-title" x="605" y="728" fill="#ff654d">PERFORMANCE</text>
+<text class="node-desc" x="605" y="748">Build confidence and</text>
+<text class="node-desc" x="605" y="766">own the stage.</text>
+
+<!-- MASTERY (bottom, gold) -->
+<g transform="translate(800 795)">
+<circle r="42" class="icon-circle" stroke="#e8a020"/>
+<circle r="14" fill="#e8a020" class="glow-disc"/>
+<!-- crown/mastery icon -->
+<path class="icon-line" stroke="#e8a020" d="M-12 4 L-8 -6 L-2 2 L0 -10 L2 2 L8 -6 L12 4 Z"/>
+<line class="icon-line" stroke="#e8a020" x1="-12" y1="4" x2="12" y2="4"/>
+</g>
+<text class="node-title" x="800" y="853" fill="#e8a020">MASTERY</text>
+</g>
+
+<!-- TRACT LABELS -->
+<text class="tract-label" x="420" y="300" transform="rotate(-30 420 300)">Corticospinal tract</text>
+<text class="tract-label" x="280" y="195" transform="rotate(10 280 195)">Arcuate fasciculus</text>
+<text class="tract-label" x="650" y="520">Papez circuit</text>
+
+</svg>
