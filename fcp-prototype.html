@@ -50,21 +50,15 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9997;b
 .progress-label{display:flex;justify-content:space-between;margin-top:6px;font-size:0.7rem;color:var(--text3);font-family:var(--mono)}
 
 /* ══ BODY MAP ══ */
-.body-map-container{position:relative;max-width:500px;margin:30px auto;padding:0 20px}
+.body-map-container{position:relative;max-width:520px;margin:30px auto;padding:0 20px}
 .body-map-container h2{font-family:var(--serif);font-size:1rem;color:var(--text2);text-align:center;letter-spacing:2px;text-transform:uppercase;margin-bottom:20px}
 
-.body-svg{width:100%;max-height:520px}
-.body-svg .system{cursor:pointer;transition:all 0.3s ease;opacity:0.5}
-.body-svg .system:hover{opacity:1;filter:drop-shadow(0 0 12px currentColor)}
-.body-svg .system.active{opacity:1}
-.body-svg .system.completed{opacity:1}
-.body-svg .system.locked{opacity:0.2;cursor:not-allowed}
-.body-svg text{font-family:var(--sans);font-size:8px;fill:var(--text);pointer-events:none;text-anchor:middle}
-.body-svg .organ{transition:all 0.3s ease}
-.body-svg .system:hover .organ{filter:brightness(1.3)}
-.body-svg .pulse-ring{animation:pulseRing 2s ease-in-out infinite;opacity:0}
-.body-svg .system.incomplete .pulse-ring{opacity:0.3}
-@keyframes pulseRing{0%,100%{r:12;opacity:0.1}50%{r:16;opacity:0.3}}
+.body-svg{width:100%;height:auto}
+.body-svg .node{cursor:pointer;transition:all 0.3s ease}
+.body-svg .node:hover{filter:brightness(1.4) drop-shadow(0 0 12px currentColor)}
+.body-svg text{pointer-events:none}
+.body-svg .ring{animation:pulse 2.4s infinite}
+.body-svg .done .ring{stroke-dasharray:none;opacity:1}
 
 /* ══ SYSTEM GRID (below body map) ══ */
 .systems-grid{max-width:700px;margin:10px auto 30px;padding:0 20px;display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
@@ -202,99 +196,151 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9997;b
 <!-- BODY MAP -->
 <div class="body-map-container">
   <h2>Select a System</h2>
-  <svg class="body-svg" viewBox="0 0 300 500" id="bodyMap">
-    <!-- Simplified body outline -->
-    <ellipse cx="150" cy="55" rx="28" ry="32" fill="none" stroke="rgba(100,180,220,0.12)" stroke-width="1"/>
-    <line x1="150" y1="87" x2="150" y2="280" stroke="rgba(100,180,220,0.08)" stroke-width="1"/>
-    <line x1="150" y1="120" x2="100" y2="200" stroke="rgba(100,180,220,0.06)" stroke-width="1"/>
-    <line x1="150" y1="120" x2="200" y2="200" stroke="rgba(100,180,220,0.06)" stroke-width="1"/>
-    <line x1="150" y1="280" x2="115" y2="420" stroke="rgba(100,180,220,0.06)" stroke-width="1"/>
-    <line x1="150" y1="280" x2="185" y2="420" stroke="rgba(100,180,220,0.06)" stroke-width="1"/>
+  <svg class="body-svg" viewBox="0 0 900 1300" id="bodyMap">
+    <defs>
+      <pattern id="grid" width="32" height="32" patternUnits="userSpaceOnUse">
+        <path d="M32 0H0V32" fill="none" stroke="#153043" stroke-width=".7"/>
+      </pattern>
+      <pattern id="scan" width="1" height="9" patternUnits="userSpaceOnUse">
+        <rect width="1" height="1" fill="#6ad7ff"/>
+      </pattern>
+      <filter id="glow" x="-90%" y="-90%" width="280%" height="280%">
+        <feGaussianBlur stdDeviation="5" result="b"/>
+        <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+      </filter>
+    </defs>
 
-    <!-- NERVOUS — Brain -->
-    <g class="system incomplete" data-system="nervous" onclick="openSystem('nervous')" style="color:#8868d0">
-      <circle class="pulse-ring" cx="150" cy="45" r="14" fill="none" stroke="#8868d0" stroke-width="1"/>
-      <circle class="organ" cx="150" cy="45" r="12" fill="rgba(136,104,208,0.25)" stroke="#8868d0" stroke-width="1.5"/>
-      <text x="150" y="48" font-size="10" fill="#8868d0">🧠</text>
-      <text x="150" y="22" font-size="7" fill="#8868d0">Nervous</text>
+    <rect width="900" height="1300" fill="url(#grid)"/>
+    <rect width="900" height="1300" fill="url(#scan)" opacity=".12"/>
+
+    <!-- BODY WIREFRAME -->
+    <g id="body">
+      <ellipse cx="450" cy="145" rx="72" ry="88" fill="none" stroke="#65d9ff" stroke-width="1.2" opacity=".28"/>
+      <path d="M376 150c-15 10-25 28-25 48 0 33 22 57 52 68v48h94v-48c30-11 52-35 52-68 0-20-10-38-25-48" fill="none" stroke="#65d9ff" stroke-width="1.2" opacity=".28"/>
+      <path d="M403 314c-86 23-132 89-154 194l-55 274 61 14 68-270 25 468h204l25-468 68 270 61-14-55-274c-22-105-68-171-154-194z" fill="none" stroke="#65d9ff" stroke-width="1.2" opacity=".28"/>
+      <path d="M348 990l-36 210 63 35 38-245M552 990l36 210-63 35-38-245" fill="none" stroke="#65d9ff" stroke-width="1.2" opacity=".28"/>
+      <path d="M450 80v1040M394 344c38 18 74 18 112 0M355 445h190M340 570h220M350 700h200M370 860h160" fill="none" stroke="#65d9ff" stroke-width=".7" opacity=".16"/>
+      <path d="M383 138c39-20 95-20 134 0M382 174c45 25 91 25 136 0" fill="none" stroke="#65d9ff" stroke-width=".7" opacity=".16"/>
     </g>
 
-    <!-- CARDIOVASCULAR — Heart -->
-    <g class="system incomplete" data-system="cardio" onclick="openSystem('cardio')" style="color:#d05068">
-      <circle class="pulse-ring" cx="140" cy="155" r="14" fill="none" stroke="#d05068" stroke-width="1"/>
-      <circle class="organ" cx="140" cy="155" r="12" fill="rgba(208,80,104,0.25)" stroke="#d05068" stroke-width="1.5"/>
-      <text x="140" y="158" font-size="10" fill="#d05068">♥</text>
-      <text x="140" y="138" font-size="7" fill="#d05068">Cardio</text>
+    <!-- INTERNAL ORGANS -->
+    <g id="organs">
+      <path d="M398 128c-36-29-79 11-53 47-20 30 17 63 49 43 23 26 77 9 69-31 34-16 16-65-22-62-9-20-30-24-43 3z" fill="none" stroke="#b56cff" stroke-width="2" filter="url(#glow)" opacity=".8"/>
+      <path d="M405 380c-63-10-96 42-88 130 59 4 89-42 95-107zM495 380c63-10 96 42 88 130-59 4-89-42-95-107z" fill="none" stroke="#55f1ff" stroke-width="2" filter="url(#glow)" opacity=".8"/>
+      <path d="M452 426c39-31 80 13 53 67-22 44-80 31-80-14 0-20 10-38 27-53z" fill="none" stroke="#ff5f82" stroke-width="2" filter="url(#glow)" opacity=".8"/>
+      <path d="M345 565c83-55 183-36 244 19-92 26-177 32-244-19zM476 620c56-46 116 23 61 71-52 45-122-23-61-71z" fill="none" stroke="#ffb33d" stroke-width="2" filter="url(#glow)" opacity=".8"/>
+      <path d="M381 705c-39 9-50 68-14 88 41-15 56-67 14-88zM519 705c39 9 50 68 14 88-41-15-56-67-14-88z" fill="none" stroke="#4da3ff" stroke-width="2" filter="url(#glow)" opacity=".8"/>
+      <path d="M330 355h240M300 795h300M350 990h200M260 760l70-280M640 760l-70-280" fill="none" stroke="#9cff73" stroke-width="2" filter="url(#glow)" opacity=".8"/>
     </g>
 
-    <!-- RESPIRATORY — Lungs -->
-    <g class="system incomplete" data-system="resp" onclick="openSystem('resp')" style="color:#40c8e8">
-      <circle class="pulse-ring" cx="150" cy="140" r="16" fill="none" stroke="#40c8e8" stroke-width="1"/>
-      <ellipse class="organ" cx="130" cy="145" rx="10" ry="14" fill="rgba(64,200,232,0.15)" stroke="#40c8e8" stroke-width="1"/>
-      <ellipse class="organ" cx="170" cy="145" rx="10" ry="14" fill="rgba(64,200,232,0.15)" stroke="#40c8e8" stroke-width="1"/>
-      <text x="150" y="130" font-size="7" fill="#40c8e8">Respiratory</text>
+    <!-- LYMPH DOTS -->
+    <g>
+      <circle cx="380" cy="350" r="5" fill="#ffd75a" filter="url(#glow)"/>
+      <circle cx="520" cy="350" r="5" fill="#ffd75a" filter="url(#glow)"/>
+      <circle cx="340" cy="450" r="5" fill="#ffd75a" filter="url(#glow)"/>
+      <circle cx="560" cy="450" r="5" fill="#ffd75a" filter="url(#glow)"/>
+      <circle cx="315" cy="610" r="5" fill="#ffd75a" filter="url(#glow)"/>
+      <circle cx="585" cy="610" r="5" fill="#ffd75a" filter="url(#glow)"/>
+      <circle cx="365" cy="790" r="5" fill="#ffd75a" filter="url(#glow)"/>
+      <circle cx="535" cy="790" r="5" fill="#ffd75a" filter="url(#glow)"/>
+      <circle cx="385" cy="1010" r="5" fill="#ffd75a" filter="url(#glow)"/>
+      <circle cx="515" cy="1010" r="5" fill="#ffd75a" filter="url(#glow)"/>
     </g>
 
-    <!-- GI + LIVER — Abdomen -->
-    <g class="system incomplete" data-system="gi" onclick="openSystem('gi')" style="color:#d0a040">
-      <circle class="pulse-ring" cx="155" cy="200" r="16" fill="none" stroke="#d0a040" stroke-width="1"/>
-      <path class="organ" d="M140,185 Q155,180 165,195 Q170,210 155,215 Q140,210 140,185Z" fill="rgba(208,160,64,0.2)" stroke="#d0a040" stroke-width="1.2"/>
-      <text x="155" y="200" font-size="9" fill="#d0a040">🫁</text>
-      <text x="215" y="200" font-size="7" fill="#d0a040">GI &amp; Liver</text>
+    <!-- CONNECTORS -->
+    <g>
+      <path fill="none" stroke="#b56cff" stroke-width="2" stroke-dasharray="2 7" opacity=".8" d="M292 170H405"/>
+      <path fill="none" stroke="#55f1ff" stroke-width="2" stroke-dasharray="2 7" opacity=".8" d="M258 410h125"/>
+      <path fill="none" stroke="#ff5f82" stroke-width="2" stroke-dasharray="2 7" opacity=".8" d="M525 455h130"/>
+      <path fill="none" stroke="#ffb33d" stroke-width="2" stroke-dasharray="2 7" opacity=".8" d="M520 640h135"/>
+      <path fill="none" stroke="#4da3ff" stroke-width="2" stroke-dasharray="2 7" opacity=".8" d="M245 810h130"/>
+      <path fill="none" stroke="#ffd75a" stroke-width="2" stroke-dasharray="2 7" opacity=".8" d="M500 240h150"/>
+      <path fill="none" stroke="#ff9db2" stroke-width="2" stroke-dasharray="2 7" opacity=".8" d="M245 610h160"/>
+      <path fill="none" stroke="#9cff73" stroke-width="2" stroke-dasharray="2 7" opacity=".8" d="M250 1030l105-110"/>
+      <path fill="none" stroke="#ffd75a" stroke-width="2" stroke-dasharray="2 7" opacity=".8" d="M520 890h135"/>
+      <path fill="none" stroke="#2fffe6" stroke-width="2" stroke-dasharray="2 7" opacity=".8" d="M635 1130h80v55"/>
     </g>
 
-    <!-- RENAL — Kidneys -->
-    <g class="system incomplete" data-system="renal" onclick="openSystem('renal')" style="color:#5090d0">
-      <circle class="pulse-ring" cx="150" cy="230" r="12" fill="none" stroke="#5090d0" stroke-width="1"/>
-      <ellipse class="organ" cx="135" cy="230" rx="7" ry="10" fill="rgba(80,144,208,0.2)" stroke="#5090d0" stroke-width="1.2"/>
-      <ellipse class="organ" cx="165" cy="230" rx="7" ry="10" fill="rgba(80,144,208,0.2)" stroke="#5090d0" stroke-width="1.2"/>
-      <text x="150" y="252" font-size="7" fill="#5090d0">Renal</text>
+    <!-- CLICKABLE SYSTEM NODES -->
+    <g id="nodes">
+      <g class="node" data-system="nervous" onclick="openSystem('nervous')" style="--c:#b56cff">
+        <circle class="ring" cx="240" cy="170" r="52"/>
+        <path class="icon" d="M218 174c-16-21 8-45 31-29 21-20 54 0 41 28 18 14 0 42-24 36-17 17-46 8-48-17" fill="none" stroke="#b56cff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" filter="url(#glow)"/>
+        <circle cx="155" cy="250" r="17" fill="none" stroke="#b56cff" stroke-width="2"/><text x="149" y="257" fill="#fff" font-size="20">1</text>
+        <text class="nt" x="185" y="258" fill="#e9f8ff" font-size="24">BRAIN</text><text class="sub" x="185" y="282" fill="#b56cff" font-size="15">Nervous System</text>
+      </g>
+
+      <g class="node" data-system="resp" onclick="openSystem('resp')" style="--c:#55f1ff">
+        <circle class="ring" cx="190" cy="410" r="52"/>
+        <path class="icon" d="M190 382v58M184 405c-28-32-48 0-43 35 22 4 43-13 43-35zM196 405c28-32 48 0 43 35-22 4-43-13-43-35z" fill="none" stroke="#55f1ff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" filter="url(#glow)"/>
+        <circle cx="85" cy="420" r="17" fill="none" stroke="#55f1ff" stroke-width="2"/><text x="79" y="427" fill="#fff" font-size="20">3</text>
+        <text class="nt" x="110" y="420" fill="#e9f8ff" font-size="24">LUNGS</text><text class="sub" x="110" y="445" fill="#55f1ff" font-size="15">Respiratory System</text>
+      </g>
+
+      <g class="node" data-system="cardio" onclick="openSystem('cardio')" style="--c:#ff5f82">
+        <circle class="ring" cx="710" cy="455" r="52"/>
+        <path class="icon" d="M710 485c-43-30-39-66-12-61 8 1 12 8 12 8s4-7 12-8c27-5 31 31-12 61z" fill="none" stroke="#ff5f82" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" filter="url(#glow)"/>
+        <circle cx="790" cy="455" r="17" fill="none" stroke="#ff5f82" stroke-width="2"/><text x="784" y="462" fill="#fff" font-size="20">2</text>
+        <text class="nt" x="815" y="455" fill="#e9f8ff" font-size="24">HEART</text><text class="sub" x="815" y="480" fill="#ff5f82" font-size="15">Cardiovascular</text>
+      </g>
+
+      <g class="node" data-system="gi" onclick="openSystem('gi')" style="--c:#ffb33d">
+        <circle class="ring" cx="710" cy="640" r="52"/>
+        <path class="icon" d="M690 632c29-18 58 8 40 38-16 28-62 16-50-12 4-11 16-13 10-26z" fill="none" stroke="#ffb33d" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" filter="url(#glow)"/>
+        <circle cx="790" cy="640" r="17" fill="none" stroke="#ffb33d" stroke-width="2"/><text x="784" y="647" fill="#fff" font-size="20">4</text>
+        <text class="nt" x="815" y="640" fill="#e9f8ff" font-size="24">STOMACH</text><text class="sub" x="815" y="665" fill="#ffb33d" font-size="15">GI System</text>
+      </g>
+
+      <g class="node" data-system="renal" onclick="openSystem('renal')" style="--c:#4da3ff">
+        <circle class="ring" cx="180" cy="810" r="52"/>
+        <path class="icon" d="M166 788c-32 16-30 58 4 65 22-17 22-51-4-65zM194 788c32 16 30 58-4 65-22-17-22-51 4-65zM180 795v64" fill="none" stroke="#4da3ff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" filter="url(#glow)"/>
+        <circle cx="95" cy="890" r="17" fill="none" stroke="#4da3ff" stroke-width="2"/><text x="89" y="897" fill="#fff" font-size="20">5</text>
+        <text class="nt" x="125" y="890" fill="#e9f8ff" font-size="24">KIDNEYS</text><text class="sub" x="125" y="915" fill="#4da3ff" font-size="15">Renal System</text>
+      </g>
+
+      <g class="node" data-system="endo" onclick="openSystem('endo')" style="--c:#ffd75a">
+        <circle class="ring" cx="700" cy="240" r="52"/>
+        <path class="icon" d="M700 218c-15 14-18 34 0 50 18-16 15-36 0-50zM678 235c-14 14-7 36 16 36M722 235c14 14 7 36-16 36" fill="none" stroke="#ffd75a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" filter="url(#glow)"/>
+        <circle cx="780" cy="240" r="17" fill="none" stroke="#ffd75a" stroke-width="2"/><text x="774" y="247" fill="#fff" font-size="20">6</text>
+        <text class="nt" x="815" y="240" fill="#e9f8ff" font-size="24">PITUITARY</text><text class="sub" x="815" y="265" fill="#ffd75a" font-size="15">Endocrine System</text>
+      </g>
+
+      <g class="node" data-system="haem" onclick="openSystem('haem')" style="--c:#ff9db2">
+        <circle class="ring" cx="180" cy="610" r="52"/>
+        <path class="icon" d="M170 580l34 62M158 644l34-62M160 585l45 52" fill="none" stroke="#ff9db2" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" filter="url(#glow)"/>
+        <circle cx="85" cy="690" r="17" fill="none" stroke="#ff9db2" stroke-width="2"/><text x="79" y="697" fill="#fff" font-size="20">7</text>
+        <text class="nt" x="115" y="690" fill="#e9f8ff" font-size="24">BONE MARROW</text><text class="sub" x="115" y="715" fill="#ff9db2" font-size="15">Haematology</text>
+      </g>
+
+      <g class="node" data-system="msk" onclick="openSystem('msk')" style="--c:#9cff73">
+        <circle class="ring" cx="175" cy="1030" r="52"/>
+        <path class="icon" d="M175 995l-18 32 18 42 18-42zM156 1027h38M165 1069h20" fill="none" stroke="#9cff73" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" filter="url(#glow)"/>
+        <circle cx="85" cy="1085" r="17" fill="none" stroke="#9cff73" stroke-width="2"/><text x="79" y="1092" fill="#fff" font-size="20">8</text>
+        <text class="nt" x="115" y="1085" fill="#e9f8ff" font-size="24">SKELETON</text><text class="sub" x="115" y="1110" fill="#9cff73" font-size="15">Musculoskeletal</text>
+      </g>
+
+      <g class="node" data-system="immune" onclick="openSystem('immune')" style="--c:#ffd75a">
+        <circle class="ring" cx="710" cy="890" r="52"/>
+        <path class="icon" d="M710 860v60M680 890h60M688 868l44 44M732 868l-44 44" fill="none" stroke="#ffd75a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" filter="url(#glow)"/>
+        <circle cx="790" cy="945" r="17" fill="none" stroke="#ffd75a" stroke-width="2"/><text x="784" y="952" fill="#fff" font-size="20">9</text>
+        <text class="nt" x="820" y="945" fill="#e9f8ff" font-size="24">LYMPH NODES</text><text class="sub" x="820" y="970" fill="#ffd75a" font-size="15">Immune System</text>
+      </g>
+
+      <g class="node" data-system="cell" onclick="openSystem('cell')" style="--c:#2fffe6">
+        <circle class="ring" cx="720" cy="1185" r="52"/>
+        <circle class="icon" cx="720" cy="1185" r="18" fill="none" stroke="#2fffe6" stroke-width="3" filter="url(#glow)"/>
+        <circle class="icon" cx="720" cy="1185" r="5" fill="none" stroke="#2fffe6" stroke-width="3" filter="url(#glow)"/>
+        <path class="icon" d="M690 1165c15 0 15-13 30-13M742 1210c17 0 17-15 35-15" fill="none" stroke="#2fffe6" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" filter="url(#glow)"/>
+        <circle cx="805" cy="1210" r="17" fill="none" stroke="#2fffe6" stroke-width="2"/><text x="794" y="1217" fill="#fff" font-size="18">10</text>
+        <text class="nt" x="835" y="1210" fill="#e9f8ff" font-size="24">CELLS</text><text class="sub" x="835" y="1235" fill="#2fffe6" font-size="15">Cell Biology</text>
+      </g>
     </g>
 
-    <!-- ENDOCRINE — Scattered nodes -->
-    <g class="system incomplete" data-system="endo" onclick="openSystem('endo')" style="color:#d0a040">
-      <circle class="pulse-ring" cx="150" cy="115" r="10" fill="none" stroke="#d0a040" stroke-width="1"/>
-      <circle class="organ" cx="150" cy="115" r="5" fill="rgba(208,160,64,0.3)" stroke="#d0a040" stroke-width="1"/>
-      <text x="200" y="115" font-size="7" fill="#d0a040">Endocrine</text>
-    </g>
-
-    <!-- HAEMATOPOIETIC — Bone marrow (sternum area) -->
-    <g class="system incomplete" data-system="haem" onclick="openSystem('haem')" style="color:#d06888">
-      <circle class="pulse-ring" cx="150" cy="170" r="10" fill="none" stroke="#d06888" stroke-width="1"/>
-      <rect class="organ" x="143" y="163" width="14" height="14" rx="3" fill="rgba(208,104,136,0.2)" stroke="#d06888" stroke-width="1"/>
-      <text x="85" y="175" font-size="7" fill="#d06888">Haemato</text>
-    </g>
-
-    <!-- MUSCULOSKELETAL — Skeleton hint -->
-    <g class="system incomplete" data-system="msk" onclick="openSystem('msk')" style="color:#50b870">
-      <circle class="pulse-ring" cx="150" cy="310" r="10" fill="none" stroke="#50b870" stroke-width="1"/>
-      <line class="organ" x1="140" y1="300" x2="160" y2="320" stroke="#50b870" stroke-width="1.5"/>
-      <line class="organ" x1="160" y1="300" x2="140" y2="320" stroke="#50b870" stroke-width="1.5"/>
-      <text x="150" y="340" font-size="7" fill="#50b870">MSK</text>
-    </g>
-
-    <!-- CELL BIOLOGY — Micro level -->
-    <g class="system incomplete" data-system="cell" onclick="openSystem('cell')" style="color:#40c8e8">
-      <circle class="pulse-ring" cx="80" cy="100" r="10" fill="none" stroke="#40c8e8" stroke-width="1"/>
-      <circle class="organ" cx="80" cy="100" r="8" fill="rgba(64,200,232,0.15)" stroke="#40c8e8" stroke-width="1"/>
-      <circle cx="80" cy="100" r="3" fill="rgba(64,200,232,0.3)"/>
-      <text x="80" y="82" font-size="7" fill="#40c8e8">Cell Bio</text>
-    </g>
-
-    <!-- IMMUNE & INFECTIOUS — Lymph nodes -->
-    <g class="system incomplete" data-system="immune" onclick="openSystem('immune')" style="color:#d0a040">
-      <circle class="pulse-ring" cx="220" cy="130" r="10" fill="none" stroke="#d0a040" stroke-width="1"/>
-      <circle class="organ" cx="220" cy="130" r="6" fill="rgba(208,160,64,0.2)" stroke="#d0a040" stroke-width="1"/>
-      <circle cx="232" cy="122" r="4" fill="rgba(208,160,64,0.15)" stroke="#d0a040" stroke-width="0.8"/>
-      <circle cx="228" cy="142" r="4" fill="rgba(208,160,64,0.15)" stroke="#d0a040" stroke-width="0.8"/>
-      <text x="225" y="158" font-size="7" fill="#d0a040">Immune</text>
-    </g>
-
-    <!-- CONNECTIVE TISSUE — Joints -->
-    <g class="system incomplete" data-system="ct" onclick="openSystem('ct')" style="color:#d0a040">
-      <circle class="pulse-ring" cx="110" cy="210" r="10" fill="none" stroke="#d0a040" stroke-width="1"/>
-      <circle class="organ" cx="110" cy="210" r="5" fill="rgba(208,160,64,0.2)" stroke="#d0a040" stroke-width="1"/>
-      <text x="70" y="230" font-size="7" fill="#d0a040">Connective</text>
+    <!-- MICRO FIELD -->
+    <g stroke="#2fffe6" fill="none" opacity=".5" filter="url(#glow)">
+      <circle cx="650" cy="1040" r="8"/><circle cx="710" cy="1065" r="14"/>
+      <circle cx="760" cy="1030" r="7"/><circle cx="690" cy="1110" r="6"/>
+      <path d="M790 1080l12-12 12 12-12 12zM640 1100c15-22 34-7 22 12-13 20-36 8-22-12z"/>
     </g>
   </svg>
 </div>
@@ -614,12 +660,11 @@ function updateProgress() {
 
 function updateBodyMap() {
   Object.entries(SYSTEMS).forEach(([key, sys]) => {
-    const el = document.querySelector(`.system[data-system="${key}"]`);
+    const el = document.querySelector(`.node[data-system="${key}"]`);
     if (!el) return;
     const prog = getSystemProgress(key);
-    el.classList.remove('completed', 'incomplete', 'active', 'locked');
-    if (prog.pct === 100) el.classList.add('completed');
-    else el.classList.add('incomplete');
+    el.classList.remove('done');
+    if (prog.pct === 100) el.classList.add('done');
   });
 }
 
@@ -859,7 +904,7 @@ updateProgress();
 updateBodyMap();
 
 // Body map click from SVG
-document.querySelectorAll('.system[data-system]').forEach(el => {
+document.querySelectorAll('.node[data-system]').forEach(el => {
   el.addEventListener('click', () => openSystem(el.dataset.system));
 });
 </script>
