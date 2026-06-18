@@ -139,10 +139,10 @@
   function getSkillPos(id){
     var positions={
       'ear-training':{x:250,y:170},
-      'rhythm':{x:515,y:200},
-      'technique':{x:602,y:235},
+      'technique':{x:515,y:200},
+      'rhythm':{x:602,y:235},
       'theory':{x:400,y:380},
-      'improvisation':{x:1190,y:170},
+      'improvisation':{x:465,y:545},
       'chords':{x:1190,y:420},
       'song-learning':{x:895,y:560},
       'performance':{x:605,y:670},
