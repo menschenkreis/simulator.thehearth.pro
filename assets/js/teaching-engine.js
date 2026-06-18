@@ -87,6 +87,7 @@ function createTeachingEngine(containerEl, opts){
       if(!typingDone) return;
       if(e.target.closest('[data-action]') || e.target.closest('.teach-choice')) return;
       container.removeEventListener('click', clickAdvance);
+      if(typeof playSfx==='function')playSfx('lesson-next');
       advance(lesson);
     }
     // Delay binding to avoid accidental advance from the click that opened this step
@@ -125,6 +126,7 @@ function createTeachingEngine(containerEl, opts){
         if(choice.correct){
           state.scores[concept].right++;
           state.wrongCount = 0;
+          if(typeof playSfx==='function')playSfx('lesson-correct');
 
           // Flash green
           this.style.background = '#2ecc71';
@@ -145,6 +147,7 @@ function createTeachingEngine(containerEl, opts){
         } else {
           state.scores[concept].wrong++;
           state.wrongCount++;
+          if(typeof playSfx==='function')playSfx('lesson-wrong');
 
           // Flash red
           this.style.background = '#e74c3c';

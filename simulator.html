@@ -5581,21 +5581,73 @@ window.playSfx=function(type){
       sub.start(now);sub.stop(now+0.35);
       return;
     } else if(type==='drill-click'){
-      // Quick tight click — precision, focused
-      osc.type='square';
-      osc.frequency.setValueAtTime(1200,now);
-      osc.frequency.exponentialRampToValueAtTime(600,now+0.02);
-      gain.gain.setValueAtTime(0.1,now);
-      gain.gain.exponentialRampToValueAtTime(0.001,now+0.04);
-      osc.start(now);osc.stop(now+0.05);
-      // Tiny click overtone
-      var cl=ctx.createOscillator();
-      var cg=ctx.createGain();
-      cl.type='sine';cl.frequency.setValueAtTime(2400,now);
-      cg.gain.setValueAtTime(0.06,now);
-      cg.gain.exponentialRampToValueAtTime(0.001,now+0.025);
-      cl.connect(cg);cg.connect(ctx.destination);
-      cl.start(now);cl.stop(now+0.03);
+      // Satisfying resonant pluck — for Foundation blocks and drill entries
+      var notes=[196,220,247,262,294,330,392]; // G3-A3-B3-C4-D4-E4-G4
+      var step=(window._drillClickStep=(window._drillClickStep||0)+1);
+      var f=notes[step%notes.length];
+      // Main tone — nylon string quality
+      osc.type='triangle';
+      osc.frequency.setValueAtTime(f*1.015,now);
+      osc.frequency.exponentialRampToValueAtTime(f,now+0.04);
+      gain.gain.setValueAtTime(0.0001,now);
+      gain.gain.exponentialRampToValueAtTime(0.2,now+0.008);
+      gain.gain.exponentialRampToValueAtTime(0.001,now+0.55);
+      osc.start(now);osc.stop(now+0.6);
+      // Harmonic overtone
+      var ov=ctx.createOscillator();
+      var og=ctx.createGain();
+      ov.type='sine';
+      ov.frequency.setValueAtTime(f*2.005,now);
+      og.gain.setValueAtTime(0.0001,now);
+      og.gain.exponentialRampToValueAtTime(0.06,now+0.006);
+      og.gain.exponentialRampToValueAtTime(0.001,now+0.3);
+      ov.connect(og);og.connect(ctx.destination);
+      ov.start(now);ov.stop(now+0.35);
+      // Sub warmth
+      var sub=ctx.createOscillator();
+      var sg=ctx.createGain();
+      sub.type='sine';sub.frequency.setValueAtTime(f*0.5,now);
+      sg.gain.setValueAtTime(0.0001,now);
+      sg.gain.exponentialRampToValueAtTime(0.08,now+0.01);
+      sg.gain.exponentialRampToValueAtTime(0.001,now+0.4);
+      sub.connect(sg);sg.connect(ctx.destination);
+      sub.start(now);sub.stop(now+0.45);
+    } else if(type==='lesson-next'){
+      // Gentle ascending chime — clicking next in a lesson
+      var nf=[392,440,523]; // G4 A4 C5
+      nf.forEach(function(f,i){
+        var o=ctx.createOscillator();
+        var g=ctx.createGain();
+        o.type='sine';
+        o.frequency.setValueAtTime(f,now+i*0.06);
+        g.gain.setValueAtTime(0.0001,now+i*0.06);
+        g.gain.exponentialRampToValueAtTime(0.1,now+i*0.06+0.01);
+        g.gain.exponentialRampToValueAtTime(0.001,now+i*0.06+0.4);
+        o.connect(g);g.connect(ctx.destination);
+        o.start(now+i*0.06);o.stop(now+i*0.06+0.45);
+      });
+    } else if(type==='lesson-wrong'){
+      // Soft dissonant pluck — "not quite" without being harsh
+      osc.type='triangle';
+      osc.frequency.setValueAtTime(233,now); // Bb3
+      osc.frequency.setValueAtTime(238,now+0.15); // slight detune
+      gain.gain.setValueAtTime(0.12,now);
+      gain.gain.exponentialRampToValueAtTime(0.001,now+0.4);
+      osc.start(now);osc.stop(now+0.45);
+    } else if(type==='lesson-correct'){
+      // Happy resolution — correct answer
+      var cf=[523,659,784]; // C5 E5 G5
+      cf.forEach(function(f,i){
+        var o=ctx.createOscillator();
+        var g=ctx.createGain();
+        o.type='sine';
+        o.frequency.setValueAtTime(f,now+i*0.08);
+        g.gain.setValueAtTime(0.0001,now+i*0.08);
+        g.gain.exponentialRampToValueAtTime(0.1,now+i*0.08+0.01);
+        g.gain.exponentialRampToValueAtTime(0.001,now+i*0.08+0.5);
+        o.connect(g);g.connect(ctx.destination);
+        o.start(now+i*0.08);o.stop(now+i*0.08+0.55);
+      });
     }
   }catch(e){}
 };
