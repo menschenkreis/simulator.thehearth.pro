@@ -19,12 +19,7 @@
   }
 
   // HEARTH: only brain scene first.
-  window.showHearth=function(){
-    inject(); const el=panel(); if(!el)return; const regions=[['Foundation',145,225,'#8b6b3d','foundation'],['Do',260,120,'#e8a020','doing'],['Know',405,170,'#6fa35f','knowing'],['Play',380,310,'#5a9fd4','play'],['Study',150,160,'#8a6aaa','study'],['Practice',260,300,'#d4af69','practice'],['Create',170,285,'#c45a20','create'],['Mastery',310,235,'#ff6b35','mastery']];
-    let svg='<svg viewBox="0 0 560 420"><path d="M90,220 C75,160 110,85 195,60 C250,40 345,55 400,100 C455,145 470,230 435,285 C400,340 310,350 245,335 C170,318 110,285 90,220Z" fill="#0d0b08" stroke="'+GOLD+'" stroke-opacity=".28"/><path d="M260,55 C275,130 250,200 270,335M90,220 C180,200 275,215 430,260" stroke="'+GOLD+'" stroke-opacity=".13" stroke-dasharray="4 5" fill="none"/>';
-    regions.forEach(r=>{svg+='<g onclick="SceneFirst.openHearth(\''+r[4]+'\')"><circle cx="'+r[1]+'" cy="'+r[2]+'" r="38" fill="'+r[3]+'" opacity=".08"><animate attributeName="r" values="28;43;28" dur="4s" repeatCount="indefinite"/></circle><circle cx="'+r[1]+'" cy="'+r[2]+'" r="16" fill="'+r[3]+'" opacity=".62"/><text x="'+r[1]+'" y="'+(r[2]+34)+'" text-anchor="middle" fill="'+r[3]+'" font-family="JetBrains Mono" font-size="9">'+r[0]+'</text></g>';}); svg+='</svg>';
-    el.innerHTML=sceneStart('sf-brain','The Hearth Brain','One brain. Eight learning systems. Touch a glowing region only when you want detail.','Start with the brain itself. No dashboard. Let the picture tell you where learning lives.','images/character-full/Thinking.png','hearth')+'<div class="sf-stage">'+svg+'</div><div id="sf-drawer" class="sf-drawer">Touch one glowing brain region.</div></div></div>';
-  };
+  // showHearth moved to hearth-brain.js (loads brain-map.svg)
 
   // PLAY: only world map first.
   window.showPlay=function(){
