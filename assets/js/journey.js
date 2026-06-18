@@ -1,4 +1,4 @@
-// Journey Node — Central Spine Guided Lesson Path
+// Journey Node - Central Spine Guided Lesson Path
 // Multi-student 8-level lesson programme with review, feedback, tracking, and scalable lesson data.
 
 (function(){
@@ -6,7 +6,7 @@
   const ACTIVE = 'hearth-journey-active-student';
 
   const LEVELS = [
-    { id:'L1', num:1, name:'Origin', tag:'THE SEED', color:'#ff4444', totalLessons:8, unlockAfter:8, focus:'First contact: body, instrument, clean sound, simple rhythm.' },
+    { id:'L1', num:1, name:'Origin', tag:'THE FIRST VOICE', color:'#ff4444', totalLessons:8, unlockAfter:8, focus:'Bridge from Foundation to Doing: picking, rhythm, fretting, first scale, first chords, connecting ideas, first song moment.' },
     { id:'L2', num:2, name:'Duality', tag:'THE SECOND VOICE', color:'#ff8800', totalLessons:10, unlockAfter:10, focus:'Two hands, chord gaps, pentatonic vocabulary, embellishments.' },
     { id:'L3', num:3, name:'Creation', tag:'FIRST EXPRESSIONS', color:'#ffcc00', totalLessons:12, unlockAfter:12, focus:'First complete songs, riffs, phrasing, song seeds.' },
     { id:'L4', num:4, name:'Structure', tag:'FRAMEWORKS', color:'#44cc44', totalLessons:14, unlockAfter:14, focus:'Keys, chord families, fretboard maps, timing systems.' },
@@ -17,7 +17,7 @@
   ];
 
   const CONCEPT_BANK = {
-    L1: ['Clean sound','Posture and relaxation','String names','Finger numbering','Pick direction','Open chords','Counting pulse','Practice ritual'],
+    L1: ['Alternate picking','Rhythm pulse','Chromatic exercise','Pentatonic shape 1','Open chords (E, A, D)','Scale-to-chord connection','First song moment','Practice ritual'],
     L2: ['Finger gymnastics','Metronome control','Pentatonic pattern 1','Chord embellishments','C chord gap check','Scale-to-piano relationship','Songwriting seed','Open chord fluency','Musical colour','Call and response'],
     L3: ['Riff building','Chord progressions','Simple melodies','Pentatonic phrasing','Dynamics','Verse/chorus shape','Song map','Ear copying'],
     L4: ['Major scale map','Key centres','I IV V','Chord families','Fretboard landmarks','Intervals','Rhythm grids','Transposition'],
@@ -28,11 +28,11 @@
   };
 
   const TASK_BANK = {
-    warmup: ['Finger gymnastics with metronome','Chromatic warm-up across 6 strings','Slow chord-change breathing drill','Right-hand pulse on muted strings'],
-    concept: ['Read / discuss concept','Draw the concept','Compare it on guitar and piano','Say the vocabulary out loud'],
-    drill: ['Metronome drill','Slow clean repetitions','Loop the hard 4 bars','Speed ladder only if clean'],
-    music: ['Apply inside a song','Create a 2-bar phrase','Embellish a chord progression','Improvise with only today’s notes'],
-    review: ['Review last lesson notes','Find gaps without shame','Rate confidence','Choose next gradient']
+    warmup: ['Body scan + 2 min clean open strings','Finger gymnastics: 1-2-3-4 chromatic across 6 strings','Right-hand pulse on muted strings, D DU UDU','Slow chord-change breathing drill - two chords only'],
+    concept: ['Say the idea in plain words before touching the guitar','Draw the pattern on paper or fretboard diagram','Find it on the guitar - say what you see','Connect it to something you already know'],
+    drill: ['Metronome at 60 BPM - one clean rep is worth ten sloppy','Slow repetitions with pause to check each note','Loop the hard transition only - 4 bars max','Speed ladder: increase 5 BPM only if last rep was clean'],
+    music: ['Apply the concept inside a real song moment','Create a 2-bar phrase using today's idea','Improvise with only the notes you learned today','Play something that makes you want to come back tomorrow'],
+    review: ['Read your last lesson notes honestly','Name one thing that stuck and one thing that slipped','Rate your confidence: 1-5 on today's concept','Choose the next small gradient - what should the next lesson do?']
   };
 
   function esc(v){
@@ -63,7 +63,7 @@
       jen.currentLevel = 2;
       jen.levels.L1.lessonsDone = 8; jen.levels.L1.complete = true;
       jen.levels.L2.unlocked = true;
-      jen.levels.L2.notes.push({ date:'2026-06-14', text:'L2 with Jen: reviewed last week, practised finger gymnastics with metronome, learned pentatonic scale pattern with metronome, learned chord embellishments and how they colour songs. Jen is close to my ability; I need to level up fast to stay ahead. Need to understand how scales relate to piano and what they mean for playing the instrument. Jen wants to learn to write a song. She didn’t know C chord, so we are seeing the gaps.' });
+      jen.levels.L2.notes.push({ date:'2026-06-14', text:'L2 with Jen: reviewed last week, practised finger gymnastics with metronome, learned pentatonic scale pattern with metronome, learned chord embellishments and how they colour songs. Jen is close to my ability; I need to level up fast to stay ahead. Need to understand how scales relate to piano and what they mean for playing the instrument. Jen wants to learn to write a song. She didn't know C chord, so we are seeing the gaps.' });
       state = { version:2, students:[mine, jen], activeStudentId:mine.id };
       saveState(state);
     }
@@ -136,9 +136,23 @@
     const concepts = CONCEPT_BANK[level.id] || CONCEPT_BANK.L1;
     const primaryConcept = concepts[(lessonNum-1) % concepts.length];
     const secondaryConcept = concepts[lessonNum % concepts.length];
-    const practiceDrills = (window.PRACTICE && window.PRACTICE.drills) ? window.PRACTICE.drills : [];
-    const filtered = practiceDrills.filter(d => levelNum <= 2 ? d.difficulty <= 2 : d.difficulty <= Math.min(4, levelNum));
-    const drill = (filtered.length ? filtered : practiceDrills)[(lessonNum-1) % Math.max(1, (filtered.length || practiceDrills.length))] || { title:'Clean repetition drill', category:'Technique', duration:'10 min', defaultBpm:60, instructions:'Choose one small movement and repeat it cleanly with a metronome.' };
+    
+    // Level-specific drill bank
+    const LEVEL_DRILLS = {
+      L1: [
+        { title:'Alternate picking — open strings', category:'Picking', duration:'15 min', defaultBpm:60, instructions:'Down-up-down-up on each open string. Start on low E, move to A, then D, G, B, high E. One string at a time. Focus on even volume between down and up strokes.' },
+        { title:'Rhythm pulse — D DU UDU', category:'Rhythm', duration:'15 min', defaultBpm:72, instructions:'Mute all strings with your fretting hand. Strum the D DU UDU pattern with a metronome. Count 1-and-2-and-3-and-4-and. Down on numbers, up on ands. Keep it steady.' },
+        { title:'Chromatic walk — 1-2-3-4', category:'Fretting', duration:'15 min', defaultBpm:50, instructions:'Fret 1-2-3-4 on low E string. Then A. Then D, G, B, high E. One finger per fret. Press just behind the fret wire. If it buzzes, adjust finger position.' },
+        { title:'Pentatonic shape 1 — slow clean reps', category:'Scales', duration:'15 min', defaultBpm:55, instructions:'Play the A minor pentatonic at fret 5: 5-8 on E, 5-7 on A, 5-7 on D, 5-7 on G, 5-7 on B, 5-8 on e. Ascending then descending. Pause between each note to check it rings clean.' },
+        { title:'Open chord transitions — E to A', category:'Chords', duration:'15 min', defaultBpm:60, instructions:'Hold E major. Strum and let it ring. Then move to A major. Strum and let it ring. Back to E. Four strums per chord. Focus on clean transitions — no buzzing, no muted strings.' },
+        { title:'Scale-chord mapping', category:'Theory', duration:'15 min', defaultBpm:60, instructions:'Play the A minor pentatonic. Then play an A minor chord. Notice which notes overlap. Now play the pentatonic over the chord — hear how they fit together.' },
+        { title:'Song moment — pick + rhythm + chord', category:'Application', duration:'15 min', defaultBpm:72, instructions:'Choose one chord you know. Strum it with D DU UDU pattern. Add one melody note from the pentatonic. This is a song moment — a real piece of music.' },
+        { title:'Practice ritual build', category:'Routine', duration:'15 min', defaultBpm:60, instructions:'Build a 20-minute routine: 2 min body scan, 3 min chromatic warm-up, 5 min today concept, 5 min drill, 5 min free play. Write it down.' }
+      ]
+    };
+    
+    const levelDrills = LEVEL_DRILLS[level.id];
+    const drill = levelDrills ? levelDrills[(lessonNum-1) % levelDrills.length] : { title:'Clean repetition drill', category:'Technique', duration:'10 min', defaultBpm:60, instructions:'Choose one small movement and repeat it cleanly with a metronome.' };
     const warm = TASK_BANK.warmup[(lessonNum-1) % TASK_BANK.warmup.length];
     const music = TASK_BANK.music[(lessonNum-1) % TASK_BANK.music.length];
     const conceptTask = TASK_BANK.concept[(lessonNum-1) % TASK_BANK.concept.length];
@@ -154,7 +168,7 @@
       conceptNames: [primaryConcept, secondaryConcept],
       taskNames: [warm, conceptTask, drill.title, music, review],
       blocks: [
-        { id:'review', min:8, phase:'REVIEW', source:'Journey Notes', title:'Review last contact', body:'Look at the previous lesson. What did we learn? What gap appeared? What should not be skipped today?', prompt:'Write the real notes here — e.g. “didn’t know C chord”, “wants to write a song”, “scale/piano connection unclear”.' },
+        { id:'review', min:8, phase:'REVIEW', source:'Journey Notes', title:'Review last contact', body:'Look at the previous lesson. What did we learn? What gap appeared? What should not be skipped today?', prompt:'Write the real notes here - e.g. "didn't know C chord", "wants to write a song", "scale/piano connection unclear".' },
         { id:'warmup', min:10, phase:'WARM-UP', source:'Practice', title:warm, body:'Wake the hands with a clean, small movement before adding new material.', prompt:'Tempo, cleanliness, body tension, and one correction.' },
         { id:'concept', min:12, phase:'CONCEPT', source:'Knowing/Foundation', title:primaryConcept, body:'Teach the idea plainly. Connect significance to mass: say it, draw it, find it on the guitar.', prompt:'What words were misunderstood? What physical thing did this map to?' },
         { id:'drill', min:15, phase:'DRILL', source:'Do/Practice', title:drill.title, body:(drill.instructions || drill.description || 'Practise slowly with a metronome.'), prompt:'BPM, pass condition, mistake pattern, next gradient.' },
@@ -265,7 +279,7 @@
     html += '<img src="images/character-full/Encouraging.png" style="width:90px;height:90px;object-fit:contain;filter:drop-shadow(0 4px 12px rgba(0,0,0,0.4));animation:char-float 3s ease-in-out infinite"/>';
     html += '<div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:10px 14px;margin-top:8px;max-width:260px;text-align:center;position:relative">';
     html += '<div style="position:absolute;left:50%;top:-6px;transform:translateX(-50%);width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-bottom:6px solid var(--border)"></div>';
-    html += '<div style="font-size:0.68rem;color:var(--text);line-height:1.5">This is your learning spine — from <strong style="color:#d4af69">Foundation</strong> to <strong style="color:#d4af69">Mastery</strong>. Click a level to see your lessons.</div>';
+    html += '<div style="font-size:0.68rem;color:var(--text);line-height:1.5">This is your learning spine - from <strong style="color:#d4af69">Foundation</strong> to <strong style="color:#d4af69">Mastery</strong>. Click a level to see your lessons.</div>';
     html += '</div>';
     html += '</div>';
 
@@ -442,12 +456,12 @@
 
     // Guide messages per block type
     const blockGuides = {
-      review: 'Let us start by looking back. What happened last time? What gap showed up? Read your previous notes honestly before moving on.',
-      warmup: 'Time to wake the hands. Small, clean movements — no rush. Focus on one correction from last time.',
-      concept: 'Here is the idea for today. Say it plainly, find it on the guitar, connect it to something you already know.',
-      drill: 'Now we drill. Slow, with a metronome. One clean repetition is worth more than ten sloppy ones.',
-      music: 'Turn the drill into music. Play something real — a riff, a chord progression, a song moment. This is where it sticks.',
-      reflect: 'Last step. Rate what you learned, write one honest note, and name the next small thing to work on.'
+      review: 'Before we build something new, let us check what is already here. Read your last lesson notes. What did the hands learn? What slipped? No judgement - just honest looking.',
+      warmup: 'Time to wake the hands. Two minutes of clean, small movements. Drop your shoulders. Breathe. The body needs to be calm before it can learn.',
+      concept: 'Here is today's idea. Say it in plain words first. Then find it on the guitar. If a word is unclear, stop and clear it - that is the Foundation mindset, and it never stops being useful.',
+      drill: 'Now we train the movement. Slow, with a metronome. One clean repetition is worth more than ten sloppy ones. If it buzzes, adjust. Closer to the fret wire, arched finger, less shoulder tension.',
+      music: 'This is where the drill becomes music. Play something real - a riff, a chord progression, a song moment. If you can not represent it, you do not understand it yet. Make it small enough that your hands can succeed.',
+      reflect: 'Last step. Rate what you learned, write one honest note, and name the next small thing to work on. The next lesson adapts to what you tell it.'
     };
 
     let html = '<div class="journey-shell" style="display:flex;flex-direction:column;align-items:center;padding:20px">';
@@ -534,18 +548,19 @@
     const n = lessonsDone + 1;
     const primary = lesson.conceptNames[0] || 'the core concept';
     const blocks = lesson.blocks.map(b => b.title);
-    if(lessonsDone === 0) return 'Welcome to ' + level.id + '. Lesson ' + n + ' focuses on ' + primary + '. You will review, warm up, learn the concept, drill it, apply it to music, and reflect. Every lesson follows this shape — one hour, beginning to end.';
-    if(n > total) return 'You have completed all ' + total + ' lessons in ' + level.id + '. The next level is unlocked — keep the momentum going.';
+    if(lessonsDone === 0) return 'Welcome to ' + level.id + '. Lesson ' + n + ' focuses on ' + primary + '. You will review, warm up, learn the concept, drill it, apply it to music, and reflect. Every lesson follows this shape - one hour, beginning to end.';
+    if(n > total) return 'You have completed all ' + total + ' lessons in ' + level.id + '. The next level is unlocked - keep the momentum going.';
     if(n === total) return 'This is your final lesson in ' + level.id + '. Lesson ' + n + ' brings together everything you have learned. Focus on ' + primary + ' and lock it in before moving forward.';
     const prev = lesson.conceptNames[1] || 'last time';
     return 'Lesson ' + n + ' of ' + total + '. Today you are working on ' + primary + '. You will drill it slowly, apply it to a real musical moment, and leave with clear notes for next time. One honest hour.';
   }
 
   function guideText(student, level, lvlState, notes){
-    if(notes.length && /C chord|gap/i.test(notes[0].text)) return 'This is exactly why Journey exists: the lesson revealed a gap. Don’t skip it. Put C chord into the next warm-up, connect the pentatonic to piano visually, and give the songwriting goal a tiny song seed.';
-    if(student.name.toLowerCase().includes('jen')) return 'Jen’s path should track what happened in the real lesson, not an abstract syllabus. Use notes to capture gaps, interests, and next gradients — then the next lesson adapts.';
-    if((lvlState.lessonsDone||0)===0) return 'Start with one full contact. Review, warm hands, teach one concept, drill it, apply musically, then reflect. The lesson is one hour because it has a beginning, middle, and closure.';
-    return 'The spine remembers progress per student. Complete enough lessons in '+level.id+' and the next level unlocks. Rate concepts honestly — “need work” is navigation, not failure.';
+    if(notes.length && /C chord|gap/i.test(notes[0].text)) return 'This is exactly why Journey exists: the lesson revealed a gap. Don\'t skip it. Put C chord into the next warm-up, connect the pentatonic to piano visually, and give the songwriting goal a tiny song seed.';
+    if(student.name.toLowerCase().includes('jen')) return 'Jen\'s path should track what happened in the real lesson, not an abstract syllabus. Use notes to capture gaps, interests, and next gradients — then the next lesson adapts.';
+    if((lvlState.lessonsDone||0)===0) return 'Foundation gave you the map. Now we train the hands. Start with one full contact: review what you know, wake the hands, learn one new concept, drill it slowly, apply it to music, then reflect. The lesson is one hour because it has a beginning, middle, and closure.';
+    if(level.num===1) return 'Level 1 is the bridge from understanding to doing. Each lesson adds one new movement or idea. If a concept feels foggy, stop and clear it — the Foundation mindset never stops being useful. Rate concepts honestly; \"need work\" is navigation, not failure.';
+    return 'The spine remembers progress per student. Complete enough lessons in '+level.id+' and the next level unlocks. Rate concepts honestly — \"need work\" is navigation, not failure.';
   }
 
   function lightMapSpine(student){
@@ -647,7 +662,7 @@
       const state=loadState(); let s=activeStudent(state);
       if(!/jen/i.test(s.name)){ const jen=state.students.find(x=>/jen/i.test(x.name)); if(jen){ state.activeStudentId=jen.id; saveState(state); s=jen; } }
       s.currentLevel = 2; s.levels.L2.unlocked = true;
-      s.levels.L2.notes.push({ date:today(), text:'L2 with Jen: reviewed what we learned last week; practised finger gymnastics with a metronome; learned pentatonic scale pattern with metronome; learned chord embellishments and how they colour songs. Relevance: Jen is close to my ability — I need to level up fast. Need to understand how scales relate to piano and what they mean on guitar. Jen wants to write a song. She didn’t know C chord, so C chord is a gap to track.' });
+      s.levels.L2.notes.push({ date:today(), text:'L2 with Jen: reviewed what we learned last week; practised finger gymnastics with a metronome; learned pentatonic scale pattern with metronome; learned chord embellishments and how they colour songs. Relevance: Jen is close to my ability - I need to level up fast. Need to understand how scales relate to piano and what they mean on guitar. Jen wants to write a song. She didn't know C chord, so C chord is a gap to track.' });
       saveStudent(s); render();
     },
     reset(){ if(confirm('Reset Journey data on this device?')){ localStorage.removeItem(STORE); render(); } },
