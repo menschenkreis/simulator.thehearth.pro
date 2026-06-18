@@ -2262,8 +2262,26 @@ function showFoundation(){
     'f-speaking':'Right hand, left hand, both together.',
     'f-conversations':'Time for your first conversation.'
   };
+  const completedSummary={
+    'f-how-to-learn':'You learned the three barriers to learning and how to practise. Ready for the next block?',
+    'f-learning-a-language':'You understand music as a language — vocabulary, grammar, conversation. Listening comes first.',
+    'f-language-of-music':'You know the 12 notes, intervals, and the building blocks of harmony.',
+    'f-language-of-guitar':'You can read tab, find notes on the fretboard, and speak the language of guitar.',
+    'f-the-guitar':'You know your instrument — parts, posture, and what a capo does.',
+    'f-speaking':'Right hand creates sound, left hand changes pitch. Both hands working together.',
+    'f-conversations':'You played your first chord. Foundation complete. The journey begins.'
+  };
   var activeTopic=F.topics[activeIdx];
-  var speechText=activeTopic?speechByBlock[activeTopic.id]:'Welcome to Foundation.';
+  // If all blocks done, show final message
+  var speechText;
+  if(doneCount===F.topics.length){
+    speechText='Foundation complete. Every master started here.';
+  } else if(activeIdx>0 && completed[F.topics[activeIdx-1].id]){
+    // Show summary of last completed block
+    speechText=completedSummary[F.topics[activeIdx-1].id]||speechByBlock[activeTopic.id];
+  } else {
+    speechText=activeTopic?speechByBlock[activeTopic.id]:'Welcome to Foundation.';
+  }
   const speechLines=[speechText];
   const speechEl=document.getElementById('speech-text');
   if(speechEl){
