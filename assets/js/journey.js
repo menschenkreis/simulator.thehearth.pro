@@ -31,8 +31,8 @@
     warmup: ['Body scan + 2 min clean open strings','Finger gymnastics: 1-2-3-4 chromatic across 6 strings','Right-hand pulse on muted strings, D DU UDU','Slow chord-change breathing drill - two chords only'],
     concept: ['Say the idea in plain words before touching the guitar','Draw the pattern on paper or fretboard diagram','Find it on the guitar - say what you see','Connect it to something you already know'],
     drill: ['Metronome at 60 BPM - one clean rep is worth ten sloppy','Slow repetitions with pause to check each note','Loop the hard transition only - 4 bars max','Speed ladder: increase 5 BPM only if last rep was clean'],
-    music: ['Apply the concept inside a real song moment','Create a 2-bar phrase using today's idea','Improvise with only the notes you learned today','Play something that makes you want to come back tomorrow'],
-    review: ['Read your last lesson notes honestly','Name one thing that stuck and one thing that slipped','Rate your confidence: 1-5 on today's concept','Choose the next small gradient - what should the next lesson do?']
+    music: ["Apply the concept inside a real song moment","Create a 2-bar phrase using today's idea","Improvise with only the notes you learned today","Play something that makes you want to come back tomorrow"],
+    review: ["Read your last lesson notes honestly","Name one thing that stuck and one thing that slipped","Rate your confidence: 1-5 on today's concept","Choose the next small gradient - what should the next lesson do?"]
   };
 
   function esc(v){
@@ -63,7 +63,7 @@
       jen.currentLevel = 2;
       jen.levels.L1.lessonsDone = 8; jen.levels.L1.complete = true;
       jen.levels.L2.unlocked = true;
-      jen.levels.L2.notes.push({ date:'2026-06-14', text:'L2 with Jen: reviewed last week, practised finger gymnastics with metronome, learned pentatonic scale pattern with metronome, learned chord embellishments and how they colour songs. Jen is close to my ability; I need to level up fast to stay ahead. Need to understand how scales relate to piano and what they mean for playing the instrument. Jen wants to learn to write a song. She didn't know C chord, so we are seeing the gaps.' });
+      jen.levels.L2.notes.push({ date:'2026-06-14', text:"L2 with Jen: reviewed last week, practised finger gymnastics with metronome, learned pentatonic scale pattern with metronome, learned chord embellishments and how they colour songs. Jen is close to my ability; I need to level up fast to stay ahead. Need to understand how scales relate to piano and what they mean for playing the instrument. Jen wants to learn to write a song. She didn't know C chord, so we are seeing the gaps." });
       state = { version:2, students:[mine, jen], activeStudentId:mine.id };
       saveState(state);
     }
@@ -168,7 +168,7 @@
       conceptNames: [primaryConcept, secondaryConcept],
       taskNames: [warm, conceptTask, drill.title, music, review],
       blocks: [
-        { id:'review', min:8, phase:'REVIEW', source:'Journey Notes', title:'Review last contact', body:'Look at the previous lesson. What did we learn? What gap appeared? What should not be skipped today?', prompt:'Write the real notes here - e.g. "didn't know C chord", "wants to write a song", "scale/piano connection unclear".' },
+        { id:'review', min:8, phase:'REVIEW', source:'Journey Notes', title:'Review last contact', body:'Look at the previous lesson. What did we learn? What gap appeared? What should not be skipped today?', prompt:"Write the real notes here - e.g. \"didn't know C chord\", \"wants to write a song\", \"scale/piano connection unclear\"." },
         { id:'warmup', min:10, phase:'WARM-UP', source:'Practice', title:warm, body:'Wake the hands with a clean, small movement before adding new material.', prompt:'Tempo, cleanliness, body tension, and one correction.' },
         { id:'concept', min:12, phase:'CONCEPT', source:'Knowing/Foundation', title:primaryConcept, body:'Teach the idea plainly. Connect significance to mass: say it, draw it, find it on the guitar.', prompt:'What words were misunderstood? What physical thing did this map to?' },
         { id:'drill', min:15, phase:'DRILL', source:'Do/Practice', title:drill.title, body:(drill.instructions || drill.description || 'Practise slowly with a metronome.'), prompt:'BPM, pass condition, mistake pattern, next gradient.' },
@@ -458,7 +458,7 @@
     const blockGuides = {
       review: 'Before we build something new, let us check what is already here. Read your last lesson notes. What did the hands learn? What slipped? No judgement - just honest looking.',
       warmup: 'Time to wake the hands. Two minutes of clean, small movements. Drop your shoulders. Breathe. The body needs to be calm before it can learn.',
-      concept: 'Here is today's idea. Say it in plain words first. Then find it on the guitar. If a word is unclear, stop and clear it - that is the Foundation mindset, and it never stops being useful.',
+      concept: "Here is today's idea. Say it in plain words first. Then find it on the guitar. If a word is unclear, stop and clear it - that is the Foundation mindset, and it never stops being useful.",
       drill: 'Now we train the movement. Slow, with a metronome. One clean repetition is worth more than ten sloppy ones. If it buzzes, adjust. Closer to the fret wire, arched finger, less shoulder tension.',
       music: 'This is where the drill becomes music. Play something real - a riff, a chord progression, a song moment. If you can not represent it, you do not understand it yet. Make it small enough that your hands can succeed.',
       reflect: 'Last step. Rate what you learned, write one honest note, and name the next small thing to work on. The next lesson adapts to what you tell it.'
@@ -662,7 +662,7 @@
       const state=loadState(); let s=activeStudent(state);
       if(!/jen/i.test(s.name)){ const jen=state.students.find(x=>/jen/i.test(x.name)); if(jen){ state.activeStudentId=jen.id; saveState(state); s=jen; } }
       s.currentLevel = 2; s.levels.L2.unlocked = true;
-      s.levels.L2.notes.push({ date:today(), text:'L2 with Jen: reviewed what we learned last week; practised finger gymnastics with a metronome; learned pentatonic scale pattern with metronome; learned chord embellishments and how they colour songs. Relevance: Jen is close to my ability - I need to level up fast. Need to understand how scales relate to piano and what they mean on guitar. Jen wants to write a song. She didn't know C chord, so C chord is a gap to track.' });
+      s.levels.L2.notes.push({ date:today(), text:"L2 with Jen: reviewed what we learned last week; practised finger gymnastics with a metronome; learned pentatonic scale pattern with metronome; learned chord embellishments and how they colour songs. Relevance: Jen is close to my ability - I need to level up fast. Need to understand how scales relate to piano and what they mean on guitar. Jen wants to write a song. She didn't know C chord, so C chord is a gap to track." });
       saveStudent(s); render();
     },
     reset(){ if(confirm('Reset Journey data on this device?')){ localStorage.removeItem(STORE); render(); } },
