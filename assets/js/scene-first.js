@@ -18,8 +18,16 @@
     return '<div class="sf-wrap"><button class="back-btn" onclick="backToMap()">← Map</button><div class="sf-scene '+kind+'"><div class="sf-top"><div><div class="sf-node-ident"><img src="'+icon+'" alt=""><div><div class="sf-kicker">'+esc(kind.replace('sf-','').replace('-',' '))+'</div><div class="sf-title">'+esc(nodeTitle)+'</div></div></div><div class="sf-sub">'+esc(sub)+'</div></div><div class="sf-guide"><img src="'+img+'"><div>'+esc(guide)+'</div></div></div>';
   }
 
-  // HEARTH: only brain scene first.
-  // showHearth moved to hearth-brain.js (loads brain-map.svg)
+  window.showHearth=function(){
+    // Delegate to hearth-brain.js SVG loader
+    if(window.HearthBrain && window.HearthBrain.render){
+      window.HearthBrain.render();
+      return;
+    }
+    // Fallback: empty panel
+    inject(); const el=panel(); if(!el)return;
+    el.innerHTML='<div style="padding:40px;text-align:center;color:var(--dim)">Brain map loading...</div>';
+  };
 
   // PLAY: only world map first.
   window.showPlay=function(){

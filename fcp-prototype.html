@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>FCP(SA) Part I — Simulator</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=DM+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #080c12;
+  --bg2: #0e1420;
+  --bg3: #151e2e;
+  --surface: #1a2436;
+  --border: rgba(100,180,220,0.1);
+  --border2: rgba(100,180,220,0.2);
+  --text: #d8e8f0;
+  --text2: #8aa8c0;
+  --text3: #5a7088;
+  --cyan: #40c8e8;
+  --teal: #38b2a0;
+  --purple: #8868d0;
+  --rose: #d06888;
+  --amber: #d0a040;
+  --green: #50b870;
+  --blue: #5090d0;
+  --red: #d05050;
+  --serif: 'Cinzel', serif;
+  --sans: 'DM Sans', sans-serif;
+  --mono: 'JetBrains Mono', monospace;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;line-height:1.6;-webkit-font-smoothing:antialiased}
+
+/* Scanlines */
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:9998;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.03) 2px,rgba(0,0,0,0.03) 4px);opacity:0.4}
+/* Vignette */
+body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9997;background:radial-gradient(ellipse at center,transparent 55%,rgba(0,0,0,0.4) 100%)}
+
+/* ══ HEADER ══ */
+.header{text-align:center;padding:40px 20px 20px;position:relative;z-index:10}
+.header h1{font-family:var(--serif);font-size:clamp(1.6rem,4vw,2.4rem);color:var(--cyan);letter-spacing:3px;text-transform:uppercase;margin-bottom:6px}
+.header .subtitle{font-size:0.85rem;color:var(--text2);letter-spacing:2px;text-transform:uppercase}
+.header .exam-badge{display:inline-block;margin-top:12px;padding:4px 16px;border:1px solid var(--cyan);border-radius:20px;font-size:0.7rem;color:var(--cyan);letter-spacing:1.5px;text-transform:uppercase;opacity:0.7}
+
+/* ══ PROGRESS BAR ══ */
+.progress-bar{max-width:600px;margin:20px auto;padding:0 20px}
+.progress-track{height:4px;background:var(--bg3);border-radius:2px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--teal),var(--cyan));border-radius:2px;transition:width 0.6s ease;width:0%}
+.progress-label{display:flex;justify-content:space-between;margin-top:6px;font-size:0.7rem;color:var(--text3);font-family:var(--mono)}
+
+/* ══ BODY MAP ══ */
+.body-map-container{position:relative;max-width:500px;margin:30px auto;padding:0 20px}
+.body-map-container h2{font-family:var(--serif);font-size:1rem;color:var(--text2);text-align:center;letter-spacing:2px;text-transform:uppercase;margin-bottom:20px}
+
+.body-svg{width:100%;max-height:520px}
+.body-svg .system{cursor:pointer;transition:all 0.3s ease;opacity:0.5}
+.body-svg .system:hover{opacity:1;filter:drop-shadow(0 0 12px currentColor)}
+.body-svg .system.active{opacity:1}
+.body-svg .system.completed{opacity:1}
+.body-svg .system.locked{opacity:0.2;cursor:not-allowed}
+.body-svg text{font-family:var(--sans);font-size:8px;fill:var(--text);pointer-events:none;text-anchor:middle}
+.body-svg .organ{transition:all 0.3s ease}
+.body-svg .system:hover .organ{filter:brightness(1.3)}
+.body-svg .pulse-ring{animation:pulseRing 2s ease-in-out infinite;opacity:0}
+.body-svg .system.incomplete .pulse-ring{opacity:0.3}
+@keyframes pulseRing{0%,100%{r:12;opacity:0.1}50%{r:16;opacity:0.3}}
+
+/* ══ SYSTEM GRID (below body map) ══ */
+.systems-grid{max-width:700px;margin:10px auto 30px;padding:0 20px;display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
+.system-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:16px;cursor:pointer;transition:all 0.3s ease;position:relative;overflow:hidden}
+.system-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--accent);opacity:0.4;transition:opacity 0.3s}
+.system-card:hover{border-color:var(--border2);transform:translateY(-2px)}
+.system-card:hover::before{opacity:0.8}
+.system-card.completed{border-color:var(--accent)}
+.system-card.completed::before{opacity:1}
+.system-card .icon{font-size:1.4rem;margin-bottom:8px}
+.system-card h3{font-family:var(--serif);font-size:0.8rem;color:var(--text);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px}
+.system-card .topic-count{font-size:0.7rem;color:var(--text3);font-family:var(--mono)}
+.system-card .card-progress{margin-top:10px;height:3px;background:var(--bg3);border-radius:2px;overflow:hidden}
+.system-card .card-progress-fill{height:100%;background:var(--accent);border-radius:2px;transition:width 0.4s}
+
+/* ══ TOPIC PANEL (slides in) ══ */
+.topic-panel{position:fixed;inset:0;z-index:100;display:none;background:var(--bg)}
+.topic-panel.open{display:flex;flex-direction:column}
+.panel-header{display:flex;align-items:center;gap:12px;padding:20px;border-bottom:1px solid var(--border)}
+.panel-back{width:36px;height:36px;border-radius:50%;border:1px solid var(--border2);background:var(--bg2);color:var(--text);font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s}
+.panel-back:hover{background:var(--surface);border-color:var(--cyan)}
+.panel-title{font-family:var(--serif);font-size:1rem;letter-spacing:1px;text-transform:uppercase;color:var(--text)}
+.panel-system{font-size:0.7rem;color:var(--text3);font-family:var(--mono);letter-spacing:1px;text-transform:uppercase}
+
+.panel-body{flex:1;overflow-y:auto;padding:20px}
+.panel-body::-webkit-scrollbar{width:4px}
+.panel-body::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+
+/* ══ TOPIC LIST ══ */
+.topic-list{max-width:600px;margin:0 auto}
+.topic-item{display:flex;align-items:center;gap:14px;padding:14px 16px;border:1px solid var(--border);border-radius:10px;margin-bottom:10px;cursor:pointer;transition:all 0.2s;background:var(--bg2)}
+.topic-item:hover{border-color:var(--border2);background:var(--bg3)}
+.topic-item.completed-topic{border-color:var(--teal)}
+.topic-num{width:28px;height:28px;border-radius:50%;border:1.5px solid var(--text3);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:0.7rem;color:var(--text3);flex-shrink:0;transition:all 0.3s}
+.topic-item.completed-topic .topic-num{border-color:var(--teal);color:var(--teal);background:rgba(56,178,160,0.1)}
+.topic-item.active-topic .topic-num{border-color:var(--cyan);color:var(--cyan);box-shadow:0 0 8px rgba(64,200,232,0.3)}
+.topic-info{flex:1;min-width:0}
+.topic-info h4{font-size:0.85rem;color:var(--text);margin-bottom:2px}
+.topic-info .topic-type{font-size:0.65rem;color:var(--text3);font-family:var(--mono);text-transform:uppercase;letter-spacing:0.5px}
+.topic-chevron{color:var(--text3);font-size:0.8rem;transition:transform 0.2s}
+.topic-item:hover .topic-chevron{transform:translateX(3px);color:var(--text2)}
+
+/* ══ STAIRCASE VIEW ══ */
+.staircase-view{max-width:500px;margin:0 auto}
+.staircase-view h3{font-family:var(--serif);font-size:0.9rem;color:var(--cyan);text-align:center;letter-spacing:1px;margin-bottom:24px;text-transform:uppercase}
+
+.stair{display:flex;gap:14px;margin-bottom:16px;align-items:stretch}
+.stair-tread{width:4px;flex-shrink:0;border-radius:2px;transition:all 0.4s;background:var(--bg3)}
+.stair.active .stair-tread{background:var(--cyan);box-shadow:0 0 8px rgba(64,200,232,0.3)}
+.stair.completed .stair-tread{background:var(--teal)}
+.stair-content{flex:1;padding:16px;border:1px solid var(--border);border-radius:10px;background:var(--bg2);transition:all 0.3s;cursor:pointer}
+.stair.active .stair-content{border-color:var(--cyan);background:var(--bg3)}
+.stair.completed .stair-content{border-color:var(--teal)}
+.stair-content:hover{border-color:var(--border2)}
+.stair-header{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.stair-num{width:24px;height:24px;border-radius:50%;border:1.5px solid var(--text3);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:0.65rem;color:var(--text3);flex-shrink:0}
+.stair.active .stair-num{border-color:var(--cyan);color:var(--cyan)}
+.stair.completed .stair-num{border-color:var(--teal);color:var(--teal);background:rgba(56,178,160,0.15)}
+.stair-title{font-family:var(--serif);font-size:0.75rem;letter-spacing:1px;text-transform:uppercase;color:var(--text2)}
+.stair.active .stair-title{color:var(--text)}
+.stair-desc{font-size:0.78rem;color:var(--text3);line-height:1.5}
+.stair.active .stair-desc{color:var(--text2)}
+
+/* ══ STAIR CONTENT DETAIL ══ */
+.stair-detail{max-width:500px;margin:20px auto;padding:0 20px}
+.stair-detail-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:24px;animation:fadeIn 0.3s ease}
+.stair-detail-card h4{font-family:var(--serif);font-size:0.85rem;color:var(--cyan);letter-spacing:1px;text-transform:uppercase;margin-bottom:12px}
+.stair-detail-card p{font-size:0.82rem;color:var(--text2);line-height:1.7;margin-bottom:12px}
+.stair-detail-card ul{list-style:none;margin-bottom:16px}
+.stair-detail-card li{font-size:0.8rem;color:var(--text2);padding:4px 0;padding-left:16px;position:relative}
+.stair-detail-card li::before{content:'›';position:absolute;left:0;color:var(--cyan)}
+.stair-detail-card .note-box{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin-top:12px}
+.stair-detail-card .note-box .label{font-size:0.65rem;color:var(--text3);font-family:var(--mono);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px}
+
+.complete-btn{display:block;width:100%;margin-top:16px;padding:12px;border:1px solid var(--teal);border-radius:8px;background:transparent;color:var(--teal);font-family:var(--serif);font-size:0.8rem;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;transition:all 0.3s}
+.complete-btn:hover{background:rgba(56,178,160,0.1)}
+.complete-btn.done{background:rgba(56,178,160,0.15);cursor:default}
+
+/* ══ MCQ VIEW ══ */
+.mcq-container{max-width:500px;margin:0 auto}
+.mcq-question{font-size:0.88rem;color:var(--text);line-height:1.6;margin-bottom:16px}
+.mcq-options{display:flex;flex-direction:column;gap:8px}
+.mcq-option{padding:12px 16px;border:1px solid var(--border);border-radius:8px;font-size:0.82rem;color:var(--text2);cursor:pointer;transition:all 0.2s;background:var(--bg2)}
+.mcq-option:hover{border-color:var(--border2);background:var(--bg3)}
+.mcq-option.selected{border-color:var(--cyan);background:rgba(64,200,232,0.08);color:var(--text)}
+.mcq-option.correct{border-color:var(--green);background:rgba(80,184,112,0.1);color:var(--green)}
+.mcq-option.wrong{border-color:var(--red);background:rgba(208,80,80,0.1);color:var(--red)}
+.mcq-explanation{margin-top:16px;padding:16px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;font-size:0.8rem;color:var(--text2);line-height:1.6;display:none}
+
+/* ══ FLOATING GUIDE ══ */
+.guide{position:fixed;bottom:20px;right:20px;z-index:50;display:flex;align-items:flex-end;gap:10px;max-width:300px;pointer-events:none}
+.guide-bubble{background:var(--bg3);border:1px solid var(--border2);border-radius:12px;border-bottom-right-radius:4px;padding:10px 14px;font-size:0.75rem;color:var(--text2);line-height:1.5;animation:fadeIn 0.4s ease;pointer-events:auto}
+.guide-bubble .guide-name{font-family:var(--serif);font-size:0.65rem;color:var(--cyan);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px}
+.guide-icon{width:40px;height:40px;border-radius:50%;background:var(--bg3);border:1.5px solid var(--cyan);display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;pointer-events:auto}
+
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* ══ MOBILE ══ */
+@media(max-width:600px){
+  .systems-grid{grid-template-columns:1fr}
+  .header h1{font-size:1.4rem}
+  .guide{bottom:12px;right:12px;max-width:240px}
+}
+
+/* ══ EMBER PARTICLES ══ */
+.ember{position:fixed;width:3px;height:3px;border-radius:50%;background:var(--cyan);opacity:0;pointer-events:none;z-index:1;animation:emberFloat 10s ease-in-out infinite}
+@keyframes emberFloat{0%{opacity:0;transform:translateY(0) scale(1)}10%{opacity:0.3}60%{opacity:0.08}100%{opacity:0;transform:translateY(-50vh) scale(0)}}
+</style>
+</head>
+<body>
+
+<!-- EMBER PARTICLES -->
+<div class="ember" style="left:10%;animation-delay:0s"></div>
+<div class="ember" style="left:25%;animation-delay:2s"></div>
+<div class="ember" style="left:50%;animation-delay:4s"></div>
+<div class="ember" style="left:75%;animation-delay:1s"></div>
+<div class="ember" style="left:90%;animation-delay:3s"></div>
+
+<!-- HEADER -->
+<div class="header">
+  <h1>FCP(SA) Part I</h1>
+  <div class="subtitle">Master the Curriculum · Pass with Confidence</div>
+  <div class="exam-badge">Colleges of Medicine of South Africa</div>
+</div>
+
+<!-- PROGRESS BAR -->
+<div class="progress-bar">
+  <div class="progress-track"><div class="progress-fill" id="mainProgress"></div></div>
+  <div class="progress-label">
+    <span id="progressText">0 of 10 systems started</span>
+    <span id="progressPct">0%</span>
+  </div>
+</div>
+
+<!-- BODY MAP -->
+<div class="body-map-container">
+  <h2>Select a System</h2>
+  <svg class="body-svg" viewBox="0 0 300 500" id="bodyMap">
+    <!-- Simplified body outline -->
+    <ellipse cx="150" cy="55" rx="28" ry="32" fill="none" stroke="rgba(100,180,220,0.12)" stroke-width="1"/>
+    <line x1="150" y1="87" x2="150" y2="280" stroke="rgba(100,180,220,0.08)" stroke-width="1"/>
+    <line x1="150" y1="120" x2="100" y2="200" stroke="rgba(100,180,220,0.06)" stroke-width="1"/>
+    <line x1="150" y1="120" x2="200" y2="200" stroke="rgba(100,180,220,0.06)" stroke-width="1"/>
+    <line x1="150" y1="280" x2="115" y2="420" stroke="rgba(100,180,220,0.06)" stroke-width="1"/>
+    <line x1="150" y1="280" x2="185" y2="420" stroke="rgba(100,180,220,0.06)" stroke-width="1"/>
+
+    <!-- NERVOUS — Brain -->
+    <g class="system incomplete" data-system="nervous" onclick="openSystem('nervous')" style="color:#8868d0">
+      <circle class="pulse-ring" cx="150" cy="45" r="14" fill="none" stroke="#8868d0" stroke-width="1"/>
+      <circle class="organ" cx="150" cy="45" r="12" fill="rgba(136,104,208,0.25)" stroke="#8868d0" stroke-width="1.5"/>
+      <text x="150" y="48" font-size="10" fill="#8868d0">🧠</text>
+      <text x="150" y="22" font-size="7" fill="#8868d0">Nervous</text>
+    </g>
+
+    <!-- CARDIOVASCULAR — Heart -->
+    <g class="system incomplete" data-system="cardio" onclick="openSystem('cardio')" style="color:#d05068">
+      <circle class="pulse-ring" cx="140" cy="155" r="14" fill="none" stroke="#d05068" stroke-width="1"/>
+      <circle class="organ" cx="140" cy="155" r="12" fill="rgba(208,80,104,0.25)" stroke="#d05068" stroke-width="1.5"/>
+      <text x="140" y="158" font-size="10" fill="#d05068">♥</text>
+      <text x="140" y="138" font-size="7" fill="#d05068">Cardio</text>
+    </g>
+
+    <!-- RESPIRATORY — Lungs -->
+    <g class="system incomplete" data-system="resp" onclick="openSystem('resp')" style="color:#40c8e8">
+      <circle class="pulse-ring" cx="150" cy="140" r="16" fill="none" stroke="#40c8e8" stroke-width="1"/>
+      <ellipse class="organ" cx="130" cy="145" rx="10" ry="14" fill="rgba(64,200,232,0.15)" stroke="#40c8e8" stroke-width="1"/>
+      <ellipse class="organ" cx="170" cy="145" rx="10" ry="14" fill="rgba(64,200,232,0.15)" stroke="#40c8e8" stroke-width="1"/>
+      <text x="150" y="130" font-size="7" fill="#40c8e8">Respiratory</text>
+    </g>
+
+    <!-- GI + LIVER — Abdomen -->
+    <g class="system incomplete" data-system="gi" onclick="openSystem('gi')" style="color:#d0a040">
+      <circle class="pulse-ring" cx="155" cy="200" r="16" fill="none" stroke="#d0a040" stroke-width="1"/>
+      <path class="organ" d="M140,185 Q155,180 165,195 Q170,210 155,215 Q140,210 140,185Z" fill="rgba(208,160,64,0.2)" stroke="#d0a040" stroke-width="1.2"/>
+      <text x="155" y="200" font-size="9" fill="#d0a040">🫁</text>
+      <text x="215" y="200" font-size="7" fill="#d0a040">GI &amp; Liver</text>
+    </g>
+
+    <!-- RENAL — Kidneys -->
+    <g class="system incomplete" data-system="renal" onclick="openSystem('renal')" style="color:#5090d0">
+      <circle class="pulse-ring" cx="150" cy="230" r="12" fill="none" stroke="#5090d0" stroke-width="1"/>
+      <ellipse class="organ" cx="135" cy="230" rx="7" ry="10" fill="rgba(80,144,208,0.2)" stroke="#5090d0" stroke-width="1.2"/>
+      <ellipse class="organ" cx="165" cy="230" rx="7" ry="10" fill="rgba(80,144,208,0.2)" stroke="#5090d0" stroke-width="1.2"/>
+      <text x="150" y="252" font-size="7" fill="#5090d0">Renal</text>
+    </g>
+
+    <!-- ENDOCRINE — Scattered nodes -->
+    <g class="system incomplete" data-system="endo" onclick="openSystem('endo')" style="color:#d0a040">
+      <circle class="pulse-ring" cx="150" cy="115" r="10" fill="none" stroke="#d0a040" stroke-width="1"/>
+      <circle class="organ" cx="150" cy="115" r="5" fill="rgba(208,160,64,0.3)" stroke="#d0a040" stroke-width="1"/>
+      <text x="200" y="115" font-size="7" fill="#d0a040">Endocrine</text>
+    </g>
+
+    <!-- HAEMATOPOIETIC — Bone marrow (sternum area) -->
+    <g class="system incomplete" data-system="haem" onclick="openSystem('haem')" style="color:#d06888">
+      <circle class="pulse-ring" cx="150" cy="170" r="10" fill="none" stroke="#d06888" stroke-width="1"/>
+      <rect class="organ" x="143" y="163" width="14" height="14" rx="3" fill="rgba(208,104,136,0.2)" stroke="#d06888" stroke-width="1"/>
+      <text x="85" y="175" font-size="7" fill="#d06888">Haemato</text>
+    </g>
+
+    <!-- MUSCULOSKELETAL — Skeleton hint -->
+    <g class="system incomplete" data-system="msk" onclick="openSystem('msk')" style="color:#50b870">
+      <circle class="pulse-ring" cx="150" cy="310" r="10" fill="none" stroke="#50b870" stroke-width="1"/>
+      <line class="organ" x1="140" y1="300" x2="160" y2="320" stroke="#50b870" stroke-width="1.5"/>
+      <line class="organ" x1="160" y1="300" x2="140" y2="320" stroke="#50b870" stroke-width="1.5"/>
+      <text x="150" y="340" font-size="7" fill="#50b870">MSK</text>
+    </g>
+
+    <!-- CELL BIOLOGY — Micro level -->
+    <g class="system incomplete" data-system="cell" onclick="openSystem('cell')" style="color:#40c8e8">
+      <circle class="pulse-ring" cx="80" cy="100" r="10" fill="none" stroke="#40c8e8" stroke-width="1"/>
+      <circle class="organ" cx="80" cy="100" r="8" fill="rgba(64,200,232,0.15)" stroke="#40c8e8" stroke-width="1"/>
+      <circle cx="80" cy="100" r="3" fill="rgba(64,200,232,0.3)"/>
+      <text x="80" y="82" font-size="7" fill="#40c8e8">Cell Bio</text>
+    </g>
+
+    <!-- IMMUNE & INFECTIOUS — Lymph nodes -->
+    <g class="system incomplete" data-system="immune" onclick="openSystem('immune')" style="color:#d0a040">
+      <circle class="pulse-ring" cx="220" cy="130" r="10" fill="none" stroke="#d0a040" stroke-width="1"/>
+      <circle class="organ" cx="220" cy="130" r="6" fill="rgba(208,160,64,0.2)" stroke="#d0a040" stroke-width="1"/>
+      <circle cx="232" cy="122" r="4" fill="rgba(208,160,64,0.15)" stroke="#d0a040" stroke-width="0.8"/>
+      <circle cx="228" cy="142" r="4" fill="rgba(208,160,64,0.15)" stroke="#d0a040" stroke-width="0.8"/>
+      <text x="225" y="158" font-size="7" fill="#d0a040">Immune</text>
+    </g>
+
+    <!-- CONNECTIVE TISSUE — Joints -->
+    <g class="system incomplete" data-system="ct" onclick="openSystem('ct')" style="color:#d0a040">
+      <circle class="pulse-ring" cx="110" cy="210" r="10" fill="none" stroke="#d0a040" stroke-width="1"/>
+      <circle class="organ" cx="110" cy="210" r="5" fill="rgba(208,160,64,0.2)" stroke="#d0a040" stroke-width="1"/>
+      <text x="70" y="230" font-size="7" fill="#d0a040">Connective</text>
+    </g>
+  </svg>
+</div>
+
+<!-- SYSTEM CARDS (grid below body) -->
+<div class="systems-grid" id="systemsGrid"></div>
+
+<!-- TOPIC PANEL (full-screen slide-in) -->
+<div class="topic-panel" id="topicPanel">
+  <div class="panel-header">
+    <button class="panel-back" onclick="closePanel()">←</button>
+    <div>
+      <div class="panel-title" id="panelTitle">System</div>
+      <div class="panel-system" id="panelSystem">Topics</div>
+    </div>
+  </div>
+  <div class="panel-body" id="panelBody"></div>
+</div>
+
+<!-- FLOATING GUIDE -->
+<div class="guide" id="guide">
+  <div class="guide-bubble">
+    <div class="guide-name">Dr. Vault</div>
+    <div id="guideText">Welcome to FCP Part I. Select a body system to begin your journey through the curriculum.</div>
+  </div>
+  <div class="guide-icon">🩺</div>
+</div>
+
+<script>
+// ════════════════════════════════════════
+// FCP(SA) Part I — Knowledge Base
+// ════════════════════════════════════════
+
+const SYSTEMS = {
+  cell: {
+    name: 'Cell Biology',
+    icon: '🔬',
+    color: '#40c8e8',
+    description: 'The building blocks of life',
+    topics: [
+      { name: 'Cell Membrane — Structure & Function', type: 'Core Science',
+        learn: 'The cell membrane is a phospholipid bilayer embedded with proteins. It maintains cellular integrity, regulates transport, and facilitates cell signalling. Key components: phospholipids, cholesterol, integral & peripheral proteins, glycolipids.',
+        review: 'Clinical link: Membrane transport defects cause diseases like cystic fibrosis (CFTR channel). Understanding membrane structure explains drug absorption and receptor binding.',
+        test: { q: 'Which component maintains membrane fluidity?', opts: ['Phospholipids','Cholesterol','Integral proteins','Glycolipids'], a: 1, exp: 'Cholesterol acts as a fluidity buffer — prevents packing at low temp, restricts movement at high temp.' },
+        own: 'Membrane = phospholipid bilayer + cholesterol + proteins. Fluid mosaic model. Clinically relevant for drug delivery and channelopathies.' },
+      { name: 'Cytoplasmic Organelles', type: 'Core Science',
+        learn: 'Organelles: mitochondria (ATP production), ER (protein/lipid synthesis), Golgi (packaging), lysosomes (digestion), ribosomes (translation). Each has distinct structure-function relationships.',
+        review: 'Mitochondrial diseases (MELAS, MERRF) present with neurological and muscular symptoms. Lysosomal storage diseases (Tay-Sachs, Gaucher) result from enzyme deficiencies.',
+        test: { q: 'Which organelle is the primary site of ATP production?', opts: ['ER','Golgi','Mitochondria','Lysosomes'], a: 2, exp: 'Mitochondria generate ~90% of cellular ATP via oxidative phosphorylation.' },
+        own: 'Organelles = functional compartments. Mitochondria = energy. Lysosomes = digestion. Clinical: mitochondrial diseases and storage disorders.' },
+      { name: 'The Cell Cycle & Regulation', type: 'Core Science',
+        learn: 'Cell cycle: G1 → S → G2 → M. Checkpoints ensure fidelity: G1/S (DNA integrity), G2/M (DNA replication complete), Spindle checkpoint (chromosome attachment). Cyclins and CDKs drive progression.',
+        review: 'Cancer = dysregulated cell cycle. Tumour suppressors (p53, Rb) prevent uncontrolled division. Oncogenes (Ras, Myc) promote it. Chemotherapy targets rapidly dividing cells.',
+        test: { q: 'Which checkpoint prevents entry into S phase with damaged DNA?', opts: ['G2/M','Spindle','G1/S','G0'], a: 2, exp: 'G1/S checkpoint (restriction point) checks DNA integrity before replication begins.' },
+        own: 'Cell cycle = G1→S→G2→M with checkpoints. Cyclins/CDKs drive it. p53/Rb are brakes. Cancer = brakes failed + accelerator stuck.' },
+      { name: 'Cell Death — Apoptosis & Necrosis', type: 'Core Science',
+        learn: 'Apoptosis = programmed cell death ( orderly, no inflammation). Intrinsic pathway (mitochondrial, cytochrome c, caspases). Extrinsic pathway (death receptors, Fas/FasL). Necrosis = uncontrolled cell death (inflammatory, pathological).',
+        review: 'Apoptosis defects: autoimmunity (failure to eliminate self-reactive lymphocytes), cancer (failure to eliminate damaged cells). Necrosis: MI, stroke, sepsis.',
+        test: { q: 'Which feature distinguishes apoptosis from necrosis?', opts: ['Inflammation present','Cell swelling','Orderly dismantling','Random membrane rupture'], a: 2, exp: 'Apoptosis is orderly — cell shrinks, DNA fragments, membrane blebs, phagocytosed without inflammation.' },
+        own: 'Apoptosis = clean programmed death (caspases). Necrosis = messy pathological death (inflammation). Clinical: too little apoptosis = cancer, too much = neurodegeneration.' },
+      { name: 'Krebs Cycle & ATP Synthesis', type: 'Core Science',
+        learn: 'Krebs cycle occurs in mitochondrial matrix. Acetyl-CoA → 2CO₂ + 3NADH + FADH₂ + GTP per turn. NADH/FADH₂ feed electron transport chain (ETC). Chemiosmosis drives ATP synthase. Total yield: ~36 ATP per glucose.',
+        review: 'Metabolic diseases: Pyruvate dehydrogenase deficiency, Leigh syndrome. Toxins: Cyanide inhibits Complex IV. Carbon monoxide binds Complex IV. Arsenic inhibits pyruvate dehydrogenase.',
+        test: { q: 'How many ATP molecules are produced per glucose via oxidative phosphorylation?', opts: ['2','12','36','100'], a: 2, exp: '~36 ATP total (2 from glycolysis + 34 from ETC/chemiosmosis).' },
+        own: 'Krebs cycle = mitochondrial matrix. Feeds ETC via NADH/FADH₂. Chemiosmosis = proton gradient drives ATP synthase. Clinical: mitochondrial toxins and metabolic diseases.' }
+    ]
+  },
+  cardio: {
+    name: 'Cardiovascular',
+    icon: '❤️',
+    color: '#d05068',
+    description: 'Heart, vessels, and circulation',
+    topics: [
+      { name: 'Cardiac Muscle Microanatomy', type: 'Anatomy',
+        learn: 'Cardiac muscle: striated, branched, uninucleate (mostly). Intercalated discs contain gap junctions (electrical coupling) and desmosomes (mechanical adhesion). T-tubules at Z-lines. Sarcoplasmic reticulum less developed than skeletal muscle.',
+        review: 'Clinical: Gap junction disruption → arrhythmias. Desmosome mutations → arrhythmogenic right ventricular cardiomyopathy (ARVC).',
+        test: { q: 'What structure enables electrical coupling between cardiac myocytes?', opts: ['T-tubules','Desmosomes','Gap junctions','Sarcoplasmic reticulum'], a: 2, exp: 'Gap junctions (connexons) in intercalated discs allow ion flow between cells, enabling coordinated contraction.' },
+        own: 'Cardiac muscle = branched, striated, intercalated discs. Gap junctions = electrical coupling. Desmosomes = mechanical adhesion. Clinical: channelopathies and cardiomyopathies.' },
+      { name: 'The Cardiac Cycle', type: 'Physiology',
+        learn: 'Cardiac cycle: Atrial systole → Isovolumetric contraction → Rapid ejection → Reduced ejection → Isovolumetric relaxation → Rapid filling → Reduced filling. Heart sounds: S1 (AV valve closure), S2 (semilunar valve closure).',
+        review: 'Murmurs indicate valvular disease. S3 = ventricular gallop (heart failure). S4 = atrial gallop (reduced compliance). ECG correlates: P wave (atrial depolarisation), QRS (ventricular depolarisation), T wave (ventricular repolarisation).',
+        test: { q: 'Which heart sound corresponds to AV valve closure?', opts: ['S2','S3','S1','S4'], a: 2, exp: 'S1 = "lub" = mitral and tricuspid valve closure at start of systole.' },
+        own: 'Cardiac cycle = systole (contraction) + diastole (relaxation). S1 = AV valves close. S2 = semilunar valves close. ECG: P-QRS-T maps the electrical cycle.' },
+      { name: 'Coronary Circulation', type: 'Anatomy',
+        learn: 'Left coronary artery → LAD (anterior wall, septum) + circumflex (lateral wall). Right coronary artery → RCA (inferior wall, SA node in 60%). Venous drainage via coronary sinus → right atrium. Coronary flow predominantly diastolic.',
+        review: 'LAD occlusion = anterior MI (most dangerous). RCA occlusion = inferior MI (often bradycardia). Collateral circulation develops chronically. Exercise increases coronary flow.',
+        test: { q: 'Which coronary artery supplies the SA node in most people?', opts: ['LAD','Circumflex','RCA','Left main'], a: 2, exp: 'RCA supplies SA node in ~60% of people (circumflex in ~40%).' },
+        own: 'LCA → LAD + circumflex. RCA → inferior wall + SA node (60%). Coronary flow = diastolic. MI location depends on which artery is occluded.' },
+      { name: 'Blood Pressure Control', type: 'Physiology',
+        learn: 'BP = CO × SVR. Short-term: baroreceptor reflex (carotid sinus, aortic arch). Long-term: RAAS (renin → angiotensin → aldosterone → Na⁺/H₂O retention), ADH, ANP. Local: NO (vasodilation), endothelin (vasoconstriction).',
+        review: 'Hypertension: essential (95%) vs secondary (renal artery stenosis, phaeochromocytoma, Cushing\'s, Conn\'s). Treatment targets: <130/80. Complications: LVH, stroke, CKD, retinopathy.',
+        test: { q: 'What is the primary short-term regulator of blood pressure?', opts: ['RAAS','Baroreceptor reflex','ADH','ANP'], a: 1, exp: 'Baroreceptors in carotid sinus and aortic arch provide beat-to-beat BP regulation via autonomic nervous system.' },
+        own: 'BP = CO × SVR. Short-term: baroreceptors. Long-term: RAAS + ADH. Hypertension = sustained elevated BP. Treat to <130/80.' }
+    ]
+  },
+  resp: {
+    name: 'Respiratory',
+    icon: '🫁',
+    color: '#40c8e8',
+    description: 'Lungs, ventilation, and gas exchange',
+    topics: [
+      { name: 'Lung Anatomy & Surface Markings', type: 'Anatomy',
+        learn: 'Right lung: 3 lobes (horizontal + oblique fissures). Left lung: 2 lobes (oblique fissure only, cardiac notch). Hilum: pulmonary artery (superior), veins (inferior), bronchus (posterior). Surface anatomy: apex above clavicle, base on diaphragm.',
+        review: 'Clinical: Pneumothorax = air in pleural space. Apex = TB predilection zone. Base = effusions collect. Hilum = lymphadenopathy in malignancy.',
+        test: { q: 'How many lobes does the left lung have?', opts: ['3','2','1','4'], a: 1, exp: 'Left lung has 2 lobes (upper and lower) due to the cardiac notch accommodating the heart.' },
+        own: 'Right = 3 lobes. Left = 2 lobes (cardiac notch). Hilum = entry/exit point. Apex = TB site. Base = effusion site.' },
+      { name: 'Ventilation Mechanics', type: 'Physiology',
+        learn: 'Inspiration: diaphragm contracts (primary), external intercostals elevate ribs. Intrapleural pressure becomes more negative (-5 to -8 cmH₂O). Compliance = ΔV/ΔP. Surfactant reduces surface tension.',
+        review: 'Obstructive diseases (asthma, COPD): airflow limitation. Restrictive diseases (fibrosis, kyphosurfical scoliosis): reduced compliance. PEEP in ICU maintains alveolar recruitment.',
+        test: { q: 'What is the primary muscle of inspiration?', opts: ['External intercostals','Diaphragm','Internal intercostals','Abdominals'], a: 1, exp: 'Diaphragm contributes ~75% of tidal volume. External intercostals assist.' },
+        own: 'Inspiration = diaphragm + external intercostals. Negative intrapleural pressure. Surfactant = reduces surface tension. Obstructive vs restrictive patterns.' },
+      { name: 'Gas Exchange & Transport', type: 'Physiology',
+        learn: 'Alveolar gas exchange: O₂ and CO₂ diffuse across respiratory membrane (alveolar epithelium + capillary endothelium). O₂ transport: 98% bound to Hb (oxyhaemoglobin), 2% dissolved. CO₂ transport: 70% as HCO₃⁻, 23% bound to Hb, 7% dissolved.',
+        review: 'Hb-O₂ dissociation curve: right shift = decreased affinity (acidosis, ↑temp, ↑2,3-DPG, ↓pH) — Bohr effect. CO poisoning shifts curve left. Pulse oximetry measures SaO₂.',
+        test: { q: 'What percentage of CO₂ is transported as bicarbonate?', opts: ['23%','70%','7%','50%'], a: 1, exp: '~70% of CO₂ is converted to HCO₃⁻ in RBCs via carbonic anhydrase.' },
+        own: 'O₂: 98% on Hb, 2% dissolved. CO₂: 70% HCO₃⁻, 23% Hb, 7% dissolved. Bohr effect: acidosis/heat → right shift → unloading.' }
+    ]
+  },
+  gi: {
+    name: 'GI & Liver',
+    icon: '🫁',
+    color: '#d0a040',
+    description: 'Gut, liver, biliary system',
+    topics: [
+      { name: 'GI Tract Microanatomy', type: 'Anatomy',
+        learn: 'Layers: mucosa (epithelium, lamina propria, muscularis mucosae), submucosa, muscularis externa (inner circular, outer longitudinal), serosa. Villi increase surface area. Crypts of Lieberkühn contain stem cells.',
+        review: 'Coeliac disease: villous atrophy in duodenum/jejunum. Crohn\'s: transmural inflammation with skip lesions. Ulcerative colitis: mucosal inflammation continuous from rectum.',
+        test: { q: 'Which layer contains the submucosal (Meissner\'s) plexus?', opts: ['Mucosa','Submucosa','Muscularis externa','Serosa'], a: 1, exp: 'Submucosal plexus controls glandular secretion and blood flow.' },
+        own: 'GI layers: mucosa → submucosa → muscularis → serosa. Villi = absorption. Clinical: coeliac (villous atrophy), Crohn\'s (transmural), UC (mucosal).' },
+      { name: 'Acid Secretion & Peptic Disease', type: 'Physiology',
+        learn: 'Parietal cells secrete HCl via H⁺/K⁺ ATPase. Stimuli: gastrin (G cells), ACh (vagus), histamine (ECL cells). Protective: mucus-bicarbonate barrier, prostaglandins. H. pylori disrupts protection.',
+        review: 'Peptic ulcer disease: gastric ulcer (pain on eating) vs duodenal ulcer (pain relieved by eating). H. pylori test: urea breath test, stool antigen. Treatment: PPI + antibiotics.',
+        test: { q: 'Which cell type secretes hydrochloric acid?', opts: ['G cells','ECL cells','Parietal cells','Chief cells'], a: 2, exp: 'Parietal cells (oxyntic cells) secrete HCl via H⁺/K⁺ ATPase proton pump.' },
+        own: 'Parietal cells → HCl. G cells → gastrin. ECL cells → histamine. H. pylori → ulcer disease. PPI = proton pump inhibitor.' },
+      { name: 'Liver Functions & Hepatitis', type: 'Pathophysiology',
+        learn: 'Liver: metabolism (glucose, lipid, protein), detoxification, bile synthesis, protein synthesis (albumin, clotting factors), storage (glycogen, vitamins). Dual blood supply: portal vein (75%) + hepatic artery (25%).',
+        review: 'Hepatitis A (faecal-oral, acute, self-limiting). Hep B (blood/body fluids, chronic risk, vaccine available). Hep C (blood, high chronicity, now curable with DAAs). Alcoholic liver disease: steatosis → steatohepatitis → cirrhosis.',
+        test: { q: 'Which hepatitis virus is most associated with chronic liver disease and hepatocellular carcinoma?', opts: ['Hep A','Hep B','Hep C','Hep E'], a: 2, exp: 'Hep C has the highest chronicity rate (~75-85%) and is a leading cause of HCC and liver transplant.' },
+        own: 'Liver = metabolic powerhouse. Portal vein + hepatic artery dual supply. Hepatitis: A (acute), B (chronic risk), C (high chronicity). Cirrhosis = end-stage.' }
+    ]
+  },
+  renal: {
+    name: 'Renal',
+    icon: '🫘',
+    color: '#5090d0',
+    description: 'Kidneys and fluid balance',
+    topics: [
+      { name: 'Nephron Structure & Function', type: 'Anatomy',
+        learn: 'Nephron: renal corpuscle (glomerulus + Bowman\'s capsule) → PCT → Loop of Henle → DCT → Collecting duct. Cortical nephrons (85%) vs juxtamedullary (15%). Juxtaglomerular apparatus: macula densa + JG cells → renin release.',
+        review: 'Nephrotic syndrome: massive proteinuria, hypoalbuminaemia, oedema, hyperlipidaemia. Nephritic syndrome: haematuria, hypertension, oliguria. CKD: progressive nephron loss.',
+        test: { q: 'Where is renin released from?', opts: ['Macula densa','Juxtaglomerular cells','Podocytes','Collecting duct'], a: 1, exp: 'JG cells (modified smooth muscle) in afferent arteriole release renin in response to reduced renal perfusion.' },
+        own: 'Nephron = filtration (glomerulus) → reabsorption (PCT, loop) → secretion (DCT) → concentration (collecting duct). JG apparatus = renin release.' },
+      { name: 'Fluid & Electrolyte Balance', type: 'Physiology',
+        learn: 'ADH (vasopressin): from posterior pituitary, increases collecting duct water reabsorption (aquaporin-2). Aldosterone: from adrenal cortex, increases Na⁺ reabsorption in DCT. ANP: from atria, promotes Na⁺/H₂O excretion.',
+        review: 'SIADH: excess ADH → dilutional hyponatraemia. Diabetes insipidus: ADH deficiency/resistance → dilute polyuria. Hyperkalaemia: cardiac toxicity (peaked T waves, then sine wave).',
+        test: { q: 'Where does ADH act to increase water reabsorption?', opts: ['PCT','Loop of Henle','DCT','Collecting duct'], a: 3, exp: 'ADH inserts aquaporin-2 channels in collecting duct principal cells, increasing water permeability.' },
+        own: 'ADH → water retention (collecting duct). Aldosterone → Na⁺ retention (DCT). ANP → Na⁺ excretion. Imbalances: SIADH, DI, hyperkalaemia.' }
+    ]
+  },
+  endo: {
+    name: 'Endocrine',
+    icon: '⚗️',
+    color: '#d0a040',
+    description: 'Hormones and metabolic regulation',
+    topics: [
+      { name: 'Hypothalamic-Pituitary Axis', type: 'Physiology',
+        learn: 'Hypothalamus → releasing/inhibiting hormones → anterior pituitary → tropic hormones → target glands. Key axes: HPA (cortisol), HPT (thyroid), HPG (sex steroids). Posterior pituitary: ADH and oxytocin (made in hypothalamus).',
+        review: 'Cushing\'s syndrome: excess cortisol (moon face, buffalo hump, striae). Addison\'s: cortisol deficiency (fatigue, hyperpigmentation). Sheehan\'s: postpartum pituitary necrosis.',
+        test: { q: 'Which hormone stimulates cortisol release from the adrenal cortex?', opts: ['TSH','ACTH','FSH','GH'], a: 1, exp: 'ACTH (adrenocorticotropic hormone) from anterior pituitary stimulates cortisol synthesis in zona fasciculata.' },
+        own: 'Hypothalamus → pituitary → target gland. HPA axis = cortisol. HPT = thyroid. HPG = sex steroids. Posterior: ADH + oxytocin.' },
+      { name: 'Thyroid Physiology', type: 'Physiology',
+        learn: 'Thyroid hormones: T4 (inactive, major product) and T3 (active, converted by deiodinase). Synthesis: iodide trapping → oxidation → organification → coupling → storage in colloid. TSH from pituitary stimulates production.',
+        review: 'Hypothyroidism: fatigue, weight gain, cold intolerance, constipation, bradycardia. Hyperthyroidism: weight loss, heat intolerance, tremor, atrial fibrillation, exophthalmos (Graves\').',
+        test: { q: 'Which is the biologically active thyroid hormone?', opts: ['T4','T3','TSH','rT3'], a: 1, exp: 'T3 is ~4x more potent than T4. Most T3 is produced by peripheral conversion of T4 by deiodinase enzymes.' },
+        own: 'T4 = inactive prohypothesis. T3 = active form. Synthesis requires iodide. Hypo = slow. Hyper = fast. Graves\' = autoimmune hyperthyroidism.' },
+      { name: 'Diabetes & Glucose Homeostasis', type: 'Pathophysiology',
+        learn: 'Insulin (β cells): promotes glucose uptake, glycogenesis, lipogenesis. Glucagon (α cells): promotes glycogenolysis, gluconeogenesis. Fasting glucose: 3.5-5.5 mmol/L. HbA1c: 3-month average (>48 mmol/mol = diabetes).',
+        review: 'Type 1: autoimmune β cell destruction (insulin-dependent). Type 2: insulin resistance + relative deficiency. DKA: type 1 emergency (ketones, acidosis, dehydration). HHS: type 2 emergency (extreme hyperglycaemia, no ketones).',
+        test: { q: 'What is the hallmark of DKA?', opts: ['Hyperglycaemia only','Ketonaemia + metabolic acidosis','Hyperosmolarity','Hypoglycaemia'], a: 1, exp: 'DKA = hyperglycaemia + ketonaemia + metabolic acidosis (pH <7.3, HCO₃⁻ <18). Primarily type 1 diabetes.' },
+        own: 'Insulin = glucose disposal. Glucagon = glucose release. Type 1 = no insulin (DKA risk). Type 2 = insulin resistance (HHS risk). HbA1c = 3-month average.' }
+    ]
+  },
+  haem: {
+    name: 'Haematology',
+    icon: '🩸',
+    color: '#d06888',
+    description: 'Blood, coagulation, and disorders',
+    topics: [
+      { name: 'Red Blood Cell Physiology', type: 'Core Science',
+        learn: 'RBC: biconcave disc, no nucleus/mitochondria. Hb structure: 4 subunits (2α, 2β), each with haem group. O₂ binding: cooperative (sigmoid curve). 2,3-BPG shifts curve right (↑unloading). Lifespan: ~120 days, destroyed in spleen.',
+        review: 'Anaemia: ↓Hb. Microcytic (iron deficiency, thalassaemia). Normocytic (anaemia of chronic disease, haemolysis). Macrocytic (B12/folate deficiency). Sickle cell: HbS (Glu→Val at β6).',
+        test: { q: 'What causes the sickle cell mutation?', opts: ['Valine → Glutamic acid','Glutamic acid → Valine','Histidine → Lysine','Proline → Serine'], a: 1, exp: 'HbS: Glu→Val substitution at position 6 of β-globin chain. Homozygous (HbSS) = sickle cell disease.' },
+        own: 'RBC = O₂ carrier. Hb = 4 subunits with haem. Cooperative binding (sigmoid). Sickle cell = Glu→Val mutation. Anaemia classified by MCV.' },
+      { name: 'Coagulation Cascade', type: 'Physiology',
+        learn: 'Intrinsic pathway (XII → XI → IX → VIII). Extrinsic pathway (III/VII). Common pathway (X → V → fibrinogen → fibrin). Anticoagulants: antithrombin, protein C/S, TFPI. PT/INR: extrinsic. APTT: intrinsic.',
+        review: 'Haemophilia A: Factor VIII deficiency (X-linked). Haemophilia B: Factor IX deficiency. DIC: consumption of clotting factors → bleeding. Warfarin: inhibits vitamin K-dependent factors (II, VII, IX, X).',
+        test: { q: 'Which test monitors the extrinsic coagulation pathway?', opts: ['APTT','PT/INR','Bleeding time','Thrombin time'], a: 1, exp: 'PT/INR measures extrinsic pathway (factor VII). APTT measures intrinsic pathway.' },
+        own: 'Intrinsic = XII→XI→IX→VIII. Extrinsic = III→VII. Common = X→V→fibrin. PT/INR = extrinsic. APTT = intrinsic. Warfarin = vitamin K antagonist.' }
+    ]
+  },
+  msk: {
+    name: 'Musculoskeletal',
+    icon: '🦴',
+    color: '#50b870',
+    description: 'Bones, joints, and connective tissue',
+    topics: [
+      { name: 'Joint Structure & Types', type: 'Anatomy',
+        learn: 'Synovial joints: articular cartilage, synovial membrane (produces synovial fluid), joint capsule, ligaments. Types: hinge (knee), ball-and-socket (hip), pivot (C1-C2), saddle (thumb), condyloid (wrist), gliding (carpals).',
+        review: 'Osteoarthritis: cartilage degeneration (wear-and-tear). Rheumatoid arthritis: autoimmune synovial inflammation (symmetrical, erosive). Gout: urate crystal deposition (1st MTP).',
+        test: { q: 'Which joint type allows the greatest range of motion?', opts: ['Hinge','Pivot','Ball-and-socket','Saddle'], a: 2, exp: 'Ball-and-socket joints (hip, shoulder) allow movement in all planes: flexion, extension, abduction, adduction, rotation.' },
+        own: 'Synovial joint = cartilage + synovial membrane + capsule + ligaments. 6 types by shape. OA = degenerative. RA = autoimmune. Gout = crystal.' },
+      { name: 'Collagen & Connective Tissue', type: 'Clinical Chemistry',
+        learn: 'Collagen types: I (bone, tendon, skin — most abundant), II (cartilage), III (blood vessels, uterus), IV (basement membrane). Synthesis: proline → hydroxylation (vitamin C) → glycosylation → triple helix.',
+        review: 'Scurvy: vitamin C deficiency → impaired hydroxylation → defective collagen → bleeding gums, poor wound healing. Ehlers-Danlos: collagen synthesis defects → hypermobility, fragile vessels. Osteogenesis imperfecta: type I collagen defect → brittle bones.',
+        test: { q: 'Which vitamin is essential for collagen hydroxylation?', opts: ['Vitamin A','Vitamin C','Vitamin D','Vitamin K'], a: 1, exp: 'Vitamin C is a cofactor for prolyl hydroxylase and lysyl hydroxylase, essential for collagen cross-linking.' },
+        own: 'Collagen I = bone/tendon. II = cartilage. III = vessels. IV = basement membrane. Vitamin C needed for hydroxylation. Scurvy = defective collagen.' }
+    ]
+  },
+  immune: {
+    name: 'Immune & Infectious',
+    icon: '🛡️',
+    color: '#d0a040',
+    description: 'Immune system and infectious diseases',
+    topics: [
+      { name: 'Innate vs Adaptive Immunity', type: 'Core Science',
+        learn: 'Innate: neutrophils, macrophages, NK cells, complement. Rapid, non-specific. Adaptive: B cells (antibodies), T cells (CD4 helper, CD8 cytotoxic). Slow initially, specific, memory. MHC I presents to CD8. MHC II presents to CD4.',
+        review: 'Immunodeficiency: HIV depletes CD4 T cells → opportunistic infections. Autoimmunity: loss of self-tolerance. Vaccination: exploits adaptive memory.',
+        test: { q: 'Which MHC class presents antigens to CD8+ T cells?', opts: ['MHC I','MHC II','MHC III','MHC IV'], a: 0, exp: 'MHC I presents endogenous antigens (viral, tumour) to CD8+ cytotoxic T cells. MHC II presents exogenous antigens to CD4+ helper T cells.' },
+        own: 'Innate = fast, non-specific (neutrophils, macrophages, complement). Adaptive = slow, specific, memory (B cells → antibodies, T cells → cell-mediated). MHC I → CD8. MHC II → CD4.' },
+      { name: 'HIV Pathogenesis & AIDS', type: 'Pathophysiology',
+        learn: 'HIV targets CD4+ T cells via CD4 receptor + CCR5/CXCR4 co-receptors. Viral RNA → reverse transcriptase → proviral DNA → integration → replication. CD4 count decline: >500 (normal) → 200-500 (symptomatic) → <200 (AIDS).',
+        review: 'Opportunistic infections at CD4 <200: Pneumocystis pneumonia, toxoplasmosis, CMV, cryptococcal meningitis, MAC. Kaposi\'s sarcoma (HHV-8). Burkitt\'s lymphoma (EBV). ART: combination therapy suppresses viral load.',
+        test: { q: 'At what CD4 count is AIDS diagnosed?', opts: ['<500','<350','<200','<100'], a: 2, exp: 'AIDS = CD4 <200 cells/μL OR presence of AIDS-defining illness, regardless of CD4 count.' },
+        own: 'HIV targets CD4+ T cells. CD4 decline → opportunistic infections. AIDS = CD4 <200. ART suppresses viral load. Kaposi\'s sarcoma and Burkitt\'s lymphoma are AIDS-defining malignancies.' },
+      { name: 'Kaposi\'s Sarcoma & Burkitt\'s Lymphoma', type: 'Pathophysiology',
+        learn: 'Kaposi\'s sarcoma: HHV-8 driven. Spindle cell tumour. Purple skin lesions, can affect GI tract and lungs. Endemic in Africa, common in HIV. Burkitt\'s lymphoma: EBV associated. B cell lymphoma. "Starry sky" histology. Endemic (jaw), sporadic (abdominal), immunodeficiency-associated.',
+        review: 'KS treatment: ART (immune reconstitution), chemotherapy for advanced disease. Burkitt\'s: intensive chemotherapy (CHOP-like). Both are aggressive but chemo-sensitive.',
+        test: { q: 'Which virus is associated with Kaposi\'s sarcoma?', opts: ['EBV','HHV-8','HPV','CMV'], a: 1, exp: 'HHV-8 (Kaposi sarcoma-associated herpesvirus) is the causative agent of all forms of KS.' },
+        own: 'KS = HHV-8, spindle cell tumour, purple lesions. Burkitt\'s = EBV, B cell lymphoma, starry sky. Both AIDS-defining. Chemo-sensitive.' }
+    ]
+  },
+  ct: {
+    name: 'Connective Tissue',
+    icon: '🔗',
+    color: '#d0a040',
+    description: 'Connective tissue, joints, and soft tissue',
+    topics: [
+      { name: 'Osteoarthritis & Gout', type: 'Pathophysiology',
+        learn: 'OA: degenerative joint disease. Cartilage erosion → subchondral bone sclerosis → osteophytes. Risk: age, obesity, trauma. Gout: urate crystal deposition. Hyperuricaemia → acute monoarthritis (1st MTP classic). Chronic → tophi.',
+        review: 'OA management: weight loss, paracetamol, NSAIDs, joint replacement. Gout: acute = colchicine/NSAIDs. Chronic = allopurinol (urate-lowering). Avoid urate-lowering in acute phase.',
+        test: { q: 'Which joint is most commonly affected in gout?', opts: ['Knee','Ankle','1st MTP','Wrist'], a: 2, exp: 'First metatarsophalangeal (MTP) joint is affected in ~50% of first gout attacks (podagra).' },
+        own: 'OA = wear-and-tear, cartilage loss, osteophytes. Gout = urate crystals, 1st MTP, hyperuricaemia. OA: paracetamol → replacement. Gout: colchicine acute, allopurinol chronic.' }
+    ]
+  }
+};
+
+// ════════════════════════════════════════
+// State
+// ════════════════════════════════════════
+let state = JSON.parse(localStorage.getItem('fcp_progress') || '{}');
+// state format: { systemKey: { topics: { topicIdx: { steps: [bool,bool,bool,bool] } } } }
+
+function saveState() { localStorage.setItem('fcp_progress', JSON.stringify(state)); }
+
+function getSystemProgress(sysKey) {
+  const sys = SYSTEMS[sysKey];
+  if (!sys) return { done: 0, total: 0, pct: 0 };
+  const total = sys.topics.length * 4;
+  let done = 0;
+  const s = state[sysKey];
+  if (s && s.topics) {
+    Object.values(s.topics).forEach(t => { if (t.steps) done += t.steps.filter(Boolean).length; });
+  }
+  return { done, total, pct: total ? Math.round((done / total) * 100) : 0 };
+}
+
+function getTotalProgress() {
+  let done = 0, total = 0;
+  Object.keys(SYSTEMS).forEach(k => { const p = getSystemProgress(k); done += p.done; total += p.total; });
+  return total ? Math.round((done / total) * 100) : 0;
+}
+
+function countStartedSystems() {
+  return Object.keys(SYSTEMS).filter(k => state[k] && state[k].topics && Object.keys(state[k].topics).length > 0).length;
+}
+
+// ════════════════════════════════════════
+// Render
+// ════════════════════════════════════════
+function renderGrid() {
+  const grid = document.getElementById('systemsGrid');
+  grid.innerHTML = '';
+  Object.entries(SYSTEMS).forEach(([key, sys]) => {
+    const prog = getSystemProgress(key);
+    const completed = prog.pct === 100;
+    const card = document.createElement('div');
+    card.className = 'system-card' + (completed ? ' completed' : '');
+    card.style.setProperty('--accent', sys.color);
+    card.onclick = () => openSystem(key);
+    card.innerHTML = `
+      <div class="icon">${sys.icon}</div>
+      <h3>${sys.name}</h3>
+      <div class="topic-count">${sys.topics.length} topics · ${prog.pct}%</div>
+      <div class="card-progress"><div class="card-progress-fill" style="width:${prog.pct}%"></div></div>
+    `;
+    grid.appendChild(card);
+  });
+}
+
+function updateProgress() {
+  const pct = getTotalProgress();
+  document.getElementById('mainProgress').style.width = pct + '%';
+  document.getElementById('progressPct').textContent = pct + '%';
+  const started = countStartedSystems();
+  document.getElementById('progressText').textContent = `${started} of ${Object.keys(SYSTEMS).length} systems started`;
+}
+
+function updateBodyMap() {
+  Object.entries(SYSTEMS).forEach(([key, sys]) => {
+    const el = document.querySelector(`.system[data-system="${key}"]`);
+    if (!el) return;
+    const prog = getSystemProgress(key);
+    el.classList.remove('completed', 'incomplete', 'active', 'locked');
+    if (prog.pct === 100) el.classList.add('completed');
+    else el.classList.add('incomplete');
+  });
+}
+
+// ════════════════════════════════════════
+// Panel Navigation
+// ════════════════════════════════════════
+let currentSystem = null;
+let currentTopic = null;
+let currentStep = null;
+
+function openSystem(key) {
+  currentSystem = key;
+  const sys = SYSTEMS[key];
+  document.getElementById('panelTitle').textContent = sys.name;
+  document.getElementById('panelSystem').textContent = `${sys.topics.length} topics`;
+  document.getElementById('topicPanel').classList.add('open');
+
+  const body = document.getElementById('panelBody');
+  body.innerHTML = '';
+
+  sys.topics.forEach((topic, idx) => {
+    const prog = state[key]?.topics?.[idx]?.steps || [];
+    const allDone = prog.length === 4 && prog.every(Boolean);
+    const anyDone = prog.some(Boolean);
+
+    const item = document.createElement('div');
+    item.className = 'topic-item' + (allDone ? ' completed-topic' : '') + (anyDone && !allDone ? ' active-topic' : '');
+    item.onclick = () => openTopic(key, idx);
+    item.innerHTML = `
+      <div class="topic-num">${allDone ? '✓' : idx + 1}</div>
+      <div class="topic-info">
+        <h4>${topic.name}</h4>
+        <div class="topic-type">${topic.type}</div>
+      </div>
+      <div class="topic-chevron">›</div>
+    `;
+    body.appendChild(item);
+  });
+
+  updateGuide(sys.topics.length > 0
+    ? `Explore ${sys.name}. ${sys.topics.length} topics covering the FCP curriculum. Pick one to begin.`
+    : `${sys.name} — coming soon.`);
+}
+
+function openTopic(sysKey, topicIdx) {
+  currentSystem = sysKey;
+  currentTopic = topicIdx;
+  currentStep = null;
+  const sys = SYSTEMS[sysKey];
+  const topic = sys.topics[topicIdx];
+
+  document.getElementById('panelTitle').textContent = topic.name;
+  document.getElementById('panelSystem').textContent = sys.name + ' · Topic ' + (topicIdx + 1);
+
+  const body = document.getElementById('panelBody');
+  body.innerHTML = '';
+
+  const steps = [
+    { label: 'Learn', desc: 'Core concepts and mechanisms' },
+    { label: 'Review', desc: 'Clinical correlations and high-yield connections' },
+    { label: 'Test', desc: 'MCQ practice to check understanding' },
+    { label: 'Consolidate', desc: 'Key takeaways and integration' }
+  ];
+
+  // Ensure state
+  if (!state[sysKey]) state[sysKey] = { topics: {} };
+  if (!state[sysKey].topics[topicIdx]) state[sysKey].topics[topicIdx] = { steps: [false, false, false, false] };
+  const topicState = state[sysKey].topics[topicIdx].steps;
+
+  // Find first incomplete step
+  let activeIdx = topicState.findIndex(s => !s);
+  if (activeIdx === -1) activeIdx = 3; // all done, show last
+
+  const stairDiv = document.createElement('div');
+  stairDiv.className = 'staircase-view';
+  stairDiv.innerHTML = `<h3>The Staircase</h3>`;
+
+  steps.forEach((step, i) => {
+    const isActive = i === activeIdx;
+    const isDone = topicState[i];
+    const stair = document.createElement('div');
+    stair.className = 'stair' + (isActive ? ' active' : '') + (isDone ? ' completed' : '');
+    stair.innerHTML = `
+      <div class="stair-tread"></div>
+      <div class="stair-content" onclick="openStep(${i})">
+        <div class="stair-header">
+          <div class="stair-num">${isDone ? '✓' : i + 1}</div>
+          <div class="stair-title">${step.label}</div>
+        </div>
+        <div class="stair-desc">${step.desc}</div>
+      </div>
+    `;
+    stairDiv.appendChild(stair);
+  });
+
+  body.appendChild(stairDiv);
+  updateGuide(`Step through the staircase: Learn → Review → Test → Consolidate. Start with the first incomplete step.`);
+}
+
+function openStep(stepIdx) {
+  if (currentSystem === null || currentTopic === null) return;
+  currentStep = stepIdx;
+  const topic = SYSTEMS[currentSystem].topics[currentTopic];
+  const body = document.getElementById('panelBody');
+
+  if (!state[currentSystem]) state[currentSystem] = { topics: {} };
+  if (!state[currentSystem].topics[currentTopic]) state[currentSystem].topics[currentTopic] = { steps: [false, false, false, false] };
+  const topicState = state[currentSystem].topics[currentTopic].steps;
+
+  const stepLabels = ['Learn', 'Review', 'Test', 'Consolidate'];
+
+  if (stepIdx === 2) {
+    // MCQ
+    renderMCQ(body, topic, stepLabels[stepIdx]);
+  } else if (stepIdx === 3) {
+    // Consolidate
+    renderConsolidate(body, topic, stepLabels[stepIdx]);
+  } else {
+    // Learn or Review
+    const content = stepIdx === 0 ? topic.learn : topic.review;
+    body.innerHTML = `
+      <div class="stair-detail">
+        <div class="stair-detail-card">
+          <h4>${stepLabels[stepIdx]}</h4>
+          <p>${content}</p>
+          <button class="complete-btn ${topicState[stepIdx] ? 'done' : ''}" onclick="completeStep(${stepIdx})">
+            ${topicState[stepIdx] ? '✓ Completed' : 'Mark as Complete'}
+          </button>
+        </div>
+      </div>
+    `;
+    const tips = [
+      'Take your time with the fundamentals. Understanding the mechanism beats memorising the name.',
+      'Clinical correlations are where exam gold lives. Connect the basic science to the bedside.',
+      'Test yourself honestly. If you can explain it, you know it.',
+      'This is yours now. The key takeaway — carry it forward.'
+    ];
+    updateGuide(tips[stepIdx]);
+  }
+}
+
+function renderMCQ(body, topic, label) {
+  const mcq = topic.test;
+  body.innerHTML = `
+    <div class="stair-detail">
+      <div class="stair-detail-card">
+        <h4>${label}</h4>
+        <div class="mcq-container">
+          <div class="mcq-question">${mcq.q}</div>
+          <div class="mcq-options" id="mcqOptions">
+            ${mcq.opts.map((opt, i) => `<div class="mcq-option" onclick="selectMCQ(${i})" data-idx="${i}">${String.fromCharCode(65 + i)}. ${opt}</div>`).join('')}
+          </div>
+          <div class="mcq-explanation" id="mcqExplanation">
+            <strong>Explanation:</strong> ${mcq.exp}
+          </div>
+          <button class="complete-btn" id="mcqComplete" style="display:none" onclick="completeStep(2)">
+            Mark as Complete
+          </button>
+        </div>
+      </div>
+    </div>
+  `;
+  window._mcqAnswer = mcq.a;
+  window._mcqAnswered = false;
+}
+
+function selectMCQ(idx) {
+  if (window._mcqAnswered) return;
+  window._mcqAnswered = true;
+  const opts = document.querySelectorAll('.mcq-option');
+  opts.forEach((el, i) => {
+    if (i === window._mcqAnswer) el.classList.add('correct');
+    if (i === idx && i !== window._mcqAnswer) el.classList.add('wrong');
+  });
+  document.getElementById('mcqExplanation').style.display = 'block';
+  document.getElementById('mcqComplete').style.display = 'block';
+  if (idx === window._mcqAnswer) {
+    updateGuide('Correct! Well done. Clinical reasoning is building.');
+  } else {
+    updateGuide('Not quite. Read the explanation — understanding why matters more than getting it right.');
+  }
+}
+
+function renderConsolidate(body, topic, label) {
+  body.innerHTML = `
+    <div class="stair-detail">
+      <div class="stair-detail-card">
+        <h4>${label}</h4>
+        <div class="note-box">
+          <div class="label">Key Takeaway</div>
+          <p>${topic.own}</p>
+        </div>
+        <button class="complete-btn ${topicState()[2] ? 'done' : ''}" onclick="completeStep(3)">
+          ${topicState()[2] ? '✓ Completed' : 'Mark as Complete'}
+        </button>
+      </div>
+    </div>
+  `;
+  updateGuide('This is the consolidation step. If you can teach this to someone else, you own it.');
+}
+
+function topicState() {
+  if (currentSystem === null || currentTopic === null) return [false,false,false,false];
+  return state[currentSystem]?.topics?.[currentTopic]?.steps || [false,false,false,false];
+}
+
+function completeStep(stepIdx) {
+  if (currentSystem === null || currentTopic === null) return;
+  if (!state[currentSystem]) state[currentSystem] = { topics: {} };
+  if (!state[currentSystem].topics[currentTopic]) state[currentSystem].topics[currentTopic] = { steps: [false, false, false, false] };
+  state[currentSystem].topics[currentTopic].steps[stepIdx] = true;
+  saveState();
+  updateProgress();
+  updateBodyMap();
+  renderGrid();
+
+  // Re-render current step
+  if (currentStep !== null) openStep(currentStep);
+}
+
+function closePanel() {
+  document.getElementById('topicPanel').classList.remove('open');
+  currentSystem = null;
+  currentTopic = null;
+  currentStep = null;
+}
+
+function updateGuide(text) {
+  document.getElementById('guideText').textContent = text;
+}
+
+// ════════════════════════════════════════
+// Init
+// ════════════════════════════════════════
+renderGrid();
+updateProgress();
+updateBodyMap();
+
+// Body map click from SVG
+document.querySelectorAll('.system[data-system]').forEach(el => {
+  el.addEventListener('click', () => openSystem(el.dataset.system));
+});
+</script>
+</body>
+</html>
