@@ -2198,7 +2198,7 @@ function showFoundation(){
       // Character + speech bubble row
       '<div style="position:relative;display:flex;justify-content:center;margin-bottom:2px">'+
         '<img src="images/character-neutral.png" class="character-float" style="width:120px;height:120px;object-fit:contain"/>'+
-        '<div id="speech-bubble" class="speech-bubble" style="position:absolute;left:calc(50% + 65px);top:10px;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:8px 12px;width:180px;z-index:5">'+
+        '<div id="speech-bubble" class="speech-bubble" style="position:absolute;left:calc(50% + 90px);top:10px;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:8px 12px;width:180px;z-index:5">'+
           '<div style="position:absolute;left:-6px;top:20px;width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-right:6px solid var(--border)"></div>'+
           '<div id="speech-text" style="font-size:0.68rem;line-height:1.4"></div>'+
         '</div>'+
@@ -2253,7 +2253,18 @@ function showFoundation(){
 
   el.innerHTML=html;
 
-  const speechLines=['Welcome to Foundation.','These are your building blocks.','Each one builds on the last.','Start at the bottom. Work your way up.'];
+  const speechByBlock={
+    'f-how-to-learn':'Welcome! These are your building blocks.',
+    'f-learning-a-language':'Music is a language. Let’s learn how.',
+    'f-language-of-music':'12 notes. Infinite possibilities.',
+    'f-language-of-guitar':'The fretboard is your map.',
+    'f-the-guitar':'Know your instrument before you play it.',
+    'f-speaking':'Right hand, left hand, both together.',
+    'f-conversations':'Time for your first conversation.'
+  };
+  var activeTopic=F.topics[activeIdx];
+  var speechText=activeTopic?speechByBlock[activeTopic.id]:'Welcome to Foundation.';
+  const speechLines=[speechText];
   const speechEl=document.getElementById('speech-text');
   if(speechEl){
     speechLines.forEach((line,i)=>{
@@ -2382,10 +2393,8 @@ function showFoundationTopic(topicId){
         var progress=JSON.parse(localStorage.getItem('hearth-foundation-progress')||'{}');
         progress[topicId]=true;
         localStorage.setItem('hearth-foundation-progress',JSON.stringify(progress));
-        // Go to next topic or back to foundation
-        var next=F.topics[topicIdx+1];
-        if(next) showFoundationTopic(next.id);
-        else showFoundation();
+        // Go back to pyramid — let student choose next block
+        showFoundation();
       }
     });
     engine.start(lessonInfo.lesson);
