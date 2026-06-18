@@ -31,8 +31,8 @@
     warmup: ['Body scan + 2 min clean open strings','Finger gymnastics: 1-2-3-4 chromatic across 6 strings','Right-hand pulse on muted strings, D DU UDU','Slow chord-change breathing drill - two chords only'],
     concept: ['Say the idea in plain words before touching the guitar','Draw the pattern on paper or fretboard diagram','Find it on the guitar - say what you see','Connect it to something you already know'],
     drill: ['Metronome at 60 BPM - one clean rep is worth ten sloppy','Slow repetitions with pause to check each note','Loop the hard transition only - 4 bars max','Speed ladder: increase 5 BPM only if last rep was clean'],
-    music: ["Apply the concept inside a real song moment","Create a 2-bar phrase using today's idea","Improvise with only the notes you learned today","Play something that makes you want to come back tomorrow"],
-    review: ["Read your last lesson notes honestly","Name one thing that stuck and one thing that slipped","Rate your confidence: 1-5 on today's concept","Choose the next small gradient - what should the next lesson do?"]
+    music: ["Apply the concept inside a real song moment","Create a 2-bar phrase using today\'s idea","Improvise with only the notes you learned today","Play something that makes you want to come back tomorrow"],
+    review: ["Read your last lesson notes honestly","Name one thing that stuck and one thing that slipped","Rate your confidence: 1-5 on today\'s concept","Choose the next small gradient - what should the next lesson do?"]
   };
 
   function esc(v){
@@ -63,7 +63,7 @@
       jen.currentLevel = 2;
       jen.levels.L1.lessonsDone = 8; jen.levels.L1.complete = true;
       jen.levels.L2.unlocked = true;
-      jen.levels.L2.notes.push({ date:'2026-06-14', text:"L2 with Jen: reviewed last week, practised finger gymnastics with metronome, learned pentatonic scale pattern with metronome, learned chord embellishments and how they colour songs. Jen is close to my ability; I need to level up fast to stay ahead. Need to understand how scales relate to piano and what they mean for playing the instrument. Jen wants to learn to write a song. She didn't know C chord, so we are seeing the gaps." });
+      jen.levels.L2.notes.push({ date:'2026-06-14', text:"L2 with Jen: reviewed last week, practised finger gymnastics with metronome, learned pentatonic scale pattern with metronome, learned chord embellishments and how they colour songs. Jen is close to my ability; I need to level up fast to stay ahead. Need to understand how scales relate to piano and what they mean for playing the instrument. Jen wants to learn to write a song. She didn\'t know C chord, so we are seeing the gaps." });
       state = { version:2, students:[mine, jen], activeStudentId:mine.id };
       saveState(state);
     }
@@ -168,7 +168,7 @@
       conceptNames: [primaryConcept, secondaryConcept],
       taskNames: [warm, conceptTask, drill.title, music, review],
       blocks: [
-        { id:'review', min:8, phase:'REVIEW', source:'Journey Notes', title:'Review last contact', body:'Look at the previous lesson. What did we learn? What gap appeared? What should not be skipped today?', prompt:"Write the real notes here - e.g. \"didn't know C chord\", \"wants to write a song\", \"scale/piano connection unclear\"." },
+        { id:'review', min:8, phase:'REVIEW', source:'Journey Notes', title:'Review last contact', body:'Look at the previous lesson. What did we learn? What gap appeared? What should not be skipped today?', prompt:"Write the real notes here - e.g. \"didn\'t know C chord\", \"wants to write a song\", \"scale/piano connection unclear\"." },
         { id:'warmup', min:10, phase:'WARM-UP', source:'Practice', title:warm, body:'Wake the hands with a clean, small movement before adding new material.', prompt:'Tempo, cleanliness, body tension, and one correction.' },
         { id:'concept', min:12, phase:'CONCEPT', source:'Knowing/Foundation', title:primaryConcept, body:'Teach the idea plainly. Connect significance to mass: say it, draw it, find it on the guitar.', prompt:'What words were misunderstood? What physical thing did this map to?' },
         { id:'drill', min:15, phase:'DRILL', source:'Do/Practice', title:drill.title, body:(drill.instructions || drill.description || 'Practise slowly with a metronome.'), prompt:'BPM, pass condition, mistake pattern, next gradient.' },
@@ -176,6 +176,114 @@
         { id:'reflect', min:5, phase:'REFLECT', source:'Hearth', title:'Feedback + next lesson target', body:'Rate confidence, capture notes, choose the next small step.', prompt:'What should the next lesson do?' }
       ]
     };
+  }
+
+  // Generate TeachingEngine steps for a journey block
+  function buildBlockSteps(block, lesson, levelNum, lessonNum, blockIdx){
+    const concept = lesson.conceptNames[0] || 'the concept';
+    const concept2 = lesson.conceptNames[1] || 'the next idea';
+    const steps = [];
+    
+    // Character images by block type
+    const chars = {
+      review: { speak:'images/character-face/Neutral.png', ask:'images/character-face/Thinking.png', action:'images/character-face/Encouraging.png' },
+      warmup: { speak:'images/character-face/Encouraging.png', ask:'images/character-face/Thinking.png', action:'images/character-face/Encouraging.png' },
+      concept: { speak:'images/character-face/Neutral.png', ask:'images/character-face/Thinking.png', action:'images/character-face/Encouraging.png' },
+      drill: { speak:'images/character-face/Encouraging.png', ask:'images/character-face/Thinking.png', action:'images/character-face/Encouraging.png' },
+      music: { speak:'images/character-face/Encouraging.png', ask:'images/character-face/Celebratory.png', action:'images/character-face/Encouraging.png' },
+      reflect: { speak:'images/character-face/Neutral.png', ask:'images/character-face/Thinking.png', action:'images/character-face/Celebratory.png' }
+    };
+    const c = chars[block.id] || chars.concept;
+    
+    if(block.id === 'review'){
+      steps.push({ type:'speak', char:c.speak, charLabel:'Guide',
+        text:'<p>Before we build something new, let us check what is already here.</p><p>Read your last lesson notes honestly. What did the hands learn? What slipped? No judgement — just honest looking.</p>' });
+      steps.push({ type:'ask', char:c.ask, charLabel:'Guide', concept:'review-check',
+        text:'<p>From your last lesson, what feels solid and what feels shaky?</p>',
+        choices:[
+          { label:'I remember most of it', correct:true, response:{ char:'images/character-face/Celebratory.png', charLabel:'Guide', text:'<p>Good. Let us build on that foundation today.</p>' }},
+          { label:'Some things slipped', correct:true, response:{ char:'images/character-face/Encouraging.png', charLabel:'Guide', text:'<p>That is normal. Repetition is how the hands remember. We will touch on the shaky parts today.</p>' }},
+          { label:'I feel lost', correct:true, response:{ char:'images/character-face/Encouraging.png', charLabel:'Guide', text:'<p>No worries. We will start from where you are, not where you think you should be.</p>' }}
+        ]});
+      steps.push({ type:'action', char:c.action, charLabel:'Guide',
+        text:'<p>Write one thing that stuck and one thing that slipped from your last lesson. Be specific — the more honest the note, the better the next lesson adapts.</p>',
+        actionType:'notes', actionId:'review-notes', prompt:'What stuck? What slipped?' });
+    }
+    else if(block.id === 'warmup'){
+      steps.push({ type:'speak', char:c.speak, charLabel:'Guide',
+        text:'<p>Time to wake the hands. Two minutes of clean, small movements.</p><p>Drop your shoulders. Breathe. The body needs to be calm before it can learn.</p>' });
+      steps.push({ type:'action', char:c.action, charLabel:'Guide',
+        text:'<p>Do the warm-up now. Focus on one correction from last time.</p>',
+        actionType:'checklist', actionId:'warmup-checks',
+        checks:['Body scan complete — shoulders dropped, jaw loose','Clean notes on open strings — all 6 ring clear','Metronome tempo noted — BPM: ___','One correction from last time applied'] });
+      steps.push({ type:'ask', char:c.ask, charLabel:'Guide', concept:'warmup-check',
+        text:'<p>How did the warm-up feel?</p>',
+        choices:[
+          { label:'Hands are awake and calm', correct:true, response:{ char:'images/character-face/Celebratory.png', charLabel:'Guide', text:'<p>Perfect. You are ready for today\'s idea.</p>' }},
+          { label:'Some tension remains', correct:true, response:{ char:'images/character-face/Encouraging.png', charLabel:'Guide', text:'<p>Notice where it lives. We will work through it during the drill.</p>' }},
+          { label:'Fingers are stiff', correct:true, response:{ char:'images/character-face/Encouraging.png', charLabel:'Guide', text:'<p>Stiffness is the body saying it needs more time. Slow down the reps and breathe into it.</p>' }}
+        ]});
+    }
+    else if(block.id === 'concept'){
+      steps.push({ type:'speak', char:c.speak, charLabel:'Guide',
+        text:'<p>Here is today\'s idea: <strong>'+esc(concept)+'</strong>.</p><p>Say it in plain words first. Then find it on the guitar. If a word is unclear, stop and clear it — that is the Foundation mindset, and it never stops being useful.</p>' });
+      steps.push({ type:'action', char:c.action, charLabel:'Guide',
+        text:'<p>Find this concept on the guitar. Draw it, say it, touch it. The clearer the mental picture, the cleaner the physical execution.</p>',
+        actionType:'checklist', actionId:'concept-checks',
+        checks:['I can explain this concept in plain words','I can find it on the guitar','I can connect it to something I already know'] });
+      steps.push({ type:'ask', char:c.ask, charLabel:'Guide', concept:'concept-check',
+        text:'<p>Can you explain <strong>'+esc(concept)+'</strong> in your own words?</p>',
+        choices:[
+          { label:'Yes, I get it', correct:true, response:{ char:'images/character-face/Celebratory.png', charLabel:'Guide', text:'<p>Excellent. Now let us train the movement so it becomes natural.</p>' }},
+          { label:'I understand but need practice', correct:true, response:{ char:'images/character-face/Encouraging.png', charLabel:'Guide', text:'<p>Understanding before movement is exactly right. The drill will help it stick.</p>' }},
+          { label:'I am confused', correct:true, response:{ char:'images/character-face/Encouraging.png', charLabel:'Guide', text:'<p>Good — you noticed. Let us break it down smaller. What part is unclear?</p>' }}
+        ]});
+    }
+    else if(block.id === 'drill'){
+      steps.push({ type:'speak', char:c.speak, charLabel:'Guide',
+        text:'<p>Now we train the movement. Slow, with a metronome.</p><p>One clean repetition is worth more than ten sloppy ones. If it buzzes, adjust — closer to the fret wire, arched finger, less shoulder tension.</p>' });
+      steps.push({ type:'action', char:c.action, charLabel:'Guide',
+        text:'<p>'+esc(block.body)+'</p>',
+        actionType:'checklist', actionId:'drill-checks',
+        checks:['Started at slow tempo — BPM: ___','Clean reps achieved before speeding up','Focused on one specific correction','Timed myself — minutes practised: ___'] });
+      steps.push({ type:'ask', char:c.ask, charLabel:'Guide', concept:'drill-check',
+        text:'<p>How did the drill go?</p>',
+        choices:[
+          { label:'Clean reps happening', correct:true, response:{ char:'images/character-face/Celebratory.png', charLabel:'Guide', text:'<p>That is the sound of progress. Now let us make it musical.</p>' }},
+          { label:'Still buzzing or messy', correct:true, response:{ char:'images/character-face/Encouraging.png', charLabel:'Guide', text:'<p>Slow down more. The metronome is your honest friend — it tells you the truth about your tempo.</p>' }},
+          { label:'Got bored and rushed', correct:true, response:{ char:'images/character-face/Thinking.png', charLabel:'Guide', text:'<p>Rushing is a gradient gap — the step is too easy. Let us add a small challenge: try it at +5 BPM, or add a rhythm variation.</p>' }}
+        ]});
+    }
+    else if(block.id === 'music'){
+      steps.push({ type:'speak', char:c.speak, charLabel:'Guide',
+        text:'<p>This is where the drill becomes music. Play something real — a riff, a chord progression, a song moment.</p><p>If you can not represent it, you do not understand it yet. Make it small enough that your hands can succeed.</p>' });
+      steps.push({ type:'action', char:c.action, charLabel:'Guide',
+        text:'<p>Play something that uses today\'s concept. It can be simple — two chords, a short riff, a melody. The point is to feel music, not just exercise.</p>',
+        actionType:'notes', actionId:'music-notes', prompt:'What did you play? How did it feel?' });
+      steps.push({ type:'ask', char:c.ask, charLabel:'Guide', concept:'music-check',
+        text:'<p>Did today\'s concept connect to real music?</p>',
+        choices:[
+          { label:'Yes, I heard it in a song moment', correct:true, response:{ char:'images/character-face/Celebratory.png', charLabel:'Guide', text:'<p>That is the goal. When an idea becomes music, it becomes yours.</p>' }},
+          { label:'Not yet, still feels like an exercise', correct:true, response:{ char:'images/character-face/Encouraging.png', charLabel:'Guide', text:'<p>Keep the exercise small and add rhythm. Music is pattern + feeling. The feeling comes when the pattern is easy enough to forget.</p>' }},
+          { label:'I want to try something different', correct:true, response:{ char:'images/character-face/Encouraging.png', charLabel:'Guide', text:'<p>Go for it. Curiosity is the best teacher after the basics are in place.</p>' }}
+        ]});
+    }
+    else if(block.id === 'reflect'){
+      steps.push({ type:'speak', char:c.speak, charLabel:'Guide',
+        text:'<p>Last step. Rate what you learned, write one honest note, and name the next small thing to work on.</p><p>The next lesson adapts to what you tell it.</p>' });
+      steps.push({ type:'ask', char:c.ask, charLabel:'Guide', concept:'reflect-rate',
+        text:'<p>Rate your confidence with today\'s concept:</p>',
+        choices:[
+          { label:'Confident — I can do this', correct:true, response:{ char:'images/character-face/Celebratory.png', charLabel:'Guide', text:'<p>Lock it in. Next time we build on this.</p>' }},
+          { label:'Getting there — needs more reps', correct:true, response:{ char:'images/character-face/Encouraging.png', charLabel:'Guide', text:'<p>Honest. Repetition is the bridge between knowing and doing.</p>' }},
+          { label:'Still confused — need to revisit', correct:true, response:{ char:'images/character-face/Encouraging.png', charLabel:'Guide', text:'<p>We will put this into the next warm-up. No concept gets left behind.</p>' }}
+        ]});
+      steps.push({ type:'action', char:c.action, charLabel:'Guide',
+        text:'<p>Write your notes for next time. What should the next lesson focus on? What gap showed up? What gradient is next?</p>',
+        actionType:'notes', actionId:'reflect-notes', prompt:'Next lesson should focus on...' });
+    }
+    
+    return steps;
   }
 
   function ratingButtons(kind, names, current){
@@ -458,7 +566,7 @@
     const blockGuides = {
       review: 'Before we build something new, let us check what is already here. Read your last lesson notes. What did the hands learn? What slipped? No judgement - just honest looking.',
       warmup: 'Time to wake the hands. Two minutes of clean, small movements. Drop your shoulders. Breathe. The body needs to be calm before it can learn.',
-      concept: "Here is today's idea. Say it in plain words first. Then find it on the guitar. If a word is unclear, stop and clear it - that is the Foundation mindset, and it never stops being useful.",
+      concept: "Here is today\'s idea. Say it in plain words first. Then find it on the guitar. If a word is unclear, stop and clear it - that is the Foundation mindset, and it never stops being useful.",
       drill: 'Now we train the movement. Slow, with a metronome. One clean repetition is worth more than ten sloppy ones. If it buzzes, adjust. Closer to the fret wire, arched finger, less shoulder tension.',
       music: 'This is where the drill becomes music. Play something real - a riff, a chord progression, a song moment. If you can not represent it, you do not understand it yet. Make it small enough that your hands can succeed.',
       reflect: 'Last step. Rate what you learned, write one honest note, and name the next small thing to work on. The next lesson adapts to what you tell it.'
@@ -494,22 +602,16 @@
       html += '<div style="font-size:0.68rem;color:var(--text);line-height:1.5">'+esc(guideMsg)+'</div>';
       html += '</div></div>';
 
-      // Block card
-      const val = student.activeLesson.blockNotes[b.id] || '';
-      html += '<div class="journey-card" style="max-width:360px;width:100%">';
+      // Block card - clickable to launch TeachingEngine
+      html += '<div class="journey-card" style="max-width:360px;width:100%;cursor:pointer" onclick="Journey.openBlock('+levelNum+','+lessonNum+','+bi+')">';
       html += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">';
       html += '<div style="font-family:JetBrains Mono,monospace;font-size:0.55rem;color:var(--gold);text-transform:uppercase;letter-spacing:0.1em">'+esc(b.phase)+'</div>';
       html += '<div style="font-family:JetBrains Mono,monospace;font-size:0.55rem;color:var(--dim)">'+b.min+' min</div>';
       html += '</div>';
       html += '<div style="font-family:Cinzel,serif;color:var(--gold);font-size:0.95rem;font-weight:700;margin-bottom:8px">'+esc(b.title)+'</div>';
-      html += '<div style="font-size:0.72rem;color:var(--dim);line-height:1.5;margin-bottom:10px">'+esc(b.body)+'</div>';
-      html += '<textarea class="journey-input" id="journey-note-'+b.id+'" placeholder="'+esc(b.prompt)+'">'+esc(val)+'</textarea>';
-      html += '</div>';
-
-      // Next button
-      html += '<div style="max-width:360px;width:100%;margin-top:12px;text-align:center">';
-      html += '<button class="journey-btn" onclick="Journey.saveAndNext('+levelNum+','+lessonNum+','+(bi+1)+')" style="padding:10px 24px">Next →</button>';
-      html += '</div>';
+      html += '<div style="font-size:0.72rem;color:var(--dim);line-height:1.5;margin-bottom:6px">'+esc(b.body)+'</div>';
+      html += '<div style="font-size:0.62rem;color:var(--gold);text-align:center;padding:6px;background:rgba(212,175,105,0.08);border-radius:6px">Tap to begin</div>';
+      html += '</div>';;
 
     } else if(isReview) {
       // Review/complete step
@@ -630,6 +732,42 @@
       const state = loadState(); const s = activeStudent(state); const l = getLevel(levelNum);
       s.currentLevel = levelNum; s.activeLesson = null; saveStudent(s); renderLevelLesson(levelNum, lessonNum);
     },
+    openBlock(levelNum, lessonNum, blockIdx){
+      const state = loadState(); const s = activeStudent(state);
+      const lesson = buildLesson(s, levelNum, lessonNum);
+      const block = lesson.blocks[blockIdx];
+      if(!block) return;
+      const steps = buildBlockSteps(block, lesson, levelNum, lessonNum, blockIdx);
+      if(!steps.length) return;
+      // Launch TeachingEngine in p-teach panel
+      document.querySelectorAll('.pnl').forEach(p=>p.classList.remove('on'));
+      var el=document.getElementById('p-teach');
+      el.classList.add('on');
+      el.innerHTML='<div style="padding:16px;max-width:700px;margin:0 auto">'+
+        '<button class="back-btn" onclick="Journey.saveAndBack('+levelNum+','+lessonNum+','+blockIdx+')">← Back to Lesson</button>'+
+        '<div style="text-align:center;margin:8px 0 4px"><span style="font-family:Cinzel,serif;color:var(--gold);font-size:0.85rem;letter-spacing:2px">'+esc(block.phase)+': '+esc(block.title)+'</span></div>'+
+        '<div id="teach-container"></div>'+
+      '</div>';
+      var engine=window._teachEngine=TeachingEngine(document.getElementById('teach-container'),{
+        onComplete:function(scores){
+          // Mark block as done and go back to lesson
+          var state2=loadState(); var s2=activeStudent(state2);
+          if(s2.activeLesson){
+            s2.activeLesson.blockNotes[block.id]='completed';
+            s2.activeLesson.blockIdx=blockIdx+1;
+            saveStudent(s2);
+          }
+          playSfx('success');
+          setTimeout(function(){ renderLevelLesson(levelNum, lessonNum, blockIdx+1); },1200);
+        }
+      });
+      engine.start({ steps: steps });
+    },
+    saveAndBack(levelNum, lessonNum, blockIdx){
+      // Save notes from teach-container if any
+      document.querySelectorAll('.pnl').forEach(p=>p.classList.remove('on'));
+      renderLevelLesson(levelNum, lessonNum, blockIdx);
+    },
     switchStudent(id){ const state=loadState(); state.activeStudentId=id; saveState(state); render(); },
     addStudent(){ const name = prompt('Student name?'); if(!name) return; const state=loadState(); const s=blankStudent(name.trim()); state.students.push(s); state.activeStudentId=s.id; saveState(state); render(); },
     renameStudent(){ const state=loadState(); const s=activeStudent(state); const name=prompt('Rename journey/student:', s.name); if(!name) return; s.name=name.trim(); saveStudent(s); render(); },
@@ -662,7 +800,7 @@
       const state=loadState(); let s=activeStudent(state);
       if(!/jen/i.test(s.name)){ const jen=state.students.find(x=>/jen/i.test(x.name)); if(jen){ state.activeStudentId=jen.id; saveState(state); s=jen; } }
       s.currentLevel = 2; s.levels.L2.unlocked = true;
-      s.levels.L2.notes.push({ date:today(), text:"L2 with Jen: reviewed what we learned last week; practised finger gymnastics with a metronome; learned pentatonic scale pattern with metronome; learned chord embellishments and how they colour songs. Relevance: Jen is close to my ability - I need to level up fast. Need to understand how scales relate to piano and what they mean on guitar. Jen wants to write a song. She didn't know C chord, so C chord is a gap to track." });
+      s.levels.L2.notes.push({ date:today(), text:"L2 with Jen: reviewed what we learned last week; practised finger gymnastics with a metronome; learned pentatonic scale pattern with metronome; learned chord embellishments and how they colour songs. Relevance: Jen is close to my ability - I need to level up fast. Need to understand how scales relate to piano and what they mean on guitar. Jen wants to write a song. She didn\'t know C chord, so C chord is a gap to track." });
       saveStudent(s); render();
     },
     reset(){ if(confirm('Reset Journey data on this device?')){ localStorage.removeItem(STORE); render(); } },
