@@ -31,6 +31,7 @@ const CHAR = {
 
 function createTeachingEngine(containerEl, opts){
   const container = containerEl;
+  opts = opts || {};
   var _teachContinueShown = false;
   var currentLesson = null;
   const state = {
@@ -50,7 +51,7 @@ function createTeachingEngine(containerEl, opts){
       case 'ask':     renderAsk(step, lesson); break;
       case 'cards':   renderCards(step, lesson); break;
       case 'video':   renderVideo(step, lesson); break;
-      case 'action':  step.render(container, advance); break;
+      case 'action':  renderAction(step, lesson); break;
       case 'end':     renderEnd(step, lesson); break;
       default:        renderSpeak(step, lesson);
     }
@@ -139,7 +140,7 @@ function createTeachingEngine(containerEl, opts){
           setTimeout(function(){
             if(choice.response){
               // Show response then advance
-              showFollowUp(choice.response, step, lesson);
+              showFollowUp(normalizeResponse(choice.response), step, lesson);
             } else {
               advance(lesson);
             }
@@ -180,6 +181,40 @@ function createTeachingEngine(containerEl, opts){
         advance(lesson);
       });
     }, 300);
+  }
+
+  function normalizeResponse(response){
+    if(typeof response === 'string') return { text: response };
+    return response || { text: '' };
+  }
+
+  function renderAction(step, lesson){
+    if(typeof step.render === 'function'){
+      step.render(container, function(){ advance(lesson); }, lesson, state);
+      return;
+    }
+
+    var html = buildCharArea(step.char || CHAR.encouraging, step.charLabel || '', step.text || '<p>Try this step, then continue when you are ready.</p>', true, step.charSize);
+
+    if(step.actionType === 'checklist'){
+      html += '<div class="teach-action-box" style="max-width:700px;margin:16px auto;background:var(--card);border:1px solid #3a2a1a;border-radius:10px;padding:14px">';
+      (step.checks || []).forEach(function(label, i){
+        html += '<label style="display:block;margin:10px 0;color:var(--dim);font-size:0.78rem;line-height:1.45"><input type="checkbox" data-teach-check="'+i+'" /> '+label+'</label>';
+      });
+      html += '</div>';
+    } else if(step.actionType === 'notes'){
+      html += '<div class="teach-action-box" style="max-width:700px;margin:16px auto;background:var(--card);border:1px solid #3a2a1a;border-radius:10px;padding:14px">';
+      html += '<textarea data-teach-notes="'+(step.actionId || 'notes')+'" placeholder="'+escapeAttr(step.prompt || 'Write your notes here...')+'" style="width:100%;min-height:110px;box-sizing:border-box;background:#0d0b08;border:1px solid #3a2a1a;border-radius:8px;color:var(--text);padding:10px;font-family:DM Sans,sans-serif;font-size:0.78rem;line-height:1.45"></textarea>';
+      html += '</div>';
+    }
+
+    html += '<div style="display:flex;justify-content:center;padding:10px 16px;max-width:700px;margin:0 auto">' +
+      '<button class="fb-nav-btn" data-action="advance" style="background:var(--gold);border:none;color:var(--bg);padding:9px 24px;border-radius:6px;cursor:pointer;font-family:DM Sans,sans-serif;font-size:0.8rem;font-weight:700;letter-spacing:0.02em">Continue</button>' +
+    '</div></div>';
+
+    container.innerHTML = html;
+    bindButtons(step, lesson);
+    typewriterEffect();
   }
 
   // ── GRADIENT FAILSAFE ──
@@ -326,11 +361,19 @@ function createTeachingEngine(containerEl, opts){
         '</div>' +
       '</div>';
   }
+
+  function escapeAttr(value){
+    return String(value == null ? '' : value).replace(/[&<>"']/g, function(ch){
+      return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch];
+    });
+  }
   function closeCharArea(){
-    var navLabel = state.history.length > 0 ? '\u2190 Back' : 'Next \u25B8';
-    var navAction = state.history.length > 0 ? 'back' : 'advance';
-    return '<div style="display:flex;justify-content:center;padding:10px 16px;max-width:700px;margin:0 auto">' +
-      '<button class="fb-nav-btn" data-action="'+navAction+'" style="background:none;border:1px solid #3a2a1a;color:#a89880;padding:8px 24px;border-radius:6px;cursor:pointer;font-family:DM Sans,sans-serif;font-size:0.8rem;font-weight:600;letter-spacing:0.02em;transition:all 0.15s">'+navLabel+'</button>' +
+    var backButton = state.history.length > 0
+      ? '<button class="fb-nav-btn" data-action="back" style="background:none;border:1px solid #3a2a1a;color:#a89880;padding:8px 18px;border-radius:6px;cursor:pointer;font-family:DM Sans,sans-serif;font-size:0.8rem;font-weight:600;letter-spacing:0.02em;transition:all 0.15s">\u2190 Back</button>'
+      : '';
+    return '<div style="display:flex;justify-content:center;gap:8px;padding:10px 16px;max-width:700px;margin:0 auto">' +
+      backButton +
+      '<button class="fb-nav-btn" data-action="advance" style="background:none;border:1px solid #3a2a1a;color:#a89880;padding:8px 24px;border-radius:6px;cursor:pointer;font-family:DM Sans,sans-serif;font-size:0.8rem;font-weight:600;letter-spacing:0.02em;transition:all 0.15s">Next \u25B8</button>' +
     '</div></div>';
   }
 
@@ -415,6 +458,7 @@ function createTeachingEngine(containerEl, opts){
   // ── Public API ──
   return {
     start: function(lesson){
+      lesson = normalizeLesson(lesson);
       currentLesson = lesson;
       state.stepIdx = 0;
       state.history = [];
@@ -428,6 +472,13 @@ function createTeachingEngine(containerEl, opts){
     getState: function(){ return Object.assign({}, state); },
     CHAR: CHAR
   };
+}
+
+function normalizeLesson(lesson){
+  if(Array.isArray(lesson)) return { steps: lesson };
+  lesson = lesson || {};
+  if(!Array.isArray(lesson.steps)) lesson.steps = [];
+  return lesson;
 }
 
 // Export

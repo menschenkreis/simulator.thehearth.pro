@@ -38,6 +38,7 @@
   function esc(v){
     return String(v == null ? '' : v).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
   }
+  function attr(v){ return esc(v); }
   function uid(){ return 's-' + Math.random().toString(36).slice(2,9) + '-' + Date.now().toString(36); }
   function today(){ return new Date().toISOString().slice(0,10); }
   function getLevel(num){ return LEVELS[Math.max(0, Math.min(LEVELS.length-1, (Number(num)||1)-1))]; }
@@ -45,6 +46,22 @@
     const out=[]; if(!list || !list.length) return out;
     for(let i=0;i<count;i++) out.push(list[(n+i)%list.length]);
     return out;
+  }
+
+  function showPanel(panelId){
+    const target = document.getElementById(panelId);
+    if(!target) return null;
+    document.querySelectorAll('.pnl').forEach(panel => panel.classList.remove('on'));
+    target.classList.add('on');
+    return target;
+  }
+
+  function getJourneyRoot(){
+    return document.getElementById('journey-content') || document.getElementById('p-lesson');
+  }
+
+  function safePlaySfx(name){
+    if(typeof window.playSfx === 'function') window.playSfx(name);
   }
 
   function blankStudent(name){
@@ -178,6 +195,81 @@
     };
   }
 
+  function speakStep(char, text){
+    return { type:'speak', char:char, charLabel:'Guide', text:text };
+  }
+
+  function askStep(char, concept, text, choices){
+    return { type:'ask', char:char, charLabel:'Guide', concept:concept, text:text, choices:choices };
+  }
+
+  function actionStep(char, text, config){
+    config = config || {};
+    return {
+      type:'action',
+      char:char,
+      charLabel:'Guide',
+      text:text,
+      actionType:config.actionType || 'checklist',
+      actionId:config.actionId || 'journey-action',
+      prompt:config.prompt || '',
+      checks:config.checks || [],
+      render:function(container, advance){
+        renderJourneyAction(container, advance, this);
+      }
+    };
+  }
+
+  function renderJourneyAction(container, advance, step){
+    const isNotes = step.actionType === 'notes';
+    let html = '<div class="teach-scene-wrap">' +
+      '<div class="teach-scene">' +
+        '<div class="teach-char-wrap">' +
+          '<img src="'+attr(step.char || 'images/character-face/Encouraging.png')+'" class="teach-char-img" />' +
+          '<div class="teach-char-label">'+esc(step.charLabel || 'Guide')+'</div>' +
+        '</div>' +
+        '<div class="teach-bubble">' +
+          '<div class="teach-tail"></div>' +
+          '<div class="teach-text">'+(step.text || '')+'</div>' +
+        '</div>' +
+      '</div>' +
+      '<div style="max-width:700px;margin:16px auto 0;padding:16px;background:var(--card);border:1px solid #3a2a1a;border-radius:8px">';
+
+    if(isNotes){
+      html += '<textarea data-journey-action="'+attr(step.actionId)+'" placeholder="'+attr(step.prompt || 'Write your notes here...')+'" style="width:100%;min-height:120px;box-sizing:border-box;background:#0d0b08;border:1px solid #3a2a1a;border-radius:8px;color:var(--text);padding:10px;font-family:DM Sans,sans-serif;font-size:0.78rem;line-height:1.45"></textarea>';
+    } else {
+      (step.checks || []).forEach((label, i) => {
+        html += '<label style="display:block;margin:10px 0;color:var(--dim);line-height:1.45;font-size:0.78rem"><input type="checkbox" data-journey-check="'+i+'" /> '+esc(label)+'</label>';
+      });
+      if(!step.checks || !step.checks.length){
+        html += '<p style="color:var(--dim);font-size:0.78rem;line-height:1.5;margin:0">Do the exercise slowly and honestly. Continue when the step feels complete.</p>';
+      }
+    }
+
+    html += '<div style="text-align:center;margin-top:16px">' +
+      '<button data-journey-continue style="background:var(--gold);color:var(--bg);border:none;padding:10px 24px;border-radius:6px;font-family:DM Sans,sans-serif;font-weight:700;cursor:pointer">Continue</button>' +
+      '</div></div></div>';
+
+    container.innerHTML = html;
+
+    const button = container.querySelector('[data-journey-continue]');
+    const checks = container.querySelectorAll('[data-journey-check]');
+    function update(){
+      if(!checks.length) return;
+      const done = Array.prototype.every.call(checks, check => check.checked);
+      button.disabled = !done;
+      button.textContent = done ? 'Continue' : 'Complete the checks';
+      button.style.background = done ? 'var(--gold)' : '#3a2a1a';
+      button.style.color = done ? 'var(--bg)' : '#706050';
+      button.style.cursor = done ? 'pointer' : 'not-allowed';
+    }
+    checks.forEach(check => check.addEventListener('change', update));
+    update();
+    button.addEventListener('click', function(){
+      if(!button.disabled) advance();
+    });
+  }
+
   // Generate TeachingEngine steps for a journey block
   function buildBlockSteps(block, lesson, levelNum, lessonNum, blockIdx){
     const concept = lesson.conceptNames[0] || 'the concept';
@@ -205,17 +297,17 @@
           { label:'Some things slipped', correct:true, response:{ char:'images/character-face/Encouraging.png', charLabel:'Guide', text:'<p>That is normal. Repetition is how the hands remember. We will touch on the shaky parts today.</p>' }},
           { label:'I feel lost', correct:true, response:{ char:'images/character-face/Encouraging.png', charLabel:'Guide', text:'<p>No worries. We will start from where you are, not where you think you should be.</p>' }}
         ]});
-      steps.push({ type:'action', char:c.action, charLabel:'Guide',
-        text:'<p>Write one thing that stuck and one thing that slipped from your last lesson. Be specific — the more honest the note, the better the next lesson adapts.</p>',
-        actionType:'notes', actionId:'review-notes', prompt:'What stuck? What slipped?' });
+      steps.push(actionStep(c.action, '<p>Write one thing that stuck and one thing that slipped from your last lesson. Be specific - the more honest the note, the better the next lesson adapts.</p>', {
+        actionType:'notes', actionId:'review-notes', prompt:'What stuck? What slipped?'
+      }));
     }
     else if(block.id === 'warmup'){
       steps.push({ type:'speak', char:c.speak, charLabel:'Guide',
         text:'<p>Time to wake the hands. Two minutes of clean, small movements.</p><p>Drop your shoulders. Breathe. The body needs to be calm before it can learn.</p>' });
-      steps.push({ type:'action', char:c.action, charLabel:'Guide',
-        text:'<p>Do the warm-up now. Focus on one correction from last time.</p>',
+      steps.push(actionStep(c.action, '<p>Do the warm-up now. Focus on one correction from last time.</p>', {
         actionType:'checklist', actionId:'warmup-checks',
-        checks:['Body scan complete — shoulders dropped, jaw loose','Clean notes on open strings — all 6 ring clear','Metronome tempo noted — BPM: ___','One correction from last time applied'] });
+        checks:['Body scan complete - shoulders dropped, jaw loose','Clean notes on open strings - all 6 ring clear','Metronome tempo noted - BPM: ___','One correction from last time applied']
+      }));
       steps.push({ type:'ask', char:c.ask, charLabel:'Guide', concept:'warmup-check',
         text:'<p>How did the warm-up feel?</p>',
         choices:[
@@ -227,10 +319,10 @@
     else if(block.id === 'concept'){
       steps.push({ type:'speak', char:c.speak, charLabel:'Guide',
         text:'<p>Here is today\'s idea: <strong>'+esc(concept)+'</strong>.</p><p>Say it in plain words first. Then find it on the guitar. If a word is unclear, stop and clear it — that is the Foundation mindset, and it never stops being useful.</p>' });
-      steps.push({ type:'action', char:c.action, charLabel:'Guide',
-        text:'<p>Find this concept on the guitar. Draw it, say it, touch it. The clearer the mental picture, the cleaner the physical execution.</p>',
+      steps.push(actionStep(c.action, '<p>Find this concept on the guitar. Draw it, say it, touch it. The clearer the mental picture, the cleaner the physical execution.</p>', {
         actionType:'checklist', actionId:'concept-checks',
-        checks:['I can explain this concept in plain words','I can find it on the guitar','I can connect it to something I already know'] });
+        checks:['I can explain this concept in plain words','I can find it on the guitar','I can connect it to something I already know']
+      }));
       steps.push({ type:'ask', char:c.ask, charLabel:'Guide', concept:'concept-check',
         text:'<p>Can you explain <strong>'+esc(concept)+'</strong> in your own words?</p>',
         choices:[
@@ -242,10 +334,10 @@
     else if(block.id === 'drill'){
       steps.push({ type:'speak', char:c.speak, charLabel:'Guide',
         text:'<p>Now we train the movement. Slow, with a metronome.</p><p>One clean repetition is worth more than ten sloppy ones. If it buzzes, adjust — closer to the fret wire, arched finger, less shoulder tension.</p>' });
-      steps.push({ type:'action', char:c.action, charLabel:'Guide',
-        text:'<p>'+esc(block.body)+'</p>',
+      steps.push(actionStep(c.action, '<p>'+esc(block.body)+'</p>', {
         actionType:'checklist', actionId:'drill-checks',
-        checks:['Started at slow tempo — BPM: ___','Clean reps achieved before speeding up','Focused on one specific correction','Timed myself — minutes practised: ___'] });
+        checks:['Started at slow tempo - BPM: ___','Clean reps achieved before speeding up','Focused on one specific correction','Timed myself - minutes practised: ___']
+      }));
       steps.push({ type:'ask', char:c.ask, charLabel:'Guide', concept:'drill-check',
         text:'<p>How did the drill go?</p>',
         choices:[
@@ -257,9 +349,9 @@
     else if(block.id === 'music'){
       steps.push({ type:'speak', char:c.speak, charLabel:'Guide',
         text:'<p>This is where the drill becomes music. Play something real — a riff, a chord progression, a song moment.</p><p>If you can not represent it, you do not understand it yet. Make it small enough that your hands can succeed.</p>' });
-      steps.push({ type:'action', char:c.action, charLabel:'Guide',
-        text:'<p>Play something that uses today\'s concept. It can be simple — two chords, a short riff, a melody. The point is to feel music, not just exercise.</p>',
-        actionType:'notes', actionId:'music-notes', prompt:'What did you play? How did it feel?' });
+      steps.push(actionStep(c.action, '<p>Play something that uses today&#39;s concept. It can be simple - two chords, a short riff, a melody. The point is to feel music, not just exercise.</p>', {
+        actionType:'notes', actionId:'music-notes', prompt:'What did you play? How did it feel?'
+      }));
       steps.push({ type:'ask', char:c.ask, charLabel:'Guide', concept:'music-check',
         text:'<p>Did today\'s concept connect to real music?</p>',
         choices:[
@@ -278,9 +370,9 @@
           { label:'Getting there — needs more reps', correct:true, response:{ char:'images/character-face/Encouraging.png', charLabel:'Guide', text:'<p>Honest. Repetition is the bridge between knowing and doing.</p>' }},
           { label:'Still confused — need to revisit', correct:true, response:{ char:'images/character-face/Encouraging.png', charLabel:'Guide', text:'<p>We will put this into the next warm-up. No concept gets left behind.</p>' }}
         ]});
-      steps.push({ type:'action', char:c.action, charLabel:'Guide',
-        text:'<p>Write your notes for next time. What should the next lesson focus on? What gap showed up? What gradient is next?</p>',
-        actionType:'notes', actionId:'reflect-notes', prompt:'Next lesson should focus on...' });
+      steps.push(actionStep(c.action, '<p>Write your notes for next time. What should the next lesson focus on? What gap showed up? What gradient is next?</p>', {
+        actionType:'notes', actionId:'reflect-notes', prompt:'Next lesson should focus on...'
+      }));
     }
     
     return steps;
@@ -339,7 +431,8 @@
 
   function render(){
     injectStyles();
-    const root = document.getElementById('journey-content');
+    showPanel('p-lesson');
+    const root = getJourneyRoot();
     if(!root) return;
     const state = loadState();
     const student = activeStudent(state);
@@ -475,7 +568,8 @@
   }
   function renderLevel(num){
     injectStyles();
-    const root = document.getElementById('journey-content');
+    showPanel('p-lesson');
+    const root = getJourneyRoot();
     if(!root) return;
     const state = loadState();
     const student = activeStudent(state);
@@ -543,7 +637,8 @@
   }
   function renderLevelLesson(levelNum, lessonNum, blockIdx){
     injectStyles();
-    const root = document.getElementById('journey-content');
+    showPanel('p-lesson');
+    const root = getJourneyRoot();
     if(!root) return;
     const state = loadState();
     const student = activeStudent(state);
@@ -683,7 +778,9 @@
 
   function renderLesson(){
     injectStyles();
-    const root = document.getElementById('journey-content');
+    showPanel('p-lesson');
+    const root = getJourneyRoot();
+    if(!root) return;
     const state = loadState();
     const student = activeStudent(state);
     const level = getLevel(student.currentLevel || 1);
@@ -718,6 +815,17 @@
     return student;
   }
 
+  function rerenderActiveLesson(student){
+    if(!student || !student.activeLesson){
+      render();
+      return;
+    }
+    const level = getLevel(student.currentLevel || 1);
+    const lessonNum = student.activeLesson.lessonNum || 1;
+    const blockIdx = student.activeLesson.blockIdx || 0;
+    renderLevelLesson(level.num, lessonNum, blockIdx);
+  }
+
   const Journey = {
     render,
     startLesson(){ const state=loadState(); const s=activeStudent(state); const l=getLevel(s.currentLevel||1); const ls=s.levels[l.id]; const num=(ls.lessonsDone||0)+1; renderLevelLesson(l.num, num); },
@@ -739,16 +847,21 @@
       if(!block) return;
       const steps = buildBlockSteps(block, lesson, levelNum, lessonNum, blockIdx);
       if(!steps.length) return;
-      // Launch TeachingEngine in p-teach panel
-      document.querySelectorAll('.pnl').forEach(p=>p.classList.remove('on'));
-      var el=document.getElementById('p-teach');
-      el.classList.add('on');
+      if(typeof window.TeachingEngine !== 'function'){
+        alert('Teaching engine is not loaded yet.');
+        return;
+      }
+
+      // Launch TeachingEngine in p-teach panel. If the host page does not have
+      // panels, fall back to the journey root so the lesson still works.
+      var el = showPanel('p-teach') || getJourneyRoot();
+      if(!el) return;
       el.innerHTML='<div style="padding:16px;max-width:700px;margin:0 auto">'+
         '<button class="back-btn" onclick="Journey.saveAndBack('+levelNum+','+lessonNum+','+blockIdx+')">← Back to Lesson</button>'+
         '<div style="text-align:center;margin:8px 0 4px"><span style="font-family:Cinzel,serif;color:var(--gold);font-size:0.85rem;letter-spacing:2px">'+esc(block.phase)+': '+esc(block.title)+'</span></div>'+
         '<div id="teach-container"></div>'+
       '</div>';
-      var engine=window._teachEngine=TeachingEngine(document.getElementById('teach-container'),{
+      var engine=window._teachEngine=window.TeachingEngine(document.getElementById('teach-container'),{
         onComplete:function(scores){
           // Mark block as done and go back to lesson
           var state2=loadState(); var s2=activeStudent(state2);
@@ -757,15 +870,19 @@
             s2.activeLesson.blockIdx=blockIdx+1;
             saveStudent(s2);
           }
-          playSfx('success');
+          safePlaySfx('success');
           setTimeout(function(){ renderLevelLesson(levelNum, lessonNum, blockIdx+1); },1200);
         }
       });
-      engine.start({ steps: steps });
+      engine.start({
+        id: lesson.id + '-' + block.id,
+        title: block.title,
+        completeText: '<p>'+esc(block.title)+' complete.</p>',
+        steps: steps
+      });
     },
     saveAndBack(levelNum, lessonNum, blockIdx){
       // Save notes from teach-container if any
-      document.querySelectorAll('.pnl').forEach(p=>p.classList.remove('on'));
       renderLevelLesson(levelNum, lessonNum, blockIdx);
     },
     switchStudent(id){ const state=loadState(); state.activeStudentId=id; saveState(state); render(); },
@@ -775,9 +892,9 @@
     setDraftRating(kind, encoded, value){
       const s = collectDraft(); if(!s.activeLesson) return;
       const name = decodeURIComponent(encoded); const key = kind==='concept' ? 'conceptRatings' : 'taskRatings';
-      s.activeLesson[key][name] = value; saveStudent(s); renderLesson();
+      s.activeLesson[key][name] = value; saveStudent(s); rerenderActiveLesson(s);
     },
-    saveLessonDraft(){ const s=collectDraft(); saveStudent(s); renderLesson(); },
+    saveLessonDraft(){ const s=collectDraft(); saveStudent(s); rerenderActiveLesson(s); },
     completeLesson(){
       const s = collectDraft(); const level = getLevel(s.currentLevel); const ls = s.levels[level.id]; const lesson = s.activeLesson;
       lesson.status = 'complete'; lesson.completedAt = new Date().toISOString();
