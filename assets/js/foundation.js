@@ -367,9 +367,6 @@ const FOUNDATION = {
 <p>Try it on a different string tomorrow. Then another. One string per day. Within a week, your hands will start to <em>know</em> the fretboard.</p>`
         },
         {
-          label: 'Own',
-          title: 'Foundation complete',
-        {
           label: 'Apply',
           title: 'Your first chord: E major',
           body: `<p>You can walk up one string. Good. Now let's do something that sounds like music.</p>
