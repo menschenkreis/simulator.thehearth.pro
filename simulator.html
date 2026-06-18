@@ -2182,13 +2182,7 @@ function startLesson1(){
     return;
   }
   document.querySelectorAll('.pnl').forEach(function(p){p.classList.remove('on')});
-  var el=document.getElementById('p-teach');
-  if(!el){
-    el=document.createElement('div');
-    el.id='p-teach';
-    el.className='pnl';
-    document.querySelector('.stage').appendChild(el);
-  }
+  var el=document.getElementById('p-lesson');
   el.classList.add('on');
   el.innerHTML='<div style="padding:16px;max-width:700px;margin:0 auto">'+
     '<button class="back-btn" onclick="showFoundation()">← Foundation</button>'+
