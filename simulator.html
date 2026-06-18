@@ -2173,6 +2173,41 @@ function calcOverallLevel(progress) {
   return lvl || '-';
 }
 
+function startLesson1(){
+  var L=window.LESSON_1_FOUNDATION;
+  if(!L||!window.TeachingEngine){
+    alert('Lesson 1 not loaded. Please refresh the page.');
+    return;
+  }
+  document.querySelectorAll('.pnl').forEach(function(p){p.classList.remove('on')});
+  var el=document.getElementById('p-teach');
+  if(!el){
+    el=document.createElement('div');
+    el.id='p-teach';
+    el.className='pnl';
+    document.querySelector('.stage').appendChild(el);
+  }
+  el.classList.add('on');
+  el.innerHTML='<div style="padding:16px;max-width:700px;margin:0 auto">'+
+    '<button class="back-btn" onclick="showFoundation()">← Foundation</button>'+
+    '<div id="teach-container"></div>'+
+  '</div>';
+  var engine=TeachingEngine(document.getElementById('teach-container'),{
+    lesson:L,
+    onComplete:function(){
+      playSfx('success');
+      // Mark all Foundation topics as complete
+      var F=window.FOUNDATION;
+      if(F){
+        var progress=JSON.parse(localStorage.getItem('hearth-foundation-progress')||'{}');
+        F.topics.forEach(function(t){progress[t.id]=true;});
+        localStorage.setItem('hearth-foundation-progress',JSON.stringify(progress));
+      }
+      setTimeout(function(){showFoundation();},1500);
+    }
+  });
+}
+
 function showFoundation(){
   document.querySelectorAll('.pnl').forEach(p=>p.classList.remove('on'));
   document.getElementById('p-foundation').classList.add('on');
@@ -2202,6 +2237,11 @@ function showFoundation(){
       '</div>'+
     '</div>'+
     '<div style="height:8px"></div>'+
+    // Start Lesson 1 button
+    '<div style="text-align:center;margin-bottom:12px">'+
+      '<button onclick="startLesson1()" style="background:linear-gradient(180deg,var(--gold),var(--amber));color:var(--bg);border:none;padding:10px 28px;border-radius:8px;font-family:Cinzel,serif;font-size:0.85rem;font-weight:700;letter-spacing:1px;cursor:pointer;box-shadow:0 2px 12px rgba(212,175,105,0.25)">Start Lesson 1</button>'+
+      '<div style="font-size:0.5rem;color:var(--dim);margin-top:4px">Guided journey through all 7 blocks</div>'+
+    '</div>'+
     // Character on top of pyramid, centered
     '<div style="display:flex;flex-direction:column;align-items:center;flex:1;justify-content:center">'+
       // Character + speech bubble row
@@ -5284,6 +5324,7 @@ updateInsightCount();
 <script src="assets/js/practice-room.js?v=1"></script>
 <script src="assets/js/hearth-brain.js?v=1"></script>
 <script src="assets/js/beatbot.js"></script>
+<script src="assets/js/lesson-1-foundation.js"></script>
 <script src="assets/js/play-world.js?v=1"></script>
 <script src="assets/js/study-key.js?v=1"></script>
 <script src="assets/js/create-workshop.js?v=1"></script>
