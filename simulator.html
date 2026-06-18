@@ -1880,7 +1880,7 @@ function showNodeInfo(id) {
   const data = NODE_DATA[id];
   if (!data) return;
   if (data.locked) return;
-  playSfx('node');
+  playSfx('node-enter');
   _activeNode = id;
   moveFlame(id);
   const wasSame = (_flameNode === id);
@@ -1976,7 +1976,8 @@ const NODE_HOVER_DATA={
 };
 
 // Hover handled by CSS — grow + glow on the node itself
-function showNodePreview(){}
+function showNodePreview(){
+  playSfx('map-click');}
 function hideNodePreview(){}
 
 // Routes: from -> to = array of waypoint node ids
@@ -2380,6 +2381,7 @@ function rainbowBlocks(items, opts){
 
 // ═══ FOUNDATION TOPIC VIEWER ═══
 function showFoundationTopic(topicId){
+  playSfx('drill-click');
   const F=window.FOUNDATION;if(!F)return;
   const topic=F.topics.find(t=>t.id===topicId);if(!topic)return;
   setNotebookContext('f-'+topicId,topic.title);
@@ -2794,6 +2796,7 @@ function showDoing(){
   }
 
   window.showDoingDrill=function(catId,drillId){
+    playSfx('drill-click');
     const cat=D.categories.find(c=>c.id===catId);if(!cat)return;
     const drill=cat.drills.find(d=>d.id===drillId);if(!drill)return;
     const state=getState(drillId);
@@ -3157,6 +3160,7 @@ window.showKnowingBook=function(catId,levelFilter){
 // ═══ KNOWING TOPIC VIEW (encyclopedia - just read, no quiz) ═══
 
 window.showKnowingTopic=function(catId,topicId){
+  playSfx('drill-click');
   const K=window.KNOWING;if(!K)return;
   const cat=K.categories.find(c=>c.id===catId);if(!cat)return;
   const topic=cat.topics.find(t=>t.id===topicId);if(!topic)return;
@@ -5529,6 +5533,69 @@ window.playSfx=function(type){
       gain.gain.exponentialRampToValueAtTime(0.001,now+0.05);
       src.start(now);
       return; // skip osc
+    } else if(type==='map-click'){
+      // Warm airy pluck — map level hover/click
+      var notes=[262,294,330,349,392,440,494]; // C4-B4
+      var step=(window._mapClickStep=(window._mapClickStep||0)+1);
+      var f=notes[step%notes.length];
+      osc.type='triangle';
+      osc.frequency.setValueAtTime(f*1.008,now);
+      osc.frequency.exponentialRampToValueAtTime(f,now+0.03);
+      gain.gain.setValueAtTime(0.0001,now);
+      gain.gain.exponentialRampToValueAtTime(0.18,now+0.006);
+      gain.gain.exponentialRampToValueAtTime(0.001,now+0.45);
+      osc.start(now);
+      osc.stop(now+0.5);
+      // Soft overtone
+      var ov=ctx.createOscillator();
+      var og=ctx.createGain();
+      ov.type='sine';
+      ov.frequency.setValueAtTime(f*2,now);
+      og.gain.setValueAtTime(0.0001,now);
+      og.gain.exponentialRampToValueAtTime(0.04,now+0.005);
+      og.gain.exponentialRampToValueAtTime(0.001,now+0.2);
+      ov.connect(og);og.connect(ctx.destination);
+      ov.start(now);ov.stop(now+0.25);
+    } else if(type==='node-enter'){
+      // Resonant chime with sustain — crossing a threshold
+      var freqs=[392,494,587,784]; // G4 B4 D5 G5 (G major arpeggio)
+      freqs.forEach(function(f,i){
+        var o=ctx.createOscillator();
+        var g=ctx.createGain();
+        o.type='sine';
+        o.frequency.setValueAtTime(f,now+i*0.07);
+        g.gain.setValueAtTime(0.0001,now+i*0.07);
+        g.gain.exponentialRampToValueAtTime(0.12,now+i*0.07+0.01);
+        g.gain.exponentialRampToValueAtTime(0.001,now+i*0.07+0.7);
+        o.connect(g);g.connect(ctx.destination);
+        o.start(now+i*0.07);o.stop(now+i*0.07+0.75);
+      });
+      // Sub bass thud
+      var sub=ctx.createOscillator();
+      var sg=ctx.createGain();
+      sub.type='sine';sub.frequency.setValueAtTime(80,now);
+      sg.gain.setValueAtTime(0.0001,now);
+      sg.gain.exponentialRampToValueAtTime(0.15,now+0.01);
+      sg.gain.exponentialRampToValueAtTime(0.001,now+0.3);
+      sub.connect(sg);sg.connect(ctx.destination);
+      sub.start(now);sub.stop(now+0.35);
+      return;
+    } else if(type==='drill-click'){
+      // Quick tight click — precision, focused
+      osc.type='square';
+      osc.frequency.setValueAtTime(1200,now);
+      osc.frequency.exponentialRampToValueAtTime(600,now+0.02);
+      gain.gain.setValueAtTime(0.1,now);
+      gain.gain.exponentialRampToValueAtTime(0.001,now+0.04);
+      osc.start(now);osc.stop(now+0.05);
+      // Tiny click overtone
+      var cl=ctx.createOscillator();
+      var cg=ctx.createGain();
+      cl.type='sine';cl.frequency.setValueAtTime(2400,now);
+      cg.gain.setValueAtTime(0.06,now);
+      cg.gain.exponentialRampToValueAtTime(0.001,now+0.025);
+      cl.connect(cg);cg.connect(ctx.destination);
+      cl.start(now);cl.stop(now+0.03);
     }
   }catch(e){}
 };
