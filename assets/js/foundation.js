@@ -64,6 +64,12 @@ const FOUNDATION = {
           title: 'This block is set',
           body: `<p>You now know the three barriers to learning. You know imagination comes before movement. You know how to find and release tension.</p>
 <p>These aren't nice ideas — they're tools you'll use every time you practise. When you hit a wall later, come back here. The barrier will be one of these three.</p>
+<p><strong>How to practise:</strong> 20 minutes a day beats 2 hours once a week. Here's what a session looks like:</p>
+<p>• <strong>2 minutes</strong> — Scan your body. Release tension. Breathe.<br>
+• <strong>5 minutes</strong> — Warm up. Chromatic exercise or finger stretches.<br>
+• <strong>10 minutes</strong> — Work on one thing. A chord, a scale, a drill. One thing.<br>
+• <strong>3 minutes</strong> — Play something you enjoy. Anything. Even open strings.</p>
+<p>The key is <strong>consistency</strong>, not duration. Short daily sessions build myelin. Long weekly sessions build frustration.</p>
 <p><strong>This block is set. You're ready for Block 02: Learning a Language.</strong></p>`
         }
       ]
@@ -205,7 +211,12 @@ const FOUNDATION = {
 • 2nd string (B): fret 5 = E<br>
 • 1st string (thinnest): open = E, fret 12 = E</p>
 <p>Play each one. Listen. They're all E — but different octaves. Higher and lower versions of the same note.</p>
-<p>You just found every E on the guitar. Tomorrow, find every A. Then D. Then G. One note per day.</p>`
+<p>You just found every E on the guitar. Tomorrow, find every A. Then D. Then G. One note per day.</p>
+<p><strong>Reading tab:</strong> Guitar has its own notation called <em>tablature</em> (tab). It's simple — six lines represent the six strings. Numbers tell you which fret to press.</p>
+<p>Here's what an E note looks like in tab:</p>
+<p style="font-family:var(--mono);color:var(--gold);font-size:0.8rem;line-height:1.8;text-align:center">e|---0---<br>B|---0---<br>G|---1---<br>D|---2---<br>A|---2---<br>E|---0---</p>
+<p>Bottom line = thickest string (E). Top line = thinnest string (e). The numbers are frets. 0 = play open. 1 = press fret 1. And so on.</p>
+<p>That's an E major chord. You just read your first tab. Every drill in the Doing node uses this notation — you now speak the language.</p>`
         },
         {
           label: 'Own',
@@ -257,7 +268,9 @@ const FOUNDATION = {
 • Your left hand holds the neck — thumb behind it, fingers curved, wrist mostly straight</p>
 <p>The guitar should feel <strong>supported, not clamped</strong>. If you're squeezing, you're doing it wrong.</p>
 <p><strong>Thumb placement:</strong> your left thumb goes behind the neck, roughly opposite your middle finger. Use the pad (flat part), not the tip. Keep the thumb joint straight — don't bend the tip, as this creates tension that spreads into your palm. Your hand forms a gentle C-shape: thumb on one side, fingers on the other, neck in the middle.</p>
-<p>A trick: sit without the guitar. Put a pillow on your right leg. Rest your arm over it. Notice how your arm falls naturally? That's how it should feel on the guitar.</p>`
+<p>A trick: sit without the guitar. Put a pillow on your right leg. Rest your arm over it. Notice how your arm falls naturally? That's how it should feel on the guitar.</p>
+<p><strong>The capo:</strong> a clamp that goes across the neck at any fret. It raises the pitch of all strings by the same amount. Put it on fret 2, and every open string goes up two half steps. This lets you play the same chord shapes in different keys.</p>
+<p>You don't need a capo right now. But if you see one in a lesson or a song, you'll know what it does. Think of it as a shortcut — same fingers, higher sound.</p>`
         },
         {
           label: 'Own',
@@ -356,7 +369,25 @@ const FOUNDATION = {
         {
           label: 'Own',
           title: 'Foundation complete',
-          body: `<p>You can make a clean note. You can move between notes. You can walk up and down a string. Both hands working together — right hand creating sound, left hand changing pitch.</p>
+        {
+          label: 'Apply',
+          title: 'Your first chord: E major',
+          body: `<p>You can walk up one string. Good. Now let's do something that sounds like music.</p>
+<p>An <strong>E major chord</strong> uses all six strings. It's the first chord most guitarists learn, and it's been used in thousands of songs. Here's where your fingers go:</p>
+<p style="font-family:var(--mono);color:var(--gold);font-size:0.8rem;line-height:1.8;text-align:center">e|---0---<br>B|---0---<br>G|---1---  (index finger, fret 1)<br>D|---2---  (middle finger, fret 2)<br>A|---2---  (ring finger, fret 2)<br>E|---0---</p>
+<p>The 0s mean open — no finger needed. The numbers tell you which fret and which finger.</p>
+<p><strong>Step by step:</strong></p>
+<p>1. Place your index finger on fret 1 of the G string (3rd string). Press just behind the fret wire.<br>
+2. Place your middle finger on fret 2 of the D string (4th string).<br>
+3. Place your ring finger on fret 2 of the A string (5th string).<br>
+4. Strum all six strings with your thumb, from top to bottom.</p>
+<p>Does it ring? All six strings? If some buzz or sound muted, adjust your fingers — make sure they're arched and not touching the strings below them.</p>
+<p>Play it again. And again. That sound — that's a chord. That's music. You just went from single notes to harmony.</p>`
+        },
+        {
+          label: 'Own',
+          title: 'Foundation complete',
+          body: `<p>You can make a clean note. You can move between notes. You can walk up and down a string. You just played your first chord. Both hands working together — right hand creating sound, left hand changing pitch.</p>
 <p>This is the beginning of everything.</p>
 <div style="background:var(--card);border:2px solid var(--gold);border-radius:8px;padding:16px;margin-top:16px;text-align:center">
   <div style="font-family:Cinzel,serif;color:var(--gold);font-size:0.9rem;font-weight:700;margin-bottom:4px">FOUNDATION COMPLETE</div>
