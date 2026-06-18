@@ -258,6 +258,59 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 .insight-empty{text-align:center;color:#555;font-size:0.78rem;padding:20px 0;}
 .insight-close-btn{background:none;border:none;color:#888;cursor:pointer;font-size:1.1rem;padding:2px 6px;transition:color 0.15s;}
 .insight-close-btn:hover{color:#d4af69;}
+
+/* ═══ TOOLKIT BUTTON + PANEL ═══ */
+.toolkit-btn{position:fixed;top:60px;right:70px;z-index:800;cursor:pointer;display:flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:50%;background:rgba(26,23,20,0.85);border:1px solid #3a2a1a;transition:all 0.2s;backdrop-filter:blur(6px);}
+.toolkit-btn:hover{border-color:#d4af69;transform:scale(1.08);box-shadow:0 0 16px rgba(212,175,105,0.25);}
+.toolkit-btn svg{width:22px;height:22px;fill:none;stroke:#d4af69;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 0 3px rgba(212,175,105,0.3));}
+.toolkit-btn:hover svg{stroke:#e8c06a;}
+.toolkit-panel{position:fixed;top:110px;right:16px;z-index:801;width:320px;max-height:75vh;background:#0d0b08;border:1px solid #2a2218;border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,0.6);overflow:hidden;display:none;animation:fadeUp 0.2s ease;}
+.toolkit-panel.show{display:flex;flex-direction:column;}
+.toolkit-header{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid #2a2218;flex-shrink:0;}
+.toolkit-header h3{margin:0;font-family:Cinzel,serif;color:#d4af69;font-size:0.85rem;font-weight:600;}
+.toolkit-close{background:none;border:none;color:#888;cursor:pointer;font-size:1.1rem;padding:2px 6px;transition:color 0.15s;}
+.toolkit-close:hover{color:#d4af69;}
+.toolkit-body{padding:16px;overflow-y:auto;flex:1;}
+.toolkit-section{margin-bottom:20px;}
+.toolkit-section:last-child{margin-bottom:0;}
+.toolkit-section-title{font-family:'JetBrains Mono',monospace;font-size:0.6rem;color:#666;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:10px;}
+.toolkit-quick-btns{display:flex;gap:6px;flex-wrap:wrap;}
+.toolkit-quick-btn{background:#1a1410;border:1px solid #2a2218;color:#a89880;padding:8px 14px;border-radius:8px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:0.75rem;font-weight:500;transition:all 0.15s;display:flex;align-items:center;gap:6px;}
+.toolkit-quick-btn:hover{border-color:#d4af69;color:#d4af69;transform:translateY(-1px);}
+.toolkit-quick-btn svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.5;}
+
+/* Metronome */
+.metro-display{text-align:center;margin-bottom:16px;}
+.metro-bpm{font-family:Cinzel,serif;color:#d4af69;font-size:2.8rem;font-weight:700;line-height:1;cursor:pointer;transition:color 0.15s;user-select:none;}
+.metro-bpm:hover{color:#e8c06a;}
+.metro-bpm-label{font-family:'JetBrains Mono',monospace;font-size:0.55rem;color:#666;letter-spacing:0.1em;margin-top:2px;}
+.metro-tempo-name{font-family:'DM Sans',sans-serif;font-size:0.75rem;color:#a89880;margin-top:6px;}
+.metro-pendulum{width:100%;height:60px;display:flex;align-items:center;justify-content:center;margin:12px 0;position:relative;overflow:hidden;}
+.metro-pendulum-arm{width:3px;height:50px;background:linear-gradient(180deg,#d4af69,#8b6914);border-radius:2px;transform-origin:bottom center;position:absolute;bottom:5px;transition:none;}
+.metro-pendulum-arm.swing{animation:metroSwing var(--metro-period, 1s) ease-in-out infinite alternate;}
+@keyframes metroSwing{0%{transform:rotate(-25deg);}100%{transform:rotate(25deg);}}
+.metro-pendulum-weight{width:12px;height:8px;background:#d4af69;border-radius:2px;position:absolute;top:4px;left:-4.5px;}
+.metro-pendulum-base{width:40px;height:6px;background:#2a2218;border-radius:3px;position:absolute;bottom:0;}
+.metro-pendulum-dot{width:8px;height:8px;border-radius:50%;background:#d4af69;position:absolute;bottom:2px;left:50%;transform:translateX(-50%);opacity:0;transition:opacity 0.05s;}
+.metro-pendulum-dot.flash{opacity:1;box-shadow:0 0 12px rgba(212,175,105,0.8);}
+.metro-controls{display:flex;gap:8px;align-items:center;justify-content:center;margin-bottom:12px;}
+.metro-play{width:44px;height:44px;border-radius:50%;background:linear-gradient(180deg,#d4af69,#b8942e);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.15s;box-shadow:0 2px 8px rgba(212,175,105,0.3);}
+.metro-play:hover{transform:scale(1.05);box-shadow:0 4px 16px rgba(212,175,105,0.4);}
+.metro-play svg{width:18px;height:18px;fill:#0d0b08;stroke:none;}
+.metro-tap{padding:8px 16px;background:#1a1410;border:1px solid #2a2218;color:#a89880;border-radius:8px;cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:0.65rem;letter-spacing:0.05em;transition:all 0.15s;}
+.metro-tap:hover{border-color:#d4af69;color:#d4af69;}
+.metro-tap:active{transform:scale(0.95);}
+.metro-slider{width:100%;margin:8px 0;-webkit-appearance:none;appearance:none;height:4px;background:#2a2218;border-radius:2px;outline:none;}
+.metro-slider::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:16px;height:16px;border-radius:50%;background:#d4af69;cursor:pointer;border:2px solid #0d0b08;box-shadow:0 0 6px rgba(212,175,105,0.3);}
+.metro-slider::-moz-range-thumb{width:16px;height:16px;border-radius:50%;background:#d4af69;cursor:pointer;border:2px solid #0d0b08;}
+.metro-beats{display:flex;gap:6px;justify-content:center;margin-top:8px;}
+.metro-beat-dot{width:10px;height:10px;border-radius:50%;background:#2a2218;border:1px solid #3a2a1a;transition:all 0.1s;}
+.metro-beat-dot.active{background:#d4af69;border-color:#d4af69;box-shadow:0 0 8px rgba(212,175,105,0.5);}
+.metro-beat-dot.accent{background:#e8a020;border-color:#e8a020;}
+.metro-time-sig{display:flex;gap:4px;justify-content:center;margin-top:10px;}
+.metro-time-btn{padding:4px 10px;background:none;border:1px solid #2a2218;color:#666;border-radius:4px;cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:0.6rem;transition:all 0.15s;}
+.metro-time-btn:hover{border-color:#d4af69;color:#a89880;}
+.metro-time-btn.active{border-color:#d4af69;color:#d4af69;background:rgba(212,175,105,0.08);}
 @media(max-width:600px){
   .teach-scene{flex-direction:column;align-items:center;gap:8px;padding:12px 8px 8px;}
   .teach-char-wrap{flex:0 0 auto;}
@@ -556,6 +609,10 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 @media(max-width:600px){
   .play-world-sub{font-size:0.7rem;}
   .world-map-svg{font-size:5px;}
+  .toolkit-btn{top:auto;bottom:60px;right:16px;width:40px;height:40px;}
+  .toolkit-btn svg{width:18px;height:18px;}
+  .toolkit-panel{width:calc(100vw - 32px);right:16px;max-height:60vh;bottom:110px;top:auto;}
+  .metro-bpm{font-size:2.2rem;}
 }
 
 
@@ -1246,9 +1303,6 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
     <div style="display:flex;gap:2px;">
       <div class="top-tool on" onclick="sw('map')">Map</div>
       <div class="top-tool" onclick="sw('lesson')">Journey</div>
-      <div class="top-tool" onclick="sw('theory')">Dictionary</div>
-      <div class="top-tool" onclick="openFretboard()">Fretboard</div>
-      <div class="top-tool" onclick="toggleNotebook()">Notes</div>
       <div class="top-tool" onclick="toggleLinkDeposit()" title="Save a YouTube link">YT</div>
       <div class="top-tool" onclick="toggleProgress()">Progress</div>
       <div class="top-tool" onclick="toggleSettings()">Settings</div>
@@ -1258,6 +1312,68 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
   <div class="top-right">
     <button onclick="toggleCredits()" style="background:none;border:none;color:var(--dim);font-size:0.8rem;cursor:pointer;padding:4px 8px;min-height:unset;" title="Credits">©</button>
   </div>
+  <!-- Toolkit Button -->
+  <div class="toolkit-btn" id="toolkitBtn" onclick="toggleToolkit()" title="Toolkit">
+    <svg viewBox="0 0 24 24"><path d="M12 2L8 18h8L12 2z"/><line x1="12" y1="2" x2="12" y2="8"/><circle cx="12" cy="5" r="1.5" fill="#d4af69" stroke="none"/><line x1="9" y1="18" x2="15" y2="18"/><line x1="7" y1="20" x2="17" y2="20"/></svg>
+  </div>
+  <div class="toolkit-panel" id="toolkitPanel">
+    <div class="toolkit-header">
+      <h3>Tool Kit</h3>
+      <button class="toolkit-close" onclick="toggleToolkit()">×</button>
+    </div>
+    <div class="toolkit-body">
+      <!-- Metronome -->
+      <div class="toolkit-section">
+        <div class="toolkit-section-title">Metronome</div>
+        <div class="metro-display">
+          <div class="metro-bpm" id="metroBpm" onclick="toggleMetronome()">120</div>
+          <div class="metro-bpm-label">BPM</div>
+          <div class="metro-tempo-name" id="metroTempoName">Allegro</div>
+        </div>
+        <div class="metro-pendulum">
+          <div class="metro-pendulum-base"></div>
+          <div class="metro-pendulum-arm" id="metroArm">
+            <div class="metro-pendulum-weight"></div>
+          </div>
+          <div class="metro-pendulum-dot" id="metroDot"></div>
+        </div>
+        <div class="metro-controls">
+          <button class="metro-tap" id="metroTapBtn" onclick="metroTap()">TAP</button>
+          <button class="metro-play" id="metroPlayBtn" onclick="toggleMetronome()">
+            <svg id="metroPlayIcon" viewBox="0 0 24 24"><polygon points="6,3 20,12 6,21"/></svg>
+          </button>
+          <button class="metro-tap" onclick="metroReset()">RESET</button>
+        </div>
+        <input type="range" class="metro-slider" id="metroSlider" min="40" max="240" value="120" oninput="setMetroBpm(this.value)">
+        <div class="metro-beats" id="metroBeats"></div>
+        <div class="metro-time-sig">
+          <button class="metro-time-btn active" onclick="setMetroTime(4)">4/4</button>
+          <button class="metro-time-btn" onclick="setMetroTime(3)">3/4</button>
+          <button class="metro-time-btn" onclick="setMetroTime(6)">6/8</button>
+          <button class="metro-time-btn" onclick="setMetroTime(2)">2/4</button>
+        </div>
+      </div>
+      <!-- Quick Access -->
+      <div class="toolkit-section">
+        <div class="toolkit-section-title">Quick Access</div>
+        <div class="toolkit-quick-btns">
+          <button class="toolkit-quick-btn" onclick="openFretboard();toggleToolkit()">
+            <svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><line x1="2" y1="8" x2="22" y2="8"/><line x1="2" y1="12" x2="22" y2="12"/><line x1="2" y1="16" x2="22" y2="16"/><line x1="6" y1="4" x2="6" y2="20"/><line x1="10" y1="4" x2="10" y2="20"/><line x1="14" y1="4" x2="14" y2="20"/></svg>
+            Fretboard
+          </button>
+          <button class="toolkit-quick-btn" onclick="sw('theory');toggleToolkit()">
+            <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+            Dictionary
+          </button>
+          <button class="toolkit-quick-btn" onclick="toggleNotebook();toggleToolkit()">
+            <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+            Notes
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Insight Star -->
   <div class="insight-star" id="insightStar" onclick="toggleInsightPanel()">
     <span class="star-icon">★</span>
@@ -5216,6 +5332,163 @@ function viewInsights(){
   html += '</div>';
   container.innerHTML = html;
 }
+
+// ═══ TOOLKIT ═══
+function toggleToolkit(){
+  var panel = document.getElementById('toolkitPanel');
+  var wasOpen = panel.classList.contains('show');
+  panel.classList.toggle('show');
+  if(!wasOpen) renderMetroBeats();
+}
+
+// ═══ METRONOME ═══
+var metroState = {
+  bpm: 120,
+  playing: false,
+  beatsPerMeasure: 4,
+  currentBeat: 0,
+  interval: null,
+  audioCtx: null,
+  tapTimes: []
+};
+
+function getMetroAudioCtx(){
+  if(!metroState.audioCtx) metroState.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  return metroState.audioCtx;
+}
+
+function metroClick(accent){
+  var ctx = getMetroAudioCtx();
+  var osc = ctx.createOscillator();
+  var gain = ctx.createGain();
+  osc.connect(gain);
+  gain.connect(ctx.destination);
+  osc.frequency.value = accent ? 1000 : 800;
+  osc.type = 'sine';
+  gain.gain.setValueAtTime(accent ? 0.3 : 0.15, ctx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.08);
+  osc.start(ctx.currentTime);
+  osc.stop(ctx.currentTime + 0.08);
+}
+
+function metroTick(){
+  metroState.currentBeat = (metroState.currentBeat % metroState.beatsPerMeasure) + 1;
+  var accent = metroState.currentBeat === 1;
+  metroClick(accent);
+  // Update beat dots
+  var dots = document.querySelectorAll('.metro-beat-dot');
+  dots.forEach(function(d, i){
+    d.classList.remove('active', 'accent');
+    if(i === metroState.currentBeat - 1){
+      d.classList.add('active');
+      if(accent) d.classList.add('accent');
+    }
+  });
+  // Flash pendulum dot
+  var dot = document.getElementById('metroDot');
+  dot.classList.add('flash');
+  setTimeout(function(){ dot.classList.remove('flash'); }, 80);
+}
+
+function toggleMetronome(){
+  if(metroState.playing){
+    stopMetronome();
+  } else {
+    startMetronome();
+  }
+}
+
+function startMetronome(){
+  metroState.playing = true;
+  metroState.currentBeat = 0;
+  var period = 60000 / metroState.bpm;
+  document.getElementById('metroArm').style.setProperty('--metro-period', period + 'ms');
+  document.getElementById('metroArm').classList.add('swing');
+  metroTick();
+  metroState.interval = setInterval(metroTick, period);
+  document.getElementById('metroPlayIcon').innerHTML = '<rect x="5" y="3" width="4" height="18"/><rect x="15" y="3" width="4" height="18"/>';
+}
+
+function stopMetronome(){
+  metroState.playing = false;
+  clearInterval(metroState.interval);
+  metroState.interval = null;
+  document.getElementById('metroArm').classList.remove('swing');
+  document.getElementById('metroPlayIcon').innerHTML = '<polygon points="6,3 20,12 6,21"/>';
+  // Clear beat dots
+  document.querySelectorAll('.metro-beat-dot').forEach(function(d){ d.classList.remove('active', 'accent'); });
+}
+
+function setMetroBpm(val){
+  metroState.bpm = parseInt(val);
+  document.getElementById('metroBpm').textContent = val;
+  document.getElementById('metroSlider').value = val;
+  document.getElementById('metroTempoName').textContent = getTempoName(val);
+  if(metroState.playing){
+    stopMetronome();
+    startMetronome();
+  }
+}
+
+function getTempoName(bpm){
+  if(bpm < 50) return 'Grave';
+  if(bpm < 60) return 'Largo';
+  if(bpm < 70) return 'Adagio';
+  if(bpm < 80) return 'Andante';
+  if(bpm < 100) return 'Moderato';
+  if(bpm < 120) return 'Allegretto';
+  if(bpm < 140) return 'Allegro';
+  if(bpm < 168) return 'Vivace';
+  if(bpm < 200) return 'Presto';
+  return 'Prestissimo';
+}
+
+function metroTap(){
+  var now = Date.now();
+  metroState.tapTimes.push(now);
+  // Keep last 6 taps
+  if(metroState.tapTimes.length > 6) metroState.tapTimes.shift();
+  if(metroState.tapTimes.length >= 2){
+    var times = metroState.tapTimes;
+    var total = 0;
+    for(var i = 1; i < times.length; i++) total += times[i] - times[i-1];
+    var avg = total / (times.length - 1);
+    var bpm = Math.round(60000 / avg);
+    bpm = Math.max(40, Math.min(240, bpm));
+    setMetroBpm(bpm);
+  }
+  // Visual feedback
+  var btn = document.getElementById('metroTapBtn');
+  btn.style.borderColor = '#d4af69';
+  btn.style.color = '#d4af69';
+  setTimeout(function(){ btn.style.borderColor = ''; btn.style.color = ''; }, 150);
+}
+
+function metroReset(){
+  stopMetronome();
+  metroState.tapTimes = [];
+  setMetroBpm(120);
+}
+
+function setMetroTime(beats){
+  metroState.beatsPerMeasure = beats;
+  metroState.currentBeat = 0;
+  document.querySelectorAll('.metro-time-btn').forEach(function(b){ b.classList.remove('active'); });
+  event.target.classList.add('active');
+  renderMetroBeats();
+  if(metroState.playing){ stopMetronome(); startMetronome(); }
+}
+
+function renderMetroBeats(){
+  var container = document.getElementById('metroBeats');
+  if(!container) return;
+  var html = '';
+  for(var i = 0; i < metroState.beatsPerMeasure; i++){
+    html += '<div class="metro-beat-dot"></div>';
+  }
+  container.innerHTML = html;
+}
+
 // Init count on load
 updateInsightCount();
 </script>
