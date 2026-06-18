@@ -262,7 +262,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 /* ═══ TOOLKIT BUTTON + PANEL ═══ */
 .toolkit-btn{position:fixed;top:60px;right:70px;z-index:800;cursor:pointer;display:flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:50%;background:rgba(26,23,20,0.85);border:1px solid #3a2a1a;transition:all 0.2s;backdrop-filter:blur(6px);}
 .toolkit-btn:hover{border-color:#d4af69;transform:scale(1.08);box-shadow:0 0 16px rgba(212,175,105,0.25);}
-.toolkit-btn svg{width:22px;height:22px;fill:none;stroke:#d4af69;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 0 3px rgba(212,175,105,0.3));}
+.toolkit-btn svg{width:22px;height:22px;stroke:#d4af69;stroke-width:1;fill:none;filter:drop-shadow(0 0 3px rgba(212,175,105,0.3));}
 .toolkit-btn:hover svg{stroke:#e8c06a;}
 .toolkit-panel{position:fixed;top:110px;right:16px;z-index:801;width:320px;max-height:75vh;background:#0d0b08;border:1px solid #2a2218;border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,0.6);overflow:hidden;display:none;animation:fadeUp 0.2s ease;}
 .toolkit-panel.show{display:flex;flex-direction:column;}
@@ -1314,7 +1314,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
   </div>
   <!-- Toolkit Button -->
   <div class="toolkit-btn" id="toolkitBtn" onclick="toggleToolkit()" title="Toolkit">
-    <svg viewBox="0 0 24 24"><path d="M12 2L8 18h8L12 2z"/><line x1="12" y1="2" x2="12" y2="8"/><circle cx="12" cy="5" r="1.5" fill="#d4af69" stroke="none"/><line x1="9" y1="18" x2="15" y2="18"/><line x1="7" y1="20" x2="17" y2="20"/></svg>
+    <svg viewBox="0 0 24 24" fill="none" stroke="#d4af69" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3L6 20h12L12 3z"/><line x1="12" y1="3" x2="12" y2="14"/><circle cx="12" cy="10" r="1.5"/><line x1="5" y1="20" x2="19" y2="20"/></svg>
   </div>
   <div class="toolkit-panel" id="toolkitPanel">
     <div class="toolkit-header">
@@ -1358,15 +1358,15 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
         <div class="toolkit-section-title">Quick Access</div>
         <div class="toolkit-quick-btns">
           <button class="toolkit-quick-btn" onclick="openFretboard();toggleToolkit()">
-            <svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><line x1="2" y1="8" x2="22" y2="8"/><line x1="2" y1="12" x2="22" y2="12"/><line x1="2" y1="16" x2="22" y2="16"/><line x1="6" y1="4" x2="6" y2="20"/><line x1="10" y1="4" x2="10" y2="20"/><line x1="14" y1="4" x2="14" y2="20"/></svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="1"/><line x1="2" y1="7" x2="22" y2="7"/><line x1="2" y1="10" x2="22" y2="10"/><line x1="2" y1="13" x2="22" y2="13"/><line x1="2" y1="16" x2="22" y2="16"/><line x1="6" y1="4" x2="6" y2="20"/><line x1="10" y1="4" x2="10" y2="20"/><line x1="14" y1="4" x2="14" y2="20"/><line x1="18" y1="4" x2="18" y2="20"/></svg>
             Fretboard
           </button>
           <button class="toolkit-quick-btn" onclick="sw('theory');toggleToolkit()">
-            <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5L4 6v13l8-1z"/><path d="M12 5l8 1v13l-8-1z"/><line x1="12" y1="5" x2="12" y2="18"/><path d="M12 5L12 2l2 1.5L12 5"/></svg>
             Dictionary
           </button>
           <button class="toolkit-quick-btn" onclick="toggleNotebook();toggleToolkit()">
-            <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3h12l2 2v16H5V3z"/><path d="M17 3v4h2"/><line x1="8" y1="9" x2="16" y2="9"/><line x1="8" y1="12" x2="14" y2="12"/><line x1="8" y1="15" x2="15" y2="15"/></svg>
             Notes
           </button>
         </div>

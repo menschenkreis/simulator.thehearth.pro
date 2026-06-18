@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#d4af69" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+  <!-- Pyramid body -->
+  <path d="M12 3 L6 20 L18 20 Z"/>
+  <!-- Pendulum arm -->
+  <line x1="12" y1="3" x2="12" y2="14"/>
+  <!-- Weight -->
+  <circle cx="12" cy="10" r="1.5"/>
+  <!-- Base -->
+  <line x1="5" y1="20" x2="19" y2="20"/>
+</svg>

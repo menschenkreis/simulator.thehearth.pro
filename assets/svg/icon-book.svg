@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#d4af69" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+  <!-- Left page -->
+  <path d="M12 5 L4 6 L4 19 L12 18 Z"/>
+  <!-- Right page -->
+  <path d="M12 5 L20 6 L20 19 L12 18 Z"/>
+  <!-- Spine -->
+  <line x1="12" y1="5" x2="12" y2="18"/>
+  <!-- Left page lines -->
+  <line x1="6" y1="9" x2="10.5" y2="8.5"/>
+  <line x1="6" y1="12" x2="10.5" y2="11.5"/>
+  <line x1="6" y1="15" x2="10.5" y2="14.5"/>
+  <!-- Right page lines -->
+  <line x1="13.5" y1="8.5" x2="18" y2="9"/>
+  <line x1="13.5" y1="11.5" x2="18" y2="12"/>
+  <line x1="13.5" y1="14.5" x2="18" y2="15"/>
+  <!-- Bookmark ribbon -->
+  <path d="M12 5 L12 2 L14 3.5 L12 5"/>
+</svg>

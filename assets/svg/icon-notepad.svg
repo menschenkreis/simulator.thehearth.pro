@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#d4af69" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+  <!-- Page -->
+  <path d="M5 3 L17 3 L19 5 L19 21 L5 21 Z"/>
+  <!-- Curled corner -->
+  <path d="M17 3 L17 7 L19 5"/>
+  <!-- Writing lines -->
+  <line x1="8" y1="9" x2="16" y2="9"/>
+  <line x1="8" y1="12" x2="14" y2="12"/>
+  <line x1="8" y1="15" x2="15" y2="15"/>
+  <!-- Pencil -->
+  <line x1="20" y1="6" x2="22" y2="18"/>
+  <line x1="21" y1="18" x2="22.5" y2="18"/>
+  <line x1="22" y1="18" x2="21.5" y2="20"/>
+  <line x1="20.5" y1="18.5" x2="21" y2="18"/>
+</svg>
