@@ -91,11 +91,15 @@
           '</div>'+
         '</div>'+
         '<div style="position:relative;background:#080704;border:1px solid var(--border);border-radius:12px;overflow:hidden">'+
-          '<div id="brain-svg-container">'+svgText+'</div>'+
+          '<div id="brain-svg-container" style="width:100%;overflow:hidden">'+svgText+'</div>'+
           '<div id="brain-overlay" style="display:none;position:absolute;top:0;right:0;width:340px;max-height:100%;overflow-y:auto;padding:16px;box-sizing:border-box"></div>'+
           '<div style="font-family:JetBrains Mono;font-size:0.4rem;color:var(--dim);text-align:center;padding:4px;letter-spacing:1.5px;opacity:0.35">TAP A SKILL REGION TO EXPLORE</div>'+
         '</div>'+
       '</div>';
+
+      // Force SVG to fill container
+      var svgEl=document.querySelector('#brain-svg-container svg');
+      if(svgEl){svgEl.style.width='100%';svgEl.style.height='auto';}
 
       // Make skill nodes interactive
       attachSkillHandlers();
