@@ -1730,6 +1730,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
   <div class="pnl" id="p-foundation"></div>
 
   <!-- JOURNEY / LESSON BUILDER -->
+  <div class="pnl" id="p-teach"></div>
   <div class="pnl" id="p-lesson">
     <div style="padding:24px;max-width:600px;margin:0 auto">
       <div id="journey-content" style="display:flex;flex-direction:column;gap:12px">
@@ -2182,7 +2183,7 @@ function startLesson1(){
     return;
   }
   document.querySelectorAll('.pnl').forEach(function(p){p.classList.remove('on')});
-  var el=document.getElementById('p-lesson');
+  var el=document.getElementById('p-teach');
   el.classList.add('on');
   el.innerHTML='<div style="padding:16px;max-width:700px;margin:0 auto">'+
     '<button class="back-btn" onclick="showFoundation()">← Foundation</button>'+
