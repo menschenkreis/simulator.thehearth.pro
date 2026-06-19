@@ -4409,16 +4409,8 @@ function showCreate(){
     '</div>'+
 
     '<div class="cauldron-vessel" id="cauldronVessel">'+
-      '<img src="assets/svg/cauldron.svg" style="width:100%;max-width:320px;height:auto;display:block;margin:0 auto;position:relative;z-index:1" />'+
-      '<div class="cauldron-bubble" id="cauldronBubble">'+
-        '<div class="cauldron-bubble-glow"></div>'+
-        '<div class="cauldron-prompt-text" id="cauldronPrompt">The cauldron is still. Add an ingredient.</div>'+
-      '</div>'+
-      '<div class="cauldron-fire">'+
-        '<span class="cauldron-flame cauldron-flame-1">▲</span>'+
-        '<span class="cauldron-flame cauldron-flame-2">▲</span>'+
-        '<span class="cauldron-flame cauldron-flame-3">▲</span>'+
-      '</div>'+
+      '<img src="assets/svg/cauldron.svg" style="width:100%;max-width:320px;height:auto;display:block;margin:0 auto" />'+
+      '<div class="cauldron-prompt-text" id="cauldronPrompt" style="position:relative;margin-top:-120px;z-index:2">The cauldron is still. Add an ingredient.</div>'+
     '</div>'+
 
     '<div class="cauldron-ingredients">'+
@@ -4471,7 +4463,7 @@ window.cauldronMix=function(){
   if(selected.length===0)return;
   var CI=window.CAULDRON_INGREDIENTS||[];
   var CC=window.CREATE_COMBOS||[];
-  var vessel=document.getElementById('cauldronBubble');
+  var vessel=document.getElementById('cauldronVessel');
   var textEl=document.getElementById('cauldronPrompt');
   if(!vessel||!textEl)return;
   var result=null;
