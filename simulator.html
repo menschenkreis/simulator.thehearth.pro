@@ -5702,21 +5702,50 @@ window.playSfx=function(type){
 
 </script>
 <script>
-// Ember particles
+// Ember particles (perf-optimized: pre-rendered textures, no per-frame gradients)
 (function(){
   var canvas=document.getElementById('emberCanvas');
   if(!canvas)return;
   var ctx=canvas.getContext('2d');
   var W,H,particles=[],sparks=[];
-  var MAX=50;
-  var SPARK_MAX=20;
+  var MAX=30,SPARK_MAX=12;
   var isMobile=(window.innerWidth<600);
-  if(isMobile){MAX=25;SPARK_MAX=10;}
+  if(isMobile){MAX=15;SPARK_MAX=6;}
   var colors=['#c45a20','#ff6b1a','#e8a020','#ff4500','#ff8c42','#ffd700'];
+  var paused=false;
+
+  // Pre-render particle textures (one gradient per color, cached)
+  var texCache={};
+  function getTex(color,size){
+    var key=color+'_'+size;
+    if(texCache[key])return texCache[key];
+    var s=Math.ceil(size*7);
+    var c=document.createElement('canvas');
+    c.width=s;c.height=s;
+    var g=c.getContext('2d');
+    var cx=s/2,cy=s/2,r=s/2;
+    var gr=g.createRadialGradient(cx,cy,0,cx,cy,r);
+    gr.addColorStop(0,color+'cc');
+    gr.addColorStop(0.3,color+'44');
+    gr.addColorStop(1,color+'00');
+    g.fillStyle=gr;
+    g.beginPath();
+    g.arc(cx,cy,r,0,Math.PI*2);
+    g.fill();
+    // Bright core
+    g.beginPath();
+    g.arc(cx,cy,size*0.8,0,Math.PI*2);
+    g.fillStyle=color;
+    g.globalAlpha=0.7;
+    g.fill();
+    texCache[key]=c;
+    return c;
+  }
 
   function resize(){W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight;}
   resize();
   window.addEventListener('resize',resize);
+  document.addEventListener('visibilitychange',function(){paused=document.hidden;});
 
   function spawn(){
     return{
@@ -5756,9 +5785,12 @@ window.playSfx=function(type){
 
   var _fCount=0;
   function tick(){
+    if(paused){requestAnimationFrame(tick);return;}
     _fCount++;
-    if(isMobile&&_fCount%2===0){requestAnimationFrame(tick);return;}
+    if(isMobile&&_fCount%3===0){requestAnimationFrame(tick);return;}
     ctx.clearRect(0,0,W,H);
+    ctx.shadowBlur=0;
+    ctx.globalAlpha=1;
 
     for(var i=0;i<particles.length;i++){
       var p=particles[i];
@@ -5773,26 +5805,12 @@ window.playSfx=function(type){
       else if(p.life>p.maxLife-40)fade=Math.max(0,(p.maxLife-p.life)/40);
 
       var twinkle=0.7+Math.sin(p.phase)*0.3;
-      var alpha=fade*twinkle*0.6;
+      var alpha=fade*twinkle;
 
-      // Glow
-      ctx.beginPath();
-      ctx.arc(p.x,p.y,p.size*3.5,0,Math.PI*2);
-      var grd=ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,p.size*3.5);
-      grd.addColorStop(0,p.color+'33');
-      grd.addColorStop(1,p.color+'00');
-      ctx.fillStyle=grd;
-      ctx.globalAlpha=alpha*0.24;
-      ctx.fill();
-
-      // Core
-      ctx.beginPath();
-      ctx.arc(p.x,p.y,p.size,0,Math.PI*2);
-      ctx.fillStyle=p.color;
-      ctx.globalAlpha=alpha*0.46;
-      ctx.shadowBlur=5;
-      ctx.shadowColor=p.color;
-      ctx.fill();
+      // Draw pre-rendered texture
+      var tex=getTex(p.color,p.size);
+      ctx.globalAlpha=alpha*0.5;
+      ctx.drawImage(tex,p.x-tex.width/2,p.y-tex.height/2);
 
       // Spark burst
       if(Math.random()<0.004&&sparks.length<SPARK_MAX){
@@ -5804,7 +5822,7 @@ window.playSfx=function(type){
       }
     }
 
-    // Sparkles
+    // Sparkles (simple circles, no shadow)
     for(var i=sparks.length-1;i>=0;i--){
       var s=sparks[i];
       s.x+=s.vx;
@@ -5816,15 +5834,12 @@ window.playSfx=function(type){
       ctx.beginPath();
       ctx.arc(s.x,s.y,s.size,0,Math.PI*2);
       ctx.fillStyle=s.color;
-      ctx.globalAlpha=sa*0.35;
-      ctx.shadowBlur=2;
-      ctx.shadowColor=s.color;
+      ctx.globalAlpha=sa*0.4;
       ctx.fill();
       if(s.life>=s.maxLife)sparks.splice(i,1);
     }
 
     ctx.globalAlpha=1;
-    ctx.shadowBlur=0;
     requestAnimationFrame(tick);
   }
   tick();
