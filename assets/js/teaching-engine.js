@@ -87,6 +87,7 @@ function createTeachingEngine(containerEl, opts){
     function clickAdvance(e){
       if(!typingDone) return;
       if(e.target.closest('[data-action]') || e.target.closest('.teach-choice')) return;
+      if(Date.now() - _lastBtnClick < 300) return;
       container.removeEventListener('click', clickAdvance);
       if(typeof playSfx==='function')playSfx('lesson-next');
       advance(lesson);
@@ -173,14 +174,16 @@ function createTeachingEngine(containerEl, opts){
     container.innerHTML = html;
     var typingDone = false;
     typewriterEffect(function(){ typingDone = true; });
+    bindButtons(step, lesson);
     setTimeout(function(){
       container.addEventListener('click', function handler(e){
         if(!typingDone) return;
         if(e.target.closest('[data-action]')) return;
+        if(Date.now() - _lastBtnClick < 300) return;
         container.removeEventListener('click', handler);
         advance(lesson);
       });
-    }, 300);
+    }, 150);
   }
 
   function normalizeResponse(response){
@@ -423,9 +426,11 @@ function createTeachingEngine(containerEl, opts){
     tick();
   }
 
+  var _lastBtnClick = 0;
   function bindButtons(step, lesson){
     container.querySelectorAll('.teach-btn, [data-action]').forEach(btn => {
       btn.addEventListener('click', function(){
+        _lastBtnClick = Date.now();
         var action = this.dataset.action;
         if(action === 'advance') advance(lesson);
         else if(action === 'back') back(lesson);
