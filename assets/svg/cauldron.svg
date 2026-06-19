@@ -3,12 +3,7 @@
 <desc id="desc">A dark fantasy line art cauldron with glowing liquid, magical steam, musical note and quill shapes, and ember flames.</desc>
 
 <style>
- :root{
- --gold:#d4af69;
- --amber:#e8a020;
- --ember:#c45a20;
- --dark:#080c12;
- }
+ :root{ --gold:#d4af69; --amber:#e8a020; --ember:#c45a20; --dark:#080c12; }
  svg{ background:transparent; }
  .line{ fill:none; stroke:var(--gold); stroke-width:5; stroke-linecap:round; stroke-linejoin:round; }
  .thin{ fill:none; stroke:var(--gold); stroke-width:2.5; stroke-linecap:round; stroke-linejoin:round; opacity:.9; }
@@ -66,19 +61,15 @@
  <path class="steamThin" d="M534 596 C574 530 610 510 591 454 C574 403 523 386 553 334 C579 288 642 278 626 219 C617 184 590 163 559 158"/>
  <path class="steam" d="M406 600 C375 544 396 501 447 461 C498 421 431 357 354 384 C298 403 287 462 339 493"/>
  <path class="steamThin" d="M392 578 C351 536 354 489 404 449 C442 419 426 389 382 394"/>
- <!-- abstract musical note in steam -->
  <path class="amber glow" d="M403 374 L403 480 C385 468 356 475 344 497 C330 523 355 548 388 535 C416 524 425 497 409 481 M403 374 C439 410 476 406 494 370 C468 387 438 389 403 374Z"/>
- <!-- right tendril, abstract quill form -->
  <path class="steam" d="M616 602 C666 548 626 498 671 438 C716 378 786 356 773 275 C747 328 703 350 691 410 C681 459 720 501 664 551"/>
  <path class="steamThin" d="M640 586 C694 532 682 481 715 420 C741 371 760 332 770 277"/>
- <!-- quill feather ribs -->
  <path class="thin glow" d="M775 274 C741 322 717 375 694 450"/>
  <path class="fine glow" d="M747 321 C718 319 704 333 690 351"/>
  <path class="fine glow" d="M733 358 C705 356 687 373 677 390"/>
  <path class="fine glow" d="M718 398 C694 397 676 414 664 435"/>
  <path class="fine glow" d="M760 305 C760 337 748 355 729 375"/>
  <path class="fine glow" d="M746 344 C746 375 732 396 710 416"/>
- <!-- inner curls -->
  <path class="steamThin" d="M512 270 C487 238 530 211 548 242 C560 263 537 277 521 263"/>
  <path class="steamThin" d="M574 417 C607 387 643 428 616 456 C594 479 566 451 587 432"/>
  <path class="steamThin" d="M357 331 C319 304 349 256 394 271 C424 281 422 317 390 315"/>
@@ -109,7 +100,6 @@
  <ellipse class="liquidFill glow" cx="512" cy="602" rx="308" ry="70"/>
  <ellipse class="line glow" cx="512" cy="600" rx="318" ry="78"/>
  <ellipse class="thin glow" cx="512" cy="602" rx="278" ry="51"/>
- <!-- liquid ripples -->
  <g class="glow">
   <ellipse class="amber soft" cx="512" cy="600" rx="220" ry="35"/>
   <ellipse class="amber soft" cx="512" cy="600" rx="170" ry="25"/>
@@ -118,13 +108,10 @@
   <path class="fine" d="M430 595 C470 584 553 584 595 596"/>
   <path class="fine" d="M456 613 C492 624 540 624 578 613"/>
  </g>
- <!-- bowl -->
  <path class="bodyFill glow" d="M220 608 C232 770 321 866 512 866 C703 866 792 770 804 608 C738 674 286 674 220 608Z"/>
- <!-- rim shadow lines -->
  <path class="thin" d="M238 640 C337 702 687 702 786 640"/>
  <path class="fine" d="M270 690 C363 741 661 741 754 690"/>
  <path class="fine dim" d="M315 813 C403 842 621 842 709 813"/>
- <!-- central sigil -->
  <g id="central-sigil" class="glow">
   <circle class="thin" cx="512" cy="747" r="72"/>
   <circle class="fine" cx="512" cy="747" r="50"/>
@@ -135,7 +122,6 @@
   <path class="fine" d="M486 721 C501 704 523 704 538 721"/>
   <path class="fine" d="M486 773 C501 790 523 790 538 773"/>
  </g>
- <!-- rune/knotwork left -->
  <g id="left-ornament" class="rune glow">
   <path d="M278 742 C326 695 383 696 425 742 C380 789 326 789 278 742Z"/>
   <path d="M293 742 C337 724 366 724 410 742"/>
@@ -145,7 +131,6 @@
   <path d="M263 708 C281 698 299 699 315 712"/>
   <path d="M263 778 C281 788 299 787 315 774"/>
  </g>
- <!-- rune/knotwork right -->
  <g id="right-ornament" class="rune glow">
   <path d="M746 742 C698 695 641 696 599 742 C644 789 698 789 746 742Z"/>
   <path d="M731 742 C687 724 658 724 614 742"/>
@@ -155,7 +140,6 @@
   <path d="M761 708 C743 698 725 699 709 712"/>
   <path d="M761 778 C743 788 725 787 709 774"/>
  </g>
- <!-- rim runes -->
  <g class="rune glow">
   <path d="M376 654 h50"/>
   <path d="M598 654 h50"/>
@@ -185,6 +169,20 @@
  <path class="fireFill" d="M512 950 C486 924 488 902 476 881 C451 924 471 947 512 950Z"/>
  <path class="ember" d="M255 919 C235 900 254 881 250 855 C273 879 279 901 255 919Z"/>
  <path class="ember" d="M769 919 C789 900 770 881 774 855 C751 879 745 901 769 919Z"/>
+ <path class="fine amber" d="M512 956 l12 20 -12 20 -12-20z"/>
+ <path class="fine amber" d="M247 935 l8 12 -8 12 -8-12z"/>
+ <path class="fine amber" d="M777 935 l8 12 -8 12 -8-12z"/>
+</g>
+
+<!-- tiny embers -->
+<g id="embers" class="glow">
+ <circle class="spark" cx="452" cy="910" r="3"/>
+ <circle class="spark" cx="572" cy="915" r="3"/>
+ <circle class="spark" cx="532" cy="875" r="2.5"/>
+ <circle class="spark" cx="478" cy="872" r="2.4"/>
+ <circle class="spark" cx="235" cy="862" r="2.6"/>
+ <circle class="spark" cx="793" cy="862" r="2.6"/>
+ <path class="fine amber" d="M420 936 C455 955 568 955 604 936"/>
 </g>
 
 </svg>
