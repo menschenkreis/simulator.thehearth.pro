@@ -179,70 +179,150 @@
  </filter>
 </defs>
 
-<!-- Cauldron body -->
-<path class="bodyFill" d="M 260 580 Q 260 700 512 720 Q 764 700 764 580 L 764 540 Q 764 520 740 510 L 720 505 Q 680 498 640 500 L 384 500 Q 344 498 304 505 L 284 510 Q 260 520 260 540 Z"/>
+<!-- soft upward magical glow -->
+<ellipse cx="512" cy="560" rx="250" ry="180" fill="#e8a020" opacity=".07" filter="url(#goldGlow)"/>
+<ellipse cx="512" cy="480" rx="170" ry="260" fill="#e8a020" opacity=".05" filter="url(#goldGlow)"/>
 
-<!-- Cauldron rim -->
-<path class="line glow" d="M 240 505 Q 240 485 280 478 L 320 472 Q 512 460 704 472 L 744 478 Q 784 485 784 505 L 784 520 Q 784 535 760 540 L 740 544 Q 680 552 640 550 L 384 550 Q 344 552 284 544 L 264 540 Q 240 535 240 520 Z"/>
+<!-- magical steam, upper 60% -->
+<g id="steam">
+ <!-- central living tendril -->
+ <path class="steam"
+ d="M516 596
+ C492 535 570 512 539 445
+ C511 386 449 378 490 311
+ C524 255 606 256 579 174
+ C564 129 521 119 502 153
+ C488 179 517 196 535 177" />
 
-<!-- Left handle -->
-<path class="line glow" d="M 260 530 Q 220 530 210 560 Q 200 590 220 610 Q 240 625 260 615"/>
+ <path class="steamThin"
+ d="M534 596
+ C574 530 610 510 591 454
+ C574 403 523 386 553 334
+ C579 288 642 278 626 219
+ C617 184 590 163 559 158" />
 
-<!-- Right handle -->
-<path class="line glow" d="M 764 530 Q 804 530 814 560 Q 824 590 804 610 Q 784 625 764 615"/>
+ <!-- left tendril with abstract musical note -->
+ <path class="steam"
+ d="M406 600
+ C375 544 396 501 447 461
+ C498 421 431 357 354 384
+ C298 403 287 462 339 493" />
 
-<!-- Left leg -->
-<path class="line" d="M 340 700 L 320 760 L 360 760"/>
+ <path class="steamThin"
+ d="M392 578
+ C351 536 354 489 404 449
+ C442 419 426 389 382 394" />
 
-<!-- Right leg -->
-<path class="line" d="M 684 700 L 704 760 L 664 760"/>
+ <!-- abstract musical note in steam -->
+ <path class="amber glow"
+ d="M403 374
+ L403 480
+ C385 468 356 475 344 497
+ C330 523 355 548 388 535
+ C416 524 425 497 409 481
+ M403 374
+ C439 410 476 406 494 370
+ C468 387 438 389 403 374Z" />
 
-<!-- Center leg -->
-<path class="line" d="M 512 715 L 512 770 L 532 770 L 492 770 L 512 770"/>
+ <!-- right tendril, abstract quill form -->
+ <path class="steam"
+ d="M616 602
+ C666 548 626 498 671 438
+ C716 378 786 356 773 275
+ C747 328 703 350 691 410
+ C681 459 720 501 664 551" />
 
-<!-- Liquid surface -->
-<ellipse class="liquidFill glow" cx="512" cy="530" rx="220" ry="30"/>
+ <path class="steamThin"
+ d="M640 586
+ C694 532 682 481 715 420
+ C741 371 760 332 770 277" />
 
-<!-- Concentric ripples -->
-<ellipse class="amber soft" cx="512" cy="530" rx="160" ry="22"/>
-<ellipse class="amber dim" cx="512" cy="530" rx="100" ry="14"/>
+ <!-- quill feather ribs -->
+ <path class="thin glow"
+ d="M775 274
+ C741 322 717 375 694 450" />
+ <path class="fine glow" d="M747 321 C718 319 704 333 690 351"/>
+ <path class="fine glow" d="M733 358 C705 356 687 373 677 390"/>
+ <path class="fine glow" d="M718 398 C694 397 676 414 664 435"/>
+ <path class="fine glow" d="M760 305 C760 337 748 355 729 375"/>
+ <path class="fine glow" d="M746 344 C746 375 732 396 710 416"/>
 
-<!-- Rune patterns on body -->
-<path class="rune" d="M 380 560 L 380 600 M 370 580 L 390 580"/>
-<path class="rune" d="M 440 570 L 440 610 M 430 590 Q 440 580 450 590"/>
-<path class="rune" d="M 500 575 L 510 615 L 520 575"/>
-<path class="rune" d="M 580 570 L 580 610 M 570 580 L 590 580 M 570 600 L 590 600"/>
-<path class="rune" d="M 640 560 L 640 600 M 630 580 Q 640 570 650 580"/>
+ <!-- little inner curls -->
+ <path class="steamThin" d="M512 270 C487 238 530 211 548 242 C560 263 537 277 521 263"/>
+ <path class="steamThin" d="M574 417 C607 387 643 428 616 456 C594 479 566 451 587 432"/>
+ <path class="steamThin" d="M357 331 C319 304 349 256 394 271 C424 281 422 317 390 315"/>
+</g>
 
-<!-- Steam tendrils -->
-<path class="steam" d="M 420 490 Q 400 420 430 360 Q 460 300 440 240 Q 420 180 450 120"/>
-<path class="steam" d="M 512 480 Q 530 400 500 330 Q 470 260 510 190 Q 550 120 520 60"/>
-<path class="steam" d="M 600 490 Q 630 420 600 350 Q 570 280 610 210 Q 650 140 620 80"/>
+<!-- sparks -->
+<g id="sparks">
+ <circle class="spark" cx="337" cy="294" r="3"/>
+ <circle class="spark" cx="688" cy="263" r="2.6"/>
+ <circle class="spark" cx="449" cy="210" r="2"/>
+ <circle class="spark" cx="621" cy="333" r="2.4"/>
+ <circle class="spark" cx="300" cy="451" r="2.5"/>
+ <circle class="spark" cx="748" cy="479" r="2.2"/>
+ <path class="amber glow" d="M728 342 l6 12 12 6 -12 6 -6 12 -6-12 -12-6 12-6z"/>
+ <path class="amber glow" d="M290 383 l4 8 8 4 -8 4 -4 8 -4-8 -8-4 8-4z"/>
+</g>
 
-<!-- Steam thin wisps -->
-<path class="steamThin" d="M 460 485 Q 445 430 470 370 Q 495 310 475 250"/>
-<path class="steamThin" d="M 560 485 Q 580 430 555 370 Q 530 310 560 250"/>
+<!-- cauldron handles behind body -->
+<g id="handles" class="glow">
+ <path class="line"
+ d="M264 610
+ C189 596 145 666 179 724
+ C199 759 239 756 249 723
+ C258 693 220 691 220 720" />
+ <path class="thin"
+ d="M253 637
+ C202 631 174 674 196 710
+ C208 730 229 731 235 714" />
 
-<!-- Musical note shape in steam (abstract) -->
-<path class="amber glow" d="M 480 200 L 480 150 Q 480 135 495 135 Q 510 135 510 150 Q 510 165 495 165 L 480 165" fill="none" stroke-width="3"/>
+ <path class="line"
+ d="M760 610
+ C835 596 879 666 845 724
+ C825 759 785 756 775 723
+ C766 693 804 691 804 720" />
+ <path class="thin"
+ d="M771 637
+ C822 631 850 674 828 710
+ C816 730 795 731 789 714" />
+</g>
 
-<!-- Quill shape in steam (abstract) -->
-<path class="gold glow thin" d="M 590 180 Q 610 160 600 130 Q 590 100 610 80 L 605 85 Q 585 105 595 130 Q 605 155 585 175" fill="none" stroke-width="2"/>
+<!-- cauldron body -->
+<g id="cauldron">
+ <!-- rim outer and inner -->
+ <ellipse class="liquidFill glow" cx="512" cy="602" rx="308" ry="70"/>
+ <ellipse class="line glow" cx="512" cy="600" rx="318" ry="78"/>
+ <ellipse class="thin glow" cx="512" cy="602" rx="278" ry="51"/>
 
-<!-- Sparks -->
-<circle class="spark" cx="450" cy="380" r="3"/>
-<circle class="spark" cx="540" cy="350" r="2.5"/>
-<circle class="spark" cx="490" cy="300" r="2"/>
-<circle class="spark" cx="570" cy="280" r="2"/>
-<circle class="spark" cx="430" cy="250" r="1.5"/>
-<circle class="spark" cx="560" cy="200" r="1.5"/>
+ <!-- body fill -->
+ <path class="bodyFill"
+ d="M224 620
+ C224 620 240 770 340 800
+ C420 824 604 824 684 800
+ C784 770 800 620 800 620" />
 
-<!-- Fire beneath -->
-<path class="fireFill" d="M 420 780 Q 430 750 450 760 Q 460 740 480 755 Q 490 730 512 745 Q 530 725 545 750 Q 560 735 575 755 Q 590 740 604 780 Q 560 770 512 775 Q 464 770 420 780 Z"/>
+ <!-- rune patterns on body -->
+ <path class="rune" d="M360 660 L360 720 M345 690 L375 690"/>
+ <path class="rune" d="M440 670 L440 730 M425 700 Q440 685 455 700"/>
+ <path class="rune" d="M520 675 L520 735 M505 705 L535 705"/>
+ <path class="rune" d="M600 670 L600 730 M585 700 L615 700"/>
+ <path class="rune" d="M680 660 L680 720 M665 690 Q680 675 695 690"/>
+</g>
 
-<!-- Small flame accents -->
-<path class="ember soft" d="M 440 770 Q 445 755 455 762"/>
-<path class="ember soft" d="M 520 765 Q 525 748 535 758"/>
-<path class="ember soft" d="M 580 770 Q 585 755 595 762"/>
+<!-- fire beneath -->
+<path class="fireFill"
+ d="M420 830
+ C430 800 460 810 475 790
+ C490 770 510 780 520 760
+ C530 780 550 770 565 790
+ C580 810 610 800 604 830
+ Q560 820 512 825 Q464 820 420 830 Z"
+ fill="url(#fireGlow)" stroke="var(--ember)" stroke-width="3"/>
+
+<!-- small flame accents -->
+<path class="ember soft" d="M445 820 Q450 805 460 812"/>
+<path class="ember soft" d="M525 815 Q530 798 540 808"/>
+<path class="ember soft" d="M580 820 Q585 805 595 812"/>
 
 </svg>
