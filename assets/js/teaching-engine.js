@@ -74,28 +74,10 @@ function createTeachingEngine(containerEl, opts){
     bindButtons(step, lesson);
     _teachContinueShown = true;
 
-    var typingDone = false;
-
     // Typewriter effect
     if(isTyping){
-      typewriterEffect(function(){ typingDone = true; });
-    } else {
-      typingDone = true;
+      typewriterEffect();
     }
-
-    // Click anywhere to advance (but not on buttons)
-    function clickAdvance(e){
-      if(!typingDone) return;
-      if(e.target.closest('[data-action]') || e.target.closest('.teach-choice')) return;
-      if(Date.now() - _lastBtnClick < 300) return;
-      container.removeEventListener('click', clickAdvance);
-      if(typeof playSfx==='function')playSfx('lesson-next');
-      advance(lesson);
-    }
-    // Delay binding to avoid accidental advance from the click that opened this step
-    setTimeout(function(){
-      container.addEventListener('click', clickAdvance);
-    }, 120);
   }
 
   // ── ASK: Character asks, player answers ──
@@ -172,18 +154,8 @@ function createTeachingEngine(containerEl, opts){
     var html = buildCharArea(response.char || CHAR.celebratory, response.charLabel || '', response.text, true, response.charSize);
     html += closeCharArea();
     container.innerHTML = html;
-    var typingDone = false;
-    typewriterEffect(function(){ typingDone = true; });
+    typewriterEffect();
     bindButtons(step, lesson);
-    setTimeout(function(){
-      container.addEventListener('click', function handler(e){
-        if(!typingDone) return;
-        if(e.target.closest('[data-action]')) return;
-        if(Date.now() - _lastBtnClick < 300) return;
-        container.removeEventListener('click', handler);
-        advance(lesson);
-      });
-    }, 150);
   }
 
   function normalizeResponse(response){
