@@ -1,4 +1,4 @@
-const CACHE = 'hearth-v1';
+const CACHE = 'hearth-v2';
 const SHELL = [
   '/simulator.html',
   '/index.html',
