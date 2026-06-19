@@ -1,234 +1,245 @@
 // Create Node - Combo Obstructions
 // 32 multi-ingredient provocations where creative elements collide.
+// Each prompt must be something you can actually DO in 2-5 minutes.
 
 const CREATE_COMBOS = [
+
+ // ───── 2 INGREDIENTS ─────
+
  {
  ingredients: ["lyrics", "melody"],
  level: 2,
- constraint: "The lyric must apologize while the melody refuses to sound sorry.",
- prompt: "Write an apology that keeps trying to become a victory lap. Do not let either side win cleanly.",
- payoff: "You hear remorse and pride wrestling in the same mouth."
+ constraint: "Write a lyric in a major key. Make it about something that hurts.",
+ prompt: "Pick a key — G, C, or D. Strum a happy chord progression. Now write words about a loss over those bright chords. Let the mismatch sit there.",
+ payoff: "Happy music over sad words creates something neither can alone. That tension is your song."
  },
  {
  ingredients: ["riff", "rhythm"],
  level: 2,
- constraint: "The riff must sound heavy, but the rhythm must keep dodging the downbeat.",
- prompt: "Make the sound of someone acting fearless while refusing to stand still long enough to be seen.",
- payoff: "You learn that swagger can limp if you listen below the distortion."
+ constraint: "Write a riff that lands on beat 2 instead of beat 1.",
+ prompt: "Play a 4-beat pattern. Start your riff on beat 2, not beat 1. The kick drum hits first. Your riff answers it. Loop it until it grooves.",
+ payoff: "Starting on the offbeat makes the riff feel like it's chasing something. That's groove."
  },
  {
  ingredients: ["story", "lyrics"],
  level: 2,
- constraint: "Tell a humiliating story, but every lyric line must pretend it is no big deal.",
- prompt: "Write the scene you still joke about because naming the hurt would make the room too quiet.",
- payoff: "The punchline cracks and the real confession breathes through it."
+ constraint: "Tell a true story in exactly 4 lines. Each line is one sentence.",
+ prompt: "Think of something that happened to you. Beginning, middle, end, and one detail you still remember. Four sentences. That's the verse.",
+ payoff: "You just wrote a song verse. It was always that simple."
  },
  {
  ingredients: ["melody", "rhythm"],
  level: 2,
- constraint: "The melody must beg for calm while the rhythm keeps interrupting it.",
- prompt: "Write the sound of trying to self-soothe while your pulse is calling you a liar.",
- payoff: "You discover that panic can wear a beautiful tune and still shake."
+ constraint: "Hum a melody. Then play the same rhythm on muted strings.",
+ prompt: "Hum something — anything. Record it or just remember it. Now mute all strings and strum that exact rhythm. The rhythm IS the melody's skeleton.",
+ payoff: "Melody and rhythm are the same thing at different speeds. You just proved it."
  },
  {
  ingredients: ["lyrics", "riff"],
  level: 2,
- constraint: "The lyric must be tender; the riff must sound like it wants to smash the furniture.",
- prompt: "Say something kind over a guitar part that clearly does not trust kindness.",
- payoff: "You find the bruise under the compliment."
+ constraint: "Write a lyric. Play a riff that contradicts the mood.",
+ prompt: "Write a tender lyric — something soft and honest. Now play an aggressive riff over it. Don't soften the riff. Let them clash.",
+ payoff: "When gentle words meet harsh music, the listener has to decide what's real. That's engagement."
  },
  {
  ingredients: ["story", "rhythm"],
  level: 2,
- constraint: "The story moves forward, but the groove keeps dragging one foot in the past.",
- prompt: "Tell the story of leaving while the rhythm keeps returning to the moment you should have left sooner.",
- payoff: "You hear how memory turns progress into a loop."
+ constraint: "Tell a story using only rhythm. No pitch, no words.",
+ prompt: "Mute all strings. Strum a pattern: quiet parts = sad, loud parts = intense, pauses = dramatic. Tell the whole story with dynamics alone.",
+ payoff: "Rhythm carries emotion even without a single note. You just proved it."
  },
  {
  ingredients: ["melody", "riff"],
  level: 2,
- constraint: "The melody must forgive; the riff must keep receipts.",
- prompt: "Write a part where one voice lets go and the other voice refuses to stop reading the evidence.",
- payoff: "You learn that resolution can be interrupted by a grudge with good timing."
+ constraint: "Play a riff in E. Sing a melody in A over it.",
+ prompt: "Play a simple riff in the key of E. Now sing a melody in A — a different key. Don't resolve the clash. Let both exist together.",
+ payoff: "Two keys at once create a sound neither could alone. You just found a third harmony."
  },
  {
  ingredients: ["lyrics", "rhythm"],
  level: 2,
- constraint: "The words must confess; the rhythm must keep making excuses.",
- prompt: "Write the sentence you owe someone, then set it to a groove that keeps trying to charm its way out.",
- payoff: "You hear accountability arrive with its collar crooked."
+ constraint: "Speak a sentence out loud. That's your strum pattern.",
+ prompt: "Say a sentence — any sentence. Listen to the natural rhythm of the words. Now strum that exact pattern. Down for stressed syllables, up for unstressed.",
+ payoff: "You've been a rhythm player since you learned to talk. You just connected the two."
  },
  {
  ingredients: ["story", "melody"],
  level: 2,
- constraint: "The story must get uglier as the melody gets sweeter.",
- prompt: "Score the moment you realized you were not innocent, and make it sound almost pretty.",
- payoff: "You learn that sweetness can indict you better than darkness."
+ constraint: "Sing a story using only vowels — ah, oh, ee. No words.",
+ prompt: "Pick a story — something that happened. Now sing it using only 'ah,' 'oh,' and 'ee.' The melody carries the emotion. No lyrics needed.",
+ payoff: "When words vanish, melody becomes the storyteller. You just proved music predates language."
  },
  {
  ingredients: ["riff", "story"],
  level: 2,
- constraint: "The riff repeats like denial while the story reveals one new shame each pass.",
- prompt: "Build a loop for the lie you told yourself, then let the verses slowly prove it false.",
- payoff: "The riff becomes a locked door that keeps failing to stay shut."
+ constraint: "Play a riff that sounds like a person you know.",
+ prompt: "Think of someone — their personality, their energy. Play a riff that matches them. Not their music. Them. Aggressive? Play aggressive. Nervous? Play nervous.",
+ payoff: "Riffs carry character. You just turned a person into a motif."
  },
+
+ // ───── 3 INGREDIENTS ─────
 
  {
  ingredients: ["lyrics", "melody", "rhythm"],
  level: 3,
- constraint: "Three minutes. The lyric admits fear, the melody reaches upward, and the rhythm keeps stumbling.",
- prompt: "Write the sound of saying 'I am fine' while every musical part files a complaint.",
- payoff: "You catch the body testifying against the sentence."
+ constraint: "Record your heartbeat. Sing over it. Write words for it.",
+ prompt: "Put your phone on your chest. Record the pulse. Hum a melody over the loop. Now write words that fit the rhythm of your own heartbeat. The heartbeat is the foundation.",
+ payoff: "You just built a song from your own body. That's as personal as music gets."
  },
  {
  ingredients: ["lyrics", "riff", "story"],
  level: 3,
- constraint: "The story must be specific, the lyric must avoid names, and the riff must point at the guilty person anyway.",
- prompt: "Tell the scene without naming them. Make the guitar less polite than you are.",
- payoff: "You discover that an instrument can gossip more honestly than language."
+ constraint: "Write 3 lines of story. Give each line a different riff.",
+ prompt: "Line 1: set the scene (play a riff). Line 2: the conflict (play a different riff). Line 3: the outcome (play a third riff). Write lyrics that connect them.",
+ payoff: "Riffs are chapters. You just scored a narrative with guitar."
  },
  {
- ingredients: ["melody", "riff", "rhythm"],
+ ingredients: ["melody", "rhythm", "story"],
  level: 3,
- constraint: "The melody wants to float, the riff wants to drag, and the rhythm gets 90 seconds to choose neither.",
- prompt: "Make a piece that sounds like being pulled between leaving and staying until the floor gets tired.",
- payoff: "You learn that indecision has its own gravity."
+ constraint: "Put the guitar down. Tell a story with your voice and body only.",
+ prompt: "No guitar. Clap, stomp, hum, sing. Tell a story using only your body. No instrument. Just you and rhythm.",
+ payoff: "You are the instrument. The guitar was always optional."
  },
  {
- ingredients: ["story", "lyrics", "rhythm"],
+ ingredients: ["lyrics", "melody", "riff"],
  level: 3,
- constraint: "Every new story detail must force the rhythm to drop or add an accent.",
- prompt: "Tell the story of a secret getting heavier in real time.",
- payoff: "The groove becomes a nervous witness that cannot sit still."
+ constraint: "Write a riff. Sing a different melody over it. Write lyrics that match the melody, not the riff.",
+ prompt: "Build a riff. Now sing a melody that ignores the riff's mood. Write words that follow the melody's emotion, not the riff's. Three layers, three moods.",
+ payoff: "When layers disagree, the listener assembles the meaning. That's how complex songs work."
  },
  {
- ingredients: ["riff", "melody", "lyrics"],
+ ingredients: ["lyrics", "riff", "rhythm"],
  level: 3,
- constraint: "The riff mocks the lyric, while the melody secretly believes it.",
- prompt: "Write a line you are embarrassed to mean, then surround it with guitar parts that argue about whether you deserve it.",
- payoff: "You hear self-contempt fail to kill longing."
+ constraint: "Write a riff with 3 notes. Match each note to a word.",
+ prompt: "Pick 3 notes on one string. Assign one word to each note. Now play the notes in order and say the words at the same time. That's your chorus.",
+ payoff: "You just built a hook from the ground up. Notes and words as one unit."
  },
  {
- ingredients: ["rhythm", "story", "riff"],
+ ingredients: ["melody", "riff", "story"],
  level: 3,
- constraint: "Two minutes. The rhythm must rush, the riff must stay stubborn, and the story must happen in one room.",
- prompt: "Write the soundtrack to waiting for someone to say the thing that would ruin the evening.",
- payoff: "You learn how suspense sounds when nothing moves except the pulse."
+ constraint: "Play a riff. Sing a melody that starts where the riff ends.",
+ prompt: "Play a 2-bar riff. When it stops, start singing — pick up where the riff left off. The riff hands off to the melody like a relay baton.",
+ payoff: "Riff and melody can share one idea by taking turns. You just built a conversation."
  },
  {
  ingredients: ["lyrics", "melody", "story"],
  level: 3,
- constraint: "The lyric lies, the story exposes the lie, and the melody must stay loyal to both.",
- prompt: "Sing about being over it while the scene proves you are absolutely not over it.",
- payoff: "You discover that contradiction can be more truthful than confession."
+ constraint: "Write a story in present tense. Sing it. No past tense allowed.",
+ prompt: "Write 4 lines about something happening RIGHT NOW. Not 'I went' — 'I'm going.' Not 'she said' — 'she says.' Sing it. Present tense makes it urgent.",
+ payoff: "Present tense pulls the listener into the moment. You just made a song that feels like now."
  },
  {
- ingredients: ["rhythm", "melody", "lyrics"],
+ ingredients: ["rhythm", "story", "riff"],
  level: 3,
- constraint: "The rhythm is a dare, the melody is a flinch, and the lyric must not explain either.",
- prompt: "Write the moment before you admit you want something too much.",
- payoff: "The song stands at the edge and lets desire make the noise."
+ constraint: "Mute all strings. Tell a story with rhythm. Then add ONE riff note.",
+ prompt: "Mute everything. Strum patterns for 30 seconds — quiet, loud, fast, slow. Now let ONE note ring out. That single note is the climax of your story.",
+ payoff: "One note after 30 seconds of rhythm hits harder than anything you've ever played."
  },
+
+ // ───── 4 INGREDIENTS ─────
 
  {
  ingredients: ["lyrics", "melody", "riff", "rhythm"],
  level: 4,
- constraint: "Major key only. The lyric grieves, the melody smiles, the riff threatens, and the rhythm keeps dancing.",
- prompt: "Write a funeral that everyone is pretending is a party.",
- payoff: "You learn that a chorus can smile with blood in its teeth."
- },
- {
- ingredients: ["lyrics", "story", "riff", "rhythm"],
- level: 4,
- constraint: "The story confesses betrayal, the lyric asks for sympathy, the riff refuses mercy, and the rhythm will not slow down.",
- prompt: "Make a piece where your excuse keeps getting chased by the thing you actually did.",
- payoff: "The groove turns self-defense into a crime scene."
- },
- {
- ingredients: ["melody", "story", "riff", "rhythm"],
- level: 4,
- constraint: "The melody must comfort, the story must humiliate, the riff must itch, and the rhythm must stay almost too neat.",
- prompt: "Score the memory that still makes you physically cringe, but dress it like it came prepared.",
- payoff: "You find elegance sweating through its shirt."
- },
- {
- ingredients: ["lyrics", "melody", "story", "rhythm"],
- level: 4,
- constraint: "The lyric is one sentence, the story is three scenes, the melody cannot resolve, and the rhythm repeats like a bad habit.",
- prompt: "Write about the pattern you keep calling a phase.",
- payoff: "The piece stops being about what happened and starts pointing at what keeps happening."
+ constraint: "Layer a loop: rhythm first, then riff, then melody, then words. Never go back and change.",
+ prompt: "Record rhythm (30 sec). Record riff on top (30 sec). Record melody on top (30 sec). Write words over everything (30 sec). Each layer is permanent. No editing.",
+ payoff: "Constraints breed creativity. You can't fix it — so you make it work."
  },
  {
  ingredients: ["lyrics", "melody", "riff", "story"],
  level: 4,
- constraint: "The lyric forgives, the story does not, the melody reaches for grace, and the riff keeps dragging the body back.",
- prompt: "Write the sound of deciding to move on before the wound has agreed.",
- payoff: "You hear forgiveness as weather, not a verdict."
+ constraint: "Write a complete song in 10 minutes. All four layers. Start now.",
+ prompt: "Timer: 10 minutes. Pick a key. Play a riff. Hum a melody. Write words. The song doesn't need to be good. It needs to be finished.",
+ payoff: "Your first instinct was better than your perfectionism. You just wrote a song."
  },
  {
  ingredients: ["melody", "riff", "rhythm", "story"],
  level: 4,
- constraint: "The rhythm must feel childish, the riff must feel dangerous, the melody must feel lonely, and the story must refuse nostalgia.",
- prompt: "Write a childhood memory that turns the lights on halfway through and ruins the cute version.",
- payoff: "Innocence stops being decoration and becomes evidence."
+ constraint: "No lyrics. Tell a story with melody, riff, and rhythm only.",
+ prompt: "No words. Hum, whistle, or scat the melody. Let the riff carry the attitude. Let rhythm carry the narrative. The story must make sense without a single word.",
+ payoff: "When words vanish, every other element has to work harder. You just made music speak without language."
  },
+ {
+ ingredients: ["lyrics", "rhythm", "riff", "story"],
+ level: 4,
+ constraint: "Write a verse with slow rhythm. Write a chorus with fast rhythm. The tempo change IS the story.",
+ prompt: "Verse: slow strum, gentle words. Chorus: fast strum, louder words. The tempo shift is the plot twist. The story changes because the speed changes.",
+ payoff: "Tempo is narrative. You just used speed as a storytelling device."
+ },
+ {
+ ingredients: ["lyrics", "melody", "rhythm", "story"],
+ level: 4,
+ constraint: "Write a song in gibberish. The melody, rhythm, and story must still make sense.",
+ prompt: "No real words. Make up sounds. But the melody must carry emotion, the rhythm must carry narrative, and the listener must feel something. No hiding behind 'I don't know what I'm saying.'",
+ payoff: "If the feeling lands without language, you understand music at its deepest level."
+ },
+ {
+ ingredients: ["lyrics", "melody", "riff", "story"],
+ level: 4,
+ constraint: "Write a love song where the riff sounds angry.",
+ prompt: "Sweet lyrics. Sweet melody. Angry riff. The guitar doesn't believe the words. Let the listener decide who's telling the truth.",
+ payoff: "When the guitar disagrees with the singer, the song gets honest."
+ },
+
+ // ───── 5 INGREDIENTS ─────
 
  {
  ingredients: ["lyrics", "melody", "riff", "rhythm", "story"],
  level: 5,
- constraint: "One room, one secret, one note you avoid, one rhythm you cannot relax into, one lyric you wish was not yours.",
- prompt: "Build the piece around the exact thing you usually edit out so people will still like you.",
- payoff: "The song becomes a room where your mask has nowhere to sit."
+ constraint: "All five layers. 5 minutes. No preparation. Hit record now.",
+ prompt: "Record everything at once. Riff, rhythm, melody, words, story arc. Don't plan. Don't think. Just build. Whatever comes out IS the song.",
+ payoff: "This is what you sound like when you stop trying to be good. That's the most honest thing you've ever made."
  },
  {
  ingredients: ["lyrics", "melody", "riff", "rhythm", "story"],
  level: 5,
- constraint: "The lyric must expose need, the melody must deny it, the riff must punish it, the rhythm must betray it, and the story must make it undeniable.",
- prompt: "Write about wanting to be chosen, but make every part of the music ashamed of wanting.",
- payoff: "You hear desire survive the courtroom you built around it."
+ constraint: "Record everything. Listen back. Find the 3 seconds that feel real. Build around those.",
+ prompt: "Record a full take. Listen. Find the 3 seconds that made you feel something — even a flicker. Delete everything else. Build the whole song from those 3 seconds.",
+ payoff: "The song was always 3 seconds long. Everything else was scaffolding."
  },
  {
  ingredients: ["lyrics", "melody", "riff", "rhythm", "story"],
  level: 5,
- constraint: "No part may agree with another part for more than one bar.",
- prompt: "Score the inside of your head during the conversation where you said too little and meant too much.",
- payoff: "The arrangement reveals the civil war your face concealed."
+ constraint: "Play it for someone. Watch their face. The song is whatever made them react.",
+ prompt: "Play your song for someone — friend, stranger, anyone. Don't explain it. Watch their face. The moment they react? That's the real song.",
+ payoff: "Music isn't what you play — it's what lands."
  },
  {
  ingredients: ["lyrics", "melody", "riff", "rhythm", "story"],
  level: 5,
- constraint: "The story is shame, the lyric is charm, the melody is pleading, the riff is contempt, and the rhythm is a locked jaw.",
- prompt: "Make the most attractive version of your worst coping mechanism, then let it rot in public.",
- payoff: "You learn the difference between charisma and escape."
+ constraint: "Start with all five layers. Every 30 seconds, remove one. End with only lyrics and silence.",
+ prompt: "Start with everything playing. After 30 seconds, remove the riff. After another 30, remove the drums. Keep stripping until only your voice and silence remain.",
+ payoff: "The song teaches you what it was actually about by taking away everything it was hiding behind."
  },
  {
  ingredients: ["lyrics", "melody", "riff", "rhythm", "story"],
  level: 5,
- constraint: "Use only one chord shape, one repeated image, one recurring rhythmic wound, and one melodic note that refuses to resolve.",
- prompt: "Tell the story you keep overexplaining by giving it fewer places to hide.",
- payoff: "The smaller the cage gets, the louder the truth paces."
+ constraint: "Make it sound like a celebration. The story must be about loss.",
+ prompt: "Upbeat riff. Bouncy rhythm. Soaring melody. Happy-sounding. But the words are about losing someone. Make the party feel like a funeral. Nobody at the party knows.",
+ payoff: "Joy and grief share a skeleton. The groove is the only thing keeping both upright."
  },
  {
  ingredients: ["lyrics", "melody", "riff", "rhythm", "story"],
  level: 5,
- constraint: "Every element must contradict the title.",
- prompt: "Title it 'I Am Fine' and then make the entire piece testify against you.",
+ constraint: "Title the song first. Then write every element to contradict the title.",
+ prompt: "Pick a title: 'I'm Fine,' 'Nothing Hurts,' 'I'm Over It.' Now write the song that proves the title is a lie. Every element contradicts the title.",
  payoff: "You discover how obvious a lie becomes when the band stops covering for it."
  },
  {
  ingredients: ["lyrics", "melody", "riff", "rhythm", "story"],
  level: 5,
- constraint: "The lyric can use only questions, the melody can use only falling motion, the riff can use only restraint, and the rhythm must keep almost breaking.",
- prompt: "Write the interrogation you wish someone had cared enough to give you.",
- payoff: "The piece becomes tenderness with a bare bulb overhead."
+ constraint: "Use only one chord. One riff note. One rhythm. One image. Make it enough.",
+ prompt: "One chord. One note repeated in a riff. One rhythm pattern. One image in the lyrics. That's all you get. Make it enough.",
+ payoff: "The fewer tools you have, the more each one matters. You just learned that limitation is the mother of invention."
  },
  {
  ingredients: ["lyrics", "melody", "riff", "rhythm", "story"],
  level: 5,
- constraint: "End every element before it feels finished. Leave the final bar exposed.",
- prompt: "Make a song about abandonment that abandons itself first.",
- payoff: "You feel the missing ending become the most honest instrument in the room."
+ constraint: "Every element must disagree with every other element for the whole song.",
+ prompt: "Lyrics say one thing. Melody says another. Riff says something else. Rhythm fights the riff. Story contradicts the lyrics. Nothing agrees. Make it work anyway.",
+ payoff: "The arrangement reveals the civil war your face concealed."
  }
+
 ];
 
 if(typeof window !== "undefined") window.CREATE_COMBOS = CREATE_COMBOS;
