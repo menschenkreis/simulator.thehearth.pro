@@ -11,51 +11,44 @@ const LESSON_1_FOUNDATION = {
     },
 
     {
-      type: 'action',
-      render: function(container, advance){
-        container.innerHTML = `
-          <div class="teach-scene-wrap">
-            <div class="teach-scene">
-              <div class="teach-char-wrap">
-                <img src="images/character-face/Encouraging.png" class="teach-char-img" />
-                <div class="teach-char-label">Guide</div>
-              </div>
-              <div class="teach-bubble">
-                <div class="teach-tail"></div>
-                <div class="teach-text">
-                  <p>Before notes, we check the instrument you live inside: your body. Guitar gets much easier when you learn to notice tension before it turns into a wall.</p>
-                </div>
-              </div>
-            </div>
-            <div style="max-width:700px;margin:16px auto 0;padding:16px;background:var(--card);border:1px solid #3a2a1a;border-radius:8px">
-              <div style="font-family:Cinzel,serif;color:var(--gold);font-size:0.95rem;font-weight:700;margin-bottom:12px">Body Scan Warm-up</div>
-              <label style="display:block;margin:10px 0;color:var(--dim);line-height:1.4"><input type="checkbox" data-scan /> Drop your shoulders. Let them hang instead of guarding your ears.</label>
-              <label style="display:block;margin:10px 0;color:var(--dim);line-height:1.4"><input type="checkbox" data-scan /> Unclench your jaw. Open your mouth once, then let it soften.</label>
-              <label style="display:block;margin:10px 0;color:var(--dim);line-height:1.4"><input type="checkbox" data-scan /> Loosen your fretting thumb. The neck is supported, not squeezed.</label>
-              <label style="display:block;margin:10px 0;color:var(--dim);line-height:1.4"><input type="checkbox" data-scan /> Breathe out slowly. If you were holding your breath, welcome back.</label>
-              <label style="display:block;margin:10px 0;color:var(--dim);line-height:1.4"><input type="checkbox" data-scan /> Picture one clean note before moving a finger.</label>
-              <p style="font-size:0.75rem;color:var(--dim);line-height:1.5;margin:14px 0 0">This tiny ritual is not decoration. It prevents the most common beginner mistake: teaching your hands to play with unnecessary effort.</p>
-              <div style="text-align:center;margin-top:16px">
-                <button data-continue disabled style="background:#3a2a1a;color:#706050;border:1px solid #4a3824;padding:10px 24px;border-radius:6px;font-family:DM Sans,sans-serif;font-weight:700;cursor:not-allowed">Complete the scan</button>
-              </div>
-            </div>
-          </div>`;
-
-        var checks = container.querySelectorAll('[data-scan]');
-        var button = container.querySelector('[data-continue]');
-        function update(){
-          var done = Array.prototype.every.call(checks, function(check){ return check.checked; });
-          button.disabled = !done;
-          button.textContent = done ? 'Ready for the first idea' : 'Complete the scan';
-          button.style.background = done ? 'var(--gold)' : '#3a2a1a';
-          button.style.color = done ? 'var(--bg)' : '#706050';
-          button.style.cursor = done ? 'pointer' : 'not-allowed';
+      type: 'speak',
+      char: 'images/character-face/Encouraging.png',
+      charLabel: 'Guide',
+      text: '<p>Before we touch a string, we check the instrument you live inside: your body.</p><p>Here is something most beginners do not know: <strong>tension is the enemy of clean playing</strong>. When you hold your breath, clench your jaw, or squeeze the neck, your fingers lose their independence. They become clumsy.</p><p>The fix is simple. Before you play, do a quick body scan: drop your shoulders, unclench your jaw, loosen your fretting thumb, and breathe. This is not warm-up fluff. It is the foundation of technique.</p>'
+    },
+    {
+      type: 'ask',
+      concept: 'body-tension',
+      char: 'images/character-face/Thinking.png',
+      charLabel: 'Guide',
+      text: '<p>Why does tension in your shoulders or jaw affect your playing?</p>',
+      choices: [
+        {
+          label: 'Tension travels down the arm and makes fingers stiff and clumsy',
+          correct: true,
+          response: {
+            char: 'images/character-face/Celebratory.png',
+            charLabel: 'Guide',
+            text: '<p>Exactly. Your fingers share tendons with your forearm, which connects to your shoulder. If your shoulder is locked up, your fingers cannot move freely. A relaxed body is the first step to clean playing.</p>'
+          }
+        },
+        { label: 'It does not really affect anything', correct: false },
+        { label: 'It makes you play too fast', correct: false },
+        { label: 'It only matters for advanced players', correct: false }
+      ],
+      reexplain: [
+        {
+          char: 'images/character-face/Encouraging.png',
+          charLabel: 'Guide',
+          text: '<p>Think about it this way: try to wiggle your fingers right now while clenching your fist. Hard, right? Tension in one part of the body limits movement everywhere connected to it.</p>'
         }
-        checks.forEach(function(check){ check.addEventListener('change', update); });
-        button.addEventListener('click', function(){
-          if(!button.disabled) advance();
-        });
-      }
+      ]
+    },
+    {
+      type: 'speak',
+      char: 'images/character-face/Encouraging.png',
+      charLabel: 'Guide',
+      text: '<p>Good. Now try this: drop your shoulders, unclench your jaw, loosen your thumb on the neck, and take one slow breath. When you are ready, move on.</p>'
     },
 
     {
@@ -193,262 +186,126 @@ const LESSON_1_FOUNDATION = {
     },
 
     {
-      type: 'action',
-      render: function(container, advance){
-        container.innerHTML = `
-          <div class="teach-scene-wrap">
-            <div class="teach-scene">
-              <div class="teach-char-wrap">
-                <img src="images/character-face/Encouraging.png" class="teach-char-img" />
-                <div class="teach-char-label">Guide</div>
-              </div>
-              <div class="teach-bubble">
-                <div class="teach-tail"></div>
-                <div class="teach-text">
-                  <p>Time for your first sounds. We are not chasing speed. We are chasing clean, ringing notes and a body that stays calm while you make them.</p>
-                </div>
-              </div>
-            </div>
-            <div style="max-width:700px;margin:16px auto 0;padding:16px;background:var(--card);border:1px solid #3a2a1a;border-radius:8px">
-              <div style="font-family:Cinzel,serif;color:var(--gold);font-size:0.95rem;font-weight:700;margin-bottom:12px">First Sounds</div>
-              <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin:0 0 14px">
-                <button data-stroke="rest" style="background:var(--gold);color:var(--bg);border:none;padding:11px 14px;border-radius:6px;font-family:DM Sans,sans-serif;font-weight:700;cursor:pointer">Try Rest Stroke</button>
-                <button data-stroke="free" style="background:none;color:var(--gold);border:1px solid var(--gold);padding:11px 14px;border-radius:6px;font-family:DM Sans,sans-serif;font-weight:700;cursor:pointer">Try Free Stroke</button>
-              </div>
-              <div data-stroke-meter style="height:42px;border:1px solid #3a2a1a;border-radius:6px;background:rgba(0,0,0,0.14);display:flex;align-items:center;justify-content:center;color:var(--dim);font-size:0.75rem;margin-bottom:14px;transition:all 0.18s">Click a stroke button and listen for the feel.</div>
-              <label style="display:block;margin:10px 0;color:var(--dim);line-height:1.4"><input type="checkbox" data-step /> Play one open string. Let it ring until it fades.</label>
-              <label style="display:block;margin:10px 0;color:var(--dim);line-height:1.4"><input type="checkbox" data-step /> Try a rest stroke: push through the string and rest on the next string.</label>
-              <label style="display:block;margin:10px 0;color:var(--dim);line-height:1.4"><input type="checkbox" data-step /> Try a free stroke: pluck the string and let the finger or pick move away freely.</label>
-              <label style="display:block;margin:10px 0;color:var(--dim);line-height:1.4"><input type="checkbox" data-step /> Press just behind fret 1 on any string, then play it. Listen for buzz or muting.</label>
-              <label style="display:block;margin:10px 0;color:var(--dim);line-height:1.4"><input type="checkbox" data-step /> Release any extra pressure and play the same note again.</label>
-              <p style="font-size:0.75rem;color:var(--dim);line-height:1.5;margin:14px 0 0">The sweet spot is usually gentler than beginners expect: just enough pressure for a clean note.</p>
-              <div style="text-align:center;margin-top:16px">
-                <button data-continue disabled style="background:#3a2a1a;color:#706050;border:1px solid #4a3824;padding:10px 24px;border-radius:6px;font-family:DM Sans,sans-serif;font-weight:700;cursor:not-allowed">Make each sound</button>
-              </div>
-            </div>
-          </div>`;
-
-        var checks = container.querySelectorAll('[data-step]');
-        var button = container.querySelector('[data-continue]');
-        var meter = container.querySelector('[data-stroke-meter]');
-        var audioCtx = null;
-        function playStroke(kind){
-          if(meter){
-            meter.textContent = kind === 'rest' ? 'Rest stroke: fuller, rounder, more grounded.' : 'Free stroke: lighter, quicker, more open.';
-            meter.style.borderColor = kind === 'rest' ? 'var(--gold)' : '#8ab4f8';
-            meter.style.color = kind === 'rest' ? 'var(--gold)' : '#8ab4f8';
-            meter.style.transform = 'scale(1.02)';
-            setTimeout(function(){ meter.style.transform = 'scale(1)'; }, 160);
+      type: 'speak',
+      char: 'images/character-face/Encouraging.png',
+      charLabel: 'Guide',
+      text: '<p>Time for your first sounds. There are two ways to pluck a string, and they feel very different.</p><p>A <strong>rest stroke</strong> pushes through the string and lands on the next one. It sounds full and round, like a bass note. A <strong>free stroke</strong> plucks the string and moves away into the air. It sounds lighter and more open.</p><p>Neither is better. They are different tools. But you need to know both.</p>'
+    },
+    {
+      type: 'ask',
+      concept: 'stroke-types',
+      char: 'images/character-face/Thinking.png',
+      charLabel: 'Guide',
+      text: '<p>Which stroke type produces a fuller, more grounded sound?</p>',
+      choices: [
+        {
+          label: 'Rest stroke — it pushes through and lands on the next string',
+          correct: true,
+          response: {
+            char: 'images/character-face/Celebratory.png',
+            charLabel: 'Guide',
+            text: '<p>Yes. The rest stroke transfers more energy into the string, so it sounds bigger and rounder. The free stroke is quicker and lighter — great for fast passages and fingerpicking.</p>'
           }
-          var AudioContext = window.AudioContext || window.webkitAudioContext;
-          if(!AudioContext) return;
-          audioCtx = audioCtx || new AudioContext();
-          var now = audioCtx.currentTime;
-          var osc = audioCtx.createOscillator();
-          var gain = audioCtx.createGain();
-          osc.type = kind === 'rest' ? 'triangle' : 'sine';
-          osc.frequency.setValueAtTime(kind === 'rest' ? 196 : 247, now);
-          gain.gain.setValueAtTime(0.0001, now);
-          gain.gain.exponentialRampToValueAtTime(kind === 'rest' ? 0.26 : 0.13, now + 0.02);
-          gain.gain.exponentialRampToValueAtTime(0.0001, now + (kind === 'rest' ? 0.65 : 0.32));
-          osc.connect(gain);
-          gain.connect(audioCtx.destination);
-          osc.start(now);
-          osc.stop(now + 0.7);
+        },
+        { label: 'Free stroke — it moves faster', correct: false },
+        { label: 'They sound exactly the same', correct: false },
+        { label: 'It depends on the guitar brand', correct: false }
+      ],
+      reexplain: [
+        {
+          char: 'images/character-face/Encouraging.png',
+          charLabel: 'Guide',
+          text: '<p>Think about it: a rest stroke pushes through the string and stops on the next one. That extra contact time transfers more energy. The free stroke plucks and lifts away — less contact, lighter sound.</p>'
         }
-        container.querySelectorAll('[data-stroke]').forEach(function(strokeButton){
-          strokeButton.addEventListener('click', function(){
-            playStroke(this.dataset.stroke);
-          });
-        });
-        function update(){
-          var done = Array.prototype.every.call(checks, function(check){ return check.checked; });
-          button.disabled = !done;
-          button.textContent = done ? 'Clean notes are happening' : 'Make each sound';
-          button.style.background = done ? 'var(--gold)' : '#3a2a1a';
-          button.style.color = done ? 'var(--bg)' : '#706050';
-          button.style.cursor = done ? 'pointer' : 'not-allowed';
-        }
-        checks.forEach(function(check){ check.addEventListener('change', update); });
-        button.addEventListener('click', function(){
-          if(!button.disabled) advance();
-        });
-      }
+      ]
+    },
+    {
+      type: 'speak',
+      char: 'images/character-face/Encouraging.png',
+      charLabel: 'Guide',
+      text: '<p>Now try it. Play an open string with a rest stroke — push through and land on the next string. Then try a free stroke — pluck and let your finger move freely into the air.</p><p>Listen to the difference. The rest stroke should feel heavier. The free stroke should feel lighter.</p><p>Now press just behind fret 1 on any string and play it. If you hear buzzing or muting, adjust your finger closer to the fret wire and arch it more. Release any extra pressure and play again — you need less force than you think.</p>'
     },
 
     {
-      type: 'action',
-      render: function(container, advance){
-        container.innerHTML = `
-          <div class="teach-scene-wrap">
-            <div class="teach-scene">
-              <div class="teach-char-wrap">
-                <img src="images/character-face/Thinking.png" class="teach-char-img" />
-                <div class="teach-char-label">Guide</div>
-              </div>
-              <div class="teach-bubble">
-                <div class="teach-tail"></div>
-                <div class="teach-text">
-                  <p>One note is a sound. Two notes are the beginning of music, because now there is movement. Let us make that movement small and clean.</p>
-                </div>
-              </div>
-            </div>
-            <div style="max-width:700px;margin:16px auto 0;padding:16px;background:var(--card);border:1px solid #3a2a1a;border-radius:8px">
-              <div style="font-family:Cinzel,serif;color:var(--gold);font-size:0.95rem;font-weight:700;margin-bottom:12px">Moving Between Notes</div>
-              <div style="display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;margin:10px 0 14px">
-                <div style="font-family:var(--mono);color:var(--gold);font-size:0.85rem;line-height:1.7;text-align:center;border:1px solid #3a2a1a;border-radius:6px;padding:10px;background:rgba(0,0,0,0.14)">
-                  e|-------------<br />
-                  B|-------------<br />
-                  G|--<span data-tab-note="0">0</span>--<span data-tab-note="2">2</span>--<span data-tab-note="0b">0</span>--<br />
-                  D|-------------<br />
-                  A|-------------<br />
-                  E|-------------
-                </div>
-                <button data-play-tab style="background:var(--gold);color:var(--bg);border:none;padding:11px 18px;border-radius:6px;font-family:DM Sans,sans-serif;font-weight:700;cursor:pointer">Play</button>
-              </div>
-              <div data-tab-status style="height:28px;color:var(--dim);font-size:0.75rem;text-align:center">Open -> fret 2 -> open on the G string.</div>
-              <label style="display:block;margin:10px 0;color:var(--dim);line-height:1.4"><input type="checkbox" data-move /> Play the G string open. Let the note speak clearly.</label>
-              <label style="display:block;margin:10px 0;color:var(--dim);line-height:1.4"><input type="checkbox" data-move /> Press fret 2 just behind the fret wire and play again.</label>
-              <label style="display:block;margin:10px 0;color:var(--dim);line-height:1.4"><input type="checkbox" data-move /> Lift the finger and play open again. Notice the return home.</label>
-              <label style="display:block;margin:10px 0;color:var(--dim);line-height:1.4"><input type="checkbox" data-move /> Walk up one string: open, 1, 2, 3, 4. Slow enough that every note is honest.</label>
-              <label style="display:block;margin:10px 0;color:var(--dim);line-height:1.4"><input type="checkbox" data-move /> Walk back down: 4, 3, 2, 1, open.</label>
-              <p style="font-size:0.75rem;color:var(--dim);line-height:1.5;margin:14px 0 0">If a note buzzes, do not judge it. Adjust. Closer to the fret wire, arched finger, less shoulder tension.</p>
-              <div style="text-align:center;margin-top:16px">
-                <button data-continue disabled style="background:#3a2a1a;color:#706050;border:1px solid #4a3824;padding:10px 24px;border-radius:6px;font-family:DM Sans,sans-serif;font-weight:700;cursor:not-allowed">Complete the movement</button>
-              </div>
-            </div>
-          </div>`;
-
-        var checks = container.querySelectorAll('[data-move]');
-        var button = container.querySelector('[data-continue]');
-        var playTab = container.querySelector('[data-play-tab]');
-        var tabStatus = container.querySelector('[data-tab-status]');
-        var tabNotes = ['0', '2', '0b'].map(function(id){ return container.querySelector('[data-tab-note="'+id+'"]'); });
-        playTab.addEventListener('click', function(){
-          tabNotes.forEach(function(note){
-            if(note){
-              note.style.background = 'transparent';
-              note.style.color = 'var(--gold)';
-              note.style.borderRadius = '4px';
-              note.style.padding = '1px 3px';
-            }
-          });
-          ['open', 'fret 2', 'open'].forEach(function(label, idx){
-            setTimeout(function(){
-              tabNotes.forEach(function(note){
-                if(note){
-                  note.style.background = 'transparent';
-                  note.style.color = 'var(--gold)';
-                }
-              });
-              if(tabNotes[idx]){
-                tabNotes[idx].style.background = 'var(--gold)';
-                tabNotes[idx].style.color = 'var(--bg)';
-              }
-              if(tabStatus) tabStatus.textContent = 'Playing: ' + label;
-            }, idx * 420);
-          });
-          setTimeout(function(){
-            tabNotes.forEach(function(note){
-              if(note){
-                note.style.background = 'transparent';
-                note.style.color = 'var(--gold)';
-              }
-            });
-            if(tabStatus) tabStatus.textContent = 'Now try it on your guitar: open -> fret 2 -> open.';
-          }, 1300);
-        });
-        function update(){
-          var done = Array.prototype.every.call(checks, function(check){ return check.checked; });
-          button.disabled = !done;
-          button.textContent = done ? 'Movement complete' : 'Complete the movement';
-          button.style.background = done ? 'var(--gold)' : '#3a2a1a';
-          button.style.color = done ? 'var(--bg)' : '#706050';
-          button.style.cursor = done ? 'pointer' : 'not-allowed';
+      type: 'speak',
+      char: 'images/character-face/Thinking.png',
+      charLabel: 'Guide',
+      text: '<p>One note is a sound. Two notes are the beginning of music, because now there is movement.</p><p>Here is the core skill: <strong>fretting</strong>. Press a string down just behind the fret wire with the tip of your finger. Not on top of the fret. Not far behind it. Just behind it. That is where the note rings cleanest.</p><p>The fret wire is your target. Your finger is the tool. The sweet spot is within 2mm of the fret wire.</p>'
+    },
+    {
+      type: 'ask',
+      concept: 'fretting-position',
+      char: 'images/character-face/Thinking.png',
+      charLabel: 'Guide',
+      text: '<p>Where should your finger press the string for the cleanest note?</p>',
+      choices: [
+        {
+          label: 'Just behind the fret wire, using the fingertip',
+          correct: true,
+          response: {
+            char: 'images/character-face/Celebratory.png',
+            charLabel: 'Guide',
+            text: '<p>Right. Behind the fret wire, with the fingertip arched. Too far back and the note buzzes. On top of the fret and it mutes. Just behind is the sweet spot.</p>'
+          }
+        },
+        { label: 'Right on top of the fret wire', correct: false },
+        { label: 'In the middle of the fret space', correct: false },
+        { label: 'As far from the fret wire as possible', correct: false }
+      ],
+      reexplain: [
+        {
+          char: 'images/character-face/Encouraging.png',
+          charLabel: 'Guide',
+          text: '<p>Picture the fret wire as a tiny wall. Your finger needs to press the string right next to that wall, not on top of it. The closer to the wire, the cleaner the note.</p>'
         }
-        checks.forEach(function(check){ check.addEventListener('change', update); });
-        button.addEventListener('click', function(){
-          if(!button.disabled) advance();
-        });
-      }
+      ]
+    },
+    {
+      type: 'speak',
+      char: 'images/character-face/Encouraging.png',
+      charLabel: 'Guide',
+      text: '<p>Now try this: play the G string open (no fret). Let it ring clearly. Then press fret 2 just behind the fret wire and play again. Listen to the difference in pitch.</p><p>Lift your finger and play open again. Notice the return home.</p><p>Now walk up one string slowly: open, 1, 2, 3, 4. Slow enough that every note is honest. Then walk back down: 4, 3, 2, 1, open.</p><p>If a note buzzes, do not judge it. Adjust: closer to the fret wire, arch your finger more, drop your shoulder. The fix is always physical, never emotional.</p>'
     },
 
     {
-      type: 'action',
-      render: function(container, advance){
-        container.innerHTML = `
-          <div class="teach-scene-wrap">
-            <div class="teach-scene">
-              <div class="teach-char-wrap">
-                <img src="images/character-face/Encouraging.png" class="teach-char-img" />
-                <div class="teach-char-label">Guide</div>
-              </div>
-              <div class="teach-bubble">
-                <div class="teach-tail"></div>
-                <div class="teach-text">
-                  <p>You have played single notes. Now we stack notes together. This is your first chord: E major. It is big, open, friendly, and used everywhere.</p>
-                </div>
-              </div>
-            </div>
-            <div style="max-width:760px;margin:16px auto 0;padding:16px;background:var(--card);border:1px solid #3a2a1a;border-radius:8px">
-              <div style="font-family:Cinzel,serif;color:var(--gold);font-size:0.95rem;font-weight:700;margin-bottom:12px">First Chord: E Major</div>
-              <div style="display:grid;grid-template-columns:minmax(220px,1fr) auto;gap:14px;align-items:center;margin:10px 0 14px">
-                <div data-chord-diagram style="font-family:var(--mono);color:var(--gold);font-size:0.82rem;line-height:1.75;text-align:center;border:1px solid #3a2a1a;border-radius:6px;padding:12px;background:rgba(0,0,0,0.14);transition:all 0.18s">
-                  e|---0---<br />
-                  B|---0---<br />
-                  G|---<strong style="color:#fff">1</strong>--- finger 1<br />
-                  D|---<strong style="color:#fff">2</strong>--- finger 2<br />
-                  A|---<strong style="color:#fff">3</strong>--- finger 3<br />
-                  E|---0---
-                </div>
-                <button data-strum style="background:var(--gold);color:var(--bg);border:none;padding:11px 18px;border-radius:6px;font-family:DM Sans,sans-serif;font-weight:700;cursor:pointer">Strum All 6</button>
-              </div>
-              <div data-strum-status style="height:28px;color:var(--dim);font-size:0.75rem;text-align:center">Finger numbers: 1 index, 2 middle, 3 ring.</div>
-              <label style="display:block;margin:10px 0;color:var(--dim);line-height:1.4"><input type="checkbox" data-chord /> Put your index finger on fret 1 of the G string.</label>
-              <label style="display:block;margin:10px 0;color:var(--dim);line-height:1.4"><input type="checkbox" data-chord /> Put your middle finger on fret 2 of the D string.</label>
-              <label style="display:block;margin:10px 0;color:var(--dim);line-height:1.4"><input type="checkbox" data-chord /> Put your ring finger on fret 2 of the A string.</label>
-              <label style="display:block;margin:10px 0;color:var(--dim);line-height:1.4"><input type="checkbox" data-chord /> Strum all six strings slowly from thick to thin.</label>
-              <label style="display:block;margin:10px 0;color:var(--dim);line-height:1.4"><input type="checkbox" data-chord /> Check each string. If one is muted, arch the fingers and try again.</label>
-              <p style="font-size:0.75rem;color:var(--dim);line-height:1.5;margin:14px 0 0">That sound is harmony: several notes working together. Your hands just made a little room for music to stand in.</p>
-              <div style="text-align:center;margin-top:16px">
-                <button data-continue disabled style="background:#3a2a1a;color:#706050;border:1px solid #4a3824;padding:10px 24px;border-radius:6px;font-family:DM Sans,sans-serif;font-weight:700;cursor:not-allowed">Ring the chord</button>
-              </div>
-            </div>
-          </div>`;
-
-        var checks = container.querySelectorAll('[data-chord]');
-        var button = container.querySelector('[data-continue]');
-        var strum = container.querySelector('[data-strum]');
-        var diagram = container.querySelector('[data-chord-diagram]');
-        var strumStatus = container.querySelector('[data-strum-status]');
-        strum.addEventListener('click', function(){
-          if(diagram){
-            diagram.style.borderColor = 'var(--gold)';
-            diagram.style.boxShadow = '0 0 0 3px rgba(214, 169, 84, 0.18)';
-            diagram.style.transform = 'translateY(-2px)';
+      type: 'speak',
+      char: 'images/character-face/Encouraging.png',
+      charLabel: 'Guide',
+      text: '<p>You have played single notes. Now we stack notes together. This is your first chord: <strong>E major</strong>.</p><p>A chord is just several notes played at the same time. E major uses three fingers on three strings, with three strings left open. It sounds big, full, and is used in thousands of songs.</p><p>Here is the shape:</p><p style="font-family:var(--mono);color:var(--gold);font-size:0.82rem;line-height:1.8;text-align:center;margin:12px 0;padding:10px;background:rgba(0,0,0,0.14);border-radius:6px">e|---0--- (open)<br />B|---0--- (open)<br />G|---1--- finger 1<br />D|---2--- finger 2<br />A|---2--- finger 3<br />E|---0--- (open)</p><p>Finger 1 goes on fret 1 of the G string. Fingers 2 and 3 go on fret 2 of the D and A strings. Strum all six strings.</p>'
+    },
+    {
+      type: 'ask',
+      concept: 'e-major-shape',
+      char: 'images/character-face/Thinking.png',
+      charLabel: 'Guide',
+      text: '<p>In the E major chord, how many strings are played open (no finger)?</p>',
+      choices: [
+        {
+          label: 'Three — the low E, B, and high e strings',
+          correct: true,
+          response: {
+            char: 'images/character-face/Celebratory.png',
+            charLabel: 'Guide',
+            text: '<p>Yes. Three open strings and three fretted ones. That is what makes E major sound so full — it rings across the whole guitar.</p>'
           }
-          if(strumStatus) strumStatus.textContent = 'Strumming: E, A, D, G, B, e';
-          setTimeout(function(){
-            if(diagram){
-              diagram.style.boxShadow = 'none';
-              diagram.style.transform = 'translateY(0)';
-            }
-            if(strumStatus) strumStatus.textContent = 'Let the chord ring, then check each string.';
-          }, 650);
-        });
-        function update(){
-          var done = Array.prototype.every.call(checks, function(check){ return check.checked; });
-          button.disabled = !done;
-          button.textContent = done ? 'E major is ringing' : 'Ring the chord';
-          button.style.background = done ? 'var(--gold)' : '#3a2a1a';
-          button.style.color = done ? 'var(--bg)' : '#706050';
-          button.style.cursor = done ? 'pointer' : 'not-allowed';
+        },
+        { label: 'One — just the low E', correct: false },
+        { label: 'None — all strings are fretted', correct: false },
+        { label: 'Six — all strings are open', correct: false }
+      ],
+      reexplain: [
+        {
+          char: 'images/character-face/Encouraging.png',
+          charLabel: 'Guide',
+          text: '<p>Look at the shape again. The 0s in tab mean open — no finger needed. Count them: low E is 0, B is 0, high e is 0. That is three open strings.</p>'
         }
-        checks.forEach(function(check){ check.addEventListener('change', update); });
-        button.addEventListener('click', function(){
-          if(!button.disabled) advance();
-        });
-      }
+      ]
+    },
+    {
+      type: 'speak',
+      char: 'images/character-face/Encouraging.png',
+      charLabel: 'Guide',
+      text: '<p>Now form the chord. Place finger 1 on fret 1 of the G string. Fingers 2 and 3 on fret 2 of the D and A strings. Arch your fingers so they do not touch the open strings.</p><p>Strum all six strings. If some notes are muted or buzz, adjust: press closer to the fret wire, arch your fingers more, and check that your thumb is relaxed behind the neck.</p><p>When all six strings ring clearly, you have played your first chord.</p>'
     },
 
     {
