@@ -18,7 +18,8 @@ const DOING = {
     'John Jorgenson — Gypsy Jazz Guitar',
     'David Hamburger — Slide Basics',
     'Christopher Parkening — Classical Guitar',
-    'Glenn Weiser — Celtic Guitar'
+    'Glenn Weiser — Celtic Guitar',
+    'Marty Music — Ultimate Guitar Guide & Pentatonic Shapes'
   ],
 
   categories: [
