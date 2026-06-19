@@ -532,19 +532,12 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 .cauldron-wrap{padding:16px;max-width:600px;margin:0 auto;overflow-y:auto;height:100%;}
 .cauldron-header{margin-bottom:16px;}
 .cauldron-vessel{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:140px;padding:24px 16px;position:relative;margin-bottom:20px;}
-.cauldron-bubble{position:relative;width:100%;min-height:80px;background:radial-gradient(ellipse at center,rgba(232,160,32,0.06) 0%,transparent 70%);border-radius:12px;display:flex;align-items:center;justify-content:center;text-align:center;transition:all 0.3s;margin-top:-40px;position:relative;z-index:2;
+.cauldron-bubble{position:relative;width:100%;min-height:100px;background:radial-gradient(ellipse at center,rgba(196,90,32,0.08) 0%,transparent 70%);border-radius:50%;display:flex;align-items:center;justify-content:center;text-align:center;transition:all 0.3s;}
 .cauldron-bubble-glow{position:absolute;width:100%;height:100%;border-radius:50%;background:radial-gradient(ellipse at center,rgba(196,90,32,0.06) 0%,transparent 60%);opacity:0.5;}
 .cauldron-bubbling{animation:cauldron-bubble-anim 0.6s ease-out;}
 @keyframes cauldron-bubble-anim{0%{transform:scale(1);}30%{transform:scale(1.05);background:radial-gradient(ellipse at center,rgba(196,90,32,0.15) 0%,transparent 70%);}100%{transform:scale(1);}}
 .cauldron-prompt-text{font-family:'DM Sans',sans-serif;font-size:0.9rem;color:var(--dim);line-height:1.7;max-width:400px;transition:color 0.3s;z-index:1;}
 .cauldron-prompt-label{font-family:'JetBrains Mono',monospace;font-size:0.65rem;letter-spacing:0.12em;text-transform:uppercase;display:block;margin-bottom:8px;}
-.cauldron-ingredient.selected{border-color:var(--gold)!important;background:rgba(212,175,105,0.12)!important;box-shadow:0 0 12px rgba(212,175,105,0.2);transform:scale(1.05);}
-.cauldron-stir-btn{display:block;margin:12px auto 0;padding:10px 28px;background:var(--gold);color:var(--bg);border:none;border-radius:6px;font-family:Cinzel,serif;font-weight:700;font-size:0.8rem;cursor:pointer;transition:all 0.2s;}
-.cauldron-stir-btn:hover{transform:scale(1.04);box-shadow:0 0 16px rgba(212,175,105,0.3);}
-.cauldron-mix-row{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:4px 0;}
-.cauldron-mix-label{font-size:0.7rem;font-weight:600;}
-.cauldron-constraint{font-size:0.75rem;color:var(--gold);font-style:italic;line-height:1.5;margin:4px 0;}
-.cauldron-prompt-body{font-size:0.8rem;color:var(--dim);line-height:1.6;}
 .cauldron-fire{display:flex;gap:4px;align-items:flex-end;margin-top:8px;}
 .cauldron-flame{font-size:0.8rem;color:#c45a20;opacity:0.4;animation:cauldron-flicker 1.5s ease-in-out infinite;}
 .cauldron-flame-2{font-size:1.1rem;animation-delay:0.3s;opacity:0.6;}
@@ -1838,7 +1831,6 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 <script src="assets/js/play-worldmap.js"></script>
 <script src="assets/js/create.js"></script>
 <script src="assets/js/create-cauldron.js"></script>
-<script src="assets/js/create-combos.js"></script>
 <script src="assets/js/references.js"></script>
 <script>
 const NODE_DATA = {
@@ -4388,7 +4380,7 @@ function showCreate(){
   const CI=window.CAULDRON_INGREDIENTS||[];
 
   var ingredientsHtml=CI.map(function(ing){
-    return '<button class="cauldron-ingredient" data-id="'+ing.id+'" onclick="cauldronToggle(\''+ing.id+'\')" style="--ic:'+ing.color+'">'+
+    return '<button class="cauldron-ingredient" data-id="'+ing.id+'" onclick="cauldronStir(\''+ing.id+'\')" style="--ic:'+ing.color+'">'+
       '<span class="ci-symbol">'+ing.symbol+'</span>'+
       '<span class="ci-name">'+ing.name+'</span>'+
     '</button>';
@@ -4404,21 +4396,25 @@ function showCreate(){
         '<span style="font-family:JetBrains Mono;font-size:0.6rem;color:#c45a20;letter-spacing:0.12em;text-transform:uppercase">Create · The Cauldron</span>'+
       '</div>'+
       '<p style="font-size:0.8rem;color:var(--dim);margin:4px 0 0 0;line-height:1.6;max-width:480px">'+
-        'Toss ingredients into the cauldron. Pick one element of songwriting, or mix several. The cauldron brews a creative obstruction — a constraint that pushes you somewhere you wouldn\'t go alone.'+
+        'Toss an ingredient into the cauldron. It will bubble up a prompt to push you somewhere you wouldn\'t go alone.'+
       '</p>'+
     '</div>'+
 
     '<div class="cauldron-vessel" id="cauldronVessel">'+
       '<div class="cauldron-bubble" id="cauldronBubble">'+
-        '<div class="cauldron-prompt-text" id="cauldronPrompt">Select ingredients and stir the cauldron.</div>'+
+        '<div class="cauldron-bubble-glow"></div>'+
+        '<div class="cauldron-prompt-text" id="cauldronPrompt">The cauldron is still. Add an ingredient.</div>'+
+      '</div>'+
+      '<div class="cauldron-fire">'+
+        '<span class="cauldron-flame cauldron-flame-1">▲</span>'+
+        '<span class="cauldron-flame cauldron-flame-2">▲</span>'+
+        '<span class="cauldron-flame cauldron-flame-3">▲</span>'+
       '</div>'+
     '</div>'+
 
     '<div class="cauldron-ingredients">'+
-      '<div class="cauldron-ingredients-label">Choose Your Ingredients</div>'+
+      '<div class="cauldron-ingredients-label">Ingredients</div>'+
       '<div class="cauldron-ingredients-grid">'+ingredientsHtml+'</div>'+
-      '<button class="cauldron-stir-btn" id="cauldronStirBtn" onclick="cauldronMix()" style="display:none">🔥 Stir the Cauldron</button>'+
-      '<div id="cauldronHint" style="font-size:0.65rem;color:var(--dim);margin-top:8px;text-align:center">Select 1+ ingredients, then stir</div>'+
     '</div>'+
 
     '<div class="cauldron-workstation">'+
@@ -4426,128 +4422,54 @@ function showCreate(){
       '<textarea class="cauldron-notes" id="cauldronNotes" placeholder="Write your ideas here..." oninput="saveCauldronNotes()">'+savedNotes+'</textarea>'+
       '<div class="cauldron-workstation-tools">'+
         '<button class="cauldron-tool-btn" onclick="cauldronClear()">Clear</button>'+
-        '<button class="cauldron-tool-btn" onclick="cauldronMix()">Stir Again</button>'+
+        '<button class="cauldron-tool-btn" onclick="cauldronReroll()">Stir Again</button>'+
       '</div>'+
     '</div>'+
   '</div>';
 }
 
 // ═══ Cauldron interactions ═══
-var _cauldronSelected=new Set();
-var _cauldronLastPrompt=null;
+var _cauldronLastIngredient=null;
 
-window.cauldronToggle=function(ingredientId){
+window.cauldronStir=function(ingredientId){
   var CI=window.CAULDRON_INGREDIENTS||[];
   var ing=CI.find(function(i){return i.id===ingredientId;});
   if(!ing)return;
+  _cauldronLastIngredient=ingredientId;
 
-  if(_cauldronSelected.has(ingredientId)){
-    _cauldronSelected.delete(ingredientId);
-  }else{
-    _cauldronSelected.add(ingredientId);
-  }
-
-  // Update button states
-  document.querySelectorAll('.cauldron-ingredient').forEach(function(btn){
-    if(_cauldronSelected.has(btn.dataset.id)){
-      btn.classList.add('selected');
-    }else{
-      btn.classList.remove('selected');
-    }
-  });
-
-  // Update count + stir button
-  var countEl=document.getElementById('cauldronCount');
-  var stirBtn=document.getElementById('cauldronStirBtn');
-  var count=_cauldronSelected.size;
-  if(stirBtn) stirBtn.style.display=count>0?'inline-block':'none';
-  var hint=document.getElementById('cauldronHint');
-  if(hint) hint.style.display=count>0?'none':'block';
-};
-
-window.cauldronMix=function(){
-  var selected=Array.from(_cauldronSelected);
-  if(selected.length===0)return;
-
-  var CI=window.CAULDRON_INGREDIENTS||[];
-  var CC=window.CREATE_COMBOS||[];
+  var prompt=ing.prompts[Math.floor(Math.random()*ing.prompts.length)];
 
   var vessel=document.getElementById('cauldronBubble');
   var textEl=document.getElementById('cauldronPrompt');
-  if(!vessel||!textEl)return;
 
-  var result=null;
-
-  if(selected.length===1){
-    // Single ingredient
-    var ing=CI.find(function(i){return i.id===selected[0];});
-    if(ing){
-      var prompt=ing.prompts[Math.floor(Math.random()*ing.prompts.length)];
-      result={
-        constraint:'Single ingredient: '+ing.name,
-        prompt:prompt,
-        level:1,
-        colors:[ing.color],
-        labels:[ing.symbol+' '+ing.name]
-      };
-    }
-  }else{
-    // Multi-ingredient — find matching combo
-    var sorted=selected.slice().sort();
-    var match=CC.find(function(c){
-      return c.ingredients.slice().sort().join(',')===sorted.join(',');
-    });
-    if(match){
-      var colors=selected.map(function(id){var ing=CI.find(function(i){return i.id===id;});return ing?ing.color:'#d4af69';});
-      var labels=selected.map(function(id){var ing=CI.find(function(i){return i.id===id;});return ing?ing.symbol+' '+ing.name:id;});
-      result={constraint:match.constraint,prompt:match.prompt,level:match.level,colors:colors,labels:labels};
-    }else{
-      // No exact match — blend individual prompts
-      var prompts=selected.map(function(id){var ing=CI.find(function(i){return i.id===id;});return ing?ing.prompts[Math.floor(Math.random()*ing.prompts.length)]:'';});
-      var colors=selected.map(function(id){var ing=CI.find(function(i){return i.id===id;});return ing?ing.color:'#d4af69';});
-      var labels=selected.map(function(id){var ing=CI.find(function(i){return i.id===id;});return ing?ing.symbol+' '+ing.name:id;});
-      result={constraint:'Combine: '+labels.join(' + '),prompt:prompts.join('<br><br>'),level:selected.length,colors:colors,labels:labels};
-    }
-  }
-
-  if(!result)return;
-  _cauldronLastPrompt=result;
-
-  // Animate
+  // Animate: flash + bubble
   vessel.classList.add('cauldron-bubbling');
+  textEl.style.color=ing.color;
 
   setTimeout(function(){
-    var levelBadge=result.level<=2?'⚗️':result.level<=3?'🔥':'💀';
-    var levelNames=['','Ingredient','Filter','Forge','Collision','Alchemy'];
-    var levelName=levelNames[result.level]||'';
-    var labelHtml=result.labels.map(function(l,i){return '<span class="cauldron-mix-label" style="color:'+result.colors[i]+'">'+l+'</span>';}).join(' ');
-    textEl.innerHTML=levelBadge+' <span style="font-size:0.65rem;color:var(--dim);text-transform:uppercase;letter-spacing:0.08em">Level '+result.level+': '+levelName+'</span><br>'+
-      '<span class="cauldron-mix-row">'+labelHtml+'</span><br>'+
-      '<span class="cauldron-constraint">'+result.constraint+'</span><br>'+
-      '<span class="cauldron-prompt-body">'+result.prompt+'</span>';
-    textEl.style.color='';
+    textEl.innerHTML='<span class="cauldron-prompt-label" style="color:'+ing.color+'">'+ing.symbol+' '+ing.name+'</span><br>'+prompt;
   },150);
 
-  setTimeout(function(){vessel.classList.remove('cauldron-bubbling');},600);
+  setTimeout(function(){
+    vessel.classList.remove('cauldron-bubbling');
+  },600);
 };
 
-window.cauldronReroll=function(){cauldronMix();};
+window.cauldronReroll=function(){
+  if(_cauldronLastIngredient){
+    cauldronStir(_cauldronLastIngredient);
+  }
+};
 
-window.saveCauldronNotes=function(){var notes=document.getElementById('cauldronNotes');if(notes)localStorage.setItem('cauldron-notes',notes.value);};
+window.saveCauldronNotes=function(){
+  var notes=document.getElementById('cauldronNotes');
+  if(notes) localStorage.setItem('cauldron-notes',notes.value);
+};
 
 window.cauldronClear=function(){
-  var textEl=document.getElementById('cauldronPrompt');
-  if(textEl)textEl.innerHTML='Select ingredients and stir the cauldron.';
-  if(textEl)textEl.style.color='';
-  _cauldronSelected.clear();
-  _cauldronLastPrompt=null;
-  document.querySelectorAll('.cauldron-ingredient').forEach(function(btn){btn.classList.remove('selected');});
-  var countEl=document.getElementById('cauldronCount');
-  if(countEl)countEl.textContent='';
-  var stirBtn=document.getElementById('cauldronStirBtn');
-  if(stirBtn)stirBtn.style.display='none';
-  var hint=document.getElementById('cauldronHint');
-  if(hint)hint.style.display='block';
+  var notes=document.getElementById('cauldronNotes');
+  if(notes) notes.value='';
+  saveCauldronNotes();
 };
 
 // ═══ TEXT-TO-SPEECH ═══
