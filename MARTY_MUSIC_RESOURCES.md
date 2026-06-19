@@ -32,3 +32,7 @@ PDF saved: assets/Marty_Music_Ultimate_Guitar_Guide.pdf
 - **URL:** https://www.martymusic.com/pentatonic-scale-exercises-signup
 - **Covers:** Practical pentatonic exercises
 - **Use for:** Doing node pentatonic drill content
+
+## Pentatonic Scale Video
+- **URL:** https://www.youtube.com/watch?v=nIIhACU6iFY
+- **Use for:** Doing node reference, embeddable in lessons
