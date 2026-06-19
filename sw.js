@@ -1,4 +1,4 @@
-const CACHE = 'hearth-v2';
+const CACHE = 'hearth-v3';
 const SHELL = [
   '/simulator.html',
   '/index.html',
@@ -22,31 +22,15 @@ self.addEventListener('activate', e => {
 });
 
 self.addEventListener('fetch', e => {
-  const url = new URL(e.request.url);
-  const isHTML = e.request.headers.get('accept')?.includes('text/html');
-
-  if (isHTML) {
-    // Network-first for HTML
-    e.respondWith(
-      fetch(e.request).then(r => {
-        const clone = r.clone();
+  // Network-first for ALL requests — cache is only offline fallback
+  e.respondWith(
+    fetch(e.request).then(r => {
+      const clone = r.clone();
+      const url = new URL(e.request.url);
+      if (r.ok && (url.pathname.startsWith('/assets/') || url.pathname.startsWith('/images/') || url.pathname.startsWith('/simulator') || url.pathname.startsWith('/sw') || url.pathname.includes('fonts.googleapis.com') || url.pathname.includes('fonts.gstatic.com'))) {
         caches.open(CACHE).then(c => c.put(e.request, clone));
-        return r;
-      }).catch(() => caches.match(e.request))
-    );
-  } else {
-    // Cache-first for static assets
-    e.respondWith(
-      caches.match(e.request).then(cached => {
-        if (cached) return cached;
-        return fetch(e.request).then(r => {
-          if (r.ok && (url.pathname.startsWith('/assets/') || url.pathname.startsWith('/images/') || url.pathname.includes('fonts.googleapis.com') || url.pathname.includes('fonts.gstatic.com'))) {
-            const clone = r.clone();
-            caches.open(CACHE).then(c => c.put(e.request, clone));
-          }
-          return r;
-        });
-      })
-    );
-  }
+      }
+      return r;
+    }).catch(() => caches.match(e.request))
+  );
 });
