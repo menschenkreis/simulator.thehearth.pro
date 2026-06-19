@@ -71,20 +71,18 @@ window.LESSON_HOW_TO_LEARN = {
         {
           image: 'images/block-mass.png',
           title: 'Absence of Mass',
-          desc: 'Trying to learn without the physical thing. You can\'t learn guitar from a book alone.',
           color: '#e74c3c'
         },
         {
           image: 'images/block-gradient.png',
           title: 'Too Steep a Gradient',
-          desc: 'Jumping ahead too fast. Trying chords before you can fret a single note cleanly.',
           color: '#e67e22'
         },
         {
           image: 'images/block-word.png',
           title: 'The Misunderstood Word',
-          desc: 'One word you don\'t understand blanks everything after it. The #1 killer.',
-          color: '#9b59b6'
+          color: '#9b59b6',
+          imageStyle: 'transform:rotate(90deg)'
         }
       ],
       continueLabel: 'Tell me more about each one →'

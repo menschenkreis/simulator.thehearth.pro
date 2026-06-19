@@ -269,11 +269,13 @@ function createTeachingEngine(containerEl, opts){
     html += '<div class="teach-cards" style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin:16px 0">';
     step.cards.forEach((card, i) => {
       const icon = card.icon || '';
-      const img = card.image ? '<img src="'+card.image+'" style="width:80px;height:80px;object-fit:contain;border-radius:8px;margin-bottom:8px;transition:all 0.3s" />' : '<div style="font-size:2rem;margin-bottom:8px">'+icon+'</div>';
+      const imgStyle = 'width:80px;height:80px;object-fit:contain;border-radius:8px;margin-bottom:8px;transition:all 0.3s' + (card.imageStyle ? ';'+card.imageStyle : '');
+      const img = card.image ? '<img src="'+card.image+'" style="'+imgStyle+'" />' : '<div style="font-size:2rem;margin-bottom:8px">'+icon+'</div>';
+      const descHtml = card.desc ? '<div style="font-size:0.7rem;color:var(--dim);line-height:1.4">'+card.desc+'</div>' : '';
       html += '<div class="teach-card" data-card-idx="'+i+'" style="flex:1 1 '+(100/step.cards.length - 2)+'%;min-width:140px;max-width:220px;background:var(--card);border:2px solid '+(card.color||'var(--gold)')+'40;border-radius:10px;padding:16px 12px;text-align:center;cursor:pointer;transition:all 0.3s;opacity:0;transform:translateY(20px)" onclick="expandCard(this,'+(card.image?"'"+card.image+"'":'null')+')">' +
         '<div class="teach-card-img">'+img+'</div>' +
         '<div style="font-family:Cinzel,serif;font-size:0.75rem;font-weight:700;color:'+(card.color||'var(--gold)')+';margin-bottom:6px">'+card.title+'</div>' +
-        '<div style="font-size:0.7rem;color:var(--dim);line-height:1.4">'+card.desc+'</div>' +
+        descHtml +
       '</div>';
     });
     html += '</div>';
