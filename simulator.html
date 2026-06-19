@@ -2176,34 +2176,16 @@ function calcOverallLevel(progress) {
   return lvl || '-';
 }
 
+function startFoundationLesson(topicId){
+  showFoundationTopic(topicId);
+}
 function startLesson1(){
-  var L=window.LESSON_1_FOUNDATION;
-  if(!L||!window.TeachingEngine){
-    alert('Lesson 1 not loaded. Please refresh the page.');
-    return;
-  }
-  document.querySelectorAll('.pnl').forEach(function(p){p.classList.remove('on')});
-  var el=document.getElementById('p-teach');
-  el.classList.add('on');
-  el.innerHTML='<div style="padding:16px;max-width:800px;margin:0 auto;height:100%;display:flex;flex-direction:column;box-sizing:border-box">'+
-    '<button class="back-btn" onclick="showFoundation()" style="flex-shrink:0">← Foundation</button>'+
-    '<div id="teach-container" style="flex:1;display:flex;align-items:center;justify-content:center;min-height:0"></div>'+
-  '</div>';
-  var engine=TeachingEngine(document.getElementById('teach-container'),{
-    lesson:L,
-    onComplete:function(){
-      playSfx('success');
-      // Mark all Foundation topics as complete
-      var F=window.FOUNDATION;
-      if(F){
-        var progress=JSON.parse(localStorage.getItem('hearth-foundation-progress')||'{}');
-        F.topics.forEach(function(t){progress[t.id]=true;});
-        localStorage.setItem('hearth-foundation-progress',JSON.stringify(progress));
-      }
-      setTimeout(function(){showFoundation();},1500);
-    }
-  });
-  engine.start(L);
+  // Start the first incomplete block, or Block 01
+  var F=window.FOUNDATION;
+  var completed=JSON.parse(localStorage.getItem('hearth-foundation-progress')||'{}');
+  var nextTopic=F.topics.find(function(t){return !completed[t.id];});
+  var topicId=nextTopic?nextTopic.id:'f-how-to-learn';
+  showFoundationTopic(topicId);
 }
 
 function showFoundation(){

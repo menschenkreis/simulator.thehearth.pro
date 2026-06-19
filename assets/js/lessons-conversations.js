@@ -5,7 +5,7 @@
 window.LESSON_CONVERSATIONS = {
   id: 'f-conversations',
   title: 'Guitar Conversations',
-  completeText: '<p style="text-align:center"><strong>You can make clean notes and move between them.</strong></p><p style="text-align:center">Both hands working together — right hand creating sound, left hand changing pitch.</p><p style="text-align:center;margin-top:16px;font-family:Cinzel,serif;color:var(--gold);font-size:1rem">FOUNDATION COMPLETE</p><p style="text-align:center;font-size:0.85rem;color:var(--dim);margin-top:4px">Seven layers. Each one builds on the last.<br>How to Learn → Language → Music → Guitar → The Instrument → Speaking → Conversations</p>',
+  completeText: '<p style="text-align:center"><strong>You can make clean notes and move between them.</strong></p><p style="text-align:center">Both hands working together — right hand creating sound, left hand changing pitch.</p><p style="text-align:center;margin-top:16px;font-family:Cinzel,serif;color:var(--gold);font-size:1rem">FOUNDATION COMPLETE</p><p style="text-align:center;font-size:0.85rem;color:var(--dim);margin-top:4px">Seven layers. Each one builds on the last.<br>How to Learn → Language → Music → Guitar → The Instrument → Speaking → Conversations</p><p style="text-align:center;font-size:0.85rem;color:var(--gold);margin-top:12px">Next: <strong>Doing</strong> — alternate picking, chromatic exercises, hammer-ons, your first scales.</p>',
 
   steps: [
     {
@@ -86,7 +86,49 @@ window.LESSON_CONVERSATIONS = {
       text: '<p>Try it on a different string tomorrow. Then another. One string per day. Within a week, your hands will start to <em>know</em> the fretboard.</p><p>You\'re not just learning exercises. You\'re building the foundation of every technique you\'ll ever use.</p>'
     },
     {
+      type: 'speak',
+      char: TeachingCHAR.encouraging,
+      charSize: 'big',
+      text: '<p>You now have the seven layers of Foundation. But Foundation is not the end — it\'s the launchpad.</p><p>What comes next is <strong>Doing</strong>. That\'s where your hands start training for real. You\'ll meet:</p><p><strong>Alternate picking</strong> — down-up-down-up, the picking foundation. Clean, even, rhythmic.</p><p><strong>Chromatic exercises</strong> — fingers 1-2-3-4 across all strings. Building independence and strength.</p><p><strong>Hammer-ons and pull-offs</strong> — legato technique. Smooth, connected notes without picking every one.</p><p><strong>Your first scales</strong> — pentatonic shapes. The vocabulary of rock, blues, and pop.</p><p>Everything you learned in Foundation — the body scan, the two strokes, the fretting position, the intervals — feeds directly into these techniques. Nothing was wasted.</p>'
+    },
+    {
+      type: 'ask',
+      concept: 'foundation-to-doing',
+      char: TeachingCHAR.thinking,
+      text: '<p>You just played open → fret 2 → open. What technique will you learn first in Doing?</p>',
+      choices: [
+        {
+          label: 'Alternate picking — down-up-down-up on a single string',
+          correct: true,
+          response: {
+            char: TeachingCHAR.celebratory,
+            charSize: 'big',
+            text: '<p>Yes! Alternate picking is the foundation of all picking technique. You already know how to pluck a string. Now you\'ll learn to do it in a steady, even rhythm — down, up, down, up. Ready for the next level.</p>'
+          }
+        },
+        {
+          label: 'Barre chords',
+          correct: false,
+          reexplain: [
+            { char: TeachingCHAR.encouraging, text: '<p>Barre chords come later — they require finger strength you\'re still building.</p>' },
+            { char: TeachingCHAR.neutral, text: '<p>The first technique in Doing is <strong>alternate picking</strong> — the down-up motion on a single string. It\'s the foundation of all picking technique. Barre chords come after you\'ve built finger independence.</p>' },
+            { char: TeachingCHAR.thinking, text: '<p>So what technique will you learn first?</p>' }
+          ]
+        },
+        {
+          label: 'Sweep picking',
+          correct: false,
+          reexplain: [
+            { char: TeachingCHAR.encouraging, text: '<p>Sweep picking is advanced — it comes much later.</p>' },
+            { char: TeachingCHAR.neutral, text: '<p>Alternate picking is first. Down-up-down-up on a single string. Clean, even, rhythmic. This is the technique that every other picking style builds on.</p>' },
+            { char: TeachingCHAR.thinking, text: '<p>What technique comes first in Doing?</p>' }
+          ]
+        }
+      ]
+    },
+    {
       type: 'end',
+      char: TeachingCHAR.celebratory,
       char: TeachingCHAR.celebratory,
       charSize: 'big',
       buttonLabel: 'Foundation Complete →',
