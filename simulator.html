@@ -4404,7 +4404,7 @@ function showCreate(){
         '<span style="font-family:JetBrains Mono;font-size:0.6rem;color:#c45a20;letter-spacing:0.12em;text-transform:uppercase">Create · The Cauldron</span>'+
       '</div>'+
       '<p style="font-size:0.8rem;color:var(--dim);margin:4px 0 0 0;line-height:1.6;max-width:480px">'+
-        'Select your ingredients. Mix 1 for a single prompt. Mix 2+ for combined obstructions. The more you add, the wilder it gets.'+
+        'Toss ingredients into the cauldron. Pick one element of songwriting, or mix several. The cauldron brews a creative obstruction — a constraint that pushes you somewhere you wouldn\'t go alone.'+
       '</p>'+
     '</div>'+
 
@@ -4416,9 +4416,10 @@ function showCreate(){
     '</div>'+
 
     '<div class="cauldron-ingredients">'+
-      '<div class="cauldron-ingredients-label">Ingredients <span id="cauldronCount" style="color:var(--gold)"></span></div>'+
+      '<div class="cauldron-ingredients-label">Choose Your Ingredients</div>'+
       '<div class="cauldron-ingredients-grid">'+ingredientsHtml+'</div>'+
       '<button class="cauldron-stir-btn" id="cauldronStirBtn" onclick="cauldronMix()" style="display:none">🔥 Stir the Cauldron</button>'+
+      '<div id="cauldronHint" style="font-size:0.65rem;color:var(--dim);margin-top:8px;text-align:center">Select 1+ ingredients, then stir</div>'+
     '</div>'+
 
     '<div class="cauldron-workstation">'+
@@ -4460,8 +4461,9 @@ window.cauldronToggle=function(ingredientId){
   var countEl=document.getElementById('cauldronCount');
   var stirBtn=document.getElementById('cauldronStirBtn');
   var count=_cauldronSelected.size;
-  if(countEl) countEl.textContent=count>0?'('+count+' selected)':'';
   if(stirBtn) stirBtn.style.display=count>0?'inline-block':'none';
+  var hint=document.getElementById('cauldronHint');
+  if(hint) hint.style.display=count>0?'none':'block';
 };
 
 window.cauldronMix=function(){
@@ -4545,6 +4547,8 @@ window.cauldronClear=function(){
   if(countEl)countEl.textContent='';
   var stirBtn=document.getElementById('cauldronStirBtn');
   if(stirBtn)stirBtn.style.display='none';
+  var hint=document.getElementById('cauldronHint');
+  if(hint)hint.style.display='block';
 };
 
 // ═══ TEXT-TO-SPEECH ═══
