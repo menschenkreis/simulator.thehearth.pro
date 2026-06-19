@@ -94,7 +94,7 @@ function createTeachingEngine(containerEl, opts){
     // Delay binding to avoid accidental advance from the click that opened this step
     setTimeout(function(){
       container.addEventListener('click', clickAdvance);
-    }, 300);
+    }, 120);
   }
 
   // ── ASK: Character asks, player answers ──
