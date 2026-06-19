@@ -1,0 +1,248 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" role="img" aria-labelledby="title desc">
+<title id="title">Mystical Alchemical Cauldron</title>
+<desc id="desc">A dark fantasy line art cauldron with glowing liquid, magical steam, musical note and quill shapes, and ember flames.</desc>
+
+<style>
+ :root{
+ --gold:#d4af69;
+ --amber:#e8a020;
+ --ember:#c45a20;
+ --dark:#080c12;
+ }
+
+ svg{
+ background:transparent;
+ }
+
+ .line{
+ fill:none;
+ stroke:var(--gold);
+ stroke-width:5;
+ stroke-linecap:round;
+ stroke-linejoin:round;
+ }
+
+ .thin{
+ fill:none;
+ stroke:var(--gold);
+ stroke-width:2.5;
+ stroke-linecap:round;
+ stroke-linejoin:round;
+ opacity:.9;
+ }
+
+ .fine{
+ fill:none;
+ stroke:var(--gold);
+ stroke-width:1.6;
+ stroke-linecap:round;
+ stroke-linejoin:round;
+ opacity:.7;
+ }
+
+ .amber{
+ fill:none;
+ stroke:var(--amber);
+ stroke-width:4;
+ stroke-linecap:round;
+ stroke-linejoin:round;
+ }
+
+ .ember{
+ fill:none;
+ stroke:var(--ember);
+ stroke-width:4;
+ stroke-linecap:round;
+ stroke-linejoin:round;
+ }
+
+ .glow{
+ filter:url(#goldGlow);
+ }
+
+ .soft{
+ opacity:.55;
+ }
+
+ .dim{
+ opacity:.35;
+ }
+
+ .bodyFill{
+ fill:url(#cauldronShade);
+ stroke:var(--gold);
+ stroke-width:5;
+ stroke-linejoin:round;
+ }
+
+ .liquidFill{
+ fill:url(#liquidGlow);
+ stroke:var(--amber);
+ stroke-width:4;
+ }
+
+ .steam{
+ fill:none;
+ stroke:var(--amber);
+ stroke-width:4;
+ stroke-linecap:round;
+ stroke-linejoin:round;
+ filter:url(#goldGlow);
+ opacity:.9;
+ }
+
+ .steamThin{
+ fill:none;
+ stroke:var(--gold);
+ stroke-width:2;
+ stroke-linecap:round;
+ stroke-linejoin:round;
+ filter:url(#goldGlow);
+ opacity:.45;
+ }
+
+ .spark{
+ fill:var(--amber);
+ filter:url(#goldGlow);
+ }
+
+ .rune{
+ fill:none;
+ stroke:var(--gold);
+ stroke-width:2;
+ stroke-linecap:round;
+ stroke-linejoin:round;
+ opacity:.75;
+ }
+
+ .fireFill{
+ fill:url(#fireGlow);
+ stroke:var(--ember);
+ stroke-width:3;
+ stroke-linejoin:round;
+ filter:url(#emberGlow);
+ }
+</style>
+
+<defs>
+ <radialGradient id="liquidGlow" cx="50%" cy="45%" r="60%">
+ <stop offset="0%" stop-color="#fff1a8" stop-opacity=".95"/>
+ <stop offset="32%" stop-color="#e8a020" stop-opacity=".75"/>
+ <stop offset="75%" stop-color="#a95b12" stop-opacity=".45"/>
+ <stop offset="100%" stop-color="#080c12" stop-opacity=".15"/>
+ </radialGradient>
+
+ <linearGradient id="cauldronShade" x1="0%" y1="0%" x2="0%" y2="100%">
+ <stop offset="0%" stop-color="#d4af69" stop-opacity=".22"/>
+ <stop offset="45%" stop-color="#8b5a22" stop-opacity=".25"/>
+ <stop offset="100%" stop-color="#080c12" stop-opacity=".15"/>
+ </linearGradient>
+
+ <radialGradient id="fireGlow" cx="50%" cy="40%" r="70%">
+ <stop offset="0%" stop-color="#ffd75a" stop-opacity=".95"/>
+ <stop offset="45%" stop-color="#e8a020" stop-opacity=".8"/>
+ <stop offset="100%" stop-color="#c45a20" stop-opacity=".65"/>
+ </radialGradient>
+
+ <filter id="goldGlow" x="-80%" y="-80%" width="260%" height="260%">
+ <feGaussianBlur stdDeviation="5" result="blur"/>
+ <feColorMatrix
+ in="blur"
+ type="matrix"
+ values="
+ 1 0 0 0 0.83
+ 0 1 0 0 0.55
+ 0 0 1 0 0.10
+ 0 0 0 .85 0"
+ result="goldBlur"/>
+ <feMerge>
+ <feMergeNode in="goldBlur"/>
+ <feMergeNode in="SourceGraphic"/>
+ </feMerge>
+ </filter>
+
+ <filter id="emberGlow" x="-80%" y="-80%" width="260%" height="260%">
+ <feGaussianBlur stdDeviation="5" result="blur"/>
+ <feColorMatrix
+ in="blur"
+ type="matrix"
+ values="
+ 1 0 0 0 0.80
+ 0 1 0 0 0.28
+ 0 0 1 0 0.05
+ 0 0 0 .85 0"
+ result="emberBlur"/>
+ <feMerge>
+ <feMergeNode in="emberBlur"/>
+ <feMergeNode in="SourceGraphic"/>
+ </feMerge>
+ </filter>
+</defs>
+
+<!-- Cauldron body -->
+<path class="bodyFill" d="M 260 580 Q 260 700 512 720 Q 764 700 764 580 L 764 540 Q 764 520 740 510 L 720 505 Q 680 498 640 500 L 384 500 Q 344 498 304 505 L 284 510 Q 260 520 260 540 Z"/>
+
+<!-- Cauldron rim -->
+<path class="line glow" d="M 240 505 Q 240 485 280 478 L 320 472 Q 512 460 704 472 L 744 478 Q 784 485 784 505 L 784 520 Q 784 535 760 540 L 740 544 Q 680 552 640 550 L 384 550 Q 344 552 284 544 L 264 540 Q 240 535 240 520 Z"/>
+
+<!-- Left handle -->
+<path class="line glow" d="M 260 530 Q 220 530 210 560 Q 200 590 220 610 Q 240 625 260 615"/>
+
+<!-- Right handle -->
+<path class="line glow" d="M 764 530 Q 804 530 814 560 Q 824 590 804 610 Q 784 625 764 615"/>
+
+<!-- Left leg -->
+<path class="line" d="M 340 700 L 320 760 L 360 760"/>
+
+<!-- Right leg -->
+<path class="line" d="M 684 700 L 704 760 L 664 760"/>
+
+<!-- Center leg -->
+<path class="line" d="M 512 715 L 512 770 L 532 770 L 492 770 L 512 770"/>
+
+<!-- Liquid surface -->
+<ellipse class="liquidFill glow" cx="512" cy="530" rx="220" ry="30"/>
+
+<!-- Concentric ripples -->
+<ellipse class="amber soft" cx="512" cy="530" rx="160" ry="22"/>
+<ellipse class="amber dim" cx="512" cy="530" rx="100" ry="14"/>
+
+<!-- Rune patterns on body -->
+<path class="rune" d="M 380 560 L 380 600 M 370 580 L 390 580"/>
+<path class="rune" d="M 440 570 L 440 610 M 430 590 Q 440 580 450 590"/>
+<path class="rune" d="M 500 575 L 510 615 L 520 575"/>
+<path class="rune" d="M 580 570 L 580 610 M 570 580 L 590 580 M 570 600 L 590 600"/>
+<path class="rune" d="M 640 560 L 640 600 M 630 580 Q 640 570 650 580"/>
+
+<!-- Steam tendrils -->
+<path class="steam" d="M 420 490 Q 400 420 430 360 Q 460 300 440 240 Q 420 180 450 120"/>
+<path class="steam" d="M 512 480 Q 530 400 500 330 Q 470 260 510 190 Q 550 120 520 60"/>
+<path class="steam" d="M 600 490 Q 630 420 600 350 Q 570 280 610 210 Q 650 140 620 80"/>
+
+<!-- Steam thin wisps -->
+<path class="steamThin" d="M 460 485 Q 445 430 470 370 Q 495 310 475 250"/>
+<path class="steamThin" d="M 560 485 Q 580 430 555 370 Q 530 310 560 250"/>
+
+<!-- Musical note shape in steam (abstract) -->
+<path class="amber glow" d="M 480 200 L 480 150 Q 480 135 495 135 Q 510 135 510 150 Q 510 165 495 165 L 480 165" fill="none" stroke-width="3"/>
+
+<!-- Quill shape in steam (abstract) -->
+<path class="gold glow thin" d="M 590 180 Q 610 160 600 130 Q 590 100 610 80 L 605 85 Q 585 105 595 130 Q 605 155 585 175" fill="none" stroke-width="2"/>
+
+<!-- Sparks -->
+<circle class="spark" cx="450" cy="380" r="3"/>
+<circle class="spark" cx="540" cy="350" r="2.5"/>
+<circle class="spark" cx="490" cy="300" r="2"/>
+<circle class="spark" cx="570" cy="280" r="2"/>
+<circle class="spark" cx="430" cy="250" r="1.5"/>
+<circle class="spark" cx="560" cy="200" r="1.5"/>
+
+<!-- Fire beneath -->
+<path class="fireFill" d="M 420 780 Q 430 750 450 760 Q 460 740 480 755 Q 490 730 512 745 Q 530 725 545 750 Q 560 735 575 755 Q 590 740 604 780 Q 560 770 512 775 Q 464 770 420 780 Z"/>
+
+<!-- Small flame accents -->
+<path class="ember soft" d="M 440 770 Q 445 755 455 762"/>
+<path class="ember soft" d="M 520 765 Q 525 748 535 758"/>
+<path class="ember soft" d="M 580 770 Q 585 755 595 762"/>
+
+</svg>
