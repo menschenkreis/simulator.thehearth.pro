@@ -1,0 +1,98 @@
+[
+  {
+    "item_slug": "cauldron_svg",
+    "item_type": "visual_asset",
+    "prototype_selector_or_key": "assets/svg/cauldron.svg",
+    "prototype_role": "Decorative cauldron image",
+    "rebuild_recommendation": "Keep as scene asset not interactive SVG",
+    "notes": "Preserved as database-blueprint/assets/svg/cauldron.svg"
+  },
+  {
+    "item_slug": "cauldron_vessel",
+    "item_type": "container",
+    "prototype_selector_or_key": ".cauldron-vessel",
+    "prototype_role": "Holds cauldron SVG",
+    "rebuild_recommendation": "Render inside Create scene component",
+    "notes": "Prototype uses centered max-width 320px image"
+  },
+  {
+    "item_slug": "cauldron_prompt",
+    "item_type": "prompt_overlay",
+    "prototype_selector_or_key": "#cauldronPrompt",
+    "prototype_role": "Prompt text floats over cauldron",
+    "rebuild_recommendation": "Render prompt overlay as HTML component",
+    "notes": "Prototype uses position relative margin-top -120px z-index 2"
+  },
+  {
+    "item_slug": "cauldron_bubbling",
+    "item_type": "animation_class",
+    "prototype_selector_or_key": ".cauldron-bubbling",
+    "prototype_role": "Triggers bubbling scale animation",
+    "rebuild_recommendation": "Keep as CSS animation state",
+    "notes": "Applied when stirring"
+  },
+  {
+    "item_slug": "cauldron_bubble_anim",
+    "item_type": "keyframes",
+    "prototype_selector_or_key": "cauldron-bubble-anim",
+    "prototype_role": "Scale/bubble visual effect",
+    "rebuild_recommendation": "Keep frontend-owned animation",
+    "notes": "Do not store animation in database"
+  },
+  {
+    "item_slug": "ingredient_button",
+    "item_type": "interactive_control",
+    "prototype_selector_or_key": ".cauldron-ingredient",
+    "prototype_role": "Selectable ingredient button",
+    "rebuild_recommendation": "Render from create_ingredients data",
+    "notes": "Selected state should be accessible and keyboard-friendly"
+  },
+  {
+    "item_slug": "ingredient_selected",
+    "item_type": "interactive_state",
+    "prototype_selector_or_key": ".cauldron-ingredient.selected",
+    "prototype_role": "Gold border and glow",
+    "rebuild_recommendation": "Keep as selected visual state",
+    "notes": "Driven by selected ingredient IDs"
+  },
+  {
+    "item_slug": "stir_button",
+    "item_type": "interactive_control",
+    "prototype_selector_or_key": ".cauldron-stir-btn",
+    "prototype_role": "Calls cauldronMix()",
+    "rebuild_recommendation": "Use component event handler that calls prompt engine",
+    "notes": "Should work with one or more selected ingredients"
+  },
+  {
+    "item_slug": "prompt_engine",
+    "item_type": "function",
+    "prototype_selector_or_key": "cauldronMix()",
+    "prototype_role": "Brews random obstruction prompt",
+    "rebuild_recommendation": "Move selection logic toward data-driven prompt service",
+    "notes": "Should support 5 creative elements plus 8 modifier ingredients"
+  },
+  {
+    "item_slug": "prompt_data",
+    "item_type": "global_data",
+    "prototype_selector_or_key": "window.CREATE_DATA",
+    "prototype_role": "Stores prototype prompt data",
+    "rebuild_recommendation": "Replace with API or imported seed data",
+    "notes": "Current newer files use CREATE_OBSTRUCTIONS and CREATE_COMBOS"
+  },
+  {
+    "item_slug": "notes_storage",
+    "item_type": "local_storage",
+    "prototype_selector_or_key": "cauldron-notes",
+    "prototype_role": "Saves scratch notes",
+    "rebuild_recommendation": "Move to creative_project_notes with local fallback",
+    "notes": "Keep localStorage as temporary offline fallback"
+  },
+  {
+    "item_slug": "project_storage",
+    "item_type": "local_storage",
+    "prototype_selector_or_key": "hearth-create-projects",
+    "prototype_role": "Tracks saved projects",
+    "rebuild_recommendation": "Move to creative_projects with profile ownership",
+    "notes": "Useful for later export/sharing"
+  }
+]

@@ -1,0 +1,9 @@
+quest_type,label,plain_meaning,example,primary_nodes,notes
+main_quest,Main Quest,The main path through the current level,Level 1 First Contact,Foundation; Doing; Practice; Study,Should be visible on map/dashboard
+node_quest,Node Quest,A focused quest inside one node,Complete the Foundation threshold,Foundation; Doing; Knowing; Practice; Study; Create; Hearth; Mastery,Good for node identity
+daily_card,Daily Card,A small suggested action for today,Tap pulse for one minute,Practice; Doing; Study; Create,Should be overridable
+recovery_quest,Recovery Quest,A supportive quest triggered by struggle,Find the misunderstood word,Study; Hearth; Foundation,Must not feel punitive
+creative_quest,Creative Quest,A Create node challenge,Complete one obstruction,Create,Reward action not perfection
+source_quest,Source Quest,A quest to discover or use a source,Open a cited page and save one note,Knowing; Study,Supports source-backed learning
+reflection_quest,Reflection Quest,A quest to notice learning/body change,Write what changed after practice,Hearth; Practice,Core Hearth identity
+mastery_quest,Mastery Quest,A long-range inspiration quest,Study one artist and name what they transcend,Mastery,Useful later

@@ -1,0 +1,90 @@
+[
+  {
+    "Resource Name": "JustinGuitar",
+    "Resource Type": "Website",
+    "Skill Node": "Chords",
+    "Level": "Ember",
+    "URL": "https://www.justinguitar.com/",
+    "Why Useful": "Structured beginner-to-intermediate guitar pathway",
+    "Best For": "Beginners",
+    "Status": "Approved",
+    "Notes": ""
+  },
+  {
+    "Resource Name": "Fender Play",
+    "Resource Type": "Course",
+    "Skill Node": "Chords",
+    "Level": "Ember",
+    "URL": "https://www.fender.com/play",
+    "Why Useful": "Guided learning paths and song-based lessons",
+    "Best For": "Beginners",
+    "Status": "To Review",
+    "Notes": ""
+  },
+  {
+    "Resource Name": "Marty Music",
+    "Resource Type": "YouTube Channel",
+    "Skill Node": "Songs",
+    "Level": "Ember",
+    "URL": "https://www.youtube.com/@MartyMusic",
+    "Why Useful": "Accessible song tutorials and riffs",
+    "Best For": "Beginners",
+    "Status": "Approved",
+    "Notes": ""
+  },
+  {
+    "Resource Name": "Andy Guitar",
+    "Resource Type": "Website",
+    "Skill Node": "Songs",
+    "Level": "Ember",
+    "URL": "https://www.andyguitar.co.uk/",
+    "Why Useful": "Beginner-friendly lessons and song pathways",
+    "Best For": "Beginners",
+    "Status": "Approved",
+    "Notes": ""
+  },
+  {
+    "Resource Name": "Signals Music Studio",
+    "Resource Type": "YouTube Channel",
+    "Skill Node": "Theory",
+    "Level": "Ritual",
+    "URL": "https://www.youtube.com/@SignalsMusicStudio",
+    "Why Useful": "Practical theory and songwriting explanations",
+    "Best For": "Intermediate",
+    "Status": "Approved",
+    "Notes": ""
+  },
+  {
+    "Resource Name": "Absolutely Understand Guitar",
+    "Resource Type": "YouTube Channel",
+    "Skill Node": "Theory",
+    "Level": "Flame",
+    "URL": "https://www.youtube.com/@absolutelyunderstandguitar60",
+    "Why Useful": "Deep conceptual guitar theory pathway",
+    "Best For": "Beginners to Intermediate",
+    "Status": "Approved",
+    "Notes": ""
+  },
+  {
+    "Resource Name": "Berklee Online Music Theory",
+    "Resource Type": "Course",
+    "Skill Node": "Theory",
+    "Level": "Ritual",
+    "URL": "https://online.berklee.edu/courses/music-theory-101",
+    "Why Useful": "Formal music theory foundation",
+    "Best For": "Intermediate",
+    "Status": "To Review",
+    "Notes": ""
+  },
+  {
+    "Resource Name": "Berklee Online Ear Training",
+    "Resource Type": "Course",
+    "Skill Node": "Ear Training",
+    "Level": "Ritual",
+    "URL": "https://online.berklee.edu/courses/ear-training-fundamentals",
+    "Why Useful": "Ear training fundamentals and transcription skills",
+    "Best For": "Intermediate",
+    "Status": "To Review",
+    "Notes": ""
+  }
+]

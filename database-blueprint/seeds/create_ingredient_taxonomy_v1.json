@@ -1,0 +1,119 @@
+[
+  {
+    "ingredient_slug": "lyrics",
+    "label": "Lyrics",
+    "group_name": "creative_element",
+    "prototype_source": "create-obstructions/create-combos",
+    "ui_role": "primary creative ingredient",
+    "recommended_status": "keep",
+    "notes": "One of the 5 stronger obstruction/combo categories"
+  },
+  {
+    "ingredient_slug": "melody",
+    "label": "Melody",
+    "group_name": "creative_element",
+    "prototype_source": "create-obstructions/create-combos",
+    "ui_role": "primary creative ingredient",
+    "recommended_status": "keep",
+    "notes": "One of the 5 stronger obstruction/combo categories"
+  },
+  {
+    "ingredient_slug": "riff",
+    "label": "Riff",
+    "group_name": "creative_element",
+    "prototype_source": "create-obstructions/create-combos",
+    "ui_role": "primary creative ingredient",
+    "recommended_status": "keep",
+    "notes": "One of the 5 stronger obstruction/combo categories"
+  },
+  {
+    "ingredient_slug": "rhythm",
+    "label": "Rhythm",
+    "group_name": "creative_element",
+    "prototype_source": "create-obstructions/create-combos",
+    "ui_role": "primary creative ingredient",
+    "recommended_status": "keep",
+    "notes": "One of the 5 stronger obstruction/combo categories"
+  },
+  {
+    "ingredient_slug": "story",
+    "label": "Story",
+    "group_name": "creative_element",
+    "prototype_source": "create-obstructions/create-combos",
+    "ui_role": "primary creative ingredient",
+    "recommended_status": "keep",
+    "notes": "One of the 5 stronger obstruction/combo categories"
+  },
+  {
+    "ingredient_slug": "emotion",
+    "label": "Emotion",
+    "group_name": "obstruction_modifier",
+    "prototype_source": "prototype create.js",
+    "ui_role": "modifier ingredient",
+    "recommended_status": "keep_as_modifier",
+    "notes": "Useful for emotional exposure and prompt tone"
+  },
+  {
+    "ingredient_slug": "time",
+    "label": "Time",
+    "group_name": "obstruction_modifier",
+    "prototype_source": "prototype create.js",
+    "ui_role": "modifier ingredient",
+    "recommended_status": "keep_as_modifier",
+    "notes": "Useful for timed instinct-based prompts"
+  },
+  {
+    "ingredient_slug": "constraint",
+    "label": "Constraint",
+    "group_name": "obstruction_modifier",
+    "prototype_source": "prototype create.js",
+    "ui_role": "modifier ingredient",
+    "recommended_status": "keep_as_modifier",
+    "notes": "Core obstruction concept"
+  },
+  {
+    "ingredient_slug": "collaboration",
+    "label": "Collaboration",
+    "group_name": "obstruction_modifier",
+    "prototype_source": "prototype create.js",
+    "ui_role": "modifier ingredient",
+    "recommended_status": "keep_as_modifier",
+    "notes": "Could support co-writing or imagined interlocutor prompts"
+  },
+  {
+    "ingredient_slug": "cover",
+    "label": "Cover",
+    "group_name": "obstruction_modifier",
+    "prototype_source": "prototype create.js",
+    "ui_role": "modifier ingredient",
+    "recommended_status": "keep_as_modifier",
+    "notes": "Useful for transforming existing songs or influences"
+  },
+  {
+    "ingredient_slug": "genre",
+    "label": "Genre",
+    "group_name": "obstruction_modifier",
+    "prototype_source": "prototype create.js",
+    "ui_role": "modifier ingredient",
+    "recommended_status": "keep_as_modifier",
+    "notes": "Useful for style collision"
+  },
+  {
+    "ingredient_slug": "acoustic",
+    "label": "Acoustic",
+    "group_name": "obstruction_modifier",
+    "prototype_source": "prototype create.js",
+    "ui_role": "modifier ingredient",
+    "recommended_status": "keep_as_modifier",
+    "notes": "Useful for limitation and texture"
+  },
+  {
+    "ingredient_slug": "lyrical",
+    "label": "Lyrical",
+    "group_name": "obstruction_modifier",
+    "prototype_source": "prototype create.js",
+    "ui_role": "modifier ingredient",
+    "recommended_status": "review_name",
+    "notes": "May overlap with Lyrics; consider renaming to language/text/image"
+  }
+]

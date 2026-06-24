@@ -1,0 +1,112 @@
+[
+  {
+    "Priority": 1,
+    "Source": "Principles of Correct Practice for Guitar",
+    "Author": "Jamie Andreas",
+    "Primary Role": "Practice philosophy and body-aware technique",
+    "Hearth Nodes": "Foundation; Practice; Doing; Hearth",
+    "Why It Matters": "Defines attention, tension, correct practice, and how the body learns. This should shape the simulator voice and failure-recovery design.",
+    "Text/OCR Status": "Scanned / OCR needed",
+    "First Extraction Scope": "Printed pages 13-27, 33-40, 69-77; then right hand and left hand sections.",
+    "Output To Build": "Practice principles source notes; Foundation body-scan and first-sound lesson support"
+  },
+  {
+    "Priority": 2,
+    "Source": "Learning the Classic Guitar Part 1",
+    "Author": "Aaron Shearer",
+    "Primary Role": "Foundation technique sequence",
+    "Hearth Nodes": "Foundation; Doing; Practice",
+    "Why It Matters": "Gives a disciplined beginner technique path: positioning, tone, rest stroke, free stroke, left hand, and efficient movement.",
+    "Text/OCR Status": "Scanned / OCR needed",
+    "First Extraction Scope": "TOC plus printed pages 1-27 and 29-42 first.",
+    "Output To Build": "Foundation technique map; source support for rest/free stroke interaction"
+  },
+  {
+    "Priority": 3,
+    "Source": "Fretboard Logic Box Set",
+    "Author": "Bill Edwards",
+    "Primary Role": "Fretboard/CAGED architecture",
+    "Hearth Nodes": "Study; Knowing; Doing",
+    "Why It Matters": "Provides a pattern-based fretboard model. This can anchor Study once Foundation has begun.",
+    "Text/OCR Status": "Scanned / OCR needed",
+    "First Extraction Scope": "TOC plus CAGED/fretboard system overview.",
+    "Output To Build": "Fretboard map source notes; Study node concept graph"
+  },
+  {
+    "Priority": 4,
+    "Source": "The Everything Music Theory Book",
+    "Author": "Marc Schonbrun",
+    "Primary Role": "Beginner-friendly theory and vocabulary",
+    "Hearth Nodes": "Study; Knowing",
+    "Why It Matters": "Text-readable theory source for glossary, misunderstood-word prevention, and Study node sequencing.",
+    "Text/OCR Status": "EPUB / extraction good",
+    "First Extraction Scope": "TOC, fundamentals, rhythm, scales, chords, key signatures, intervals.",
+    "Output To Build": "Study glossary; music-as-language vocabulary ladder"
+  },
+  {
+    "Priority": 5,
+    "Source": "Development of Professional Expertise",
+    "Author": "K. Anders Ericsson",
+    "Primary Role": "Expertise and deliberate practice research",
+    "Hearth Nodes": "Hearth; Practice; Mastery; Study",
+    "Why It Matters": "Gives scientific grounding for deliberate practice, feedback, expert development, and visible intervals to mastery.",
+    "Text/OCR Status": "Text-based / extraction good",
+    "First Extraction Scope": "Introduction, deliberate practice/expert performance chapters, learning environment design sections.",
+    "Output To Build": "Hearth learning-science notes; Practice design principles for Martin"
+  },
+  {
+    "Priority": 6,
+    "Source": "The Cambridge Handbook of Expertise and Expert Performance",
+    "Author": "K. Anders Ericsson et al.",
+    "Primary Role": "Broad expertise research reference",
+    "Hearth Nodes": "Hearth; Practice; Mastery; Study",
+    "Why It Matters": "A deeper reference for learning science and cross-domain simulator design, especially useful beyond guitar.",
+    "Text/OCR Status": "Text-based / extraction good",
+    "First Extraction Scope": "Do not process end to end. Pull selected chapters only after the practice model is clearer.",
+    "Output To Build": "Research backing for reusable simulator engine and progress model"
+  },
+  {
+    "Priority": 7,
+    "Source": "Music, Language, and the Brain",
+    "Author": "Aniruddh D. Patel",
+    "Primary Role": "Music-language-neuroscience bridge",
+    "Hearth Nodes": "Hearth; Study",
+    "Why It Matters": "Supports the core idea that music can be understood through language-like learning and brain development.",
+    "Text/OCR Status": "Text-based / extraction good",
+    "First Extraction Scope": "Overview chapters and rhythm/language/music cognition sections.",
+    "Output To Build": "Hearth explanation notes; music-as-language framework support"
+  },
+  {
+    "Priority": 8,
+    "Source": "This Is Your Brain on Music",
+    "Author": "Daniel J. Levitin",
+    "Primary Role": "Accessible music cognition and emotion",
+    "Hearth Nodes": "Hearth; Study; Mastery",
+    "Why It Matters": "Already source-noted. Good for learner-facing explanations about sound, memory, emotion, anticipation, taste, and expertise.",
+    "Text/OCR Status": "Text-based / extraction good",
+    "First Extraction Scope": "Already mapped at chapter level; deepen only when Hearth lessons need it.",
+    "Output To Build": "Hearth reflections and source-backed explanations"
+  },
+  {
+    "Priority": 9,
+    "Source": "Guitar Building Blocks",
+    "Author": "Patrick Stefurak",
+    "Primary Role": "Beginner practice framing",
+    "Hearth Nodes": "Foundation; Practice; Doing",
+    "Why It Matters": "Text-readable beginner source that can support the practical sequence after the philosophical spine is stable.",
+    "Text/OCR Status": "Text-based / extraction good",
+    "First Extraction Scope": "Practice planning and early beginner concept sequence.",
+    "Output To Build": "Foundation/Practice support notes"
+  },
+  {
+    "Priority": 10,
+    "Source": "Guitar Exercises for Dummies",
+    "Author": "Mark Phillips & Jon Chappell",
+    "Primary Role": "Practical beginner exercises",
+    "Hearth Nodes": "Doing; Practice; Foundation",
+    "Why It Matters": "Already source-noted. Useful for turning concepts into small, practical beginner tasks.",
+    "Text/OCR Status": "Text-based / extraction good",
+    "First Extraction Scope": "Already partially source-noted; deepen around first chords and finger independence when needed.",
+    "Output To Build": "Doing drills and Foundation action steps"
+  }
+]

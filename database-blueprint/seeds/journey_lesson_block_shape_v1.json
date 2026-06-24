@@ -1,0 +1,62 @@
+[
+  {
+    "block_order": 1,
+    "block_key": "review",
+    "block_name": "Review",
+    "purpose": "Reconnect to the last lesson and identify what stuck",
+    "typical_duration_minutes": "5-10",
+    "likely_node": ["Hearth", "Study"],
+    "teaching_engine_use": ["ask", "speak", "cards"],
+    "student_memory_created": ["review note", "remembered concept", "weak spot"]
+  },
+  {
+    "block_order": 2,
+    "block_key": "warm_up",
+    "block_name": "Warm-Up",
+    "purpose": "Prepare body attention pulse and hands",
+    "typical_duration_minutes": "5-10",
+    "likely_node": ["Practice", "Doing"],
+    "teaching_engine_use": ["action"],
+    "student_memory_created": ["body check", "warm-up completed"]
+  },
+  {
+    "block_order": 3,
+    "block_key": "concept",
+    "block_name": "Concept",
+    "purpose": "Introduce one idea at the right gradient",
+    "typical_duration_minutes": "10-15",
+    "likely_node": ["Foundation", "Knowing", "Study"],
+    "teaching_engine_use": ["speak", "cards", "ask"],
+    "student_memory_created": ["concept rating", "source note opened"]
+  },
+  {
+    "block_order": 4,
+    "block_key": "drill",
+    "block_name": "Drill",
+    "purpose": "Repeat one physical or mental action until it becomes clearer",
+    "typical_duration_minutes": "10-20",
+    "likely_node": ["Doing", "Practice"],
+    "teaching_engine_use": ["action"],
+    "student_memory_created": ["task rating", "drill state", "tempo/pass condition"]
+  },
+  {
+    "block_order": 5,
+    "block_key": "music_application",
+    "block_name": "Music Application",
+    "purpose": "Use the idea in a song riff phrase or creative fragment",
+    "typical_duration_minutes": "10-20",
+    "likely_node": ["Practice", "Create", "Mastery"],
+    "teaching_engine_use": ["action", "cards"],
+    "student_memory_created": ["application note", "song fragment", "creative seed"]
+  },
+  {
+    "block_order": 6,
+    "block_key": "reflect",
+    "block_name": "Reflect",
+    "purpose": "Name what changed and what needs the next smaller step",
+    "typical_duration_minutes": "5-10",
+    "likely_node": ["Hearth"],
+    "teaching_engine_use": ["speak", "ask", "cards"],
+    "student_memory_created": ["reflection", "next gradient", "guide memory signal"]
+  }
+]

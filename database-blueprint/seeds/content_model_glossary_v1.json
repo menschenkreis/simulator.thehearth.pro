@@ -1,0 +1,210 @@
+[
+  {
+    "term": "App Node",
+    "plain_meaning": "One major place in the simulator",
+    "content_or_student": "content",
+    "likely_table_or_group": "app_nodes",
+    "example": "Foundation",
+    "important_note": "Core 8 define the world map"
+  },
+  {
+    "term": "Optional Pathway",
+    "plain_meaning": "A side road or themed route",
+    "content_or_student": "content",
+    "likely_table_or_group": "roadmap_items or path grouping",
+    "example": "World Traditions",
+    "important_note": "Can preserve Play without making it core"
+  },
+  {
+    "term": "Skill Node",
+    "plain_meaning": "The ability area being developed",
+    "content_or_student": "content",
+    "likely_table_or_group": "skill_nodes",
+    "example": "Rhythm",
+    "important_note": "Reusable beyond one lesson"
+  },
+  {
+    "term": "Level",
+    "plain_meaning": "How far along the journey this belongs",
+    "content_or_student": "content",
+    "likely_table_or_group": "mastery_levels",
+    "example": "Level 1",
+    "important_note": "Use plain Level 1 through Level 8"
+  },
+  {
+    "term": "Roadmap Item",
+    "plain_meaning": "One learnable unit",
+    "content_or_student": "content",
+    "likely_table_or_group": "roadmap_items",
+    "example": "Open string names",
+    "important_note": "Can connect lessons drills resources and source notes"
+  },
+  {
+    "term": "Lesson",
+    "plain_meaning": "A guided teaching sequence",
+    "content_or_student": "content",
+    "likely_table_or_group": "teaching_lessons",
+    "example": "Lesson 1 Foundation",
+    "important_note": "Contains TeachingEngine steps"
+  },
+  {
+    "term": "TeachingEngine Step",
+    "plain_meaning": "One beat inside a lesson",
+    "content_or_student": "content",
+    "likely_table_or_group": "teaching_steps",
+    "example": "ask step",
+    "important_note": "Step types include speak ask cards action video end"
+  },
+  {
+    "term": "Action Renderer Key",
+    "plain_meaning": "Name of custom interaction to render",
+    "content_or_student": "content/render contract",
+    "likely_table_or_group": "teaching_steps action key",
+    "example": "foundation.body_scan",
+    "important_note": "Frontend owns actual rendering"
+  },
+  {
+    "term": "Book Source",
+    "plain_meaning": "The identity of a book",
+    "content_or_student": "content/source",
+    "likely_table_or_group": "book_sources",
+    "example": "Principles of Correct Practice",
+    "important_note": "Separate from file copies"
+  },
+  {
+    "term": "Book File",
+    "plain_meaning": "An actual file copy of a book",
+    "content_or_student": "content/source",
+    "likely_table_or_group": "book_files",
+    "example": "local PDF or hosted URL",
+    "important_note": "One source can have many files"
+  },
+  {
+    "term": "Book Section",
+    "plain_meaning": "A place inside a book",
+    "content_or_student": "content/source",
+    "likely_table_or_group": "book_sections",
+    "example": "Chapter 1 pages 13-27",
+    "important_note": "Useful for page traceability"
+  },
+  {
+    "term": "Source Note",
+    "plain_meaning": "A traceable extracted idea",
+    "content_or_student": "content/source",
+    "likely_table_or_group": "source_notes",
+    "example": "Relaxation before speed",
+    "important_note": "Should come before lesson drafts"
+  },
+  {
+    "term": "Resource",
+    "plain_meaning": "External learning support",
+    "content_or_student": "content/resources",
+    "likely_table_or_group": "resources",
+    "example": "JustinGuitar lesson",
+    "important_note": "Curated for a specific moment"
+  },
+  {
+    "term": "Media Asset",
+    "plain_meaning": "A file used by the app",
+    "content_or_student": "content/assets",
+    "likely_table_or_group": "media_assets",
+    "example": "cauldron.svg",
+    "important_note": "Track rights and usage purpose"
+  },
+  {
+    "term": "Practice Drill",
+    "plain_meaning": "A repeatable physical task",
+    "content_or_student": "content/practice",
+    "likely_table_or_group": "practice_drills",
+    "example": "Alternate picking 60 BPM",
+    "important_note": "Connect to pass conditions"
+  },
+  {
+    "term": "Practice Session",
+    "plain_meaning": "A real practice event",
+    "content_or_student": "student",
+    "likely_table_or_group": "practice_sessions",
+    "example": "20 minute chord session",
+    "important_note": "Belongs to student profile"
+  },
+  {
+    "term": "Pass Condition",
+    "plain_meaning": "What counts as ready for now",
+    "content_or_student": "content/assessment",
+    "likely_table_or_group": "roadmap_items or lesson criteria",
+    "example": "Play E major once and notice buzzes",
+    "important_note": "Must be observable"
+  },
+  {
+    "term": "Creative Element",
+    "plain_meaning": "What the learner makes with",
+    "content_or_student": "content/create",
+    "likely_table_or_group": "create_ingredients",
+    "example": "Lyrics",
+    "important_note": "Five core elements in newer prompt system"
+  },
+  {
+    "term": "Obstruction Modifier",
+    "plain_meaning": "Pressure applied to a creative task",
+    "content_or_student": "content/create",
+    "likely_table_or_group": "create_ingredients",
+    "example": "Time",
+    "important_note": "Older cauldron ingredients become modifiers"
+  },
+  {
+    "term": "Creative Prompt",
+    "plain_meaning": "The creative challenge",
+    "content_or_student": "content/create",
+    "likely_table_or_group": "create_obstructions or create_combos",
+    "example": "Write apology with proud melody",
+    "important_note": "Includes constraint prompt payoff"
+  },
+  {
+    "term": "Creative Project",
+    "plain_meaning": "A saved creative seed or work",
+    "content_or_student": "student",
+    "likely_table_or_group": "creative_projects",
+    "example": "Song idea from cauldron",
+    "important_note": "Belongs to student profile"
+  },
+  {
+    "term": "User",
+    "plain_meaning": "The account owner",
+    "content_or_student": "student/users",
+    "likely_table_or_group": "users",
+    "example": "Ayla",
+    "important_note": "Can own multiple profiles later"
+  },
+  {
+    "term": "Student Profile",
+    "plain_meaning": "One learner journey",
+    "content_or_student": "student",
+    "likely_table_or_group": "student_profiles",
+    "example": "Jen",
+    "important_note": "Progress attaches here"
+  },
+  {
+    "term": "Progress Record",
+    "plain_meaning": "State of a learner against content",
+    "content_or_student": "student",
+    "likely_table_or_group": "progress_records",
+    "example": "comfortable on drill alt-1",
+    "important_note": "Do not mix with shared content"
+  },
+  {
+    "term": "Lesson Attempt",
+    "plain_meaning": "A record of trying a lesson",
+    "content_or_student": "student",
+    "likely_table_or_group": "lesson_attempts",
+    "example": "Foundation Lesson 1 attempt",
+    "important_note": "Can store score stuck points and completion"
+  },
+  {
+    "term": "Student Note",
+    "plain_meaning": "A learner-written note",
+    "content_or_student": "student",
+    "likely_table_or_group": "student_notes",
+    "example": "My wrist tensed up",
+    "important_note": "Important for reflection and Hearth"
+  }
+]

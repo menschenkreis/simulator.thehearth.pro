@@ -1,0 +1,266 @@
+[
+  {
+    "trait_key": "hands_first",
+    "category": "input",
+    "plain_name": "Hands-first",
+    "meaning": "The body learns before the mind does",
+    "design_response": "Start with a physical action before explanation",
+    "profile_scope": "student_profile"
+  },
+  {
+    "trait_key": "spatial_thinker",
+    "category": "input",
+    "plain_name": "Spatial thinker",
+    "meaning": "Diagrams and maps are the learner language",
+    "design_response": "Use fretboard maps diagrams and node links",
+    "profile_scope": "student_profile"
+  },
+  {
+    "trait_key": "structure_dependent",
+    "category": "input",
+    "plain_name": "Structure-dependent",
+    "meaning": "Needs a clear roadmap",
+    "design_response": "Show current path current step and progress",
+    "profile_scope": "student_profile"
+  },
+  {
+    "trait_key": "context_driven",
+    "category": "input",
+    "plain_name": "Context-driven",
+    "meaning": "Needs to know where this fits",
+    "design_response": "Add a purpose card before drills",
+    "profile_scope": "student_profile"
+  },
+  {
+    "trait_key": "self_researcher",
+    "category": "processing",
+    "plain_name": "Self-researcher",
+    "meaning": "Goes to find sources independently",
+    "design_response": "Offer source notes and deeper reading",
+    "profile_scope": "student_profile"
+  },
+  {
+    "trait_key": "experimental",
+    "category": "processing",
+    "plain_name": "Experimental",
+    "meaning": "Learns by trying and breaking things",
+    "design_response": "Provide safe sandbox experiments",
+    "profile_scope": "student_profile"
+  },
+  {
+    "trait_key": "incubator",
+    "category": "processing",
+    "plain_name": "Incubator",
+    "meaning": "Needs processing time not more input",
+    "design_response": "Offer pause revisit and reflection moments",
+    "profile_scope": "student_profile"
+  },
+  {
+    "trait_key": "top_down_processor",
+    "category": "processing",
+    "plain_name": "Top-down processor",
+    "meaning": "Needs the big picture before details",
+    "design_response": "Show overview before steps",
+    "profile_scope": "student_profile"
+  },
+  {
+    "trait_key": "bottom_up_needs",
+    "category": "processing",
+    "plain_name": "Bottom-up needs",
+    "meaning": "Needs one piece at a time",
+    "design_response": "Chunk lessons into small steps",
+    "profile_scope": "student_profile"
+  },
+  {
+    "trait_key": "pattern_noticer",
+    "category": "processing",
+    "plain_name": "Pattern-noticer",
+    "meaning": "Knows it is learned when it appears everywhere",
+    "design_response": "Show where else the idea appears",
+    "profile_scope": "student_profile"
+  },
+  {
+    "trait_key": "network_thinker",
+    "category": "processing",
+    "plain_name": "Network thinker",
+    "meaning": "Mastery means connection density",
+    "design_response": "Show cross-node links and related concepts",
+    "profile_scope": "student_profile"
+  },
+  {
+    "trait_key": "taxonomic_mind",
+    "category": "processing",
+    "plain_name": "Taxonomic mind",
+    "meaning": "Files ideas by category and type",
+    "design_response": "Organize concepts by families and tags",
+    "profile_scope": "student_profile"
+  },
+  {
+    "trait_key": "structured_freedom",
+    "category": "processing",
+    "plain_name": "Structured freedom",
+    "meaning": "Needs routine frame with choice inside",
+    "design_response": "Offer a clear route with optional branches",
+    "profile_scope": "student_profile"
+  },
+  {
+    "trait_key": "exercise_runner",
+    "category": "output",
+    "plain_name": "Exercise-runner",
+    "meaning": "Follows prescribed practice well",
+    "design_response": "Provide clear practice cards and checklists",
+    "profile_scope": "student_profile"
+  },
+  {
+    "trait_key": "perfectionist",
+    "category": "output",
+    "plain_name": "Perfectionist",
+    "meaning": "Repeats until clean",
+    "design_response": "Use clean stop conditions and prevent overgrinding",
+    "profile_scope": "student_profile"
+  },
+  {
+    "trait_key": "automaticity_benchmark",
+    "category": "output",
+    "plain_name": "Automaticity benchmark",
+    "meaning": "Muscle memory feels like mastery",
+    "design_response": "Track comfortable repetition not just first success",
+    "profile_scope": "student_profile"
+  },
+  {
+    "trait_key": "transfer_benchmark",
+    "category": "output",
+    "plain_name": "Transfer benchmark",
+    "meaning": "Applying elsewhere proves learning",
+    "design_response": "Ask learner to use the skill in a new context",
+    "profile_scope": "student_profile"
+  },
+  {
+    "trait_key": "purpose_activated",
+    "category": "motivation",
+    "plain_name": "Purpose-activated",
+    "meaning": "The reason drives obsession",
+    "design_response": "Show why every exercise matters",
+    "profile_scope": "student_profile"
+  },
+  {
+    "trait_key": "progress_visible",
+    "category": "motivation",
+    "plain_name": "Progress-visible",
+    "meaning": "Hearing or seeing improvement fuels motivation",
+    "design_response": "Show visible progress and before-after evidence",
+    "profile_scope": "student_profile"
+  },
+  {
+    "trait_key": "recording_as_fuel",
+    "category": "motivation",
+    "plain_name": "Recording as fuel",
+    "meaning": "Playback motivates the learner",
+    "design_response": "Make recording easy and prompted",
+    "profile_scope": "student_profile"
+  },
+  {
+    "trait_key": "connection_finder",
+    "category": "motivation",
+    "plain_name": "Connection-finder",
+    "meaning": "Links between ideas create energy",
+    "design_response": "Surface related ideas and cross-node pathways",
+    "profile_scope": "student_profile"
+  },
+  {
+    "trait_key": "growth_noticer",
+    "category": "motivation",
+    "plain_name": "Growth-noticer",
+    "meaning": "Small improvements matter",
+    "design_response": "Name micro-wins after practice",
+    "profile_scope": "student_profile"
+  },
+  {
+    "trait_key": "joy_dependent",
+    "category": "motivation",
+    "plain_name": "Joy-dependent",
+    "meaning": "Fun is fuel not decoration",
+    "design_response": "Keep playful challenges and musical rewards",
+    "profile_scope": "student_profile"
+  },
+  {
+    "trait_key": "gradient_need",
+    "category": "warning",
+    "plain_name": "Gradient need",
+    "meaning": "Too steep a step causes shutdown",
+    "design_response": "Offer a simpler version on struggle",
+    "profile_scope": "student_profile"
+  },
+  {
+    "trait_key": "misunderstood_word_sensitive",
+    "category": "warning",
+    "plain_name": "Misunderstood-word sensitive",
+    "meaning": "A missing definition can block everything after it",
+    "design_response": "Ask which word went foggy and open glossary",
+    "profile_scope": "student_profile"
+  },
+  {
+    "trait_key": "ambiguity_trigger",
+    "category": "warning",
+    "plain_name": "Ambiguity trigger",
+    "meaning": "No clear next step causes paralysis",
+    "design_response": "Always show the next action",
+    "profile_scope": "student_profile"
+  },
+  {
+    "trait_key": "boredom_trigger",
+    "category": "warning",
+    "plain_name": "Boredom trigger",
+    "meaning": "Too slow a pace causes disengagement",
+    "design_response": "Offer a variation or challenge before boredom sets in",
+    "profile_scope": "student_profile"
+  },
+  {
+    "trait_key": "passive_processor",
+    "category": "warning",
+    "plain_name": "Passive processor",
+    "meaning": "The app must help organize action",
+    "design_response": "Make the next step obvious and structured",
+    "profile_scope": "student_profile"
+  },
+  {
+    "trait_key": "under_records",
+    "category": "warning",
+    "plain_name": "Under-records",
+    "meaning": "Recording is useful but easily skipped",
+    "design_response": "Prompt short recordings at natural moments",
+    "profile_scope": "student_profile"
+  },
+  {
+    "trait_key": "teacher_learner",
+    "category": "pattern",
+    "plain_name": "Teacher-learner",
+    "meaning": "Teaching is a learning tool",
+    "design_response": "Add teach-back prompts and teacher prep notes",
+    "profile_scope": "student_profile"
+  },
+  {
+    "trait_key": "necessity_learner",
+    "category": "pattern",
+    "plain_name": "Necessity-learner",
+    "meaning": "Rises when there is a real occasion",
+    "design_response": "Connect tasks to upcoming lessons or performances",
+    "profile_scope": "student_profile"
+  },
+  {
+    "trait_key": "play_state_learner",
+    "category": "pattern",
+    "plain_name": "Play-state learner",
+    "meaning": "Learns best when it feels like play",
+    "design_response": "Use games jams and low-pressure experiments",
+    "profile_scope": "student_profile"
+  },
+  {
+    "trait_key": "mentor_responsive",
+    "category": "pattern",
+    "plain_name": "Mentor-responsive",
+    "meaning": "Guidance accelerates learning",
+    "design_response": "Use guide character and teacher feedback well",
+    "profile_scope": "student_profile"
+  }
+]

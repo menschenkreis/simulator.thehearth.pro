@@ -1,0 +1,149 @@
+[
+  {
+    "state_slug": "unseen",
+    "label": "Unseen",
+    "applies_to": "general",
+    "plain_meaning": "Learner has not encountered it yet",
+    "notes": "Default state"
+  },
+  {
+    "state_slug": "seen",
+    "label": "Seen",
+    "applies_to": "general",
+    "plain_meaning": "Learner has opened or encountered it",
+    "notes": "Low pressure"
+  },
+  {
+    "state_slug": "tried",
+    "label": "Tried",
+    "applies_to": "general",
+    "plain_meaning": "Learner attempted it at least once",
+    "notes": "Important for beginner bravery"
+  },
+  {
+    "state_slug": "needs_review",
+    "label": "Needs Review",
+    "applies_to": "general",
+    "plain_meaning": "Learner should return to it",
+    "notes": "Should trigger supportive recovery not shame"
+  },
+  {
+    "state_slug": "clean_once",
+    "label": "Clean Once",
+    "applies_to": "doing",
+    "plain_meaning": "Learner performed it cleanly one time",
+    "notes": "Better than jumping straight to mastered"
+  },
+  {
+    "state_slug": "comfortable",
+    "label": "Comfortable",
+    "applies_to": "doing",
+    "plain_meaning": "Learner can repeat with some ease",
+    "notes": "Intermediate embodied state"
+  },
+  {
+    "state_slug": "mastered",
+    "label": "Mastered",
+    "applies_to": "general",
+    "plain_meaning": "Learner met pass condition reliably",
+    "notes": "Must be tied to pass condition"
+  },
+  {
+    "state_slug": "unread",
+    "label": "Unread",
+    "applies_to": "knowing_study",
+    "plain_meaning": "Source or topic not read yet",
+    "notes": "Reading-specific default"
+  },
+  {
+    "state_slug": "opened",
+    "label": "Opened",
+    "applies_to": "knowing_study",
+    "plain_meaning": "Learner opened a book/source/topic",
+    "notes": "Useful for library progress"
+  },
+  {
+    "state_slug": "read",
+    "label": "Read",
+    "applies_to": "knowing_study",
+    "plain_meaning": "Learner read the item",
+    "notes": "Should not imply mastery"
+  },
+  {
+    "state_slug": "reviewed",
+    "label": "Reviewed",
+    "applies_to": "knowing_study",
+    "plain_meaning": "Learner returned and reviewed it",
+    "notes": "Useful for study loops"
+  },
+  {
+    "state_slug": "prompt_drawn",
+    "label": "Prompt Drawn",
+    "applies_to": "create",
+    "plain_meaning": "Learner generated a prompt",
+    "notes": "Create-specific"
+  },
+  {
+    "state_slug": "draft_started",
+    "label": "Draft Started",
+    "applies_to": "create",
+    "plain_meaning": "Learner began a response",
+    "notes": "Creative work state"
+  },
+  {
+    "state_slug": "seed_saved",
+    "label": "Seed Saved",
+    "applies_to": "create",
+    "plain_meaning": "Learner saved a creative seed",
+    "notes": "Creative memory"
+  },
+  {
+    "state_slug": "returned_to",
+    "label": "Returned To",
+    "applies_to": "create",
+    "plain_meaning": "Learner revisited a seed/project",
+    "notes": "Important creative practice"
+  },
+  {
+    "state_slug": "finished_enough",
+    "label": "Finished Enough",
+    "applies_to": "create",
+    "plain_meaning": "Learner completed enough for now",
+    "notes": "Better than perfection language"
+  },
+  {
+    "state_slug": "planned",
+    "label": "Planned",
+    "applies_to": "practice",
+    "plain_meaning": "Practice session or card selected",
+    "notes": "Practice-specific"
+  },
+  {
+    "state_slug": "started",
+    "label": "Started",
+    "applies_to": "practice",
+    "plain_meaning": "Practice began",
+    "notes": "Practice-specific"
+  },
+  {
+    "state_slug": "completed",
+    "label": "Completed",
+    "applies_to": "practice",
+    "plain_meaning": "Practice session completed",
+    "notes": "Practice-specific"
+  },
+  {
+    "state_slug": "repeated",
+    "label": "Repeated",
+    "applies_to": "practice",
+    "plain_meaning": "Learner repeated a practice item",
+    "notes": "Practice-specific"
+  },
+  {
+    "state_slug": "reflected",
+    "label": "Reflected",
+    "applies_to": "practice_hearth",
+    "plain_meaning": "Learner wrote reflection",
+    "notes": "Feeds Hearth"
+  }
+]

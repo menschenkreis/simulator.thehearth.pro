@@ -1,0 +1,146 @@
+[
+  {
+    "List": "Status",
+    "Value": "Not Started"
+  },
+  {
+    "List": "Status",
+    "Value": "In Progress"
+  },
+  {
+    "List": "Status",
+    "Value": "Review"
+  },
+  {
+    "List": "Status",
+    "Value": "Complete"
+  },
+  {
+    "List": "Priority",
+    "Value": "Low"
+  },
+  {
+    "List": "Priority",
+    "Value": "Medium"
+  },
+  {
+    "List": "Priority",
+    "Value": "High"
+  },
+  {
+    "List": "Level",
+    "Value": "Level 1"
+  },
+  {
+    "List": "Level",
+    "Value": "Level 2"
+  },
+  {
+    "List": "Level",
+    "Value": "Level 3"
+  },
+  {
+    "List": "Level",
+    "Value": "Level 4"
+  },
+  {
+    "List": "Level",
+    "Value": "Level 5"
+  },
+  {
+    "List": "Level",
+    "Value": "Level 6"
+  },
+  {
+    "List": "Level",
+    "Value": "Level 7"
+  },
+  {
+    "List": "Level",
+    "Value": "Level 8"
+  },
+  {
+    "List": "Skill Node",
+    "Value": "Rhythm"
+  },
+  {
+    "List": "Skill Node",
+    "Value": "Chords"
+  },
+  {
+    "List": "Skill Node",
+    "Value": "Fretboard"
+  },
+  {
+    "List": "Skill Node",
+    "Value": "Technique"
+  },
+  {
+    "List": "Skill Node",
+    "Value": "Theory"
+  },
+  {
+    "List": "Skill Node",
+    "Value": "Ear Training"
+  },
+  {
+    "List": "Skill Node",
+    "Value": "Scales & Lead"
+  },
+  {
+    "List": "Skill Node",
+    "Value": "Songs"
+  },
+  {
+    "List": "Skill Node",
+    "Value": "Improvisation / Creation"
+  },
+  {
+    "List": "Resource Type",
+    "Value": "YouTube Channel"
+  },
+  {
+    "List": "Resource Type",
+    "Value": "YouTube Video"
+  },
+  {
+    "List": "Resource Type",
+    "Value": "Website"
+  },
+  {
+    "List": "Resource Type",
+    "Value": "Course"
+  },
+  {
+    "List": "Resource Type",
+    "Value": "Book"
+  },
+  {
+    "List": "Resource Type",
+    "Value": "App"
+  },
+  {
+    "List": "Resource Type",
+    "Value": "Tool"
+  },
+  {
+    "List": "Song Status",
+    "Value": "Wishlist"
+  },
+  {
+    "List": "Song Status",
+    "Value": "Learning"
+  },
+  {
+    "List": "Song Status",
+    "Value": "Playable"
+  },
+  {
+    "List": "Song Status",
+    "Value": "Learned"
+  },
+  {
+    "List": "Song Status",
+    "Value": "Performance Ready"
+  }
+]

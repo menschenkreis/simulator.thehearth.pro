@@ -1,0 +1,56 @@
+[
+  {
+    "string_id": "high-e",
+    "label": "e",
+    "hint": "Speed / style",
+    "weight": "1.4px",
+    "categories": "speed; styles",
+    "recommended_skill_node": "Technique",
+    "sort_order": "1"
+  },
+  {
+    "string_id": "b",
+    "label": "B",
+    "hint": "Arpeggios / harmony",
+    "weight": "1.8px",
+    "categories": "arpeggios",
+    "recommended_skill_node": "Chords",
+    "sort_order": "2"
+  },
+  {
+    "string_id": "g",
+    "label": "G",
+    "hint": "Scales / maps",
+    "weight": "2.2px",
+    "categories": "scales",
+    "recommended_skill_node": "Scales & Lead",
+    "sort_order": "3"
+  },
+  {
+    "string_id": "d",
+    "label": "D",
+    "hint": "Picking / attack",
+    "weight": "2.6px",
+    "categories": "picking",
+    "recommended_skill_node": "Technique",
+    "sort_order": "4"
+  },
+  {
+    "string_id": "a",
+    "label": "A",
+    "hint": "Fretting / grip",
+    "weight": "3px",
+    "categories": "fretting",
+    "recommended_skill_node": "Technique",
+    "sort_order": "5"
+  },
+  {
+    "string_id": "low-e",
+    "label": "E",
+    "hint": "Rhythm / pulse",
+    "weight": "3.4px",
+    "categories": "rhythm",
+    "recommended_skill_node": "Rhythm",
+    "sort_order": "6"
+  }
+]

@@ -1,0 +1,16 @@
+key_name,value_type,purpose,recommended_future_home,migration_priority,notes
+hearth-foundation-progress,Object,Foundation block completion,progress_records or lesson_attempts,high,Map block completion to student profile
+hearth-doing-progress,Object,Drill completion states,progress_records and drill_attempts,high,Values include booleans and state strings
+hearth-knowing-progress,Object,Topic read states,progress_records or source_note_reads,high,Topic IDs need stable canonical slugs
+hearth-knowing-state,Object,Book reader position,student_reading_state,medium,Useful for resume reading
+hearth-knowing-quiz,Object,Quiz states,quiz_attempts,medium,Prototype quizzes are weak and should be redesigned
+hearth-practice-state,Object,Active practice session,practice_session_state,high,Could remain local during active session
+hearth-practice-log,Array,Session history,practice_sessions,high,Important user data
+hearth-practice-notes,Array,Session notes,student_notes or practice_reflections,high,Important reflective data
+hearth-journey-v2,Object,Multi-student data,student_profiles plus journey_progress,high,Core Journey migration item
+hearth-journey-active-student,String,Current student ID,user preference / active profile,medium,Useful app preference
+cauldron-notes,String,Create node scratch notes,creative_project_notes,medium,Could stay local draft until saved
+hearth-create-projects,Array,Create projects,creative_projects,medium,Important once Create matures
+travelledPaths,Array,Map path travelled state,map_progress_state,low,Can be regenerated from progress later
+flameNode,String,Current flame position,user interface state,low,UI preference not core learning data
+hearth-sessions,Array,Session timestamps,practice_sessions or app_sessions,medium,Clarify difference from practice log

@@ -1,0 +1,58 @@
+[
+  {
+    "event_order": "1",
+    "event_name": "Enter Map",
+    "learner_experience": "Learner returns to the symbolic world",
+    "system_response": "Show current quest and node states",
+    "possible_data_written": "current_node or interface state"
+  },
+  {
+    "event_order": "2",
+    "event_name": "Choose Quest",
+    "learner_experience": "Learner chooses or accepts next action",
+    "system_response": "Open relevant node/scene",
+    "possible_data_written": "active quest state"
+  },
+  {
+    "event_order": "3",
+    "event_name": "Do Action",
+    "learner_experience": "Learner completes lesson step drill study prompt or practice",
+    "system_response": "Validate or ask for self-assessment",
+    "possible_data_written": "lesson attempt drill attempt practice state"
+  },
+  {
+    "event_order": "4",
+    "event_name": "Receive Feedback",
+    "learner_experience": "Learner sees explanation result or next suggestion",
+    "system_response": "Update state and offer recovery if needed",
+    "possible_data_written": "progress record attempt details"
+  },
+  {
+    "event_order": "5",
+    "event_name": "Earn Progress",
+    "learner_experience": "Learner gets visible evidence of completion",
+    "system_response": "Glow card node map ring or milestone",
+    "possible_data_written": "student accomplishment progress record"
+  },
+  {
+    "event_order": "6",
+    "event_name": "Reflect",
+    "learner_experience": "Learner writes or selects body/meaning reflection",
+    "system_response": "Save memory and feed Hearth",
+    "possible_data_written": "student note reflection practice session"
+  },
+  {
+    "event_order": "7",
+    "event_name": "Return To Map",
+    "learner_experience": "Learner sees changed world",
+    "system_response": "Update map/dashboard/current path",
+    "possible_data_written": "map progress current recommendation"
+  },
+  {
+    "event_order": "8",
+    "event_name": "Next Return Point",
+    "learner_experience": "Learner sees what to do next",
+    "system_response": "Suggest next daily card quest or review item",
+    "possible_data_written": "recommendation state"
+  }
+]

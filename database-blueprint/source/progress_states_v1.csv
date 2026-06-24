@@ -1,0 +1,22 @@
+state_slug,label,applies_to,plain_meaning,notes
+unseen,Unseen,general,Learner has not encountered it yet,Default state
+seen,Seen,general,Learner has opened or encountered it,Low pressure
+tried,Tried,general,Learner attempted it at least once,Important for beginner bravery
+needs_review,Needs Review,general,Learner should return to it,Should trigger supportive recovery not shame
+clean_once,Clean Once,doing,Learner performed it cleanly one time,Better than jumping straight to mastered
+comfortable,Comfortable,doing,Learner can repeat with some ease,Intermediate embodied state
+mastered,Mastered,general,Learner met pass condition reliably,Must be tied to pass condition
+unread,Unread,knowing_study,Source or topic not read yet,Reading-specific default
+opened,Opened,knowing_study,Learner opened a book/source/topic,Useful for library progress
+read,Read,knowing_study,Learner read the item,Should not imply mastery
+reviewed,Reviewed,knowing_study,Learner returned and reviewed it,Useful for study loops
+prompt_drawn,Prompt Drawn,create,Learner generated a prompt,Create-specific
+draft_started,Draft Started,create,Learner began a response,Creative work state
+seed_saved,Seed Saved,create,Learner saved a creative seed,Creative memory
+returned_to,Returned To,create,Learner revisited a seed/project,Important creative practice
+finished_enough,Finished Enough,create,Learner completed enough for now,Better than perfection language
+planned,Planned,practice,Practice session or card selected,Practice-specific
+started,Started,practice,Practice began,Practice-specific
+completed,Completed,practice,Practice session completed,Practice-specific
+repeated,Repeated,practice,Learner repeated a practice item,Practice-specific
+reflected,Reflected,practice_hearth,Learner wrote reflection,Feeds Hearth

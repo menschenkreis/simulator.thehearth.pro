@@ -1,0 +1,13 @@
+item_slug,item_type,prototype_selector_or_key,prototype_role,rebuild_recommendation,notes
+cauldron_svg,visual_asset,assets/svg/cauldron.svg,Decorative cauldron image,Keep as scene asset not interactive SVG,Preserved as database-blueprint/assets/svg/cauldron.svg
+cauldron_vessel,container,.cauldron-vessel,Holds cauldron SVG,Render inside Create scene component,Prototype uses centered max-width 320px image
+cauldron_prompt,prompt_overlay,#cauldronPrompt,Prompt text floats over cauldron,Render prompt overlay as HTML component,Prototype uses position relative margin-top -120px z-index 2
+cauldron_bubbling,animation_class,.cauldron-bubbling,Triggers bubbling scale animation,Keep as CSS animation state,Applied when stirring
+cauldron_bubble_anim,keyframes,cauldron-bubble-anim,Scale/bubble visual effect,Keep frontend-owned animation,Do not store animation in database
+ingredient_button,interactive_control,.cauldron-ingredient,Selectable ingredient button,Render from create_ingredients data,Selected state should be accessible and keyboard-friendly
+ingredient_selected,interactive_state,.cauldron-ingredient.selected,Gold border and glow,Keep as selected visual state,Driven by selected ingredient IDs
+stir_button,interactive_control,.cauldron-stir-btn,Calls cauldronMix(),Use component event handler that calls prompt engine,Should work with one or more selected ingredients
+prompt_engine,function,cauldronMix(),Brews random obstruction prompt,Move selection logic toward data-driven prompt service,Should support 5 creative elements plus 8 modifier ingredients
+prompt_data,global_data,window.CREATE_DATA,Stores prototype prompt data,Replace with API or imported seed data,Current newer files use CREATE_OBSTRUCTIONS and CREATE_COMBOS
+notes_storage,local_storage,cauldron-notes,Saves scratch notes,Move to creative_project_notes with local fallback,Keep localStorage as temporary offline fallback
+project_storage,local_storage,hearth-create-projects,Tracks saved projects,Move to creative_projects with profile ownership,Useful for later export/sharing

@@ -1,0 +1,19 @@
+trigger,profile_trait,system_response,example_copy
+wrong_answer,misunderstood_word_sensitive,Offer a term check before re-teaching,Was there a word in that question that went foggy?
+wrong_answer,gradient_need,Offer a smaller step and re-ask,Let's make the step smaller and try the same idea again.
+new_theory,hands_first,Add a physical action before long explanation,Touch the string first. Then we will name what happened.
+new_theory,top_down_processor,Show the big picture first,Here is the map before we walk the path.
+new_theory,bottom_up_needs,Limit the step to one small piece,One note. One movement. That is enough for now.
+study_topic,spatial_thinker,Show diagram or map alongside text,See it on the fretboard before reading the paragraph.
+study_topic,self_researcher,Show source notes and deeper references,Here is where this idea comes from if you want the trail.
+practice_start,structure_dependent,Show exact session shape,Today has three parts: warm up, pattern, tiny song.
+practice_start,joy_dependent,Include a playful musical goal,Make it sound good before you make it impressive.
+practice_reflection,progress_visible,Ask for one visible improvement,What is one thing that sounded cleaner than last time?
+practice_reflection,recording_as_fuel,Prompt a short recording,Record ten seconds now so tomorrow has proof.
+over_repeating,perfectionist,Give a clean stopping rule,Clean once counts. Comfort grows tomorrow.
+lesson_prep,teacher_learner,Ask for a teach-back,How would you explain this to Jen in one sentence?
+lesson_prep,necessity_learner,Connect practice to a real upcoming use,This is for the next lesson. Prepare the part you will need to guide.
+stuck_state,ambiguity_trigger,Give a single next action,Your next action is: play string 6 open, then fret 2.
+stuck_state,incubator,Offer pause and return,Pause here. The brain may need quiet before more input.
+boredom_signal,boredom_trigger,Offer variation or challenge,Same skill, new angle: make it softer, slower, or stranger.
+create_prompt,play_state_learner,Frame as play not assessment,Try it like a game. No one is grading the first sound.

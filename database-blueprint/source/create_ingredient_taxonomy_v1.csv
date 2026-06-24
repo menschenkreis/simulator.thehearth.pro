@@ -1,0 +1,14 @@
+ingredient_slug,label,group_name,prototype_source,ui_role,recommended_status,notes
+lyrics,Lyrics,creative_element,create-obstructions/create-combos,primary creative ingredient,keep,One of the 5 stronger obstruction/combo categories
+melody,Melody,creative_element,create-obstructions/create-combos,primary creative ingredient,keep,One of the 5 stronger obstruction/combo categories
+riff,Riff,creative_element,create-obstructions/create-combos,primary creative ingredient,keep,One of the 5 stronger obstruction/combo categories
+rhythm,Rhythm,creative_element,create-obstructions/create-combos,primary creative ingredient,keep,One of the 5 stronger obstruction/combo categories
+story,Story,creative_element,create-obstructions/create-combos,primary creative ingredient,keep,One of the 5 stronger obstruction/combo categories
+emotion,Emotion,obstruction_modifier,prototype create.js,modifier ingredient,keep_as_modifier,Useful for emotional exposure and prompt tone
+time,Time,obstruction_modifier,prototype create.js,modifier ingredient,keep_as_modifier,Useful for timed instinct-based prompts
+constraint,Constraint,obstruction_modifier,prototype create.js,modifier ingredient,keep_as_modifier,Core obstruction concept
+collaboration,Collaboration,obstruction_modifier,prototype create.js,modifier ingredient,keep_as_modifier,Could support co-writing or imagined interlocutor prompts
+cover,Cover,obstruction_modifier,prototype create.js,modifier ingredient,keep_as_modifier,Useful for transforming existing songs or influences
+genre,Genre,obstruction_modifier,prototype create.js,modifier ingredient,keep_as_modifier,Useful for style collision
+acoustic,Acoustic,obstruction_modifier,prototype create.js,modifier ingredient,keep_as_modifier,Useful for limitation and texture
+lyrical,Lyrical,obstruction_modifier,prototype create.js,modifier ingredient,review_name,May overlap with Lyrics; consider renaming to language/text/image

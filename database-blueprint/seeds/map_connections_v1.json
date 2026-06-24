@@ -1,0 +1,155 @@
+[
+  {
+    "from_slug": "foundation",
+    "to_slug": "doing",
+    "connection_type": "prototype_gold_branch",
+    "visual_path": "left_branch_top",
+    "reason": "Foundation opens into the physical skill path",
+    "svg_status": "coordinate_known",
+    "notes": "Gold connection class is gold-conn; exact path id still needed from full SVG"
+  },
+  {
+    "from_slug": "doing",
+    "to_slug": "practice",
+    "connection_type": "prototype_gold_branch",
+    "visual_path": "left_branch_middle",
+    "reason": "Doing descends into focused practice and embodied repetition",
+    "svg_status": "coordinate_known",
+    "notes": "Exact path id still needed from full SVG"
+  },
+  {
+    "from_slug": "practice",
+    "to_slug": "hearth",
+    "connection_type": "prototype_gold_branch",
+    "visual_path": "left_branch_center",
+    "reason": "Physical work should feed the Hearth reflection layer",
+    "svg_status": "coordinate_known",
+    "notes": "Exact path id still needed from full SVG"
+  },
+  {
+    "from_slug": "foundation",
+    "to_slug": "knowing",
+    "connection_type": "prototype_gold_branch",
+    "visual_path": "right_branch_top",
+    "reason": "Foundation opens into the knowledge and reference path",
+    "svg_status": "coordinate_known",
+    "notes": "Gold connection class is gold-conn; exact path id still needed from full SVG"
+  },
+  {
+    "from_slug": "knowing",
+    "to_slug": "study",
+    "connection_type": "prototype_gold_branch",
+    "visual_path": "right_branch_middle",
+    "reason": "Knowing descends into structured study and concept checks",
+    "svg_status": "coordinate_known",
+    "notes": "Exact path id still needed from full SVG"
+  },
+  {
+    "from_slug": "study",
+    "to_slug": "hearth",
+    "connection_type": "prototype_gold_branch",
+    "visual_path": "right_branch_center",
+    "reason": "Study should feed misunderstood-word recovery and learning reflection",
+    "svg_status": "coordinate_known",
+    "notes": "Exact path id still needed from full SVG"
+  },
+  {
+    "from_slug": "hearth",
+    "to_slug": "play",
+    "connection_type": "prototype_gold_branch",
+    "visual_path": "lower_left_branch",
+    "reason": "Hearth fans into Play or World Traditions as listening and cultural exploration",
+    "svg_status": "coordinate_known",
+    "notes": "Play recommended as optional pathway not core node"
+  },
+  {
+    "from_slug": "hearth",
+    "to_slug": "create",
+    "connection_type": "prototype_gold_branch",
+    "visual_path": "lower_right_branch",
+    "reason": "Hearth fans into Create as expressive output and personal meaning",
+    "svg_status": "coordinate_known",
+    "notes": "Exact path id still needed from full SVG"
+  },
+  {
+    "from_slug": "play",
+    "to_slug": "mastery",
+    "connection_type": "prototype_gold_branch",
+    "visual_path": "lower_left_convergence",
+    "reason": "World traditions can feed artistry and long-range musical imagination",
+    "svg_status": "coordinate_known",
+    "notes": "Optional pathway if Play is absorbed into Mastery or Knowing"
+  },
+  {
+    "from_slug": "create",
+    "to_slug": "mastery",
+    "connection_type": "prototype_gold_branch",
+    "visual_path": "lower_right_convergence",
+    "reason": "Creative practice points toward voice artistry and mastery",
+    "svg_status": "coordinate_known",
+    "notes": "The poetry end of the language metaphor"
+  },
+  {
+    "from_slug": "foundation",
+    "to_slug": "mastery",
+    "connection_type": "central_spine",
+    "visual_path": "spine_l1_to_l8",
+    "reason": "Central spine shows the long Level 1 to Level 8 journey",
+    "svg_status": "partial_svg_ids_known",
+    "notes": "Known segment ids include spine-l1 through spine-l8; labels L1-L8; full SVG paste cut off mid-label"
+  },
+  {
+    "from_slug": "doing",
+    "to_slug": "create",
+    "connection_type": "conceptual_application",
+    "visual_path": "not_drawn_or_unknown",
+    "reason": "Technique becomes material for riffs rhythm melody and songs",
+    "svg_status": "conceptual",
+    "notes": "Useful backend relationship even if not drawn directly"
+  },
+  {
+    "from_slug": "knowing",
+    "to_slug": "create",
+    "connection_type": "conceptual_application",
+    "visual_path": "not_drawn_or_unknown",
+    "reason": "Theory and references become creative choices",
+    "svg_status": "conceptual",
+    "notes": "Useful for songwriting prompts"
+  },
+  {
+    "from_slug": "knowing",
+    "to_slug": "mastery",
+    "connection_type": "conceptual_aspiration",
+    "visual_path": "not_drawn_or_unknown",
+    "reason": "Artist and source references support advanced inspiration",
+    "svg_status": "conceptual",
+    "notes": "Mastery should cite examples"
+  },
+  {
+    "from_slug": "practice",
+    "to_slug": "doing",
+    "connection_type": "feedback_loop",
+    "visual_path": "not_drawn_or_unknown",
+    "reason": "Practice results should update drill confidence and next actions",
+    "svg_status": "conceptual",
+    "notes": "Important backend relationship"
+  },
+  {
+    "from_slug": "study",
+    "to_slug": "knowing",
+    "connection_type": "feedback_loop",
+    "visual_path": "not_drawn_or_unknown",
+    "reason": "Study questions should link back to source notes and reference entries",
+    "svg_status": "conceptual",
+    "notes": "Knowing is source library Study is learning process"
+  },
+  {
+    "from_slug": "mastery",
+    "to_slug": "hearth",
+    "connection_type": "reflection_loop",
+    "visual_path": "not_drawn_or_unknown",
+    "reason": "Long-range inspiration should return to identity reflection and learner purpose",
+    "svg_status": "conceptual",
+    "notes": "Useful for Hearth dashboard and journey reflection"
+  }
+]

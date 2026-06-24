@@ -1,0 +1,66 @@
+[
+  {
+    "quest_type": "main_quest",
+    "label": "Main Quest",
+    "plain_meaning": "The main path through the current level",
+    "example": "Level 1 First Contact",
+    "primary_nodes": "Foundation; Doing; Practice; Study",
+    "notes": "Should be visible on map/dashboard"
+  },
+  {
+    "quest_type": "node_quest",
+    "label": "Node Quest",
+    "plain_meaning": "A focused quest inside one node",
+    "example": "Complete the Foundation threshold",
+    "primary_nodes": "Foundation; Doing; Knowing; Practice; Study; Create; Hearth; Mastery",
+    "notes": "Good for node identity"
+  },
+  {
+    "quest_type": "daily_card",
+    "label": "Daily Card",
+    "plain_meaning": "A small suggested action for today",
+    "example": "Tap pulse for one minute",
+    "primary_nodes": "Practice; Doing; Study; Create",
+    "notes": "Should be overridable"
+  },
+  {
+    "quest_type": "recovery_quest",
+    "label": "Recovery Quest",
+    "plain_meaning": "A supportive quest triggered by struggle",
+    "example": "Find the misunderstood word",
+    "primary_nodes": "Study; Hearth; Foundation",
+    "notes": "Must not feel punitive"
+  },
+  {
+    "quest_type": "creative_quest",
+    "label": "Creative Quest",
+    "plain_meaning": "A Create node challenge",
+    "example": "Complete one obstruction",
+    "primary_nodes": "Create",
+    "notes": "Reward action not perfection"
+  },
+  {
+    "quest_type": "source_quest",
+    "label": "Source Quest",
+    "plain_meaning": "A quest to discover or use a source",
+    "example": "Open a cited page and save one note",
+    "primary_nodes": "Knowing; Study",
+    "notes": "Supports source-backed learning"
+  },
+  {
+    "quest_type": "reflection_quest",
+    "label": "Reflection Quest",
+    "plain_meaning": "A quest to notice learning/body change",
+    "example": "Write what changed after practice",
+    "primary_nodes": "Hearth; Practice",
+    "notes": "Core Hearth identity"
+  },
+  {
+    "quest_type": "mastery_quest",
+    "label": "Mastery Quest",
+    "plain_meaning": "A long-range inspiration quest",
+    "example": "Study one artist and name what they transcend",
+    "primary_nodes": "Mastery",
+    "notes": "Useful later"
+  }
+]

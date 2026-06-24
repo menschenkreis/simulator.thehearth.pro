@@ -1,0 +1,30 @@
+[
+  {
+    "asset_key": "foundation.learning_barrier.lack_of_mass",
+    "concept": "absence of mass",
+    "width": 4371,
+    "height": 3087,
+    "source_path": "/Users/alessandralove/Documents/TREE OF LIFE/PRODUCTION/SIMULATION/ASSETS/Learning how to Learn/Lack of Mass.png",
+    "recommended_app_path": "assets/images/foundation/learning-how-to-learn/lack-of-mass.png",
+    "recommended_use": "Explain why theory needs physical examples, objects, diagrams, and doing steps"
+  },
+  {
+    "asset_key": "foundation.learning_barrier.misunderstood_word",
+    "concept": "misunderstood word",
+    "width": 4371,
+    "height": 3087,
+    "source_path": "/Users/alessandralove/Documents/TREE OF LIFE/PRODUCTION/SIMULATION/ASSETS/Learning how to Learn/Misunderstood word.png",
+    "recommended_app_path": "assets/images/foundation/learning-how-to-learn/misunderstood-word.png",
+    "recommended_use": "Explain why one unclear word can break comprehension",
+    "orientation_note": "Source needed 90 degree rotation; corrected app copy created in database-blueprint/assets/images/foundation/learning-how-to-learn/misunderstood-word.png."
+  },
+  {
+    "asset_key": "foundation.learning_barrier.skipped_gradient",
+    "concept": "skipped gradient",
+    "width": 4371,
+    "height": 3087,
+    "source_path": "/Users/alessandralove/Documents/TREE OF LIFE/PRODUCTION/SIMULATION/ASSETS/Learning how to Learn/Skipped Gradient.png",
+    "recommended_app_path": "assets/images/foundation/learning-how-to-learn/skipped-gradient.png",
+    "recommended_use": "Explain why the learner needs a smaller next step"
+  }
+]

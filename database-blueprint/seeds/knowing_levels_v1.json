@@ -1,0 +1,74 @@
+[
+  {
+    "level_number": "1",
+    "roman": "I",
+    "label": "Level I",
+    "subtitle": "Foundations",
+    "color": "#c47a3a",
+    "unlock_rule": "unlocked_by_default",
+    "sort_order": "1"
+  },
+  {
+    "level_number": "2",
+    "roman": "II",
+    "label": "Level II",
+    "subtitle": "Development",
+    "color": "#4A6741",
+    "unlock_rule": "previous_level_50_percent_read",
+    "sort_order": "2"
+  },
+  {
+    "level_number": "3",
+    "roman": "III",
+    "label": "Level III",
+    "subtitle": "Systems",
+    "color": "#5B3A6B",
+    "unlock_rule": "previous_level_50_percent_read",
+    "sort_order": "3"
+  },
+  {
+    "level_number": "4",
+    "roman": "IV",
+    "label": "Level IV",
+    "subtitle": "Navigation",
+    "color": "#2C5F7C",
+    "unlock_rule": "previous_level_50_percent_read",
+    "sort_order": "4"
+  },
+  {
+    "level_number": "5",
+    "roman": "V",
+    "label": "Level V",
+    "subtitle": "Expansion",
+    "color": "#8B6914",
+    "unlock_rule": "previous_level_50_percent_read",
+    "sort_order": "5"
+  },
+  {
+    "level_number": "6",
+    "roman": "VI",
+    "label": "Level VI",
+    "subtitle": "Advanced Harmony",
+    "color": "#6B3A3A",
+    "unlock_rule": "previous_level_50_percent_read",
+    "sort_order": "6"
+  },
+  {
+    "level_number": "7",
+    "roman": "VII",
+    "label": "Level VII",
+    "subtitle": "Modal Fluency",
+    "color": "#3A5B6B",
+    "unlock_rule": "previous_level_50_percent_read",
+    "sort_order": "7"
+  },
+  {
+    "level_number": "8",
+    "roman": "VIII",
+    "label": "Level VIII",
+    "subtitle": "Mastery",
+    "color": "#6B5B3A",
+    "unlock_rule": "previous_level_50_percent_read",
+    "sort_order": "8"
+  }
+]

@@ -1,0 +1,137 @@
+[
+  {
+    "priority": "1",
+    "phase": "Phase 1",
+    "area": "App node taxonomy",
+    "build_now": "yes",
+    "why": "Everything attaches to the 8-node world plus optional pathways",
+    "do_not_do_yet": "Do not force Play into core 8 by accident",
+    "related_files": "database-blueprint/source/map_node_registry_v1.csv"
+  },
+  {
+    "priority": "2",
+    "phase": "Phase 1",
+    "area": "Levels and roadmap items",
+    "build_now": "yes",
+    "why": "QJam and Hearth levels need stable structure",
+    "do_not_do_yet": "Do not over-polish poetic level names",
+    "related_files": "database-blueprint/source/hearth_8_levels_seed.csv"
+  },
+  {
+    "priority": "3",
+    "phase": "Phase 1",
+    "area": "Resource library",
+    "build_now": "yes",
+    "why": "Videos books tools and references need one home",
+    "do_not_do_yet": "Do not dump links without purpose",
+    "related_files": "database-blueprint/source/resource_library_seed.csv"
+  },
+  {
+    "priority": "4",
+    "phase": "Phase 1",
+    "area": "Book sources and files",
+    "build_now": "yes",
+    "why": "Books must separate identity from file copies",
+    "do_not_do_yet": "Do not store huge PDFs in git",
+    "related_files": "database-blueprint/source/book_sources_from_inventory_seed.csv"
+  },
+  {
+    "priority": "5",
+    "phase": "Phase 1",
+    "area": "Source notes",
+    "build_now": "yes",
+    "why": "Visible citations and page references are core to trust",
+    "do_not_do_yet": "Do not draft lessons without source anchors",
+    "related_files": "database-blueprint/source/source_priority_map_v1.csv"
+  },
+  {
+    "priority": "6",
+    "phase": "Phase 2",
+    "area": "Teaching lessons and steps",
+    "build_now": "yes",
+    "why": "TeachingEngine is valuable and should become data-fed",
+    "do_not_do_yet": "Do not store giant inline render functions",
+    "related_files": "database-blueprint/source/foundation_comprehensive_map_v1.csv"
+  },
+  {
+    "priority": "7",
+    "phase": "Phase 2",
+    "area": "Node interior registry",
+    "build_now": "yes",
+    "why": "Nodes need renderer/action keys without global overrides",
+    "do_not_do_yet": "Do not preserve shared #p-foundation panel pattern",
+    "related_files": "database-blueprint/source/node_interiors_registry_v1.csv"
+  },
+  {
+    "priority": "8",
+    "phase": "Phase 2",
+    "area": "Create prompts",
+    "build_now": "yes",
+    "why": "Obstructions and combos are strong content assets",
+    "do_not_do_yet": "Do not collapse elements and modifiers too early",
+    "related_files": "database-blueprint/source/create_ingredient_taxonomy_v1.csv"
+  },
+  {
+    "priority": "9",
+    "phase": "Phase 3",
+    "area": "Student profiles",
+    "build_now": "yes after content read model",
+    "why": "Journey needs real profile ownership",
+    "do_not_do_yet": "Do not build complex sync before content model is stable",
+    "related_files": "database-blueprint/source/prototype_local_storage_keys_v1.csv"
+  },
+  {
+    "priority": "10",
+    "phase": "Phase 3",
+    "area": "Progress records",
+    "build_now": "yes after profiles",
+    "why": "Drill/read/lesson progress must survive browser changes",
+    "do_not_do_yet": "Do not remove localStorage fallback immediately",
+    "related_files": "database-blueprint/source/prototype_local_storage_keys_v1.csv"
+  },
+  {
+    "priority": "11",
+    "phase": "Phase 3",
+    "area": "Practice sessions",
+    "build_now": "yes after profiles",
+    "why": "Practice logs are important learner memory",
+    "do_not_do_yet": "Do not connect every drill workflow before session model exists",
+    "related_files": "database-blueprint/docs/practice-node-system-notes.md"
+  },
+  {
+    "priority": "12",
+    "phase": "Phase 4",
+    "area": "PDF hosting and OCR",
+    "build_now": "later",
+    "why": "Raw PDFs are large and many are scanned",
+    "do_not_do_yet": "Do not block app rebuild on OCR completion",
+    "related_files": "database-blueprint/source/ocr_queue.csv"
+  },
+  {
+    "priority": "13",
+    "phase": "Phase 4",
+    "area": "Videos",
+    "build_now": "later",
+    "why": "Justin/QJam/Marty resources need careful cataloguing",
+    "do_not_do_yet": "Do not scrape account-gated content",
+    "related_files": "database-blueprint/docs/video-resource-access-plan.md"
+  },
+  {
+    "priority": "14",
+    "phase": "Phase 5",
+    "area": "Orphan pages cleanup",
+    "build_now": "later",
+    "why": "Some old pages may be retired",
+    "do_not_do_yet": "Do not migrate orphan/backup pages by default",
+    "related_files": "database-blueprint/docs/prototype-inventory-snapshot-v1.md"
+  },
+  {
+    "priority": "15",
+    "phase": "Phase 5",
+    "area": "Visual polish",
+    "build_now": "later",
+    "why": "Prototype visuals are conceptual drafts",
+    "do_not_do_yet": "Do not freeze exact SVG/UI treatment",
+    "related_files": "database-blueprint/docs/prototype-artifact-policy.md"
+  }
+]

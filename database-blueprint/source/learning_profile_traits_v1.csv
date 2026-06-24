@@ -1,0 +1,34 @@
+trait_key,category,plain_name,meaning,design_response,profile_scope
+hands_first,input,Hands-first,The body learns before the mind does,Start with a physical action before explanation,student_profile
+spatial_thinker,input,Spatial thinker,Diagrams and maps are the learner language,Use fretboard maps diagrams and node links,student_profile
+structure_dependent,input,Structure-dependent,Needs a clear roadmap,Show current path current step and progress,student_profile
+context_driven,input,Context-driven,Needs to know where this fits,Add a purpose card before drills,student_profile
+self_researcher,processing,Self-researcher,Goes to find sources independently,Offer source notes and deeper reading,student_profile
+experimental,processing,Experimental,Learns by trying and breaking things,Provide safe sandbox experiments,student_profile
+incubator,processing,Incubator,Needs processing time not more input,Offer pause revisit and reflection moments,student_profile
+top_down_processor,processing,Top-down processor,Needs the big picture before details,Show overview before steps,student_profile
+bottom_up_needs,processing,Bottom-up needs,Needs one piece at a time,Chunk lessons into small steps,student_profile
+pattern_noticer,processing,Pattern-noticer,Knows it is learned when it appears everywhere,Show where else the idea appears,student_profile
+network_thinker,processing,Network thinker,Mastery means connection density,Show cross-node links and related concepts,student_profile
+taxonomic_mind,processing,Taxonomic mind,Files ideas by category and type,Organize concepts by families and tags,student_profile
+structured_freedom,processing,Structured freedom,Needs routine frame with choice inside,Offer a clear route with optional branches,student_profile
+exercise_runner,output,Exercise-runner,Follows prescribed practice well,Provide clear practice cards and checklists,student_profile
+perfectionist,output,Perfectionist,Repeats until clean,Use clean stop conditions and prevent overgrinding,student_profile
+automaticity_benchmark,output,Automaticity benchmark,Muscle memory feels like mastery,Track comfortable repetition not just first success,student_profile
+transfer_benchmark,output,Transfer benchmark,Applying elsewhere proves learning,Ask learner to use the skill in a new context,student_profile
+purpose_activated,motivation,Purpose-activated,The reason drives obsession,Show why every exercise matters,student_profile
+progress_visible,motivation,Progress-visible,Hearing or seeing improvement fuels motivation,Show visible progress and before-after evidence,student_profile
+recording_as_fuel,motivation,Recording as fuel,Playback motivates the learner,Make recording easy and prompted,student_profile
+connection_finder,motivation,Connection-finder,Links between ideas create energy,Surface related ideas and cross-node pathways,student_profile
+growth_noticer,motivation,Growth-noticer,Small improvements matter,Name micro-wins after practice,student_profile
+joy_dependent,motivation,Joy-dependent,Fun is fuel not decoration,Keep playful challenges and musical rewards,student_profile
+gradient_need,warning,Gradient need,Too steep a step causes shutdown,Offer a simpler version on struggle,student_profile
+misunderstood_word_sensitive,warning,Misunderstood-word sensitive,A missing definition can block everything after it,Ask which word went foggy and open glossary,student_profile
+ambiguity_trigger,warning,Ambiguity trigger,No clear next step causes paralysis,Always show the next action,student_profile
+boredom_trigger,warning,Boredom trigger,Too slow a pace causes disengagement,Offer a variation or challenge before boredom sets in,student_profile
+passive_processor,warning,Passive processor,The app must help organize action,Make the next step obvious and structured,student_profile
+under_records,warning,Under-records,Recording is useful but easily skipped,Prompt short recordings at natural moments,student_profile
+teacher_learner,pattern,Teacher-learner,Teaching is a learning tool,Add teach-back prompts and teacher prep notes,student_profile
+necessity_learner,pattern,Necessity-learner,Rises when there is a real occasion,Connect tasks to upcoming lessons or performances,student_profile
+play_state_learner,pattern,Play-state learner,Learns best when it feels like play,Use games jams and low-pressure experiments,student_profile
+mentor_responsive,pattern,Mentor-responsive,Guidance accelerates learning,Use guide character and teacher feedback well,student_profile

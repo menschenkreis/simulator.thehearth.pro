@@ -1,0 +1,9 @@
+level_number,roman,label,subtitle,color,unlock_rule,sort_order
+1,I,Level I,Foundations,#c47a3a,unlocked_by_default,1
+2,II,Level II,Development,#4A6741,previous_level_50_percent_read,2
+3,III,Level III,Systems,#5B3A6B,previous_level_50_percent_read,3
+4,IV,Level IV,Navigation,#2C5F7C,previous_level_50_percent_read,4
+5,V,Level V,Expansion,#8B6914,previous_level_50_percent_read,5
+6,VI,Level VI,Advanced Harmony,#6B3A3A,previous_level_50_percent_read,6
+7,VII,Level VII,Modal Fluency,#3A5B6B,previous_level_50_percent_read,7
+8,VIII,Level VIII,Mastery,#6B5B3A,previous_level_50_percent_read,8

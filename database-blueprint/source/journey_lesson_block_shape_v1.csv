@@ -1,0 +1,7 @@
+block_order,block_key,block_name,purpose,typical_duration_minutes,likely_node,teaching_engine_use,student_memory_created
+1,review,Review,Reconnect to the last lesson and identify what stuck,5-10,Hearth; Study,ask/speak/cards,review note; remembered concept; weak spot
+2,warm_up,Warm-Up,Prepare body attention pulse and hands,5-10,Practice; Doing,action,body check; warm-up completed
+3,concept,Concept,Introduce one idea at the right gradient,10-15,Foundation; Knowing; Study,speak/cards/ask,concept rating; source note opened
+4,drill,Drill,Repeat one physical or mental action until it becomes clearer,10-20,Doing; Practice,action,task rating; drill state; tempo/pass condition
+5,music_application,Music Application,Use the idea in a song riff phrase or creative fragment,10-20,Practice; Create; Mastery,action/cards,application note; song fragment; creative seed
+6,reflect,Reflect,Name what changed and what needs the next smaller step,5-10,Hearth,speak/ask/cards,reflection; next gradient; guide memory signal

@@ -1,0 +1,188 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" role="img" aria-labelledby="title desc">
+<title id="title">Mystical Alchemical Cauldron</title>
+<desc id="desc">A dark fantasy line art cauldron with glowing liquid, magical steam, musical note and quill shapes, and ember flames.</desc>
+
+<style>
+ :root{ --gold:#d4af69; --amber:#e8a020; --ember:#c45a20; --dark:#080c12; }
+ svg{ background:transparent; }
+ .line{ fill:none; stroke:var(--gold); stroke-width:5; stroke-linecap:round; stroke-linejoin:round; }
+ .thin{ fill:none; stroke:var(--gold); stroke-width:2.5; stroke-linecap:round; stroke-linejoin:round; opacity:.9; }
+ .fine{ fill:none; stroke:var(--gold); stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; opacity:.7; }
+ .amber{ fill:none; stroke:var(--amber); stroke-width:4; stroke-linecap:round; stroke-linejoin:round; }
+ .ember{ fill:none; stroke:var(--ember); stroke-width:4; stroke-linecap:round; stroke-linejoin:round; }
+ .glow{ filter:url(#goldGlow); }
+ .soft{ opacity:.55; }
+ .dim{ opacity:.35; }
+ .bodyFill{ fill:url(#cauldronShade); stroke:var(--gold); stroke-width:5; stroke-linejoin:round; }
+ .liquidFill{ fill:url(#liquidGlow); stroke:var(--amber); stroke-width:4; }
+ .steam{ fill:none; stroke:var(--amber); stroke-width:4; stroke-linecap:round; stroke-linejoin:round; filter:url(#goldGlow); opacity:.9; }
+ .steamThin{ fill:none; stroke:var(--gold); stroke-width:2; stroke-linecap:round; stroke-linejoin:round; filter:url(#goldGlow); opacity:.45; }
+ .spark{ fill:var(--amber); filter:url(#goldGlow); }
+ .rune{ fill:none; stroke:var(--gold); stroke-width:2; stroke-linecap:round; stroke-linejoin:round; opacity:.75; }
+ .fireFill{ fill:url(#fireGlow); stroke:var(--ember); stroke-width:3; stroke-linejoin:round; filter:url(#emberGlow); }
+</style>
+
+<defs>
+ <radialGradient id="liquidGlow" cx="50%" cy="45%" r="60%">
+  <stop offset="0%" stop-color="#fff1a8" stop-opacity=".95"/>
+  <stop offset="32%" stop-color="#e8a020" stop-opacity=".75"/>
+  <stop offset="75%" stop-color="#a95b12" stop-opacity=".45"/>
+  <stop offset="100%" stop-color="#080c12" stop-opacity=".15"/>
+ </radialGradient>
+ <linearGradient id="cauldronShade" x1="0%" y1="0%" x2="0%" y2="100%">
+  <stop offset="0%" stop-color="#d4af69" stop-opacity=".22"/>
+  <stop offset="45%" stop-color="#8b5a22" stop-opacity=".25"/>
+  <stop offset="100%" stop-color="#080c12" stop-opacity=".15"/>
+ </linearGradient>
+ <radialGradient id="fireGlow" cx="50%" cy="40%" r="70%">
+  <stop offset="0%" stop-color="#ffd75a" stop-opacity=".95"/>
+  <stop offset="45%" stop-color="#e8a020" stop-opacity=".8"/>
+  <stop offset="100%" stop-color="#c45a20" stop-opacity=".65"/>
+ </radialGradient>
+ <filter id="goldGlow" x="-80%" y="-80%" width="260%" height="260%">
+  <feGaussianBlur stdDeviation="5" result="blur"/>
+  <feColorMatrix in="blur" type="matrix" values="1 0 0 0 0.83 0 1 0 0 0.55 0 0 1 0 0.10 0 0 0 .85 0" result="goldBlur"/>
+  <feMerge><feMergeNode in="goldBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+ </filter>
+ <filter id="emberGlow" x="-80%" y="-80%" width="260%" height="260%">
+  <feGaussianBlur stdDeviation="5" result="blur"/>
+  <feColorMatrix in="blur" type="matrix" values="1 0 0 0 0.80 0 1 0 0 0.28 0 0 1 0 0.05 0 0 0 .85 0" result="emberBlur"/>
+  <feMerge><feMergeNode in="emberBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+ </filter>
+</defs>
+
+<!-- soft upward magical glow -->
+<ellipse cx="512" cy="560" rx="250" ry="180" fill="#e8a020" opacity=".07" filter="url(#goldGlow)"/>
+<ellipse cx="512" cy="480" rx="170" ry="260" fill="#e8a020" opacity=".05" filter="url(#goldGlow)"/>
+
+<!-- magical steam -->
+<g id="steam">
+ <path class="steam" d="M516 596 C492 535 570 512 539 445 C511 386 449 378 490 311 C524 255 606 256 579 174 C564 129 521 119 502 153 C488 179 517 196 535 177"/>
+ <path class="steamThin" d="M534 596 C574 530 610 510 591 454 C574 403 523 386 553 334 C579 288 642 278 626 219 C617 184 590 163 559 158"/>
+ <path class="steam" d="M406 600 C375 544 396 501 447 461 C498 421 431 357 354 384 C298 403 287 462 339 493"/>
+ <path class="steamThin" d="M392 578 C351 536 354 489 404 449 C442 419 426 389 382 394"/>
+ <path class="amber glow" d="M403 374 L403 480 C385 468 356 475 344 497 C330 523 355 548 388 535 C416 524 425 497 409 481 M403 374 C439 410 476 406 494 370 C468 387 438 389 403 374Z"/>
+ <path class="steam" d="M616 602 C666 548 626 498 671 438 C716 378 786 356 773 275 C747 328 703 350 691 410 C681 459 720 501 664 551"/>
+ <path class="steamThin" d="M640 586 C694 532 682 481 715 420 C741 371 760 332 770 277"/>
+ <path class="thin glow" d="M775 274 C741 322 717 375 694 450"/>
+ <path class="fine glow" d="M747 321 C718 319 704 333 690 351"/>
+ <path class="fine glow" d="M733 358 C705 356 687 373 677 390"/>
+ <path class="fine glow" d="M718 398 C694 397 676 414 664 435"/>
+ <path class="fine glow" d="M760 305 C760 337 748 355 729 375"/>
+ <path class="fine glow" d="M746 344 C746 375 732 396 710 416"/>
+ <path class="steamThin" d="M512 270 C487 238 530 211 548 242 C560 263 537 277 521 263"/>
+ <path class="steamThin" d="M574 417 C607 387 643 428 616 456 C594 479 566 451 587 432"/>
+ <path class="steamThin" d="M357 331 C319 304 349 256 394 271 C424 281 422 317 390 315"/>
+</g>
+
+<!-- sparks -->
+<g id="sparks">
+ <circle class="spark" cx="337" cy="294" r="3"/>
+ <circle class="spark" cx="688" cy="263" r="2.6"/>
+ <circle class="spark" cx="449" cy="210" r="2"/>
+ <circle class="spark" cx="621" cy="333" r="2.4"/>
+ <circle class="spark" cx="300" cy="451" r="2.5"/>
+ <circle class="spark" cx="748" cy="479" r="2.2"/>
+ <path class="amber glow" d="M728 342 l6 12 12 6 -12 6 -6 12 -6-12 -12-6 12-6z"/>
+ <path class="amber glow" d="M290 383 l4 8 8 4 -8 4 -4 8 -4-8 -8-4 8-4z"/>
+</g>
+
+<!-- cauldron handles -->
+<g id="handles" class="glow">
+ <path class="line" d="M264 610 C189 596 145 666 179 724 C199 759 239 756 249 723 C258 693 220 691 220 720"/>
+ <path class="thin" d="M253 637 C202 631 174 674 196 710 C208 730 229 731 235 714"/>
+ <path class="line" d="M760 610 C835 596 879 666 845 724 C825 759 785 756 775 723 C766 693 804 691 804 720"/>
+ <path class="thin" d="M771 637 C822 631 850 674 828 710 C816 730 795 731 789 714"/>
+</g>
+
+<!-- cauldron body -->
+<g id="cauldron">
+ <ellipse class="liquidFill glow" cx="512" cy="602" rx="308" ry="70"/>
+ <ellipse class="line glow" cx="512" cy="600" rx="318" ry="78"/>
+ <ellipse class="thin glow" cx="512" cy="602" rx="278" ry="51"/>
+ <g class="glow">
+  <ellipse class="amber soft" cx="512" cy="600" rx="220" ry="35"/>
+  <ellipse class="amber soft" cx="512" cy="600" rx="170" ry="25"/>
+  <ellipse class="amber soft" cx="512" cy="600" rx="115" ry="16"/>
+  <ellipse class="amber soft" cx="512" cy="600" rx="58" ry="8"/>
+  <path class="fine" d="M430 595 C470 584 553 584 595 596"/>
+  <path class="fine" d="M456 613 C492 624 540 624 578 613"/>
+ </g>
+ <path class="bodyFill glow" d="M220 608 C232 770 321 866 512 866 C703 866 792 770 804 608 C738 674 286 674 220 608Z"/>
+ <path class="thin" d="M238 640 C337 702 687 702 786 640"/>
+ <path class="fine" d="M270 690 C363 741 661 741 754 690"/>
+ <path class="fine dim" d="M315 813 C403 842 621 842 709 813"/>
+ <g id="central-sigil" class="glow">
+  <circle class="thin" cx="512" cy="747" r="72"/>
+  <circle class="fine" cx="512" cy="747" r="50"/>
+  <path class="thin" d="M512 675 L548 747 L512 819 L476 747Z"/>
+  <path class="thin" d="M440 747 L512 711 L584 747 L512 783Z"/>
+  <circle class="thin" cx="512" cy="747" r="12"/>
+  <path class="fine" d="M512 690 v25 M512 779 v25 M455 747 h25 M544 747 h25"/>
+  <path class="fine" d="M486 721 C501 704 523 704 538 721"/>
+  <path class="fine" d="M486 773 C501 790 523 790 538 773"/>
+ </g>
+ <g id="left-ornament" class="rune glow">
+  <path d="M278 742 C326 695 383 696 425 742 C380 789 326 789 278 742Z"/>
+  <path d="M293 742 C337 724 366 724 410 742"/>
+  <path d="M293 742 C337 762 366 762 410 742"/>
+  <path d="M318 705 C341 731 366 754 392 782"/>
+  <path d="M392 705 C366 731 341 754 318 782"/>
+  <path d="M263 708 C281 698 299 699 315 712"/>
+  <path d="M263 778 C281 788 299 787 315 774"/>
+ </g>
+ <g id="right-ornament" class="rune glow">
+  <path d="M746 742 C698 695 641 696 599 742 C644 789 698 789 746 742Z"/>
+  <path d="M731 742 C687 724 658 724 614 742"/>
+  <path d="M731 742 C687 762 658 762 614 742"/>
+  <path d="M706 705 C683 731 658 754 632 782"/>
+  <path d="M632 705 C658 731 683 754 706 782"/>
+  <path d="M761 708 C743 698 725 699 709 712"/>
+  <path d="M761 778 C743 788 725 787 709 774"/>
+ </g>
+ <g class="rune glow">
+  <path d="M376 654 h50"/>
+  <path d="M598 654 h50"/>
+  <path d="M498 654 l14-18 14 18-14 18z"/>
+  <path d="M466 653 l-10 6 10 6"/>
+  <path d="M558 653 l10 6-10 6"/>
+  <circle cx="330" cy="660" r="4"/>
+  <circle cx="694" cy="660" r="4"/>
+ </g>
+</g>
+
+<!-- legs -->
+<g id="legs" class="glow">
+ <path class="line" d="M313 833 C300 870 277 891 246 908 C274 920 315 907 330 873 C342 847 338 834 313 833Z"/>
+ <path class="thin" d="M301 862 C280 875 266 889 260 905"/>
+ <ellipse class="thin" cx="247" cy="914" rx="33" ry="10"/>
+ <path class="line" d="M711 833 C724 870 747 891 778 908 C750 920 709 907 694 873 C682 847 686 834 711 833Z"/>
+ <path class="thin" d="M723 862 C744 875 758 889 764 905"/>
+ <ellipse class="thin" cx="777" cy="914" rx="33" ry="10"/>
+</g>
+
+<!-- fire below cauldron -->
+<g id="fire" class="glow">
+ <ellipse class="fine ember" cx="512" cy="944" rx="128" ry="24"/>
+ <path class="fireFill" d="M512 942 C466 908 505 879 500 839 C532 872 551 896 512 942Z"/>
+ <path class="fireFill" d="M512 946 C548 915 534 888 560 860 C570 905 559 930 512 946Z"/>
+ <path class="fireFill" d="M512 950 C486 924 488 902 476 881 C451 924 471 947 512 950Z"/>
+ <path class="ember" d="M255 919 C235 900 254 881 250 855 C273 879 279 901 255 919Z"/>
+ <path class="ember" d="M769 919 C789 900 770 881 774 855 C751 879 745 901 769 919Z"/>
+ <path class="fine amber" d="M512 956 l12 20 -12 20 -12-20z"/>
+ <path class="fine amber" d="M247 935 l8 12 -8 12 -8-12z"/>
+ <path class="fine amber" d="M777 935 l8 12 -8 12 -8-12z"/>
+</g>
+
+<!-- tiny embers -->
+<g id="embers" class="glow">
+ <circle class="spark" cx="452" cy="910" r="3"/>
+ <circle class="spark" cx="572" cy="915" r="3"/>
+ <circle class="spark" cx="532" cy="875" r="2.5"/>
+ <circle class="spark" cx="478" cy="872" r="2.4"/>
+ <circle class="spark" cx="235" cy="862" r="2.6"/>
+ <circle class="spark" cx="793" cy="862" r="2.6"/>
+ <path class="fine amber" d="M420 936 C455 955 568 955 604 936"/>
+</g>
+
+</svg>

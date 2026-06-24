@@ -1,0 +1,12 @@
+area,item_count,total_size,status,primary_risk,rebuild_note
+html_pages,8 files,520 KB mixed,live plus orphan/backup pages,simulator.html is 324 KB monolith,Split app into routes/components and retire orphan pages deliberately
+javascript,37 files,720 KB mixed,core systems plus lessons plus utilities,scene-first overrides node functions and data is hardcoded,Preserve solid systems but remove global override architecture
+css,3 files plus inline,32 KB plus 400 inline lines,mixed,styles are split between files and simulator.html,Move styles into component/theme structure
+svg_assets,8 files,52 KB,mixed,brain-map not deployed and icons are scattered,Register scene SVGs separately from simple toolkit icons
+images,44 files,7.5 MB,mixed,multiple icon variants and high-res character files,Create asset status review before production bundling
+audio,1 file,1.4 MB,live,campfire loop may need loading/mute controls,Keep as optional ambience asset
+knowledge_base_processed,53 books,unknown small md total,valuable,not connected to app/database,Import as source notes and book/source metadata
+knowledge_base_raw_pdfs,33 PDFs,894 MB,local/private,too large for git and 70 percent scanned/OCR needed,Host or private-store PDFs and track OCR/source status
+guitar_tricks_course,72 PDFs plus catalog,3.7 MB,candidate resource,rights/status and integration unclear,Catalog as resources only after review
+database,content_books 53 rows,not applicable,partial,0 user-facing tables and progress is localStorage,Build content tables and separate student tables
+local_storage,15 keys,not applicable,live state,only local backup no sync or auth,Migrate gradually with local fallback and conflict rules

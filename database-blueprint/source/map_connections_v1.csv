@@ -1,0 +1,18 @@
+from_slug,to_slug,connection_type,visual_path,reason,svg_status,notes
+foundation,doing,prototype_gold_branch,left_branch_top,Foundation opens into the physical skill path,coordinate_known,Gold connection class is gold-conn; exact path id still needed from full SVG
+doing,practice,prototype_gold_branch,left_branch_middle,Doing descends into focused practice and embodied repetition,coordinate_known,Exact path id still needed from full SVG
+practice,hearth,prototype_gold_branch,left_branch_center,Physical work should feed the Hearth reflection layer,coordinate_known,Exact path id still needed from full SVG
+foundation,knowing,prototype_gold_branch,right_branch_top,Foundation opens into the knowledge and reference path,coordinate_known,Gold connection class is gold-conn; exact path id still needed from full SVG
+knowing,study,prototype_gold_branch,right_branch_middle,Knowing descends into structured study and concept checks,coordinate_known,Exact path id still needed from full SVG
+study,hearth,prototype_gold_branch,right_branch_center,Study should feed misunderstood-word recovery and learning reflection,coordinate_known,Exact path id still needed from full SVG
+hearth,play,prototype_gold_branch,lower_left_branch,Hearth fans into Play or World Traditions as listening and cultural exploration,coordinate_known,Play recommended as optional pathway not core node
+hearth,create,prototype_gold_branch,lower_right_branch,Hearth fans into Create as expressive output and personal meaning,coordinate_known,Exact path id still needed from full SVG
+play,mastery,prototype_gold_branch,lower_left_convergence,World traditions can feed artistry and long-range musical imagination,coordinate_known,Optional pathway if Play is absorbed into Mastery or Knowing
+create,mastery,prototype_gold_branch,lower_right_convergence,Creative practice points toward voice artistry and mastery,coordinate_known,The poetry end of the language metaphor
+foundation,mastery,central_spine,spine_l1_to_l8,Central spine shows the long Level 1 to Level 8 journey,partial_svg_ids_known,"Known segment ids include spine-l1 through spine-l8; labels L1-L8; full SVG paste cut off mid-label"
+doing,create,conceptual_application,not_drawn_or_unknown,Technique becomes material for riffs rhythm melody and songs,conceptual,Useful backend relationship even if not drawn directly
+knowing,create,conceptual_application,not_drawn_or_unknown,Theory and references become creative choices,conceptual,Useful for songwriting prompts
+knowing,mastery,conceptual_aspiration,not_drawn_or_unknown,Artist and source references support advanced inspiration,conceptual,Mastery should cite examples
+practice,doing,feedback_loop,not_drawn_or_unknown,Practice results should update drill confidence and next actions,conceptual,Important backend relationship
+study,knowing,feedback_loop,not_drawn_or_unknown,Study questions should link back to source notes and reference entries,conceptual,Knowing is source library Study is learning process
+mastery,hearth,reflection_loop,not_drawn_or_unknown,Long-range inspiration should return to identity reflection and learner purpose,conceptual,Useful for Hearth dashboard and journey reflection

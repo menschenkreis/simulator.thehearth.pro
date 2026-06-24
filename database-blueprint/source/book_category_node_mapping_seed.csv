@@ -1,0 +1,8 @@
+Prototype Category,Normalized Node,Secondary Tags,Notes
+foundation,Foundation,"beginner; fundamentals",Core beginner/foundation materials.
+doing,Doing,"drills; technique; exercises",Physical guitar work and skill-building drills.
+create,Create,"songwriting; recording; production",Creative writing, recording, production, and composition resources.
+classical,Doing,"classical; technique; reading",Classical books should usually support Doing and Knowing rather than become a primary node.
+fretboard,Knowing,"fretboard; navigation; CAGED",Fretboard understanding belongs mainly in Knowing, with practice links into Doing.
+guitar,Study,"general guitar; philosophy; reference",General guitar books need manual review; they may map to Foundation, Doing, Knowing, or Study.
+jazz,Mastery,"jazz; improvisation; harmony",Advanced style materials, usually Mastery or Knowing depending on content.

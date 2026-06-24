@@ -1,0 +1,37 @@
+List,Value
+Status,Not Started
+Status,In Progress
+Status,Review
+Status,Complete
+Priority,Low
+Priority,Medium
+Priority,High
+Level,Level 1
+Level,Level 2
+Level,Level 3
+Level,Level 4
+Level,Level 5
+Level,Level 6
+Level,Level 7
+Level,Level 8
+Skill Node,Rhythm
+Skill Node,Chords
+Skill Node,Fretboard
+Skill Node,Technique
+Skill Node,Theory
+Skill Node,Ear Training
+Skill Node,Scales & Lead
+Skill Node,Songs
+Skill Node,Improvisation / Creation
+Resource Type,YouTube Channel
+Resource Type,YouTube Video
+Resource Type,Website
+Resource Type,Course
+Resource Type,Book
+Resource Type,App
+Resource Type,Tool
+Song Status,Wishlist
+Song Status,Learning
+Song Status,Playable
+Song Status,Learned
+Song Status,Performance Ready

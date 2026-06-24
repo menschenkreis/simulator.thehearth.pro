@@ -1,0 +1,27 @@
+connection_slug,from_slug,to_slug,svg_element_id,svg_element_type,css_class,data_path,x1,y1,x2,y2,path_d,stroke_width,connection_type,notes
+spine_l1,foundation,mastery,spine-l1,line,conn-spine,journey,350,99,350,189,,,central_spine,Segment 1 of central Level 1-8 spine
+spine_l2,foundation,mastery,spine-l2,line,conn-spine,journey,350,200,350,290,,,central_spine,Segment 2 of central Level 1-8 spine
+spine_l3,foundation,mastery,spine-l3,line,conn-spine,journey,350,302,350,369,,,central_spine,Segment 3 of central Level 1-8 spine
+spine_l4,foundation,mastery,spine-l4,line,conn-spine,journey,350,380,350,447,,,central_spine,Segment 4 of central Level 1-8 spine
+spine_l5,hearth,mastery,spine-l5,line,conn-spine,journey,350,540,350,595,,,central_spine,Segment 5 of central Level 1-8 spine
+spine_l6,hearth,mastery,spine-l6,line,conn-spine,journey,350,607,350,662,,,central_spine,Segment 6 of central Level 1-8 spine
+spine_l7,hearth,mastery,spine-l7,line,conn-spine,journey,350,674,350,729,,,central_spine,Segment 7 of central Level 1-8 spine
+spine_l8,hearth,mastery,spine-l8,line,conn-spine,journey,350,740,350,784,,,central_spine,Segment 8 of central Level 1-8 spine
+foundation_to_doing,foundation,doing,,line,gold-conn,doing,324,88,160,265,,,prototype_gold_branch,Raw SVG line has no id; rebuild should add stable id.
+foundation_to_knowing,foundation,knowing,,line,gold-conn,knowing,376,88,540,265,,,prototype_gold_branch,Raw SVG line has no id; rebuild should add stable id.
+doing_to_hearth,doing,hearth,,line,gold-conn,doing,160,305,310,475,,,prototype_gold_branch,Reference describes Doing to Hearth via left path.
+practice_to_play,practice,play,,line,gold-conn,doing,248,398,105,666,,,prototype_gold_branch,Prototype Practise to Play.
+knowing_to_hearth,knowing,hearth,,line,gold-conn,knowing,540,305,390,475,,,prototype_gold_branch,Reference describes Knowing to Hearth via right path.
+study_to_create,study,create,,line,gold-conn,knowing,452,398,595,666,,,prototype_gold_branch,Prototype Study to Create.
+hearth_to_play,hearth,play,,line,gold-conn dim,journey,305,512,110,668,,,prototype_gold_branch_dim,Cross-connection from Hearth to Play.
+hearth_to_create,hearth,create,,line,gold-conn dim,journey,395,512,590,668,,,prototype_gold_branch_dim,Cross-connection from Hearth to Create.
+hearth_to_mastery,hearth,mastery,,line,gold-conn dim,journey,350,535,350,786,,,prototype_gold_branch_dim,Center down from Hearth to Mastery.
+play_to_mastery,play,mastery,,line,gold-conn dim,doing,105,706,325,800,,,prototype_gold_branch_dim,Left convergence into Mastery.
+create_to_mastery,create,mastery,,line,gold-conn dim,knowing,595,706,375,800,,,prototype_gold_branch_dim,Right convergence into Mastery.
+foundation_to_practice_thin,foundation,practice,,line,gold-conn dim,doing,337,115,248,345,,1,thin_cross_connection,Thin direct guide from Foundation to Practise.
+foundation_to_study_thin,foundation,study,,line,gold-conn dim,knowing,363,115,452,345,,1,thin_cross_connection,Thin direct guide from Foundation to Study.
+doing_to_knowing_thin,doing,knowing,,line,gold-conn dim,journey,194,283,506,283,,1,thin_cross_connection,Horizontal relationship line.
+practice_to_study_thin,practice,study,,line,gold-conn dim,journey,296,388,404,388,,1,thin_cross_connection,Horizontal relationship line.
+play_to_create_thin,play,create,,line,gold-conn dim,journey,136,682,564,682,,1,thin_cross_connection,Horizontal lower relationship line.
+play_perimeter_curve,play,doing,,path,gold-conn dim,doing,,,,,"M 88,662 Q 60,450 146,305",,perimeter_curve,Outer doing path curve.
+create_perimeter_curve,create,knowing,,path,gold-conn dim,knowing,,,,,"M 612,662 Q 640,450 554,305",,perimeter_curve,Outer knowing path curve.

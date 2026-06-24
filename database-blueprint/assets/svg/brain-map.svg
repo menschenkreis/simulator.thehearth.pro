@@ -1,0 +1,318 @@
+<svg viewBox="0 0 1600 950" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+<title id="title">The Hearth Mastery Guitar Learning Brain Map</title>
+<desc id="desc">A stylised anatomical brain map showing guitar learning skills as glowing neural regions connected by animated pathways.</desc>
+
+<defs>
+<filter id="softGlow" x="-80%" y="-80%" width="260%" height="260%">
+<feGaussianBlur stdDeviation="6" result="blur"/>
+<feMerge>
+<feMergeNode in="blur"/>
+<feMergeNode in="SourceGraphic"/>
+</feMerge>
+</filter>
+
+<filter id="bigGlow" x="-120%" y="-120%" width="340%" height="340%">
+<feGaussianBlur stdDeviation="12" result="blur"/>
+<feMerge>
+<feMergeNode in="blur"/>
+<feMergeNode in="SourceGraphic"/>
+</feMerge>
+</filter>
+
+<radialGradient id="hubGradient" cx="50%" cy="50%" r="50%">
+<stop offset="0%" stop-color="#fff0b8" stop-opacity="1"/>
+<stop offset="38%" stop-color="#e8a020" stop-opacity=".75"/>
+<stop offset="100%" stop-color="#e8a020" stop-opacity="0"/>
+</radialGradient>
+
+<style>
+.bg { fill:#0d0b08; }
+
+.brain-line {
+fill:none;
+stroke:#e8a020;
+stroke-width:2.4;
+stroke-linecap:round;
+stroke-linejoin:round;
+opacity:.88;
+}
+
+.fine-line {
+fill:none;
+stroke:#e8a020;
+stroke-width:1.05;
+stroke-linecap:round;
+stroke-linejoin:round;
+opacity:.34;
+}
+
+.sulcus {
+fill:none;
+stroke:#e8a020;
+stroke-width:1.4;
+stroke-linecap:round;
+stroke-dasharray:7 9;
+opacity:.46;
+}
+
+.lobe-label {
+font-family:"JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+font-size:15px;
+letter-spacing:.16em;
+fill:#e8a020;
+opacity:.15;
+}
+
+.node-title {
+font-family:"JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+font-size:22px;
+font-weight:700;
+letter-spacing:.04em;
+}
+
+.node-desc {
+font-family:"JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+font-size:14px;
+fill:#f3ead8;
+opacity:.82;
+}
+
+.tract-label {
+font-family:"JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+font-size:12px;
+fill:#e8a020;
+opacity:.38;
+letter-spacing:.05em;
+}
+
+.path {
+fill:none;
+stroke-width:2.8;
+stroke-linecap:round;
+stroke-linejoin:round;
+filter:url(#softGlow);
+}
+
+.developing {
+stroke-dasharray:6 12;
+animation: dashFlow 4s linear infinite;
+opacity:.58;
+}
+
+.active {
+opacity:.9;
+}
+
+.icon-circle {
+fill:none;
+stroke-width:2.8;
+filter:url(#softGlow);
+}
+
+.icon-line {
+fill:none;
+stroke-width:2.4;
+stroke-linecap:round;
+stroke-linejoin:round;
+}
+
+.glow-disc { filter:url(#bigGlow); opacity:.24; }
+.centre-dot { filter:url(#softGlow); }
+.pulse { animation:pulse 2.6s ease-in-out infinite; transform-box:fill-box; transform-origin:center; }
+
+@keyframes dashFlow {
+to { stroke-dashoffset:-120; }
+}
+
+@keyframes pulse {
+0%,100% { opacity:.62; transform:scale(1); }
+50% { opacity:1; transform:scale(1.12); }
+}
+</style>
+</defs>
+
+<rect class="bg" width="1600" height="950"/>
+
+<!-- ANATOMICAL BRAIN OUTLINE -->
+<g id="brain" transform="translate(135 45) scale(2.55)">
+<path class="brain-line" d="
+M112 216
+C91 198 88 170 105 151
+C96 125 116 96 145 93
+C154 69 184 57 210 68
+C232 42 275 45 294 72
+C324 57 364 69 376 99
+C411 104 434 132 430 166
+C458 181 465 217 445 242
+C462 274 445 312 412 320
+C404 352 368 369 338 356
+C310 382 263 378 242 347
+C210 365 170 354 156 321
+C127 315 105 290 109 260
+C93 246 94 226 112 216
+Z"/>
+
+<path class="fine-line" d="M134 164 C154 144 188 145 203 169 C222 152 257 159 263 185"/>
+<path class="fine-line" d="M122 209 C154 198 181 211 190 239 C219 218 255 231 263 263"/>
+<path class="fine-line" d="M151 278 C179 263 213 272 226 302 C254 287 285 294 300 321"/>
+<path class="fine-line" d="M238 105 C263 94 292 104 302 128 C333 116 366 129 377 158"/>
+<path class="fine-line" d="M295 193 C324 176 363 184 378 216 C407 207 433 223 438 251"/>
+<path class="fine-line" d="M300 260 C328 249 361 262 373 291 C389 287 405 292 417 306"/>
+<path class="fine-line" d="M169 117 C188 104 215 109 226 131"/>
+<path class="fine-line" d="M335 90 C349 100 357 113 361 130"/>
+<path class="fine-line" d="M124 247 C142 250 155 261 161 279"/>
+<path class="fine-line" d="M276 334 C292 342 308 343 324 337"/>
+
+<path class="brain-line" d="
+M343 334
+C369 319 407 326 424 351
+C443 378 423 411 389 414
+C361 416 336 399 331 373
+C327 357 331 343 343 334
+Z"/>
+<path class="fine-line" d="M350 354 C370 345 397 350 411 369"/>
+<path class="fine-line" d="M344 376 C367 365 401 373 414 395"/>
+<path class="fine-line" d="M362 399 C375 391 393 392 405 404"/>
+
+<path class="brain-line" d="
+M286 336
+C293 354 296 375 291 396
+C286 417 290 439 304 456
+M313 338
+C322 361 323 385 316 410
+C311 428 316 445 331 462"/>
+<path class="fine-line" d="M294 389 C304 394 312 396 320 394"/>
+
+<path class="sulcus" d="M278 82 C255 122 252 162 269 204 C280 232 275 266 255 296"/>
+<path class="sulcus" d="M149 247 C198 235 245 236 291 255 C330 271 370 276 415 266"/>
+
+<text class="lobe-label" x="132" y="146">FRONTAL</text>
+<text class="lobe-label" x="268" y="121">PARIETAL</text>
+<text class="lobe-label" x="362" y="195">OCCIPITAL</text>
+<text class="lobe-label" x="190" y="292">TEMPORAL</text>
+<text class="lobe-label" x="354" y="384">CEREBELLUM</text>
+</g>
+
+<!-- CENTRAL HUB -->
+<g id="central-hub">
+<circle cx="800" cy="475" r="82" fill="none" stroke="#e8a020" stroke-width="2" opacity=".42"/>
+<circle cx="800" cy="475" r="56" fill="none" stroke="#e8a020" stroke-width="1.5" stroke-dasharray="2 8" opacity=".55"/>
+<circle cx="800" cy="475" r="34" fill="url(#hubGradient)" filter="url(#bigGlow)"/>
+<circle cx="800" cy="475" r="6" fill="#fff0b8" class="centre-dot pulse"/>
+</g>
+
+<!-- PATHWAYS -->
+<g id="pathways">
+<path class="path developing" stroke="#8d5cff" d="M250 170 C330 170 330 230 460 260 C570 285 620 370 800 475"/>
+<path class="path active" stroke="#4da3ff" d="M602 235 C642 270 650 350 720 405 C750 430 770 450 800 475"/>
+<path class="path developing" stroke="#4da3ff" d="M515 200 C575 230 570 330 670 410 C715 445 755 460 800 475"/>
+<path class="path developing" stroke="#8d5cff" d="M400 380 C500 375 565 430 665 455 C715 468 760 472 800 475"/>
+<path class="path active" stroke="#2fffe6" d="M465 545 C585 545 650 508 720 485 C755 474 780 472 800 475"/>
+<path class="path developing" stroke="#d9f45a" d="M1190 420 C1070 420 960 455 875 470 C845 475 822 475 800 475"/>
+<path class="path active" stroke="#ff9d2e" d="M895 560 C875 535 850 500 800 475"/>
+<path class="path developing" stroke="#ff654d" d="M605 670 C665 632 690 575 735 520 C758 492 780 480 800 475"/>
+<path class="path active" stroke="#8d5cff" d="M800 475 C800 585 800 680 800 795"/>
+</g>
+
+<!-- TRACT LABELS -->
+<text class="tract-label" x="690" y="330" transform="rotate(60 690 330)">Corticospinal tract</text>
+<text class="tract-label" x="508" y="407" transform="rotate(12 508 407)">Arcuate fasciculus</text>
+<text class="tract-label" x="702" y="612" transform="rotate(-48 702 612)">Papez circuit</text>
+
+<!-- SKILL NODES -->
+<g id="nodes">
+
+<!-- Ear Training -->
+<g transform="translate(250 170)">
+<circle class="glow-disc pulse" r="44" fill="#8d5cff"/>
+<circle class="icon-circle" r="37" stroke="#8d5cff"/>
+<path class="icon-line" stroke="#8d5cff" d="M-8 4 C-20 -16 8 -22 17 -8 C26 8 7 10 8 24 M-3 -10 C4 -17 16 -10 13 1"/>
+<circle r="5" fill="#f3eaff"/>
+<text class="node-title" x="55" y="-8" fill="#8d5cff">EAR TRAINING</text>
+<text class="node-desc" x="55" y="18">Listen, identify</text>
+<text class="node-desc" x="55" y="38">and internalise.</text>
+</g>
+
+<!-- Technique -->
+<g transform="translate(515 200)">
+<circle class="glow-disc pulse" r="44" fill="#4da3ff"/>
+<circle class="icon-circle" r="37" stroke="#4da3ff"/>
+<path class="icon-line" stroke="#4da3ff" d="M-16 9 V-13 M-6 15 V-22 M4 15 V-18 M14 12 V-6 M-16 9 C-12 28 12 28 18 12"/>
+<circle r="5" fill="#e6f2ff"/>
+<text class="node-title" x="-40" y="68" fill="#4da3ff">TECHNIQUE</text>
+<text class="node-desc" x="-40" y="92">Control and precision.</text>
+</g>
+
+<!-- Rhythm -->
+<g transform="translate(602 235)">
+<circle class="glow-disc pulse" r="41" fill="#4da3ff"/>
+<circle class="icon-circle" r="34" stroke="#4da3ff"/>
+<path class="icon-line" stroke="#4da3ff" d="M-12 17 L0 -20 L12 17 M-20 17 H20 M-4 -8 L7 6"/>
+<circle r="5" fill="#e6f2ff"/>
+<text class="node-title" x="48" y="-6" fill="#4da3ff">RHYTHM</text>
+<text class="node-desc" x="48" y="18">Timing, groove and feel.</text>
+</g>
+
+<!-- Theory -->
+<g transform="translate(400 380)">
+<circle class="glow-disc pulse" r="45" fill="#8d5cff"/>
+<circle class="icon-circle" r="37" stroke="#8d5cff"/>
+<path class="icon-line" stroke="#8d5cff" d="M-22 -16 Q0 -28 22 -16 V18 Q0 8 -22 18 Z M0 -23 V11"/>
+<circle r="5" fill="#f3eaff"/>
+<text class="node-title" x="-38" y="72" fill="#8d5cff">THEORY</text>
+<text class="node-desc" x="-38" y="96">Language and harmony.</text>
+</g>
+
+<!-- Improvisation -->
+<g transform="translate(465 545)">
+<circle class="glow-disc pulse" r="43" fill="#2fffe6"/>
+<circle class="icon-circle" r="35" stroke="#2fffe6"/>
+<path class="icon-line" stroke="#2fffe6" d="M-24 0 H-12 L-5 -18 L7 20 L15 -2 H25"/>
+<circle r="5" fill="#dffffc"/>
+<text class="node-title" x="-48" y="68" fill="#2fffe6">IMPROVISATION</text>
+<text class="node-desc" x="-48" y="92">Create and express.</text>
+</g>
+
+<!-- Chords -->
+<g transform="translate(1190 420)">
+<circle class="glow-disc pulse" r="43" fill="#d9f45a"/>
+<circle class="icon-circle" r="35" stroke="#d9f45a"/>
+<path class="icon-line" stroke="#d9f45a" d="M-20 -22 H20 V22 H-20 Z M-20 -8 H20 M-20 7 H20 M-7 -22 V22 M7 -22 V22"/>
+<circle r="5" fill="#fbffd3"/>
+<text class="node-title" x="55" y="-5" fill="#d9f45a">CHORDS</text>
+<text class="node-desc" x="55" y="20">Shapes, voicings</text>
+<text class="node-desc" x="55" y="40">and progressions.</text>
+</g>
+
+<!-- Song Learning -->
+<g transform="translate(895 560)">
+<circle class="glow-disc pulse" r="45" fill="#ff9d2e"/>
+<circle class="icon-circle" r="37" stroke="#ff9d2e"/>
+<path class="icon-line" stroke="#ff9d2e" d="M-4 18 V-22 L20 -28 V8 M-4 18 C-22 17 -22 0 -4 0 M20 8 C2 7 2 -10 20 -10"/>
+<circle r="5" fill="#fff1d9"/>
+<text class="node-title" x="-55" y="72" fill="#ff9d2e">SONG LEARNING</text>
+<text class="node-desc" x="-55" y="96">Skills into songs.</text>
+</g>
+
+<!-- Performance -->
+<g transform="translate(605 670)">
+<circle class="glow-disc pulse" r="44" fill="#ff654d"/>
+<circle class="icon-circle" r="36" stroke="#ff654d"/>
+<path class="icon-line" stroke="#ff654d" d="M0 -24 L8 -7 L27 -5 L13 8 L17 28 L0 18 L-17 28 L-13 8 L-27 -5 L-8 -7 Z"/>
+<circle r="5" fill="#ffe2dc"/>
+<text class="node-title" x="-38" y="70" fill="#ff654d">PERFORMANCE</text>
+<text class="node-desc" x="-38" y="94">Confidence and expression.</text>
+</g>
+
+<!-- Mastery -->
+<g transform="translate(800 795)">
+<circle class="glow-disc pulse" r="48" fill="#8d5cff"/>
+<circle class="icon-circle" r="39" stroke="#8d5cff"/>
+<path class="icon-line" stroke="#8d5cff" d="M-18 0 L-4 15 L22 -18"/>
+<circle r="5" fill="#f3eaff"/>
+<text class="node-title" x="-48" y="72" fill="#8d5cff">MASTERY</text>
+<text class="node-desc" x="-72" y="96">Integration, fluency, growth.</text>
+</g>
+
+</g>
+</svg>

@@ -1,0 +1,90 @@
+[
+  {
+    "level_number": 1,
+    "lesson_count": 8,
+    "stable_name": "Level 1",
+    "level_feeling": "First guided steps / first voice",
+    "core_movement": "Begin the training path after Foundation",
+    "primary_nodes": ["Doing", "Practice", "Study", "Hearth"],
+    "core_accomplishments": ["complete first guided practice lesson", "clean first chord changes or sound tasks", "keep simple pulse", "write first Journey reflection"],
+    "unlock_recommendation": "unlock after Foundation threshold is complete and Level 1 core accomplishments are met",
+    "numerology_note": "One = first voice, origin, first deliberate step"
+  },
+  {
+    "level_number": 2,
+    "lesson_count": 10,
+    "stable_name": "Level 2",
+    "level_feeling": "Duality / two hands",
+    "core_movement": "Coordinate hands and close chord gaps",
+    "primary_nodes": ["Doing", "Practice", "Study", "Hearth"],
+    "core_accomplishments": ["change between first chord pairs", "keep simple pulse", "learn first pentatonic shape", "identify stuck points"],
+    "unlock_recommendation": "unlock when key Level 1 pass conditions are met, not only lesson count",
+    "numerology_note": "Two = left/right, call/response, coordination"
+  },
+  {
+    "level_number": 3,
+    "lesson_count": 12,
+    "stable_name": "Level 3",
+    "level_feeling": "First expression",
+    "core_movement": "Turn basics into songs riffs and phrasing",
+    "primary_nodes": ["Doing", "Practice", "Create", "Mastery"],
+    "core_accomplishments": ["play first song fragments", "save first riff", "phrase a simple melody", "reflect on sound"],
+    "unlock_recommendation": "unlock after song-fragment and rhythm accomplishments",
+    "numerology_note": "Three = phrase, expression, small musical sentence"
+  },
+  {
+    "level_number": 4,
+    "lesson_count": 14,
+    "stable_name": "Level 4",
+    "level_feeling": "Structure",
+    "core_movement": "Understand keys chord families and fretboard maps",
+    "primary_nodes": ["Knowing", "Study", "Doing", "Practice"],
+    "core_accomplishments": ["explain key center", "use chord family", "find notes on fretboard", "follow simple map"],
+    "unlock_recommendation": "unlock after concept confidence and applied fretboard tasks",
+    "numerology_note": "Four = frame, structure, stable ground"
+  },
+  {
+    "level_number": 5,
+    "lesson_count": 16,
+    "stable_name": "Level 5",
+    "level_feeling": "Transformation",
+    "core_movement": "Move into new positions and expressive techniques",
+    "primary_nodes": ["Doing", "Practice", "Create", "Hearth"],
+    "core_accomplishments": ["try bends slides legato", "move pentatonic position", "notice tension", "shape expressive sound"],
+    "unlock_recommendation": "unlock after controlled movement and reflection milestones",
+    "numerology_note": "Five = change, motion, transformation"
+  },
+  {
+    "level_number": 6,
+    "lesson_count": 18,
+    "stable_name": "Level 6",
+    "level_feeling": "Integration",
+    "core_movement": "Connect triads arpeggios and voice leading",
+    "primary_nodes": ["Knowing", "Study", "Doing", "Practice"],
+    "core_accomplishments": ["build triads", "use arpeggios", "hear voice movement", "apply to song section"],
+    "unlock_recommendation": "unlock after harmony-in-action accomplishments",
+    "numerology_note": "Six = harmony, integration, relationship"
+  },
+  {
+    "level_number": 7,
+    "lesson_count": 20,
+    "stable_name": "Level 7",
+    "level_feeling": "Intuition",
+    "core_movement": "Make theory become instinct",
+    "primary_nodes": ["Study", "Doing", "Practice", "Create", "Hearth"],
+    "core_accomplishments": ["apply theory without stopping", "improvise with constraints", "recover from weak spots", "explain why choices work"],
+    "unlock_recommendation": "unlock after repeated independent application",
+    "numerology_note": "Seven = insight, inner knowing, the why"
+  },
+  {
+    "level_number": 8,
+    "lesson_count": 24,
+    "stable_name": "Level 8",
+    "level_feeling": "Personal sound",
+    "core_movement": "Collaborate perform and develop voice",
+    "primary_nodes": ["Create", "Mastery", "Practice", "Hearth"],
+    "core_accomplishments": ["complete personal project", "perform or record", "collaborate", "reflect on voice and direction"],
+    "unlock_recommendation": "completion requires project/performance plus reflection, not only lessons",
+    "numerology_note": "Eight = power, circulation, collective force"
+  }
+]

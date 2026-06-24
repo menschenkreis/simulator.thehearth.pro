@@ -1,0 +1,10 @@
+skill_slug,skill_name,color,svg_x,svg_y,mapped_nodes,prototype_progress_logic,rebuild_progress_sources,description,notes
+ear_training,Ear Training,#8d5cff,250,170,knowing; play,Counts knowing topics read / total topics,"study_attempts; ear_training_lessons; listening_tasks; knowing_progress","Listen identify and internalise.",Play mapping should become World Traditions or listening pathway if Play is optional
+technique,Technique,#4da3ff,515,200,doing,Counts doing drills mastered in picking/fretting/speed,"doing_drills; practice_sessions; progress_records","Control and precision.",Should include tension/body quality not just completion
+rhythm,Rhythm,#4da3ff,602,235,doing,Counts doing drills in rhythm category,"rhythm_drills; metronome_sessions; practice_reflections","Timing groove and feel.",Important bridge between Doing and Practice
+theory,Theory,#8d5cff,400,380,knowing,Counts knowing topics read,"study_quizzes; source_notes; concept_confidence","Language and harmony.",Should live mainly in Study/Knowing split
+improvisation,Improvisation,#2fffe6,465,545,play; create,Placeholder start playing to unlock,"create_projects; improvisation_drills; saved_seeds","Create and express.",Map to Create plus Doing rather than only Play
+chords,Chords,#d9f45a,1190,420,knowing; doing,Counts knowing topics in chords category,"chord_drills; chord_lessons; knowing_topics; practice_sessions","Shapes voicings and progressions.",SVG x is far right within 1600 viewBox
+song_learning,Song Learning,#ff9d2e,895,560,play,Placeholder explore the world map,"songs; roadmap_items; practice_sessions; listening_resources","Skills into songs.",Could become Songs pathway under Doing/Practice/Mastery
+performance,Performance,#ff654d,605,670,mastery,Counts practice log entries with feeling nailed,"practice_sessions; lesson_attempts; performance_reflections","Confidence and expression.",Should include recording/sharing later
+mastery,Mastery,#8d5cff,800,795,mastery,Placeholder journey continues,"long_range_goals; mastery_exemplars; cross_node_progress","Integration fluency growth.",The brain's vertical integration path

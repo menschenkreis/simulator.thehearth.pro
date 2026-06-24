@@ -1,0 +1,16 @@
+priority,phase,area,build_now,why,do_not_do_yet,related_files
+1,Phase 1,App node taxonomy,yes,Everything attaches to the 8-node world plus optional pathways,Do not force Play into core 8 by accident,database-blueprint/source/map_node_registry_v1.csv
+2,Phase 1,Levels and roadmap items,yes,QJam and Hearth levels need stable structure,Do not over-polish poetic level names,database-blueprint/source/hearth_8_levels_seed.csv
+3,Phase 1,Resource library,yes,Videos books tools and references need one home,Do not dump links without purpose,database-blueprint/source/resource_library_seed.csv
+4,Phase 1,Book sources and files,yes,Books must separate identity from file copies,Do not store huge PDFs in git,database-blueprint/source/book_sources_from_inventory_seed.csv
+5,Phase 1,Source notes,yes,Visible citations and page references are core to trust,Do not draft lessons without source anchors,database-blueprint/source/source_priority_map_v1.csv
+6,Phase 2,Teaching lessons and steps,yes,TeachingEngine is valuable and should become data-fed,Do not store giant inline render functions,database-blueprint/source/foundation_comprehensive_map_v1.csv
+7,Phase 2,Node interior registry,yes,Nodes need renderer/action keys without global overrides,Do not preserve shared #p-foundation panel pattern,database-blueprint/source/node_interiors_registry_v1.csv
+8,Phase 2,Create prompts,yes,Obstructions and combos are strong content assets,Do not collapse elements and modifiers too early,database-blueprint/source/create_ingredient_taxonomy_v1.csv
+9,Phase 3,Student profiles,yes after content read model,Journey needs real profile ownership,Do not build complex sync before content model is stable,database-blueprint/source/prototype_local_storage_keys_v1.csv
+10,Phase 3,Progress records,yes after profiles,Drill/read/lesson progress must survive browser changes,Do not remove localStorage fallback immediately,database-blueprint/source/prototype_local_storage_keys_v1.csv
+11,Phase 3,Practice sessions,yes after profiles,Practice logs are important learner memory,Do not connect every drill workflow before session model exists,database-blueprint/docs/practice-node-system-notes.md
+12,Phase 4,PDF hosting and OCR,later,Raw PDFs are large and many are scanned,Do not block app rebuild on OCR completion,database-blueprint/source/ocr_queue.csv
+13,Phase 4,Videos,later,Justin/QJam/Marty resources need careful cataloguing,Do not scrape account-gated content,database-blueprint/docs/video-resource-access-plan.md
+14,Phase 5,Orphan pages cleanup,later,Some old pages may be retired,Do not migrate orphan/backup pages by default,database-blueprint/docs/prototype-inventory-snapshot-v1.md
+15,Phase 5,Visual polish,later,Prototype visuals are conceptual drafts,Do not freeze exact SVG/UI treatment,database-blueprint/docs/prototype-artifact-policy.md

@@ -1,0 +1,200 @@
+[
+  {
+    "slug": "lesson_complete",
+    "label": "Lesson Complete",
+    "category": "lesson",
+    "trigger_example": "Finish all required steps in a lesson",
+    "visible_reward": "Lesson card glows and map progress updates",
+    "recommended_priority": "high",
+    "notes": "Core TeachingEngine progress"
+  },
+  {
+    "slug": "foundation_block_complete",
+    "label": "Foundation Block Complete",
+    "category": "foundation",
+    "trigger_example": "Complete all units inside a Foundation block",
+    "visible_reward": "Pyramid block lights up",
+    "recommended_priority": "high",
+    "notes": "Useful for Foundation threshold"
+  },
+  {
+    "slug": "node_visited",
+    "label": "Node Visited",
+    "category": "map",
+    "trigger_example": "Enter a node for the first time",
+    "visible_reward": "Node ring wakes up",
+    "recommended_priority": "medium",
+    "notes": "Lightweight exploration reward"
+  },
+  {
+    "slug": "drill_seen",
+    "label": "Drill Seen",
+    "category": "doing",
+    "trigger_example": "Open a drill detail",
+    "visible_reward": "Small state dot appears",
+    "recommended_priority": "medium",
+    "notes": "Low-friction state"
+  },
+  {
+    "slug": "drill_practised",
+    "label": "Drill Practised",
+    "category": "doing",
+    "trigger_example": "Mark drill as practised",
+    "visible_reward": "Drill card progress dot changes",
+    "recommended_priority": "high",
+    "notes": "Should feed Practice later"
+  },
+  {
+    "slug": "drill_clean_once",
+    "label": "Clean Once",
+    "category": "doing",
+    "trigger_example": "Play drill clean one time",
+    "visible_reward": "Clean marker on drill",
+    "recommended_priority": "high",
+    "notes": "Good beginner win"
+  },
+  {
+    "slug": "drill_comfortable",
+    "label": "Comfortable",
+    "category": "doing",
+    "trigger_example": "Repeat drill with ease",
+    "visible_reward": "Warmer progress state",
+    "recommended_priority": "medium",
+    "notes": "Before mastered"
+  },
+  {
+    "slug": "drill_mastered",
+    "label": "Drill Mastered",
+    "category": "doing",
+    "trigger_example": "Meet drill pass condition",
+    "visible_reward": "Mastery marker on drill",
+    "recommended_priority": "high",
+    "notes": "Should require observable pass condition"
+  },
+  {
+    "slug": "practice_session_complete",
+    "label": "Practice Session Complete",
+    "category": "practice",
+    "trigger_example": "Finish a practice timer/session",
+    "visible_reward": "Candle/session mark saved",
+    "recommended_priority": "high",
+    "notes": "Core practice memory"
+  },
+  {
+    "slug": "streak_held",
+    "label": "Streak Held",
+    "category": "practice",
+    "trigger_example": "Practice or return on consecutive days",
+    "visible_reward": "Subtle streak flame",
+    "recommended_priority": "medium",
+    "notes": "Avoid shame streaks"
+  },
+  {
+    "slug": "body_reflection_written",
+    "label": "Body Reflection Written",
+    "category": "hearth",
+    "trigger_example": "Answer post-practice body prompt",
+    "visible_reward": "Hearth memory entry",
+    "recommended_priority": "high",
+    "notes": "Distinctive Hearth feature"
+  },
+  {
+    "slug": "misunderstood_word_resolved",
+    "label": "Word Resolved",
+    "category": "study",
+    "trigger_example": "Mark an unclear term as clarified",
+    "visible_reward": "Term clears from review",
+    "recommended_priority": "high",
+    "notes": "Supports learning-science anchor"
+  },
+  {
+    "slug": "source_note_discovered",
+    "label": "Source Discovered",
+    "category": "knowing",
+    "trigger_example": "Open or attach a source note",
+    "visible_reward": "Source glimmer/citation saved",
+    "recommended_priority": "medium",
+    "notes": "Supports source-traceability"
+  },
+  {
+    "slug": "book_opened",
+    "label": "Book Opened",
+    "category": "knowing",
+    "trigger_example": "Open a reference book",
+    "visible_reward": "Book progress begins",
+    "recommended_priority": "medium",
+    "notes": "Good library signal"
+  },
+  {
+    "slug": "quiz_passed",
+    "label": "Quiz Passed",
+    "category": "study",
+    "trigger_example": "Pass a study quiz",
+    "visible_reward": "Concept confidence rises",
+    "recommended_priority": "medium",
+    "notes": "Quiz quality must improve first"
+  },
+  {
+    "slug": "creative_prompt_completed",
+    "label": "Prompt Completed",
+    "category": "create",
+    "trigger_example": "Complete a cauldron prompt",
+    "visible_reward": "Cauldron spark/project mark",
+    "recommended_priority": "high",
+    "notes": "Create should reward action not perfection"
+  },
+  {
+    "slug": "creative_seed_saved",
+    "label": "Seed Saved",
+    "category": "create",
+    "trigger_example": "Save lyric riff story or idea",
+    "visible_reward": "Seed stored in project list",
+    "recommended_priority": "high",
+    "notes": "Important creative memory"
+  },
+  {
+    "slug": "first_chord_attempted",
+    "label": "First Chord Attempted",
+    "category": "foundation",
+    "trigger_example": "Attempt E major or first chord",
+    "visible_reward": "First chord milestone",
+    "recommended_priority": "high",
+    "notes": "Beginner emotional milestone"
+  },
+  {
+    "slug": "first_clean_sound",
+    "label": "First Clean Sound",
+    "category": "foundation",
+    "trigger_example": "Make one clear string sound",
+    "visible_reward": "Sound milestone",
+    "recommended_priority": "high",
+    "notes": "Early embodied win"
+  },
+  {
+    "slug": "first_song_fragment_saved",
+    "label": "First Song Fragment Saved",
+    "category": "create",
+    "trigger_example": "Save first musical idea",
+    "visible_reward": "Small Mastery/Create bridge",
+    "recommended_priority": "medium",
+    "notes": "Connects expression to journey"
+  },
+  {
+    "slug": "level_milestone_reached",
+    "label": "Level Milestone Reached",
+    "category": "level",
+    "trigger_example": "Meet level milestone rules",
+    "visible_reward": "Level ring progresses",
+    "recommended_priority": "high",
+    "notes": "Core game loop"
+  },
+  {
+    "slug": "node_quest_complete",
+    "label": "Node Quest Complete",
+    "category": "quest",
+    "trigger_example": "Complete a node-specific quest",
+    "visible_reward": "Quest card completes",
+    "recommended_priority": "high",
+    "notes": "Main game feeling"
+  }
+]

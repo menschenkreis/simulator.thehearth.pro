@@ -1,0 +1,9 @@
+event_order,event_name,learner_experience,system_response,possible_data_written
+1,Enter Map,Learner returns to the symbolic world,Show current quest and node states,current_node or interface state
+2,Choose Quest,Learner chooses or accepts next action,Open relevant node/scene,active quest state
+3,Do Action,Learner completes lesson step drill study prompt or practice,Validate or ask for self-assessment,lesson attempt drill attempt practice state
+4,Receive Feedback,Learner sees explanation result or next suggestion,Update state and offer recovery if needed,progress record attempt details
+5,Earn Progress,Learner gets visible evidence of completion,Glow card node map ring or milestone,student accomplishment progress record
+6,Reflect,Learner writes or selects body/meaning reflection,Save memory and feed Hearth,student note reflection practice session
+7,Return To Map,Learner sees changed world,Update map/dashboard/current path,map progress current recommendation
+8,Next Return Point,Learner sees what to do next,Suggest next daily card quest or review item,recommendation state

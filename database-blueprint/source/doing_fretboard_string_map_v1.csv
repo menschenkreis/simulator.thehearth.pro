@@ -1,0 +1,7 @@
+string_id,label,hint,weight,categories,recommended_skill_node,sort_order
+high-e,e,Speed / style,1.4px,speed; styles,Technique,1
+b,B,Arpeggios / harmony,1.8px,arpeggios,Chords,2
+g,G,Scales / maps,2.2px,scales,Scales & Lead,3
+d,D,Picking / attack,2.6px,picking,Technique,4
+a,A,Fretting / grip,3px,fretting,Technique,5
+low-e,E,Rhythm / pulse,3.4px,rhythm,Rhythm,6

@@ -1,0 +1,122 @@
+[
+  {
+    "key_name": "hearth-foundation-progress",
+    "value_type": "Object",
+    "purpose": "Foundation block completion",
+    "recommended_future_home": "progress_records or lesson_attempts",
+    "migration_priority": "high",
+    "notes": "Map block completion to student profile"
+  },
+  {
+    "key_name": "hearth-doing-progress",
+    "value_type": "Object",
+    "purpose": "Drill completion states",
+    "recommended_future_home": "progress_records and drill_attempts",
+    "migration_priority": "high",
+    "notes": "Values include booleans and state strings"
+  },
+  {
+    "key_name": "hearth-knowing-progress",
+    "value_type": "Object",
+    "purpose": "Topic read states",
+    "recommended_future_home": "progress_records or source_note_reads",
+    "migration_priority": "high",
+    "notes": "Topic IDs need stable canonical slugs"
+  },
+  {
+    "key_name": "hearth-knowing-state",
+    "value_type": "Object",
+    "purpose": "Book reader position",
+    "recommended_future_home": "student_reading_state",
+    "migration_priority": "medium",
+    "notes": "Useful for resume reading"
+  },
+  {
+    "key_name": "hearth-knowing-quiz",
+    "value_type": "Object",
+    "purpose": "Quiz states",
+    "recommended_future_home": "quiz_attempts",
+    "migration_priority": "medium",
+    "notes": "Prototype quizzes are weak and should be redesigned"
+  },
+  {
+    "key_name": "hearth-practice-state",
+    "value_type": "Object",
+    "purpose": "Active practice session",
+    "recommended_future_home": "practice_session_state",
+    "migration_priority": "high",
+    "notes": "Could remain local during active session"
+  },
+  {
+    "key_name": "hearth-practice-log",
+    "value_type": "Array",
+    "purpose": "Session history",
+    "recommended_future_home": "practice_sessions",
+    "migration_priority": "high",
+    "notes": "Important user data"
+  },
+  {
+    "key_name": "hearth-practice-notes",
+    "value_type": "Array",
+    "purpose": "Session notes",
+    "recommended_future_home": "student_notes or practice_reflections",
+    "migration_priority": "high",
+    "notes": "Important reflective data"
+  },
+  {
+    "key_name": "hearth-journey-v2",
+    "value_type": "Object",
+    "purpose": "Multi-student data",
+    "recommended_future_home": "student_profiles plus journey_progress",
+    "migration_priority": "high",
+    "notes": "Core Journey migration item"
+  },
+  {
+    "key_name": "hearth-journey-active-student",
+    "value_type": "String",
+    "purpose": "Current student ID",
+    "recommended_future_home": "user preference / active profile",
+    "migration_priority": "medium",
+    "notes": "Useful app preference"
+  },
+  {
+    "key_name": "cauldron-notes",
+    "value_type": "String",
+    "purpose": "Create node scratch notes",
+    "recommended_future_home": "creative_project_notes",
+    "migration_priority": "medium",
+    "notes": "Could stay local draft until saved"
+  },
+  {
+    "key_name": "hearth-create-projects",
+    "value_type": "Array",
+    "purpose": "Create projects",
+    "recommended_future_home": "creative_projects",
+    "migration_priority": "medium",
+    "notes": "Important once Create matures"
+  },
+  {
+    "key_name": "travelledPaths",
+    "value_type": "Array",
+    "purpose": "Map path travelled state",
+    "recommended_future_home": "map_progress_state",
+    "migration_priority": "low",
+    "notes": "Can be regenerated from progress later"
+  },
+  {
+    "key_name": "flameNode",
+    "value_type": "String",
+    "purpose": "Current flame position",
+    "recommended_future_home": "user interface state",
+    "migration_priority": "low",
+    "notes": "UI preference not core learning data"
+  },
+  {
+    "key_name": "hearth-sessions",
+    "value_type": "Array",
+    "purpose": "Session timestamps",
+    "recommended_future_home": "practice_sessions or app_sessions",
+    "migration_priority": "medium",
+    "notes": "Clarify difference from practice log"
+  }
+]

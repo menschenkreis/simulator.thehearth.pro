@@ -1,0 +1,90 @@
+[
+  {
+    "area": "html_pages",
+    "item_count": "8 files",
+    "total_size": "520 KB mixed",
+    "status": "live plus orphan/backup pages",
+    "primary_risk": "simulator.html is 324 KB monolith",
+    "rebuild_note": "Split app into routes/components and retire orphan pages deliberately"
+  },
+  {
+    "area": "javascript",
+    "item_count": "37 files",
+    "total_size": "720 KB mixed",
+    "status": "core systems plus lessons plus utilities",
+    "primary_risk": "scene-first overrides node functions and data is hardcoded",
+    "rebuild_note": "Preserve solid systems but remove global override architecture"
+  },
+  {
+    "area": "css",
+    "item_count": "3 files plus inline",
+    "total_size": "32 KB plus 400 inline lines",
+    "status": "mixed",
+    "primary_risk": "styles are split between files and simulator.html",
+    "rebuild_note": "Move styles into component/theme structure"
+  },
+  {
+    "area": "svg_assets",
+    "item_count": "8 files",
+    "total_size": "52 KB",
+    "status": "mixed",
+    "primary_risk": "brain-map not deployed and icons are scattered",
+    "rebuild_note": "Register scene SVGs separately from simple toolkit icons"
+  },
+  {
+    "area": "images",
+    "item_count": "44 files",
+    "total_size": "7.5 MB",
+    "status": "mixed",
+    "primary_risk": "multiple icon variants and high-res character files",
+    "rebuild_note": "Create asset status review before production bundling"
+  },
+  {
+    "area": "audio",
+    "item_count": "1 file",
+    "total_size": "1.4 MB",
+    "status": "live",
+    "primary_risk": "campfire loop may need loading/mute controls",
+    "rebuild_note": "Keep as optional ambience asset"
+  },
+  {
+    "area": "knowledge_base_processed",
+    "item_count": "53 books",
+    "total_size": "unknown small md total",
+    "status": "valuable",
+    "primary_risk": "not connected to app/database",
+    "rebuild_note": "Import as source notes and book/source metadata"
+  },
+  {
+    "area": "knowledge_base_raw_pdfs",
+    "item_count": "33 PDFs",
+    "total_size": "894 MB",
+    "status": "local/private",
+    "primary_risk": "too large for git and 70 percent scanned/OCR needed",
+    "rebuild_note": "Host or private-store PDFs and track OCR/source status"
+  },
+  {
+    "area": "guitar_tricks_course",
+    "item_count": "72 PDFs plus catalog",
+    "total_size": "3.7 MB",
+    "status": "candidate resource",
+    "primary_risk": "rights/status and integration unclear",
+    "rebuild_note": "Catalog as resources only after review"
+  },
+  {
+    "area": "database",
+    "item_count": "content_books 53 rows",
+    "total_size": "not applicable",
+    "status": "partial",
+    "primary_risk": "0 user-facing tables and progress is localStorage",
+    "rebuild_note": "Build content tables and separate student tables"
+  },
+  {
+    "area": "local_storage",
+    "item_count": "15 keys",
+    "total_size": "not applicable",
+    "status": "live state",
+    "primary_risk": "only local backup no sync or auth",
+    "rebuild_note": "Migrate gradually with local fallback and conflict rules"
+  }
+]

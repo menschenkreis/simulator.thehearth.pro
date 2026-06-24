@@ -1,0 +1,122 @@
+[
+  {
+    "asset_key": "guide.full.celebratory",
+    "variant": "full-body",
+    "mood": "celebratory",
+    "width": 3000,
+    "height": 5000,
+    "source_path": "/Users/alessandralove/Documents/TREE OF LIFE/PRODUCTION/SIMULATION/ASSETS/CHARACTER/FULL/Celebratory.png",
+    "recommended_app_path": "assets/images/character/full/celebratory.png",
+    "recommended_use": "Node rooms and completion moments"
+  },
+  {
+    "asset_key": "guide.full.encouraging",
+    "variant": "full-body",
+    "mood": "encouraging",
+    "width": 3000,
+    "height": 5000,
+    "source_path": "/Users/alessandralove/Documents/TREE OF LIFE/PRODUCTION/SIMULATION/ASSETS/CHARACTER/FULL/Encouraging.png",
+    "recommended_app_path": "assets/images/character/full/encouraging.png",
+    "recommended_use": "Node rooms and supportive guide moments"
+  },
+  {
+    "asset_key": "guide.full.neutral",
+    "variant": "full-body",
+    "mood": "neutral",
+    "width": 3000,
+    "height": 5000,
+    "source_path": "/Users/alessandralove/Documents/TREE OF LIFE/PRODUCTION/SIMULATION/ASSETS/CHARACTER/FULL/Neutral.png",
+    "recommended_app_path": "assets/images/character/full/neutral.png",
+    "recommended_use": "Default node room guide"
+  },
+  {
+    "asset_key": "guide.full.thinking",
+    "variant": "full-body",
+    "mood": "thinking",
+    "width": 3000,
+    "height": 5000,
+    "source_path": "/Users/alessandralove/Documents/TREE OF LIFE/PRODUCTION/SIMULATION/ASSETS/CHARACTER/FULL/Thinking.png",
+    "recommended_app_path": "assets/images/character/full/thinking.png",
+    "recommended_use": "Questions and stuck moments"
+  },
+  {
+    "asset_key": "guide.face.celebratory",
+    "variant": "face",
+    "mood": "celebratory",
+    "width": 1319,
+    "height": 1858,
+    "source_path": "/Users/alessandralove/Documents/TREE OF LIFE/PRODUCTION/SIMULATION/ASSETS/CHARACTER/FACE/Celebratory.png",
+    "recommended_app_path": "assets/images/character/face/celebratory.png",
+    "recommended_use": "TeachingEngine correct/end states"
+  },
+  {
+    "asset_key": "guide.face.encouraging",
+    "variant": "face",
+    "mood": "encouraging",
+    "width": 1297,
+    "height": 1820,
+    "source_path": "/Users/alessandralove/Documents/TREE OF LIFE/PRODUCTION/SIMULATION/ASSETS/CHARACTER/FACE/Encouraging.png",
+    "recommended_app_path": "assets/images/character/face/encouraging.png",
+    "recommended_use": "TeachingEngine speak/card states"
+  },
+  {
+    "asset_key": "guide.face.neutral",
+    "variant": "face",
+    "mood": "neutral",
+    "width": 1402,
+    "height": 1909,
+    "source_path": "/Users/alessandralove/Documents/TREE OF LIFE/PRODUCTION/SIMULATION/ASSETS/CHARACTER/FACE/Neutral.png",
+    "recommended_app_path": "assets/images/character/face/neutral.png",
+    "recommended_use": "TeachingEngine setup states"
+  },
+  {
+    "asset_key": "guide.face.thinking",
+    "variant": "face",
+    "mood": "thinking",
+    "width": 1308,
+    "height": 1841,
+    "source_path": "/Users/alessandralove/Documents/TREE OF LIFE/PRODUCTION/SIMULATION/ASSETS/CHARACTER/FACE/Thinking.png",
+    "recommended_app_path": "assets/images/character/face/thinking.png",
+    "recommended_use": "TeachingEngine ask/reexplain states"
+  },
+  {
+    "asset_key": "guide.symbol.lightbulb",
+    "variant": "symbol-face",
+    "mood": "insight",
+    "width": 1540,
+    "height": 1978,
+    "source_path": "/Users/alessandralove/Documents/TREE OF LIFE/PRODUCTION/SIMULATION/ASSETS/CHARACTER/SYMBOLS/Encouraging Face Lightbulb.png",
+    "recommended_app_path": "assets/images/character/symbols/lightbulb.png",
+    "recommended_use": "Insight and concept-click moments"
+  },
+  {
+    "asset_key": "guide.symbol.sparks",
+    "variant": "symbol-face",
+    "mood": "celebration",
+    "width": 1298,
+    "height": 1716,
+    "source_path": "/Users/alessandralove/Documents/TREE OF LIFE/PRODUCTION/SIMULATION/ASSETS/CHARACTER/SYMBOLS/Celebrator with sparks.png",
+    "recommended_app_path": "assets/images/character/symbols/sparks.png",
+    "recommended_use": "Milestones and accomplishments"
+  },
+  {
+    "asset_key": "guide.symbol.exclamation",
+    "variant": "symbol-face",
+    "mood": "warning",
+    "width": 1488,
+    "height": 1742,
+    "source_path": "/Users/alessandralove/Documents/TREE OF LIFE/PRODUCTION/SIMULATION/ASSETS/CHARACTER/SYMBOLS/Think Exclamation Mark.png",
+    "recommended_app_path": "assets/images/character/symbols/exclamation.png",
+    "recommended_use": "Gradient warnings and stuck detection"
+  },
+  {
+    "asset_key": "guide.symbol.question",
+    "variant": "symbol-face",
+    "mood": "question",
+    "width": 1408,
+    "height": 1889,
+    "source_path": "/Users/alessandralove/Documents/TREE OF LIFE/PRODUCTION/SIMULATION/ASSETS/CHARACTER/SYMBOLS/Thinking Question Mark.png",
+    "recommended_app_path": "assets/images/character/symbols/question.png",
+    "recommended_use": "Questions and misunderstood-word checks"
+  }
+]

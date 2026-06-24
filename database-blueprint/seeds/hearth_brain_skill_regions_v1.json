@@ -1,0 +1,110 @@
+[
+  {
+    "skill_slug": "ear_training",
+    "skill_name": "Ear Training",
+    "color": "#8d5cff",
+    "svg_x": "250",
+    "svg_y": "170",
+    "mapped_nodes": "knowing; play",
+    "prototype_progress_logic": "Counts knowing topics read / total topics",
+    "rebuild_progress_sources": "study_attempts; ear_training_lessons; listening_tasks; knowing_progress",
+    "description": "Listen identify and internalise.",
+    "notes": "Play mapping should become World Traditions or listening pathway if Play is optional"
+  },
+  {
+    "skill_slug": "technique",
+    "skill_name": "Technique",
+    "color": "#4da3ff",
+    "svg_x": "515",
+    "svg_y": "200",
+    "mapped_nodes": "doing",
+    "prototype_progress_logic": "Counts doing drills mastered in picking/fretting/speed",
+    "rebuild_progress_sources": "doing_drills; practice_sessions; progress_records",
+    "description": "Control and precision.",
+    "notes": "Should include tension/body quality not just completion"
+  },
+  {
+    "skill_slug": "rhythm",
+    "skill_name": "Rhythm",
+    "color": "#4da3ff",
+    "svg_x": "602",
+    "svg_y": "235",
+    "mapped_nodes": "doing",
+    "prototype_progress_logic": "Counts doing drills in rhythm category",
+    "rebuild_progress_sources": "rhythm_drills; metronome_sessions; practice_reflections",
+    "description": "Timing groove and feel.",
+    "notes": "Important bridge between Doing and Practice"
+  },
+  {
+    "skill_slug": "theory",
+    "skill_name": "Theory",
+    "color": "#8d5cff",
+    "svg_x": "400",
+    "svg_y": "380",
+    "mapped_nodes": "knowing",
+    "prototype_progress_logic": "Counts knowing topics read",
+    "rebuild_progress_sources": "study_quizzes; source_notes; concept_confidence",
+    "description": "Language and harmony.",
+    "notes": "Should live mainly in Study/Knowing split"
+  },
+  {
+    "skill_slug": "improvisation",
+    "skill_name": "Improvisation",
+    "color": "#2fffe6",
+    "svg_x": "465",
+    "svg_y": "545",
+    "mapped_nodes": "play; create",
+    "prototype_progress_logic": "Placeholder start playing to unlock",
+    "rebuild_progress_sources": "create_projects; improvisation_drills; saved_seeds",
+    "description": "Create and express.",
+    "notes": "Map to Create plus Doing rather than only Play"
+  },
+  {
+    "skill_slug": "chords",
+    "skill_name": "Chords",
+    "color": "#d9f45a",
+    "svg_x": "1190",
+    "svg_y": "420",
+    "mapped_nodes": "knowing; doing",
+    "prototype_progress_logic": "Counts knowing topics in chords category",
+    "rebuild_progress_sources": "chord_drills; chord_lessons; knowing_topics; practice_sessions",
+    "description": "Shapes voicings and progressions.",
+    "notes": "SVG x is far right within 1600 viewBox"
+  },
+  {
+    "skill_slug": "song_learning",
+    "skill_name": "Song Learning",
+    "color": "#ff9d2e",
+    "svg_x": "895",
+    "svg_y": "560",
+    "mapped_nodes": "play",
+    "prototype_progress_logic": "Placeholder explore the world map",
+    "rebuild_progress_sources": "songs; roadmap_items; practice_sessions; listening_resources",
+    "description": "Skills into songs.",
+    "notes": "Could become Songs pathway under Doing/Practice/Mastery"
+  },
+  {
+    "skill_slug": "performance",
+    "skill_name": "Performance",
+    "color": "#ff654d",
+    "svg_x": "605",
+    "svg_y": "670",
+    "mapped_nodes": "mastery",
+    "prototype_progress_logic": "Counts practice log entries with feeling nailed",
+    "rebuild_progress_sources": "practice_sessions; lesson_attempts; performance_reflections",
+    "description": "Confidence and expression.",
+    "notes": "Should include recording/sharing later"
+  },
+  {
+    "skill_slug": "mastery",
+    "skill_name": "Mastery",
+    "color": "#8d5cff",
+    "svg_x": "800",
+    "svg_y": "795",
+    "mapped_nodes": "mastery",
+    "prototype_progress_logic": "Placeholder journey continues",
+    "rebuild_progress_sources": "long_range_goals; mastery_exemplars; cross_node_progress",
+    "description": "Integration fluency growth.",
+    "notes": "The brain's vertical integration path"
+  }
+]

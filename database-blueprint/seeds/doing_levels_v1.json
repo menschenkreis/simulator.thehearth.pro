@@ -1,0 +1,66 @@
+[
+  {
+    "level_number": "1",
+    "roman": "I",
+    "label": "Level I",
+    "name": "Touch",
+    "tag": "Clean first contact",
+    "sort_order": "1"
+  },
+  {
+    "level_number": "2",
+    "roman": "II",
+    "label": "Level II",
+    "name": "Control",
+    "tag": "Two hands agree",
+    "sort_order": "2"
+  },
+  {
+    "level_number": "3",
+    "roman": "III",
+    "label": "Level III",
+    "name": "Movement",
+    "tag": "Crossings and changes",
+    "sort_order": "3"
+  },
+  {
+    "level_number": "4",
+    "roman": "IV",
+    "label": "Level IV",
+    "name": "Groove",
+    "tag": "Pulse becomes body",
+    "sort_order": "4"
+  },
+  {
+    "level_number": "5",
+    "roman": "V",
+    "label": "Level V",
+    "name": "Reach",
+    "tag": "Neck opens wider",
+    "sort_order": "5"
+  },
+  {
+    "level_number": "6",
+    "roman": "VI",
+    "label": "Level VI",
+    "name": "Flow",
+    "tag": "Patterns connect",
+    "sort_order": "6"
+  },
+  {
+    "level_number": "7",
+    "roman": "VII",
+    "label": "Level VII",
+    "name": "Fire",
+    "tag": "Advanced mechanics",
+    "sort_order": "7"
+  },
+  {
+    "level_number": "8",
+    "roman": "VIII",
+    "label": "Level VIII",
+    "name": "Voice",
+    "tag": "Technique becomes sound",
+    "sort_order": "8"
+  }
+]

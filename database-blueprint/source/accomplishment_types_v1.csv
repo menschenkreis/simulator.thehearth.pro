@@ -1,0 +1,23 @@
+slug,label,category,trigger_example,visible_reward,recommended_priority,notes
+lesson_complete,Lesson Complete,lesson,Finish all required steps in a lesson,Lesson card glows and map progress updates,high,Core TeachingEngine progress
+foundation_block_complete,Foundation Block Complete,foundation,Complete all units inside a Foundation block,Pyramid block lights up,high,Useful for Foundation threshold
+node_visited,Node Visited,map,Enter a node for the first time,Node ring wakes up,medium,Lightweight exploration reward
+drill_seen,Drill Seen,doing,Open a drill detail,Small state dot appears,medium,Low-friction state
+drill_practised,Drill Practised,doing,Mark drill as practised,Drill card progress dot changes,high,Should feed Practice later
+drill_clean_once,Clean Once,doing,Play drill clean one time,Clean marker on drill,high,Good beginner win
+drill_comfortable,Comfortable,doing,Repeat drill with ease,Warmer progress state,medium,Before mastered
+drill_mastered,Drill Mastered,doing,Meet drill pass condition,Mastery marker on drill,high,Should require observable pass condition
+practice_session_complete,Practice Session Complete,practice,Finish a practice timer/session,Candle/session mark saved,high,Core practice memory
+streak_held,Streak Held,practice,Practice or return on consecutive days,Subtle streak flame,medium,Avoid shame streaks
+body_reflection_written,Body Reflection Written,hearth,Answer post-practice body prompt,Hearth memory entry,high,Distinctive Hearth feature
+misunderstood_word_resolved,Word Resolved,study,Mark an unclear term as clarified,Term clears from review,high,Supports learning-science anchor
+source_note_discovered,Source Discovered,knowing,Open or attach a source note,Source glimmer/citation saved,medium,Supports source-traceability
+book_opened,Book Opened,knowing,Open a reference book,Book progress begins,medium,Good library signal
+quiz_passed,Quiz Passed,study,Pass a study quiz,Concept confidence rises,medium,Quiz quality must improve first
+creative_prompt_completed,Prompt Completed,create,Complete a cauldron prompt,Cauldron spark/project mark,high,Create should reward action not perfection
+creative_seed_saved,Seed Saved,create,Save lyric riff story or idea,Seed stored in project list,high,Important creative memory
+first_chord_attempted,First Chord Attempted,foundation,Attempt E major or first chord,First chord milestone,high,Beginner emotional milestone
+first_clean_sound,First Clean Sound,foundation,Make one clear string sound,Sound milestone,high,Early embodied win
+first_song_fragment_saved,First Song Fragment Saved,create,Save first musical idea,Small Mastery/Create bridge,medium,Connects expression to journey
+level_milestone_reached,Level Milestone Reached,level,Meet level milestone rules,Level ring progresses,high,Core game loop
+node_quest_complete,Node Quest Complete,quest,Complete a node-specific quest,Quest card completes,high,Main game feeling

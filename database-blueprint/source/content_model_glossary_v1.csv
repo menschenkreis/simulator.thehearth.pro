@@ -1,0 +1,27 @@
+term,plain_meaning,content_or_student,likely_table_or_group,example,important_note
+App Node,One major place in the simulator,content,app_nodes,Foundation,Core 8 define the world map
+Optional Pathway,A side road or themed route,content,roadmap_items or path grouping,World Traditions,Can preserve Play without making it core
+Skill Node,The ability area being developed,content,skill_nodes,Rhythm,Reusable beyond one lesson
+Level,How far along the journey this belongs,content,mastery_levels,Level 1,Use plain Level 1 through Level 8
+Roadmap Item,One learnable unit,content,roadmap_items,Open string names,Can connect lessons drills resources and source notes
+Lesson,A guided teaching sequence,content,teaching_lessons,Lesson 1 Foundation,Contains TeachingEngine steps
+TeachingEngine Step,One beat inside a lesson,content,teaching_steps,ask step,Step types include speak ask cards action video end
+Action Renderer Key,Name of custom interaction to render,content/render contract,teaching_steps action key,foundation.body_scan,Frontend owns actual rendering
+Book Source,The identity of a book,content/source,book_sources,Principles of Correct Practice,Separate from file copies
+Book File,An actual file copy of a book,content/source,book_files,local PDF or hosted URL,One source can have many files
+Book Section,A place inside a book,content/source,book_sections,Chapter 1 pages 13-27,Useful for page traceability
+Source Note,A traceable extracted idea,content/source,source_notes,Relaxation before speed,Should come before lesson drafts
+Resource,External learning support,content/resources,resources,JustinGuitar lesson,Curated for a specific moment
+Media Asset,A file used by the app,content/assets,media_assets,cauldron.svg,Track rights and usage purpose
+Practice Drill,A repeatable physical task,content/practice,practice_drills,Alternate picking 60 BPM,Connect to pass conditions
+Practice Session,A real practice event,student,practice_sessions,20 minute chord session,Belongs to student profile
+Pass Condition,What counts as ready for now,content/assessment,roadmap_items or lesson criteria,Play E major once and notice buzzes,Must be observable
+Creative Element,What the learner makes with,content/create,create_ingredients,Lyrics,Five core elements in newer prompt system
+Obstruction Modifier,Pressure applied to a creative task,content/create,create_ingredients,Time,Older cauldron ingredients become modifiers
+Creative Prompt,The creative challenge,content/create,create_obstructions or create_combos,Write apology with proud melody,Includes constraint prompt payoff
+Creative Project,A saved creative seed or work,student,creative_projects,Song idea from cauldron,Belongs to student profile
+User,The account owner,student/users,users,Ayla,Can own multiple profiles later
+Student Profile,One learner journey,student,student_profiles,Jen,Progress attaches here
+Progress Record,State of a learner against content,student,progress_records,comfortable on drill alt-1,Do not mix with shared content
+Lesson Attempt,A record of trying a lesson,student,lesson_attempts,Foundation Lesson 1 attempt,Can store score stuck points and completion
+Student Note,A learner-written note,student,student_notes,My wrist tensed up,Important for reflection and Hearth
