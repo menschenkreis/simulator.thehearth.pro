@@ -8,7 +8,7 @@ const FOUNDATION = {
   tag: 'THRESHOLD',
   description: 'Before Level 1 — learn how this world works. Seven layers. Each one builds on the last. Start with how to learn, end with your hands making music.',
   earned: 'Map sense · clear sound · first root notes · first musical sentence',
-  guideThresholdLine: 'Foundation is not Level 1. It is the doorway. We learn how to learn before we run.'
+  guideThresholdLine: 'Foundation is not Level 1. It is the doorway. We learn how to learn before we run.',
   sources: [
     'Jamie Andreas — Principles of Correct Practice for Guitar',
     'Kofi Agawu — Music as Discourse',
@@ -27,7 +27,7 @@ const FOUNDATION = {
       num: '01',
       title: 'How to Learn',
       subtitle: 'The meta-skill that comes before everything',
-      micro: 'Meet the map, guide, nodes, and progress system.'
+      micro: 'Meet the map, guide, nodes, and progress system.',
       status: 'open',
       tags: ['Meta-Skill', 'Hubbard', 'Learning'],
       sources: ['Jamie Andreas', 'L. Ron Hubbard', 'Beryl Lytton & Marcelle Pincus'],
@@ -84,7 +84,7 @@ const FOUNDATION = {
       num: '02',
       title: 'Learning a Language',
       subtitle: 'Music is a language. Here\'s what that means.',
-      micro: 'Spot missing mass, skipped gradients, and misunderstood words.'
+      micro: 'Spot missing mass, skipped gradients, and misunderstood words.',
       status: 'open',
       tags: ['Language', 'Agawu', 'Concept'],
       sources: ['Kofi Agawu — Music as Discourse', "Raen's concept — Music as Language"],
@@ -134,7 +134,7 @@ const FOUNDATION = {
       num: '03',
       title: 'The Language of Music',
       subtitle: '12 notes. That\'s the whole alphabet.',
-      micro: 'Vocabulary, grammar, conversation, poetry.'
+      micro: 'Vocabulary, grammar, conversation, poetry.',
       status: 'open',
       tags: ['Notes', 'Intervals', 'Theory'],
       sources: ['Michael P. Wolfsohn', 'Patrick Stefurak'],
@@ -182,7 +182,7 @@ const FOUNDATION = {
       num: '04',
       title: 'The Language of Guitar',
       subtitle: 'Where music lives on the fretboard',
-      micro: 'Notes, rhythm, intervals, roots.'
+      micro: 'Notes, rhythm, intervals, roots.',
       status: 'open',
       tags: ['Fretboard', 'Strings', 'Tuning'],
       sources: ['Fred Sokolow', 'Patrick Stefurak', 'Charles Kim'],
@@ -240,7 +240,7 @@ const FOUNDATION = {
       num: '05',
       title: 'The Guitar',
       subtitle: 'Know the instrument before you play it',
-      micro: 'Strings, frets, tab, octave.'
+      micro: 'Strings, frets, tab, octave.',
       status: 'open',
       tags: ['Guitar Parts', 'Anatomy', 'Tuning'],
       sources: ['Jamie Andreas', 'Christopher Parkening', 'Charles Kim'],
@@ -295,7 +295,7 @@ const FOUNDATION = {
       num: '06',
       title: 'Speaking with the Guitar',
       subtitle: 'Right hand, left hand, both hands together',
-      micro: 'Body, hands, first sound, rest/free stroke.'
+      micro: 'Body, hands, first sound, rest/free stroke.',
       status: 'open',
       tags: ['Right Hand', 'Left Hand', 'Picking', 'Fretting'],
       sources: ['Jamie Andreas', 'Christopher Parkening'],
@@ -341,7 +341,7 @@ const FOUNDATION = {
       num: '07',
       title: 'Guitar Conversations',
       subtitle: 'Moving between notes, the start of playing',
-      micro: 'E major, call and response, tiny musical sentence.'
+      micro: 'E major, call and response, tiny musical sentence.',
       status: 'open',
       tags: ['Coordination', 'Exercises', 'First Movements'],
       sources: ['Jamie Andreas', 'Christopher Parkening', 'Fred Sokolow'],
