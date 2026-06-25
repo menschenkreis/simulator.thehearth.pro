@@ -416,3 +416,23 @@
 .lp-next:active {
   box-shadow: var(--bev);
 }
+
+/* === FOUNDATION PYRAMID BLOCKS === */
+.f-block {
+  transition: all 0.2s ease;
+}
+.f-block:hover {
+  transform: translateY(-2px);
+}
+.f-block--dormant {
+  opacity: 0.6;
+}
+.f-block--dormant:hover {
+  opacity: 1;
+}
+.f-block--done {
+  opacity: 1;
+}
+.f-block--done:hover {
+  filter: brightness(1.1);
+}

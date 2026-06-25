@@ -2212,29 +2212,32 @@ function showFoundation(){
   let html='<div style="padding:16px;max-width:900px;margin:0 auto;display:flex;flex-direction:column;height:100%;box-sizing:border-box">'+
     '<button class="back-btn" onclick="backToMap()">← Map</button>'+
     // Big node header
-    '<div style="display:flex;align-items:center;gap:14px;margin:0 0 12px;flex-shrink:0">'+
+    '<div style="display:flex;align-items:center;gap:14px;margin:0 0 6px;flex-shrink:0">'+
       '<img src="images/foundation-icon.png" style="width:56px;height:56px;border-radius:50%;object-fit:cover;border:2px solid var(--gold);box-shadow:0 0 12px rgba(212,175,105,0.1)"/>'+
       '<div><div style="font-family:Josefin Sans,sans-serif;color:var(--gold);font-size:1.3rem;letter-spacing:2px">'+F.title+'</div>'+
-        '<div style="display:flex;align-items:center;gap:6px;margin-top:4px">'+
-          '<span style="font-family:JetBrains Mono;font-size:0.55rem;color:var(--amber)">'+doneCount+'/'+F.topics.length+'</span>'+
-          '<div style="flex:1;max-width:120px;height:4px;background:var(--surface);border-radius:2px;overflow:hidden">'+
-            '<div style="width:'+pct+'%;height:100%;background:linear-gradient(90deg,var(--gold),var(--amber));border-radius:2px;transition:width 0.5s"></div>'+
-          '</div>'+
-          '<span style="font-family:JetBrains Mono;font-size:0.5rem;color:var(--dim)">'+pct+'%</span>'+
-        '</div>'+
+        '<div style="font-family:JetBrains Mono;font-size:0.5rem;color:var(--amber);letter-spacing:0.1em;margin-top:2px">'+F.tag+'</div>'+
       '</div>'+
     '</div>'+
-    '<div style="height:8px"></div>'+
-    // Start Lesson 1 button
+    // Subtitle
+    '<div style="font-size:0.72rem;color:var(--dim);margin-bottom:4px;line-height:1.5">Before Level 1: learn how this world works.</div>'+
+    // Progress bar
+    '<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">'+
+      '<span style="font-family:JetBrains Mono;font-size:0.55rem;color:var(--amber)">'+doneCount+'/'+F.topics.length+'</span>'+
+      '<div style="flex:1;max-width:200px;height:4px;background:var(--surface);border-radius:2px;overflow:hidden">'+
+        '<div style="width:'+pct+'%;height:100%;background:linear-gradient(90deg,var(--gold),var(--amber));border-radius:2px;transition:width 0.5s"></div>'+
+      '</div>'+
+      '<span style="font-family:JetBrains Mono;font-size:0.5rem;color:var(--dim)">'+pct+'%</span>'+
+    '</div>'+
+    // Start Lesson 1 button + quest line
     '<div style="text-align:center;margin-bottom:12px">'+
       '<button onclick="startLesson1()" style="background:linear-gradient(180deg,var(--gold),var(--amber));color:var(--bg);border:none;padding:10px 28px;border-radius:8px;font-family:Cinzel,serif;font-size:0.85rem;font-weight:700;letter-spacing:1px;cursor:pointer;box-shadow:0 2px 12px rgba(212,175,105,0.25)">Start Lesson 1</button>'+
-      '<div style="font-size:0.5rem;color:var(--dim);margin-top:4px">Guided journey through all 7 blocks</div>'+
+      '<div style="font-size:0.5rem;color:var(--amber);margin-top:6px;font-style:italic">Quest: Complete the threshold to unlock your first Journey path.</div>'+
     '</div>'+
     // Character on top of pyramid, centered
     '<div style="display:flex;flex-direction:column;align-items:center;flex:1;justify-content:center">'+
       // Character + speech bubble row
       '<div style="position:relative;display:flex;justify-content:center;margin-bottom:2px">'+
-        '<img src="images/character-neutral.png" class="character-float" style="width:120px;height:120px;object-fit:contain"/>'+
+        '<img src="images/character-full/Encouraging.png" class="character-float" style="width:120px;height:120px;object-fit:contain"/>'+
         '<div id="speech-bubble" class="speech-bubble" style="position:absolute;left:calc(50% + 90px);top:10px;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:8px 12px;width:180px;z-index:5">'+
           '<div style="position:absolute;left:-6px;top:20px;width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-right:6px solid var(--border)"></div>'+
           '<div id="speech-text" style="font-size:0.68rem;line-height:1.4"></div>'+
@@ -2249,8 +2252,8 @@ function showFoundation(){
   const step=(maxWidth-minWidth)/(F.topics.length-1);
   // Level 1 as 6th step (narrowest, above topic 5)
   const l1w=minWidth-step;
-  html+='<div id="level1-skeleton" onclick="backToMap()" style="cursor:pointer;width:'+l1w+'px;padding:8px 12px;background:transparent;border:1px dashed '+(pct===100?'#d4af69':'rgba(212,175,105,0.3)')+';border-radius:6px;text-align:center;margin-bottom:3px">'+
-    '<span style="font-family:\'Cinzel\',serif;font-size:0.55rem;letter-spacing:0.12em;text-transform:uppercase;color:'+(pct===100?'#d4af69':'rgba(212,175,105,0.5)')+'">Level 1</span>'+
+  html+='<div id="level1-skeleton" onclick="backToMap()" style="cursor:pointer;width:'+l1w+'px;padding:8px 12px;background:transparent;border:1px dashed '+(pct===100?'#d4af69':'rgba(212,175,105,0.3)')+';border-radius:6px;text-align:center;margin-bottom:3px;transition:all 0.3s">'+
+    '<span style="font-family:\'Cinzel\',serif;font-size:0.55rem;letter-spacing:0.12em;text-transform:uppercase;color:'+(pct===100?'#d4af69':'rgba(212,175,105,0.5)')+'">Threshold → Level 1</span>'+
     (pct===100?'<span style="margin-left:4px;font-size:0.5rem;color:#d4af69">&#10003;</span>':'')+
   '</div>';
 
@@ -2267,37 +2270,48 @@ function showFoundation(){
     const color=rainbow[i];
 
     if(isLocked){
-      html+='<div style="width:'+w+'px;padding:10px 14px;background:transparent;border:1px dashed '+color+'40;border-radius:6px;text-align:center;position:relative;z-index:'+(F.topics.length-i)+'">'+
+      html+='<div style="width:'+w+'px;padding:10px 14px;background:transparent;border:1px dashed '+color+'20;border-radius:6px;text-align:center;position:relative;z-index:'+(F.topics.length-i)+';opacity:0.4;transition:all 0.3s">'+
         '<div style="display:flex;align-items:center;justify-content:center;gap:8px">'+
-          '<span style="font-family:\'DM Sans\',sans-serif;font-size:1.2rem;color:'+color+'40">'+num+'</span>'+
-          '<span style="font-family:\'DM Sans\',sans-serif;font-size:1rem;color:'+color+'30;font-weight:600">'+t.title+'</span>'+
-        '</div></div>';
+          '<span style="font-family:\'DM Sans\',sans-serif;font-size:1.2rem;color:'+color+'30">'+num+'</span>'+
+          '<span style="font-family:\'DM Sans\',sans-serif;font-size:1rem;color:'+color+'20;font-weight:600">'+t.title+'</span>'+
+        '</div>'+
+        '<div style="font-size:0.55rem;color:'+color+'15;margin-top:2px;font-style:italic">'+(t.micro||'')+'</div>'+
+      '</div>';
     } else {
-      const bg=isDone?color:color+'18';
-      const border=isDone?color:color+'60';
+      const bg=isDone?color:color+'0a';
+      const border=isDone?color:color+'30';
       const textCol=isDone?'#fff':color;
       const numCol=isDone?'rgba(255,255,255,0.7)':color;
-      html+='<div onclick="showFoundationTopic(\''+t.id+'\')" style="width:'+w+'px;padding:12px 16px;background:'+bg+';border:2px solid '+border+';border-radius:6px;cursor:pointer;transition:all 0.15s;text-align:center;position:relative;z-index:'+(F.topics.length-i)+'">'+
+      const glowShadow=isDone?'box-shadow:0 0 16px '+color+'40, inset 0 0 8px '+color+'20;':'box-shadow:none;';
+      html+='<div onclick="showFoundationTopic(\''+t.id+'\')" class="f-block'+(isDone?' f-block--done':' f-block--dormant')+'" style="width:'+w+'px;padding:12px 16px;background:'+bg+';border:2px solid '+border+';border-radius:6px;cursor:pointer;transition:all 0.2s;text-align:center;position:relative;z-index:'+(F.topics.length-i)+';'+glowShadow+'" title="'+(t.micro||'')+'">'+
         '<div style="display:flex;align-items:center;justify-content:center;gap:8px">'+
-          '<span style="font-family:\'DM Sans\',sans-serif;font-size:2rem;color:'+numCol+';opacity:'+(isDone?'1':'0.6')+';font-weight:700">'+num+'</span>'+
+          '<span style="font-family:\'DM Sans\',sans-serif;font-size:2rem;color:'+numCol+';opacity:'+(isDone?'1':'0.5')+';font-weight:700">'+num+'</span>'+
           '<span style="font-family:\'DM Sans\',sans-serif;font-size:1.15rem;color:'+textCol+';font-weight:700">'+t.title+'</span>'+
           (isDone?'<span style="font-size:0.8rem;color:rgba(255,255,255,0.8)">&#10003;</span>':'')+
-        '</div></div>';
+        '</div>'+
+        '<div style="font-size:0.55rem;color:'+(isDone?'rgba(255,255,255,0.6)':color+'60')+';margin-top:2px;font-style:italic">'+(t.micro||'')+'</div>'+
+      '</div>';
     }
   }
+
+  // What You'll Earn row
+  html+='<div style="margin-top:16px;padding:12px 16px;background:var(--card);border:1px solid var(--border);border-radius:8px;text-align:center">'+
+    '<div style="font-family:JetBrains Mono;font-size:0.5rem;color:var(--amber);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:4px">What You\'ll Earn</div>'+
+    '<div style="font-size:0.72rem;color:var(--dim);line-height:1.6">'+F.earned+'</div>'+
+  '</div>'+
 
   html+='</div></div></div>';
 
   el.innerHTML=html;
 
   const speechByBlock={
-    'f-how-to-learn':'Welcome! These are your building blocks.',
-    'f-learning-a-language':'Music is a language. Let\u2019s learn how.',
+    'f-how-to-learn':'These are your building blocks. Learn how to learn before anything else.',
+    'f-learning-a-language':'Music is a language. Let\u2019s learn how to speak it.',
     'f-language-of-music':'12 notes. Infinite possibilities.',
-    'f-language-of-guitar':'The fretboard is your map.',
+    'f-language-of-guitar':'The fretboard is your map. Every note has a home.',
     'f-the-guitar':'Know your instrument before you play it.',
-    'f-speaking':'Right hand, left hand, both together.',
-    'f-conversations':'Time for your first conversation.'
+    'f-speaking':'Right hand creates sound. Left hand changes pitch.',
+    'f-conversations':'Your first chord. The doorway opens.'
   };
   const completedSummary={
     'f-how-to-learn':'You learned the three barriers to learning and how to practise. Ready for the next block?',
@@ -2312,12 +2326,12 @@ function showFoundation(){
   // If all blocks done, show final message
   var speechText;
   if(doneCount===F.topics.length){
-    speechText='Foundation complete. Every master started here.';
+    speechText='Threshold complete. You\'ve entered the world. Journey awaits.';
   } else if(activeIdx>0 && completed[F.topics[activeIdx-1].id]){
     // Show summary of last completed block
     speechText=completedSummary[F.topics[activeIdx-1].id]||speechByBlock[activeTopic.id];
   } else {
-    speechText=activeTopic?speechByBlock[activeTopic.id]:'Welcome to Foundation.';
+    speechText=activeTopic?speechByBlock[activeTopic.id]:F.guideThresholdLine;
   }
   const speechLines=[speechText];
   const speechEl=document.getElementById('speech-text');
