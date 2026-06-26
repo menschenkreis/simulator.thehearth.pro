@@ -470,23 +470,58 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
   .doing-state-buttons{grid-template-columns:repeat(2,minmax(0,1fr));}
 }
 
-/* === DOING MODE TOGGLE === */
+/* === DOING V2: ENTRY + MODES === */
 .doing-mode-toggle{display:flex;gap:0;margin:0 0 16px;border:1px solid var(--border);border-radius:7px;overflow:hidden;width:fit-content;}
 .doing-mode-btn{flex:1;padding:9px 22px;font-family:JetBrains Mono,monospace;font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--dim);background:var(--card);border:none;cursor:pointer;transition:all 0.2s;}
 .doing-mode-btn+.doing-mode-btn{border-left:1px solid var(--border);}
 .doing-mode-btn:hover{color:var(--text);background:rgba(212,175,105,0.06);}
 .doing-mode-btn.active{background:var(--gold);color:var(--bg);font-weight:600;}
-
-/* === EXPLORER PANEL === */
-.doing-explorer{max-width:980px;margin:0 auto;}
-.doing-explorer-guide{color:var(--dim);font-size:0.78rem;line-height:1.55;margin-bottom:18px;padding:12px 14px;border-left:3px solid rgba(212,175,105,0.4);background:rgba(26,23,20,0.5);border-radius:0 6px 6px 0;}
-.doing-explorer-guide b{color:var(--gold);}
-.doing-exp-section{margin-bottom:22px;background:rgba(26,23,20,0.7);border:1px solid var(--border);border-radius:8px;padding:18px;}
-.doing-exp-section h3{font-family:Cinzel,serif;color:var(--gold);font-size:1rem;margin:0 0 10px;}
-.doing-exp-section p{color:var(--text);font-size:0.8rem;line-height:1.55;margin:0 0 10px;}
+.doing-entry{max-width:720px;margin:0 auto 20px;}
+.doing-entry h3{font-family:Cinzel,serif;color:var(--gold);font-size:1.05rem;margin:0 0 12px;}
+.doing-entry-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.doing-entry-card{background:rgba(26,23,20,0.7);border:1px solid var(--border);border-radius:8px;padding:16px;cursor:pointer;transition:all 0.2s;position:relative;overflow:hidden;}
+.doing-entry-card:hover{border-color:rgba(212,175,105,0.5);transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,0.3);}
+.doing-entry-card .ec-icon{font-size:1.6rem;margin-bottom:6px;}
+.doing-entry-card .ec-title{font-family:Cinzel,serif;color:var(--gold);font-size:0.85rem;margin-bottom:4px;}
+.doing-entry-card .ec-desc{color:var(--dim);font-size:0.72rem;line-height:1.45;}
+.doing-entry-card .ec-glow{position:absolute;top:-20px;right:-20px;width:80px;height:80px;background:radial-gradient(circle,rgba(212,175,105,0.08),transparent 70%);pointer-events:none;}
+.doing-today{background:rgba(26,23,20,0.7);border:1px solid rgba(212,175,105,0.25);border-radius:8px;padding:18px;margin-bottom:18px;}
+.doing-today h3{font-family:Cinzel,serif;color:var(--gold);font-size:0.95rem;margin:0 0 10px;}
+.doing-today-card{background:rgba(13,11,8,0.5);border:1px solid rgba(212,175,105,0.14);border-radius:6px;padding:14px;}
+.doing-today-card .tt-title{font-family:Cinzel,serif;color:var(--text);font-size:0.9rem;margin-bottom:4px;}
+.doing-today-card .tt-meta{font-family:JetBrains Mono,monospace;color:var(--dim);font-size:0.6rem;letter-spacing:0.06em;margin-bottom:8px;}
+.doing-today-card .tt-why{color:var(--text);font-size:0.78rem;line-height:1.5;margin-bottom:8px;}
+.doing-today-card .tt-pass{color:var(--dim);font-size:0.72rem;font-style:italic;margin-bottom:10px;}
+.doing-today-card .tt-pass b{color:var(--gold);font-style:normal;}
+.doing-today-btns{display:flex;gap:8px;flex-wrap:wrap;}
+.doing-today-btns button{padding:7px 14px;border:1px solid var(--border);background:var(--card);color:var(--dim);border-radius:5px;font-family:JetBrains Mono,monospace;font-size:0.6rem;letter-spacing:0.05em;text-transform:uppercase;cursor:pointer;transition:all 0.15s;}
+.doing-today-btns button:first-child{background:var(--gold);color:var(--bg);border-color:var(--gold);}
+.doing-today-btns button:first-child:hover{opacity:0.9;}
+.doing-today-btns button:hover{border-color:var(--gold);color:var(--gold);}
+.doing-map-guide{color:var(--dim);font-size:0.78rem;line-height:1.55;margin-bottom:14px;padding:12px 14px;border-left:3px solid rgba(212,175,105,0.3);background:rgba(26,23,20,0.4);border-radius:0 6px 6px 0;}
+.doing-map-guide b{color:var(--gold);}
+.doing-review{max-width:720px;margin:0 auto 18px;}
+.doing-review h3{font-family:Cinzel,serif;color:var(--gold);font-size:0.95rem;margin:0 0 12px;}
+.doing-review-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;}
+.doing-review-stat{background:rgba(26,23,20,0.7);border:1px solid var(--border);border-radius:8px;padding:14px;text-align:center;}
+.doing-review-stat strong{display:block;font-family:Cinzel,serif;color:var(--gold);font-size:1.4rem;line-height:1;}
+.doing-review-stat span{display:block;font-family:JetBrains Mono,monospace;color:var(--dim);font-size:0.52rem;letter-spacing:0.08em;text-transform:uppercase;margin-top:4px;}
+.doing-review-weak{grid-column:1/-1;background:rgba(26,23,20,0.5);border:1px solid rgba(212,175,105,0.12);border-radius:6px;padding:12px 14px;}
+.doing-review-weak .rw-label{font-family:JetBrains Mono,monospace;color:var(--amber);font-size:0.54rem;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:4px;}
+.doing-review-weak .rw-text{color:var(--dim);font-size:0.76rem;}
+.doing-explore{max-width:980px;margin:0 auto;}
+.doing-exp-tabs{display:flex;gap:0;margin-bottom:16px;border:1px solid var(--border);border-radius:7px;overflow:hidden;}
+.doing-exp-tab{flex:1;padding:8px 10px;font-family:JetBrains Mono,monospace;font-size:0.56rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--dim);background:var(--card);border:none;cursor:pointer;transition:all 0.2s;text-align:center;}
+.doing-exp-tab+.doing-exp-tab{border-left:1px solid var(--border);}
+.doing-exp-tab:hover{color:var(--text);background:rgba(212,175,105,0.06);}
+.doing-exp-tab.active{background:var(--gold);color:var(--bg);font-weight:600;}
+.doing-exp-panel{background:rgba(26,23,20,0.7);border:1px solid var(--border);border-radius:8px;padding:20px;}
+.doing-exp-panel h3{font-family:Cinzel,serif;color:var(--gold);font-size:1rem;margin:0 0 10px;}
+.doing-exp-panel p{color:var(--text);font-size:0.8rem;line-height:1.55;margin:0 0 10px;}
 .doing-exp-note-btns{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;}
 .doing-exp-note-btn{width:40px;height:40px;border-radius:50%;border:2px solid rgba(212,175,105,0.35);background:var(--card);color:var(--gold);font-family:Cinzel,serif;font-size:0.9rem;cursor:pointer;transition:all 0.15s;}
 .doing-exp-note-btn:hover,.doing-exp-note-btn.active{background:var(--gold);color:var(--bg);border-color:#f5edd8;box-shadow:0 0 14px rgba(212,175,105,0.3);}
+.doing-exp-fretwrap{overflow-x:auto;border:1px solid rgba(212,175,105,0.14);border-radius:8px;background:linear-gradient(90deg,#120d09,#2a1b10 15%,#3a2413 50%,#1b110b);padding:10px;margin-bottom:12px;}
 .doing-exp-highway{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
 .doing-exp-highway-card{background:rgba(13,11,8,0.45);border:1px solid rgba(212,175,105,0.14);border-radius:6px;padding:12px;}
 .doing-exp-highway-card h4{font-family:JetBrains Mono,monospace;color:var(--amber);font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;margin:0 0 8px;}
@@ -497,10 +532,10 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 .doing-exp-relations{margin-top:10px;display:flex;gap:14px;flex-wrap:wrap;}
 .doing-exp-relations span{font-family:JetBrains Mono,monospace;font-size:0.66rem;color:var(--dim);padding:4px 10px;border:1px solid rgba(212,175,105,0.14);border-radius:4px;}
 .doing-exp-relations span b{color:var(--gold);}
-.doing-exp-tab{font-family:JetBrains Mono,monospace;font-size:0.75rem;color:var(--text);background:rgba(13,11,8,0.5);border:1px solid rgba(212,175,105,0.14);border-radius:6px;padding:14px;white-space:pre;line-height:1.7;overflow-x:auto;margin-bottom:10px;}
-.doing-exp-tab .string-line{color:var(--dim);}
-.doing-exp-tab .fret-num{color:var(--gold);font-weight:700;}
-.doing-exp-placeholder{color:var(--dim);font-size:0.72rem;font-style:italic;padding:10px;border:1px dashed rgba(212,175,105,0.18);border-radius:6px;margin-top:10px;}
+.doing-exp-tabblock{font-family:JetBrains Mono,monospace;font-size:0.75rem;color:var(--text);background:rgba(13,11,8,0.5);border:1px solid rgba(212,175,105,0.14);border-radius:6px;padding:14px;white-space:pre;line-height:1.7;overflow-x:auto;margin-bottom:10px;}
+.doing-exp-tabblock .string-line{color:var(--dim);}
+.doing-exp-tabblock .fret-num{color:var(--gold);font-weight:700;}
+.doing-exp-placeholder{color:var(--dim);font-size:0.72rem;font-style:italic;padding:10px;border:1px dashed rgba(212,175,105,0.18);border-radius:6px;}
 .doing-exp-pent-desc{color:var(--dim);font-size:0.76rem;line-height:1.5;margin-top:6px;}
 .doing-next-drill{background:rgba(212,175,105,0.06);border:1px solid rgba(212,175,105,0.2);border-radius:7px;padding:12px 14px;margin-bottom:14px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:border-color 0.2s;}
 .doing-next-drill:hover{border-color:rgba(212,175,105,0.5);}
@@ -508,6 +543,18 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 .doing-next-drill .nd-title{color:var(--text);font-size:0.82rem;margin-top:2px;}
 .doing-next-drill .nd-meta{color:var(--dim);font-size:0.66rem;margin-top:2px;}
 .doing-next-drill .nd-arrow{margin-left:auto;color:var(--gold);font-size:1.2rem;}
+.doing-drill-dot-preview{position:absolute;z-index:50;background:#0d0b08;border:1px solid rgba(212,175,105,0.3);border-radius:6px;padding:8px 10px;pointer-events:none;min-width:160px;box-shadow:0 8px 20px rgba(0,0,0,0.5);}
+.doing-drill-dot-preview .pdp-skill{font-family:JetBrains Mono,monospace;color:var(--amber);font-size:0.5rem;letter-spacing:0.1em;text-transform:uppercase;}
+.doing-drill-dot-preview .pdp-title{color:var(--text);font-size:0.72rem;margin:2px 0;}
+.doing-drill-dot-preview .pdp-meta{color:var(--dim);font-size:0.6rem;}
+.doing-drill-dot-preview .pdp-state{color:var(--gold);font-size:0.58rem;margin-top:3px;}
+@media(max-width:640px){
+  .doing-entry-grid{grid-template-columns:1fr;}
+  .doing-review-grid{grid-template-columns:1fr;}
+  .doing-exp-highway{grid-template-columns:1fr;}
+  .doing-exp-tabs{flex-wrap:wrap;}
+  .doing-exp-tab{flex:none;width:calc(50% - 0.5px);}
+}
 
 .node-info{
   background:var(--card);border:1px solid var(--border);border-radius:10px;
@@ -2597,15 +2644,13 @@ window.goFStep=function(tid,idx){
 };
 // ═══ DOING NODE ═══
 function showDoing(){
-  console.log('[DOING] showDoing called');
-  try {
-  document.querySelectorAll('.pnl').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.pnl').forEach(function(p){p.classList.remove('on')});
   document.getElementById('p-foundation').classList.add('on');
-  const D=window.DOING;if(!D){console.error('[DOING] DOING object not loaded');return;}
-  const el=document.getElementById('p-foundation');
-  const progress=JSON.parse(localStorage.getItem('hearth-doing-progress')||'{}');
+  var D=window.DOING;if(!D)return;
+  var el=document.getElementById('p-foundation');
+  var progress=JSON.parse(localStorage.getItem('hearth-doing-progress')||'{}');
 
-  const genreFilters=[
+  var genreFilters=[
     {id:'rock',label:'Rock',styles:['rock']},
     {id:'blues',label:'Blues / Slide',styles:['blues','slide']},
     {id:'jazz',label:'Jazz / Gypsy',styles:['jazz','gypsy']},
@@ -2616,11 +2661,11 @@ function showDoing(){
     {id:'latin',label:'Latin / Flamenco',styles:['latin','flamenco']}
   ];
 
-  let activeStyle='all';
-  let activeLevel='all';
-  let activeSearch='';
+  var activeStyle='all';
+  var activeLevel='all';
+  var activeSearch='';
 
-  const levels=[
+  var levels=[
     {level:1,label:'Level I',name:'Touch',tag:'Clean first contact'},
     {level:2,label:'Level II',name:'Control',tag:'Two hands agree'},
     {level:3,label:'Level III',name:'Movement',tag:'Crossings and changes'},
@@ -2631,7 +2676,7 @@ function showDoing(){
     {level:8,label:'Level VIII',name:'Voice',tag:'Technique becomes sound'}
   ];
 
-  const stringRows=[
+  var stringRows=[
     {id:'high-e',label:'e',hint:'Speed / style',weight:'1.4px',categories:['speed','styles']},
     {id:'b',label:'B',hint:'Arpeggios / harmony',weight:'1.8px',categories:['arpeggios']},
     {id:'g',label:'G',hint:'Scales / maps',weight:'2.2px',categories:['scales']},
@@ -2640,7 +2685,7 @@ function showDoing(){
     {id:'low-e',label:'E',hint:'Rhythm / pulse',weight:'3.4px',categories:['rhythm']}
   ];
 
-  const drillLevels={
+  var drillLevels={
     'alt-1':1,'flatpick-1':1,'chrom-1':1,'classical-1':1,'stretch-1':1,'16th-1':1,'funk-1':1,'shuffle-1':1,'strum-1':1,'triplet-1':1,'pent-1':1,'major-1':1,'blues-scale-1':1,'pent-3':1,'maj-arp':1,'min-arp':1,'pima-1':1,'pima-2':1,
     'alt-2':2,'hybrid-1':2,'spider-1':2,'barre-1':2,'legato-1':2,'vibrato-1':2,'funk-2':2,'reggae-1':2,'metronome-1':2,'pent-2':2,'modes-1':2,'modes-2':2,'dom7-arp':2,'maj7-arp':2,'classical-arp':2,'trem-1':2,'seq-1':2,'speed-ramp':2,'burst-1':2,'slide-1':2,
     'alt-3':3,'gypsy-1':3,'crosspick-1':3,'barre-2':3,'trill-1':3,'bossa-1':3,'major-2':3,'harm-min-1':3,'phrygian-1':3,'pos-shift-1':3,'slide-2':3,
@@ -2651,8 +2696,8 @@ function showDoing(){
     'gypsy-pick':8,'celtic-1':8
   };
 
-  const stateOrder=['seen','practiced','clean','comfortable','mastered'];
-  const stateLabels={seen:'Seen',practiced:'Practised',clean:'Clean once',comfortable:'Comfortable',mastered:'Mastered'};
+  var stateOrder=['seen','practiced','clean','comfortable','mastered'];
+  var stateLabels={seen:'Seen',practiced:'Practised',clean:'Clean once',comfortable:'Comfortable',mastered:'Mastered'};
 
   function esc(s){
     return String(s||'').replace(/[&<>"']/g,function(ch){
@@ -2663,28 +2708,28 @@ function showDoing(){
     return String(html||'').replace(/<[^>]*>/g,' ').replace(/\s+/g,' ').trim();
   }
   function firstSentence(html){
-    const txt=textOnly(html);
-    const m=txt.match(/^(.{20,160}?[.!?])\s/);
+    var txt=textOnly(html);
+    var m=txt.match(/^(.{20,160}?[.!?])\s/);
     return m?m[1]:txt.slice(0,150);
   }
   function getDoingLevel(drill){
     return drill.level||drillLevels[drill.id]||Math.min(8,Math.max(1,drill.difficulty||1));
   }
   function getState(drillId){
-    const value=progress[drillId];
+    var value=progress[drillId];
     if(value===true) return 'mastered';
-    if(stateOrder.includes(value)) return value;
+    if(stateOrder.indexOf(value)>=0) return value;
     return '';
   }
   function matchesGenre(drill,genreId){
     if(genreId==='all') return true;
-    const genre=genreFilters.find(g=>g.id===genreId);
-    return genre?genre.styles.includes(drill.style):drill.style===genreId;
+    var genre=genreFilters.find(function(g){return g.id===genreId;});
+    return genre?genre.styles.indexOf(drill.style)>=0:drill.style===genreId;
   }
   function drillMatchesSearch(cat,drill){
     if(!activeSearch) return true;
-    const q=activeSearch.toLowerCase();
-    return (drill.title+' '+drill.style+' '+cat.title+' '+drill.source).toLowerCase().includes(q);
+    var q=activeSearch.toLowerCase();
+    return (drill.title+' '+drill.style+' '+cat.title+' '+drill.source).toLowerCase().indexOf(q)>=0;
   }
   function isVisible(cat,drill){
     if(!matchesGenre(drill,activeStyle)) return false;
@@ -2692,30 +2737,30 @@ function showDoing(){
     return drillMatchesSearch(cat,drill);
   }
   function countForGenre(genreId){
-    let count=0;
-    D.categories.forEach(c=>c.drills.forEach(d=>{
+    var count=0;
+    D.categories.forEach(function(c){c.drills.forEach(function(d){
       if(!matchesGenre(d,genreId)) return;
       if(activeLevel!=='all'&&String(getDoingLevel(d))!==String(activeLevel)) return;
       if(!drillMatchesSearch(c,d)) return;
       count++;
-    }));
+    });});
     return count;
   }
   function countForLevelAnyGenre(level){
-    let count=0;
-    D.categories.forEach(c=>c.drills.forEach(d=>{
+    var count=0;
+    D.categories.forEach(function(c){c.drills.forEach(function(d){
       if(String(getDoingLevel(d))!==String(level)) return;
       if(!drillMatchesSearch(c,d)) return;
       count++;
-    }));
+    });});
     return count;
   }
   function countForAllGenresAllLevels(){
-    let count=0;
-    D.categories.forEach(c=>c.drills.forEach(d=>{
+    var count=0;
+    D.categories.forEach(function(c){c.drills.forEach(function(d){
       if(!drillMatchesSearch(c,d)) return;
       count++;
-    }));
+    });});
     return count;
   }
   function normalizeActiveStyle(){
@@ -2724,103 +2769,49 @@ function showDoing(){
     }
   }
   function drillShort(drill){
-    const words=drill.title.replace(/[^\w\s]/g,' ').split(/\s+/).filter(Boolean);
-    return words.slice(0,2).map(w=>w[0]).join('').toUpperCase().slice(0,2)||'D';
+    var words=drill.title.replace(/[^\w\s]/g,' ').split(/\s+/).filter(Boolean);
+    return words.slice(0,2).map(function(w){return w[0];}).join('').toUpperCase().slice(0,2)||'D';
   }
   function rowDrills(row){
-    const items=[];
-    D.categories.forEach(cat=>{
-      if(!row.categories.includes(cat.id)) return;
-      cat.drills.forEach(drill=>{
-        if(isVisible(cat,drill)) items.push({cat,drill});
+    var items=[];
+    D.categories.forEach(function(cat){
+      if(row.categories.indexOf(cat.id)<0) return;
+      cat.drills.forEach(function(drill){
+        if(isVisible(cat,drill)) items.push({cat:cat,drill:drill});
       });
     });
     return items;
   }
   function categoryCoaching(cat,drill){
-    const title=drill.title;
-    const defaults={
-      picking:{
-        feel:'Small movement from a relaxed wrist. The pick should travel through the string, not fight it.',
-        listen:'Every note should be the same size. Downstrokes and upstrokes should not sound like two different players.',
-        mistake:'Using the whole arm, gripping the pick too hard, or speeding up before the string crossing is clean.',
-        pass:'Play it clean three times at a steady BPM, then raise the tempo by 5 only if the sound stays even.',
-        guide:'Keep the motion tiny. If the pick is flying far from the string, speed will always feel like a battle.'
-      },
-      fretting:{
-        feel:'Fingertips land close to the fret with just enough pressure. The thumb supports, it does not clamp.',
-        listen:'Each note should speak immediately, with no buzz and no accidental muted neighbour strings.',
-        mistake:'Pressing too hard, lifting fingers too high, or letting the wrist collapse under the neck.',
-        pass:'Move through the pattern twice with relaxed hands and no buzzing before you mark it clean.',
-        guide:'Your fretting hand learns best when it feels easy. Clean pressure beats strong pressure.'
-      },
-      rhythm:{
-        feel:'The hand keeps moving like a pendulum, even when some attacks are muted or skipped.',
-        listen:'The pulse should feel steady before the pattern sounds fancy. The groove lives between the clicks.',
-        mistake:'Freezing the strumming hand, rushing syncopations, or treating muted strokes as throwaway noise.',
-        pass:'Loop it for one full minute without losing the click, then try it with lighter dynamics.',
-        guide:'Do not only count this one. Let the hand become the clock and make the accents sit inside it.'
-      },
-      scales:{
-        feel:'Stay close to the strings and shift positions calmly. The shape is a map, not a race.',
-        listen:'Hear the root when you arrive on it. The scale should start sounding like a colour, not a ladder.',
-        mistake:'Running the pattern mechanically without knowing where the strong notes are.',
-        pass:'Play up, down, then stop on three roots without hunting for them.',
-        guide:'Name the sound while you play it. A scale becomes useful when your ear knows where home is.'
-      },
-      arpeggios:{
-        feel:'One note at a time, with clean separation. Let the chord shape appear without strumming it.',
-        listen:'The chord should be obvious even though the notes are broken apart.',
-        mistake:'Letting notes smear together when the drill asks for separate tones, or losing the root.',
-        pass:'Play the arpeggio in time and call out root, third, fifth, and seventh where relevant.',
-        guide:'Arpeggios are chords turned into movement. Listen for the harmony, not just the fingering.'
-      },
-      speed:{
-        feel:'Short bursts, loose hands, and a clear stop. Speed comes from removing effort.',
-        listen:'Fast notes still need a front edge. If they blur, slow down until the attack returns.',
-        mistake:'Practising mistakes at high tempo and teaching the hands to panic.',
-        pass:'Find the fastest clean tempo, then practise ten BPM below it with control.',
-        guide:'Your ceiling is information, not a challenge. Train just below it until the body trusts the motion.'
-      },
-      styles:{
-        feel:'Copy the physical accent of the style first: attack, muting, swing, weight, and release.',
-        listen:'The technique should sound like a dialect, not just a guitar exercise.',
-        mistake:'Learning the shape without the accent that makes the style speak.',
-        pass:'Record one loop and check whether the style is recognisable before reading the title.',
-        guide:'Style techniques carry culture. Aim for the accent and the feel, not only the notes.'
-      }
+    var title=drill.title;
+    var defaults={
+      picking:{feel:'Small movement from a relaxed wrist.',listen:'Every note should be the same size.',mistake:'Using the whole arm or gripping too hard.',pass:'Play it clean three times at a steady BPM.',guide:'Keep the motion tiny.'},
+      fretting:{feel:'Fingertips land close to the fret with just enough pressure.',listen:'Each note should speak immediately, with no buzz.',mistake:'Pressing too hard or lifting fingers too high.',pass:'Move through the pattern twice with relaxed hands.',guide:'Clean pressure beats strong pressure.'},
+      rhythm:{feel:'The hand keeps moving like a pendulum.',listen:'The pulse should feel steady before the pattern sounds fancy.',mistake:'Freezing the strumming hand or rushing syncopations.',pass:'Loop it for one full minute without losing the click.',guide:'Let the hand become the clock.'},
+      scales:{feel:'Stay close to the strings and shift positions calmly.',listen:'Hear the root when you arrive on it.',mistake:'Running the pattern mechanically without knowing where the strong notes are.',pass:'Play up, down, then stop on three roots.',guide:'Name the sound while you play it.'},
+      arpeggios:{feel:'One note at a time, with clean separation.',listen:'The chord should be obvious even though the notes are broken apart.',mistake:'Letting notes smear together.',pass:'Play the arpeggio in time and call out root, third, fifth.',guide:'Arpeggios are chords turned into movement.'},
+      speed:{feel:'Short bursts, loose hands, and a clear stop.',listen:'Fast notes still need a front edge.',mistake:'Practising mistakes at high tempo.',pass:'Find the fastest clean tempo, then practise ten BPM below it.',guide:'Your ceiling is information, not a challenge.'},
+      styles:{feel:'Copy the physical accent of the style first.',listen:'The technique should sound like a dialect.',mistake:'Learning the shape without the accent.',pass:'Record one loop and check whether the style is recognisable.',guide:'Style techniques carry culture.'}
     };
-    const base=defaults[cat.id]||defaults.fretting;
+    var base=defaults[cat.id]||defaults.fretting;
     return {
       setup:firstSentence(drill.body)||('Work slowly through '+title+'.'),
-      feel:base.feel,
-      listen:base.listen,
-      mistake:base.mistake,
-      pass:base.pass,
-      guide:base.guide
+      feel:base.feel,listen:base.listen,mistake:base.mistake,pass:base.pass,guide:base.guide
     };
   }
 
   function render(){
     normalizeActiveStyle();
-    let totalDrills=0, doneDrills=0;
-    D.categories.forEach(c=>c.drills.forEach(d=>{
+    var totalDrills=0, doneDrills=0;
+    D.categories.forEach(function(c){c.drills.forEach(function(d){
       if(isVisible(c,d)){totalDrills++;if(getState(d.id)==='mastered')doneDrills++;}
-    }));
+    });});
 
-    let totalAll=0, masteredAll=0, touchedAll=0;
-    D.categories.forEach(c=>c.drills.forEach(d=>{
-      totalAll++;
-      const state=getState(d.id);
-      if(state) touchedAll++;
-      if(state==='mastered') masteredAll++;
-    }));
-
-    let html='<div class="doing-controls">'+
+    var html='<div class="doing-controls">'+
       '<div id="doing-level-filters" class="doing-level-rail">'+
         '<span class="doing-level-filter'+(activeLevel==='all'?' active':'')+'" data-level="all">All frets<span class="filter-count">'+countForAllGenresAllLevels()+'</span></span>';
-    levels.forEach(lv=>{
-      const lvCount=countForLevelAnyGenre(lv.level);
+    levels.forEach(function(lv){
+      var lvCount=countForLevelAnyGenre(lv.level);
       html+='<span class="doing-level-filter'+(String(activeLevel)===String(lv.level)?' active':'')+(lvCount===0?' disabled':'')+'" data-level="'+lv.level+'">'+lv.label+'<span class="filter-count">'+lvCount+'</span></span>';
     });
     html+='</div>'+
@@ -2828,22 +2819,21 @@ function showDoing(){
         '<input id="doing-search" class="doing-search" type="text" placeholder="Search drills..." value="'+esc(activeSearch)+'">'+
         '<div id="style-filters" style="display:flex;gap:6px;flex-wrap:wrap">'+
           '<span class="style-filter'+(activeStyle==='all'?' active':'')+'" data-style="all">All genres<span class="filter-count">'+countForGenre('all')+'</span></span>';
-    genreFilters.forEach(g=>{
-      const genreCount=countForGenre(g.id);
+    genreFilters.forEach(function(g){
+      var genreCount=countForGenre(g.id);
       html+='<span class="style-filter'+(activeStyle===g.id?' active':'')+(genreCount===0?' disabled':'')+'" data-style="'+esc(g.id)+'">'+esc(g.label)+'<span class="filter-count">'+genreCount+'</span></span>';
     });
     html+='</div></div></div>';
 
     html+='<div class="doing-fretboard-stage">'+
       '<div class="doing-string-labels" aria-label="Standard guitar tuning">';
-    stringRows.forEach(row=>{
+    stringRows.forEach(function(row){
       html+='<div class="doing-string-note" title="'+esc(row.hint)+'">'+esc(row.label)+'</div>';
     });
     html+='</div>'+
       '<div class="doing-fretboard-wrap"><div class="doing-fretboard">'+
-      '<div class="doing-fret-header">'+
-        '';
-    levels.forEach(lv=>{
+      '<div class="doing-fret-header">';
+    levels.forEach(function(lv){
       html+='<div class="doing-level-head" title="'+esc(lv.tag)+'">'+
         '<div class="doing-level-roman">'+esc(lv.label.replace('Level ',''))+'</div>'+
         '<div class="doing-level-name">'+esc(lv.name)+'</div>'+
@@ -2851,19 +2841,17 @@ function showDoing(){
     });
     html+='</div>';
 
-    stringRows.forEach(row=>{
-      const filtered=rowDrills(row);
-
+    stringRows.forEach(function(row){
+      var filtered=rowDrills(row);
       html+='<div class="doing-string-row" data-string="'+esc(row.id)+'" style="--string-weight:'+esc(row.weight)+'">';
-
-      levels.forEach(lv=>{
-        const drills=filtered.filter(item=>getDoingLevel(item.drill)===lv.level);
+      levels.forEach(function(lv){
+        var drills=filtered.filter(function(item){return getDoingLevel(item.drill)===lv.level;});
         html+='<div class="doing-fret-cell">';
         if(drills.length){
-          drills.forEach(item=>{
-            const drill=item.drill;
-            const cat=item.cat;
-            const state=getState(drill.id);
+          drills.forEach(function(item){
+            var drill=item.drill;
+            var cat=item.cat;
+            var state=getState(drill.id);
             html+='<button class="drill-dot" data-cat="'+esc(cat.id)+'" data-drill="'+esc(drill.id)+'" data-state="'+esc(state)+'" data-short="'+esc(drillShort(drill))+'" title="'+esc(cat.title+': '+drill.title)+'"></button>';
           });
         } else {
@@ -2871,7 +2859,6 @@ function showDoing(){
         }
         html+='</div>';
       });
-
       html+='</div>';
     });
 
@@ -2880,31 +2867,31 @@ function showDoing(){
       '<span><i></i> Untouched</span>'+
       '<span><i style="border-color:#e8a020"></i> In training</span>'+
       '<span class="done"><i></i> Mastered</span>'+
-      '<span style="margin-left:auto">'+doneDrills+'/'+totalDrills+' mastered in view · '+touchedAll+'/'+totalAll+' touched overall</span>'+
+      '<span style="margin-left:auto">'+doneDrills+'/'+totalDrills+' mastered in view</span>'+
     '</div>'+
-    (totalDrills===0?'<div style="margin-top:10px;color:var(--dim);font-size:0.75rem">No drills match this search and filter combination. Clear the search or choose All genres.</div>':'');
+    (totalDrills===0?'<div style="margin-top:10px;color:var(--dim);font-size:0.75rem">No drills match this search and filter combination.</div>':'');
 
     return html;
   }
 
   window.showDoingDrill=function(catId,drillId){
     playSfx('drill-click');
-    const cat=D.categories.find(c=>c.id===catId);if(!cat)return;
-    const drill=cat.drills.find(d=>d.id===drillId);if(!drill)return;
-    const state=getState(drillId);
-    const lv=levels.find(l=>l.level===getDoingLevel(drill))||levels[0];
-    const coach=categoryCoaching(cat,drill);
-    const diffLabel=['','Beginner','Intermediate','Advanced'][drill.difficulty]||'Training';
-    const videoHtml=drill.video?'<a href="'+esc(drill.video)+'" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:7px;color:var(--gold);text-decoration:none;font-size:0.75rem;margin-top:10px">Watch external demo</a>':'';
-    const stateButtons=stateOrder.map(s=>{
+    var cat=D.categories.find(function(c){return c.id===catId;});if(!cat)return;
+    var drill=cat.drills.find(function(d){return d.id===drillId;});if(!drill)return;
+    var state=getState(drillId);
+    var lv=levels.find(function(l){return l.level===getDoingLevel(drill);})||levels[0];
+    var coach=categoryCoaching(cat,drill);
+    var diffLabel=['','Beginner','Intermediate','Advanced'][drill.difficulty]||'Training';
+    var videoHtml=drill.video?'<a href="'+esc(drill.video)+'" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:7px;color:var(--gold);text-decoration:none;font-size:0.75rem;margin-top:10px">Watch external demo</a>':'';
+    var stateButtons=stateOrder.map(function(s){
       return '<button class="doing-state-btn '+(s==='mastered'?'mastered ':'')+(state===s?'active':'')+'" onclick="setDoingDrillState(\''+esc(catId)+'\',\''+esc(drillId)+'\',\''+s+'\')">'+stateLabels[s]+'</button>';
     }).join('');
 
     el.innerHTML='<div class="doing-drill-page">'+
-      '<button class="back-btn" onclick="showDoing()">&larr; Fretboard</button>'+
+      '<button class="back-btn" onclick="showDoing()">&larr; Back</button>'+
       '<div class="doing-drill-layout">'+
         '<div class="doing-drill-card">'+
-          '<div class="doing-kicker">'+esc(lv.label)+' · '+esc(lv.name)+'</div>'+
+          '<div class="doing-kicker">'+esc(lv.label)+' &middot; '+esc(lv.name)+'</div>'+
           '<h2>'+esc(drill.title)+'</h2>'+
           '<div style="display:flex;gap:7px;margin:8px 0 14px;flex-wrap:wrap">'+
             '<span class="tag">'+esc(cat.title)+'</span>'+
@@ -2932,28 +2919,208 @@ function showDoing(){
     '</div>';
   };
 
-  /* --- Next recommended drill --- */
+  /* === Counts === */
+  var total=0, mastered=0, touched=0;
+  D.categories.forEach(function(c){c.drills.forEach(function(d){
+    total++;
+    var s=getState(d.id);
+    if(s) touched++;
+    if(s==='mastered') mastered++;
+  });});
+
+  /* === Weakest category === */
+  var catCounts={};
+  D.categories.forEach(function(c){
+    var done=0,all=c.drills.length;
+    c.drills.forEach(function(d){if(getState(d.id)==='mastered')done++;});
+    catCounts[c.id]={title:c.title,done:done,all:all,pct:all?Math.round(done/all*100):0};
+  });
+  var weakest='';var lowPct=101;
+  Object.keys(catCounts).forEach(function(k){
+    if(catCounts[k].pct<lowPct){lowPct=catCounts[k].pct;weakest=catCounts[k].title;}
+  });
+
+  /* === Next recommended drill === */
   function findNextDrill(){
-    for(const cat of D.categories){
-      for(const drill of cat.drills){
-        const st=getState(drill.id);
-        if(!st||st==='seen') return {cat,drill};
+    for(var ci=0;ci<D.categories.length;ci++){
+      var c=D.categories[ci];
+      for(var di=0;di<c.drills.length;di++){
+        var st=getState(c.drills[di].id);
+        if(!st||st==='seen') return {cat:c,drill:c.drills[di]};
       }
     }
     return null;
   }
-  const nextDrill=findNextDrill();
-  const nextDrillHtml=nextDrill?(
-    '<div class="doing-next-drill" data-cat="'+esc(nextDrill.cat.id)+'" data-drill="'+esc(nextDrill.drill.id)+'">'+
-      '<div><div class="nd-label">Next recommended</div>'+
-      '<div class="nd-title">'+esc(nextDrill.drill.title)+'</div>'+
-      '<div class="nd-meta">'+esc(nextDrill.cat.title)+' · Level '+getDoingLevel(nextDrill.drill)+' · '+esc(nextDrill.drill.duration)+'</div>'+
-    '</div>'+
-    '<div class="nd-arrow">&#8594;</div>'+
-  '</div>'):'';
+  var nextDrill=findNextDrill();
 
-  /* --- Mode toggle --- */
-  let activeMode='training';
+  /* === Safe drill for Today card === */
+  var todayDrill=nextDrill||{cat:D.categories[0],drill:D.categories[0].drills[0]};
+  var td=todayDrill.drill;
+  var tdCat=todayDrill.cat;
+  var tdLevel=getDoingLevel(td);
+  var tdLvObj=levels.find(function(l){return l.level===tdLevel;})||levels[0];
+  var whyMap={picking:'The right hand is the drummer. Before fancy chords, it must hold time.',fretting:'The left hand learns position and pressure. Clean contact before speed.',rhythm:'The pulse lives in the body. Keep the hand moving like a pendulum.',scales:'The fretboard is a map. Scales are the roads that connect every note.',arpeggios:'Arpeggios are chords turned into movement. One note at a time.',speed:'Speed comes from removing effort, not adding it. Short bursts, loose hands.',styles:'Every style has an accent. Copy the feel first, then the notes.',fundamentals:'Know your instrument. The parts, the sound, the language.'};
+  var tdWhy=whyMap[tdCat.id]||'Every drill is a small body quest. Practise slowly, then mark what changed.';
+  var tdPass='Play it cleanly three times at a steady pace, then mark it.';
+  if(tdCat.id==='rhythm') tdPass='Loop it for 30 seconds without losing the pulse.';
+  if(tdCat.id==='speed') tdPass='Find the fastest clean tempo, then practise 10 BPM below it.';
+  if(tdCat.id==='styles') tdPass='Record one loop and check whether the style is recognisable.';
+
+  /* === State === */
+  var doingView='entry';
+  var activeMode='training';
+  var activeExpTab='notes';
+
+  /* === Entry panel HTML === */
+  function renderEntry(){
+    return '<div class="doing-entry">'+
+      '<h3>What are you here to do?</h3>'+
+      '<div class="doing-entry-grid">'+
+        '<div class="doing-entry-card" data-view="training"><div class="ec-glow"></div><div class="ec-icon">&#x1F4AA;</div><div class="ec-title">Train Today</div><div class="ec-desc">Pick a drill, practise your body, mark what changed.</div></div>'+
+        '<div class="doing-entry-card" data-view="explorer"><div class="ec-glow"></div><div class="ec-icon">&#x1F5FA;</div><div class="ec-title">Explore The Fretboard</div><div class="ec-desc">See notes, scales, and chords as a map you can read.</div></div>'+
+        '<div class="doing-entry-card" data-view="chords"><div class="ec-glow"></div><div class="ec-icon">&#x1F3B6;</div><div class="ec-title">Find A Chord / Scale</div><div class="ec-desc">Look up a shape, see where it lives on the neck.</div></div>'+
+        '<div class="doing-entry-card" data-view="review"><div class="ec-glow"></div><div class="ec-icon">&#x1F4CA;</div><div class="ec-title">Review My Progress</div><div class="ec-desc">See what you have touched, mastered, and where to go next.</div></div>'+
+      '</div>'+
+    '</div>';
+  }
+
+  /* === Today card HTML === */
+  function renderToday(){
+    return '<div class="doing-today">'+
+      '<h3>Today&#x2019;s Training</h3>'+
+      '<div class="doing-today-card">'+
+        '<div class="tt-title">'+esc(td.title)+'</div>'+
+        '<div class="tt-meta">'+esc(tdCat.title)+' &middot; Level '+tdLevel+' ('+esc(tdLvObj.name)+') &middot; '+esc(td.duration||'5 min')+'</div>'+
+        '<div class="tt-why">'+esc(tdWhy)+'</div>'+
+        '<div class="tt-pass"><b>Pass:</b> '+esc(tdPass)+'</div>'+
+        '<div class="doing-today-btns">'+
+          '<button data-action="start-drill">Start Drill</button>'+
+          '<button data-action="show-fretboard">Show On Fretboard</button>'+
+          '<button data-action="make-easier">Make Easier</button>'+
+        '</div>'+
+      '</div>'+
+    '</div>';
+  }
+
+  /* === Review card HTML === */
+  function renderReview(){
+    var recLevel=mastered<5?1:mastered<15?2:mastered<30?3:mastered<50?4:6;
+    var recLabel=levels.find(function(l){return l.level===recLevel;})||levels[0];
+    return '<div class="doing-review">'+
+      '<h3>Your Progress</h3>'+
+      '<div class="doing-review-grid">'+
+        '<div class="doing-review-stat"><strong>'+touched+'</strong><span>Drills Touched</span></div>'+
+        '<div class="doing-review-stat"><strong>'+mastered+'</strong><span>Drills Mastered</span></div>'+
+        '<div class="doing-review-stat"><strong>'+total+'</strong><span>Total Drills</span></div>'+
+        '<div class="doing-review-stat"><strong>Level '+recLevel+'</strong><span>Recommended: '+esc(recLabel.name)+'</span></div>'+
+        '<div class="doing-review-weak"><div class="rw-label">Weakest Area</div><div class="rw-text">'+(weakest?esc(weakest)+' &mdash; try a few drills here to balance your practice.':'Start training to build your progress profile.')+'</div></div>'+
+      '</div>'+
+    '</div>';
+  }
+
+  /* === Explorer tabs HTML === */
+  function renderExplorerView(){
+    var tabs=[
+      {id:'notes',label:'Notes'},
+      {id:'scales',label:'Scales'},
+      {id:'chords',label:'Chords'},
+      {id:'identify',label:'Identify'},
+      {id:'tab',label:'Tab / Notation'}
+    ];
+    var tabBtns=tabs.map(function(t){
+      return '<button class="doing-exp-tab'+(activeExpTab===t.id?' active':'')+'" data-etab="'+t.id+'">'+t.label+'</button>';
+    }).join('');
+    var content='';
+
+    if(activeExpTab==='notes'){
+      content='<h3>Note Locator</h3>'+
+        '<p>Click a note to highlight every place it lives across the fretboard.</p>'+
+        '<div class="doing-exp-note-btns" id="exp-note-btns">'+
+          ['E','A','C','D','G'].map(function(n){return '<button class="doing-exp-note-btn" data-enote="'+n+'">'+n+'</button>';}).join('')+
+        '</div>'+
+        '<div id="exp-note-result" style="color:var(--dim);font-size:0.76rem;min-height:1.4em"></div>'+
+        '<div class="doing-exp-fretwrap"><svg id="exp-fretboard-svg" viewBox="0 0 960 280" style="min-width:800px;width:100%;display:block"></svg></div>'+
+        '<h3>E/A Highways</h3>'+
+        '<p>The low E and A strings are your root-note landmarks. Every chord and scale starts here.</p>'+
+        '<div class="doing-exp-highway">'+
+          '<div class="doing-exp-highway-card"><h4>Low E String</h4><div class="note-row">'+
+            [{f:0,n:'E',root:true},{f:1,n:'F'},{f:3,n:'G'},{f:5,n:'A',root:true},{f:7,n:'B'},{f:8,n:'C'},{f:10,n:'D'},{f:12,n:'E',root:true}]
+              .map(function(o){return '<span class="note-chip'+(o.root?' on-string':'')+'"><b>'+o.f+'</b> '+o.n+'</span>';}).join('')+
+          '</div></div>'+
+          '<div class="doing-exp-highway-card"><h4>A String</h4><div class="note-row">'+
+            [{f:0,n:'A',root:true},{f:2,n:'B'},{f:3,n:'C'},{f:5,n:'D'},{f:7,n:'E'},{f:8,n:'F'},{f:10,n:'G'},{f:12,n:'A',root:true}]
+              .map(function(o){return '<span class="note-chip'+(o.root?' on-string':'')+'"><b>'+o.f+'</b> '+o.n+'</span>';}).join('')+
+          '</div></div>'+
+        '</div>'+
+        '<div class="doing-exp-relations">'+
+          '<span>E &#8594; A = <b>up 5 frets</b></span>'+
+          '<span>A &#8594; E = <b>up 7 frets</b></span>'+
+          '<span>Same note = <b>up 12 frets</b></span>'+
+        '</div>';
+    }
+    if(activeExpTab==='scales'){
+      content='<h3>A Minor Pentatonic</h3>'+
+        '<div class="doing-exp-tabblock">'+
+          '<span class="string-line">e</span>|----------------<span class="fret-num">5</span>-<span class="fret-num">8</span>-|\n'+
+          '<span class="string-line">B</span>|------------<span class="fret-num">5</span>-<span class="fret-num">8</span>-----|\n'+
+          '<span class="string-line">G</span>|--------<span class="fret-num">5</span>-<span class="fret-num">7</span>---------|\n'+
+          '<span class="string-line">D</span>|----<span class="fret-num">5</span>-<span class="fret-num">7</span>-------------|\n'+
+          '<span class="string-line">A</span>|-<span class="fret-num">5</span>-<span class="fret-num">7</span>----------------|\n'+
+          '<span class="string-line">E</span>|-<span class="fret-num">5</span>-<span class="fret-num">8</span>----------------|'+
+        '</div>'+
+        '<p class="doing-exp-pent-desc">Pentatonic means five notes. A minor pentatonic gives us <b style="color:var(--gold)">A, C, D, E, and G</b>. This is the first shape every guitarist learns. It lives at fret 5 and works over a thousand songs.</p>';
+    }
+    if(activeExpTab==='chords'){
+      content='<h3>E Major</h3>'+
+        '<div style="text-align:center;margin:10px 0">'+
+          '<svg viewBox="0 0 120 180" width="120" style="display:inline-block">'+
+            '<rect x="10" y="10" width="100" height="160" rx="4" fill="rgba(13,11,8,0.6)" stroke="rgba(212,175,105,0.25)"/>'+
+            '<line x1="28" y1="45" x2="92" y2="45" stroke="rgba(245,237,216,0.5)" stroke-width="3.5"/>'+
+            '<line x1="28" y1="70" x2="92" y2="70" stroke="rgba(245,237,216,0.5)" stroke-width="3"/>'+
+            '<line x1="28" y1="95" x2="92" y2="95" stroke="rgba(245,237,216,0.5)" stroke-width="2.5"/>'+
+            '<line x1="28" y1="120" x2="92" y2="120" stroke="rgba(245,237,216,0.5)" stroke-width="2"/>'+
+            '<line x1="28" y1="145" x2="92" y2="145" stroke="rgba(245,237,216,0.5)" stroke-width="1.5"/>'+
+            '<line x1="28" y1="170" x2="92" y2="170" stroke="rgba(245,237,216,0.5)" stroke-width="1.2"/>'+
+            '<text x="8" y="49" fill="var(--gold)" font-family="JetBrains Mono" font-size="10" text-anchor="middle">E</text>'+
+            '<text x="8" y="74" fill="var(--gold)" font-family="JetBrains Mono" font-size="10" text-anchor="middle">A</text>'+
+            '<text x="8" y="99" fill="var(--gold)" font-family="JetBrains Mono" font-size="10" text-anchor="middle">D</text>'+
+            '<text x="8" y="124" fill="var(--gold)" font-family="JetBrains Mono" font-size="10" text-anchor="middle">G</text>'+
+            '<text x="8" y="149" fill="var(--gold)" font-family="JetBrains Mono" font-size="10" text-anchor="middle">B</text>'+
+            '<text x="8" y="174" fill="var(--gold)" font-family="JetBrains Mono" font-size="10" text-anchor="middle">e</text>'+
+            '<circle cx="52" cy="70" r="7" fill="var(--gold)"/><text x="52" y="74" fill="var(--bg)" font-family="JetBrains Mono" font-size="9" text-anchor="middle" font-weight="700">2</text>'+
+            '<circle cx="60" cy="95" r="7" fill="var(--gold)"/><text x="60" y="99" fill="var(--bg)" font-family="JetBrains Mono" font-size="9" text-anchor="middle" font-weight="700">2</text>'+
+            '<circle cx="44" cy="120" r="7" fill="var(--gold)"/><text x="44" y="124" fill="var(--bg)" font-family="JetBrains Mono" font-size="9" text-anchor="middle" font-weight="700">1</text>'+
+            '<text x="115" y="15" fill="var(--dim)" font-family="JetBrains Mono" font-size="7">Frets 0-3</text>'+
+          '</svg>'+
+        '</div>'+
+        '<div style="text-align:center;font-family:JetBrains Mono,monospace;color:var(--gold);font-size:0.75rem;margin:8px 0">E major: 0 &middot; 2 &middot; 2 &middot; 1 &middot; 0 &middot; 0</div>'+
+        '<div class="doing-exp-placeholder">Chord identifier coming next: select strings and frets to name the chord.</div>';
+    }
+    if(activeExpTab==='identify'){
+      content='<h3>Chord Identifier</h3>'+
+        '<div class="doing-exp-placeholder">Coming next: click notes on the fretboard and the tool will name the chord. For now, explore Notes, Scales, and Chords to build your vocabulary.</div>';
+    }
+    if(activeExpTab==='tab'){
+      content='<h3>Tab + Notation Bridge</h3>'+
+        '<p>Tab tells you <b style="color:var(--gold)">where</b>. Notation tells you <b style="color:var(--gold)">what and when</b>.</p>'+
+        '<div class="doing-exp-tabblock">'+
+          '<span class="string-line">e</span>|---<span class="fret-num">0</span>-----<span class="fret-num">2</span>-----<span class="fret-num">0</span>---|\n'+
+          '<span class="string-line">B</span>|---------------------------------|\n'+
+          '<span class="string-line">G</span>|---------------------------------|\n'+
+          '<span class="string-line">D</span>|---------------------------------|\n'+
+          '<span class="string-line">A</span>|---------------------------------|\n'+
+          '<span class="string-line">E</span>|---------------------------------|'+
+        '</div>'+
+        '<p style="color:var(--dim);font-size:0.76rem">Open &#8594; fret 2 &#8594; open. Three notes, one string. This is what tab looks like: six lines for six strings, numbers for frets.</p>';
+    }
+
+    return '<div class="doing-explore">'+
+      '<div class="doing-exp-tabs">'+tabBtns+'</div>'+
+      '<div class="doing-exp-panel">'+content+'</div>'+
+    '</div>';
+  }
+
+  /* === Mode toggle === */
   function modeToggleHtml(){
     return '<div class="doing-mode-toggle">'+
       '<button class="doing-mode-btn'+(activeMode==='training'?' active':'')+'" data-mode="training">Training</button>'+
@@ -2961,119 +3128,13 @@ function showDoing(){
     '</div>';
   }
 
-  /* --- Explorer rendering --- */
-  function renderExplorer(){
-    let html='<div class="doing-explorer">'+
-      '<div class="doing-explorer-guide"><b>Explorer</b> is where the eye learns before the hand moves. Tap a note, trace a highway, see a shape. The fretboard becomes a map you can read.</div>';
-
-    /* 1. Note Locator */
-    html+='<div class="doing-exp-section">'+
-      '<h3>Note Locator</h3>'+
-      '<p>Click a note to highlight every place it lives across the fretboard.</p>'+
-      '<div class="doing-exp-note-btns" id="exp-note-btns">'+
-        ['E','A','C','D','G'].map(function(n){return '<button class="doing-exp-note-btn" data-enote="'+n+'">'+n+'</button>';}).join('')+
-      '</div>'+
-      '<div id="exp-note-result" style="color:var(--dim);font-size:0.76rem;min-height:1.4em"></div>';
-    html+='<div style="overflow-x:auto;margin-top:12px;border:1px solid rgba(212,175,105,0.14);border-radius:8px;background:linear-gradient(90deg,#120d09,#2a1b10 15%,#3a2413 50%,#1b110b);padding:10px">'+
-      '<svg id="exp-fretboard-svg" viewBox="0 0 960 280" style="min-width:800px;width:100%;display:block"></svg>'+
-    '</div>'+
-    '</div>';
-
-    /* 2. E/A Highways */
-    html+='<div class="doing-exp-section">'+
-      '<h3>E/A Highways</h3>'+
-      '<p>The low E and A strings are your root-note landmarks. Every chord and scale starts here.</p>'+
-      '<div class="doing-exp-highway">'+
-        '<div class="doing-exp-highway-card"><h4>Low E String</h4><div class="note-row">'+
-          [{f:0,n:'E',root:true},{f:1,n:'F'},{f:3,n:'G'},{f:5,n:'A',root:true},{f:7,n:'B'},{f:8,n:'C'},{f:10,n:'D'},{f:12,n:'E',root:true}]
-            .map(function(o){return '<span class="note-chip'+(o.root?' on-string':'')+'"><b>'+o.f+'</b> '+o.n+'</span>';}).join('')+
-        '</div></div>'+
-        '<div class="doing-exp-highway-card"><h4>A String</h4><div class="note-row">'+
-          [{f:0,n:'A',root:true},{f:2,n:'B'},{f:3,n:'C'},{f:5,n:'D'},{f:7,n:'E'},{f:8,n:'F'},{f:10,n:'G'},{f:12,n:'A',root:true}]
-            .map(function(o){return '<span class="note-chip'+(o.root?' on-string':'')+'"><b>'+o.f+'</b> '+o.n+'</span>';}).join('')+
-        '</div></div>'+
-      '</div>'+
-      '<div class="doing-exp-relations">'+
-        '<span>E &rarr; A = <b>up 5 frets</b></span>'+
-        '<span>A &rarr; E = <b>up 7 frets</b></span>'+
-        '<span>Same note = <b>up 12 frets</b></span>'+
-      '</div>'+
-    '</div>';
-
-    /* 3. A Minor Pentatonic */
-    html+='<div class="doing-exp-section">'+
-      '<h3>A Minor Pentatonic</h3>'+
-      '<div class="doing-exp-tab">'+
-        '<span class="string-line">e</span>|----------------<span class="fret-num">5</span>-<span class="fret-num">8</span>-|\n'+
-        '<span class="string-line">B</span>|------------<span class="fret-num">5</span>-<span class="fret-num">8</span>-----|\n'+
-        '<span class="string-line">G</span>|--------<span class="fret-num">5</span>-<span class="fret-num">7</span>---------|\n'+
-        '<span class="string-line">D</span>|----<span class="fret-num">5</span>-<span class="fret-num">7</span>-------------|\n'+
-        '<span class="string-line">A</span>|-<span class="fret-num">5</span>-<span class="fret-num">7</span>----------------|\n'+
-        '<span class="string-line">E</span>|-<span class="fret-num">5</span>-<span class="fret-num">8</span>----------------|'+
-      '</div>'+
-      '<p class="doing-exp-pent-desc">Pentatonic means five notes. A minor pentatonic gives us <b style="color:var(--gold)">A, C, D, E, and G</b>. This is the first shape every guitarist learns. It lives at fret 5 and works over a thousand songs.</p>'+
-    '</div>';
-
-    /* 4. E Major Chord */
-    html+='<div class="doing-exp-section">'+
-      '<h3>E Major</h3>'+
-      '<div style="text-align:center;margin:10px 0">'+
-        '<svg viewBox="0 0 120 180" width="120" style="display:inline-block">'+
-          '<rect x="10" y="10" width="100" height="160" rx="4" fill="rgba(13,11,8,0.6)" stroke="rgba(212,175,105,0.25)"/>'+
-          '<line x1="28" y1="45" x2="92" y2="45" stroke="rgba(245,237,216,0.5)" stroke-width="3.5"/>'+
-          '<line x1="28" y1="70" x2="92" y2="70" stroke="rgba(245,237,216,0.5)" stroke-width="3"/>'+
-          '<line x1="28" y1="95" x2="92" y2="95" stroke="rgba(245,237,216,0.5)" stroke-width="2.5"/>'+
-          '<line x1="28" y1="120" x2="92" y2="120" stroke="rgba(245,237,216,0.5)" stroke-width="2"/>'+
-          '<line x1="28" y1="145" x2="92" y2="145" stroke="rgba(245,237,216,0.5)" stroke-width="1.5"/>'+
-          '<line x1="28" y1="170" x2="92" y2="170" stroke="rgba(245,237,216,0.5)" stroke-width="1.2"/>'+
-          '<text x="8" y="49" fill="var(--gold)" font-family="JetBrains Mono" font-size="10" text-anchor="middle">E</text>'+
-          '<text x="8" y="74" fill="var(--gold)" font-family="JetBrains Mono" font-size="10" text-anchor="middle">A</text>'+
-          '<text x="8" y="99" fill="var(--gold)" font-family="JetBrains Mono" font-size="10" text-anchor="middle">D</text>'+
-          '<text x="8" y="124" fill="var(--gold)" font-family="JetBrains Mono" font-size="10" text-anchor="middle">G</text>'+
-          '<text x="8" y="149" fill="var(--gold)" font-family="JetBrains Mono" font-size="10" text-anchor="middle">B</text>'+
-          '<text x="8" y="174" fill="var(--gold)" font-family="JetBrains Mono" font-size="10" text-anchor="middle">e</text>'+
-          '<circle cx="52" cy="70" r="7" fill="var(--gold)"/><text x="52" y="74" fill="var(--bg)" font-family="JetBrains Mono" font-size="9" text-anchor="middle" font-weight="700">2</text>'+
-          '<circle cx="60" cy="95" r="7" fill="var(--gold)"/><text x="60" y="99" fill="var(--bg)" font-family="JetBrains Mono" font-size="9" text-anchor="middle" font-weight="700">2</text>'+
-          '<circle cx="44" cy="120" r="7" fill="var(--gold)"/><text x="44" y="124" fill="var(--bg)" font-family="JetBrains Mono" font-size="9" text-anchor="middle" font-weight="700">1</text>'+
-          '<text x="115" y="15" fill="var(--dim)" font-family="JetBrains Mono" font-size="7">Frets 0-3</text>'+
-        '</svg>'+
-      '</div>'+
-      '<div style="text-align:center;font-family:JetBrains Mono,monospace;color:var(--gold);font-size:0.75rem;margin:8px 0">E major: 0 · 2 · 2 · 1 · 0 · 0</div>'+
-      '<div class="doing-exp-placeholder">Chord identifier coming next: select strings and frets to name the chord.</div>'+
-    '</div>';
-
-    /* 5. Tab + Notation Bridge */
-    html+='<div class="doing-exp-section">'+
-      '<h3>Tab + Notation Bridge</h3>'+
-      '<p>Tab tells you <b style="color:var(--gold)">where</b>. Notation tells you <b style="color:var(--gold)">what and when</b>.</p>'+
-      '<div class="doing-exp-tab">'+
-        '<span class="string-line">e</span>|---<span class="fret-num">0</span>-----<span class="fret-num">2</span>-----<span class="fret-num">0</span>---|\n'+
-        '<span class="string-line">B</span>|---------------------------------|\n'+
-        '<span class="string-line">G</span>|---------------------------------|\n'+
-        '<span class="string-line">D</span>|---------------------------------|\n'+
-        '<span class="string-line">A</span>|---------------------------------|\n'+
-        '<span class="string-line">E</span>|---------------------------------|'+
-      '</div>'+
-      '<p style="color:var(--dim);font-size:0.76rem">Open → fret 2 → open. Three notes, one string. This is what tab looks like: six lines for six strings, numbers for frets.</p>'+
-    '</div>';
-
-    html+='</div>';
-    return html;
-  }
-
+  /* === Main shell === */
   function shell(){
-    let total=0, mastered=0, touched=0;
-    D.categories.forEach(c=>c.drills.forEach(d=>{
-      total++;
-      const s=getState(d.id);
-      if(s) touched++;
-      if(s==='mastered') mastered++;
-    }));
-    el.innerHTML='<div class="doing-shell">'+
+    var html='<div class="doing-shell">'+
     '<button class="back-btn" onclick="backToMap()">&larr; Map</button>'+
     '<div class="doing-hero">'+
       '<img class="doing-hero-icon" src="images/doing-icon.png" alt="">'+
-      '<div><div class="doing-kicker">Do Node · Fretboard Training Chamber</div>'+
+      '<div><div class="doing-kicker">Do Node &middot; Fretboard Training Chamber</div>'+
       '<h2>'+esc(D.title)+'</h2>'+
       '<p>The guitar neck becomes the map: six real strings, eight training frets, and each dot opens a coached physical drill.</p></div>'+
       '<div class="doing-stat-strip">'+
@@ -3081,37 +3142,74 @@ function showDoing(){
         '<div class="doing-stat"><strong>'+touched+'</strong><span>touched</span></div>'+
         '<div class="doing-stat"><strong>'+total+'</strong><span>drills</span></div>'+
       '</div>'+
-    '</div>'+
-    modeToggleHtml()+
-    (activeMode==='training'?(
-      '<div class="doing-explorer-guide" style="margin-bottom:14px">Training is where the body learns. Choose one dot, practise slowly, then mark what changed.</div>'+
-      nextDrillHtml+
-      '<div id="doing-fretboard">'+render()+'</div>'
-    ):renderExplorer())+
-  '</div>';
+    '</div>';
+
+    if(doingView==='entry'){
+      html+=renderEntry();
+    } else if(doingView==='training'){
+      html+=modeToggleHtml();
+      html+=renderToday();
+      html+='<div class="doing-map-guide"><b>Each dot is a tiny body quest.</b> Touched means you have met it. Mastered means you can return to it cleanly. Choose one, practise slowly, then mark what changed.</div>';
+      html+='<div id="doing-fretboard">'+render()+'</div>';
+    } else if(doingView==='explorer'){
+      html+=modeToggleHtml();
+      html+=renderExplorerView();
+    } else if(doingView==='review'){
+      html+=modeToggleHtml();
+      html+=renderReview();
+    }
+
+    html+='</div>';
+    el.innerHTML=html;
     bindControls();
-    if(activeMode==='explorer') bindExplorer();
+    if(doingView==='explorer'&&activeExpTab==='notes') bindExplorer();
+    bindDrillPreviews();
   }
 
+  /* === Drill dot hover previews === */
+  var previewEl=null;
+  function bindDrillPreviews(){
+    el.querySelectorAll('.drill-dot').forEach(function(dot){
+      dot.onclick=function(){showDoingDrill(this.getAttribute('data-cat'),this.getAttribute('data-drill'));};
+      dot.onmouseenter=function(){
+        var catId=this.getAttribute('data-cat');
+        var drillId=this.getAttribute('data-drill');
+        var cat=D.categories.find(function(c){return c.id===catId;});
+        if(!cat)return;
+        var drill=cat.drills.find(function(d){return d.id===drillId;});
+        if(!drill)return;
+        var st=getState(drillId);
+        var stLabel=st?stateLabels[st]:'Untouched';
+        var lv=getDoingLevel(drill);
+        if(!previewEl){previewEl=document.createElement('div');previewEl.className='doing-drill-dot-preview';document.body.appendChild(previewEl);}
+        previewEl.innerHTML='<div class="pdp-skill">'+esc(cat.title)+'</div><div class="pdp-title">'+esc(drill.title)+'</div><div class="pdp-meta">Level '+lv+' &middot; '+esc(drill.duration)+' &middot; BPM '+esc(drill.bpm)+'</div><div class="pdp-state">'+esc(stLabel)+'</div>';
+        var r=this.getBoundingClientRect();
+        previewEl.style.display='block';
+        previewEl.style.left=(r.right+8)+'px';
+        previewEl.style.top=(r.top-10)+'px';
+      };
+      dot.onmouseleave=function(){if(previewEl)previewEl.style.display='none';};
+    });
+  }
+
+  /* === Rerender board === */
   function rerenderBoard(refocusSearch){
-    document.getElementById('doing-fretboard').innerHTML=render();
-    bindControls();
+    var fb=document.getElementById('doing-fretboard');
+    if(fb){fb.innerHTML=render();bindControls();bindDrillPreviews();}
     if(refocusSearch){
-      const nextSearch=document.getElementById('doing-search');
-      if(nextSearch){
-        nextSearch.focus();
-        nextSearch.setSelectionRange(activeSearch.length,activeSearch.length);
-      }
+      var ns=document.getElementById('doing-search');
+      if(ns){ns.focus();ns.setSelectionRange(activeSearch.length,activeSearch.length);}
     }
   }
+
+  /* === Explorer note binding === */
   function bindExplorer(){
-    /* Note Locator buttons */
     var activeNote=null;
     var NOTES=['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
     var TUNING=[40,45,50,55,59,64];
     var STRING_NAMES=['E','A','D','G','B','e'];
     function noteFromMidi(m){ return NOTES[((m%12)+12)%12]; }
-    function renderExplorerFretboard(highlightNote){
+    function renderFretboard(highlightNote){
       var svg=document.getElementById('exp-fretboard-svg');
       if(!svg) return;
       var left=60,right=900,topY=25,bottomY=230;
@@ -3157,59 +3255,68 @@ function showDoing(){
         var note=btn.dataset.enote;
         activeNote=(activeNote===note)?null:note;
         el.querySelectorAll('.doing-exp-note-btn').forEach(function(b){b.classList.toggle('active',b.dataset.enote===activeNote);});
-        renderExplorerFretboard(activeNote);
+        renderFretboard(activeNote);
       };
     });
-    renderExplorerFretboard(null);
+    renderFretboard(null);
   }
+
+  /* === Bind controls === */
   function bindControls(){
-    el.querySelectorAll('.doing-mode-btn').forEach(function(btn){
-      btn.onclick=function(){ activeMode=btn.dataset.mode; shell(); };
+    el.querySelectorAll('.doing-entry-card').forEach(function(card){
+      card.onclick=function(){
+        var v=card.getAttribute('data-view');
+        if(v==='chords'){doingView='explorer';activeExpTab='chords';}
+        else if(v==='training'||v==='explorer'||v==='review'){doingView=v;}
+        shell();
+      };
     });
-    var nextDrillEl=el.querySelector('.doing-next-drill');
-    if(nextDrillEl){
-      nextDrillEl.onclick=function(){ showDoingDrill(nextDrillEl.dataset.cat,nextDrillEl.dataset.drill); };
-    }
-    if(activeMode!=='training') return;
+    el.querySelectorAll('.doing-mode-btn').forEach(function(btn){
+      btn.onclick=function(){ activeMode=btn.dataset.mode; doingView=activeMode; shell(); };
+    });
+    el.querySelectorAll('.doing-exp-tab').forEach(function(btn){
+      btn.onclick=function(){ activeExpTab=btn.getAttribute('data-etab'); shell(); };
+    });
+    var startDrillBtn=el.querySelector('[data-action="start-drill"]');
+    if(startDrillBtn){startDrillBtn.onclick=function(){showDoingDrill(tdCat.id,td.id);};}
+    var showFretBtn=el.querySelector('[data-action="show-fretboard"]');
+    if(showFretBtn){showFretBtn.onclick=function(){doingView='training';shell();};}
+    var easierBtn=el.querySelector('[data-action="make-easier"]');
+    if(easierBtn){easierBtn.onclick=function(){alert('Easier mode coming soon. For now, try slowing the BPM.');};}
+    if(doingView!=='training') return;
     var styleFilters=document.getElementById('style-filters');
     if(styleFilters){
       styleFilters.addEventListener('click',function(e){
-        const btn=e.target.closest('.style-filter');
+        var btn=e.target.closest('.style-filter');
         if(!btn||btn.classList.contains('disabled'))return;
         activeStyle=btn.getAttribute('data-style')||'all';
         rerenderBoard();
       });
     }
-    const levelFilters=document.getElementById('doing-level-filters');
-    if(levelFilters){
-      levelFilters.addEventListener('click',function(e){
-        const btn=e.target.closest('.doing-level-filter');
+    var levelFilt=document.getElementById('doing-level-filters');
+    if(levelFilt){
+      levelFilt.addEventListener('click',function(e){
+        var btn=e.target.closest('.doing-level-filter');
         if(!btn||btn.classList.contains('disabled'))return;
         activeLevel=btn.getAttribute('data-level')||'all';
         normalizeActiveStyle();
         rerenderBoard();
       });
     }
-    const searchInput=document.getElementById('doing-search');
+    var searchInput=document.getElementById('doing-search');
     if(searchInput){
       searchInput.addEventListener('input',function(){
         activeSearch=this.value.trim();
         rerenderBoard(true);
       });
     }
-    el.querySelectorAll('.drill-dot').forEach(dot=>{
-      dot.onclick=function(){showDoingDrill(this.getAttribute('data-cat'),this.getAttribute('data-drill'));};
-    });
   }
 
   shell();
-  console.log('[DOING] shell() completed');
-  } catch(err) { console.error('[DOING] ERROR:', err); document.getElementById('p-foundation').innerHTML = '<pre style="color:red;padding:20px">Error: ' + err.message + '\n' + err.stack + '</pre>'; }
 }
 
-
 window.setDoingDrillState=function(catId,drillId,state){
-  const progress=JSON.parse(localStorage.getItem('hearth-doing-progress')||'{}');
+  var progress=JSON.parse(localStorage.getItem('hearth-doing-progress')||'{}');
   progress[drillId]=state;
   localStorage.setItem('hearth-doing-progress',JSON.stringify(progress));
   showDoingDrill(catId,drillId);
