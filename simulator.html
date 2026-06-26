@@ -134,24 +134,12 @@
 .doing-adj-btn{flex:1;padding:8px;border:1px solid var(--border);background:transparent;border-radius:6px;color:var(--dim);font-family:DM Sans,sans-serif;font-size:0.72rem;cursor:pointer;transition:all 0.15s;}
 .doing-adj-btn:hover{border-color:var(--gold);color:var(--gold);}
 
-/* === FOUNDATION GATE SVG + LAYOUT === */
-.foundation-gate-wrap{position:relative;display:flex;flex-direction:column;align-items:center;flex:1;justify-content:center;isolation:isolate;}
-.foundation-gate-svg{position:absolute;inset:40px 50%;transform:translateX(-50%);width:min(860px,96vw);max-height:680px;pointer-events:none;z-index:0;opacity:0.9;}
-.foundation-gate-wrap>*{position:relative;z-index:1;}
-@media(max-width:720px){.foundation-gate-svg{width:118vw;opacity:0.55;}}
-/* === PICK COLLECTION === */
-.foundation-picks-wrap{text-align:center;margin:12px 0 8px;padding:10px;background:rgba(26,23,20,0.5);border:1px solid rgba(212,175,105,0.12);border-radius:8px;}
-.foundation-picks-title{font-family:Cinzel,serif;color:var(--gold);font-size:0.72rem;letter-spacing:0.08em;margin-bottom:8px;}
-.foundation-picks-grid{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;}
-.hearth-pick{width:68px;text-align:center;opacity:0.35;transition:all 0.3s;}
-.hearth-pick.earned{opacity:1;}
-.hearth-pick .pick-shape{width:52px;height:62px;margin:0 auto 4px;background:radial-gradient(circle at 35% 28%,#ffe6a3,#d4af69 45%,#6d3f16 100%);border-radius:50% 50% 52% 52%;border:1px solid rgba(212,175,105,0.35);box-shadow:0 0 10px rgba(212,175,105,0.1);display:flex;align-items:center;justify-content:center;transition:all 0.3s;}
-.hearth-pick.earned .pick-shape{box-shadow:0 0 18px rgba(212,175,105,0.35);border-color:rgba(212,175,105,0.6);}
-.hearth-pick .pick-icon{font-size:1.2rem;}
-.hearth-pick .pick-label{font-family:JetBrains Mono,monospace;font-size:0.42rem;letter-spacing:0.06em;text-transform:uppercase;color:var(--gold);}
-.hearth-pick .pick-desc{font-size:0.38rem;color:var(--dim);line-height:1.3;}
-.hearth-pick.earned .pick-label{color:var(--gold);}
-.hearth-pick:not(.earned) .pick-shape{filter:grayscale(0.6) brightness(0.6);}
+/* === FOUNDATION NECK PATH === */
+.foundation-neck-wrap{position:relative;display:flex;flex-direction:column;align-items:center;padding:0 16px 20px;max-width:960px;margin:0 auto;}
+.foundation-neck-svg{width:min(920px,96vw);height:auto;display:block;margin:0 auto;}
+.foundation-neck-svg text{pointer-events:none;}
+@media(max-width:720px){.foundation-neck-svg{width:100vw;}}
+
 
 
 .node-info{background:var(--panel) !important;border:2px solid var(--gold) !important;border-radius:12px !important;box-shadow:0 4px 16px rgba(255,140,66,0.15) !important;}
@@ -2329,223 +2317,146 @@ function startLesson1(){
 }
 
 function showFoundation(){
-  document.querySelectorAll('.pnl').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.pnl').forEach(function(p){p.classList.remove('on')});
   document.getElementById('p-foundation').classList.add('on');
-  const F=window.FOUNDATION;if(!F)return;
-  const el=document.getElementById('p-foundation');
-  const completed=JSON.parse(localStorage.getItem('hearth-foundation-progress')||'{}');
-  const doneCount=Object.keys(completed).filter(k=>completed[k]).length;
-  const pct=Math.round(doneCount/F.topics.length*100);
+  var F=window.FOUNDATION;if(!F)return;
+  var el=document.getElementById('p-foundation');
+  var completed=JSON.parse(localStorage.getItem('hearth-foundation-progress')||'{}');
+  var doneCount=Object.keys(completed).filter(function(k){return completed[k]}).length;
+  var pct=Math.round(doneCount/F.topics.length*100);
 
-  // Determine which topics are accessible: first not-done one + all completed
-  const firstIncomplete=F.topics.findIndex(t=>!completed[t.id]);
-  const activeIdx=firstIncomplete===-1?F.topics.length-1:firstIncomplete;
+  var firstIncomplete=F.topics.findIndex(function(t){return !completed[t.id]});
+  var activeIdx=firstIncomplete===-1?F.topics.length-1:firstIncomplete;
+  var allDone=doneCount===F.topics.length;
 
-  let html='<div style="padding:16px;max-width:900px;margin:0 auto;display:flex;flex-direction:column;height:100%;box-sizing:border-box">'+
-    '<button class="back-btn" onclick="backToMap()">← Map</button>'+
-    // Big node header
-    '<div style="display:flex;align-items:center;gap:14px;margin:0 0 6px;flex-shrink:0">'+
-      '<img src="images/foundation-icon.png" style="width:56px;height:56px;border-radius:50%;object-fit:cover;border:2px solid var(--gold);box-shadow:0 0 12px rgba(212,175,105,0.1)"/>'+
-      '<div><div style="font-family:Josefin Sans,sans-serif;color:var(--gold);font-size:1.3rem;letter-spacing:2px">'+F.title+'</div>'+
-        '<div style="font-family:JetBrains Mono;font-size:0.5rem;color:var(--amber);letter-spacing:0.1em;margin-top:2px">'+F.tag+'</div>'+
-      '</div>'+
-    '</div>'+
-    // Subtitle
-    '<div style="font-size:0.72rem;color:var(--dim);margin-bottom:4px;line-height:1.5">"Tune the instrument. Enter the world."</div>'+
-    // Progress bar
-    '<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">'+
-      '<span style="font-family:JetBrains Mono;font-size:0.55rem;color:var(--amber)">'+doneCount+'/'+F.topics.length+'</span>'+
-      '<div style="flex:1;max-width:200px;height:4px;background:var(--surface);border-radius:2px;overflow:hidden">'+
-        '<div style="width:'+pct+'%;height:100%;background:linear-gradient(90deg,var(--gold),var(--amber));border-radius:2px;transition:width 0.5s"></div>'+
-      '</div>'+
-      '<span style="font-family:JetBrains Mono;font-size:0.5rem;color:var(--dim)">'+pct+'%</span>'+
-    '</div>'+
-    // Start Lesson 1 button + quest line
-    '<div style="text-align:center;margin-bottom:12px">'+
-      '<button onclick="startLesson1()" style="background:linear-gradient(180deg,var(--gold),var(--amber));color:var(--bg);border:none;padding:10px 28px;border-radius:8px;font-family:Cinzel,serif;font-size:0.85rem;font-weight:700;letter-spacing:1px;cursor:pointer;box-shadow:0 2px 12px rgba(212,175,105,0.25)">Start Lesson 1</button>'+
-      '<div style="font-size:0.5rem;color:var(--amber);margin-top:4px;line-height:1.4">Before Level 1, we tune the learner. Each block sets one part of the instrument: body, ear, hands, words, map, sound, and first conversation.</div>'+
-      '<div style="font-size:0.5rem;color:var(--amber);margin-top:4px;font-style:italic">Quest: Complete the Tuning Gate to unlock your first Journey path.</div>'+
-      '<div style="font-size:0.48rem;color:var(--dim);margin-top:4px">Earn Hearth Picks as you complete milestones.</div>'+
-    '</div>'+
-    // Pick Collection
-    '<div class="foundation-picks-wrap">'+
-      '<div class="foundation-picks-title">Hearth Picks</div>'+
-      '<div class="foundation-picks-grid">'+
-        '<div class="hearth-pick'+(doneCount>=1?' earned':'')+'"><div class="pick-shape"><div class="pick-icon">&#x1F3B5;</div></div><div class="pick-label">Threshold</div><div class="pick-desc">Enter Foundation</div></div>'+
-        '<div class="hearth-pick'+(doneCount>=3?' earned':'')+'"><div class="pick-shape"><div class="pick-icon">&#x2728;</div></div><div class="pick-label">Clear Sound</div><div class="pick-desc">Make one clean note</div></div>'+
-        '<div class="hearth-pick'+(doneCount>=5?' earned':'')+'"><div class="pick-shape"><div class="pick-icon">&#x1F4D6;</div></div><div class="pick-label">Language</div><div class="pick-desc">Understand music</div></div>'+
-        '<div class="hearth-pick'+(pct>=100?' earned':'')+'"><div class="pick-shape"><div class="pick-icon">&#x1F525;</div></div><div class="pick-label">First Flame</div><div class="pick-desc">Complete Foundation</div></div>'+
-      '</div>'+
-    '</div>'+
-    // Character on top of pyramid, centered (with gate SVG backdrop)
-    '<div class="foundation-gate-wrap">'+
-      '<svg class="foundation-gate-svg" viewBox="0 0 900 620" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Foundation tuning gate">'+
-        '<defs>'+
-          '<radialGradient id="gateGlow" cx="50%" cy="42%" r="60%">'+
-            '<stop offset="0%" stop-color="#d4af69" stop-opacity="0.18"/>'+
-            '<stop offset="52%" stop-color="#d4af69" stop-opacity="0.06"/>'+
-            '<stop offset="100%" stop-color="#0d0b08" stop-opacity="0"/>'+
-          '</radialGradient>'+
-          '<linearGradient id="stringGrad" x1="0" y1="0" x2="0" y2="1">'+
-            '<stop offset="0%" stop-color="#f6d88a" stop-opacity="0.75"/>'+
-            '<stop offset="45%" stop-color="#d4af69" stop-opacity="0.28"/>'+
-            '<stop offset="100%" stop-color="#d4af69" stop-opacity="0.08"/>'+
-          '</linearGradient>'+
-          '<filter id="softGoldGlow"><feGaussianBlur stdDeviation="4" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>'+
-          '<filter id="wideGlow"><feGaussianBlur stdDeviation="10" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>'+
-        '</defs>'+
-        '<rect width="900" height="620" fill="transparent"/>'+
-        '<ellipse cx="450" cy="360" rx="360" ry="255" fill="url(#gateGlow)"/>'+
-        '<path d="M170 570 L170 270 C170 125 285 54 450 54 C615 54 730 125 730 270 L730 570" fill="none" stroke="#d4af69" stroke-opacity="0.42" stroke-width="2" filter="url(#softGoldGlow)"/>'+
-        '<path d="M220 570 L220 292 C220 170 312 110 450 110 C588 110 680 170 680 292 L680 570" fill="none" stroke="#d4af69" stroke-opacity="0.18" stroke-width="1.5"/>'+
-        '<path d="M382 150 C382 112 410 90 450 90 C490 90 518 112 518 150 L518 214 L382 214 Z" fill="#0d0b08" fill-opacity="0.52" stroke="#d4af69" stroke-opacity="0.55" stroke-width="1.5"/>'+
-        '<text x="450" y="187" text-anchor="middle" fill="#d4af69" fill-opacity="0.72" font-size="18" font-family="Cinzel, serif" letter-spacing="4">JOURNEY</text>'+
-        '<g class="foundation-strings" stroke="url(#stringGrad)" stroke-width="1.5">'+
-          '<line x1="285" y1="122" x2="245" y2="570"/>'+
-          '<line x1="351" y1="118" x2="335" y2="570"/>'+
-          '<line x1="417" y1="115" x2="425" y2="570"/>'+
-          '<line x1="483" y1="115" x2="475" y2="570"/>'+
-          '<line x1="549" y1="118" x2="565" y2="570"/>'+
-          '<line x1="615" y1="122" x2="655" y2="570"/>'+
-        '</g>'+
-        '<g class="foundation-tuning-pins" fill="#16120d" stroke="#d4af69" stroke-width="1.5" filter="url(#softGoldGlow)">'+
-          '<g transform="translate(285 118) rotate(-18)"><circle r="13" fill="#21170d"/><rect x="-29" y="-6" width="21" height="12" rx="5" fill="#21170d"/></g>'+
-          '<g transform="translate(351 114) rotate(-10)"><circle r="13" fill="#21170d"/><rect x="-29" y="-6" width="21" height="12" rx="5" fill="#21170d"/></g>'+
-          '<g transform="translate(417 111) rotate(-4)"><circle r="13" fill="#21170d"/><rect x="-29" y="-6" width="21" height="12" rx="5" fill="#21170d"/></g>'+
-          '<g transform="translate(483 111) rotate(4)"><circle r="13" fill="#21170d"/><rect x="8" y="-6" width="21" height="12" rx="5" fill="#21170d"/></g>'+
-          '<g transform="translate(549 114) rotate(10)"><circle r="13" fill="#21170d"/><rect x="8" y="-6" width="21" height="12" rx="5" fill="#21170d"/></g>'+
-          '<g transform="translate(615 118) rotate(18)"><circle r="13" fill="#21170d"/><rect x="8" y="-6" width="21" height="12" rx="5" fill="#21170d"/></g>'+
-        '</g>'+
-        '<g class="foundation-terraces" fill="none" stroke="#d4af69" stroke-opacity="0.24" stroke-width="1.2">'+
-          '<polygon points="165,550 735,550 696,502 204,502"/>'+
-          '<polygon points="205,495 695,495 660,452 240,452"/>'+
-          '<polygon points="245,445 655,445 625,407 275,407"/>'+
-          '<polygon points="285,400 615,400 590,366 310,366"/>'+
-          '<polygon points="325,360 575,360 555,330 345,330"/>'+
-          '<polygon points="365,324 535,324 520,300 380,300"/>'+
-          '<polygon points="405,294 495,294 482,274 418,274"/>'+
-        '</g>'+
-        '<g class="foundation-flame" transform="translate(450 248)" filter="url(#wideGlow)">'+
-          '<path d="M0 -32 C18 -10 21 8 9 27 C3 37 -8 39 -16 29 C-29 12 -11 -7 0 -32Z" fill="#e8a020" fill-opacity="0.88"/>'+
-          '<path d="M2 -12 C12 4 10 18 1 27 C-6 20 -8 9 2 -12Z" fill="#ffe2a3" fill-opacity="0.85"/>'+
-        '</g>'+
-        '<path d="M150 570 C285 596 615 596 750 570" fill="none" stroke="#d4af69" stroke-opacity="0.18" stroke-width="2"/>'+
-      '</svg>'+
-      // Character + speech bubble row
-      '<div style="position:relative;display:flex;justify-content:center;margin-bottom:2px">'+
-        '<img src="images/character-full/Encouraging.png" class="character-float" style="width:120px;height:120px;object-fit:contain"/>'+
-        '<div id="speech-bubble" class="speech-bubble" style="position:absolute;left:calc(50% + 90px);top:10px;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:8px 12px;width:180px;z-index:5">'+
-          '<div style="position:absolute;left:-6px;top:20px;width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-right:6px solid var(--border)"></div>'+
-          '<div id="speech-text" style="font-size:0.68rem;line-height:1.4"></div>'+
-        '</div>'+
-      '</div>'+
-      // Pyramid stack
-      '<div style="display:flex;flex-direction:column;align-items:center">';
-
-  // Building blocks - widest at bottom, narrowest at top
-  const maxWidth=520;
-  const minWidth=240;
-  const step=(maxWidth-minWidth)/(F.topics.length-1);
-  // Level 1 as 6th step (narrowest, above topic 5)
-  const l1w=minWidth-step;
-  html+='<div id="level1-skeleton" onclick="backToMap()" style="cursor:pointer;width:'+l1w+'px;padding:8px 12px;background:transparent;border:1px dashed '+(pct===100?'#d4af69':'rgba(212,175,105,0.3)')+';border-radius:6px;text-align:center;margin-bottom:3px;transition:all 0.3s">'+
-    '<span style="font-family:\'Cinzel\',serif;font-size:0.55rem;letter-spacing:0.12em;text-transform:uppercase;color:'+(pct===100?'#d4af69':'rgba(212,175,105,0.5)')+'">Threshold → Level 1</span>'+
-    (pct===100?'<span style="margin-left:4px;font-size:0.5rem;color:#d4af69">&#10003;</span>':'')+
-  '</div>';
-
-  const rainbow=['#e74c3c','#e67e22','#f1c40f','#2ecc71','#3498db','#9b59b6','#e84393'];
-
-  for(let idx=F.topics.length-1; idx>=0; idx--){
-    const t=F.topics[idx];
-    const i=idx;
-    const w=maxWidth-step*i;
-    const isDone=completed[t.id];
-    const isActive=i===activeIdx;
-    const isLocked=i>activeIdx&&!isDone;
-    const num=i+1;
-    const color=rainbow[i];
-
-    if(isLocked){
-      html+='<div style="width:'+w+'px;padding:10px 14px;background:transparent;border:1px dashed '+color+'20;border-radius:6px;text-align:center;position:relative;z-index:'+(F.topics.length-i)+';opacity:0.4;transition:all 0.3s">'+
-        '<div style="display:flex;align-items:center;justify-content:center;gap:8px">'+
-          '<span style="font-family:\'DM Sans\',sans-serif;font-size:1.2rem;color:'+color+'30">'+num+'</span>'+
-          '<span style="font-family:\'DM Sans\',sans-serif;font-size:1rem;color:'+color+'20;font-weight:600">'+t.title+'</span>'+
-        '</div>'+
-        '<div style="font-size:0.55rem;color:'+color+'15;margin-top:2px;font-style:italic">'+(t.micro||'')+'</div>'+
-      '</div>';
-    } else {
-      const bg=isDone?color:color+'0a';
-      const border=isDone?color:color+'30';
-      const textCol=isDone?'#fff':color;
-      const numCol=isDone?'rgba(255,255,255,0.7)':color;
-      const glowShadow=isDone?'box-shadow:0 0 16px '+color+'40, inset 0 0 8px '+color+'20;':'box-shadow:none;';
-      html+='<div onclick="showFoundationTopic(\''+t.id+'\')" class="f-block'+(isDone?' f-block--done':' f-block--dormant')+'" style="width:'+w+'px;padding:12px 16px;background:'+bg+';border:2px solid '+border+';border-radius:6px;cursor:pointer;transition:all 0.2s;text-align:center;position:relative;z-index:'+(F.topics.length-i)+';'+glowShadow+'" title="'+(t.micro||'')+'">'+
-        '<div style="display:flex;align-items:center;justify-content:center;gap:8px">'+
-          '<span style="font-family:\'DM Sans\',sans-serif;font-size:2rem;color:'+numCol+';opacity:'+(isDone?'1':'0.5')+';font-weight:700">'+num+'</span>'+
-          '<span style="font-family:\'DM Sans\',sans-serif;font-size:1.15rem;color:'+textCol+';font-weight:700">'+t.title+'</span>'+
-          (isDone?'<span style="font-size:0.8rem;color:rgba(255,255,255,0.8)">&#10003;</span>':'')+
-        '</div>'+
-        '<div style="font-size:0.55rem;color:'+(isDone?'rgba(255,255,255,0.6)':color+'60')+';margin-top:2px;font-style:italic">'+(t.micro||'')+'</div>'+
-      '</div>';
-    }
+  var speechText;
+  if(allDone){
+    speechText=F.completionLine||'The gate is open. Journey Level 1 begins.';
+  } else if(activeIdx>0 && completed[F.topics[activeIdx-1].id]){
+    speechText=F.topics[activeIdx].subtitle||F.topics[activeIdx].title;
+  } else {
+    speechText=F.guideLine||F.subtitle;
   }
 
-  // What You'll Earn row
-  html+='<div style="margin-top:16px;padding:12px 16px;background:var(--card);border:1px solid var(--border);border-radius:8px;text-align:center">'+
-    '<div style="font-family:JetBrains Mono;font-size:0.5rem;color:var(--amber);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:4px">What You\'ll Earn</div>'+
-    '<div style="font-size:0.72rem;color:var(--dim);line-height:1.6">'+F.earned+'</div>'+
-  '</div>';
+  // Build SVG geometry
+  var topY=270,botY=560,topL=345,topR=555,botL=110,botR=790;
+  var fY=[],fL=[],fR=[];
+  for(var i=0;i<=10;i++){var t=i/10;fY.push(Math.round(topY+(botY-topY)*t));fL.push(Math.round(topL+(botL-topL)*t));fR.push(Math.round(topR+(botR-topR)*t));}
 
-  html+='</div></div></div>';
+  // Fret lines (9 lines between 10 spaces)
+  var fretLines='';
+  for(var fi=1;fi<10;fi++){
+    fretLines+='<line x1="'+fL[fi]+'" y1="'+fY[fi]+'" x2="'+fR[fi]+'" y2="'+fY[fi]+'"/>';
+  }
+
+  // Six strings
+  var sX=[365,389,413,437,461,485];
+  var bX=[170,280,370,460,570,680];
+  var strings='';
+  for(var si=0;si<6;si++){
+    strings+='<line x1="'+sX[si]+'" y1="'+fY[0]+'" x2="'+bX[si]+'" y2="'+fY[10]+'"/>';
+  }
+
+  // Foundation steps (0-9)
+  var steps='';
+  F.topics.forEach(function(tp,idx){
+    var isDone=completed[tp.id];
+    var isActive=idx===activeIdx;
+    var isLocked=idx>activeIdx&&!isDone;
+    var isCS=tp.status==='coming-soon';
+    var sc='';
+    if(isDone) sc='is-complete';
+    else if(isActive) sc='is-active';
+    else if(isLocked||isCS) sc='is-locked';
+
+    var y1=fY[idx],y2=fY[idx+1],lx1=fL[idx],rx1=fR[idx],lx2=fL[idx+1],rx2=fR[idx+1];
+    var cy=Math.round((y1+y2)/2);
+    var cx=Math.round((lx1+rx1+lx2+rx2)/4);
+
+    var click='';
+    if(!isCS) click="showFoundationTopic('"+tp.id+"')";
+    var cur=isCS?'cursor:default':'cursor:pointer';
+
+    steps+='<g class="foundation-step '+sc+'" data-step="'+idx+'" data-topic-id="'+tp.id+'" '
+      +(click?'onclick="'+click+'"':'')+' style="'+cur+'">'
+      +'<polygon points="'+lx1+','+y1+' '+rx1+','+y1+' '+rx2+','+y2+' '+lx2+','+y2+'"/>'
+      +'<text x="'+cx+'" y="'+(cy-6)+'" text-anchor="middle" font-size="18" font-family="Cinzel,serif" class="step-num">'+tp.num+'</text>'
+      +'<text x="'+cx+'" y="'+(cy+10)+'" text-anchor="middle" font-size="10" font-family="JetBrains Mono,monospace">'+tp.title.toUpperCase()+'</text>'
+      +(isCS?'<text x="'+cx+'" y="'+(cy+22)+'" text-anchor="middle" font-size="7" font-family="JetBrains Mono,monospace" fill="rgba(212,175,105,0.3)">COMING SOON</text>':'')
+      +(isDone?'<text x="'+(rx1-12)+'" y="'+(cy+4)+'" text-anchor="middle" font-size="14" fill="rgba(212,175,105,0.9)">✓</text>':'')
+      +'</g>';
+  });
+
+  // Assemble SVG
+  var svg='<svg class="foundation-neck-svg" viewBox="0 0 900 620" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Foundation neck path">'
+    +'<defs>'
+    +'<radialGradient id="neckGlow" cx="50%" cy="48%" r="62%">'
+    +'<stop offset="0%" stop-color="#d4af69" stop-opacity="0.20"/>'
+    +'<stop offset="60%" stop-color="#d4af69" stop-opacity="0.06"/>'
+    +'<stop offset="100%" stop-color="#0d0b08" stop-opacity="0"/>'
+    +'</radialGradient>'
+    +'<linearGradient id="stringGold" x1="0" y1="0" x2="0" y2="1">'
+    +'<stop offset="0%" stop-color="#ffe0a0" stop-opacity="0.9"/>'
+    +'<stop offset="55%" stop-color="#d4af69" stop-opacity="0.42"/>'
+    +'<stop offset="100%" stop-color="#d4af69" stop-opacity="0.12"/>'
+    +'</linearGradient>'
+    +'<linearGradient id="neckSurface" x1="0" y1="0" x2="0" y2="1">'
+    +'<stop offset="0%" stop-color="#0d0b08" stop-opacity="0.3"/>'
+    +'<stop offset="40%" stop-color="#1a1510" stop-opacity="0.7"/>'
+    +'<stop offset="100%" stop-color="#0d0b08" stop-opacity="0.95"/>'
+    +'</linearGradient>'
+    +'<filter id="goldGlow"><feGaussianBlur stdDeviation="4" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>'
+    +'<filter id="softGlow"><feGaussianBlur stdDeviation="2" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>'
+    +'</defs>'
+    +'<rect width="900" height="620" fill="transparent"/>'
+    +'<ellipse cx="450" cy="390" rx="390" ry="250" fill="url(#neckGlow)"/>'
+    +'<path d="M380 86 C380 48 408 28 450 28 C492 28 520 48 520 86 L520 170 L380 170 Z" fill="rgba(13,11,8,0.72)" stroke="rgba(212,175,105,0.62)" stroke-width="1.7" filter="url(#goldGlow)"/>'
+    +'<text x="450" y="104" text-anchor="middle" fill="rgba(212,175,105,0.86)" font-size="18" font-family="Cinzel,serif" letter-spacing="0.24em">LEVEL 1</text>'
+    +'<text x="450" y="130" text-anchor="middle" fill="rgba(244,226,190,0.42)" font-size="9" font-family="JetBrains Mono,monospace" letter-spacing="0.12em">JOURNEY BEGINS</text>'
+    +'<polygon points="110,560 790,560 555,270 345,270" fill="url(#neckSurface)" stroke="rgba(212,175,105,0.34)" stroke-width="2"/>'
+    +'<g stroke="rgba(212,175,105,0.18)" stroke-width="1" pointer-events="none">'+fretLines+'</g>'
+    +'<g stroke="url(#stringGold)" stroke-width="1.7" pointer-events="none">'+strings+'</g>'
+    +'<g id="foundation-steps">'+steps+'</g>'
+    +'<line x1="450" y1="'+fY[0]+'" x2="450" y2="170" stroke="rgba(212,175,105,0.15)" stroke-width="1" stroke-dasharray="4,4"/>'
+    +'</svg>';
+
+  // Assemble page
+  var html='<div class="foundation-neck-wrap">'
+    +'<button class="back-btn" onclick="backToMap()">← Map</button>'
+    +'<div style="text-align:center;margin:8px 0 4px">'
+    +'<div style="font-family:\'Cinzel\',serif;color:var(--gold);font-size:1.3rem;letter-spacing:3px">'+F.title+'</div>'
+    +'<div style="font-family:JetBrains Mono;font-size:0.5rem;color:var(--amber);letter-spacing:0.1em;margin-top:2px">'+F.tag+'</div>'
+    +'<div style="font-size:0.7rem;color:var(--dim);margin-top:6px;line-height:1.5">'+F.subtitle+'</div>'
+    +'</div>'
+    +'<div style="display:flex;align-items:center;gap:8px;justify-content:center;margin:6px 0 4px">'
+    +'<span style="font-family:JetBrains Mono;font-size:0.5rem;color:var(--amber)">'+doneCount+'/'+F.topics.length+'</span>'
+    +'<div style="width:120px;height:3px;background:var(--surface);border-radius:2px;overflow:hidden">'
+    +'<div style="width:'+pct+'%;height:100%;background:linear-gradient(90deg,var(--gold),var(--amber));border-radius:2px;transition:width 0.5s"></div>'
+    +'</div>'
+    +'<span style="font-family:JetBrains Mono;font-size:0.48rem;color:var(--dim)">'+pct+'%</span>'
+    +'</div>'
+    +'<div style="position:relative;display:flex;justify-content:center;margin:4px 0 8px">'
+    +'<img src="images/character-full/Encouraging.png" style="width:80px;height:80px;object-fit:contain"/>'
+    +'<div style="position:absolute;left:calc(50% + 56px);top:4px;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:8px 12px;max-width:200px;z-index:5">'
+    +'<div style="position:absolute;left:-6px;top:16px;width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-right:6px solid var(--border)"></div>'
+    +'<div style="font-size:0.68rem;line-height:1.4;color:var(--text)">'+speechText+'</div>'
+    +'</div>'
+    +'</div>'
+    +'<div style="text-align:center;margin-bottom:8px">'
+    +'<button onclick="startLesson1()" style="background:linear-gradient(180deg,var(--gold),var(--amber));color:var(--bg);border:none;padding:8px 24px;border-radius:8px;font-family:\'Cinzel\',serif;font-size:0.8rem;font-weight:700;letter-spacing:1px;cursor:pointer;box-shadow:0 2px 12px rgba(212,175,105,0.25)">Start Lesson 1</button>'
+    +'</div>'
+    +'<div style="text-align:center;margin-bottom:10px">'
+    +'<div style="font-size:0.5rem;color:var(--amber);font-style:italic">'+F.questLine+'</div>'
+    +(allDone?'<div style="font-size:0.5rem;color:var(--gold);margin-top:4px">'+F.completionLine+'</div>':'')
+    +'</div>'
+    +svg
+    +'<div style="text-align:center;margin-top:8px">'
+    +'<div style="font-size:0.5rem;color:var(--amber);line-height:1.4">'+F.guideLine+'</div>'
+    +'</div>'
+    +'</div>';
 
   el.innerHTML=html;
-
-  const speechByBlock={
-    'f-how-to-learn':'These are your building blocks. Learn how to learn before anything else.',
-    'f-learning-a-language':'Music is a language. Let\u2019s learn how to speak it.',
-    'f-language-of-music':'12 notes. Infinite possibilities.',
-    'f-language-of-guitar':'The fretboard is your map. Every note has a home.',
-    'f-the-guitar':'Know your instrument before you play it.',
-    'f-speaking':'Right hand creates sound. Left hand changes pitch.',
-    'f-conversations':'Your first chord. The doorway opens.'
-  };
-  const completedSummary={
-    'f-how-to-learn':'You learned the three barriers to learning and how to practise. Ready for the next block?',
-    'f-learning-a-language':'You understand music as a language \u2014 vocabulary, grammar, conversation. Listening comes first.',
-    'f-language-of-music':'You know the 12 notes, intervals, and the building blocks of harmony.',
-    'f-language-of-guitar':'You can read tab, find notes on the fretboard, and speak the language of guitar.',
-    'f-the-guitar':'You know your instrument \u2014 parts, posture, and what a capo does.',
-    'f-speaking':'Right hand creates sound, left hand changes pitch. Both hands working together.',
-    'f-conversations':'You played your first chord. Foundation complete. The journey begins.'
-  };
-  var activeTopic=F.topics[activeIdx];
-  // If all blocks done, show final message
-  var speechText;
-  if(doneCount===F.topics.length){
-    speechText='Threshold complete. You\'ve entered the world. Journey awaits.';
-  } else if(activeIdx>0 && completed[F.topics[activeIdx-1].id]){
-    // Show summary of last completed block
-    speechText=completedSummary[F.topics[activeIdx-1].id]||speechByBlock[activeTopic.id];
-  } else {
-    speechText=activeTopic?speechByBlock[activeTopic.id]:F.guideThresholdLine;
-  }
-  const speechLines=[speechText];
-  const speechEl=document.getElementById('speech-text');
-  if(speechEl){
-    speechLines.forEach((line,i)=>{
-      const div=document.createElement('div');
-      div.className='speech-line';
-      div.style.animationDelay=(i*0.8)+'s';
-      div.style.fontSize='0.75rem';
-      div.style.color='var(--text)';
-      div.style.lineHeight='1.5';
-      div.style.marginBottom='2px';
-      div.textContent=line;
-      speechEl.appendChild(div);
-    });
-  }
 }
-
 
 // ═══ REUSABLE RAINBOW BLOCKS HELPER ═══
 function rainbowBlocks(items, opts){

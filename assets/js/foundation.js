@@ -1,36 +1,83 @@
-// Foundation Node — The 7 Building Blocks
-// Learn → Language → Music → Guitar → The Instrument → Speaking → Conversations
-// Each block flows: Understand → Experience → Apply → Own
+// Foundation Node — The First Neck Path (0-9 Threshold)
+// Before Level 1, the learner walks the first guitar neck.
+// The frets are the Foundation steps. The strings guide the path.
+// 0 = Threshold, 1-9 = the ten frets, then Level 1 / Journey begins.
 
 const FOUNDATION = {
   id: 'foundation',
   title: 'Foundation',
   tag: 'THRESHOLD',
-  description: 'Before Level 1 — learn how this world works. Seven layers. Each one builds on the last. Start with how to learn, end with your hands making music.',
+  subtitle: 'Cross the first neck-path.',
+  guideLine: 'Before Level 1, we walk the first neck. Each fret sets part of you: body, ear, hands, words, map, sound, and first conversation.',
+  questLine: 'Complete the ten frets. Open the Journey gate.',
+  completionLine: 'The gate is open. Journey Level 1 begins.',
   earned: 'Map sense · clear sound · first root notes · first musical sentence',
-  guideThresholdLine: 'Foundation is not Level 1. It is the doorway. We learn how to learn before we run.',
   sources: [
     'Jamie Andreas — Principles of Correct Practice for Guitar',
     'Kofi Agawu — Music as Discourse',
     'L. Ron Hubbard — Learning How to Learn',
-    'Beryl Lytton & Marcelle Pincus — English Handbook and Study Guide',
     'Fred Sokolow — Fretboard Roadmaps',
     'Christopher Parkening — Guitar Method Vol 1',
     'Charles Kim — Teach Yourself VISUALLY Guitar',
     'Michael P. Wolfsohn — Music Theory for Guitar'
   ],
 
+  // 10 threshold steps (0-9) mapped to the neck path fret spaces
   topics: [
-    // ═══ BLOCK 01 ═══
+    // ═══ STEP 0 — THE THRESHOLD ═══
+    {
+      id: 'f-threshold',
+      num: '0',
+      title: 'The Threshold',
+      subtitle: 'Meet the world, the guide, the map, and your progress.',
+      micro: 'How this simulator works.',
+      status: 'open',
+      tags: ['Meta', 'Introduction'],
+      sources: [],
+      steps: [
+        {
+          label: 'Understand',
+          title: 'Welcome to the Threshold',
+          body: `<p>Before you learn guitar, you need to know where you are.</p>
+<p>This is <strong>The Hearth Mastery</strong> — a quest-based learning path. You're not just following lessons. You're walking a map.</p>
+<p>There are <strong>eight nodes</strong> on the map. You're standing at the first one: <strong>Foundation</strong>. This is the threshold — the doorway before everything else.</p>
+<p>Foundation has <strong>ten frets</strong> (steps 0 through 9). Each one builds on the last. When you cross all ten, the Journey gate opens and Level 1 begins.</p>`
+        },
+        {
+          label: 'Experience',
+          title: 'The guide, the map, and you',
+          body: `<p>Look around. You'll see:</p>
+<p>• <strong>The Map</strong> — your overview of all eight nodes. Click any node to enter it.<br>
+• <strong>The Guide</strong> — that's me. I'll give you context, recommendations, and feedback.<br>
+• <strong>Progress markers</strong> — the golden dots and completed steps you see across the map.</p>
+<p>Everything you do is saved automatically. Your progress lives in this browser. When you come back, you pick up where you left off.</p>`
+        },
+        {
+          label: 'Apply',
+          title: 'Your first move',
+          body: `<p>Click <strong>Start Lesson 1</strong> below, or click any fret on the neck path to begin exploring.</p>
+<p>There's no wrong order within a step — each one has Understanding, Experience, and Application. But steps build on each other, so go in order.</p>
+<p>When you finish a step, it glows gold on the path. The active step always glows brightest.</p>`
+        },
+        {
+          label: 'Own',
+          title: 'The threshold is set',
+          body: `<p>You know the map, the guide, and the path. The ten frets stretch ahead of you. The Journey gate waits at the end.</p>
+<p><strong>This fret is set. Step onto the neck.</strong></p>`
+        }
+      ]
+    },
+
+    // ═══ STEP 1 — HOW TO LEARN ═══
     {
       id: 'f-how-to-learn',
-      num: '01',
+      num: '1',
       title: 'How to Learn',
-      subtitle: 'The meta-skill that comes before everything',
-      micro: 'Meet the map, guide, nodes, and progress system.',
+      subtitle: 'The meta-skill that comes before everything.',
+      micro: 'Missing mass, skipped gradients, misunderstood words.',
       status: 'open',
       tags: ['Meta-Skill', 'Hubbard', 'Learning'],
-      sources: ['Jamie Andreas', 'L. Ron Hubbard', 'Beryl Lytton & Marcelle Pincus'],
+      sources: ['Jamie Andreas', 'L. Ron Hubbard'],
       steps: [
         {
           label: 'Understand',
@@ -64,7 +111,7 @@ const FOUNDATION = {
         },
         {
           label: 'Own',
-          title: 'This block is set',
+          title: 'This fret is set',
           body: `<p>You now know the three barriers to learning. You know imagination comes before movement. You know how to find and release tension.</p>
 <p>These aren't nice ideas — they're tools you'll use every time you practise. When you hit a wall later, come back here. The barrier will be one of these three.</p>
 <p><strong>How to practise:</strong> 20 minutes a day beats 2 hours once a week. Here's what a session looks like:</p>
@@ -73,21 +120,21 @@ const FOUNDATION = {
 • <strong>10 minutes</strong> — Work on one thing. A chord, a scale, a drill. One thing.<br>
 • <strong>3 minutes</strong> — Play something you enjoy. Anything. Even open strings.</p>
 <p>The key is <strong>consistency</strong>, not duration. Short daily sessions build myelin. Long weekly sessions build frustration.</p>
-<p><strong>This block is set. You're ready for Block 02: Learning a Language.</strong></p>`
+<p><strong>This fret is set. Step to fret 2: Music as Language.</strong></p>`
         }
       ]
     },
 
-    // ═══ BLOCK 02 ═══
+    // ═══ STEP 2 — MUSIC AS LANGUAGE ═══
     {
-      id: 'f-learning-a-language',
-      num: '02',
-      title: 'Learning a Language',
-      subtitle: 'Music is a language. Here\'s what that means.',
-      micro: 'Spot missing mass, skipped gradients, and misunderstood words.',
+      id: 'f-music-as-language',
+      num: '2',
+      title: 'Music as Language',
+      subtitle: 'Vocabulary, grammar, conversation, poetry.',
+      micro: 'Music has words, rules, and dialogue — just like speech.',
       status: 'open',
-      tags: ['Language', 'Agawu', 'Concept'],
-      sources: ['Kofi Agawu — Music as Discourse', "Raen's concept — Music as Language"],
+      tags: ['Language', 'Concept'],
+      sources: ['Kofi Agawu'],
       steps: [
         {
           label: 'Understand',
@@ -112,7 +159,7 @@ const FOUNDATION = {
         {
           label: 'Apply',
           title: 'One misunderstood word',
-          body: `<p>Remember the third barrier from Block 01? The misunderstood word?</p>
+          body: `<p>Remember the third barrier from Step 1? The misunderstood word?</p>
 <p>In language learning, this is the #1 killer. If you're learning French and you don't understand what a "verb" is, every grammar lesson after that is gibberish.</p>
 <p>Music works the same way. If someone says "play a major third" and you don't know what "major" or "third" means, you're lost. Not because you're bad at music — because one term was undefined.</p>
 <p>That's why this simulator has a <strong>Dictionary</strong> in the toolbar. Every term, one click away. If you hit a word you don't know — stop. Look it up. Clear it. Then continue.</p>
@@ -120,24 +167,24 @@ const FOUNDATION = {
         },
         {
           label: 'Own',
-          title: 'This block is set',
+          title: 'This fret is set',
           body: `<p>You understand that music has vocabulary (notes), grammar (intervals, scales, chords), and conversation (playing). You know that listening comes before playing. You know to use the Dictionary when a word is unclear.</p>
 <p>You now understand the shape of what you're learning. Not the details yet — the shape.</p>
-<p><strong>This block is set. You're ready for Block 03: The Language of Music.</strong></p>`
+<p><strong>This fret is set. Step to fret 3: The Musical Alphabet.</strong></p>`
         }
       ]
     },
 
-    // ═══ BLOCK 03 ═══
+    // ═══ STEP 3 — THE MUSICAL ALPHABET ═══
     {
-      id: 'f-language-of-music',
-      num: '03',
-      title: 'The Language of Music',
-      subtitle: '12 notes. That\'s the whole alphabet.',
-      micro: 'Vocabulary, grammar, conversation, poetry.',
+      id: 'f-musical-alphabet',
+      num: '3',
+      title: 'The Musical Alphabet',
+      subtitle: '12 notes. Half steps. Whole steps.',
+      micro: 'The 12-note system and the intervals between them.',
       status: 'open',
       tags: ['Notes', 'Intervals', 'Theory'],
-      sources: ['Michael P. Wolfsohn', 'Patrick Stefurak'],
+      sources: ['Michael P. Wolfsohn'],
       steps: [
         {
           label: 'Understand',
@@ -146,7 +193,6 @@ const FOUNDATION = {
 <p>Their names are: <strong>A  A#  B  C  C#  D  D#  E  F  F#  G  G#</strong></p>
 <p>Then it loops back to A. The "#" means "sharp" — one half step higher.</p>
 <p>The regular notes (no sharps) are: <strong>A B C D E F G</strong></p>
-<p>These 7 letters are your alphabet. Everything else is built from them.</p>
 <p>Notice: between B and C, there's no sharp. Between E and F, there's no sharp. These are the "short jumps" — only one fret apart instead of two.</p>`
         },
         {
@@ -168,29 +214,49 @@ const FOUNDATION = {
         },
         {
           label: 'Own',
-          title: 'This block is set',
+          title: 'This fret is set',
           body: `<p>You know the 12 notes. You know the "short jumps" (B→C and E→F). You understand intervals — half steps and whole steps. You can feel the root — the home note.</p>
 <p>This is the alphabet and basic grammar of music. Every scale, every chord, every melody is built from these pieces.</p>
-<p><strong>This block is set. You're ready for Block 04: The Language of Guitar.</strong></p>`
+<p><strong>This fret is set. Step to fret 4: Rhythm & Pulse.</strong></p>`
         }
       ]
     },
 
-    // ═══ BLOCK 04 ═══
+    // ═══ STEP 4 — RHYTHM & PULSE ═══
     {
-      id: 'f-language-of-guitar',
-      num: '04',
-      title: 'The Language of Guitar',
-      subtitle: 'Where music lives on the fretboard',
-      micro: 'Notes, rhythm, intervals, roots.',
+      id: 'f-rhythm-pulse',
+      num: '4',
+      title: 'Rhythm & Pulse',
+      subtitle: 'Beat, time, body, counting, movement.',
+      micro: 'Feel the pulse. Count the space between notes.',
+      status: 'coming-soon',
+      tags: ['Rhythm', 'Time', 'Body'],
+      sources: [],
+      steps: [
+        {
+          label: 'Understand',
+          title: 'Coming soon',
+          body: `<p>This threshold step is being built. Rhythm is the heartbeat of music — beat, time, counting, and movement through the body.</p>
+<p>Check back soon.</p>`
+        }
+      ]
+    },
+
+    // ═══ STEP 5 — THE GUITAR MAP ═══
+    {
+      id: 'f-guitar-map',
+      num: '5',
+      title: 'The Guitar Map',
+      subtitle: 'Strings, frets, tab, octave, E/A highways.',
+      micro: 'Navigate the fretboard like a map.',
       status: 'open',
       tags: ['Fretboard', 'Strings', 'Tuning'],
-      sources: ['Fred Sokolow', 'Patrick Stefurak', 'Charles Kim'],
+      sources: ['Fred Sokolow', 'Charles Kim'],
       steps: [
         {
           label: 'Understand',
           title: 'The fretboard map',
-          body: `<p>The guitar has <strong>6 strings</strong> and usually <strong>19-24 frets</strong>. Each fret is one half step (remember Block 03?).</p>
+          body: `<p>The guitar has <strong>6 strings</strong> and usually <strong>19-24 frets</strong>. Each fret is one half step (remember Step 3?).</p>
 <p>The strings, from thickest (closest to you) to thinnest (closest to the floor), are:</p>
 <p><strong>E — A — D — G — B — E</strong></p>
 <p>A trick to remember them: <em>"Eddie Ate Dynamite, Good Bye Eddie"</em></p>
@@ -204,7 +270,7 @@ const FOUNDATION = {
           body: `<p>Look at your guitar neck. Around the 12th fret, you'll see two dots. This is a special spot.</p>
 <p>Fret 12 is the <strong>octave</strong> — the same note as the open string, but one octave higher. Higher in pitch, same name.</p>
 <p>This means the fretboard repeats. Notes 1-11 are the "lower" version. Notes 12+ are the "higher" version. The pattern is the same — just shifted up.</p>
-<p>This is why guitar is powerful: once you learn a pattern in one position, you can move it anywhere. The pattern stays the same — the starting note changes.</p>`
+<p>This is why guitar is powerful: once you learn a pattern in one position, you can move it anywhere.</p>`
         },
         {
           label: 'Apply',
@@ -216,31 +282,28 @@ const FOUNDATION = {
 • 3rd string (G): fret 9 = E<br>
 • 2nd string (B): fret 5 = E<br>
 • 1st string (thinnest): open = E, fret 12 = E</p>
-<p>Play each one. Listen. They're all E — but different octaves. Higher and lower versions of the same note.</p>
-<p>You just found every E on the guitar. Tomorrow, find every A. Then D. Then G. One note per day.</p>
-<p><strong>Reading tab:</strong> Guitar has its own notation called <em>tablature</em> (tab). It's simple — six lines represent the six strings. Numbers tell you which fret to press.</p>
-<p>Here's what an E note looks like in tab:</p>
+<p>Play each one. Listen. They're all E — but different octaves.</p>
+<p><strong>Reading tab:</strong> Guitar has its own notation called <em>tablature</em> (tab). Six lines represent the six strings. Numbers tell you which fret to press.</p>
 <p style="font-family:var(--mono);color:var(--gold);font-size:0.8rem;line-height:1.8;text-align:center">e|---0---<br>B|---0---<br>G|---1---<br>D|---2---<br>A|---2---<br>E|---0---</p>
-<p>Bottom line = thickest string (E). Top line = thinnest string (e). The numbers are frets. 0 = play open. 1 = press fret 1. And so on.</p>
-<p>That's an E major chord. You just read your first tab. Every drill in the Doing node uses this notation — you now speak the language.</p>`
+<p>Bottom line = thickest string (E). Top line = thinnest string (e). 0 = open. That's an E major chord. You just read your first tab.</p>`
         },
         {
           label: 'Own',
-          title: 'This block is set',
-          body: `<p>You know the 6 string names and the memory trick. You know each fret is one half step. You know fret 12 is the octave — where the map repeats. You can find one note on every string.</p>
-<p>You speak the language of guitar — at least the first few words.</p>
-<p><strong>This block is set. You're ready for Block 05: The Guitar.</strong></p>`
+          title: 'This fret is set',
+          body: `<p>You know the 6 string names and the memory trick. You know each fret is one half step. You know fret 12 is the octave. You can find one note on every string. You can read tab.</p>
+<p>You speak the language of the fretboard.</p>
+<p><strong>This fret is set. Step to fret 6: The Instrument Body.</strong></p>`
         }
       ]
     },
 
-    // ═══ BLOCK 05 — THE GUITAR ═══
+    // ═══ STEP 6 — THE INSTRUMENT BODY ═══
     {
-      id: 'f-the-guitar',
-      num: '05',
-      title: 'The Guitar',
-      subtitle: 'Know the instrument before you play it',
-      micro: 'Strings, frets, tab, octave.',
+      id: 'f-instrument-body',
+      num: '6',
+      title: 'The Instrument Body',
+      subtitle: 'Parts, posture, tuning, care.',
+      micro: 'Know the instrument before you play it.',
       status: 'open',
       tags: ['Guitar Parts', 'Anatomy', 'Tuning'],
       sources: ['Jamie Andreas', 'Christopher Parkening', 'Charles Kim'],
@@ -250,17 +313,16 @@ const FOUNDATION = {
           title: 'Know your instrument',
           body: `<p>The guitar has three main sections:</p>
 <p><strong>Headstock</strong> — the top part with the tuning pegs (knobs). Each peg controls one string. Turn it to tighten (higher pitch) or loosen (lower pitch).</p>
-<p><strong>Neck</strong> — the long part. The front is the <em>fretboard</em>. The metal strips across it are <em>frets</em>. The raised dots on the side are <em>position markers</em> — they help you find your way.</p>
-<p><strong>Body</strong> — the big part that makes the sound louder. On acoustic guitars, there's a round <em>sound hole</em>. On electric guitars, there are <em>pickups</em> (magnets that catch string vibrations).</p>
-<p>Other parts: the <em>bridge</em> (where strings attach to the body), the <em>nut</em> (where strings rest at the top of the neck), and the <em>truss rod</em> (inside the neck, keeps it straight).</p>
-<p>Every part has a purpose. Knowing the names helps you follow lessons and talk about guitar with other people.</p>`
+<p><strong>Neck</strong> — the long part. The front is the <em>fretboard</em>. The metal strips across it are <em>frets</em>. The raised dots on the side are <em>position markers</em>.</p>
+<p><strong>Body</strong> — the big part that makes the sound louder. On acoustic guitars, there's a round <em>sound hole</em>. On electric guitars, there are <em>pickups</em>.</p>
+<p>Other parts: the <em>bridge</em> (where strings attach to the body), the <em>nut</em> (where strings rest at the top of the neck), and the <em>truss rod</em> (inside the neck, keeps it straight).</p>`
         },
         {
           label: 'Experience',
           title: 'The sound of the instrument',
           body: `<p>Before you play it, just listen to it.</p>
 <p>Tap the body gently. Hear the resonance? That's the wood vibrating. The body is a resonance chamber — it takes the tiny vibration of a string and makes it loud enough to fill a room.</p>
-<p>Now strum across all the strings with your thumb (don't worry about how — just drag your thumb across them). Hear the sound? That's the guitar speaking.</p>
+<p>Now strum across all the strings with your thumb. Hear the sound? That's the guitar speaking.</p>
 <p>Every guitar sounds different. The wood, the shape, the strings — they all shape the tone. Your guitar has a voice. You're about to learn how to use it.</p>`
         },
         {
@@ -271,31 +333,28 @@ const FOUNDATION = {
 • Feet flat on the floor<br>
 • Guitar rests on your right leg (if right-handed)<br>
 • The neck points slightly up — not flat, not at the ceiling<br>
-• Your right arm rests gently over the body — its weight holds the guitar in place<br>
-• Your left hand holds the neck — thumb behind it, fingers curved, wrist mostly straight</p>
+• Your right arm rests gently over the body<br>
+• Your left hand holds the neck — thumb behind it, fingers curved</p>
 <p>The guitar should feel <strong>supported, not clamped</strong>. If you're squeezing, you're doing it wrong.</p>
-<p><strong>Thumb placement:</strong> your left thumb goes behind the neck, roughly opposite your middle finger. Use the pad (flat part), not the tip. Keep the thumb joint straight — don't bend the tip, as this creates tension that spreads into your palm. Your hand forms a gentle C-shape: thumb on one side, fingers on the other, neck in the middle.</p>
-<p>A trick: sit without the guitar. Put a pillow on your right leg. Rest your arm over it. Notice how your arm falls naturally? That's how it should feel on the guitar.</p>
-<p><strong>The capo:</strong> a clamp that goes across the neck at any fret. It raises the pitch of all strings by the same amount. Put it on fret 2, and every open string goes up two half steps. This lets you play the same chord shapes in different keys.</p>
-<p>You don't need a capo right now. But if you see one in a lesson or a song, you'll know what it does. Think of it as a shortcut — same fingers, higher sound.</p>`
+<p><strong>Thumb placement:</strong> your left thumb goes behind the neck, roughly opposite your middle finger. Use the pad (flat part), not the tip. Your hand forms a gentle C-shape.</p>
+<p><strong>The capo:</strong> a clamp that goes across the neck at any fret. It raises the pitch of all strings by the same amount. You don't need one right now, but you'll know what it does when you see one.</p>`
         },
         {
           label: 'Own',
-          title: 'This block is set',
-          body: `<p>You can name the main parts of the guitar. You know what the headstock, neck, and body do. You know how to sit with it — supported, not clamped.</p>
-<p>You know the instrument. Now it's time to learn how to make it speak.</p>
-<p><strong>This block is set. You're ready for Block 06: Speaking with the Guitar.</strong></p>`
+          title: 'This fret is set',
+          body: `<p>You can name the main parts of the guitar. You know how to sit with it — supported, not clamped. You know the instrument. Now it's time to learn how to make it speak.</p>
+<p><strong>This fret is set. Step to fret 7: Hands & Sound.</strong></p>`
         }
       ]
     },
 
-    // ═══ BLOCK 06 — SPEAKING WITH THE GUITAR ═══
+    // ═══ STEP 7 — HANDS & SOUND ═══
     {
-      id: 'f-speaking',
-      num: '06',
-      title: 'Speaking with the Guitar',
-      subtitle: 'Right hand, left hand, both hands together',
-      micro: 'Body, hands, first sound, rest/free stroke.',
+      id: 'f-hands-sound',
+      num: '7',
+      title: 'Hands & Sound',
+      subtitle: 'Right hand, left hand, rest/free stroke, clean tone.',
+      micro: 'Two hands, different jobs, one sound.',
       status: 'open',
       tags: ['Right Hand', 'Left Hand', 'Picking', 'Fretting'],
       sources: ['Jamie Andreas', 'Christopher Parkening'],
@@ -304,101 +363,128 @@ const FOUNDATION = {
           label: 'Understand',
           title: 'The two hands have different jobs',
           body: `<p>Guitar is the only instrument where your two hands do completely different things at the same time.</p>
-<p><strong>Right hand</strong> (picking hand): creates the sound. It plucks, picks, or strums the strings. Without it, no sound.</p>
-<p><strong>Left hand</strong> (fretting hand): changes the pitch. It presses strings against frets to change which note sounds. Without it, you only get open strings.</p>
-<p>Neither hand alone makes music. They have to work <em>together</em>. This is the fundamental coordination of guitar — and it takes practice.</p>`
+<p><strong>Right hand</strong> (picking hand): creates the sound. It plucks, picks, or strums the strings.</p>
+<p><strong>Left hand</strong> (fretting hand): changes the pitch. It presses strings against frets.</p>
+<p>Neither hand alone makes music. They have to work <em>together</em>.</p>`
         },
         {
           label: 'Experience',
-          title: 'The right hand: rest stroke vs free stroke',
+          title: 'Rest stroke vs free stroke',
           body: `<p>Your right hand has two basic strokes:</p>
-<p><strong>Rest stroke</strong> — Push the string down toward the guitar body. Keep going until your finger rests on the next string. This gives a <em>full, round, powerful</em> sound. Best for single notes you want to stand out.</p>
-<p><strong>Free stroke</strong> — Pluck the string and let your finger come back up into the air, not touching the next string. This gives a <em>lighter, more open</em> sound. Best for playing multiple strings or faster passages.</p>
-<p>Try both on the same string. Hear the difference? Rest stroke = bold. Free stroke = light. You'll use both, depending on what the music needs.</p>`
+<p><strong>Rest stroke</strong> — Push the string down toward the guitar body. Keep going until your finger rests on the next string. <em>Full, round, powerful</em> sound. Best for single notes.</p>
+<p><strong>Free stroke</strong> — Pluck the string and let your finger come back up into the air. <em>Lighter, more open</em> sound. Best for faster passages.</p>
+<p>Try both on the same string. Hear the difference? Rest stroke = bold. Free stroke = light.</p>`
         },
         {
           label: 'Apply',
-          title: 'The left hand: fretting a note',
-          body: `<p>Now your left hand joins in. This is where it gets real.</p>
-<p>Pick a string — any string, open. Now press down on fret 1 with your index finger. Where? <strong>Right behind the fret wire</strong> — not on top of it, not in the middle of the fret. Just behind it.</p>
-<p>How hard? Just enough to make the note ring clean. If it buzzes, press harder. If your finger hurts, you're pressing too hard. The sweet spot is surprisingly gentle.</p>
+          title: 'Fretting a note',
+          body: `<p>Pick a string — any string, open. Now press down on fret 1 with your index finger. Where? <strong>Right behind the fret wire</strong> — not on top of it, not in the middle.</p>
+<p>How hard? Just enough to make the note ring clean. If it buzzes, press harder. If your finger hurts, you're pressing too hard.</p>
 <p>Now pick the string again. Hear the new note? You just changed the pitch by shortening the vibrating length of the string. That's what fretting is.</p>
-<p>Play fret 1, then lift your finger and play open. Fret 1, open. Hear the difference? That's the half step from Block 03 — now in your hands.</p>`
+<p>Play fret 1, then lift your finger and play open. Fret 1, open. Hear the difference? That's the half step from Step 3 — now in your hands.</p>`
         },
         {
           label: 'Own',
-          title: 'This block is set',
-          body: `<p>You know the two strokes — rest stroke for power, free stroke for lightness. You know where to place your fretting finger (just behind the fret wire) and how hard to press (just enough to ring clean).</p>
+          title: 'This fret is set',
+          body: `<p>You know the two strokes — rest stroke for power, free stroke for lightness. You know where to place your fretting finger and how hard to press.</p>
 <p>You can make the guitar speak. One note at a time, clean and ringing.</p>
-<p><strong>This block is set. You're ready for Block 07: Guitar Conversations.</strong></p>`
+<p><strong>This fret is set. Step to fret 8: First Shapes.</strong></p>`
         }
       ]
     },
 
-    // ═══ BLOCK 07 — GUITAR CONVERSATIONS ═══
+    // ═══ STEP 8 — FIRST SHAPES ═══
     {
-      id: 'f-conversations',
-      num: '07',
-      title: 'Guitar Conversations',
-      subtitle: 'Moving between notes, the start of playing',
-      micro: 'E major, call and response, tiny musical sentence.',
+      id: 'f-first-shapes',
+      num: '8',
+      title: 'First Shapes',
+      subtitle: 'E major, simple chord grip, open/fret movement.',
+      micro: 'From single notes to chords.',
+      status: 'open',
+      tags: ['Chords', 'E Major', 'Coordination'],
+      sources: ['Jamie Andreas', 'Fred Sokolow'],
+      steps: [
+        {
+          label: 'Understand',
+          title: 'One note is not music. Two notes are.',
+          body: `<p>You can make a clean note. Good. But music isn't one note — it's notes <em>moving</em>.</p>
+<p>The moment you play one note, then another, you've created an <strong>interval</strong>. This is the DNA of melody.</p>
+<p>The real skill isn't playing one note cleanly. It's moving from one note to the next <em>cleanly</em>.</p>`
+        },
+        {
+          label: 'Experience',
+          title: 'Walking up one string',
+          body: `<p>Same string, one fret at a time:</p>
+<p>Open → Fret 1 → Fret 2 → Fret 3 → Fret 4</p>
+<p>Right hand picks each note. Left hand frets each one. One at a time. Slow and clean.</p>
+<p>Now walk back down: Fret 4 → Fret 3 → Fret 2 → Fret 1 → Open</p>
+<p>This is the fundamental movement of guitar — <strong>fingers moving along a string</strong>. Every scale, every riff, every melody is built from this.</p>`
+        },
+        {
+          label: 'Apply',
+          title: 'Your first chord: E major',
+          body: `<p>An <strong>E major chord</strong> uses all six strings. It's the first chord most guitarists learn.</p>
+<p style="font-family:var(--mono);color:var(--gold);font-size:0.8rem;line-height:1.8;text-align:center">e|---0---<br>B|---0---<br>G|---1---  (index, fret 1)<br>D|---2---  (middle, fret 2)<br>A|---2---  (ring, fret 2)<br>E|---0---</p>
+<p><strong>Step by step:</strong></p>
+<p>1. Index finger on fret 1 of the G string (3rd string).<br>
+2. Middle finger on fret 2 of the D string (4th string).<br>
+3. Ring finger on fret 2 of the A string (5th string).<br>
+4. Strum all six strings with your thumb.</p>
+<p>Does it ring? All six? If some buzz, adjust — make sure your fingers are arched and not touching the strings below them.</p>
+<p>That sound — that's a chord. That's music. You just went from single notes to harmony.</p>`
+        },
+        {
+          label: 'Own',
+          title: 'This fret is set',
+          body: `<p>You can walk up and down a string. You just played your first chord. Both hands working together — right hand creating sound, left hand changing pitch.</p>
+<p><strong>This fret is set. Step to fret 9: First Conversation.</strong></p>`
+        }
+      ]
+    },
+
+    // ═══ STEP 9 — FIRST CONVERSATION ═══
+    {
+      id: 'f-first-conversation',
+      num: '9',
+      title: 'First Conversation',
+      subtitle: 'Call and response, tiny riff, first musical sentence.',
+      micro: 'Your first musical sentence.',
       status: 'open',
       tags: ['Coordination', 'Exercises', 'First Movements'],
       sources: ['Jamie Andreas', 'Christopher Parkening', 'Fred Sokolow'],
       steps: [
         {
           label: 'Understand',
-          title: 'One note is not music. Two notes are.',
-          body: `<p>You can make a clean note. Good. But music isn't one note — it's notes <em>moving</em>.</p>
-<p>The moment you play one note, then another, you've created an <strong>interval</strong> — the distance between two sounds. This is the DNA of melody. Every song you've ever heard is just intervals — sequences of distances between notes.</p>
-<p>So the real skill isn't playing one note cleanly. It's moving from one note to the next <em>cleanly</em>. That's what we're about to learn.</p>`
+          title: 'Music is dialogue',
+          body: `<p>A conversation has two parts: saying something, and hearing a response. Music works the same way.</p>
+<p>You play a phrase — a short musical sentence. Then you hear how it sounds in the room. Then you respond to it — with another phrase, a variation, or an answer.</p>
+<p>This is called <strong>call and response</strong>. It's the oldest form of music. It's how humans have been making music for thousands of years.</p>`
         },
         {
           label: 'Experience',
-          title: 'The first exercise: one string, two frets',
-          body: `<p>Put it all together. Here's your first real exercise:</p>
-<p>1. Pick any string (start with the 3rd string — G)<br>
-2. Play it open (right hand picks, left hand does nothing)<br>
-3. Now press fret 2 with your index finger (just behind the fret wire)<br>
-4. Pick it again<br>
-5. Lift your finger. Play open again.</p>
-<p>Open → Fret 2 → Open. That's a whole step up, then back down. You just played your first two-note sequence.</p>
-<p>Do it 10 times. Each time, listen: does each note ring clean? Is the transition smooth? No buzzing? No muting?</p>`
+          title: 'The call',
+          body: `<p>Play this simple call:</p>
+<p>Open G string → Fret 2 on G string → Open G string</p>
+<p>That's three notes: home, up a step, back home. A tiny question.</p>
+<p>Now listen to how it hangs in the air. It feels unfinished, doesn't it? Like a question waiting for an answer. That's the "call."</p>`
         },
         {
           label: 'Apply',
-          title: 'Walking up one string',
-          body: `<p>Now let's walk. Same string, one fret at a time:</p>
-<p>Open → Fret 1 → Fret 2 → Fret 3 → Fret 4</p>
-<p>Right hand picks each note. Left hand frets each one. One at a time. Slow and clean.</p>
-<p>Now walk back down: Fret 4 → Fret 3 → Fret 2 → Fret 1 → Open</p>
-<p>This is the fundamental movement of guitar — <strong>fingers moving along a string</strong>. Every scale, every riff, every melody is built from this. You're doing it right now.</p>
-<p>Try it on a different string tomorrow. Then another. One string per day. Within a week, your hands will start to <em>know</em> the fretboard.</p>`
-        },
-        {
-          label: 'Apply',
-          title: 'Your first chord: E major',
-          body: `<p>You can walk up one string. Good. Now let's do something that sounds like music.</p>
-<p>An <strong>E major chord</strong> uses all six strings. It's the first chord most guitarists learn, and it's been used in thousands of songs. Here's where your fingers go:</p>
-<p style="font-family:var(--mono);color:var(--gold);font-size:0.8rem;line-height:1.8;text-align:center">e|---0---<br>B|---0---<br>G|---1---  (index finger, fret 1)<br>D|---2---  (middle finger, fret 2)<br>A|---2---  (ring finger, fret 2)<br>E|---0---</p>
-<p>The 0s mean open — no finger needed. The numbers tell you which fret and which finger.</p>
-<p><strong>Step by step:</strong></p>
-<p>1. Place your index finger on fret 1 of the G string (3rd string). Press just behind the fret wire.<br>
-2. Place your middle finger on fret 2 of the D string (4th string).<br>
-3. Place your ring finger on fret 2 of the A string (5th string).<br>
-4. Strum all six strings with your thumb, from top to bottom.</p>
-<p>Does it ring? All six strings? If some buzz or sound muted, adjust your fingers — make sure they're arched and not touching the strings below them.</p>
-<p>Play it again. And again. That sound — that's a chord. That's music. You just went from single notes to harmony.</p>`
+          title: 'The response',
+          body: `<p>Now answer it. Play:</p>
+<p>Open G string → Fret 4 on G string → Fret 2 on G string → Open G string</p>
+<p>Four notes. A longer, more complete answer. It resolves. It feels finished.</p>
+<p>You just played your first musical sentence: <strong>call → response</strong>. Question → answer. Tension → resolution.</p>
+<p>This is the pattern behind every song. Every riff. Every solo. It all starts here.</p>`
         },
         {
           label: 'Own',
           title: 'Foundation complete',
-          body: `<p>You can make a clean note. You can move between notes. You can walk up and down a string. You just played your first chord. Both hands working together — right hand creating sound, left hand changing pitch.</p>
-<p>This is the beginning of everything.</p>
+          body: `<p>You can make a clean note. You can move between notes. You can walk up and down a string. You played your first chord. You played your first musical sentence — call and response.</p>
+<p>Ten frets. The full threshold. You've walked the first neck path.</p>
 <div style="background:var(--card);border:2px solid var(--gold);border-radius:8px;padding:16px;margin-top:16px;text-align:center">
   <div style="font-family:Cinzel,serif;color:var(--gold);font-size:0.9rem;font-weight:700;margin-bottom:4px">FOUNDATION COMPLETE</div>
-  <p style="font-size:0.75rem;color:var(--dim);margin:0">Seven layers. Each one builds on the last.<br>How to Learn → Language → Music → Guitar → The Instrument → Speaking → Conversations</p>
-  <p style="font-size:0.75rem;color:var(--dim);margin:8px 0 0 0">You now have the foundation for everything that comes next.</p>
+  <p style="font-size:0.75rem;color:var(--dim);margin:0">Ten frets walked. The first neck path is behind you.<br>The Journey gate is open. Level 1 begins.</p>
 </div>`
         }
       ]
