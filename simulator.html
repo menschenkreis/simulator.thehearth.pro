@@ -136,132 +136,116 @@
 
 
 
-/* === FOUNDATION: FIRST NECK PATH === */
+/* === FOUNDATION: IMAGE + HOTSPOT OVERLAY === */
 .foundation-shell{
   min-height:calc(100vh - 54px);
   box-sizing:border-box;
-  padding:14px 18px 26px;
+  padding:14px 18px 20px;
   color:var(--text);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
 }
-
-.foundation-map-btn{
+.foundation-back{
+  position:fixed;
+  left:18px;
+  top:62px;
+  z-index:20;
+}
+.foundation-scene{
+  position:relative;
+  width:min(900px,96vw);
+  aspect-ratio:900/620;
+  margin:0 auto;
+  border-radius:12px;
+  overflow:hidden;
+  background:
+    radial-gradient(ellipse at 50% 40%,rgba(212,175,105,0.08),transparent 55%),
+    linear-gradient(180deg,#0e0b07 0%,#17100a 40%,#0d0b08 100%);
+  box-shadow:0 20px 60px rgba(0,0,0,0.6);
+}
+.foundation-bg{
   position:absolute;
-  left:22px;
-  top:16px;
-  z-index:10;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  z-index:1;
+  pointer-events:none;
 }
-
-.foundation-header{
-  text-align:center;
-  margin:8px auto 10px;
-  max-width:620px;
+.foundation-hotspots{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  z-index:2;
 }
-
-.foundation-kicker{
-  font-family:JetBrains Mono,var(--mono),monospace;
-  color:var(--amber);
-  font-size:0.62rem;
-  letter-spacing:0.16em;
-  text-transform:uppercase;
-  margin-bottom:4px;
+.foundation-zones polygon{
+  fill:transparent;
+  stroke:transparent;
+  stroke-width:1;
+  transition:fill 0.2s ease, stroke 0.2s ease, opacity 0.2s ease;
 }
-
-.foundation-header h1{
-  margin:0;
-  font-family:Cinzel,serif;
-  color:var(--gold);
-  font-size:clamp(1.7rem,3vw,2.45rem);
-  letter-spacing:0.12em;
-  font-weight:600;
+.hs-active{
+  fill:rgba(232,160,32,0.18);
+  stroke:rgba(255,214,138,0.75);
+  stroke-width:2;
+  filter:drop-shadow(0 0 12px rgba(232,160,32,0.4));
 }
-
-.foundation-header p{
-  margin:6px 0 10px;
-  color:var(--dim);
-  font-size:0.86rem;
+.hs-active:hover{
+  fill:rgba(232,160,32,0.28);
+  stroke:rgba(255,214,138,0.95);
 }
-
-.foundation-progress-line{
+.hs-done{
+  fill:rgba(212,175,105,0.10);
+  stroke:rgba(212,175,105,0.40);
+  stroke-width:1.5;
+}
+.hs-done:hover{
+  fill:rgba(212,175,105,0.18);
+  stroke:rgba(212,175,105,0.65);
+}
+.hs-locked{
+  fill:transparent;
+  stroke:transparent;
+  opacity:0.35;
+}
+.hs-soon{
+  opacity:0.18;
+  cursor:default !important;
+}
+.foundation-progress-bar{
   display:flex;
   align-items:center;
   justify-content:center;
   gap:10px;
+  margin-top:8px;
   font-family:JetBrains Mono,var(--mono),monospace;
   color:var(--amber);
-  font-size:0.62rem;
+  font-size:0.58rem;
 }
-
-.foundation-progress-line div{
-  width:150px;
-  height:4px;
+.foundation-progress-bar div{
+  width:120px;
+  height:3px;
   background:rgba(212,175,105,0.13);
   border-radius:999px;
   overflow:hidden;
 }
-
-.foundation-progress-line i{
+.foundation-progress-bar i{
   display:block;
   height:100%;
   background:linear-gradient(90deg,var(--gold),var(--amber));
   border-radius:999px;
   transition:width 0.45s ease;
 }
-
-.foundation-stage{
-  position:relative;
-  width:min(1040px,100%);
-  margin:0 auto;
-  min-height:620px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  overflow:hidden;
-  background:
-    radial-gradient(circle at 50% 42%,rgba(212,175,105,0.10),transparent 36%),
-    radial-gradient(circle at 50% 88%,rgba(232,160,32,0.08),transparent 34%);
+@media(max-width:700px){
+  .foundation-back{position:static;margin-bottom:4px;}
+  .foundation-scene{border-radius:8px;}
+}
+@media(max-width:480px){
+  .foundation-scene{border-radius:6px;}
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-.foundation-footer{
-  margin:8px auto 0;
-  text-align:center;
-  color:var(--amber);
-  font-family:JetBrains Mono,var(--mono),monospace;
-  font-size:0.62rem;
-  letter-spacing:0.02em;
-}
 
 /* === FOUNDATION: IMAGE + HOTSPOT OVERLAY === */
 .foundation-shell{
@@ -2733,31 +2717,18 @@ function showFoundation(){
     + '</g>'
     + '</svg>';
 
-  // Assemble
+  // Assemble — image handles beauty, SVG handles clicks
   el.innerHTML = '<div class="foundation-shell">'
     + '<button class="back-btn foundation-back" onclick="backToMap()">&#8592; Map</button>'
-    + '<header class="foundation-header">'
-    + '<div class="foundation-kicker">' + esc(F.tag) + '</div>'
-    + '<h1>' + esc(F.title) + '</h1>'
-    + '<p>' + esc(F.subtitle) + '</p>'
-    + '<div class="foundation-progress-line">'
+    + '<div class="foundation-scene">'
+    + '<img class="foundation-bg" src="images/foundation-neck-threshold.png" alt="Foundation neck path" onerror="this.style.display=\'none\'"/>'
+    + svg
+    + '</div>'
+    + '<div class="foundation-progress-bar">'
     + '<span>' + doneCount + '/' + F.topics.length + '</span>'
     + '<div><i style="width:' + pct + '%"></i></div>'
     + '<span>' + pct + '%</span>'
     + '</div>'
-    + '</header>'
-    + '<div class="foundation-scene">'
-    + '<img class="foundation-bg" src="images/foundation-neck-threshold.png" alt="" onerror="this.style.display=\'none\'"/>'
-    + svg
-    + '<div class="foundation-guide">'
-    + '<img src="images/character-full/Encouraging.png" alt="Guide"/>'
-    + '<div class="foundation-guide-bubble">'
-    + '<p>' + esc(speechText) + '</p>'
-    + '<button onclick="startLesson1()">' + (allDone ? 'Review Foundation' : 'Start Current Fret') + '</button>'
-    + '</div>'
-    + '</div>'
-    + '</div>'
-    + '<footer class="foundation-footer">' + esc(F.questLine) + '</footer>'
     + '</div>';
 }
 
