@@ -134,6 +134,11 @@
 .doing-adj-btn{flex:1;padding:8px;border:1px solid var(--border);background:transparent;border-radius:6px;color:var(--dim);font-family:DM Sans,sans-serif;font-size:0.72rem;cursor:pointer;transition:all 0.15s;}
 .doing-adj-btn:hover{border-color:var(--gold);color:var(--gold);}
 
+/* === FOUNDATION GATE SVG === */
+.foundation-gate-wrap{position:relative;display:flex;flex-direction:column;align-items:center;flex:1;justify-content:center;}
+.foundation-gate-svg{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:100%;max-width:900px;height:auto;pointer-events:none;z-index:0;opacity:0.85;}
+.foundation-gate-wrap>*{position:relative;z-index:1;}
+
 .node-info{background:var(--panel) !important;border:2px solid var(--gold) !important;border-radius:12px !important;box-shadow:0 4px 16px rgba(255,140,66,0.15) !important;}
 [data-theme="sparks"] .node-info h4{color:var(--gold) !important;font-size:1.2rem !important;font-family:DM Sans,sans-serif !important;font-weight:700 !important;}
 [data-theme="sparks"] .node-info p{color:var(--text) !important;font-size:0.95rem !important;}
@@ -2345,8 +2350,38 @@ function showFoundation(){
       '<button onclick="startLesson1()" style="background:linear-gradient(180deg,var(--gold),var(--amber));color:var(--bg);border:none;padding:10px 28px;border-radius:8px;font-family:Cinzel,serif;font-size:0.85rem;font-weight:700;letter-spacing:1px;cursor:pointer;box-shadow:0 2px 12px rgba(212,175,105,0.25)">Start Lesson 1</button>'+
       '<div style="font-size:0.5rem;color:var(--amber);margin-top:6px;font-style:italic">Quest: Complete the threshold to unlock your first Journey path.</div>'+
     '</div>'+
-    // Character on top of pyramid, centered
-    '<div style="display:flex;flex-direction:column;align-items:center;flex:1;justify-content:center">'+
+    // Character on top of pyramid, centered (with gate SVG backdrop)
+    '<div class="foundation-gate-wrap">'+
+      '<svg class="foundation-gate-svg" viewBox="0 0 900 620" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Foundation tuning gate">'+
+        '<defs>'+
+          '<radialGradient id="gateGlow" cx="50%" cy="42%" r="60%">'+
+            '<stop offset="0%" stop-color="#d4af69" stop-opacity="0.18"/>'+
+            '<stop offset="52%" stop-color="#d4af69" stop-opacity="0.06"/>'+
+            '<stop offset="100%" stop-color="#0d0b08" stop-opacity="0"/>'+
+          '</radialGradient>'+
+          '<linearGradient id="stringGrad" x1="0" y1="0" x2="0" y2="1">'+
+            '<stop offset="0%" stop-color="#f6d88a" stop-opacity="0.75"/>'+
+            '<stop offset="45%" stop-color="#d4af69" stop-opacity="0.28"/>'+
+            '<stop offset="100%" stop-color="#d4af69" stop-opacity="0.08"/>'+
+          '</linearGradient>'+
+          '<filter id="softGoldGlow"><feGaussianBlur stdDeviation="4" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>'+
+          '<filter id="wideGlow"><feGaussianBlur stdDeviation="10" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>'+
+        '</defs>'+
+        '<rect width="900" height="620" fill="transparent"/>'+
+        '<ellipse cx="450" cy="360" rx="360" ry="255" fill="url(#gateGlow)"/>'+
+        '<path d="M170 570 L170 270 C170 125 285 54 450 54 C615 54 730 125 730 270 L730 570" fill="none" stroke="#d4af69" stroke-opacity="0.42" stroke-width="2" filter="url(#softGoldGlow)"/>'+
+        '<path d="M220 570 L220 292 C220 170 312 110 450 110 C588 110 680 170 680 292 L680 570" fill="none" stroke="#d4af69" stroke-opacity="0.18" stroke-width="1.5"/>'+
+        '<path d="M382 150 C382 112 410 90 450 90 C490 90 518 112 518 150 L518 214 L382 214 Z" fill="#0d0b08" fill-opacity="0.52" stroke="#d4af69" stroke-opacity="0.55" stroke-width="1.5"/>'+
+        '<text x="450" y="187" text-anchor="middle" fill="#d4af69" fill-opacity="0.72" font-size="18" font-family="Cinzel, serif" letter-spacing="4">JOURNEY</text>'+
+        '<g class="foundation-strings" stroke="url(#stringGrad)" stroke-width="1.5">'+
+          '<line x1="285" y1="122" x2="245" y2="570"/>'+
+          '<line x1="351" y1="118" x2="335" y2="570"/>'+
+          '<line x1="417" y1="115" x2="425" y2="570"/>'+
+          '<line x1="483" y1="115" x2="475" y2="570"/>'+
+          '<line x1="549" y1="118" x2="565" y2="570"/>'+
+          '<line x1="615" y1="122" x2="655" y2="570"/>'+
+        '</g>'+
+      '</svg>'+
       // Character + speech bubble row
       '<div style="position:relative;display:flex;justify-content:center;margin-bottom:2px">'+
         '<img src="images/character-full/Encouraging.png" class="character-float" style="width:120px;height:120px;object-fit:contain"/>'+
