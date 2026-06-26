@@ -469,6 +469,46 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
   .doing-practice-grid{grid-template-columns:1fr;}
   .doing-state-buttons{grid-template-columns:repeat(2,minmax(0,1fr));}
 }
+
+/* === DOING MODE TOGGLE === */
+.doing-mode-toggle{display:flex;gap:0;margin:0 0 16px;border:1px solid var(--border);border-radius:7px;overflow:hidden;width:fit-content;}
+.doing-mode-btn{flex:1;padding:9px 22px;font-family:JetBrains Mono,monospace;font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--dim);background:var(--card);border:none;cursor:pointer;transition:all 0.2s;}
+.doing-mode-btn+.doing-mode-btn{border-left:1px solid var(--border);}
+.doing-mode-btn:hover{color:var(--text);background:rgba(212,175,105,0.06);}
+.doing-mode-btn.active{background:var(--gold);color:var(--bg);font-weight:600;}
+
+/* === EXPLORER PANEL === */
+.doing-explorer{max-width:980px;margin:0 auto;}
+.doing-explorer-guide{color:var(--dim);font-size:0.78rem;line-height:1.55;margin-bottom:18px;padding:12px 14px;border-left:3px solid rgba(212,175,105,0.4);background:rgba(26,23,20,0.5);border-radius:0 6px 6px 0;}
+.doing-explorer-guide b{color:var(--gold);}
+.doing-exp-section{margin-bottom:22px;background:rgba(26,23,20,0.7);border:1px solid var(--border);border-radius:8px;padding:18px;}
+.doing-exp-section h3{font-family:Cinzel,serif;color:var(--gold);font-size:1rem;margin:0 0 10px;}
+.doing-exp-section p{color:var(--text);font-size:0.8rem;line-height:1.55;margin:0 0 10px;}
+.doing-exp-note-btns{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;}
+.doing-exp-note-btn{width:40px;height:40px;border-radius:50%;border:2px solid rgba(212,175,105,0.35);background:var(--card);color:var(--gold);font-family:Cinzel,serif;font-size:0.9rem;cursor:pointer;transition:all 0.15s;}
+.doing-exp-note-btn:hover,.doing-exp-note-btn.active{background:var(--gold);color:var(--bg);border-color:#f5edd8;box-shadow:0 0 14px rgba(212,175,105,0.3);}
+.doing-exp-highway{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
+.doing-exp-highway-card{background:rgba(13,11,8,0.45);border:1px solid rgba(212,175,105,0.14);border-radius:6px;padding:12px;}
+.doing-exp-highway-card h4{font-family:JetBrains Mono,monospace;color:var(--amber);font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;margin:0 0 8px;}
+.doing-exp-highway-card .note-row{display:flex;gap:6px;flex-wrap:wrap;}
+.doing-exp-highway-card .note-chip{display:inline-flex;align-items:center;gap:4px;padding:4px 8px;border:1px solid rgba(212,175,105,0.22);border-radius:4px;font-family:JetBrains Mono,monospace;font-size:0.68rem;color:var(--dim);}
+.doing-exp-highway-card .note-chip b{color:var(--gold);font-weight:600;}
+.doing-exp-highway-card .note-chip.on-string{background:rgba(212,175,105,0.08);border-color:rgba(212,175,105,0.4);color:var(--text);}
+.doing-exp-relations{margin-top:10px;display:flex;gap:14px;flex-wrap:wrap;}
+.doing-exp-relations span{font-family:JetBrains Mono,monospace;font-size:0.66rem;color:var(--dim);padding:4px 10px;border:1px solid rgba(212,175,105,0.14);border-radius:4px;}
+.doing-exp-relations span b{color:var(--gold);}
+.doing-exp-tab{font-family:JetBrains Mono,monospace;font-size:0.75rem;color:var(--text);background:rgba(13,11,8,0.5);border:1px solid rgba(212,175,105,0.14);border-radius:6px;padding:14px;white-space:pre;line-height:1.7;overflow-x:auto;margin-bottom:10px;}
+.doing-exp-tab .string-line{color:var(--dim);}
+.doing-exp-tab .fret-num{color:var(--gold);font-weight:700;}
+.doing-exp-placeholder{color:var(--dim);font-size:0.72rem;font-style:italic;padding:10px;border:1px dashed rgba(212,175,105,0.18);border-radius:6px;margin-top:10px;}
+.doing-exp-pent-desc{color:var(--dim);font-size:0.76rem;line-height:1.5;margin-top:6px;}
+.doing-next-drill{background:rgba(212,175,105,0.06);border:1px solid rgba(212,175,105,0.2);border-radius:7px;padding:12px 14px;margin-bottom:14px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:border-color 0.2s;}
+.doing-next-drill:hover{border-color:rgba(212,175,105,0.5);}
+.doing-next-drill .nd-label{font-family:JetBrains Mono,monospace;color:var(--amber);font-size:0.54rem;letter-spacing:0.1em;text-transform:uppercase;}
+.doing-next-drill .nd-title{color:var(--text);font-size:0.82rem;margin-top:2px;}
+.doing-next-drill .nd-meta{color:var(--dim);font-size:0.66rem;margin-top:2px;}
+.doing-next-drill .nd-arrow{margin-left:auto;color:var(--gold);font-size:1.2rem;}
+
 .node-info{
   background:var(--card);border:1px solid var(--border);border-radius:10px;
   padding:10px 14px;display:none;position:fixed;
@@ -2890,14 +2930,136 @@ function showDoing(){
     '</div>';
   };
 
+  /* --- Next recommended drill --- */
+  function findNextDrill(){
+    for(const cat of D.categories){
+      for(const drill of cat.drills){
+        const st=getState(drill.id);
+        if(!st||st==='seen') return {cat,drill};
+      }
+    }
+    return null;
+  }
+  const nextDrill=findNextDrill();
+  const nextDrillHtml=nextDrill?(
+    '<div class="doing-next-drill" data-cat="'+esc(nextDrill.cat.id)+'" data-drill="'+esc(nextDrill.drill.id)+'">'+
+      '<div><div class="nd-label">Next recommended</div>'+
+      '<div class="nd-title">'+esc(nextDrill.drill.title)+'</div>'+
+      '<div class="nd-meta">'+esc(nextDrill.cat.title)+' · Level '+getDoingLevel(nextDrill.drill)+' · '+esc(nextDrill.drill.duration)+'</div>'+
+    '</div>'+
+    '<div class="nd-arrow">&#8594;</div>'+
+  '</div>'):'';
+
+  /* --- Mode toggle --- */
+  let activeMode='training';
+  function modeToggleHtml(){
+    return '<div class="doing-mode-toggle">'+
+      '<button class="doing-mode-btn'+(activeMode==='training'?' active':'')+'" data-mode="training">Training</button>'+
+      '<button class="doing-mode-btn'+(activeMode==='explorer'?' active':'')+'" data-mode="explorer">Explorer</button>'+
+    '</div>';
+  }
+
+  /* --- Explorer rendering --- */
+  function renderExplorer(){
+    let html='<div class="doing-explorer">'+
+      '<div class="doing-explorer-guide"><b>Explorer</b> is where the eye learns before the hand moves. Tap a note, trace a highway, see a shape. The fretboard becomes a map you can read.</div>';
+
+    /* 1. Note Locator */
+    html+='<div class="doing-exp-section">'+
+      '<h3>Note Locator</h3>'+
+      '<p>Click a note to highlight every place it lives across the fretboard.</p>'+
+      '<div class="doing-exp-note-btns" id="exp-note-btns">'+
+        ['E','A','C','D','G'].map(function(n){return '<button class="doing-exp-note-btn" data-enote="'+n+'">'+n+'</button>';}).join('')+
+      '</div>'+
+      '<div id="exp-note-result" style="color:var(--dim);font-size:0.76rem;min-height:1.4em"></div>';
+    html+='<div style="overflow-x:auto;margin-top:12px;border:1px solid rgba(212,175,105,0.14);border-radius:8px;background:linear-gradient(90deg,#120d09,#2a1b10 15%,#3a2413 50%,#1b110b);padding:10px">'+
+      '<svg id="exp-fretboard-svg" viewBox="0 0 960 280" style="min-width:800px;width:100%;display:block"></svg>'+
+    '</div>'+
+    '</div>';
+
+    /* 2. E/A Highways */
+    html+='<div class="doing-exp-section">'+
+      '<h3>E/A Highways</h3>'+
+      '<p>The low E and A strings are your root-note landmarks. Every chord and scale starts here.</p>'+
+      '<div class="doing-exp-highway">'+
+        '<div class="doing-exp-highway-card"><h4>Low E String</h4><div class="note-row">'+
+          [{f:0,n:'E',root:true},{f:1,n:'F'},{f:3,n:'G'},{f:5,n:'A',root:true},{f:7,n:'B'},{f:8,n:'C'},{f:10,n:'D'},{f:12,n:'E',root:true}]
+            .map(function(o){return '<span class="note-chip'+(o.root?' on-string':'')+'"><b>'+o.f+'</b> '+o.n+'</span>';}).join('')+
+        '</div></div>'+
+        '<div class="doing-exp-highway-card"><h4>A String</h4><div class="note-row">'+
+          [{f:0,n:'A',root:true},{f:2,n:'B'},{f:3,n:'C'},{f:5,n:'D'},{f:7,n:'E'},{f:8,n:'F'},{f:10,n:'G'},{f:12,n:'A',root:true}]
+            .map(function(o){return '<span class="note-chip'+(o.root?' on-string':'')+'"><b>'+o.f+'</b> '+o.n+'</span>';}).join('')+
+        '</div></div>'+
+      '</div>'+
+      '<div class="doing-exp-relations">'+
+        '<span>E &rarr; A = <b>up 5 frets</b></span>'+
+        '<span>A &rarr; E = <b>up 7 frets</b></span>'+
+        '<span>Same note = <b>up 12 frets</b></span>'+
+      '</div>'+
+    '</div>';
+
+    /* 3. A Minor Pentatonic */
+    html+='<div class="doing-exp-section">'+
+      '<h3>A Minor Pentatonic</h3>'+
+      '<div class="doing-exp-tab">'+
+        '<span class="string-line">e</span>|----------------<span class="fret-num">5</span>-<span class="fret-num">8</span>-|\n'+
+        '<span class="string-line">B</span>|------------<span class="fret-num">5</span>-<span class="fret-num">8</span>-----|\n'+
+        '<span class="string-line">G</span>|--------<span class="fret-num">5</span>-<span class="fret-num">7</span>---------|\n'+
+        '<span class="string-line">D</span>|----<span class="fret-num">5</span>-<span class="fret-num">7</span>-------------|\n'+
+        '<span class="string-line">A</span>|-<span class="fret-num">5</span>-<span class="fret-num">7</span>----------------|\n'+
+        '<span class="string-line">E</span>|-<span class="fret-num">5</span>-<span class="fret-num">8</span>----------------|'+
+      '</div>'+
+      '<p class="doing-exp-pent-desc">Pentatonic means five notes. A minor pentatonic gives us <b style="color:var(--gold)">A, C, D, E, and G</b>. This is the first shape every guitarist learns. It lives at fret 5 and works over a thousand songs.</p>'+
+    '</div>';
+
+    /* 4. E Major Chord */
+    html+='<div class="doing-exp-section">'+
+      '<h3>E Major</h3>'+
+      '<div style="text-align:center;margin:10px 0">'+
+        '<svg viewBox="0 0 120 180" width="120" style="display:inline-block">'+
+          '<rect x="10" y="10" width="100" height="160" rx="4" fill="rgba(13,11,8,0.6)" stroke="rgba(212,175,105,0.25)"/>'+
+          '<line x1="28" y1="45" x2="92" y2="45" stroke="rgba(245,237,216,0.5)" stroke-width="3.5"/>'+
+          '<line x1="28" y1="70" x2="92" y2="70" stroke="rgba(245,237,216,0.5)" stroke-width="3"/>'+
+          '<line x1="28" y1="95" x2="92" y2="95" stroke="rgba(245,237,216,0.5)" stroke-width="2.5"/>'+
+          '<line x1="28" y1="120" x2="92" y2="120" stroke="rgba(245,237,216,0.5)" stroke-width="2"/>'+
+          '<line x1="28" y1="145" x2="92" y2="145" stroke="rgba(245,237,216,0.5)" stroke-width="1.5"/>'+
+          '<line x1="28" y1="170" x2="92" y2="170" stroke="rgba(245,237,216,0.5)" stroke-width="1.2"/>'+
+          '<text x="8" y="49" fill="var(--gold)" font-family="JetBrains Mono" font-size="10" text-anchor="middle">E</text>'+
+          '<text x="8" y="74" fill="var(--gold)" font-family="JetBrains Mono" font-size="10" text-anchor="middle">A</text>'+
+          '<text x="8" y="99" fill="var(--gold)" font-family="JetBrains Mono" font-size="10" text-anchor="middle">D</text>'+
+          '<text x="8" y="124" fill="var(--gold)" font-family="JetBrains Mono" font-size="10" text-anchor="middle">G</text>'+
+          '<text x="8" y="149" fill="var(--gold)" font-family="JetBrains Mono" font-size="10" text-anchor="middle">B</text>'+
+          '<text x="8" y="174" fill="var(--gold)" font-family="JetBrains Mono" font-size="10" text-anchor="middle">e</text>'+
+          '<circle cx="52" cy="70" r="7" fill="var(--gold)"/><text x="52" y="74" fill="var(--bg)" font-family="JetBrains Mono" font-size="9" text-anchor="middle" font-weight="700">2</text>'+
+          '<circle cx="60" cy="95" r="7" fill="var(--gold)"/><text x="60" y="99" fill="var(--bg)" font-family="JetBrains Mono" font-size="9" text-anchor="middle" font-weight="700">2</text>'+
+          '<circle cx="44" cy="120" r="7" fill="var(--gold)"/><text x="44" y="124" fill="var(--bg)" font-family="JetBrains Mono" font-size="9" text-anchor="middle" font-weight="700">1</text>'+
+          '<text x="115" y="15" fill="var(--dim)" font-family="JetBrains Mono" font-size="7">Frets 0-3</text>'+
+        '</svg>'+
+      '</div>'+
+      '<div style="text-align:center;font-family:JetBrains Mono,monospace;color:var(--gold);font-size:0.75rem;margin:8px 0">E major: 0 · 2 · 2 · 1 · 0 · 0</div>'+
+      '<div class="doing-exp-placeholder">Chord identifier coming next: select strings and frets to name the chord.</div>'+
+    '</div>';
+
+    /* 5. Tab + Notation Bridge */
+    html+='<div class="doing-exp-section">'+
+      '<h3>Tab + Notation Bridge</h3>'+
+      '<p>Tab tells you <b style="color:var(--gold)">where</b>. Notation tells you <b style="color:var(--gold)">what and when</b>.</p>'+
+      '<div class="doing-exp-tab">'+
+        '<span class="string-line">e</span>|---<span class="fret-num">0</span>-----<span class="fret-num">2</span>-----<span class="fret-num">0</span>---|\n'+
+        '<span class="string-line">B</span>|---------------------------------|\n'+
+        '<span class="string-line">G</span>|---------------------------------|\n'+
+        '<span class="string-line">D</span>|---------------------------------|\n'+
+        '<span class="string-line">A</span>|---------------------------------|\n'+
+        '<span class="string-line">E</span>|---------------------------------|'+
+      '</div>'+
+      '<p style="color:var(--dim);font-size:0.76rem">Open → fret 2 → open. Three notes, one string. This is what tab looks like: six lines for six strings, numbers for frets.</p>'+
+    '</div>';
+
+    html+='</div>';
+    return html;
+  }
+
   function shell(){
-    let total=0, mastered=0, touched=0;
-    D.categories.forEach(c=>c.drills.forEach(d=>{
-      total++;
-      const s=getState(d.id);
-      if(s) touched++;
-      if(s==='mastered') mastered++;
-    }));
     el.innerHTML='<div class="doing-shell">'+
     '<button class="back-btn" onclick="backToMap()">&larr; Map</button>'+
     '<div class="doing-hero">'+
@@ -2911,9 +3073,15 @@ function showDoing(){
         '<div class="doing-stat"><strong>'+total+'</strong><span>drills</span></div>'+
       '</div>'+
     '</div>'+
-    '<div id="doing-fretboard">'+render()+'</div>'+
+    modeToggleHtml()+
+    (activeMode==='training'?(
+      '<div class="doing-explorer-guide" style="margin-bottom:14px">Training is where the body learns. Choose one dot, practise slowly, then mark what changed.</div>'+
+      nextDrillHtml+
+      '<div id="doing-fretboard">'+render()+'</div>'
+    ):renderExplorer())+
   '</div>';
     bindControls();
+    if(activeMode==='explorer') bindExplorer();
   }
 
   function rerenderBoard(refocusSearch){
@@ -2927,8 +3095,74 @@ function showDoing(){
       }
     }
   }
+  function bindExplorer(){
+    /* Note Locator buttons */
+    var activeNote=null;
+    var NOTES=['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
+    var TUNING=[40,45,50,55,59,64];
+    var STRING_NAMES=['E','A','D','G','B','e'];
+    function noteFromMidi(m){ return NOTES[((m%12)+12)%12]; }
+    function renderExplorerFretboard(highlightNote){
+      var svg=document.getElementById('exp-fretboard-svg');
+      if(!svg) return;
+      var left=60,right=900,topY=25,bottomY=230;
+      var fretW=(right-left)/12;
+      var noteX=function(f){return f===0?left-30:left+(f-0.5)*fretW;};
+      var xForF=function(f){return left+f*fretW;};
+      var yForS=function(i){return topY+i*((bottomY-topY)/5);};
+      var s='';
+      s+='<rect x="'+(left-42)+'" y="10" width="'+(right-left+84)+'" height="240" rx="12" fill="rgba(18,13,9,.5)"/>';
+      [3,5,7,9].forEach(function(f){ s+='<circle cx="'+noteX(f)+'" cy="'+((topY+bottomY)/2)+'" r="9" fill="rgba(212,175,105,.1)"/>'; });
+      s+='<circle cx="'+noteX(12)+'" cy="'+((topY+bottomY)/2-22)+'" r="7" fill="rgba(212,175,105,.12)"/>';
+      s+='<circle cx="'+noteX(12)+'" cy="'+((topY+bottomY)/2+22)+'" r="7" fill="rgba(212,175,105,.12)"/>';
+      for(var f=0;f<=12;f++){ s+='<line x1="'+xForF(f)+'" y1="'+(topY-14)+'" x2="'+xForF(f)+'" y2="'+(bottomY+14)+'" stroke="'+(f===0?'#d4af69':'rgba(245,237,216,.25)')+'" stroke-width="'+(f===0?6:1.5)+'"/>'; }
+      STRING_NAMES.forEach(function(name,si){
+        var y=yForS(si);
+        s+='<line x1="'+(left-30)+'" y1="'+y+'" x2="'+right+'" y2="'+y+'" stroke="rgba(245,237,216,.5)" stroke-width="'+(3.6-si*0.32)+'" stroke-linecap="round"/>';
+        s+='<text x="28" y="'+y+'" text-anchor="middle" dominant-baseline="central" fill="#d4af69" font-family="Cinzel,serif" font-size="13" font-weight="700">'+name+'</text>';
+        for(var f2=0;f2<=12;f2++){
+          var note=noteFromMidi(TUNING[si]+f2);
+          var isActive=highlightNote&&note===highlightNote;
+          var opacity=highlightNote?(isActive?1:0.18):0.5;
+          s+='<g transform="translate('+noteX(f2)+','+y+')">';
+          s+='<circle r="'+(f2===0?11:13)+'" fill="'+(isActive?'#d4af69':'#19130f')+'" stroke="'+(isActive?'#f5edd8':'rgba(212,175,105,.18)')+'" stroke-width="1.5" opacity="'+opacity+'"/>';
+          s+='<text font-family="JetBrains Mono,monospace" font-size="9" font-weight="700" fill="'+(isActive?'#0d0b08':'#6f6250')+'" text-anchor="middle" dominant-baseline="central" opacity="'+opacity+'">'+note+'</text>';
+          s+='</g>';
+        }
+      });
+      svg.innerHTML=s;
+      var res=document.getElementById('exp-note-result');
+      if(res){
+        if(!highlightNote){ res.textContent=''; }
+        else {
+          var positions=[];
+          STRING_NAMES.forEach(function(name,si){
+            for(var ff=0;ff<=12;ff++){ if(noteFromMidi(TUNING[si]+ff)===highlightNote) positions.push(name+' string, fret '+ff); }
+          });
+          res.innerHTML='<b style="color:var(--gold)">'+highlightNote+'</b> appears at: '+positions.join(' &middot; ');
+        }
+      }
+    }
+    el.querySelectorAll('.doing-exp-note-btn').forEach(function(btn){
+      btn.onclick=function(){
+        var note=btn.dataset.enote;
+        activeNote=(activeNote===note)?null:note;
+        el.querySelectorAll('.doing-exp-note-btn').forEach(function(b){b.classList.toggle('active',b.dataset.enote===activeNote);});
+        renderExplorerFretboard(activeNote);
+      };
+    });
+    renderExplorerFretboard(null);
+  }
   function bindControls(){
-    const styleFilters=document.getElementById('style-filters');
+    el.querySelectorAll('.doing-mode-btn').forEach(function(btn){
+      btn.onclick=function(){ activeMode=btn.dataset.mode; shell(); };
+    });
+    var nextDrillEl=el.querySelector('.doing-next-drill');
+    if(nextDrillEl){
+      nextDrillEl.onclick=function(){ showDoingDrill(nextDrillEl.dataset.cat,nextDrillEl.dataset.drill); };
+    }
+    if(activeMode!=='training') return;
+    var styleFilters=document.getElementById('style-filters');
     if(styleFilters){
       styleFilters.addEventListener('click',function(e){
         const btn=e.target.closest('.style-filter');
