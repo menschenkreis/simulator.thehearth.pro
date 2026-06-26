@@ -127,7 +127,7 @@ const FOUNDATION = {
 
     // ═══ STEP 2 — MUSIC AS LANGUAGE ═══
     {
-      id: 'f-music-as-language',
+      id: 'f-music-language',
       num: '2',
       title: 'Music as Language',
       subtitle: 'Vocabulary, grammar, conversation, poetry.',

@@ -134,11 +134,16 @@
 .doing-adj-btn{flex:1;padding:8px;border:1px solid var(--border);background:transparent;border-radius:6px;color:var(--dim);font-family:DM Sans,sans-serif;font-size:0.72rem;cursor:pointer;transition:all 0.15s;}
 .doing-adj-btn:hover{border-color:var(--gold);color:var(--gold);}
 
+
 /* === FOUNDATION NECK PATH === */
-.foundation-neck-wrap{position:relative;display:flex;flex-direction:column;align-items:center;padding:0 16px 20px;max-width:960px;margin:0 auto;}
-.foundation-neck-svg{width:min(920px,96vw);height:auto;display:block;margin:0 auto;}
+.foundation-neck-scene{position:relative;min-height:70vh;display:flex;align-items:center;justify-content:center;overflow:hidden;background:radial-gradient(circle at 50% 22%,rgba(212,175,105,0.12),transparent 32%),radial-gradient(circle at 50% 78%,rgba(120,65,20,0.10),transparent 42%);}
+.foundation-neck-svg{width:min(920px,96vw);height:auto;display:block;margin:0 auto;filter:drop-shadow(0 30px 60px rgba(0,0,0,0.65));}
 .foundation-neck-svg text{pointer-events:none;}
-@media(max-width:720px){.foundation-neck-svg{width:100vw;}}
+.foundation-guide-entrance{position:absolute;bottom:5%;left:50%;transform:translateX(-50%);z-index:4;}
+.foundation-guide-entrance img{width:100px;height:100px;object-fit:contain;}
+.foundation-speech{position:absolute;bottom:12%;left:50%;transform:translateX(-50%);background:var(--card);border:1px solid var(--border);border-radius:10px;padding:8px 14px;max-width:220px;z-index:5;text-align:center;}
+.foundation-speech::after{content:"";position:absolute;top:-6px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-bottom:6px solid var(--border);}
+@media(max-width:720px){.foundation-neck-svg{width:100vw;}.foundation-guide-entrance img{width:70px;height:70px;}.foundation-speech{max-width:180px;padding:6px 10px;bottom:14%;}}
 
 
 
@@ -2329,6 +2334,7 @@ function showFoundation(){
   var activeIdx=firstIncomplete===-1?F.topics.length-1:firstIncomplete;
   var allDone=doneCount===F.topics.length;
 
+  // Guide speech
   var speechText;
   if(allDone){
     speechText=F.completionLine||'The gate is open. Journey Level 1 begins.';
@@ -2338,56 +2344,61 @@ function showFoundation(){
     speechText=F.guideLine||F.subtitle;
   }
 
-  // Build SVG geometry
-  var topY=270,botY=560,topL=345,topR=555,botL=110,botR=790;
-  var fY=[],fL=[],fR=[];
-  for(var i=0;i<=10;i++){var t=i/10;fY.push(Math.round(topY+(botY-topY)*t));fL.push(Math.round(topL+(botL-topL)*t));fR.push(Math.round(topR+(botR-topR)*t));}
+  // === SVG: Ayla's improved coordinates ===
+  var fretData=[
+    {y:560,l:110,r:790},{y:522,l:141,r:759},{y:486,l:170,r:730},
+    {y:452,l:198,r:702},{y:420,l:224,r:676},{y:390,l:249,r:651},
+    {y:362,l:272,r:628},{y:336,l:293,r:607},{y:312,l:312,r:588},
+    {y:290,l:330,r:570},{y:270,l:345,r:555}
+  ];
+  var sBotX=[178,287,396,504,613,722];
+  var sTopX=[366,400,433,467,500,534];
 
-  // Fret lines (9 lines between 10 spaces)
+  // Fret lines
   var fretLines='';
-  for(var fi=1;fi<10;fi++){
-    fretLines+='<line x1="'+fL[fi]+'" y1="'+fY[fi]+'" x2="'+fR[fi]+'" y2="'+fY[fi]+'"/>';
+  for(var i=0;i<fretData.length;i++){
+    fretLines+='<line class="neck-fret" x1="'+fretData[i].l+'" y1="'+fretData[i].y+'" x2="'+fretData[i].r+'" y2="'+fretData[i].y+'"/>';
   }
 
-  // Six strings
-  var sX=[365,389,413,437,461,485];
-  var bX=[170,280,370,460,570,680];
+  // Strings
   var strings='';
   for(var si=0;si<6;si++){
-    strings+='<line x1="'+sX[si]+'" y1="'+fY[0]+'" x2="'+bX[si]+'" y2="'+fY[10]+'"/>';
+    strings+='<line class="neck-string" x1="'+sBotX[si]+'" y1="560" x2="'+sTopX[si]+'" y2="270"/>';
   }
 
-  // Foundation steps (0-9)
+  // Steps
   var steps='';
   F.topics.forEach(function(tp,idx){
     var isDone=completed[tp.id];
     var isActive=idx===activeIdx;
-    var isLocked=idx>activeIdx&&!isDone;
     var isCS=tp.status==='coming-soon';
     var sc='';
     if(isDone) sc='is-complete';
     else if(isActive) sc='is-active';
-    else if(isLocked||isCS) sc='is-locked';
+    else sc='is-locked';
 
-    var y1=fY[idx],y2=fY[idx+1],lx1=fL[idx],rx1=fR[idx],lx2=fL[idx+1],rx2=fR[idx+1];
-    var cy=Math.round((y1+y2)/2);
-    var cx=Math.round((lx1+rx1+lx2+rx2)/4);
+    var d=fretData[idx], d2=fretData[idx+1];
+    var pts=d.l+','+d.y+' '+d.r+','+d.y+' '+d2.r+','+d2.y+' '+d2.l+','+d2.y;
+    var cy=Math.round((d.y+d2.y)/2);
+    var cx=Math.round((d.l+d.r+d2.l+d2.r)/4);
 
     var click='';
     if(!isCS) click="showFoundationTopic('"+tp.id+"')";
     var cur=isCS?'cursor:default':'cursor:pointer';
+    var numSize=Math.max(13,22-idx);
+    var labelSize=Math.max(7.5,12-idx*0.45);
 
     steps+='<g class="foundation-step '+sc+'" data-step="'+idx+'" data-topic-id="'+tp.id+'" '
       +(click?'onclick="'+click+'"':'')+' style="'+cur+'">'
-      +'<polygon points="'+lx1+','+y1+' '+rx1+','+y1+' '+rx2+','+y2+' '+lx2+','+y2+'"/>'
-      +'<text x="'+cx+'" y="'+(cy-6)+'" text-anchor="middle" font-size="18" font-family="Cinzel,serif" class="step-num">'+tp.num+'</text>'
-      +'<text x="'+cx+'" y="'+(cy+10)+'" text-anchor="middle" font-size="10" font-family="JetBrains Mono,monospace">'+tp.title.toUpperCase()+'</text>'
-      +(isCS?'<text x="'+cx+'" y="'+(cy+22)+'" text-anchor="middle" font-size="7" font-family="JetBrains Mono,monospace" fill="rgba(212,175,105,0.3)">COMING SOON</text>':'')
-      +(isDone?'<text x="'+(rx1-12)+'" y="'+(cy+4)+'" text-anchor="middle" font-size="14" fill="rgba(212,175,105,0.9)">✓</text>':'')
+      +'<polygon points="'+pts+'"/>'
+      +'<text class="step-num" x="'+cx+'" y="'+(cy-6)+'" text-anchor="middle" font-size="'+numSize+'">'+tp.num+'</text>'
+      +'<text x="'+cx+'" y="'+(cy+10)+'" text-anchor="middle" font-size="'+labelSize+'">'+tp.title.toUpperCase()+'</text>'
+      +(isDone?'<text x="'+(d.r-14)+'" y="'+(cy+4)+'" text-anchor="middle" font-size="12" fill="rgba(212,175,105,0.85)">&#10003;</text>':'')
       +'</g>';
   });
 
-  // Assemble SVG
+  var emberOp=allDone?1:0.42+pct*0.006;
+
   var svg='<svg class="foundation-neck-svg" viewBox="0 0 900 620" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Foundation neck path">'
     +'<defs>'
     +'<radialGradient id="neckGlow" cx="50%" cy="48%" r="62%">'
@@ -2395,61 +2406,57 @@ function showFoundation(){
     +'<stop offset="60%" stop-color="#d4af69" stop-opacity="0.06"/>'
     +'<stop offset="100%" stop-color="#0d0b08" stop-opacity="0"/>'
     +'</radialGradient>'
+    +'<linearGradient id="neckSurface" x1="0" y1="1" x2="0" y2="0">'
+    +'<stop offset="0%" stop-color="#17100a" stop-opacity="0.94"/>'
+    +'<stop offset="52%" stop-color="#120d08" stop-opacity="0.78"/>'
+    +'<stop offset="100%" stop-color="#0d0b08" stop-opacity="0.44"/>'
+    +'</linearGradient>'
     +'<linearGradient id="stringGold" x1="0" y1="0" x2="0" y2="1">'
     +'<stop offset="0%" stop-color="#ffe0a0" stop-opacity="0.9"/>'
     +'<stop offset="55%" stop-color="#d4af69" stop-opacity="0.42"/>'
     +'<stop offset="100%" stop-color="#d4af69" stop-opacity="0.12"/>'
     +'</linearGradient>'
-    +'<linearGradient id="neckSurface" x1="0" y1="0" x2="0" y2="1">'
-    +'<stop offset="0%" stop-color="#0d0b08" stop-opacity="0.3"/>'
-    +'<stop offset="40%" stop-color="#1a1510" stop-opacity="0.7"/>'
-    +'<stop offset="100%" stop-color="#0d0b08" stop-opacity="0.95"/>'
-    +'</linearGradient>'
     +'<filter id="goldGlow"><feGaussianBlur stdDeviation="4" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>'
-    +'<filter id="softGlow"><feGaussianBlur stdDeviation="2" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>'
+    +'<filter id="softShadow"><feDropShadow dx="0" dy="20" stdDeviation="22" flood-color="#000000" flood-opacity="0.7"/></filter>'
     +'</defs>'
     +'<rect width="900" height="620" fill="transparent"/>'
-    +'<ellipse cx="450" cy="390" rx="390" ry="250" fill="url(#neckGlow)"/>'
-    +'<path d="M380 86 C380 48 408 28 450 28 C492 28 520 48 520 86 L520 170 L380 170 Z" fill="rgba(13,11,8,0.72)" stroke="rgba(212,175,105,0.62)" stroke-width="1.7" filter="url(#goldGlow)"/>'
-    +'<text x="450" y="104" text-anchor="middle" fill="rgba(212,175,105,0.86)" font-size="18" font-family="Cinzel,serif" letter-spacing="0.24em">LEVEL 1</text>'
-    +'<text x="450" y="130" text-anchor="middle" fill="rgba(244,226,190,0.42)" font-size="9" font-family="JetBrains Mono,monospace" letter-spacing="0.12em">JOURNEY BEGINS</text>'
-    +'<polygon points="110,560 790,560 555,270 345,270" fill="url(#neckSurface)" stroke="rgba(212,175,105,0.34)" stroke-width="2"/>'
-    +'<g stroke="rgba(212,175,105,0.18)" stroke-width="1" pointer-events="none">'+fretLines+'</g>'
-    +'<g stroke="url(#stringGold)" stroke-width="1.7" pointer-events="none">'+strings+'</g>'
+    +'<ellipse class="neck-bg" cx="450" cy="390" rx="390" ry="250"/>'
+    +'<path class="journey-gate" d="M380 86 C380 48 408 28 450 28 C492 28 520 48 520 86 L520 170 L380 170 Z"/>'
+    +'<text class="journey-label" x="450" y="104" text-anchor="middle">LEVEL 1</text>'
+    +'<text class="journey-sub" x="450" y="130" text-anchor="middle">JOURNEY BEGINS</text>'
+    +'<polygon class="neck-outer" points="110,560 790,560 555,270 345,270"/>'
     +'<g id="foundation-steps">'+steps+'</g>'
-    +'<line x1="450" y1="'+fY[0]+'" x2="450" y2="170" stroke="rgba(212,175,105,0.15)" stroke-width="1" stroke-dasharray="4,4"/>'
+    +'<g>'+fretLines+'</g>'
+    +'<g>'+strings+'</g>'
+    +'<circle cx="450" cy="198" r="7" fill="#e8a020" opacity="'+emberOp+'" filter="url(#goldGlow)"/>'
     +'</svg>';
 
-  // Assemble page
-  var html='<div class="foundation-neck-wrap">'
-    +'<button class="back-btn" onclick="backToMap()">← Map</button>'
-    +'<div style="text-align:center;margin:8px 0 4px">'
+  var html='<div style="padding:12px;max-width:960px;margin:0 auto;display:flex;flex-direction:column;height:100%;box-sizing:border-box">'
+    +'<button class="back-btn" onclick="backToMap()">&#8592; Map</button>'
+    +'<div style="text-align:center;margin:4px 0 2px">'
     +'<div style="font-family:\'Cinzel\',serif;color:var(--gold);font-size:1.3rem;letter-spacing:3px">'+F.title+'</div>'
     +'<div style="font-family:JetBrains Mono;font-size:0.5rem;color:var(--amber);letter-spacing:0.1em;margin-top:2px">'+F.tag+'</div>'
-    +'<div style="font-size:0.7rem;color:var(--dim);margin-top:6px;line-height:1.5">'+F.subtitle+'</div>'
+    +'<div style="font-size:0.7rem;color:var(--dim);margin-top:4px;line-height:1.5">'+F.subtitle+'</div>'
     +'</div>'
-    +'<div style="display:flex;align-items:center;gap:8px;justify-content:center;margin:6px 0 4px">'
+    +'<div style="display:flex;align-items:center;gap:8px;justify-content:center;margin:4px 0">'
     +'<span style="font-family:JetBrains Mono;font-size:0.5rem;color:var(--amber)">'+doneCount+'/'+F.topics.length+'</span>'
     +'<div style="width:120px;height:3px;background:var(--surface);border-radius:2px;overflow:hidden">'
     +'<div style="width:'+pct+'%;height:100%;background:linear-gradient(90deg,var(--gold),var(--amber));border-radius:2px;transition:width 0.5s"></div>'
     +'</div>'
     +'<span style="font-family:JetBrains Mono;font-size:0.48rem;color:var(--dim)">'+pct+'%</span>'
     +'</div>'
-    +'<div style="position:relative;display:flex;justify-content:center;margin:4px 0 8px">'
-    +'<img src="images/character-full/Encouraging.png" style="width:80px;height:80px;object-fit:contain"/>'
-    +'<div style="position:absolute;left:calc(50% + 56px);top:4px;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:8px 12px;max-width:200px;z-index:5">'
-    +'<div style="position:absolute;left:-6px;top:16px;width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-right:6px solid var(--border)"></div>'
-    +'<div style="font-size:0.68rem;line-height:1.4;color:var(--text)">'+speechText+'</div>'
+    +'<div style="text-align:center;margin-bottom:4px">'
+    +'<div style="font-size:0.5rem;color:var(--amber);font-style:italic">'+F.questLine+'</div>'
+    +(allDone?'<div style="font-size:0.5rem;color:var(--gold);margin-top:2px">'+F.completionLine+'</div>':'')
     +'</div>'
+    +'<div class="foundation-neck-scene">'
+    +svg
+    +'<div class="foundation-guide-entrance"><img src="images/character-full/Encouraging.png"/></div>'
+    +'<div class="foundation-speech"><div style="font-size:0.68rem;line-height:1.4;color:var(--text)">'+speechText+'</div></div>'
     +'</div>'
-    +'<div style="text-align:center;margin-bottom:8px">'
+    +'<div style="text-align:center;margin-top:8px">'
     +'<button onclick="startLesson1()" style="background:linear-gradient(180deg,var(--gold),var(--amber));color:var(--bg);border:none;padding:8px 24px;border-radius:8px;font-family:\'Cinzel\',serif;font-size:0.8rem;font-weight:700;letter-spacing:1px;cursor:pointer;box-shadow:0 2px 12px rgba(212,175,105,0.25)">Start Lesson 1</button>'
     +'</div>'
-    +'<div style="text-align:center;margin-bottom:10px">'
-    +'<div style="font-size:0.5rem;color:var(--amber);font-style:italic">'+F.questLine+'</div>'
-    +(allDone?'<div style="font-size:0.5rem;color:var(--gold);margin-top:4px">'+F.completionLine+'</div>':'')
-    +'</div>'
-    +svg
     +'<div style="text-align:center;margin-top:8px">'
     +'<div style="font-size:0.5rem;color:var(--amber);line-height:1.4">'+F.guideLine+'</div>'
     +'</div>'
