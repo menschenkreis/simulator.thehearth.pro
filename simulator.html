@@ -134,10 +134,25 @@
 .doing-adj-btn{flex:1;padding:8px;border:1px solid var(--border);background:transparent;border-radius:6px;color:var(--dim);font-family:DM Sans,sans-serif;font-size:0.72rem;cursor:pointer;transition:all 0.15s;}
 .doing-adj-btn:hover{border-color:var(--gold);color:var(--gold);}
 
-/* === FOUNDATION GATE SVG === */
-.foundation-gate-wrap{position:relative;display:flex;flex-direction:column;align-items:center;flex:1;justify-content:center;}
-.foundation-gate-svg{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:100%;max-width:900px;height:auto;pointer-events:none;z-index:0;opacity:0.85;}
+/* === FOUNDATION GATE SVG + LAYOUT === */
+.foundation-gate-wrap{position:relative;display:flex;flex-direction:column;align-items:center;flex:1;justify-content:center;isolation:isolate;}
+.foundation-gate-svg{position:absolute;inset:40px 50%;transform:translateX(-50%);width:min(860px,96vw);max-height:680px;pointer-events:none;z-index:0;opacity:0.9;}
 .foundation-gate-wrap>*{position:relative;z-index:1;}
+@media(max-width:720px){.foundation-gate-svg{width:118vw;opacity:0.55;}}
+/* === PICK COLLECTION === */
+.foundation-picks-wrap{text-align:center;margin:12px 0 8px;padding:10px;background:rgba(26,23,20,0.5);border:1px solid rgba(212,175,105,0.12);border-radius:8px;}
+.foundation-picks-title{font-family:Cinzel,serif;color:var(--gold);font-size:0.72rem;letter-spacing:0.08em;margin-bottom:8px;}
+.foundation-picks-grid{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;}
+.hearth-pick{width:68px;text-align:center;opacity:0.35;transition:all 0.3s;}
+.hearth-pick.earned{opacity:1;}
+.hearth-pick .pick-shape{width:52px;height:62px;margin:0 auto 4px;background:radial-gradient(circle at 35% 28%,#ffe6a3,#d4af69 45%,#6d3f16 100%);border-radius:50% 50% 52% 52%;border:1px solid rgba(212,175,105,0.35);box-shadow:0 0 10px rgba(212,175,105,0.1);display:flex;align-items:center;justify-content:center;transition:all 0.3s;}
+.hearth-pick.earned .pick-shape{box-shadow:0 0 18px rgba(212,175,105,0.35);border-color:rgba(212,175,105,0.6);}
+.hearth-pick .pick-icon{font-size:1.2rem;}
+.hearth-pick .pick-label{font-family:JetBrains Mono,monospace;font-size:0.42rem;letter-spacing:0.06em;text-transform:uppercase;color:var(--gold);}
+.hearth-pick .pick-desc{font-size:0.38rem;color:var(--dim);line-height:1.3;}
+.hearth-pick.earned .pick-label{color:var(--gold);}
+.hearth-pick:not(.earned) .pick-shape{filter:grayscale(0.6) brightness(0.6);}
+
 
 .node-info{background:var(--panel) !important;border:2px solid var(--gold) !important;border-radius:12px !important;box-shadow:0 4px 16px rgba(255,140,66,0.15) !important;}
 [data-theme="sparks"] .node-info h4{color:var(--gold) !important;font-size:1.2rem !important;font-family:DM Sans,sans-serif !important;font-weight:700 !important;}
@@ -2336,7 +2351,7 @@ function showFoundation(){
       '</div>'+
     '</div>'+
     // Subtitle
-    '<div style="font-size:0.72rem;color:var(--dim);margin-bottom:4px;line-height:1.5">Before Level 1: learn how this world works.</div>'+
+    '<div style="font-size:0.72rem;color:var(--dim);margin-bottom:4px;line-height:1.5">"Tune the instrument. Enter the world."</div>'+
     // Progress bar
     '<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">'+
       '<span style="font-family:JetBrains Mono;font-size:0.55rem;color:var(--amber)">'+doneCount+'/'+F.topics.length+'</span>'+
@@ -2348,7 +2363,19 @@ function showFoundation(){
     // Start Lesson 1 button + quest line
     '<div style="text-align:center;margin-bottom:12px">'+
       '<button onclick="startLesson1()" style="background:linear-gradient(180deg,var(--gold),var(--amber));color:var(--bg);border:none;padding:10px 28px;border-radius:8px;font-family:Cinzel,serif;font-size:0.85rem;font-weight:700;letter-spacing:1px;cursor:pointer;box-shadow:0 2px 12px rgba(212,175,105,0.25)">Start Lesson 1</button>'+
-      '<div style="font-size:0.5rem;color:var(--amber);margin-top:6px;font-style:italic">Quest: Complete the threshold to unlock your first Journey path.</div>'+
+      '<div style="font-size:0.5rem;color:var(--amber);margin-top:4px;line-height:1.4">Before Level 1, we tune the learner. Each block sets one part of the instrument: body, ear, hands, words, map, sound, and first conversation.</div>'+
+      '<div style="font-size:0.5rem;color:var(--amber);margin-top:4px;font-style:italic">Quest: Complete the Tuning Gate to unlock your first Journey path.</div>'+
+      '<div style="font-size:0.48rem;color:var(--dim);margin-top:4px">Earn Hearth Picks as you complete milestones.</div>'+
+    '</div>'+
+    // Pick Collection
+    '<div class="foundation-picks-wrap">'+
+      '<div class="foundation-picks-title">Hearth Picks</div>'+
+      '<div class="foundation-picks-grid">'+
+        '<div class="hearth-pick'+(doneCount>=1?' earned':'')+'"><div class="pick-shape"><div class="pick-icon">&#x1F3B5;</div></div><div class="pick-label">Threshold</div><div class="pick-desc">Enter Foundation</div></div>'+
+        '<div class="hearth-pick'+(doneCount>=3?' earned':'')+'"><div class="pick-shape"><div class="pick-icon">&#x2728;</div></div><div class="pick-label">Clear Sound</div><div class="pick-desc">Make one clean note</div></div>'+
+        '<div class="hearth-pick'+(doneCount>=5?' earned':'')+'"><div class="pick-shape"><div class="pick-icon">&#x1F4D6;</div></div><div class="pick-label">Language</div><div class="pick-desc">Understand music</div></div>'+
+        '<div class="hearth-pick'+(pct>=100?' earned':'')+'"><div class="pick-shape"><div class="pick-icon">&#x1F525;</div></div><div class="pick-label">First Flame</div><div class="pick-desc">Complete Foundation</div></div>'+
+      '</div>'+
     '</div>'+
     // Character on top of pyramid, centered (with gate SVG backdrop)
     '<div class="foundation-gate-wrap">'+
@@ -2381,6 +2408,28 @@ function showFoundation(){
           '<line x1="549" y1="118" x2="565" y2="570"/>'+
           '<line x1="615" y1="122" x2="655" y2="570"/>'+
         '</g>'+
+        '<g class="foundation-tuning-pins" fill="#16120d" stroke="#d4af69" stroke-width="1.5" filter="url(#softGoldGlow)">'+
+          '<g transform="translate(285 118) rotate(-18)"><circle r="13" fill="#21170d"/><rect x="-29" y="-6" width="21" height="12" rx="5" fill="#21170d"/></g>'+
+          '<g transform="translate(351 114) rotate(-10)"><circle r="13" fill="#21170d"/><rect x="-29" y="-6" width="21" height="12" rx="5" fill="#21170d"/></g>'+
+          '<g transform="translate(417 111) rotate(-4)"><circle r="13" fill="#21170d"/><rect x="-29" y="-6" width="21" height="12" rx="5" fill="#21170d"/></g>'+
+          '<g transform="translate(483 111) rotate(4)"><circle r="13" fill="#21170d"/><rect x="8" y="-6" width="21" height="12" rx="5" fill="#21170d"/></g>'+
+          '<g transform="translate(549 114) rotate(10)"><circle r="13" fill="#21170d"/><rect x="8" y="-6" width="21" height="12" rx="5" fill="#21170d"/></g>'+
+          '<g transform="translate(615 118) rotate(18)"><circle r="13" fill="#21170d"/><rect x="8" y="-6" width="21" height="12" rx="5" fill="#21170d"/></g>'+
+        '</g>'+
+        '<g class="foundation-terraces" fill="none" stroke="#d4af69" stroke-opacity="0.24" stroke-width="1.2">'+
+          '<polygon points="165,550 735,550 696,502 204,502"/>'+
+          '<polygon points="205,495 695,495 660,452 240,452"/>'+
+          '<polygon points="245,445 655,445 625,407 275,407"/>'+
+          '<polygon points="285,400 615,400 590,366 310,366"/>'+
+          '<polygon points="325,360 575,360 555,330 345,330"/>'+
+          '<polygon points="365,324 535,324 520,300 380,300"/>'+
+          '<polygon points="405,294 495,294 482,274 418,274"/>'+
+        '</g>'+
+        '<g class="foundation-flame" transform="translate(450 248)" filter="url(#wideGlow)">'+
+          '<path d="M0 -32 C18 -10 21 8 9 27 C3 37 -8 39 -16 29 C-29 12 -11 -7 0 -32Z" fill="#e8a020" fill-opacity="0.88"/>'+
+          '<path d="M2 -12 C12 4 10 18 1 27 C-6 20 -8 9 2 -12Z" fill="#ffe2a3" fill-opacity="0.85"/>'+
+        '</g>'+
+        '<path d="M150 570 C285 596 615 596 750 570" fill="none" stroke="#d4af69" stroke-opacity="0.18" stroke-width="2"/>'+
       '</svg>'+
       // Character + speech bubble row
       '<div style="position:relative;display:flex;justify-content:center;margin-bottom:2px">'+
