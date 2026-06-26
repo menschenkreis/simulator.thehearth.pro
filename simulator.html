@@ -221,221 +221,38 @@
     radial-gradient(circle at 50% 88%,rgba(232,160,32,0.08),transparent 34%);
 }
 
-.foundation-neck-svg{
-  width:min(900px,92vw);
-  height:auto;
-  display:block;
-  filter:drop-shadow(0 24px 46px rgba(0,0,0,0.62));
-}
 
-.foundation-neck-svg text{
-  pointer-events:none;
-  user-select:none;
-}
 
-.foundation-scene-glow{
-  fill:url(#foundationSceneGlow);
-}
 
-.foundation-level-gate{
-  fill:rgba(13,11,8,0.68);
-  stroke:rgba(212,175,105,0.42);
-  stroke-width:2;
-}
 
-.foundation-level-gate.is-open{
-  fill:rgba(51,35,14,0.55);
-  stroke:rgba(255,224,160,0.92);
-  filter:url(#foundationGoldGlow);
-}
 
-.foundation-gate-title{
-  fill:rgba(255,224,160,0.96);
-  font-family:Cinzel,serif;
-  font-size:22px;
-  letter-spacing:0.18em;
-}
 
-.foundation-gate-subtitle{
-  fill:rgba(212,175,105,0.68);
-  font-family:JetBrains Mono,var(--mono),monospace;
-  font-size:10px;
-  letter-spacing:0.22em;
-}
 
-.foundation-neck-surface{
-  fill:url(#foundationNeckSurface);
-  stroke:rgba(212,175,105,0.34);
-  stroke-width:2;
-}
 
-.foundation-neck-fret{
-  stroke:rgba(255,224,160,0.30);
-  stroke-width:1.4;
-}
 
-.foundation-neck-string{
-  stroke:url(#foundationStringGold);
-  stroke-width:1.8;
-}
 
-.foundation-neck-step polygon{
-  fill:rgba(212,175,105,0.025);
-  stroke:rgba(212,175,105,0.10);
-  stroke-width:1;
-  transition:fill 0.18s ease,stroke 0.18s ease,opacity 0.18s ease;
-}
 
-.foundation-neck-step text{
-  font-family:JetBrains Mono,var(--mono),monospace;
-  fill:rgba(255,224,160,0.42);
-  letter-spacing:0.08em;
-}
 
-.foundation-step-number{
-  font-size:15px;
-  font-weight:700;
-}
 
-.foundation-step-title{
-  font-size:8px;
-  text-transform:uppercase;
-}
 
-.foundation-step-state{
-  font-size:7px;
-  fill:rgba(232,160,32,0.88) !important;
-}
 
-.foundation-neck-step.is-active polygon{
-  fill:rgba(232,160,32,0.20);
-  stroke:rgba(255,224,160,0.82);
-  stroke-width:1.8;
-  filter:url(#foundationGoldGlow);
-}
 
-.foundation-neck-step.is-active text,
-.foundation-neck-step.is-complete text{
-  fill:rgba(255,238,197,0.94);
-}
 
-.foundation-neck-step.is-complete polygon{
-  fill:rgba(212,175,105,0.12);
-  stroke:rgba(212,175,105,0.52);
-}
 
-.foundation-neck-step.is-locked{
-  opacity:0.50;
-}
 
-.foundation-neck-step.is-coming-soon{
-  opacity:0.32;
-  cursor:default !important;
-}
 
-.foundation-neck-step:not(.is-coming-soon){
-  cursor:pointer;
-}
 
-.foundation-neck-step:not(.is-coming-soon):hover polygon{
-  fill:rgba(212,175,105,0.16);
-  stroke:rgba(255,224,160,0.75);
-}
 
-.foundation-gate-ember{
-  fill:#e8a020;
-  opacity:0.52;
-  filter:url(#foundationGoldGlow);
-}
 
-.foundation-gate-ember.is-open{
-  fill:#ffe0a0;
-  opacity:1;
-}
 
-.foundation-guide-card{
-  position:absolute;
-  left:50%;
-  bottom:16px;
-  transform:translateX(-50%);
-  display:grid;
-  grid-template-columns:94px minmax(220px,340px);
-  gap:14px;
-  align-items:end;
-  z-index:5;
-}
 
-.foundation-guide-card img{
-  width:94px;
-  height:94px;
-  object-fit:contain;
-  filter:drop-shadow(0 12px 20px rgba(0,0,0,0.55));
-}
 
-.foundation-guide-card div{
-  background:rgba(25,20,15,0.94);
-  border:1px solid rgba(212,175,105,0.22);
-  border-radius:10px;
-  padding:12px 14px;
-  box-shadow:0 16px 34px rgba(0,0,0,0.36);
-}
 
-.foundation-guide-card p{
-  margin:0 0 10px;
-  color:var(--text);
-  font-size:0.84rem;
-  line-height:1.42;
-}
 
-.foundation-guide-card button{
-  width:100%;
-  border:1px solid rgba(212,175,105,0.32);
-  background:linear-gradient(180deg,var(--gold),var(--amber));
-  color:var(--bg);
-  border-radius:8px;
-  padding:9px 12px;
-  font-family:Cinzel,serif;
-  font-weight:700;
-  letter-spacing:0.06em;
-  cursor:pointer;
-}
 
-.foundation-current-card{
-  position:absolute;
-  right:18px;
-  top:72px;
-  width:min(260px,24vw);
-  background:rgba(19,15,11,0.72);
-  border:1px solid rgba(212,175,105,0.18);
-  border-radius:10px;
-  padding:12px 14px;
-  z-index:4;
-}
 
-.foundation-current-card span{
-  display:block;
-  margin-bottom:6px;
-  font-family:JetBrains Mono,var(--mono),monospace;
-  color:var(--amber);
-  font-size:0.58rem;
-  letter-spacing:0.18em;
-  text-transform:uppercase;
-}
 
-.foundation-current-card strong{
-  display:block;
-  color:var(--gold);
-  font-family:Cinzel,serif;
-  font-size:0.98rem;
-  line-height:1.2;
-}
 
-.foundation-current-card p{
-  margin:8px 0 0;
-  color:var(--dim);
-  font-size:0.78rem;
-  line-height:1.38;
-}
 
 .foundation-footer{
   margin:8px auto 0;
@@ -446,250 +263,257 @@
   letter-spacing:0.02em;
 }
 
-/* === FOUNDATION TOPIC VIEW === */
-.foundation-topic-page{
+/* === FOUNDATION: IMAGE + HOTSPOT OVERLAY === */
+.foundation-shell{
   min-height:calc(100vh - 54px);
   box-sizing:border-box;
-  padding:32px 18px 46px;
+  padding:14px 18px 20px;
+  color:var(--text);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
 }
 
-.foundation-topic-wrap{
-  width:min(980px,100%);
-  margin:0 auto;
+.foundation-back{
+  position:fixed;
+  left:18px;
+  top:62px;
+  z-index:20;
 }
 
-.foundation-topic-top{
+.foundation-header{
+  text-align:center;
+  margin:0 auto 8px;
+  max-width:520px;
+}
+
+.foundation-kicker{
+  font-family:JetBrains Mono,var(--mono),monospace;
+  color:var(--amber);
+  font-size:0.6rem;
+  letter-spacing:0.16em;
+  text-transform:uppercase;
+}
+
+.foundation-header h1{
+  margin:2px 0 4px;
+  font-family:Cinzel,serif;
+  color:var(--gold);
+  font-size:clamp(1.5rem,2.8vw,2.2rem);
+  letter-spacing:0.12em;
+  font-weight:600;
+}
+
+.foundation-header p{
+  margin:0 0 8px;
+  color:var(--dim);
+  font-size:0.82rem;
+}
+
+.foundation-progress-line{
   display:flex;
   align-items:center;
-  justify-content:space-between;
-  gap:14px;
-  margin-bottom:22px;
-}
-
-.foundation-topic-back{
-  color:var(--dim);
-  cursor:pointer;
+  justify-content:center;
+  gap:10px;
   font-family:JetBrains Mono,var(--mono),monospace;
-  font-size:0.72rem;
-  letter-spacing:0.08em;
+  color:var(--amber);
+  font-size:0.58rem;
 }
 
-.foundation-topic-read{
-  background:rgba(212,175,105,0.08);
-  color:var(--gold);
-  border:1px solid rgba(212,175,105,0.24);
-  padding:8px 14px;
-  border-radius:8px;
-  cursor:pointer;
-  font:inherit;
+.foundation-progress-line div{
+  width:120px;
+  height:3px;
+  background:rgba(212,175,105,0.13);
+  border-radius:999px;
+  overflow:hidden;
 }
 
-.foundation-topic-grid{
-  display:grid;
-  grid-template-columns:210px minmax(0,1fr);
-  gap:22px;
-  align-items:start;
-}
-
-.foundation-topic-side{
-  position:sticky;
-  top:78px;
-}
-
-.foundation-topic-side img{
-  width:128px;
+.foundation-progress-line i{
   display:block;
-  margin:0 auto 12px;
-  filter:drop-shadow(0 16px 28px rgba(0,0,0,0.45));
+  height:100%;
+  background:linear-gradient(90deg,var(--gold),var(--amber));
+  border-radius:999px;
+  transition:width 0.45s ease;
 }
 
-.foundation-topic-meta{
-  background:rgba(25,20,15,0.88);
-  border:1px solid rgba(212,175,105,0.18);
+/* === SCENE: image + SVG overlay === */
+.foundation-scene{
+  position:relative;
+  width:min(900px,96vw);
+  aspect-ratio:900/620;
+  margin:0 auto;
+  border-radius:12px;
+  overflow:hidden;
+  background:
+    radial-gradient(ellipse at 50% 40%,rgba(212,175,105,0.08),transparent 55%),
+    linear-gradient(180deg,#0e0b07 0%,#17100a 40%,#0d0b08 100%);
+  box-shadow:0 20px 60px rgba(0,0,0,0.6);
+}
+
+.foundation-bg{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  z-index:1;
+  pointer-events:none;
+}
+
+.foundation-hotspots{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  z-index:2;
+}
+
+/* === HOTSPOT POLYGONS === */
+.foundation-zones polygon{
+  fill:transparent;
+  stroke:transparent;
+  stroke-width:1;
+  transition:fill 0.2s ease, stroke 0.2s ease, opacity 0.2s ease;
+}
+
+.hs-active{
+  fill:rgba(232,160,32,0.18);
+  stroke:rgba(255,214,138,0.75);
+  stroke-width:2;
+  filter:drop-shadow(0 0 12px rgba(232,160,32,0.4));
+}
+
+.hs-active:hover{
+  fill:rgba(232,160,32,0.28);
+  stroke:rgba(255,214,138,0.95);
+}
+
+.hs-done{
+  fill:rgba(212,175,105,0.10);
+  stroke:rgba(212,175,105,0.40);
+  stroke-width:1.5;
+}
+
+.hs-done:hover{
+  fill:rgba(212,175,105,0.18);
+  stroke:rgba(212,175,105,0.65);
+}
+
+.hs-locked{
+  fill:transparent;
+  stroke:transparent;
+  opacity:0.35;
+}
+
+.hs-soon{
+  opacity:0.18;
+  cursor:default !important;
+}
+
+/* === GUIDE CARD === */
+.foundation-guide{
+  position:absolute;
+  bottom:14px;
+  left:50%;
+  transform:translateX(-50%);
+  display:flex;
+  align-items:flex-end;
+  gap:12px;
+  z-index:5;
+}
+
+.foundation-guide img{
+  width:80px;
+  height:80px;
+  object-fit:contain;
+  filter:drop-shadow(0 8px 16px rgba(0,0,0,0.5));
+}
+
+.foundation-guide-bubble{
+  background:rgba(18,14,10,0.92);
+  border:1px solid rgba(212,175,105,0.20);
   border-radius:10px;
-  padding:14px;
+  padding:10px 14px;
+  max-width:240px;
+  box-shadow:0 12px 30px rgba(0,0,0,0.4);
 }
 
-.foundation-topic-meta span{
-  display:block;
+.foundation-guide-bubble p{
+  margin:0 0 8px;
+  color:var(--text);
+  font-size:0.78rem;
+  line-height:1.4;
+}
+
+.foundation-guide-bubble button{
+  width:100%;
+  border:1px solid rgba(212,175,105,0.30);
+  background:linear-gradient(180deg,var(--gold),var(--amber));
+  color:var(--bg);
+  border-radius:8px;
+  padding:8px 12px;
+  font-family:Cinzel,serif;
+  font-weight:700;
+  font-size:0.78rem;
+  letter-spacing:0.04em;
+  cursor:pointer;
+}
+
+.foundation-guide-bubble button:hover{
+  filter:brightness(1.1);
+}
+
+.foundation-footer{
+  margin-top:10px;
+  text-align:center;
   color:var(--amber);
   font-family:JetBrains Mono,var(--mono),monospace;
-  font-size:0.62rem;
-  letter-spacing:0.16em;
-  margin-bottom:8px;
+  font-size:0.58rem;
+  letter-spacing:0.02em;
 }
 
-.foundation-topic-meta h2{
-  margin:0;
-  color:var(--gold);
-  font-family:Cinzel,serif;
-  font-size:1.2rem;
-  line-height:1.14;
-}
-
-.foundation-topic-meta p{
-  margin:8px 0 0;
-  color:var(--dim);
-  font-size:0.78rem;
-  line-height:1.42;
-}
-
-.foundation-step-tabs{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:8px;
-  margin-bottom:12px;
-}
-
-.foundation-step-tab{
-  border:1px solid rgba(212,175,105,0.16);
-  background:rgba(212,175,105,0.055);
-  color:var(--dim);
-  border-radius:8px;
-  padding:9px 7px;
-  text-align:center;
-  font-family:JetBrains Mono,var(--mono),monospace;
-  font-size:0.64rem;
-}
-
-.foundation-step-tab.is-on{
-  color:var(--bg);
-  background:var(--accent,var(--gold));
-  border-color:transparent;
-}
-
-.foundation-topic-card{
-  background:rgba(25,20,15,0.92);
-  border:1px solid rgba(212,175,105,0.18);
-  border-radius:12px;
-  padding:24px;
-  box-shadow:0 20px 50px rgba(0,0,0,0.28);
-}
-
-.foundation-topic-card h3{
-  margin:0 0 16px;
-  color:var(--accent,var(--gold));
-  font-size:1.35rem;
-  line-height:1.2;
-}
-
-.foundation-topic-card p{
-  color:var(--text);
-  font-size:1rem;
-  line-height:1.65;
-}
-
-.foundation-topic-card strong{
-  color:#f2d6a1;
-}
-
-.foundation-topic-actions{
-  display:flex;
-  gap:10px;
-  margin-top:20px;
-}
-
-.foundation-topic-actions button{
-  flex:1;
-  border-radius:9px;
-  padding:12px 14px;
-  font-family:DM Sans,sans-serif;
-  font-weight:700;
-  cursor:pointer;
-}
-
-@media(max-width:860px){
-  .foundation-stage{
-    min-height:620px;
-  }
-
-  .foundation-current-card{
-    position:relative;
-    top:auto;
-    right:auto;
-    width:auto;
-    max-width:420px;
-    margin:-18px auto 0;
-  }
-
-  .foundation-guide-card{
-    grid-template-columns:72px minmax(0,1fr);
-    width:min(430px,92vw);
-    bottom:10px;
-  }
-
-  .foundation-guide-card img{
-    width:72px;
-    height:72px;
-  }
-
-  .foundation-topic-grid{
-    grid-template-columns:1fr;
-  }
-
-  .foundation-topic-side{
+/* === RESPONSIVE === */
+@media(max-width:700px){
+  .foundation-back{
     position:static;
-    display:grid;
-    grid-template-columns:76px 1fr;
-    align-items:center;
-    gap:12px;
+    margin-bottom:4px;
   }
 
-  .foundation-topic-side img{
-    width:76px;
-    margin:0;
-  }
-}
-
-@media(max-width:620px){
-  .foundation-shell{
-    padding:12px 10px 22px;
+  .foundation-scene{
+    border-radius:8px;
   }
 
-  .foundation-map-btn{
-    position:static;
-    margin-bottom:6px;
-  }
-
-  .foundation-header h1{
-    font-size:1.55rem;
-  }
-
-  .foundation-stage{
-    min-height:560px;
-  }
-
-  .foundation-neck-svg{
-    width:112vw;
-    transform:translateY(-10px);
-  }
-
-  .foundation-guide-card{
-    grid-template-columns:1fr;
-    text-align:center;
-  }
-
-  .foundation-guide-card img{
-    display:none;
-  }
-
-  .foundation-step-title{
-    display:none;
-  }
-
-  .foundation-step-tabs{
-    grid-template-columns:1fr 1fr;
-  }
-
-  .foundation-topic-card{
-    padding:18px;
-  }
-
-  .foundation-topic-actions{
+  .foundation-guide{
     flex-direction:column;
+    align-items:center;
+    bottom:8px;
+    gap:6px;
+  }
+
+  .foundation-guide img{
+    width:56px;
+    height:56px;
+  }
+
+  .foundation-guide-bubble{
+    max-width:200px;
+    padding:8px 10px;
   }
 }
 
+@media(max-width:480px){
+  .foundation-header h1{
+    font-size:1.3rem;
+  }
+
+  .foundation-scene{
+    border-radius:6px;
+  }
+
+  .foundation-guide-bubble p{
+    font-size:0.7rem;
+  }
+}
 
 .node-info{background:var(--panel) !important;border:2px solid var(--gold) !important;border-radius:12px !important;box-shadow:0 4px 16px rgba(255,140,66,0.15) !important;}
 [data-theme="sparks"] .node-info h4{color:var(--gold) !important;font-size:1.2rem !important;font-family:DM Sans,sans-serif !important;font-weight:700 !important;}
@@ -2850,7 +2674,7 @@ function startLesson1(){
 
 
 function showFoundation(){
-  document.querySelectorAll('.pnl').forEach(function(p){p.classList.remove('on');});
+  document.querySelectorAll('.pnl').forEach(function(p){ p.classList.remove('on'); });
   document.getElementById('p-foundation').classList.add('on');
 
   var F = window.FOUNDATION;
@@ -2869,123 +2693,74 @@ function showFoundation(){
     ? (F.completionLine || 'The gate is open. Journey Level 1 begins.')
     : (activeIdx === 0
       ? 'This is the doorway before Level 1. Walk the first neck one fret at a time.'
-      : 'Next fret: ' + activeTopic.title + '. Keep the path simple. One clear step, then the next.');
+      : 'Next fret: ' + activeTopic.title + '. Keep the path simple.');
 
-  function stateFor(topic, idx){
-    if(completed[topic.id]) return 'is-complete';
-    if(idx === activeIdx) return 'is-active';
-    return 'is-locked';
-  }
-
-  function safeText(value){
-    return String(value || '').replace(/[&<>"']/g, function(ch){
+  function esc(v){
+    return String(v || '').replace(/[&<>"']/g, function(ch){
       return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[ch];
     });
   }
 
+  function stateClass(topic, idx){
+    if(completed[topic.id]) return 'hs-done';
+    if(idx === activeIdx) return 'hs-active';
+    return 'hs-locked';
+  }
+
+  // Fret hotspot coordinates (matching the neck path perspective)
   var yLines = [540,500,462,426,392,360,330,302,276,252,230];
   var leftEdge = [128,155,181,206,230,253,275,296,315,333,350];
   var rightEdge = [772,745,719,694,670,647,625,604,585,567,550];
-  var stringBottom = [166,280,394,506,620,734];
-  var stringTop = [372,403,434,466,497,528];
 
-  var frets = yLines.map(function(y, i){
-    return '<line class="foundation-neck-fret" x1="' + leftEdge[i] + '" y1="' + y + '" x2="' + rightEdge[i] + '" y2="' + y + '"/>';
-  }).join('');
+  // Build hotspot polygons
+  var hotspots = F.topics.map(function(topic, idx){
+    var y1 = yLines[idx], y2 = yLines[idx + 1];
+    var x1 = leftEdge[idx], x2 = rightEdge[idx];
+    var x3 = rightEdge[idx + 1], x4 = leftEdge[idx + 1];
+    var cls = stateClass(topic, idx);
+    var isCS = topic.status === 'coming-soon';
+    if(isCS) cls += ' hs-soon';
+    var click = isCS ? '' : ' onclick="showFoundationTopic(\'' + topic.id + '\')"';
+    var cursor = isCS ? '' : ' style="cursor:pointer"';
 
-  var strings = stringBottom.map(function(x, i){
-    return '<line class="foundation-neck-string" x1="' + x + '" y1="540" x2="' + stringTop[i] + '" y2="230"/>';
-  }).join('');
+    return '<polygon class="' + cls + '" points="' + x1+','+y1+' '+x2+','+y1+' '+x3+','+y2+' '+x4+','+y2 + '"' + click + cursor + '><title>' + esc(topic.title) + '</title></polygon>';
+  }).join('\n      ');
 
-  var steps = F.topics.map(function(topic, idx){
-    var y1 = yLines[idx];
-    var y2 = yLines[idx + 1];
-    var x1 = leftEdge[idx];
-    var x2 = rightEdge[idx];
-    var x3 = rightEdge[idx + 1];
-    var x4 = leftEdge[idx + 1];
-    var cx = Math.round((x1 + x2 + x3 + x4) / 4);
-    var cy = Math.round((y1 + y2) / 2);
-    var state = stateFor(topic, idx);
-    var isComingSoon = topic.status === 'coming-soon';
-    var click = isComingSoon ? '' : ' onclick="showFoundationTopic(\'' + topic.id + '\')"';
-    var title = safeText(topic.title);
-    var micro = safeText(topic.micro || topic.subtitle || '');
-    var label = idx === activeIdx && !completed[topic.id] ? 'NEXT' : (completed[topic.id] ? 'DONE' : '');
-
-    return '<g class="foundation-neck-step ' + state + (isComingSoon ? ' is-coming-soon' : '') + '" data-topic-id="' + topic.id + '"' + click + ' tabindex="0" role="button" aria-label="' + title + '">'
-      + '<polygon points="' + x1 + ',' + y1 + ' ' + x2 + ',' + y1 + ' ' + x3 + ',' + y2 + ' ' + x4 + ',' + y2 + '"/>'
-      + '<text class="foundation-step-number" x="' + cx + '" y="' + (cy - 5) + '" text-anchor="middle">' + topic.num + '</text>'
-      + '<text class="foundation-step-title" x="' + cx + '" y="' + (cy + 10) + '" text-anchor="middle">' + title + '</text>'
-      + (label ? '<text class="foundation-step-state" x="' + (x2 - 34) + '" y="' + (cy + 4) + '" text-anchor="middle">' + label + '</text>' : '')
-      + '<title>' + title + ' — ' + micro + '</title>'
-      + '</g>';
-  }).join('');
-
-  var gateOpen = allDone ? ' is-open' : '';
-  var activeTitle = safeText(activeTopic ? activeTopic.title : 'Foundation');
-  var activeMicro = safeText(activeTopic ? (activeTopic.micro || activeTopic.subtitle || '') : '');
-
-  var svg = '<svg class="foundation-neck-svg" viewBox="0 0 900 620" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Foundation neck path">'
-    + '<defs>'
-    + '<radialGradient id="foundationSceneGlow" cx="50%" cy="43%" r="62%">'
-    + '<stop offset="0%" stop-color="#d4af69" stop-opacity="0.16"/>'
-    + '<stop offset="48%" stop-color="#d4af69" stop-opacity="0.055"/>'
-    + '<stop offset="100%" stop-color="#0d0b08" stop-opacity="0"/>'
-    + '</radialGradient>'
-    + '<linearGradient id="foundationNeckSurface" x1="0" y1="1" x2="0" y2="0">'
-    + '<stop offset="0%" stop-color="#2a170d" stop-opacity="0.82"/>'
-    + '<stop offset="52%" stop-color="#1b120c" stop-opacity="0.64"/>'
-    + '<stop offset="100%" stop-color="#120d08" stop-opacity="0.30"/>'
-    + '</linearGradient>'
-    + '<linearGradient id="foundationStringGold" x1="0" y1="1" x2="0" y2="0">'
-    + '<stop offset="0%" stop-color="#7d6130" stop-opacity="0.42"/>'
-    + '<stop offset="55%" stop-color="#d4af69" stop-opacity="0.70"/>'
-    + '<stop offset="100%" stop-color="#fff0bb" stop-opacity="0.95"/>'
-    + '</linearGradient>'
-    + '<filter id="foundationGoldGlow"><feGaussianBlur stdDeviation="4" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>'
-    + '</defs>'
-    + '<rect width="900" height="620" fill="transparent"/>'
-    + '<ellipse class="foundation-scene-glow" cx="450" cy="382" rx="390" ry="260"/>'
-    + '<path class="foundation-level-gate' + gateOpen + '" d="M382 86 C382 46 412 24 450 24 C488 24 518 46 518 86 L518 166 L382 166 Z"/>'
-    + '<text class="foundation-gate-title" x="450" y="96" text-anchor="middle">LEVEL 1</text>'
-    + '<text class="foundation-gate-subtitle" x="450" y="122" text-anchor="middle">JOURNEY</text>'
-    + '<polygon class="foundation-neck-surface" points="128,540 772,540 550,230 350,230"/>'
-    + '<g class="foundation-neck-steps">' + steps + '</g>'
-    + '<g class="foundation-neck-lines">' + frets + strings + '</g>'
-    + '<circle class="foundation-gate-ember' + gateOpen + '" cx="450" cy="190" r="8"/>'
+  // SVG overlay
+  var svg = '<svg class="foundation-hotspots" viewBox="0 0 900 620" xmlns="http://www.w3.org/2000/svg">'
+    + '<g class="foundation-zones">'
+    + hotspots
+    + '</g>'
     + '</svg>';
 
+  // Assemble
   el.innerHTML = '<div class="foundation-shell">'
-    + '<button class="back-btn foundation-map-btn" onclick="backToMap()">&#8592; Map</button>'
+    + '<button class="back-btn foundation-back" onclick="backToMap()">&#8592; Map</button>'
     + '<header class="foundation-header">'
-    + '<div class="foundation-kicker">' + safeText(F.tag) + '</div>'
-    + '<h1>' + safeText(F.title) + '</h1>'
-    + '<p>' + safeText(F.subtitle) + '</p>'
+    + '<div class="foundation-kicker">' + esc(F.tag) + '</div>'
+    + '<h1>' + esc(F.title) + '</h1>'
+    + '<p>' + esc(F.subtitle) + '</p>'
     + '<div class="foundation-progress-line">'
     + '<span>' + doneCount + '/' + F.topics.length + '</span>'
     + '<div><i style="width:' + pct + '%"></i></div>'
     + '<span>' + pct + '%</span>'
     + '</div>'
     + '</header>'
-    + '<main class="foundation-stage">'
+    + '<div class="foundation-scene">'
+    + '<img class="foundation-bg" src="images/foundation-neck-threshold.png" alt="" onerror="this.style.display=\'none\'"/>'
     + svg
-    + '<section class="foundation-guide-card" aria-label="Foundation guide">'
-    + '<img src="images/character-full/Encouraging.png" alt="Guide character"/>'
-    + '<div>'
-    + '<p>' + safeText(speechText) + '</p>'
+    + '<div class="foundation-guide">'
+    + '<img src="images/character-full/Encouraging.png" alt="Guide"/>'
+    + '<div class="foundation-guide-bubble">'
+    + '<p>' + esc(speechText) + '</p>'
     + '<button onclick="startLesson1()">' + (allDone ? 'Review Foundation' : 'Start Current Fret') + '</button>'
     + '</div>'
-    + '</section>'
-    + '<aside class="foundation-current-card">'
-    + '<span>Current Fret</span>'
-    + '<strong>' + safeText(activeTopic ? activeTopic.num : '') + ' · ' + activeTitle + '</strong>'
-    + '<p>' + activeMicro + '</p>'
-    + '</aside>'
-    + '</main>'
-    + '<footer class="foundation-footer">' + safeText(F.questLine) + '</footer>'
+    + '</div>'
+    + '</div>'
+    + '<footer class="foundation-footer">' + esc(F.questLine) + '</footer>'
     + '</div>';
 }
+
 
 
 // ═══ REUSABLE RAINBOW BLOCKS HELPER ═══
