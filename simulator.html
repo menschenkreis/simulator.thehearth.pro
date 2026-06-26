@@ -135,16 +135,560 @@
 .doing-adj-btn:hover{border-color:var(--gold);color:var(--gold);}
 
 
-/* === FOUNDATION NECK PATH === */
-.foundation-neck-scene{position:relative;min-height:70vh;display:flex;align-items:center;justify-content:center;overflow:hidden;background:radial-gradient(circle at 50% 22%,rgba(212,175,105,0.12),transparent 32%),radial-gradient(circle at 50% 78%,rgba(120,65,20,0.10),transparent 42%);}
-.foundation-neck-svg{width:min(920px,96vw);height:auto;display:block;margin:0 auto;filter:drop-shadow(0 30px 60px rgba(0,0,0,0.65));}
-.foundation-neck-svg text{pointer-events:none;}
-.foundation-guide-entrance{position:absolute;bottom:5%;left:50%;transform:translateX(-50%);z-index:4;}
-.foundation-guide-entrance img{width:100px;height:100px;object-fit:contain;}
-.foundation-speech{position:absolute;bottom:12%;left:50%;transform:translateX(-50%);background:var(--card);border:1px solid var(--border);border-radius:10px;padding:8px 14px;max-width:220px;z-index:5;text-align:center;}
-.foundation-speech::after{content:"";position:absolute;top:-6px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-bottom:6px solid var(--border);}
-@media(max-width:720px){.foundation-neck-svg{width:100vw;}.foundation-guide-entrance img{width:70px;height:70px;}.foundation-speech{max-width:180px;padding:6px 10px;bottom:14%;}}
 
+/* === FOUNDATION: FIRST NECK PATH === */
+.foundation-shell{
+  min-height:calc(100vh - 54px);
+  box-sizing:border-box;
+  padding:14px 18px 26px;
+  color:var(--text);
+}
+
+.foundation-map-btn{
+  position:absolute;
+  left:22px;
+  top:16px;
+  z-index:10;
+}
+
+.foundation-header{
+  text-align:center;
+  margin:8px auto 10px;
+  max-width:620px;
+}
+
+.foundation-kicker{
+  font-family:JetBrains Mono,var(--mono),monospace;
+  color:var(--amber);
+  font-size:0.62rem;
+  letter-spacing:0.16em;
+  text-transform:uppercase;
+  margin-bottom:4px;
+}
+
+.foundation-header h1{
+  margin:0;
+  font-family:Cinzel,serif;
+  color:var(--gold);
+  font-size:clamp(1.7rem,3vw,2.45rem);
+  letter-spacing:0.12em;
+  font-weight:600;
+}
+
+.foundation-header p{
+  margin:6px 0 10px;
+  color:var(--dim);
+  font-size:0.86rem;
+}
+
+.foundation-progress-line{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  font-family:JetBrains Mono,var(--mono),monospace;
+  color:var(--amber);
+  font-size:0.62rem;
+}
+
+.foundation-progress-line div{
+  width:150px;
+  height:4px;
+  background:rgba(212,175,105,0.13);
+  border-radius:999px;
+  overflow:hidden;
+}
+
+.foundation-progress-line i{
+  display:block;
+  height:100%;
+  background:linear-gradient(90deg,var(--gold),var(--amber));
+  border-radius:999px;
+  transition:width 0.45s ease;
+}
+
+.foundation-stage{
+  position:relative;
+  width:min(1040px,100%);
+  margin:0 auto;
+  min-height:620px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+  background:
+    radial-gradient(circle at 50% 42%,rgba(212,175,105,0.10),transparent 36%),
+    radial-gradient(circle at 50% 88%,rgba(232,160,32,0.08),transparent 34%);
+}
+
+.foundation-neck-svg{
+  width:min(900px,92vw);
+  height:auto;
+  display:block;
+  filter:drop-shadow(0 24px 46px rgba(0,0,0,0.62));
+}
+
+.foundation-neck-svg text{
+  pointer-events:none;
+  user-select:none;
+}
+
+.foundation-scene-glow{
+  fill:url(#foundationSceneGlow);
+}
+
+.foundation-level-gate{
+  fill:rgba(13,11,8,0.68);
+  stroke:rgba(212,175,105,0.42);
+  stroke-width:2;
+}
+
+.foundation-level-gate.is-open{
+  fill:rgba(51,35,14,0.55);
+  stroke:rgba(255,224,160,0.92);
+  filter:url(#foundationGoldGlow);
+}
+
+.foundation-gate-title{
+  fill:rgba(255,224,160,0.96);
+  font-family:Cinzel,serif;
+  font-size:22px;
+  letter-spacing:0.18em;
+}
+
+.foundation-gate-subtitle{
+  fill:rgba(212,175,105,0.68);
+  font-family:JetBrains Mono,var(--mono),monospace;
+  font-size:10px;
+  letter-spacing:0.22em;
+}
+
+.foundation-neck-surface{
+  fill:url(#foundationNeckSurface);
+  stroke:rgba(212,175,105,0.34);
+  stroke-width:2;
+}
+
+.foundation-neck-fret{
+  stroke:rgba(255,224,160,0.30);
+  stroke-width:1.4;
+}
+
+.foundation-neck-string{
+  stroke:url(#foundationStringGold);
+  stroke-width:1.8;
+}
+
+.foundation-neck-step polygon{
+  fill:rgba(212,175,105,0.025);
+  stroke:rgba(212,175,105,0.10);
+  stroke-width:1;
+  transition:fill 0.18s ease,stroke 0.18s ease,opacity 0.18s ease;
+}
+
+.foundation-neck-step text{
+  font-family:JetBrains Mono,var(--mono),monospace;
+  fill:rgba(255,224,160,0.42);
+  letter-spacing:0.08em;
+}
+
+.foundation-step-number{
+  font-size:15px;
+  font-weight:700;
+}
+
+.foundation-step-title{
+  font-size:8px;
+  text-transform:uppercase;
+}
+
+.foundation-step-state{
+  font-size:7px;
+  fill:rgba(232,160,32,0.88) !important;
+}
+
+.foundation-neck-step.is-active polygon{
+  fill:rgba(232,160,32,0.20);
+  stroke:rgba(255,224,160,0.82);
+  stroke-width:1.8;
+  filter:url(#foundationGoldGlow);
+}
+
+.foundation-neck-step.is-active text,
+.foundation-neck-step.is-complete text{
+  fill:rgba(255,238,197,0.94);
+}
+
+.foundation-neck-step.is-complete polygon{
+  fill:rgba(212,175,105,0.12);
+  stroke:rgba(212,175,105,0.52);
+}
+
+.foundation-neck-step.is-locked{
+  opacity:0.50;
+}
+
+.foundation-neck-step.is-coming-soon{
+  opacity:0.32;
+  cursor:default !important;
+}
+
+.foundation-neck-step:not(.is-coming-soon){
+  cursor:pointer;
+}
+
+.foundation-neck-step:not(.is-coming-soon):hover polygon{
+  fill:rgba(212,175,105,0.16);
+  stroke:rgba(255,224,160,0.75);
+}
+
+.foundation-gate-ember{
+  fill:#e8a020;
+  opacity:0.52;
+  filter:url(#foundationGoldGlow);
+}
+
+.foundation-gate-ember.is-open{
+  fill:#ffe0a0;
+  opacity:1;
+}
+
+.foundation-guide-card{
+  position:absolute;
+  left:50%;
+  bottom:16px;
+  transform:translateX(-50%);
+  display:grid;
+  grid-template-columns:94px minmax(220px,340px);
+  gap:14px;
+  align-items:end;
+  z-index:5;
+}
+
+.foundation-guide-card img{
+  width:94px;
+  height:94px;
+  object-fit:contain;
+  filter:drop-shadow(0 12px 20px rgba(0,0,0,0.55));
+}
+
+.foundation-guide-card div{
+  background:rgba(25,20,15,0.94);
+  border:1px solid rgba(212,175,105,0.22);
+  border-radius:10px;
+  padding:12px 14px;
+  box-shadow:0 16px 34px rgba(0,0,0,0.36);
+}
+
+.foundation-guide-card p{
+  margin:0 0 10px;
+  color:var(--text);
+  font-size:0.84rem;
+  line-height:1.42;
+}
+
+.foundation-guide-card button{
+  width:100%;
+  border:1px solid rgba(212,175,105,0.32);
+  background:linear-gradient(180deg,var(--gold),var(--amber));
+  color:var(--bg);
+  border-radius:8px;
+  padding:9px 12px;
+  font-family:Cinzel,serif;
+  font-weight:700;
+  letter-spacing:0.06em;
+  cursor:pointer;
+}
+
+.foundation-current-card{
+  position:absolute;
+  right:18px;
+  top:72px;
+  width:min(260px,24vw);
+  background:rgba(19,15,11,0.72);
+  border:1px solid rgba(212,175,105,0.18);
+  border-radius:10px;
+  padding:12px 14px;
+  z-index:4;
+}
+
+.foundation-current-card span{
+  display:block;
+  margin-bottom:6px;
+  font-family:JetBrains Mono,var(--mono),monospace;
+  color:var(--amber);
+  font-size:0.58rem;
+  letter-spacing:0.18em;
+  text-transform:uppercase;
+}
+
+.foundation-current-card strong{
+  display:block;
+  color:var(--gold);
+  font-family:Cinzel,serif;
+  font-size:0.98rem;
+  line-height:1.2;
+}
+
+.foundation-current-card p{
+  margin:8px 0 0;
+  color:var(--dim);
+  font-size:0.78rem;
+  line-height:1.38;
+}
+
+.foundation-footer{
+  margin:8px auto 0;
+  text-align:center;
+  color:var(--amber);
+  font-family:JetBrains Mono,var(--mono),monospace;
+  font-size:0.62rem;
+  letter-spacing:0.02em;
+}
+
+/* === FOUNDATION TOPIC VIEW === */
+.foundation-topic-page{
+  min-height:calc(100vh - 54px);
+  box-sizing:border-box;
+  padding:32px 18px 46px;
+}
+
+.foundation-topic-wrap{
+  width:min(980px,100%);
+  margin:0 auto;
+}
+
+.foundation-topic-top{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:14px;
+  margin-bottom:22px;
+}
+
+.foundation-topic-back{
+  color:var(--dim);
+  cursor:pointer;
+  font-family:JetBrains Mono,var(--mono),monospace;
+  font-size:0.72rem;
+  letter-spacing:0.08em;
+}
+
+.foundation-topic-read{
+  background:rgba(212,175,105,0.08);
+  color:var(--gold);
+  border:1px solid rgba(212,175,105,0.24);
+  padding:8px 14px;
+  border-radius:8px;
+  cursor:pointer;
+  font:inherit;
+}
+
+.foundation-topic-grid{
+  display:grid;
+  grid-template-columns:210px minmax(0,1fr);
+  gap:22px;
+  align-items:start;
+}
+
+.foundation-topic-side{
+  position:sticky;
+  top:78px;
+}
+
+.foundation-topic-side img{
+  width:128px;
+  display:block;
+  margin:0 auto 12px;
+  filter:drop-shadow(0 16px 28px rgba(0,0,0,0.45));
+}
+
+.foundation-topic-meta{
+  background:rgba(25,20,15,0.88);
+  border:1px solid rgba(212,175,105,0.18);
+  border-radius:10px;
+  padding:14px;
+}
+
+.foundation-topic-meta span{
+  display:block;
+  color:var(--amber);
+  font-family:JetBrains Mono,var(--mono),monospace;
+  font-size:0.62rem;
+  letter-spacing:0.16em;
+  margin-bottom:8px;
+}
+
+.foundation-topic-meta h2{
+  margin:0;
+  color:var(--gold);
+  font-family:Cinzel,serif;
+  font-size:1.2rem;
+  line-height:1.14;
+}
+
+.foundation-topic-meta p{
+  margin:8px 0 0;
+  color:var(--dim);
+  font-size:0.78rem;
+  line-height:1.42;
+}
+
+.foundation-step-tabs{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:8px;
+  margin-bottom:12px;
+}
+
+.foundation-step-tab{
+  border:1px solid rgba(212,175,105,0.16);
+  background:rgba(212,175,105,0.055);
+  color:var(--dim);
+  border-radius:8px;
+  padding:9px 7px;
+  text-align:center;
+  font-family:JetBrains Mono,var(--mono),monospace;
+  font-size:0.64rem;
+}
+
+.foundation-step-tab.is-on{
+  color:var(--bg);
+  background:var(--accent,var(--gold));
+  border-color:transparent;
+}
+
+.foundation-topic-card{
+  background:rgba(25,20,15,0.92);
+  border:1px solid rgba(212,175,105,0.18);
+  border-radius:12px;
+  padding:24px;
+  box-shadow:0 20px 50px rgba(0,0,0,0.28);
+}
+
+.foundation-topic-card h3{
+  margin:0 0 16px;
+  color:var(--accent,var(--gold));
+  font-size:1.35rem;
+  line-height:1.2;
+}
+
+.foundation-topic-card p{
+  color:var(--text);
+  font-size:1rem;
+  line-height:1.65;
+}
+
+.foundation-topic-card strong{
+  color:#f2d6a1;
+}
+
+.foundation-topic-actions{
+  display:flex;
+  gap:10px;
+  margin-top:20px;
+}
+
+.foundation-topic-actions button{
+  flex:1;
+  border-radius:9px;
+  padding:12px 14px;
+  font-family:DM Sans,sans-serif;
+  font-weight:700;
+  cursor:pointer;
+}
+
+@media(max-width:860px){
+  .foundation-stage{
+    min-height:620px;
+  }
+
+  .foundation-current-card{
+    position:relative;
+    top:auto;
+    right:auto;
+    width:auto;
+    max-width:420px;
+    margin:-18px auto 0;
+  }
+
+  .foundation-guide-card{
+    grid-template-columns:72px minmax(0,1fr);
+    width:min(430px,92vw);
+    bottom:10px;
+  }
+
+  .foundation-guide-card img{
+    width:72px;
+    height:72px;
+  }
+
+  .foundation-topic-grid{
+    grid-template-columns:1fr;
+  }
+
+  .foundation-topic-side{
+    position:static;
+    display:grid;
+    grid-template-columns:76px 1fr;
+    align-items:center;
+    gap:12px;
+  }
+
+  .foundation-topic-side img{
+    width:76px;
+    margin:0;
+  }
+}
+
+@media(max-width:620px){
+  .foundation-shell{
+    padding:12px 10px 22px;
+  }
+
+  .foundation-map-btn{
+    position:static;
+    margin-bottom:6px;
+  }
+
+  .foundation-header h1{
+    font-size:1.55rem;
+  }
+
+  .foundation-stage{
+    min-height:560px;
+  }
+
+  .foundation-neck-svg{
+    width:112vw;
+    transform:translateY(-10px);
+  }
+
+  .foundation-guide-card{
+    grid-template-columns:1fr;
+    text-align:center;
+  }
+
+  .foundation-guide-card img{
+    display:none;
+  }
+
+  .foundation-step-title{
+    display:none;
+  }
+
+  .foundation-step-tabs{
+    grid-template-columns:1fr 1fr;
+  }
+
+  .foundation-topic-card{
+    padding:18px;
+  }
+
+  .foundation-topic-actions{
+    flex-direction:column;
+  }
+}
 
 
 .node-info{background:var(--panel) !important;border:2px solid var(--gold) !important;border-radius:12px !important;box-shadow:0 4px 16px rgba(255,140,66,0.15) !important;}
@@ -848,18 +1392,6 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 @keyframes blockPulse{0%,100%{box-shadow:0 0 4px var(--gold)}50%{box-shadow:0 0 18px var(--gold)}}
 .character-float{animation:float 3s ease-in-out infinite}
 .speech-line{opacity:0;animation:speechLine 0.4s ease forwards}
-/* ═══ FOUNDATION STAIRCASE ═══ */
-.staircase{display:flex;flex-direction:column;align-items:flex-end;gap:0;margin-top:8px}
-.stair-step{display:flex;align-items:stretch;cursor:pointer;transition:all 0.2s}
-.stair-step:hover{transform:translateX(-4px)}
-.stair-riser{width:12px;border-radius:3px 0 0 3px;flex-shrink:0}
-.stair-tread{padding:14px 20px;border-radius:0 8px 8px 0;display:flex;align-items:center;gap:12px;transition:all 0.2s;border:2px solid;border-left:none;min-width:200px}
-.stair-step:hover .stair-tread{filter:brightness(1.2)}
-.stair-step.locked{opacity:0.3;cursor:default}
-.stair-step.locked:hover{transform:none}
-.stair-num{font-family:'DM Sans',sans-serif;font-size:1.5rem;font-weight:700}
-.stair-title{font-family:'DM Sans',sans-serif;font-size:0.95rem;font-weight:600}
-.stair-status{font-size:0.7rem;margin-left:auto}
 
 /* ═══ BLOCK INTERIOR STAIRCASE ═══ */
 .lp-steps-stairs{display:flex;align-items:flex-end;gap:0;margin:20px 0 24px 0;overflow-x:auto;padding-bottom:4px}
@@ -937,14 +1469,6 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
   .flow-anim{display:none;}
   .path-btn{font-size:0.55rem;padding:4px 8px;}
 
-  /* ═══ FOUNDATION ═══ */
-  .foundation-layout{flex-direction:column;align-items:center;gap:16px;}
-  .foundation-char{width:100%;max-width:200px;order:-1;}
-  .foundation-char img{max-width:180px!important;}
-
-  .foundation-blocks{width:100%;max-width:100%!important;}
-  .staircase{align-items:center}
-  .stair-step{align-items:center}
 
   /* ═══ LESSON PAGES ═══ */
   .lesson-page{padding:16px 12px;}
@@ -2313,157 +2837,156 @@ function startFoundationLesson(topicId){
   showFoundationTopic(topicId);
 }
 function startLesson1(){
-  // Start the first incomplete block, or Block 01
-  var F=window.FOUNDATION;
-  var completed=JSON.parse(localStorage.getItem('hearth-foundation-progress')||'{}');
-  var nextTopic=F.topics.find(function(t){return !completed[t.id];});
-  var topicId=nextTopic?nextTopic.id:'f-how-to-learn';
-  showFoundationTopic(topicId);
-}
+  var F = window.FOUNDATION;
+  if(!F || !F.topics || !F.topics.length) return;
 
-function showFoundation(){
-  document.querySelectorAll('.pnl').forEach(function(p){p.classList.remove('on')});
-  document.getElementById('p-foundation').classList.add('on');
-  var F=window.FOUNDATION;if(!F)return;
-  var el=document.getElementById('p-foundation');
-  var completed=JSON.parse(localStorage.getItem('hearth-foundation-progress')||'{}');
-  var doneCount=Object.keys(completed).filter(function(k){return completed[k]}).length;
-  var pct=Math.round(doneCount/F.topics.length*100);
-
-  var firstIncomplete=F.topics.findIndex(function(t){return !completed[t.id]});
-  var activeIdx=firstIncomplete===-1?F.topics.length-1:firstIncomplete;
-  var allDone=doneCount===F.topics.length;
-
-  // Guide speech
-  var speechText;
-  if(allDone){
-    speechText=F.completionLine||'The gate is open. Journey Level 1 begins.';
-  } else if(activeIdx>0 && completed[F.topics[activeIdx-1].id]){
-    speechText=F.topics[activeIdx].subtitle||F.topics[activeIdx].title;
-  } else {
-    speechText=F.guideLine||F.subtitle;
-  }
-
-  // === SVG: Ayla's improved coordinates ===
-  var fretData=[
-    {y:560,l:110,r:790},{y:522,l:141,r:759},{y:486,l:170,r:730},
-    {y:452,l:198,r:702},{y:420,l:224,r:676},{y:390,l:249,r:651},
-    {y:362,l:272,r:628},{y:336,l:293,r:607},{y:312,l:312,r:588},
-    {y:290,l:330,r:570},{y:270,l:345,r:555}
-  ];
-  var sBotX=[178,287,396,504,613,722];
-  var sTopX=[366,400,433,467,500,534];
-
-  // Fret lines
-  var fretLines='';
-  for(var i=0;i<fretData.length;i++){
-    fretLines+='<line class="neck-fret" x1="'+fretData[i].l+'" y1="'+fretData[i].y+'" x2="'+fretData[i].r+'" y2="'+fretData[i].y+'"/>';
-  }
-
-  // Strings
-  var strings='';
-  for(var si=0;si<6;si++){
-    strings+='<line class="neck-string" x1="'+sBotX[si]+'" y1="560" x2="'+sTopX[si]+'" y2="270"/>';
-  }
-
-  // Steps
-  var steps='';
-  F.topics.forEach(function(tp,idx){
-    var isDone=completed[tp.id];
-    var isActive=idx===activeIdx;
-    var isCS=tp.status==='coming-soon';
-    var sc='';
-    if(isDone) sc='is-complete';
-    else if(isActive) sc='is-active';
-    else sc='is-locked';
-
-    var d=fretData[idx], d2=fretData[idx+1];
-    var pts=d.l+','+d.y+' '+d.r+','+d.y+' '+d2.r+','+d2.y+' '+d2.l+','+d2.y;
-    var cy=Math.round((d.y+d2.y)/2);
-    var cx=Math.round((d.l+d.r+d2.l+d2.r)/4);
-
-    var click='';
-    if(!isCS) click="showFoundationTopic('"+tp.id+"')";
-    var cur=isCS?'cursor:default':'cursor:pointer';
-    var numSize=Math.max(13,22-idx);
-    var labelSize=Math.max(7.5,12-idx*0.45);
-
-    steps+='<g class="foundation-step '+sc+'" data-step="'+idx+'" data-topic-id="'+tp.id+'" '
-      +(click?'onclick="'+click+'"':'')+' style="'+cur+'">'
-      +'<polygon points="'+pts+'"/>'
-      +'<text class="step-num" x="'+cx+'" y="'+(cy-6)+'" text-anchor="middle" font-size="'+numSize+'">'+tp.num+'</text>'
-      +'<text x="'+cx+'" y="'+(cy+10)+'" text-anchor="middle" font-size="'+labelSize+'">'+tp.title.toUpperCase()+'</text>'
-      +(isDone?'<text x="'+(d.r-14)+'" y="'+(cy+4)+'" text-anchor="middle" font-size="12" fill="rgba(212,175,105,0.85)">&#10003;</text>':'')
-      +'</g>';
+  var completed = JSON.parse(localStorage.getItem('hearth-foundation-progress') || '{}');
+  var nextTopic = F.topics.find(function(t){
+    return !completed[t.id] && t.status !== 'coming-soon';
   });
 
-  var emberOp=allDone?1:0.42+pct*0.006;
-
-  var svg='<svg class="foundation-neck-svg" viewBox="0 0 900 620" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Foundation neck path">'
-    +'<defs>'
-    +'<radialGradient id="neckGlow" cx="50%" cy="48%" r="62%">'
-    +'<stop offset="0%" stop-color="#d4af69" stop-opacity="0.20"/>'
-    +'<stop offset="60%" stop-color="#d4af69" stop-opacity="0.06"/>'
-    +'<stop offset="100%" stop-color="#0d0b08" stop-opacity="0"/>'
-    +'</radialGradient>'
-    +'<linearGradient id="neckSurface" x1="0" y1="1" x2="0" y2="0">'
-    +'<stop offset="0%" stop-color="#17100a" stop-opacity="0.94"/>'
-    +'<stop offset="52%" stop-color="#120d08" stop-opacity="0.78"/>'
-    +'<stop offset="100%" stop-color="#0d0b08" stop-opacity="0.44"/>'
-    +'</linearGradient>'
-    +'<linearGradient id="stringGold" x1="0" y1="0" x2="0" y2="1">'
-    +'<stop offset="0%" stop-color="#ffe0a0" stop-opacity="0.9"/>'
-    +'<stop offset="55%" stop-color="#d4af69" stop-opacity="0.42"/>'
-    +'<stop offset="100%" stop-color="#d4af69" stop-opacity="0.12"/>'
-    +'</linearGradient>'
-    +'<filter id="goldGlow"><feGaussianBlur stdDeviation="4" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>'
-    +'<filter id="softShadow"><feDropShadow dx="0" dy="20" stdDeviation="22" flood-color="#000000" flood-opacity="0.7"/></filter>'
-    +'</defs>'
-    +'<rect width="900" height="620" fill="transparent"/>'
-    +'<ellipse class="neck-bg" cx="450" cy="390" rx="390" ry="250"/>'
-    +'<path class="journey-gate" d="M380 86 C380 48 408 28 450 28 C492 28 520 48 520 86 L520 170 L380 170 Z"/>'
-    +'<text class="journey-label" x="450" y="104" text-anchor="middle">LEVEL 1</text>'
-    +'<text class="journey-sub" x="450" y="130" text-anchor="middle">JOURNEY BEGINS</text>'
-    +'<polygon class="neck-outer" points="110,560 790,560 555,270 345,270"/>'
-    +'<g id="foundation-steps">'+steps+'</g>'
-    +'<g>'+fretLines+'</g>'
-    +'<g>'+strings+'</g>'
-    +'<circle cx="450" cy="198" r="7" fill="#e8a020" opacity="'+emberOp+'" filter="url(#goldGlow)"/>'
-    +'</svg>';
-
-  var html='<div style="padding:12px;max-width:960px;margin:0 auto;display:flex;flex-direction:column;height:100%;box-sizing:border-box">'
-    +'<button class="back-btn" onclick="backToMap()">&#8592; Map</button>'
-    +'<div style="text-align:center;margin:4px 0 2px">'
-    +'<div style="font-family:\'Cinzel\',serif;color:var(--gold);font-size:1.3rem;letter-spacing:3px">'+F.title+'</div>'
-    +'<div style="font-family:JetBrains Mono;font-size:0.5rem;color:var(--amber);letter-spacing:0.1em;margin-top:2px">'+F.tag+'</div>'
-    +'<div style="font-size:0.7rem;color:var(--dim);margin-top:4px;line-height:1.5">'+F.subtitle+'</div>'
-    +'</div>'
-    +'<div style="display:flex;align-items:center;gap:8px;justify-content:center;margin:4px 0">'
-    +'<span style="font-family:JetBrains Mono;font-size:0.5rem;color:var(--amber)">'+doneCount+'/'+F.topics.length+'</span>'
-    +'<div style="width:120px;height:3px;background:var(--surface);border-radius:2px;overflow:hidden">'
-    +'<div style="width:'+pct+'%;height:100%;background:linear-gradient(90deg,var(--gold),var(--amber));border-radius:2px;transition:width 0.5s"></div>'
-    +'</div>'
-    +'<span style="font-family:JetBrains Mono;font-size:0.48rem;color:var(--dim)">'+pct+'%</span>'
-    +'</div>'
-    +'<div style="text-align:center;margin-bottom:4px">'
-    +'<div style="font-size:0.5rem;color:var(--amber);font-style:italic">'+F.questLine+'</div>'
-    +(allDone?'<div style="font-size:0.5rem;color:var(--gold);margin-top:2px">'+F.completionLine+'</div>':'')
-    +'</div>'
-    +'<div class="foundation-neck-scene">'
-    +svg
-    +'<div class="foundation-guide-entrance"><img src="images/character-full/Encouraging.png"/></div>'
-    +'<div class="foundation-speech"><div style="font-size:0.68rem;line-height:1.4;color:var(--text)">'+speechText+'</div></div>'
-    +'</div>'
-    +'<div style="text-align:center;margin-top:8px">'
-    +'<button onclick="startLesson1()" style="background:linear-gradient(180deg,var(--gold),var(--amber));color:var(--bg);border:none;padding:8px 24px;border-radius:8px;font-family:\'Cinzel\',serif;font-size:0.8rem;font-weight:700;letter-spacing:1px;cursor:pointer;box-shadow:0 2px 12px rgba(212,175,105,0.25)">Start Lesson 1</button>'
-    +'</div>'
-    +'<div style="text-align:center;margin-top:8px">'
-    +'<div style="font-size:0.5rem;color:var(--amber);line-height:1.4">'+F.guideLine+'</div>'
-    +'</div>'
-    +'</div>';
-
-  el.innerHTML=html;
+  showFoundationTopic(nextTopic ? nextTopic.id : F.topics[0].id);
 }
+
+
+function showFoundation(){
+  document.querySelectorAll('.pnl').forEach(function(p){p.classList.remove('on');});
+  document.getElementById('p-foundation').classList.add('on');
+
+  var F = window.FOUNDATION;
+  if(!F) return;
+
+  var el = document.getElementById('p-foundation');
+  var completed = JSON.parse(localStorage.getItem('hearth-foundation-progress') || '{}');
+  var doneCount = F.topics.filter(function(t){ return completed[t.id]; }).length;
+  var pct = Math.round(doneCount / F.topics.length * 100);
+  var firstIncomplete = F.topics.findIndex(function(t){ return !completed[t.id]; });
+  var activeIdx = firstIncomplete === -1 ? F.topics.length - 1 : firstIncomplete;
+  var activeTopic = F.topics[activeIdx];
+  var allDone = doneCount === F.topics.length;
+
+  var speechText = allDone
+    ? (F.completionLine || 'The gate is open. Journey Level 1 begins.')
+    : (activeIdx === 0
+      ? 'This is the doorway before Level 1. Walk the first neck one fret at a time.'
+      : 'Next fret: ' + activeTopic.title + '. Keep the path simple. One clear step, then the next.');
+
+  function stateFor(topic, idx){
+    if(completed[topic.id]) return 'is-complete';
+    if(idx === activeIdx) return 'is-active';
+    return 'is-locked';
+  }
+
+  function safeText(value){
+    return String(value || '').replace(/[&<>"']/g, function(ch){
+      return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[ch];
+    });
+  }
+
+  var yLines = [540,500,462,426,392,360,330,302,276,252,230];
+  var leftEdge = [128,155,181,206,230,253,275,296,315,333,350];
+  var rightEdge = [772,745,719,694,670,647,625,604,585,567,550];
+  var stringBottom = [166,280,394,506,620,734];
+  var stringTop = [372,403,434,466,497,528];
+
+  var frets = yLines.map(function(y, i){
+    return '<line class="foundation-neck-fret" x1="' + leftEdge[i] + '" y1="' + y + '" x2="' + rightEdge[i] + '" y2="' + y + '"/>';
+  }).join('');
+
+  var strings = stringBottom.map(function(x, i){
+    return '<line class="foundation-neck-string" x1="' + x + '" y1="540" x2="' + stringTop[i] + '" y2="230"/>';
+  }).join('');
+
+  var steps = F.topics.map(function(topic, idx){
+    var y1 = yLines[idx];
+    var y2 = yLines[idx + 1];
+    var x1 = leftEdge[idx];
+    var x2 = rightEdge[idx];
+    var x3 = rightEdge[idx + 1];
+    var x4 = leftEdge[idx + 1];
+    var cx = Math.round((x1 + x2 + x3 + x4) / 4);
+    var cy = Math.round((y1 + y2) / 2);
+    var state = stateFor(topic, idx);
+    var isComingSoon = topic.status === 'coming-soon';
+    var click = isComingSoon ? '' : ' onclick="showFoundationTopic(\'' + topic.id + '\')"';
+    var title = safeText(topic.title);
+    var micro = safeText(topic.micro || topic.subtitle || '');
+    var label = idx === activeIdx && !completed[topic.id] ? 'NEXT' : (completed[topic.id] ? 'DONE' : '');
+
+    return '<g class="foundation-neck-step ' + state + (isComingSoon ? ' is-coming-soon' : '') + '" data-topic-id="' + topic.id + '"' + click + ' tabindex="0" role="button" aria-label="' + title + '">'
+      + '<polygon points="' + x1 + ',' + y1 + ' ' + x2 + ',' + y1 + ' ' + x3 + ',' + y2 + ' ' + x4 + ',' + y2 + '"/>'
+      + '<text class="foundation-step-number" x="' + cx + '" y="' + (cy - 5) + '" text-anchor="middle">' + topic.num + '</text>'
+      + '<text class="foundation-step-title" x="' + cx + '" y="' + (cy + 10) + '" text-anchor="middle">' + title + '</text>'
+      + (label ? '<text class="foundation-step-state" x="' + (x2 - 34) + '" y="' + (cy + 4) + '" text-anchor="middle">' + label + '</text>' : '')
+      + '<title>' + title + ' — ' + micro + '</title>'
+      + '</g>';
+  }).join('');
+
+  var gateOpen = allDone ? ' is-open' : '';
+  var activeTitle = safeText(activeTopic ? activeTopic.title : 'Foundation');
+  var activeMicro = safeText(activeTopic ? (activeTopic.micro || activeTopic.subtitle || '') : '');
+
+  var svg = '<svg class="foundation-neck-svg" viewBox="0 0 900 620" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Foundation neck path">'
+    + '<defs>'
+    + '<radialGradient id="foundationSceneGlow" cx="50%" cy="43%" r="62%">'
+    + '<stop offset="0%" stop-color="#d4af69" stop-opacity="0.16"/>'
+    + '<stop offset="48%" stop-color="#d4af69" stop-opacity="0.055"/>'
+    + '<stop offset="100%" stop-color="#0d0b08" stop-opacity="0"/>'
+    + '</radialGradient>'
+    + '<linearGradient id="foundationNeckSurface" x1="0" y1="1" x2="0" y2="0">'
+    + '<stop offset="0%" stop-color="#2a170d" stop-opacity="0.82"/>'
+    + '<stop offset="52%" stop-color="#1b120c" stop-opacity="0.64"/>'
+    + '<stop offset="100%" stop-color="#120d08" stop-opacity="0.30"/>'
+    + '</linearGradient>'
+    + '<linearGradient id="foundationStringGold" x1="0" y1="1" x2="0" y2="0">'
+    + '<stop offset="0%" stop-color="#7d6130" stop-opacity="0.42"/>'
+    + '<stop offset="55%" stop-color="#d4af69" stop-opacity="0.70"/>'
+    + '<stop offset="100%" stop-color="#fff0bb" stop-opacity="0.95"/>'
+    + '</linearGradient>'
+    + '<filter id="foundationGoldGlow"><feGaussianBlur stdDeviation="4" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>'
+    + '</defs>'
+    + '<rect width="900" height="620" fill="transparent"/>'
+    + '<ellipse class="foundation-scene-glow" cx="450" cy="382" rx="390" ry="260"/>'
+    + '<path class="foundation-level-gate' + gateOpen + '" d="M382 86 C382 46 412 24 450 24 C488 24 518 46 518 86 L518 166 L382 166 Z"/>'
+    + '<text class="foundation-gate-title" x="450" y="96" text-anchor="middle">LEVEL 1</text>'
+    + '<text class="foundation-gate-subtitle" x="450" y="122" text-anchor="middle">JOURNEY</text>'
+    + '<polygon class="foundation-neck-surface" points="128,540 772,540 550,230 350,230"/>'
+    + '<g class="foundation-neck-steps">' + steps + '</g>'
+    + '<g class="foundation-neck-lines">' + frets + strings + '</g>'
+    + '<circle class="foundation-gate-ember' + gateOpen + '" cx="450" cy="190" r="8"/>'
+    + '</svg>';
+
+  el.innerHTML = '<div class="foundation-shell">'
+    + '<button class="back-btn foundation-map-btn" onclick="backToMap()">&#8592; Map</button>'
+    + '<header class="foundation-header">'
+    + '<div class="foundation-kicker">' + safeText(F.tag) + '</div>'
+    + '<h1>' + safeText(F.title) + '</h1>'
+    + '<p>' + safeText(F.subtitle) + '</p>'
+    + '<div class="foundation-progress-line">'
+    + '<span>' + doneCount + '/' + F.topics.length + '</span>'
+    + '<div><i style="width:' + pct + '%"></i></div>'
+    + '<span>' + pct + '%</span>'
+    + '</div>'
+    + '</header>'
+    + '<main class="foundation-stage">'
+    + svg
+    + '<section class="foundation-guide-card" aria-label="Foundation guide">'
+    + '<img src="images/character-full/Encouraging.png" alt="Guide character"/>'
+    + '<div>'
+    + '<p>' + safeText(speechText) + '</p>'
+    + '<button onclick="startLesson1()">' + (allDone ? 'Review Foundation' : 'Start Current Fret') + '</button>'
+    + '</div>'
+    + '</section>'
+    + '<aside class="foundation-current-card">'
+    + '<span>Current Fret</span>'
+    + '<strong>' + safeText(activeTopic ? activeTopic.num : '') + ' · ' + activeTitle + '</strong>'
+    + '<p>' + activeMicro + '</p>'
+    + '</aside>'
+    + '</main>'
+    + '<footer class="foundation-footer">' + safeText(F.questLine) + '</footer>'
+    + '</div>';
+}
+
 
 // ═══ REUSABLE RAINBOW BLOCKS HELPER ═══
 function rainbowBlocks(items, opts){
@@ -2544,86 +3067,129 @@ function rainbowBlocks(items, opts){
 
 
 // ═══ FOUNDATION TOPIC VIEWER ═══
-function showFoundationTopic(topicId){
-  playSfx('drill-click');
-  const F=window.FOUNDATION;if(!F)return;
-  const topic=F.topics.find(t=>t.id===topicId);if(!topic)return;
-  setNotebookContext('f-'+topicId,topic.title);
-  const el=document.getElementById('p-foundation');
-  const topicIdx=F.topics.indexOf(topic);
+function foundationEscape(value){
+  return String(value || '').replace(/[&<>"']/g, function(ch){
+    return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[ch];
+  });
+}
 
-  // ── INTERACTIVE LESSON OVERRIDE ──
-  // Map topic IDs to their lesson data and block labels
-  var lessonMap = {
-    'f-how-to-learn':          { lesson: window.LESSON_HOW_TO_LEARN,          label: 'BLOCK 01 — HOW TO LEARN' },
-    'f-learning-a-language':    { lesson: window.LESSON_LEARNING_A_LANGUAGE,   label: 'BLOCK 02 — LEARNING A LANGUAGE' },
-    'f-language-of-music':      { lesson: window.LESSON_LANGUAGE_OF_MUSIC,     label: 'BLOCK 03 — THE LANGUAGE OF MUSIC' },
-    'f-language-of-guitar':     { lesson: window.LESSON_LANGUAGE_OF_GUITAR,    label: 'BLOCK 04 — THE LANGUAGE OF GUITAR' },
-    'f-the-guitar':             { lesson: window.LESSON_THE_GUITAR,            label: 'BLOCK 05 — THE GUITAR' },
-    'f-speaking':               { lesson: window.LESSON_SPEAKING,              label: 'BLOCK 06 — SPEAKING WITH THE GUITAR' },
-    'f-conversations':          { lesson: window.LESSON_CONVERSATIONS,         label: 'BLOCK 07 — GUITAR CONVERSATIONS' }
-  };
-  var lessonInfo = lessonMap[topicId];
-  if(lessonInfo && lessonInfo.lesson && window.TeachingEngine){
-    document.querySelectorAll('.pnl').forEach(p=>p.classList.remove('on'));
-    el.classList.add('on');
-    el.innerHTML='<div style="padding:16px;max-width:800px;margin:0 auto;height:100%;display:flex;flex-direction:column;box-sizing:border-box">'+
-      '<button class="back-btn" onclick="showFoundation()" style="flex-shrink:0">← Foundation</button>'+
-      '<div style="text-align:center;margin:12px 0 4px;flex-shrink:0"><span style="font-family:Cinzel,serif;color:var(--gold);font-size:0.85rem;letter-spacing:2px">'+lessonInfo.label+'</span></div>'+
-      '<div id="teach-container" style="flex:1;display:flex;align-items:center;justify-content:center;min-height:0"></div>'+
-    '</div>';
-    var engine=window._teachEngine=TeachingEngine(document.getElementById('teach-container'),{
-      onComplete:function(scores){
-        var progress=JSON.parse(localStorage.getItem('hearth-foundation-progress')||'{}');
-        progress[topicId]=true;
-        localStorage.setItem('hearth-foundation-progress',JSON.stringify(progress));
-        // Go back to pyramid — let student choose next block
-        showFoundation();
-      }
-    });
-    engine.start(lessonInfo.lesson);
+function foundationColor(index){
+  var colors = ['#e74c3c','#e67e22','#f1c40f','#2ecc71','#3498db','#42d6c5','#9b59b6','#d76aa8','#d4af69','#ffb347'];
+  return colors[index % colors.length];
+}
+
+function showFoundationTopic(topicId){
+  if(typeof playSfx === 'function') playSfx('drill-click');
+
+  var F = window.FOUNDATION;
+  if(!F) return;
+
+  var topic = F.topics.find(function(t){ return t.id === topicId; });
+  if(!topic || topic.status === 'coming-soon'){
+    showFoundation();
     return;
   }
-  const nextTopic=topicIdx<F.topics.length-1?F.topics[topicIdx+1]:null;
-  const completed=JSON.parse(localStorage.getItem('hearth-foundation-progress')||'{}');
-  const isCompleted=completed[topicId];
-  const rainbow=['#e74c3c','#e67e22','#f1c40f','#2ecc71','#3498db','#9b59b6','#e84393'];
-  const color=rainbow[topicIdx];
 
-  function renderStep(idx){
-    const s=topic.steps[idx];
-    const isLast=idx===topic.steps.length-1;
-    let html='<div class="lp-body" style="--accent:'+color+'">'+
-      '<div class="lp-tags" style="display:none">'+topic.tags.map(t=>'<span style="border-color:'+color+'30;color:'+color+'">'+t+'</span>').join('')+'</div>'+
-      '<h3 style="color:'+color+'">'+s.title+'</h3>'+
-      s.body;
-    if(isLast){
-      html+='<div style="display:flex;gap:8px;margin-top:16px">'+
-        '<button class="lp-next" style="flex:1;background:'+color+';color:white;border:none;padding:12px;border-radius:8px;font-family:DM Sans,sans-serif;font-size:0.9rem;font-weight:600;cursor:pointer" onclick="playSfx(\'success\');completeFoundationTopic(\''+topicId+'\')">Mark Complete</button>';
-      if(nextTopic){
-        const nextColor=rainbow[topicIdx+1];
-        html+='<button class="lp-next" style="flex:1;background:'+nextColor+'18;color:'+nextColor+';border:2px solid '+nextColor+'60;padding:12px;border-radius:8px;font-family:DM Sans,sans-serif;font-size:0.9rem;font-weight:600;cursor:pointer" onclick="showFoundationTopic(\''+nextTopic.id+'\')">Next: '+nextTopic.title+'</button>';
-      }
-      html+='</div>';
-    } else {
-      html+='<button class="lp-next" style="background:'+color+'18;color:'+color+';border:2px solid '+color+'40;padding:10px 20px;border-radius:8px;font-family:DM Sans,sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer" onclick="nextFStep(\''+topicId+'\','+(idx+1)+')">Next: '+topic.steps[idx+1].label+'</button>';
+  if(typeof setNotebookContext === 'function') setNotebookContext('f-' + topicId, topic.title);
+
+  document.querySelectorAll('.pnl').forEach(function(p){ p.classList.remove('on'); });
+  var el = document.getElementById('p-foundation');
+  el.classList.add('on');
+
+  window._fTopic = topicId;
+  window._fTopicStep = 0;
+  renderFoundationTopicStep(topicId, 0);
+}
+
+function renderFoundationTopicStep(topicId, stepIndex){
+  var F = window.FOUNDATION;
+  var topic = F.topics.find(function(t){ return t.id === topicId; });
+  if(!topic) return;
+
+  var el = document.getElementById('p-foundation');
+  var topicIdx = F.topics.indexOf(topic);
+  var color = foundationColor(topicIdx);
+  var completed = JSON.parse(localStorage.getItem('hearth-foundation-progress') || '{}');
+  var isCompleted = !!completed[topicId];
+  var steps = topic.steps || [];
+  var step = steps[stepIndex] || steps[0];
+  var isLast = stepIndex === steps.length - 1;
+
+  window._fTopic = topicId;
+  window._fTopicStep = stepIndex;
+
+  var tabs = steps.map(function(s, idx){
+    return '<button class="foundation-step-tab ' + (idx === stepIndex ? 'is-on' : '') + '" onclick="renderFoundationTopicStep(\'' + topicId + '\',' + idx + ')" type="button">'
+      + foundationEscape(s.label || ('Step ' + (idx + 1)))
+      + '</button>';
+  }).join('');
+
+  var nextTopic = F.topics.slice(topicIdx + 1).find(function(t){ return t.status !== 'coming-soon'; });
+  var action;
+  if(isLast){
+    action = '<button type="button" style="background:' + color + ';color:#0d0b08;border:0" onclick="completeFoundationTopic(\'' + topicId + '\')">'
+      + (isCompleted ? 'Return to Path' : 'Set This Fret')
+      + '</button>';
+    if(nextTopic){
+      action += '<button type="button" style="background:' + color + '18;color:' + color + ';border:1px solid ' + color + '55" onclick="completeFoundationTopic(\'' + topicId + '\',\'' + nextTopic.id + '\')">'
+        + 'Set & Continue'
+        + '</button>';
     }
-    html+='</div>';
-    return html;
+  } else {
+    action = '<button type="button" style="background:' + color + '18;color:' + color + ';border:1px solid ' + color + '55" onclick="renderFoundationTopicStep(\'' + topicId + '\',' + (stepIndex + 1) + ')">'
+      + 'Next: ' + foundationEscape(steps[stepIndex + 1].label || 'Continue')
+      + '</button>';
   }
 
-  el.innerHTML='<div class="lesson-page" style="border-top:4px solid '+color+'">'+
-    '<div class="lp-back" onclick="showFoundation()">\u2190 Foundation</div>'+
-    '<div style="display:flex;justify-content:flex-end;margin-bottom:2px"><button id="ttsBtn" onclick="ttsToggle()" style="background:'+color+'18;color:'+color+';border:1px solid '+color+'40;padding:6px 14px;border-radius:6px;cursor:pointer;font-family:inherit;font-size:0.75rem;font-weight:600">Read aloud</button></div>'+
-    '<div class="lp-header">'+
-      '<div class="lp-tag" style="color:'+color+'">'+topic.num+' / '+F.tag+(isCompleted?' \u00b7 Complete':'')+'</div>'+
-      '<h2 style="color:'+color+'">'+topic.title+'</h2>'+
-      '<div class="lp-subtitle">'+topic.subtitle+'</div>'+
-    '</div>'+
-    '<div id="fStepBody">'+renderStep(0)+'</div>'+
-  '</div>';
-  window._fTopic=topicId;
+  var readButton = typeof ttsToggle === 'function'
+    ? '<button class="foundation-topic-read" id="ttsBtn" onclick="ttsToggle()" type="button">Read aloud</button>'
+    : '';
+
+  el.innerHTML = '<div class="foundation-topic-page" style="--accent:' + color + '">'
+    + '<div class="foundation-topic-wrap">'
+    + '<div class="foundation-topic-top">'
+    + '<div class="foundation-topic-back" onclick="showFoundation()">&#8592; Foundation Path</div>'
+    + readButton
+    + '</div>'
+    + '<div class="foundation-topic-grid">'
+    + '<aside class="foundation-topic-side">'
+    + '<img src="images/character-full/Encouraging.png" alt="Guide character"/>'
+    + '<div class="foundation-topic-meta">'
+    + '<span>' + foundationEscape(topic.num) + ' / ' + foundationEscape(F.tag) + (isCompleted ? ' / COMPLETE' : '') + '</span>'
+    + '<h2>' + foundationEscape(topic.title) + '</h2>'
+    + '<p>' + foundationEscape(topic.subtitle || topic.micro || '') + '</p>'
+    + '</div>'
+    + '</aside>'
+    + '<main>'
+    + '<div class="foundation-step-tabs">' + tabs + '</div>'
+    + '<article class="foundation-topic-card">'
+    + '<h3>' + foundationEscape(step.title || step.label) + '</h3>'
+    + (step.body || '')
+    + '<div class="foundation-topic-actions">' + action + '</div>'
+    + '</article>'
+    + '</main>'
+    + '</div>'
+    + '</div>'
+    + '</div>';
 }
+
+function completeFoundationTopic(topicId, nextTopicId){
+  if(typeof playSfx === 'function') playSfx('success');
+  var progress = JSON.parse(localStorage.getItem('hearth-foundation-progress') || '{}');
+  progress[topicId] = true;
+  localStorage.setItem('hearth-foundation-progress', JSON.stringify(progress));
+
+  if(nextTopicId){
+    showFoundationTopic(nextTopicId);
+  } else {
+    showFoundation();
+  }
+}
+
+function nextFStep(topicId, idx){
+  renderFoundationTopicStep(topicId, idx);
+}
+
 
 window.completeFoundationTopic=function(tid){
   const progress=JSON.parse(localStorage.getItem('hearth-foundation-progress')||'{}');
