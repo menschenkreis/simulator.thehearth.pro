@@ -2597,9 +2597,11 @@ window.goFStep=function(tid,idx){
 };
 // ═══ DOING NODE ═══
 function showDoing(){
+  console.log('[DOING] showDoing called');
+  try {
   document.querySelectorAll('.pnl').forEach(p=>p.classList.remove('on'));
   document.getElementById('p-foundation').classList.add('on');
-  const D=window.DOING;if(!D)return;
+  const D=window.DOING;if(!D){console.error('[DOING] DOING object not loaded');return;}
   const el=document.getElementById('p-foundation');
   const progress=JSON.parse(localStorage.getItem('hearth-doing-progress')||'{}');
 
@@ -3060,6 +3062,13 @@ function showDoing(){
   }
 
   function shell(){
+    let total=0, mastered=0, touched=0;
+    D.categories.forEach(c=>c.drills.forEach(d=>{
+      total++;
+      const s=getState(d.id);
+      if(s) touched++;
+      if(s==='mastered') mastered++;
+    }));
     el.innerHTML='<div class="doing-shell">'+
     '<button class="back-btn" onclick="backToMap()">&larr; Map</button>'+
     '<div class="doing-hero">'+
@@ -3194,6 +3203,8 @@ function showDoing(){
   }
 
   shell();
+  console.log('[DOING] shell() completed');
+  } catch(err) { console.error('[DOING] ERROR:', err); document.getElementById('p-foundation').innerHTML = '<pre style="color:red;padding:20px">Error: ' + err.message + '\n' + err.stack + '</pre>'; }
 }
 
 
