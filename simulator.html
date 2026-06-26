@@ -109,7 +109,32 @@
 [data-theme="sparks"] .bt.on .bl{color:white !important;}
 [data-theme="sparks"] .bt.on .bi{filter:brightness(10) !important;}
 [data-theme="sparks"] .center{background:var(--bg) !important;}
-[data-theme="sparks"] .node-info{background:var(--panel) !important;border:2px solid var(--gold) !important;border-radius:12px !important;box-shadow:0 4px 16px rgba(255,140,66,0.15) !important;}
+[data-theme="sparks"] /* === CALM ENTRY === */
+.doing-calm{max-width:600px;margin:0 auto;padding:8px 0 20px;text-align:center;}
+.doing-focus-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px;}
+.doing-focus-btn{padding:10px 8px;background:rgba(26,23,20,0.7);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:DM Sans,sans-serif;font-size:0.78rem;cursor:pointer;transition:all 0.2s;}
+.doing-focus-btn:hover{border-color:rgba(212,175,105,0.5);color:var(--gold);background:rgba(212,175,105,0.06);}
+.doing-rec-drill{background:rgba(212,175,105,0.06);border:1px solid rgba(212,175,105,0.2);border-radius:8px;padding:14px;margin-bottom:14px;cursor:pointer;text-align:left;transition:border-color 0.2s;}
+.doing-rec-drill:hover{border-color:rgba(212,175,105,0.5);}
+.rec-label{font-family:JetBrains Mono,monospace;color:var(--amber);font-size:0.52rem;letter-spacing:0.1em;text-transform:uppercase;}
+.rec-title{color:var(--text);font-size:0.9rem;margin:3px 0 2px;}
+.rec-meta{color:var(--dim);font-size:0.66rem;}
+.doing-quick-links{display:flex;gap:8px;justify-content:center;}
+.doing-link-btn{padding:8px 16px;background:transparent;border:1px solid var(--border);border-radius:6px;color:var(--dim);font-family:JetBrains Mono,monospace;font-size:0.58rem;letter-spacing:0.06em;cursor:pointer;transition:all 0.15s;}
+.doing-link-btn:hover{border-color:var(--gold);color:var(--gold);}
+
+/* === DRILL CARD CLEAN === */
+.doing-drill-card--clean{max-width:560px;margin:0 auto;}
+.doing-drill-sections{display:flex;flex-direction:column;gap:0;margin:16px 0;}
+.doing-drill-section{padding:10px 0;border-bottom:1px solid rgba(212,175,105,0.08);}
+.doing-drill-section:last-child{border-bottom:none;}
+.ds-label{font-family:JetBrains Mono,monospace;color:var(--amber);font-size:0.52rem;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:3px;}
+.ds-text{color:var(--text);font-size:0.82rem;line-height:1.5;}
+.doing-drill-adjust{display:flex;gap:8px;margin:12px 0;}
+.doing-adj-btn{flex:1;padding:8px;border:1px solid var(--border);background:transparent;border-radius:6px;color:var(--dim);font-family:DM Sans,sans-serif;font-size:0.72rem;cursor:pointer;transition:all 0.15s;}
+.doing-adj-btn:hover{border-color:var(--gold);color:var(--gold);}
+
+.node-info{background:var(--panel) !important;border:2px solid var(--gold) !important;border-radius:12px !important;box-shadow:0 4px 16px rgba(255,140,66,0.15) !important;}
 [data-theme="sparks"] .node-info h4{color:var(--gold) !important;font-size:1.2rem !important;font-family:DM Sans,sans-serif !important;font-weight:700 !important;}
 [data-theme="sparks"] .node-info p{color:var(--text) !important;font-size:0.95rem !important;}
 [data-theme="sparks"] .ni-enter{background:var(--gold) !important;color:white !important;font-size:0.9rem !important;padding:10px 24px !important;border-radius:20px !important;font-weight:600 !important;border:none !important;box-shadow:0 3px 0 #C06020 !important;}
@@ -2782,22 +2807,84 @@ function showDoing(){
     });
     return items;
   }
-  function categoryCoaching(cat,drill){
+
+  /* === Plain coaching for drill card === */
+  function plainCoach(cat,drill){
     var title=drill.title;
-    var defaults={
-      picking:{feel:'Small movement from a relaxed wrist.',listen:'Every note should be the same size.',mistake:'Using the whole arm or gripping too hard.',pass:'Play it clean three times at a steady BPM.',guide:'Keep the motion tiny.'},
-      fretting:{feel:'Fingertips land close to the fret with just enough pressure.',listen:'Each note should speak immediately, with no buzz.',mistake:'Pressing too hard or lifting fingers too high.',pass:'Move through the pattern twice with relaxed hands.',guide:'Clean pressure beats strong pressure.'},
-      rhythm:{feel:'The hand keeps moving like a pendulum.',listen:'The pulse should feel steady before the pattern sounds fancy.',mistake:'Freezing the strumming hand or rushing syncopations.',pass:'Loop it for one full minute without losing the click.',guide:'Let the hand become the clock.'},
-      scales:{feel:'Stay close to the strings and shift positions calmly.',listen:'Hear the root when you arrive on it.',mistake:'Running the pattern mechanically without knowing where the strong notes are.',pass:'Play up, down, then stop on three roots.',guide:'Name the sound while you play it.'},
-      arpeggios:{feel:'One note at a time, with clean separation.',listen:'The chord should be obvious even though the notes are broken apart.',mistake:'Letting notes smear together.',pass:'Play the arpeggio in time and call out root, third, fifth.',guide:'Arpeggios are chords turned into movement.'},
-      speed:{feel:'Short bursts, loose hands, and a clear stop.',listen:'Fast notes still need a front edge.',mistake:'Practising mistakes at high tempo.',pass:'Find the fastest clean tempo, then practise ten BPM below it.',guide:'Your ceiling is information, not a challenge.'},
-      styles:{feel:'Copy the physical accent of the style first.',listen:'The technique should sound like a dialect.',mistake:'Learning the shape without the accent.',pass:'Record one loop and check whether the style is recognisable.',guide:'Style techniques carry culture.'}
+    var base={
+      picking:{
+        whatDo:'Strum or pick the pattern slowly. One motion at a time.',
+        howDo:'Keep the wrist loose. Small movements from the forearm.',
+        howLong:'2 minutes slow, then 30 seconds at tempo.',
+        listen:'Each note should sound the same volume. No accents on accidentals.',
+        mistake:'Moving the whole arm instead of the wrist.',
+        pass:'Play it clean three times in a row at a steady BPM.',
+        easier:'Reduce the tempo by 10 BPM. Remove the last note of each group.',
+        harder:'Double the tempo. Add accents on beats 2 and 4.'
+      },
+      fretting:{
+        whatDo:'Place each finger close to the fret. Press down and hold.',
+        howDo:'Use fingertips, not pads. Curve the fingers like a claw.',
+        howLong:'1 minute per position. Then connect two positions slowly.',
+        listen:'Each note should ring clear. No buzzing or muting.',
+        mistake:'Pressing too hard or flattening the fingers.',
+        pass:'Move through the pattern twice without dead notes.',
+        easier:'Play one string at a time. Use a metronome at half speed.',
+        harder:'Add hammer-ons between positions. Increase speed by 5 BPM.'
+      },
+      rhythm:{
+        whatDo:'Mute the strings with your left hand. Strum the pattern.',
+        howDo:'Keep the hand swinging like a pendulum. Down-up-down-up, never stop.',
+        howLong:'2 minutes slow, then 30 seconds without stopping.',
+        listen:'The pulse should feel even. The hand should swing, not jab.',
+        mistake:'Stopping the hand between strums.',
+        pass:'Keep the pattern going for 30 seconds without freezing.',
+        easier:'Slow the tempo. Focus on the downstrokes only.',
+        harder:'Add syncopation. Try it at double speed.'
+      },
+      scales:{
+        whatDo:'Play the scale shape one note at a time. Up and down.',
+        howDo:'Use one finger per fret. Shift positions only when the shape runs out.',
+        howLong:'2 minutes up and down. Then improvise for 1 minute.',
+        listen:'Hear the root when you start and end. The scale has a home note.',
+        mistake:'Running the pattern without knowing where the strong notes are.',
+        pass:'Play the scale clean up, down, then stop on three roots.',
+        easier:'Play one octave only. Use a metronome at 60 BPM.',
+        harder:'Add bends and slides. Play it in three different positions.'
+      },
+      arpeggios:{
+        whatDo:'Play one note of the chord at a time. Let each ring.',
+        howDo:'Fret the full chord shape, then pluck individual strings.',
+        howLong:'1 minute per shape. Then connect two shapes slowly.',
+        listen:'The chord should be obvious even though the notes are broken apart.',
+        mistake:'Letting notes smear together or cutting them short.',
+        pass:'Play the arpeggio in time and call out root, third, fifth.',
+        easier:'Play the chord as a strum first. Then break it apart.',
+        harder:'Add passing tones. Play it at double speed.'
+      },
+      speed:{
+        whatDo:'Play a short burst at your fastest clean tempo. Then rest.',
+        howDo:'Start slow. Add one note per burst. Stop before it gets messy.',
+        howLong:'5 rounds of 10-second bursts with 20-second rest.',
+        listen:'Fast notes still need a front edge. Each note should speak.',
+        mistake:'Practising mistakes at high tempo.',
+        pass:'Find the fastest clean tempo, then practise 10 BPM below it.',
+        easier:'Reduce the burst to 4 notes. Focus on the attack.',
+        harder:'Add 2 notes per burst. Increase tempo by 5 BPM.'
+      },
+      styles:{
+        whatDo:'Copy the physical accent of the style. Feel the accent before playing it.',
+        howDo:'Listen to one bar of the style. Match the physical motion first.',
+        howLong:'1 minute listening, 2 minutes copying, 1 minute improvising.',
+        listen:'The technique should sound like a dialect. It has a personality.',
+        mistake:'Learning the shape without the accent.',
+        pass:'Record one loop and check whether the style is recognisable.',
+        easier:'Slow the tempo. Focus on one accent per bar.',
+        harder:'Combine two style techniques. Play it at original tempo.'
+      }
     };
-    var base=defaults[cat.id]||defaults.fretting;
-    return {
-      setup:firstSentence(drill.body)||('Work slowly through '+title+'.'),
-      feel:base.feel,listen:base.listen,mistake:base.mistake,pass:base.pass,guide:base.guide
-    };
+    var b=base[cat.id]||base.fretting;
+    return b;
   }
 
   function render(){
@@ -2880,41 +2967,35 @@ function showDoing(){
     var drill=cat.drills.find(function(d){return d.id===drillId;});if(!drill)return;
     var state=getState(drillId);
     var lv=levels.find(function(l){return l.level===getDoingLevel(drill);})||levels[0];
-    var coach=categoryCoaching(cat,drill);
-    var diffLabel=['','Beginner','Intermediate','Advanced'][drill.difficulty]||'Training';
-    var videoHtml=drill.video?'<a href="'+esc(drill.video)+'" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:7px;color:var(--gold);text-decoration:none;font-size:0.75rem;margin-top:10px">Watch external demo</a>':'';
-    var stateButtons=stateOrder.map(function(s){
+    var coach=plainCoach(cat,drill);
+    var videoHtml=drill.video?'<a href="'+esc(drill.video)+'" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:7px;color:var(--gold);text-decoration:none;font-size:0.75rem">Watch external demo</a>':'';
+    var stateButtons=['practiced','clean','mastered'].map(function(s){
       return '<button class="doing-state-btn '+(s==='mastered'?'mastered ':'')+(state===s?'active':'')+'" onclick="setDoingDrillState(\''+esc(catId)+'\',\''+esc(drillId)+'\',\''+s+'\')">'+stateLabels[s]+'</button>';
     }).join('');
 
     el.innerHTML='<div class="doing-drill-page">'+
       '<button class="back-btn" onclick="showDoing()">&larr; Back</button>'+
-      '<div class="doing-drill-layout">'+
-        '<div class="doing-drill-card">'+
-          '<div class="doing-kicker">'+esc(lv.label)+' &middot; '+esc(lv.name)+'</div>'+
-          '<h2>'+esc(drill.title)+'</h2>'+
-          '<div style="display:flex;gap:7px;margin:8px 0 14px;flex-wrap:wrap">'+
-            '<span class="tag">'+esc(cat.title)+'</span>'+
-            '<span class="tag">'+esc(diffLabel)+'</span>'+
-            '<span class="tag">'+esc(drill.style)+'</span>'+
-            '<span class="tag">BPM '+esc(drill.bpm)+'</span>'+
-            '<span class="tag">'+esc(drill.duration)+'</span>'+
-          '</div>'+
-          '<div style="line-height:1.65;font-size:0.85rem;color:var(--text);border-top:1px solid var(--border);padding-top:14px">'+drill.body+'</div>'+
-          '<div class="doing-practice-grid">'+
-            '<div class="doing-practice-box"><b>Feel</b><p>'+esc(coach.feel)+'</p></div>'+
-            '<div class="doing-practice-box"><b>Listen</b><p>'+esc(coach.listen)+'</p></div>'+
-            '<div class="doing-practice-box"><b>Watch For</b><p>'+esc(coach.mistake)+'</p></div>'+
-            '<div class="doing-practice-box"><b>Pass Condition</b><p>'+esc(coach.pass)+'</p></div>'+
-          '</div>'+
-          '<div style="font-size:0.66rem;color:var(--dim);font-style:italic">Source: '+esc(drill.source)+'</div>'+
+      '<div class="doing-drill-card doing-drill-card--clean">'+
+        '<div class="doing-kicker">'+esc(cat.title)+' &middot; '+esc(lv.name)+'</div>'+
+        '<h2>'+esc(drill.title)+'</h2>'+
+        '<div style="display:flex;gap:6px;margin:8px 0 16px;flex-wrap:wrap">'+
+          '<span class="tag">BPM '+esc(drill.bpm)+'</span>'+
+          '<span class="tag">'+esc(drill.duration)+'</span>'+
           videoHtml+
-          '<div class="doing-state-buttons">'+stateButtons+'</div>'+
         '</div>'+
-        '<aside class="doing-guide-card">'+
-          '<img src="images/character-full/Thinking.png" alt="">'+
-          '<p>'+esc(coach.guide)+'<br><br>'+esc(coach.setup)+'</p>'+
-        '</aside>'+
+        '<div class="doing-drill-sections">'+
+          '<div class="doing-drill-section"><div class="ds-label">What to do</div><div class="ds-text">'+esc(coach.whatDo)+'</div></div>'+
+          '<div class="doing-drill-section"><div class="ds-label">How to do it</div><div class="ds-text">'+esc(coach.howDo)+'</div></div>'+
+          '<div class="doing-drill-section"><div class="ds-label">How long</div><div class="ds-text">'+esc(coach.howLong)+'</div></div>'+
+          '<div class="doing-drill-section"><div class="ds-label">Listen / feel</div><div class="ds-text">'+esc(coach.listen)+'</div></div>'+
+          '<div class="doing-drill-section"><div class="ds-label">Common mistake</div><div class="ds-text">'+esc(coach.mistake)+'</div></div>'+
+          '<div class="doing-drill-section"><div class="ds-label">Pass condition</div><div class="ds-text">'+esc(coach.pass)+'</div></div>'+
+        '</div>'+
+        '<div class="doing-drill-adjust">'+
+          '<button class="doing-adj-btn" data-adj="easier">&#8592; Easier</button>'+
+          '<button class="doing-adj-btn" data-adj="harder">Harder &#8594;</button>'+
+        '</div>'+
+        '<div class="doing-state-buttons">'+stateButtons+'</div>'+
       '</div>'+
     '</div>';
   };
@@ -2953,68 +3034,60 @@ function showDoing(){
   }
   var nextDrill=findNextDrill();
 
-  /* === Safe drill for Today card === */
-  var todayDrill=nextDrill||{cat:D.categories[0],drill:D.categories[0].drills[0]};
-  var td=todayDrill.drill;
-  var tdCat=todayDrill.cat;
-  var tdLevel=getDoingLevel(td);
-  var tdLvObj=levels.find(function(l){return l.level===tdLevel;})||levels[0];
-  var whyMap={picking:'The right hand is the drummer. Before fancy chords, it must hold time.',fretting:'The left hand learns position and pressure. Clean contact before speed.',rhythm:'The pulse lives in the body. Keep the hand moving like a pendulum.',scales:'The fretboard is a map. Scales are the roads that connect every note.',arpeggios:'Arpeggios are chords turned into movement. One note at a time.',speed:'Speed comes from removing effort, not adding it. Short bursts, loose hands.',styles:'Every style has an accent. Copy the feel first, then the notes.',fundamentals:'Know your instrument. The parts, the sound, the language.'};
-  var tdWhy=whyMap[tdCat.id]||'Every drill is a small body quest. Practise slowly, then mark what changed.';
-  var tdPass='Play it cleanly three times at a steady pace, then mark it.';
-  if(tdCat.id==='rhythm') tdPass='Loop it for 30 seconds without losing the pulse.';
-  if(tdCat.id==='speed') tdPass='Find the fastest clean tempo, then practise 10 BPM below it.';
-  if(tdCat.id==='styles') tdPass='Record one loop and check whether the style is recognisable.';
-
   /* === State === */
   var doingView='entry';
   var activeMode='training';
   var activeExpTab='notes';
 
-  /* === Entry panel HTML === */
+  /* === Focus category mapping === */
+  var focusCats=[
+    {id:'right-hand',label:'Right Hand',icon:'&#x1F44B;',categories:['picking','styles','speed']},
+    {id:'left-hand',label:'Left Hand',icon:'&#x270B;',categories:['fretting','arpeggios']},
+    {id:'rhythm',label:'Rhythm',icon:'&#x1F3B5;',categories:['rhythm']},
+    {id:'chords',label:'Chords',icon:'&#x1F3B8;',categories:['arpeggios','fretting']},
+    {id:'scales',label:'Scales',icon:'&#x1F3B9;',categories:['scales']},
+    {id:'fretboard',label:'Fretboard Map',icon:'&#x1F5FA;',categories:[]}
+  ];
+
+  /* === Entry panel === */
   function renderEntry(){
-    return '<div class="doing-entry">'+
-      '<h3>What are you here to do?</h3>'+
-      '<div class="doing-entry-grid">'+
-        '<div class="doing-entry-card" data-view="training"><div class="ec-glow"></div><div class="ec-icon">&#x1F4AA;</div><div class="ec-title">Train Today</div><div class="ec-desc">Pick a drill, practise your body, mark what changed.</div></div>'+
-        '<div class="doing-entry-card" data-view="explorer"><div class="ec-glow"></div><div class="ec-icon">&#x1F5FA;</div><div class="ec-title">Explore The Fretboard</div><div class="ec-desc">See notes, scales, and chords as a map you can read.</div></div>'+
-        '<div class="doing-entry-card" data-view="chords"><div class="ec-glow"></div><div class="ec-icon">&#x1F3B6;</div><div class="ec-title">Find A Chord / Scale</div><div class="ec-desc">Look up a shape, see where it lives on the neck.</div></div>'+
-        '<div class="doing-entry-card" data-view="review"><div class="ec-glow"></div><div class="ec-icon">&#x1F4CA;</div><div class="ec-title">Review My Progress</div><div class="ec-desc">See what you have touched, mastered, and where to go next.</div></div>'+
+    /* Find recommended drill */
+    var recDrill=nextDrill;
+    var recHtml='';
+    if(recDrill){
+      var rd=recDrill.drill;
+      var rc=recDrill.cat;
+      var rl=getDoingLevel(rd);
+      var rlObj=levels.find(function(l){return l.level===rl;})||levels[0];
+      recHtml='<div class="doing-rec-drill" data-cat="'+esc(rc.id)+'" data-drill="'+esc(rd.id)+'">'+
+        '<div class="rec-label">Recommended next</div>'+
+        '<div class="rec-title">'+esc(rd.title)+'</div>'+
+        '<div class="rec-meta">'+esc(rc.title)+' &middot; '+esc(rlObj.name)+' &middot; '+esc(rd.duration||'5 min')+'</div>'+
+      '</div>';
+    }
+
+    var html='<div class="doing-calm">'+
+      '<h2 style="font-family:Cinzel,serif;color:var(--gold);font-size:1.1rem;margin:0 0 4px">Doing</h2>'+
+      '<p style="color:var(--dim);font-size:0.8rem;margin:0 0 16px">Train one physical skill at a time.</p>'+
+      '<div class="doing-focus-grid">';
+    focusCats.forEach(function(fc){
+      html+='<button class="doing-focus-btn" data-focus="'+fc.id+'">'+fc.icon+' '+fc.label+'</button>';
+    });
+    html+='</div>'+
+      recHtml+
+      '<div class="doing-quick-links">'+
+        '<button class="doing-link-btn" data-action="open-map">&#9654; Open Training Map</button>'+
+        '<button class="doing-link-btn" data-action="open-explorer">&#9654; Open Fretboard Explorer</button>'+
       '</div>'+
     '</div>';
+    return html;
   }
 
-  /* === Today card HTML === */
-  function renderToday(){
-    return '<div class="doing-today">'+
-      '<h3>Today&#x2019;s Training</h3>'+
-      '<div class="doing-today-card">'+
-        '<div class="tt-title">'+esc(td.title)+'</div>'+
-        '<div class="tt-meta">'+esc(tdCat.title)+' &middot; Level '+tdLevel+' ('+esc(tdLvObj.name)+') &middot; '+esc(td.duration||'5 min')+'</div>'+
-        '<div class="tt-why">'+esc(tdWhy)+'</div>'+
-        '<div class="tt-pass"><b>Pass:</b> '+esc(tdPass)+'</div>'+
-        '<div class="doing-today-btns">'+
-          '<button data-action="start-drill">Start Drill</button>'+
-          '<button data-action="show-fretboard">Show On Fretboard</button>'+
-          '<button data-action="make-easier">Make Easier</button>'+
-        '</div>'+
-      '</div>'+
-    '</div>';
-  }
-
-  /* === Review card HTML === */
-  function renderReview(){
-    var recLevel=mastered<5?1:mastered<15?2:mastered<30?3:mastered<50?4:6;
-    var recLabel=levels.find(function(l){return l.level===recLevel;})||levels[0];
-    return '<div class="doing-review">'+
-      '<h3>Your Progress</h3>'+
-      '<div class="doing-review-grid">'+
-        '<div class="doing-review-stat"><strong>'+touched+'</strong><span>Drills Touched</span></div>'+
-        '<div class="doing-review-stat"><strong>'+mastered+'</strong><span>Drills Mastered</span></div>'+
-        '<div class="doing-review-stat"><strong>'+total+'</strong><span>Total Drills</span></div>'+
-        '<div class="doing-review-stat"><strong>Level '+recLevel+'</strong><span>Recommended: '+esc(recLabel.name)+'</span></div>'+
-        '<div class="doing-review-weak"><div class="rw-label">Weakest Area</div><div class="rw-text">'+(weakest?esc(weakest)+' &mdash; try a few drills here to balance your practice.':'Start training to build your progress profile.')+'</div></div>'+
-      '</div>'+
+  /* === Mode toggle === */
+  function modeToggleHtml(){
+    return '<div class="doing-mode-toggle">'+
+      '<button class="doing-mode-btn'+(activeMode==='training'?' active':'')+'" data-mode="training">Training</button>'+
+      '<button class="doing-mode-btn'+(activeMode==='explorer'?' active':'')+'" data-mode="explorer">Explorer</button>'+
     '</div>';
   }
 
@@ -3041,13 +3114,13 @@ function showDoing(){
         '<div id="exp-note-result" style="color:var(--dim);font-size:0.76rem;min-height:1.4em"></div>'+
         '<div class="doing-exp-fretwrap"><svg id="exp-fretboard-svg" viewBox="0 0 960 280" style="min-width:800px;width:100%;display:block"></svg></div>'+
         '<h3>E/A Highways</h3>'+
-        '<p>The low E and A strings are your root-note landmarks. Every chord and scale starts here.</p>'+
+        '<p>The low E and A strings are your root-note landmarks.</p>'+
         '<div class="doing-exp-highway">'+
-          '<div class="doing-exp-highway-card"><h4>Low E String</h4><div class="note-row">'+
+          '<div class="doing-exp-highway-card"><h4>Low E</h4><div class="note-row">'+
             [{f:0,n:'E',root:true},{f:1,n:'F'},{f:3,n:'G'},{f:5,n:'A',root:true},{f:7,n:'B'},{f:8,n:'C'},{f:10,n:'D'},{f:12,n:'E',root:true}]
               .map(function(o){return '<span class="note-chip'+(o.root?' on-string':'')+'"><b>'+o.f+'</b> '+o.n+'</span>';}).join('')+
           '</div></div>'+
-          '<div class="doing-exp-highway-card"><h4>A String</h4><div class="note-row">'+
+          '<div class="doing-exp-highway-card"><h4>A</h4><div class="note-row">'+
             [{f:0,n:'A',root:true},{f:2,n:'B'},{f:3,n:'C'},{f:5,n:'D'},{f:7,n:'E'},{f:8,n:'F'},{f:10,n:'G'},{f:12,n:'A',root:true}]
               .map(function(o){return '<span class="note-chip'+(o.root?' on-string':'')+'"><b>'+o.f+'</b> '+o.n+'</span>';}).join('')+
           '</div></div>'+
@@ -3068,7 +3141,7 @@ function showDoing(){
           '<span class="string-line">A</span>|-<span class="fret-num">5</span>-<span class="fret-num">7</span>----------------|\n'+
           '<span class="string-line">E</span>|-<span class="fret-num">5</span>-<span class="fret-num">8</span>----------------|'+
         '</div>'+
-        '<p class="doing-exp-pent-desc">Pentatonic means five notes. A minor pentatonic gives us <b style="color:var(--gold)">A, C, D, E, and G</b>. This is the first shape every guitarist learns. It lives at fret 5 and works over a thousand songs.</p>';
+        '<p class="doing-exp-pent-desc">Five notes: <b style="color:var(--gold)">A, C, D, E, G</b>. First shape every guitarist learns.</p>';
     }
     if(activeExpTab==='chords'){
       content='<h3>E Major</h3>'+
@@ -3090,18 +3163,17 @@ function showDoing(){
             '<circle cx="52" cy="70" r="7" fill="var(--gold)"/><text x="52" y="74" fill="var(--bg)" font-family="JetBrains Mono" font-size="9" text-anchor="middle" font-weight="700">2</text>'+
             '<circle cx="60" cy="95" r="7" fill="var(--gold)"/><text x="60" y="99" fill="var(--bg)" font-family="JetBrains Mono" font-size="9" text-anchor="middle" font-weight="700">2</text>'+
             '<circle cx="44" cy="120" r="7" fill="var(--gold)"/><text x="44" y="124" fill="var(--bg)" font-family="JetBrains Mono" font-size="9" text-anchor="middle" font-weight="700">1</text>'+
-            '<text x="115" y="15" fill="var(--dim)" font-family="JetBrains Mono" font-size="7">Frets 0-3</text>'+
           '</svg>'+
         '</div>'+
-        '<div style="text-align:center;font-family:JetBrains Mono,monospace;color:var(--gold);font-size:0.75rem;margin:8px 0">E major: 0 &middot; 2 &middot; 2 &middot; 1 &middot; 0 &middot; 0</div>'+
-        '<div class="doing-exp-placeholder">Chord identifier coming next: select strings and frets to name the chord.</div>';
+        '<div style="text-align:center;font-family:JetBrains Mono,monospace;color:var(--gold);font-size:0.75rem;margin:8px 0">0 &middot; 2 &middot; 2 &middot; 1 &middot; 0 &middot; 0</div>'+
+        '<div class="doing-exp-placeholder">Chord identifier coming next.</div>';
     }
     if(activeExpTab==='identify'){
       content='<h3>Chord Identifier</h3>'+
-        '<div class="doing-exp-placeholder">Coming next: click notes on the fretboard and the tool will name the chord. For now, explore Notes, Scales, and Chords to build your vocabulary.</div>';
+        '<div class="doing-exp-placeholder">Coming next.</div>';
     }
     if(activeExpTab==='tab'){
-      content='<h3>Tab + Notation Bridge</h3>'+
+      content='<h3>Tab + Notation</h3>'+
         '<p>Tab tells you <b style="color:var(--gold)">where</b>. Notation tells you <b style="color:var(--gold)">what and when</b>.</p>'+
         '<div class="doing-exp-tabblock">'+
           '<span class="string-line">e</span>|---<span class="fret-num">0</span>-----<span class="fret-num">2</span>-----<span class="fret-num">0</span>---|\n'+
@@ -3111,20 +3183,12 @@ function showDoing(){
           '<span class="string-line">A</span>|---------------------------------|\n'+
           '<span class="string-line">E</span>|---------------------------------|'+
         '</div>'+
-        '<p style="color:var(--dim);font-size:0.76rem">Open &#8594; fret 2 &#8594; open. Three notes, one string. This is what tab looks like: six lines for six strings, numbers for frets.</p>';
+        '<p style="color:var(--dim);font-size:0.76rem">Open &#8594; fret 2 &#8594; open.</p>';
     }
 
     return '<div class="doing-explore">'+
       '<div class="doing-exp-tabs">'+tabBtns+'</div>'+
       '<div class="doing-exp-panel">'+content+'</div>'+
-    '</div>';
-  }
-
-  /* === Mode toggle === */
-  function modeToggleHtml(){
-    return '<div class="doing-mode-toggle">'+
-      '<button class="doing-mode-btn'+(activeMode==='training'?' active':'')+'" data-mode="training">Training</button>'+
-      '<button class="doing-mode-btn'+(activeMode==='explorer'?' active':'')+'" data-mode="explorer">Explorer</button>'+
     '</div>';
   }
 
@@ -3134,29 +3198,21 @@ function showDoing(){
     '<button class="back-btn" onclick="backToMap()">&larr; Map</button>'+
     '<div class="doing-hero">'+
       '<img class="doing-hero-icon" src="images/doing-icon.png" alt="">'+
-      '<div><div class="doing-kicker">Do Node &middot; Fretboard Training Chamber</div>'+
+      '<div><div class="doing-kicker">Do Node &middot; Training Chamber</div>'+
       '<h2>'+esc(D.title)+'</h2>'+
-      '<p>The guitar neck becomes the map: six real strings, eight training frets, and each dot opens a coached physical drill.</p></div>'+
+      '<p style="font-size:0.82rem;color:var(--dim)">'+esc(D.subtitle||'Train one physical skill at a time.')+'</p></div>'+
       '<div class="doing-stat-strip">'+
         '<div class="doing-stat"><strong>'+mastered+'</strong><span>mastered</span></div>'+
         '<div class="doing-stat"><strong>'+touched+'</strong><span>touched</span></div>'+
-        '<div class="doing-stat"><strong>'+total+'</strong><span>drills</span></div>'+
       '</div>'+
     '</div>';
 
     if(doingView==='entry'){
       html+=renderEntry();
     } else if(doingView==='training'){
-      html+=modeToggleHtml();
-      html+=renderToday();
-      html+='<div class="doing-map-guide"><b>Each dot is a tiny body quest.</b> Touched means you have met it. Mastered means you can return to it cleanly. Choose one, practise slowly, then mark what changed.</div>';
       html+='<div id="doing-fretboard">'+render()+'</div>';
     } else if(doingView==='explorer'){
-      html+=modeToggleHtml();
       html+=renderExplorerView();
-    } else if(doingView==='review'){
-      html+=modeToggleHtml();
-      html+=renderReview();
     }
 
     html+='</div>';
@@ -3244,9 +3300,9 @@ function showDoing(){
         else {
           var positions=[];
           STRING_NAMES.forEach(function(name,si){
-            for(var ff=0;ff<=12;ff++){ if(noteFromMidi(TUNING[si]+ff)===highlightNote) positions.push(name+' string, fret '+ff); }
+            for(var ff=0;ff<=12;ff++){ if(noteFromMidi(TUNING[si]+ff)===highlightNote) positions.push(name+' fret '+ff); }
           });
-          res.innerHTML='<b style="color:var(--gold)">'+highlightNote+'</b> appears at: '+positions.join(' &middot; ');
+          res.innerHTML='<b style="color:var(--gold)">'+highlightNote+'</b>: '+positions.join(', ');
         }
       }
     }
@@ -3263,26 +3319,55 @@ function showDoing(){
 
   /* === Bind controls === */
   function bindControls(){
-    el.querySelectorAll('.doing-entry-card').forEach(function(card){
-      card.onclick=function(){
-        var v=card.getAttribute('data-view');
-        if(v==='chords'){doingView='explorer';activeExpTab='chords';}
-        else if(v==='training'||v==='explorer'||v==='review'){doingView=v;}
+    /* Focus buttons */
+    el.querySelectorAll('.doing-focus-btn').forEach(function(btn){
+      btn.onclick=function(){
+        var focusId=btn.getAttribute('data-focus');
+        if(focusId==='fretboard'){doingView='explorer';activeExpTab='notes';}
+        else{
+          /* Filter by focus category */
+          var fc=focusCats.find(function(f){return f.id===focusId;});
+          if(fc&&fc.categories.length){
+            /* Find first matching category for filter */
+            activeStyle='all';
+            activeLevel='all';
+            doingView='training';
+          } else {
+            doingView='training';
+          }
+        }
         shell();
       };
     });
+    /* Recommended drill */
+    el.querySelectorAll('.doing-rec-drill').forEach(function(card){
+      card.onclick=function(){showDoingDrill(card.getAttribute('data-cat'),card.getAttribute('data-drill'));};
+    });
+    /* Quick links */
+    el.querySelectorAll('.doing-link-btn').forEach(function(btn){
+      btn.onclick=function(){
+        var action=btn.getAttribute('data-action');
+        if(action==='open-map'){doingView='training';}
+        else if(action==='open-explorer'){doingView='explorer';activeExpTab='notes';}
+        shell();
+      };
+    });
+    /* Mode toggle */
     el.querySelectorAll('.doing-mode-btn').forEach(function(btn){
       btn.onclick=function(){ activeMode=btn.dataset.mode; doingView=activeMode; shell(); };
     });
+    /* Explorer tabs */
     el.querySelectorAll('.doing-exp-tab').forEach(function(btn){
       btn.onclick=function(){ activeExpTab=btn.getAttribute('data-etab'); shell(); };
     });
-    var startDrillBtn=el.querySelector('[data-action="start-drill"]');
-    if(startDrillBtn){startDrillBtn.onclick=function(){showDoingDrill(tdCat.id,td.id);};}
-    var showFretBtn=el.querySelector('[data-action="show-fretboard"]');
-    if(showFretBtn){showFretBtn.onclick=function(){doingView='training';shell();};}
-    var easierBtn=el.querySelector('[data-action="make-easier"]');
-    if(easierBtn){easierBtn.onclick=function(){alert('Easier mode coming soon. For now, try slowing the BPM.');};}
+    /* Drill adjust buttons */
+    el.querySelectorAll('.doing-adj-btn').forEach(function(btn){
+      btn.onclick=function(){
+        var adj=btn.getAttribute('data-adj');
+        if(adj==='easier') alert('Easier mode coming soon. Try slowing the BPM.');
+        if(adj==='harder') alert('Harder mode coming soon. Try adding accents or increasing BPM.');
+      };
+    });
     if(doingView!=='training') return;
     var styleFilters=document.getElementById('style-filters');
     if(styleFilters){
@@ -3314,17 +3399,6 @@ function showDoing(){
 
   shell();
 }
-
-window.setDoingDrillState=function(catId,drillId,state){
-  var progress=JSON.parse(localStorage.getItem('hearth-doing-progress')||'{}');
-  progress[drillId]=state;
-  localStorage.setItem('hearth-doing-progress',JSON.stringify(progress));
-  showDoingDrill(catId,drillId);
-};
-
-window.completeDoingDrill=function(catId,drillId){
-  window.setDoingDrillState(catId,drillId,'mastered');
-};
 
 // ═══ KNOWING NODE - BOOKSHELF UI ═══
 function showKnowing(){
