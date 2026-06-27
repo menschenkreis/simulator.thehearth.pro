@@ -597,22 +597,33 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 .doing-map-zone{fill:rgba(212,175,105,0.02);stroke:transparent;stroke-width:0;cursor:pointer;transition:fill 0.3s,stroke 0.3s;}
 .doing-map-zone:hover{fill:rgba(212,175,105,0.12);stroke:rgba(212,175,105,0.45);stroke-width:1.5;}
 .doing-map-zone.debug{fill:rgba(212,175,105,0.08);stroke:rgba(212,175,105,0.6);stroke-width:2;stroke-dasharray:6 3;}
-.doing-map-bubble{position:absolute;z-index:10;background:rgba(13,11,8,0.92);border:1px solid rgba(212,175,105,0.4);border-radius:8px;padding:10px 14px;pointer-events:none;opacity:0;transition:opacity 0.25s;max-width:220px;box-shadow:0 8px 24px rgba(0,0,0,0.5);}
-.doing-map-bubble.show{opacity:1;}
-.doing-map-bubble .mb-label{font-family:Cinzel,serif;color:var(--gold);font-size:0.82rem;margin-bottom:3px;}
-.doing-map-bubble .mb-hint{color:var(--dim);font-size:0.7rem;line-height:1.4;}
-.doing-map-title{font-family:JetBrains Mono,monospace;color:rgba(212,175,105,0.55);font-size:0.5rem;letter-spacing:0.1em;text-transform:uppercase;pointer-events:none;transition:fill 0.3s;}
-.doing-map-zone:hover ~ .doing-map-title-zone{fill:var(--gold);}
-.doing-map-debug-btn{position:absolute;top:10px;right:10px;z-index:20;padding:6px 12px;background:rgba(13,11,8,0.8);border:1px solid rgba(212,175,105,0.3);border-radius:5px;color:var(--dim);font-family:JetBrains Mono,monospace;font-size:0.55rem;letter-spacing:0.08em;cursor:pointer;transition:all 0.15s;}
-.doing-map-debug-btn:hover{border-color:var(--gold);color:var(--gold);}
-.doing-map-debug-btn.active{background:var(--gold);color:var(--bg);}
-.doing-map-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
-.doing-map-header h2{font-family:Cinzel,serif;color:var(--gold);font-size:1.1rem;margin:0;}
-.doing-map-header p{color:var(--dim);font-size:0.76rem;margin:0;}
+/* Training seals */
+.doing-seal{position:absolute;width:38px;height:38px;border-radius:50%;border:1.5px solid rgba(212,175,105,0.3);background:rgba(13,11,8,0.6);display:flex;align-items:center;justify-content:center;pointer-events:none;transition:all 0.3s;z-index:5;}
+.doing-seal .seal-icon{font-family:Cinzel,serif;color:rgba(212,175,105,0.5);font-size:0.72rem;font-weight:600;transition:color 0.3s,text-shadow 0.3s;}
+.doing-seal::after{content:'';position:absolute;inset:-4px;border-radius:50%;border:1px solid rgba(212,175,105,0.08);animation:seal-pulse 3s ease-in-out infinite;pointer-events:none;}
+.doing-seal.bright{border-color:rgba(212,175,105,0.7);background:rgba(212,175,105,0.1);}
+.doing-seal.bright .seal-icon{color:#d4af69;text-shadow:0 0 10px rgba(212,175,105,0.4);}
+@keyframes seal-pulse{0%,100%{opacity:0.3;transform:scale(1)}50%{opacity:0.7;transform:scale(1.08)}}
+/* Guide card */
+.doing-map-info{position:absolute;bottom:24px;left:24px;z-index:10;background:rgba(13,11,8,0.88);border:1px solid rgba(212,175,105,0.2);border-radius:10px;padding:14px 18px;max-width:260px;pointer-events:none;transition:border-color 0.3s;backdrop-filter:blur(4px);}
+.doing-map-info .gc-title{font-family:Cinzel,serif;color:var(--gold);font-size:0.82rem;margin-bottom:4px;}
+.doing-map-info .gc-body{color:var(--dim);font-size:0.72rem;line-height:1.5;}
+.doing-map-info.active{border-color:rgba(212,175,105,0.45);}
+/* Title overlay */
+.doing-map-title-overlay{position:absolute;top:18px;left:20px;z-index:10;pointer-events:none;}
+.doing-map-title-overlay h2{font-family:Cinzel,serif;color:var(--gold);font-size:1.15rem;margin:0 0 2px;text-shadow:0 2px 12px rgba(0,0,0,0.6);}
+.doing-map-title-overlay p{color:rgba(212,175,105,0.45);font-family:JetBrains Mono,monospace;font-size:0.55rem;letter-spacing:0.08em;margin:0;text-shadow:0 1px 8px rgba(0,0,0,0.5);}
+/* Debug button - hidden by default */
+.doing-map-debug-btn{position:absolute;top:10px;right:10px;z-index:20;width:26px;height:26px;padding:0;background:rgba(13,11,8,0.5);border:1px solid rgba(212,175,105,0.15);border-radius:50%;color:rgba(212,175,105,0.3);font-size:0.65rem;cursor:pointer;transition:all 0.15s;display:flex;align-items:center;justify-content:center;opacity:0.4;}
+.doing-map-debug-btn:hover{border-color:rgba(212,175,105,0.5);color:var(--gold);opacity:1;}
+.doing-map-debug-btn.active{background:var(--gold);color:var(--bg);border-color:var(--gold);opacity:1;}
 @media(max-width:640px){
-  .doing-map-bubble{max-width:160px;padding:8px 10px;}
-  .doing-map-bubble .mb-label{font-size:0.72rem;}
-  .doing-map-bubble .mb-hint{font-size:0.62rem;}
+  .doing-map-info{bottom:12px;left:12px;max-width:200px;padding:10px 14px;}
+  .doing-map-info .gc-title{font-size:0.72rem;}
+  .doing-map-info .gc-body{font-size:0.64rem;}
+  .doing-map-title-overlay h2{font-size:0.95rem;}
+  .doing-seal{width:30px;height:30px;}
+  .doing-seal .seal-icon{font-size:0.6rem;}
 }
 
 .node-info{
@@ -3225,51 +3236,57 @@ function showDoing(){
   var guitarZones=[
     {
       id:'left-hand',
-      label:'Left Hand / Fretboard',
+      label:'Left Hand',
       hint:'Fretboard drills — chromatic, legato, barre, stretches',
       points:'335,28 495,120 520,180 395,260 300,195 310,115',
       categories:['fretting','arpeggios'],
-      view:'training'
+      view:'training',
+      seal:{icon:'L',x:'32%',y:'18%'}
     },
     {
       id:'right-hand',
-      label:'Right Hand / Strings',
+      label:'Right Hand',
       hint:'Picking, strumming, rest stroke, free stroke, tone',
       points:'690,230 820,200 870,320 830,440 710,420 660,330',
       categories:['picking','speed'],
-      view:'training'
+      view:'training',
+      seal:{icon:'R',x:'63%',y:'32%'}
     },
     {
       id:'rhythm',
-      label:'Rhythm / Body',
-      hint:'Rhythm chamber — strumming, metronome, groove, feel',
+      label:'Rhythm',
+      hint:'Strumming, metronome, groove, feel',
       points:'520,340 680,340 720,520 660,680 480,640 440,460',
       categories:['rhythm'],
-      view:'training'
+      view:'training',
+      seal:{icon:'\u266A',x:'50%',y:'55%'}
     },
     {
       id:'chords',
-      label:'Chords / Shapes',
+      label:'Chords',
       hint:'Chord diagrams, chord changes, barre shapes, inversions',
       points:'400,195 520,185 580,290 560,370 460,380 395,300',
       categories:['arpeggios','fretting'],
-      view:'training'
+      view:'training',
+      seal:{icon:'C',x:'40%',y:'30%'}
     },
     {
       id:'scales',
-      label:'Scales / Patterns',
+      label:'Scales',
       hint:'Scale explorer, pentatonic boxes, modes, patterns',
       points:'170,18 340,25 380,100 340,200 260,220 140,140',
       categories:['scales'],
-      view:'training'
+      view:'training',
+      seal:{icon:'S',x:'21%',y:'12%'}
     },
     {
       id:'tuning',
-      label:'Map / Tuning / Notes',
+      label:'Map / Tuning',
       hint:'Fretboard explorer, note finder, tuning, E/A highways',
       points:'40,5 160,15 180,120 150,180 60,135 30,55',
       categories:[],
-      view:'explorer'
+      view:'explorer',
+      seal:{icon:'\u2699',x:'8%',y:'8%'}
     }
   ];
 
@@ -3329,34 +3346,29 @@ function showDoing(){
         'onclick="enterDoingZone(\''+esc(zone.id)+'\')"/>';
     });
 
-    /* Subtle zone labels (shown only on hover via JS) */
-    var svgLabels='';
-    var labelPositions={
-      'left-hand':{x:410,y:135},
-      'right-hand':{x:765,y:320},
-      'rhythm':{x:590,y:500},
-      'chords':{x:490,y:285},
-      'scales':{x:255,y:115},
-      'tuning':{x:105,y:90}
-    };
+    /* Training seals */
+    var seals='';
     guitarZones.forEach(function(zone){
-      var p=labelPositions[zone.id]||{x:0,y:0};
-      svgLabels+='<text class="doing-map-title" data-zone-label="'+esc(zone.id)+'" '+
-        'x="'+p.x+'" y="'+p.y+'" text-anchor="middle" dominant-baseline="central" '+
-        'font-family="JetBrains Mono,monospace" font-size="8" fill="rgba(212,175,105,0.55)" '+
-        'letter-spacing="1" text-transform="uppercase" pointer-events="none" style="text-transform:uppercase">'+esc(zone.label)+'</text>';
+      if(!zone.seal)return;
+      seals+='<div class="doing-seal" data-seal="'+esc(zone.id)+'" style="left:'+esc(zone.seal.x)+';top:'+esc(zone.seal.y)+'">'+
+        '<span class="seal-icon">'+zone.seal.icon+'</span></div>';
     });
 
     var html='<div class="doing-map-wrap" id="doing-map-container">'+
       '<img src="images/doing-guitar-map.png" alt="Guitar training map" draggable="false">'+
       '<svg class="doing-map-svg" viewBox="0 0 1280 960" preserveAspectRatio="xMidYMid meet">'+
-        svgZones+svgLabels+
+        svgZones+
       '</svg>'+
-      '<div class="doing-map-bubble" id="doing-map-bubble">'+
-        '<div class="mb-label"></div>'+
-        '<div class="mb-hint"></div>'+
+      seals+
+      '<div class="doing-map-title-overlay">'+
+        '<h2>Doing</h2>'+
+        '<p>The guitar body is the training map.</p>'+
       '</div>'+
-      '<button class="doing-map-debug-btn'+(doingDebug?' active':'')+'" onclick="toggleDoingDebug()">'+(doingDebug?'DEBUG ON':'debug')+'</button>'+
+      '<div class="doing-map-info" id="doing-map-info">'+
+        '<div class="gc-title">Choose a training chamber</div>'+
+        '<div class="gc-body">Touch part of the guitar: left hand, right hand, rhythm, chords, scales, or map.</div>'+
+      '</div>'+
+      '<button class="doing-map-debug-btn'+(doingDebug?' active':'')+'" onclick="toggleDoingDebug()" title="Debug: show hotspots">⚙</button>'+
     '</div>';
     return html;
   }
@@ -3718,31 +3730,26 @@ function showDoingBubble(zoneEl){
   var zones=window._doingZones||[];
   var zone=zones.find(function(z){return z.id===zoneId;});
   if(!zone)return;
-  var bubble=document.getElementById('doing-map-bubble');
-  if(!bubble)return;
-  bubble.querySelector('.mb-label').textContent=zone.label;
-  bubble.querySelector('.mb-hint').textContent=zone.hint;
-  // Position bubble near the zone
-  var rect=zoneEl.getBoundingClientRect();
-  var container=document.getElementById('doing-map-container');
-  var cRect=container.getBoundingClientRect();
-  var bx=rect.left-cRect.left+rect.width/2;
-  var by=rect.top-cRect.top-10;
-  // Clamp to container
-  if(bx+220>cRect.width) bx=cRect.width-230;
-  if(bx<10) bx=10;
-  if(by<10) by=rect.bottom-cRect.top+10;
-  bubble.style.left=bx+'px';
-  bubble.style.top=by+'px';
-  bubble.classList.add('show');
-  // Highlight zone label
-  var lbl=document.querySelector('[data-zone-label="'+zoneId+'"]');
-  if(lbl) lbl.style.fill='#d4af69';
+  // Brighten matching seal
+  document.querySelectorAll('.doing-seal').forEach(function(s){s.classList.remove('bright');});
+  var seal=document.querySelector('[data-seal="'+zoneId+'"]');
+  if(seal) seal.classList.add('bright');
+  // Update guide card
+  var card=document.getElementById('doing-map-info');
+  if(card){
+    card.classList.add('active');
+    card.querySelector('.gc-title').textContent=zone.label;
+    card.querySelector('.gc-body').textContent=zone.hint;
+  }
 }
 function hideDoingBubble(){
-  var bubble=document.getElementById('doing-map-bubble');
-  if(bubble) bubble.classList.remove('show');
-  document.querySelectorAll('[data-zone-label]').forEach(function(l){l.style.fill='';});
+  document.querySelectorAll('.doing-seal').forEach(function(s){s.classList.remove('bright');});
+  var card=document.getElementById('doing-map-info');
+  if(card){
+    card.classList.remove('active');
+    card.querySelector('.gc-title').textContent='Choose a training chamber';
+    card.querySelector('.gc-body').textContent='Touch part of the guitar: left hand, right hand, rhythm, chords, scales, or map.';
+  }
 }
 function enterDoingZone(zoneId){
   // This function is defined inside showDoing scope — we use a global proxy
