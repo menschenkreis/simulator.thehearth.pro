@@ -3754,12 +3754,13 @@ function showKnowing(){
     lv.totalDone=lv.categories.reduce((a,c)=>a+c.done,0);
   });
 
-  // Determine max unlocked level (level 1 always unlocked, next unlocks when 50% of prev is done)
-  let maxUnlocked=1;
+  // All shelves are browseable — levels are recommendations, not locks
+  // Calculate recommendation level based on progress
+  let recommendedLevel=1;
   for(let i=0;i<levels.length-1;i++){
     const lv=levels[i];
-    if(maxUnlocked>=lv.level && (lv.totalTopics===0 || lv.totalDone/lv.totalTopics>=0.5)){
-      maxUnlocked=levels[i+1].level;
+    if(recommendedLevel>=lv.level && (lv.totalTopics===0 || lv.totalDone/lv.totalTopics>=0.5)){
+      recommendedLevel=levels[i+1].level;
     }
   }
 
@@ -3773,20 +3774,20 @@ function showKnowing(){
 
   // ── Level shelves ──
   levels.forEach((lv,li)=>{
-    const isLocked=lv.level>maxUnlocked;
+    const isRecommended=lv.level>recommendedLevel;
     const pct=lv.totalTopics?Math.round(lv.totalDone/lv.totalTopics*100):0;
-    const opacity=1;
+    const opacity=isRecommended?0.7:1;
 
-    html+='<div style="margin-bottom:24px;opacity:'+opacity+';transition:opacity 0.4s;'+(isLocked?'filter:grayscale(0.8);':'')+'">'+
+    html+='<div style="margin-bottom:24px;opacity:'+opacity+';transition:opacity 0.4s;">'+
       // Shelf header
       '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;padding:0 4px">'+
         '<div>'+
           '<span style="font-family:Josefin Sans,sans-serif;font-size:0.85rem;color:'+lv.color+';letter-spacing:2px;font-weight:500">'+lv.label+'</span>'+
           '<span style="font-family:IBM Plex Sans,sans-serif;font-size:0.7rem;color:var(--dim);margin-left:8px">'+lv.sub+'</span>'+
         '</div>'+
-        (isLocked?
-          '<span style="font-family:Josefin Sans,sans-serif;font-size:0.6rem;color:var(--dim);letter-spacing:1px">\uD83D\uDD12 Complete 50% of Level '+(lv.level-1)+' to unlock</span>':
-          '<span style="font-family:JetBrains Mono,monospace;font-size:0.6rem;color:var(--dim)">'+lv.totalDone+'/'+lv.totalTopics+' read · '+pct+'%</span>'
+        (isRecommended&&lv.level>1?
+          '<span style="font-family:Josefin Sans,sans-serif;font-size:0.6rem;color:var(--dim);letter-spacing:1px">Recommended after Level '+(lv.level-1)+'</span>':
+          '<span style="font-family:JetBrains Mono,monospace;font-size:0.6rem;color:var(--dim)">'+lv.totalDone+'/'+lv.totalTopics+' visited \u00B7 '+pct+'%</span>'
         )+
       '</div>'+
       // Progress bar
@@ -3796,7 +3797,7 @@ function showKnowing(){
 
     // Book carousel
     html+='<div style="position:relative">';
-    if(!isLocked && lv.categories.length>3){
+    if(lv.categories.length>3){
       html+='<button onclick="_scrollShelf(\'shelf-l'+lv.level+'\',-1)" style="position:absolute;left:-8px;top:50%;transform:translateY(-50%);z-index:2;background:var(--card);border:1px solid var(--border);color:var(--dim);width:28px;height:28px;border-radius:50%;cursor:pointer;font-size:0.8rem;display:flex;align-items:center;justify-content:center">\u2039</button>';
     }
 
@@ -3829,10 +3830,9 @@ function showKnowing(){
       const size=bookSizeMap[cat.id]||[155+ci*3,48+ci%3*3];
       const h=size[0]; const w=size[1];
 
-      if(isLocked || !cat.hasTopics){
-        // Greyed out book (locked level or no topics at this level)
-        const disabledTitle=isLocked?cat.title+' - Complete 50% of Level '+(lv.level-1)+' to unlock':cat.title+' - No Level '+lv.level+' topics yet';
-        html+='<div style="width:'+w+'px;height:'+h+'px;background:#2a2622;border:2px solid #333;border-radius:4px;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding:8px 4px 10px;flex-shrink:0;opacity:0.35;cursor:not-allowed" title="'+disabledTitle+'">'+
+      if(!cat.hasTopics){
+        // No topics at this level for this category
+        html+='<div style="width:'+w+'px;height:'+h+'px;background:#2a2622;border:2px solid #333;border-radius:4px;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding:8px 4px 10px;flex-shrink:0;opacity:0.35;cursor:not-allowed" title="'+cat.title+' — No Level '+lv.level+' topics yet">'+
           '<div style="writing-mode:vertical-rl;text-orientation:mixed;font-family:Josefin Sans,sans-serif;font-size:0.6rem;color:#666;text-align:center;line-height:1.1;max-height:'+(h-20)+'px;overflow:hidden;letter-spacing:0.08em;text-transform:uppercase">'+cat.title+'</div>'+
         '</div>';      } else {
         // Real book
@@ -3859,7 +3859,7 @@ function showKnowing(){
 
     html+='</div>'; // carousel
 
-    if(!isLocked && lv.categories.length>3){
+    if(lv.categories.length>3){
       html+='<button onclick="_scrollShelf(\'shelf-l'+lv.level+'\',1)" style="position:absolute;right:-8px;top:50%;transform:translateY(-50%);z-index:2;background:var(--card);border:1px solid var(--border);color:var(--dim);width:28px;height:28px;border-radius:50%;cursor:pointer;font-size:0.8rem;display:flex;align-items:center;justify-content:center">\u203A</button>';
     }
 
@@ -3994,10 +3994,21 @@ window.showKnowingTopic=function(catId,topicId){
         '<strong style="color:'+color+'">Source:</strong> '+topic.source+
       '</div>'+
       '<div style="display:flex;gap:8px;margin-top:16px">'+
+        '<button onclick="markKnowingTopic(\''+catId+'\',\''+topicId+'\')" style="flex:1;background:'+(isDone?'#2ecc71':color)+';color:'+(isDone?'white':'#0d0b08')+';border:none;padding:12px;border-radius:8px;font-family:DM Sans,sans-serif;font-size:0.9rem;font-weight:600;cursor:pointer">'+(isDone?'\u2713 Understood':'Mark as understood')+'</button>'+
         (nextTopic?'<button onclick="showKnowingTopic(\''+catId+'\',\''+nextTopic.id+'\')" style="flex:1;background:'+color+'18;color:'+color+';border:2px solid '+color+'60;padding:12px;border-radius:8px;font-family:DM Sans,sans-serif;font-size:0.9rem;font-weight:600;cursor:pointer">Next: '+nextTopic.title+'</button>':'')+
       '</div>'+
     '</div>'+
   '</div>';
+};
+
+// ═══ KNOWING: MARK AS UNDERSTOOD ═══
+window.markKnowingTopic=function(catId,topicId){
+  const completed=JSON.parse(localStorage.getItem('hearth-knowing-progress')||'{}');
+  completed[topicId]=true;
+  localStorage.setItem('hearth-knowing-progress',JSON.stringify(completed));
+  if(typeof playSfx==='function') playSfx('success');
+  // Re-render the topic view to show the updated state
+  showKnowingTopic(catId,topicId);
 };
 
 // ═══ STUDY NODE - GUIDED STUDY SESSIONS ═══
