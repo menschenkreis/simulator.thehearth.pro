@@ -1471,6 +1471,27 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
   }
   #brain-svg-container { width:100%; }
   #brain-svg-container svg { display:block; width:100%; height:auto; }
+
+/* === KNOWING SHELF SCENE === */
+.knowing-shelf-scene {
+  position: relative;
+  min-height: 240px;
+  padding: 38px 34px 24px;
+  margin-bottom: 28px;
+  border-radius: 8px;
+  background:
+    linear-gradient(to bottom, rgba(0,0,0,0.15), rgba(0,0,0,0.35)),
+    url("images/knowing-shelf-band.png");
+  background-size: 100% 100%;
+  background-position: center;
+  background-repeat: no-repeat;
+  overflow: hidden;
+}
+.knowing-shelf-scene .book-carousel {
+  height: 190px;
+  align-items: flex-end;
+  padding-bottom: 34px;
+}
 </style>
 </head>
 <body>
@@ -3778,7 +3799,7 @@ function showKnowing(){
     const pct=lv.totalTopics?Math.round(lv.totalDone/lv.totalTopics*100):0;
     const opacity=isRecommended?0.7:1;
 
-    html+='<div style="margin-bottom:24px;opacity:'+opacity+';transition:opacity 0.4s;">'+
+    html+='<div class="knowing-shelf-scene" style="opacity:'+opacity+';transition:opacity 0.4s;">'+
       // Shelf header
       '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;padding:0 4px">'+
         '<div>'+
