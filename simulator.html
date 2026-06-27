@@ -2169,7 +2169,7 @@ const NODE_HOVER_DATA={
   create:{img:'images/create-icon.png',label:'Create'}
 };
 
-// Hover handled by CSS — grow + glow on the node itself
+// Hover handled by CSS - grow + glow on the node itself
 function showNodePreview(){
   playSfx('map-click');}
 function hideNodePreview(){}
@@ -2598,13 +2598,13 @@ function showFoundationTopic(topicId){
   // ── INTERACTIVE LESSON OVERRIDE ──
   // Map topic IDs to their lesson data and block labels
   var lessonMap = {
-    'f-how-to-learn':          { lesson: window.LESSON_HOW_TO_LEARN,          label: 'BLOCK 01 — HOW TO LEARN' },
-    'f-learning-a-language':    { lesson: window.LESSON_LEARNING_A_LANGUAGE,   label: 'BLOCK 02 — LEARNING A LANGUAGE' },
-    'f-language-of-music':      { lesson: window.LESSON_LANGUAGE_OF_MUSIC,     label: 'BLOCK 03 — THE LANGUAGE OF MUSIC' },
-    'f-language-of-guitar':     { lesson: window.LESSON_LANGUAGE_OF_GUITAR,    label: 'BLOCK 04 — THE LANGUAGE OF GUITAR' },
-    'f-the-guitar':             { lesson: window.LESSON_THE_GUITAR,            label: 'BLOCK 05 — THE GUITAR' },
-    'f-speaking':               { lesson: window.LESSON_SPEAKING,              label: 'BLOCK 06 — SPEAKING WITH THE GUITAR' },
-    'f-conversations':          { lesson: window.LESSON_CONVERSATIONS,         label: 'BLOCK 07 — GUITAR CONVERSATIONS' }
+    'f-how-to-learn':          { lesson: window.LESSON_HOW_TO_LEARN,          label: 'BLOCK 01 - HOW TO LEARN' },
+    'f-learning-a-language':    { lesson: window.LESSON_LEARNING_A_LANGUAGE,   label: 'BLOCK 02 - LEARNING A LANGUAGE' },
+    'f-language-of-music':      { lesson: window.LESSON_LANGUAGE_OF_MUSIC,     label: 'BLOCK 03 - THE LANGUAGE OF MUSIC' },
+    'f-language-of-guitar':     { lesson: window.LESSON_LANGUAGE_OF_GUITAR,    label: 'BLOCK 04 - THE LANGUAGE OF GUITAR' },
+    'f-the-guitar':             { lesson: window.LESSON_THE_GUITAR,            label: 'BLOCK 05 - THE GUITAR' },
+    'f-speaking':               { lesson: window.LESSON_SPEAKING,              label: 'BLOCK 06 - SPEAKING WITH THE GUITAR' },
+    'f-conversations':          { lesson: window.LESSON_CONVERSATIONS,         label: 'BLOCK 07 - GUITAR CONVERSATIONS' }
   };
   var lessonInfo = lessonMap[topicId];
   if(lessonInfo && lessonInfo.lesson && window.TeachingEngine){
@@ -2620,7 +2620,7 @@ function showFoundationTopic(topicId){
         var progress=JSON.parse(localStorage.getItem('hearth-foundation-progress')||'{}');
         progress[topicId]=true;
         localStorage.setItem('hearth-foundation-progress',JSON.stringify(progress));
-        // Go back to pyramid — let student choose next block
+        // Go back to pyramid - let student choose next block
         showFoundation();
       }
     });
@@ -2712,7 +2712,17 @@ function renderFoundationTopicStep(topicId, stepIndex){
     ? '<button class="foundation-topic-read" id="ttsBtn" onclick="ttsToggle()" type="button">Read aloud</button>'
     : '';
 
-  el.innerHTML = '<div class="foundation-topic-page" style="--accent:' + color + '">'
+  // ── Guide expression by step type ──
+  var stepLabel = (step.label || '').toLowerCase();
+  var guideImg = 'Encouraging.png';
+  var guideSpeech = '';
+  if(stepLabel === 'understand'){ guideImg = 'Neutral.png'; guideSpeech = 'Let me explain this clearly.'; }
+  else if(stepLabel === 'experience'){ guideImg = 'Encouraging.png'; guideSpeech = 'Feel this in your hands. I\u2019ll guide you.'; }
+  else if(stepLabel === 'apply'){ guideImg = 'Thinking.png'; guideSpeech = 'Now try it yourself. Think through each step.'; }
+  else if(stepLabel === 'own'){ guideImg = 'Celebratory.png'; guideSpeech = 'You\u2019ve got this. This fret is yours.'; }
+  else { guideImg = 'Encouraging.png'; }
+
+  el.innerHTML = '<div class="foundation-topic-page" style="--accent:' + color + '">' 
     + '<div class="foundation-topic-wrap">'
     + '<div class="foundation-topic-top">'
     + '<div class="foundation-topic-back" onclick="showFoundation()">&#8592; Foundation Path</div>'
@@ -2720,7 +2730,10 @@ function renderFoundationTopicStep(topicId, stepIndex){
     + '</div>'
     + '<div class="foundation-topic-grid">'
     + '<aside class="foundation-topic-side">'
-    + '<img src="images/character-full/Encouraging.png" alt="Guide character"/>'
+    + '<div class="foundation-topic-guide">'
+    + '<img src="images/character-full/' + guideImg + '" alt="Guide character"/>'
+    + (guideSpeech ? '<div class="foundation-guide-bubble"><p>' + guideSpeech + '</p></div>' : '')
+    + '</div>'
     + '<div class="foundation-topic-meta">'
     + '<span>' + foundationEscape(topic.num) + ' / ' + foundationEscape(F.tag) + (isCompleted ? ' / COMPLETE' : '') + '</span>'
     + '<h2>' + foundationEscape(topic.title) + '</h2>'
@@ -3180,7 +3193,7 @@ function showDoing(){
     {
       id:'left-hand',
       label:'Left Hand',
-      hint:'Fretboard drills — chromatic, legato, barre, stretches',
+      hint:'Fretboard drills - chromatic, legato, barre, stretches',
       points:'335,28 495,120 520,180 395,260 300,195 310,115',
       categories:['fretting','arpeggios'],
       view:'training',
@@ -3695,7 +3708,7 @@ function hideDoingBubble(){
   }
 }
 function enterDoingZone(zoneId){
-  // This function is defined inside showDoing scope — we use a global proxy
+  // This function is defined inside showDoing scope - we use a global proxy
   if(window._enterDoingZone) window._enterDoingZone(zoneId);
 }
 function toggleDoingDebug(){
@@ -3818,7 +3831,7 @@ function showKnowing(){
 
       if(isLocked || !cat.hasTopics){
         // Greyed out book (locked level or no topics at this level)
-        const disabledTitle=isLocked?cat.title+' — Complete 50% of Level '+(lv.level-1)+' to unlock':cat.title+' — No Level '+lv.level+' topics yet';
+        const disabledTitle=isLocked?cat.title+' - Complete 50% of Level '+(lv.level-1)+' to unlock':cat.title+' - No Level '+lv.level+' topics yet';
         html+='<div style="width:'+w+'px;height:'+h+'px;background:#2a2622;border:2px solid #333;border-radius:4px;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding:8px 4px 10px;flex-shrink:0;opacity:0.35;cursor:not-allowed" title="'+disabledTitle+'">'+
           '<div style="writing-mode:vertical-rl;text-orientation:mixed;font-family:Josefin Sans,sans-serif;font-size:0.6rem;color:#666;text-align:center;line-height:1.1;max-height:'+(h-20)+'px;overflow:hidden;letter-spacing:0.08em;text-transform:uppercase">'+cat.title+'</div>'+
         '</div>';      } else {
@@ -4381,29 +4394,29 @@ function _practiceGuideText(prefs,log,nextDrill){
   if(log.length){
     const last=log[log.length-1];
     if(last.feeling==='stuck'){
-      return 'Last time was a wall. That is not failure — it is information. The gradient was too steep. Today: slower tempo, shorter candle, one movement only. Let the body remember clean before fast.';
+      return 'Last time was a wall. That is not failure - it is information. The gradient was too steep. Today: slower tempo, shorter candle, one movement only. Let the body remember clean before fast.';
     }
     if(last.feeling==='nailed'){
       return 'You left last session with clean hands. Good. Today the temptation is to skip ahead. Resist. Prove it again at the same tempo. Mastery is repetition, not novelty.';
     }
     if(last.feeling==='ok'){
-      return 'Last session was somewhere in the middle — not stuck, not clean. That is normal. Today pick one thing from that session and isolate it. Narrow the focus, deepen the work.';
+      return 'Last session was somewhere in the middle - not stuck, not clean. That is normal. Today pick one thing from that session and isolate it. Narrow the focus, deepen the work.';
     }
   }
   if(prefs.time<=5){
     return 'Five minutes. That is enough to wake the hands and remind the fingers where they live. Choose one drill. Play it clean three times. Done. Consistency beats duration.';
   }
   if(prefs.time<=10){
-    return 'Short candle. Choose one small movement — a warm-up, a scale shape, a chord change. Leave while the hands still feel clean. The temple rewards discipline, not marathon sessions.';
+    return 'Short candle. Choose one small movement - a warm-up, a scale shape, a chord change. Leave while the hands still feel clean. The temple rewards discipline, not marathon sessions.';
   }
   if(prefs.time>=30){
     return 'Long candle today. Structure matters: warm-up first, then one focused drill, then musical application (play a song or improvise). End with reflection. Without structure, long sessions become mindless repetition.';
   }
   if(prefs.focus!=='All'&&prefs.focus!==''){
-    return 'The book is open to '+prefs.focus+'. Good — the temple is here to narrow attention, not to do everything. One category, one drill, one clear intention. That is how progress happens.';
+    return 'The book is open to '+prefs.focus+'. Good - the temple is here to narrow attention, not to do everything. One category, one drill, one clear intention. That is how progress happens.';
   }
   if(nextDrill){
-    return 'Begin with '+nextDrill.title+'. Set the metronome slow enough that every note is clean. If you hear buzzing, uneven tone, or tension in the shoulders — stop, breathe, go slower. Speed is a byproduct of clean repetition.';
+    return 'Begin with '+nextDrill.title+'. Set the metronome slow enough that every note is clean. If you hear buzzing, uneven tone, or tension in the shoulders - stop, breathe, go slower. Speed is a byproduct of clean repetition.';
   }
   return 'Choose a candle, open the book, and make one clear promise to the hands. The temple does not ask for perfection. It asks for presence.';
 }
@@ -4551,10 +4564,10 @@ window.showPracticeDrill=function(drillId){
   if(drill.category==='Warm-Up')drillGuide='Warm-up is not optional. It is the bridge between rest and play. Start slow, feel the blood flow, then begin.';
   else if(drill.category==='Technique')drillGuide='Technique is not about speed. It is about control. If you cannot play it slow and clean, you cannot play it fast and clean.';
   else if(drill.category==='Scales')drillGuide='Scales are not exercises. They are vocabulary. Learn the shape, then learn to speak with it.';
-  else if(drill.category==='Chords')drillGuide='Chords are shapes, but they are also sounds. Listen to each string — is every note ringing?';
+  else if(drill.category==='Chords')drillGuide='Chords are shapes, but they are also sounds. Listen to each string - is every note ringing?';
   else if(drill.category==='Rhythm')drillGuide='Rhythm is the foundation. Without it, notes are just noise. Feel the pulse in your body before you play it with your hands.';
   else if(drill.category==='Speed')drillGuide='Speed is a byproduct of clean repetition. Never practice faster than you can play clean. The speed will come.';
-  else if(drill.category==='Ear Training')drillGuide='The ear is the most important tool. Train it like you train your fingers — daily, patiently, with intention.';
+  else if(drill.category==='Ear Training')drillGuide='The ear is the most important tool. Train it like you train your fingers - daily, patiently, with intention.';
   else if(drill.category==='Music')drillGuide='This is why we practice. Not to play exercises, but to play music. Apply what you know.';
   else drillGuide='Sit with this drill. Listen for what changes between the first repetition and the last.';
 
@@ -5145,7 +5158,7 @@ function showCreate(){
         '<span style="font-family:JetBrains Mono;font-size:0.6rem;color:#c45a20;letter-spacing:0.12em;text-transform:uppercase">Create · The Cauldron</span>'+
       '</div>'+
       '<p style="font-size:0.8rem;color:var(--dim);margin:4px 0 0 0;line-height:1.6;max-width:480px">'+
-        'Toss ingredients into the cauldron. Pick one element of songwriting, or mix several. The cauldron brews a creative obstruction — a constraint that pushes you somewhere you wouldn\'t go alone.'+
+        'Toss ingredients into the cauldron. Pick one element of songwriting, or mix several. The cauldron brews a creative obstruction - a constraint that pushes you somewhere you wouldn\'t go alone.'+
       '</p>'+
     '</div>'+
 
@@ -5827,7 +5840,7 @@ function toggleCredits(){
 }
 
 // ═══════════════════════════════════════════════════════
-// INSIGHT STAR — Log "aha moments" during learning
+// INSIGHT STAR - Log "aha moments" during learning
 // ═══════════════════════════════════════════════════════
 function getInsights(){
   try { return JSON.parse(localStorage.getItem('hearth-insights') || '[]'); }
@@ -6244,7 +6257,7 @@ if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js').catc
   });
 })();
 
-// Ambient hearth sound — campfire ambience MP3
+// Ambient hearth sound - campfire ambience MP3
 (function(){
   var audio=document.getElementById('hearthAudio');
   if(!audio)return;
@@ -6354,7 +6367,7 @@ window.playSfx=function(type){
       src.start(now);
       return; // skip osc
     } else if(type==='map-click'){
-      // Warm airy pluck — map level hover/click
+      // Warm airy pluck - map level hover/click
       var notes=[262,294,330,349,392,440,494]; // C4-B4
       var step=(window._mapClickStep=(window._mapClickStep||0)+1);
       var f=notes[step%notes.length];
@@ -6377,7 +6390,7 @@ window.playSfx=function(type){
       ov.connect(og);og.connect(ctx.destination);
       ov.start(now);ov.stop(now+0.25);
     } else if(type==='node-enter'){
-      // Resonant chime with sustain — crossing a threshold
+      // Resonant chime with sustain - crossing a threshold
       var freqs=[392,494,587,784]; // G4 B4 D5 G5 (G major arpeggio)
       freqs.forEach(function(f,i){
         var o=ctx.createOscillator();
@@ -6401,11 +6414,11 @@ window.playSfx=function(type){
       sub.start(now);sub.stop(now+0.35);
       return;
     } else if(type==='drill-click'){
-      // Satisfying resonant pluck — for Foundation blocks and drill entries
+      // Satisfying resonant pluck - for Foundation blocks and drill entries
       var notes=[196,220,247,262,294,330,392]; // G3-A3-B3-C4-D4-E4-G4
       var step=(window._drillClickStep=(window._drillClickStep||0)+1);
       var f=notes[step%notes.length];
-      // Main tone — nylon string quality
+      // Main tone - nylon string quality
       osc.type='triangle';
       osc.frequency.setValueAtTime(f*1.015,now);
       osc.frequency.exponentialRampToValueAtTime(f,now+0.04);
@@ -6433,7 +6446,7 @@ window.playSfx=function(type){
       sub.connect(sg);sg.connect(ctx.destination);
       sub.start(now);sub.stop(now+0.45);
     } else if(type==='lesson-next'){
-      // Gentle ascending chime — clicking next in a lesson
+      // Gentle ascending chime - clicking next in a lesson
       var nf=[392,440,523]; // G4 A4 C5
       nf.forEach(function(f,i){
         var o=ctx.createOscillator();
@@ -6447,7 +6460,7 @@ window.playSfx=function(type){
         o.start(now+i*0.06);o.stop(now+i*0.06+0.45);
       });
     } else if(type==='lesson-wrong'){
-      // Soft dissonant pluck — "not quite" without being harsh
+      // Soft dissonant pluck - "not quite" without being harsh
       osc.type='triangle';
       osc.frequency.setValueAtTime(233,now); // Bb3
       osc.frequency.setValueAtTime(238,now+0.15); // slight detune
@@ -6455,7 +6468,7 @@ window.playSfx=function(type){
       gain.gain.exponentialRampToValueAtTime(0.001,now+0.4);
       osc.start(now);osc.stop(now+0.45);
     } else if(type==='lesson-correct'){
-      // Happy resolution — correct answer
+      // Happy resolution - correct answer
       var cf=[523,659,784]; // C5 E5 G5
       cf.forEach(function(f,i){
         var o=ctx.createOscillator();
