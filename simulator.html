@@ -590,6 +590,31 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
   .doing-exp-tab{flex:none;width:calc(50% - 0.5px);}
 }
 
+/* === DOING GUITAR MAP === */
+.doing-map-wrap{position:relative;max-width:1200px;margin:0 auto;border-radius:10px;overflow:hidden;background:#0d0b08;box-shadow:0 12px 40px rgba(0,0,0,0.5);}
+.doing-map-wrap img{display:block;width:100%;height:auto;pointer-events:none;}
+.doing-map-svg{position:absolute;top:0;left:0;width:100%;height:100%;}
+.doing-map-zone{fill:rgba(212,175,105,0.02);stroke:transparent;stroke-width:0;cursor:pointer;transition:fill 0.3s,stroke 0.3s;}
+.doing-map-zone:hover{fill:rgba(212,175,105,0.12);stroke:rgba(212,175,105,0.45);stroke-width:1.5;}
+.doing-map-zone.debug{fill:rgba(212,175,105,0.08);stroke:rgba(212,175,105,0.6);stroke-width:2;stroke-dasharray:6 3;}
+.doing-map-bubble{position:absolute;z-index:10;background:rgba(13,11,8,0.92);border:1px solid rgba(212,175,105,0.4);border-radius:8px;padding:10px 14px;pointer-events:none;opacity:0;transition:opacity 0.25s;max-width:220px;box-shadow:0 8px 24px rgba(0,0,0,0.5);}
+.doing-map-bubble.show{opacity:1;}
+.doing-map-bubble .mb-label{font-family:Cinzel,serif;color:var(--gold);font-size:0.82rem;margin-bottom:3px;}
+.doing-map-bubble .mb-hint{color:var(--dim);font-size:0.7rem;line-height:1.4;}
+.doing-map-title{font-family:JetBrains Mono,monospace;color:rgba(212,175,105,0.55);font-size:0.5rem;letter-spacing:0.1em;text-transform:uppercase;pointer-events:none;transition:fill 0.3s;}
+.doing-map-zone:hover ~ .doing-map-title-zone{fill:var(--gold);}
+.doing-map-debug-btn{position:absolute;top:10px;right:10px;z-index:20;padding:6px 12px;background:rgba(13,11,8,0.8);border:1px solid rgba(212,175,105,0.3);border-radius:5px;color:var(--dim);font-family:JetBrains Mono,monospace;font-size:0.55rem;letter-spacing:0.08em;cursor:pointer;transition:all 0.15s;}
+.doing-map-debug-btn:hover{border-color:var(--gold);color:var(--gold);}
+.doing-map-debug-btn.active{background:var(--gold);color:var(--bg);}
+.doing-map-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+.doing-map-header h2{font-family:Cinzel,serif;color:var(--gold);font-size:1.1rem;margin:0;}
+.doing-map-header p{color:var(--dim);font-size:0.76rem;margin:0;}
+@media(max-width:640px){
+  .doing-map-bubble{max-width:160px;padding:8px 10px;}
+  .doing-map-bubble .mb-label{font-size:0.72rem;}
+  .doing-map-bubble .mb-hint{font-size:0.62rem;}
+}
+
 .node-info{
   background:var(--card);border:1px solid var(--border);border-radius:10px;
   padding:10px 14px;display:none;position:fixed;
@@ -3191,9 +3216,62 @@ function showDoing(){
   var nextDrill=findNextDrill();
 
   /* === State === */
-  var doingView='entry';
+  var doingView='map';
   var activeMode='training';
   var activeExpTab='notes';
+  var doingDebug=false;
+
+  /* === Guitar Map Zones === */
+  var guitarZones=[
+    {
+      id:'left-hand',
+      label:'Left Hand / Fretboard',
+      hint:'Fretboard drills — chromatic, legato, barre, stretches',
+      points:'335,28 495,120 520,180 395,260 300,195 310,115',
+      categories:['fretting','arpeggios'],
+      view:'training'
+    },
+    {
+      id:'right-hand',
+      label:'Right Hand / Strings',
+      hint:'Picking, strumming, rest stroke, free stroke, tone',
+      points:'690,230 820,200 870,320 830,440 710,420 660,330',
+      categories:['picking','speed'],
+      view:'training'
+    },
+    {
+      id:'rhythm',
+      label:'Rhythm / Body',
+      hint:'Rhythm chamber — strumming, metronome, groove, feel',
+      points:'520,340 680,340 720,520 660,680 480,640 440,460',
+      categories:['rhythm'],
+      view:'training'
+    },
+    {
+      id:'chords',
+      label:'Chords / Shapes',
+      hint:'Chord diagrams, chord changes, barre shapes, inversions',
+      points:'400,195 520,185 580,290 560,370 460,380 395,300',
+      categories:['arpeggios','fretting'],
+      view:'training'
+    },
+    {
+      id:'scales',
+      label:'Scales / Patterns',
+      hint:'Scale explorer, pentatonic boxes, modes, patterns',
+      points:'170,18 340,25 380,100 340,200 260,220 140,140',
+      categories:['scales'],
+      view:'training'
+    },
+    {
+      id:'tuning',
+      label:'Map / Tuning / Notes',
+      hint:'Fretboard explorer, note finder, tuning, E/A highways',
+      points:'40,5 160,15 180,120 150,180 60,135 30,55',
+      categories:[],
+      view:'explorer'
+    }
+  ];
 
   /* === Focus category mapping === */
   var focusCats=[
@@ -3235,6 +3313,50 @@ function showDoing(){
         '<button class="doing-link-btn" data-action="open-map">&#9654; Open Training Map</button>'+
         '<button class="doing-link-btn" data-action="open-explorer">&#9654; Open Fretboard Explorer</button>'+
       '</div>'+
+    '</div>';
+    return html;
+  }
+
+  /* === Guitar Map View === */
+  function renderMap(){
+    var svgZones='';
+    guitarZones.forEach(function(zone){
+      svgZones+='<polygon class="doing-map-zone'+(doingDebug?' debug':'')+'" '+
+        'data-zone="'+esc(zone.id)+'" '+
+        'points="'+esc(zone.points)+'" '+
+        'onmouseenter="showDoingBubble(this)" '+
+        'onmouseleave="hideDoingBubble()" '+
+        'onclick="enterDoingZone(\''+esc(zone.id)+'\')"/>';
+    });
+
+    /* Subtle zone labels (shown only on hover via JS) */
+    var svgLabels='';
+    var labelPositions={
+      'left-hand':{x:410,y:135},
+      'right-hand':{x:765,y:320},
+      'rhythm':{x:590,y:500},
+      'chords':{x:490,y:285},
+      'scales':{x:255,y:115},
+      'tuning':{x:105,y:90}
+    };
+    guitarZones.forEach(function(zone){
+      var p=labelPositions[zone.id]||{x:0,y:0};
+      svgLabels+='<text class="doing-map-title" data-zone-label="'+esc(zone.id)+'" '+
+        'x="'+p.x+'" y="'+p.y+'" text-anchor="middle" dominant-baseline="central" '+
+        'font-family="JetBrains Mono,monospace" font-size="8" fill="rgba(212,175,105,0.55)" '+
+        'letter-spacing="1" text-transform="uppercase" pointer-events="none" style="text-transform:uppercase">'+esc(zone.label)+'</text>';
+    });
+
+    var html='<div class="doing-map-wrap" id="doing-map-container">'+
+      '<img src="images/doing-guitar-map.png" alt="Guitar training map" draggable="false">'+
+      '<svg class="doing-map-svg" viewBox="0 0 1280 960" preserveAspectRatio="xMidYMid meet">'+
+        svgZones+svgLabels+
+      '</svg>'+
+      '<div class="doing-map-bubble" id="doing-map-bubble">'+
+        '<div class="mb-label"></div>'+
+        '<div class="mb-hint"></div>'+
+      '</div>'+
+      '<button class="doing-map-debug-btn'+(doingDebug?' active':'')+'" onclick="toggleDoingDebug()">'+(doingDebug?'DEBUG ON':'debug')+'</button>'+
     '</div>';
     return html;
   }
@@ -3348,10 +3470,15 @@ function showDoing(){
     '</div>';
   }
 
-  /* === Main shell === */
   function shell(){
+    if(doingView==='map'){
+      el.innerHTML=renderMap();
+      bindControls();
+      return;
+    }
+  /* === Main shell === */
     var html='<div class="doing-shell">'+
-    '<button class="back-btn" onclick="backToMap()">&larr; Map</button>'+
+    '<button class="back-btn" onclick="window._doingBackToMap()">&larr; Map</button>'+
     '<div class="doing-hero">'+
       '<img class="doing-hero-icon" src="images/doing-icon.png" alt="">'+
       '<div><div class="doing-kicker">Do Node &middot; Training Chamber</div>'+
@@ -3363,9 +3490,7 @@ function showDoing(){
       '</div>'+
     '</div>';
 
-    if(doingView==='entry'){
-      html+=renderEntry();
-    } else if(doingView==='training'){
+    if(doingView==='training'){
       html+='<div id="doing-fretboard">'+render()+'</div>';
     } else if(doingView==='explorer'){
       html+=renderExplorerView();
@@ -3553,9 +3678,79 @@ function showDoing(){
     }
   }
 
+  /* === Map zone internal handlers === */
+  window._enterDoingZone=function(zoneId){
+    var zone=guitarZones.find(function(z){return z.id===zoneId;});
+    if(!zone)return;
+    if(zone.view==='explorer'){
+      doingView='explorer';
+      activeExpTab='notes';
+    } else {
+      doingView='training';
+      activeStyle='all';
+      activeLevel='all';
+    }
+    shell();
+  };
+  window._toggleDoingDebug=function(){
+    doingDebug=!doingDebug;
+    document.querySelectorAll('.doing-map-zone').forEach(function(z){
+      z.classList.toggle('debug',doingDebug);
+    });
+    var btn=document.querySelector('.doing-map-debug-btn');
+    if(btn){
+      btn.classList.toggle('active',doingDebug);
+      btn.textContent=doingDebug?'DEBUG ON':'debug';
+    }
+  };
+  window._doingZones=guitarZones;
+  window._doingBackToMap=function(){
+    doingView='map';
+    shell();
+  };
+
   shell();
 }
 
+// ═══ DOING MAP INTERACTION
+function showDoingBubble(zoneEl){
+  var zoneId=zoneEl.getAttribute('data-zone');
+  var zones=window._doingZones||[];
+  var zone=zones.find(function(z){return z.id===zoneId;});
+  if(!zone)return;
+  var bubble=document.getElementById('doing-map-bubble');
+  if(!bubble)return;
+  bubble.querySelector('.mb-label').textContent=zone.label;
+  bubble.querySelector('.mb-hint').textContent=zone.hint;
+  // Position bubble near the zone
+  var rect=zoneEl.getBoundingClientRect();
+  var container=document.getElementById('doing-map-container');
+  var cRect=container.getBoundingClientRect();
+  var bx=rect.left-cRect.left+rect.width/2;
+  var by=rect.top-cRect.top-10;
+  // Clamp to container
+  if(bx+220>cRect.width) bx=cRect.width-230;
+  if(bx<10) bx=10;
+  if(by<10) by=rect.bottom-cRect.top+10;
+  bubble.style.left=bx+'px';
+  bubble.style.top=by+'px';
+  bubble.classList.add('show');
+  // Highlight zone label
+  var lbl=document.querySelector('[data-zone-label="'+zoneId+'"]');
+  if(lbl) lbl.style.fill='#d4af69';
+}
+function hideDoingBubble(){
+  var bubble=document.getElementById('doing-map-bubble');
+  if(bubble) bubble.classList.remove('show');
+  document.querySelectorAll('[data-zone-label]').forEach(function(l){l.style.fill='';});
+}
+function enterDoingZone(zoneId){
+  // This function is defined inside showDoing scope — we use a global proxy
+  if(window._enterDoingZone) window._enterDoingZone(zoneId);
+}
+function toggleDoingDebug(){
+  if(window._toggleDoingDebug) window._toggleDoingDebug();
+}
 // ═══ KNOWING NODE - BOOKSHELF UI ═══
 function showKnowing(){
   document.querySelectorAll('.pnl').forEach(p=>p.classList.remove('on'));
