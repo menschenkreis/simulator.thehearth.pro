@@ -1475,12 +1475,12 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 /* === KNOWING SHELF SCENE === */
 .knowing-shelf-scene {
   position: relative;
-  min-height: 240px;
-  padding: 38px 34px 24px;
-  margin-bottom: 28px;
+  min-height: 190px;
+  padding: 18px 28px 12px;
+  margin-bottom: 8px;
   border-radius: 8px;
   background:
-    linear-gradient(to bottom, rgba(0,0,0,0.15), rgba(0,0,0,0.35)),
+    linear-gradient(to bottom, rgba(0,0,0,0.45), rgba(0,0,0,0.55)),
     url("images/knowing-shelf-band.png");
   background-size: 100% 100%;
   background-position: center;
@@ -1488,9 +1488,9 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
   overflow: hidden;
 }
 .knowing-shelf-scene .book-carousel {
-  height: 190px;
+  height: 155px;
   align-items: flex-end;
-  padding-bottom: 34px;
+  padding-bottom: 18px;
 }
 </style>
 </head>
@@ -3799,22 +3799,26 @@ function showKnowing(){
     const pct=lv.totalTopics?Math.round(lv.totalDone/lv.totalTopics*100):0;
     const opacity=isRecommended?0.7:1;
 
-    html+='<div class="knowing-shelf-scene" style="opacity:'+opacity+';transition:opacity 0.4s;">'+
-      // Shelf header
-      '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;padding:0 4px">'+
-        '<div>'+
-          '<span style="font-family:Josefin Sans,sans-serif;font-size:0.85rem;color:'+lv.color+';letter-spacing:2px;font-weight:500">'+lv.label+'</span>'+
-          '<span style="font-family:IBM Plex Sans,sans-serif;font-size:0.7rem;color:var(--dim);margin-left:8px">'+lv.sub+'</span>'+
-        '</div>'+
-        (isRecommended&&lv.level>1?
-          '<span style="font-family:Josefin Sans,sans-serif;font-size:0.6rem;color:var(--dim);letter-spacing:1px">Recommended after Level '+(lv.level-1)+'</span>':
-          '<span style="font-family:JetBrains Mono,monospace;font-size:0.6rem;color:var(--dim)">'+lv.totalDone+'/'+lv.totalTopics+' visited \u00B7 '+pct+'%</span>'
-        )+
+    // ── Level header (ABOVE the shelf scene) ──
+    html+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;padding:0 4px">'+
+      '<div>'+
+        '<span style="font-family:Josefin Sans,sans-serif;font-size:0.85rem;color:'+lv.color+';letter-spacing:2px;font-weight:500">'+lv.label+'</span>'+
+        '<span style="font-family:IBM Plex Sans,sans-serif;font-size:0.7rem;color:var(--dim);margin-left:8px">'+lv.sub+'</span>'+
       '</div>'+
-      // Progress bar
-      '<div style="height:2px;background:var(--border);border-radius:1px;margin-bottom:12px;overflow:hidden">'+
-        '<div style="height:100%;width:'+pct+'%;background:'+lv.color+';border-radius:1px;transition:width 0.4s"></div>'+
-      '</div>';
+      (isRecommended&&lv.level>1?
+        '<span style="font-family:Josefin Sans,sans-serif;font-size:0.6rem;color:var(--dim);letter-spacing:1px">Recommended after Level '+(lv.level-1)+'</span>':
+        '<span style="font-family:JetBrains Mono,monospace;font-size:0.6rem;color:var(--dim)">'+lv.totalDone+'/'+lv.totalTopics+' visited \u00B7 '+pct+'%</span>'
+      )+
+    '</div>'+
+    // Progress bar (ABOVE the shelf scene)
+    '<div style="height:2px;background:var(--border);border-radius:1px;margin-bottom:12px;overflow:hidden">'+
+      '<div style="height:100%;width:'+pct+'%;background:'+lv.color+';border-radius:1px;transition:width 0.4s"></div>'+
+    '</div>';
+
+    // ── Shelf scene (books only) ──
+    // Progressive dark overlay: stronger on higher shelves
+    var shelfOverlay=isRecommended?Math.min(0.55+(lv.level-recommendedLevel)*0.08,0.75):0.45;
+    html+='<div class="knowing-shelf-scene" style="background:linear-gradient(to bottom,rgba(0,0,0,'+shelfOverlay+'),rgba(0,0,0,'+(shelfOverlay+0.1)+')),url(\"images/knowing-shelf-band.png\");background-size:100% 100%;background-position:center;background-repeat:no-repeat;">';
 
     // Book carousel
     html+='<div style="position:relative">';
@@ -3886,8 +3890,7 @@ function showKnowing(){
 
     html+='</div>'; // relative wrapper
 
-    // Shelf line
-    html+='<div style="height:3px;background:linear-gradient(to right,#3a2e22,'+lv.color+'40,#3a2e22);border-radius:0 0 1px 1px;margin:0 8px"></div>';
+
     html+='</div>'; // level container
   });
 
