@@ -368,7 +368,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 .pnl.on{display:flex;flex-direction:column;}
 
 /* === FOUNDATION NECK SCENE === */
-.found-neck-wrap{position:relative;width:100%;max-width:900px;margin:0 auto;aspect-ratio:2/3;border-radius:10px;overflow:hidden;background:linear-gradient(180deg,#0d0b08 0%,#1a1510 50%,#0d0b08 100%);}
+.found-neck-wrap{position:relative;width:100%;max-width:900px;margin:0 auto;aspect-ratio:1122/1402;border-radius:10px;overflow:hidden;background:linear-gradient(180deg,#0d0b08 0%,#1a1510 50%,#0d0b08 100%);}
 .found-neck-wrap img{display:block;width:100%;height:100%;object-fit:cover;pointer-events:none;}
 .found-neck-svg{position:absolute;top:0;left:0;width:100%;height:100%;}
 .found-neck-zone{fill:rgba(212,175,105,0.03);stroke:transparent;cursor:pointer;transition:fill 0.3s,stroke 0.3s;}
@@ -2385,22 +2385,26 @@ function showFoundation(){
   const firstIncomplete=F.topics.findIndex(t=>!completed[t.id]);
   const activeIdx=firstIncomplete===-1?F.topics.length-1:firstIncomplete;
 
-  // ── Fret zone geometry (SVG viewBox 0 0 400 600, portrait) ──
-  // Frets run horizontally, spaced vertically from top (0) to bottom (9)
-  // The neck is centered, narrower at top, wider at bottom
+  // ── Fret zone geometry (SVG viewBox 0 0 500 700, portrait) ──
+  // Frets run from bottom (foreground, wide) to arch (background, narrow)
+  // Image: fretboard path on floor leading to glowing archway
   const fretZones=[];
-  for(let i=0;i<F.topics.length;i++){
+  const fretCount=F.topics.length;
+  const topY=115, botY=645;
+  const spacing=(botY-topY)/(fretCount-1);
+  for(let i=0;i<fretCount;i++){
     const t=F.topics[i];
     const isDone=completed[t.id];
     const isActive=i===activeIdx;
     const isLocked=i>activeIdx&&!isDone;
-    // Fret position: evenly spaced from y=80 to y=540
-    const y=80+i*52;
-    const neckWidth=120+i*12; // gets slightly wider toward bottom
-    const cx=200;
+    // Perspective: bottom frets wider, top frets narrower
+    const progress=i/(fretCount-1); // 0=bottom, 1=top
+    const neckWidth=280-progress*180; // 280 at bottom, 100 at top
+    const cy=botY-i*spacing;
+    const cx=250;
     fretZones.push({
       topic:t, idx:i, isDone, isActive, isLocked,
-      x:cx-neckWidth/2, y:y-20, w:neckWidth, h:40, cy:y, cx:cx
+      x:cx-neckWidth/2, y:cy-22, w:neckWidth, h:44, cy:cy, cx:cx
     });
   }
 
@@ -2464,7 +2468,7 @@ function showFoundation(){
     // Neck scene container
     '<div class="found-neck-wrap">'+
       '<img src="images/foundation-threshold-neck.png" alt="Foundation threshold neck" draggable="false">'+
-      '<svg class="found-neck-svg" viewBox="0 0 400 600" preserveAspectRatio="xMidYMid meet">'+
+      '<svg class="found-neck-svg" viewBox="0 0 500 700" preserveAspectRatio="xMidYMid meet">'+
         svgZones+
       '</svg>'+
       // Title overlay
