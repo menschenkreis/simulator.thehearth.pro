@@ -229,15 +229,52 @@ const FOUNDATION = {
       title: 'Rhythm & Pulse',
       subtitle: 'Beat, time, body, counting, movement.',
       micro: 'Feel the pulse. Count the space between notes.',
-      status: 'coming-soon',
+      status: 'open',
       tags: ['Rhythm', 'Time', 'Body'],
       sources: [],
       steps: [
         {
           label: 'Understand',
-          title: 'Coming soon',
-          body: `<p>This threshold step is being built. Rhythm is the heartbeat of music — beat, time, counting, and movement through the body.</p>
-<p>Check back soon.</p>`
+          title: 'The heartbeat of music',
+          body: `<p>Imagine someone singing a beautiful melody. Now imagine the same melody with no timing — every note randomly spaced, some too long, some too short. It falls apart.</p>
+<p><strong>Rhythm is what turns notes into music.</strong></p>
+<p>Every piece of music has a pulse — a steady beat underneath, like a heartbeat. You can feel it in your chest when you listen to a song you like. Your foot starts tapping. That tapping? That's rhythm. Your body already knows how to do this.</p>
+<p>The pulse is measured in <strong>beats</strong>. A beat is one steady tap — one unit of time. When you count "1, 2, 3, 4" along with a song, each number is a beat. The speed of those beats is called <strong>tempo</strong> — fast tempo means the beats come quickly, slow tempo means they're spaced out.</p>
+<p>Music organises beats into <strong>bars</strong> (also called measures). The most common grouping is <strong>4/4 time</strong> — four steady beats in a bar. You've heard this a thousand times: "1, 2, 3, 4 — 1, 2, 3, 4 —" That repeating cycle of four is the foundation of most pop, rock, folk, and blues music.</p>
+<p>Rhythm isn't just about the beats you play. It's also about the <strong>space between notes</strong>. A rest (silence) is just as important as a sound. The gap between notes is where groove lives — where music breathes.</p>`
+        },
+        {
+          label: 'Experience',
+          title: 'Feel it in your body',
+          body: `<p>Rhythm isn't a concept. It's a physical thing. You have to feel it in your body before you can play it with your hands.</p>
+<p><strong>Do this now — no guitar needed:</strong></p>
+<p>1. Stand up or sit straight. Feet flat on the floor.</p>
+<p>2. Start tapping your right foot. Steady. Not too fast. Just a comfortable pace.</p>
+<p>3. While tapping, count out loud: <strong>"1... 2... 3... 4..."</strong></p>
+<p>4. Keep going. Feel the pulse in your foot, hear it in your voice. Let them line up.</p>
+<p>Now add your hands. <strong>Clap on each count.</strong> Foot taps, voice counts, hands clap — all on the same beat. This is your body being a rhythm section.</p>
+<p>Try this: stop counting out loud, but keep tapping and clapping. Can you feel the "1" without saying it? The first beat of each group of four has a natural weight — it's the beat that feels like "home."</p>
+<p>That heaviness on beat 1 is called the <strong>downbeat</strong>. It's what gives 4/4 its shape: <strong>ONE</strong>-two-three-four, <strong>ONE</strong>-two-three-four. The cycle restarts, and the body knows.</p>`
+        },
+        {
+          label: 'Apply',
+          title: 'One beat, one note',
+          body: `<p>Pick up your guitar. We're going to combine rhythm with sound — one note per beat, counting out loud.</p>
+<p><strong>Do this:</strong></p>
+<p>1. Set a steady foot tap. Count "1, 2, 3, 4" out loud at a comfortable pace.</p>
+<p>2. Play the <strong>open 6th string</strong> (the thickest one) once per beat. Pluck it on each count: 1 — pluck. 2 — pluck. 3 — pluck. 4 — pluck.</p>
+<p>3. Keep the foot tapping. Keep counting. Keep the notes even — same length, same space between them.</p>
+<p>Notice: you're not playing fast. You're playing <strong>steady</strong>. Steady is the goal. Speed is irrelevant right now. Evenness is everything.</p>
+<p>If the notes start bunching up or spreading out, stop. Reset. Find the foot tap again. Start over. This is the work — not playing more notes, but playing notes that land exactly on the beat.</p>
+<p>This is what professional musicians spend their whole lives refining. You're starting at the right place.</p>`
+        },
+        {
+          label: 'Own',
+          title: 'This fret is set',
+          body: `<p>You now understand rhythm as the heartbeat of music — the steady pulse that holds everything together. You've felt it in your foot, your hands, your voice. You know that 4/4 means four steady beats in a bar, with the first beat carrying the weight.</p>
+<p>You've played an open string on each beat, keeping time with your body. You know that the space between notes matters — rhythm is as much about silence as sound.</p>
+<p>Rhythm is what turns notes into music. Without it, you have sounds. With it, you have a song.</p>
+<p><strong>This fret is set. Step to fret 5: The Guitar Map.</strong></p>`
         }
       ]
     },
