@@ -783,17 +783,25 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 .mastery-footer{text-align:center;padding:16px 0 8px;}
 
 /* === PLAY (World Map) === */
-.play-world-wrap{padding:16px;max-width:900px;margin:0 auto;display:flex;flex-direction:column;height:100%;}
-.back-btn{position:fixed;top:56px;left:16px;background:var(--card);border:1px solid var(--border);color:var(--dim);padding:6px 14px;border-radius:6px;cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:0.65rem;letter-spacing:0.06em;text-transform:uppercase;z-index:100;transition:all 0.15s;}
+.play-world-wrap{padding:0;max-width:100%;margin:0 auto;display:flex;flex-direction:column;height:100%;position:relative;overflow:hidden;}
+.back-btn{position:fixed;top:56px;left:16px;background:rgba(13,11,8,0.85);border:1px solid var(--border);color:var(--dim);padding:6px 14px;border-radius:6px;cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:0.65rem;letter-spacing:0.06em;text-transform:uppercase;z-index:100;transition:all 0.15s;backdrop-filter:blur(4px);}
 .back-btn:hover{color:var(--gold);border-color:var(--gold);}
-.play-world-header{margin-bottom:8px;}
+.play-world-header{position:absolute;top:12px;left:16px;z-index:10;pointer-events:none;}
 .play-world-title{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;}
 .play-world-sub{font-size:0.75rem;color:var(--dim);margin:4px 0 0 0;line-height:1.5;max-width:500px;}
-.play-world-map-container{flex:1;display:flex;align-items:center;justify-content:center;overflow:hidden;min-height:0;}
-.world-map-svg{width:100%;height:auto;max-height:100%;display:block;}
-.wm-hotspot:hover circle:nth-child(2){opacity:0.4!important;}
-.wm-hotspot:hover text{opacity:1!important;font-size:7px!important;}
-.play-world-footer{text-align:center;padding:8px 0 4px;}
+.play-world-map-container{flex:1;display:flex;align-items:center;justify-content:center;overflow:hidden;min-height:0;position:relative;background:url('images/play-world-atlas.png') center center / contain no-repeat;}
+.world-map-svg{width:100%;height:100%;display:block;position:absolute;top:0;left:0;}
+.wm-hotspot{cursor:pointer;}
+.wm-hotspot:hover .wm-dot-core{r:5;opacity:1;}
+.wm-hotspot:hover .wm-dot-ring{opacity:0.5;}
+.wm-hotspot:hover .wm-dot-pulse{opacity:0.3;}
+.play-world-guide{position:absolute;bottom:16px;left:50%;transform:translateX(-50%);background:rgba(13,11,8,0.88);border:1px solid var(--border);border-radius:8px;padding:10px 20px;z-index:10;pointer-events:none;backdrop-filter:blur(6px);text-align:center;min-width:280px;max-width:420px;transition:all 0.25s ease;}
+.play-world-guide-text{font-size:0.78rem;color:var(--text);line-height:1.5;}
+.play-world-guide-region{font-family:'Cinzel',serif;font-size:0.85rem;color:var(--gold);font-weight:600;margin-bottom:2px;}
+.play-world-guide-tradition{font-family:'JetBrains Mono',monospace;font-size:0.6rem;color:var(--amber);letter-spacing:0.08em;text-transform:uppercase;}
+.play-world-footer{text-align:center;padding:8px 0 4px;position:absolute;bottom:0;width:100%;z-index:10;pointer-events:none;}
+.play-world-attribution{position:absolute;top:12px;right:16px;z-index:10;pointer-events:none;font-family:'JetBrains Mono',monospace;font-size:0.5rem;color:var(--dim);opacity:0.4;letter-spacing:0.08em;text-transform:uppercase;}
+.play-world-count{position:absolute;bottom:70px;right:16px;z-index:10;pointer-events:none;font-family:'JetBrains Mono',monospace;font-size:0.55rem;color:var(--dim);opacity:0.5;letter-spacing:0.08em;text-transform:uppercase;}
 .wm-region-detail{padding:16px;max-width:650px;margin:0 auto;overflow-y:auto;height:100%;}
 .wm-region-header{margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border);}
 .wm-region-body{line-height:1.7;}
@@ -4933,69 +4941,42 @@ function showPlay(){
         '<span style="font-family:\'Cinzel\',serif;color:var(--gold);font-size:1.4rem;font-weight:700;letter-spacing:0.08em">PLAY</span>'+
         '<span style="font-family:JetBrains Mono;font-size:0.6rem;color:var(--amber);letter-spacing:0.12em;margin-left:8px;text-transform:uppercase">World Map of Guitar</span>'+
       '</div>'+
-      '<p class="play-world-sub">Click a glowing region to discover its guitar tradition. From Ethiopian jazz to Delta blues - the world is yours to explore.</p>'+
     '</div>'+
     '<div class="play-world-map-container" id="playWorldMap">'+
       '<svg viewBox="0 0 900 600" xmlns="http://www.w3.org/2000/svg" class="world-map-svg" id="worldMapSvg">'+
         '<defs>'+
-          '<filter id="wm-glow"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>'+
-          '<radialGradient id="oceanGrad"><stop offset="0%" stop-color="#1a1510" stop-opacity="0.3"/><stop offset="100%" stop-color="#0d0b08" stop-opacity="0"/></radialGradient>'+
+          '<filter id="wm-glow"><feGaussianBlur stdDeviation="6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>'+
+          '<filter id="wm-glow-strong"><feGaussianBlur stdDeviation="10" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>'+
         '</defs>'+
-        '<rect width="900" height="600" fill="var(--bg)"/>'+
-        '<rect width="900" height="600" fill="url(#oceanGrad)"/>'+
-        // Lat/Lon grid
-        '<g opacity="0.04" stroke="#d4af69" stroke-width="0.3" fill="none">'+
-          '<line x1="0" y1="150" x2="900" y2="150"/>'+
-          '<line x1="0" y1="300" x2="900" y2="300"/>'+
-          '<line x1="0" y1="450" x2="900" y2="450"/>'+
-          '<line x1="150" y1="0" x2="150" y2="600"/>'+
-          '<line x1="300" y1="0" x2="300" y2="600"/>'+
-          '<line x1="450" y1="0" x2="450" y2="600"/>'+
-          '<line x1="600" y1="0" x2="600" y2="600"/>'+
-          '<line x1="750" y1="0" x2="750" y2="600"/>'+
-        '</g>'+
-        // Continents
-        '<g class="wm-continents">'+
-          // North America
-          '<path d="M 80,130 Q 60,200 100,260 L 130,270 L 160,260 Q 200,240 220,210 L 240,200 Q 230,160 200,140 L 180,120 Q 140,100 110,110 Z" fill="#d4af6908" stroke="#d4af6930" stroke-width="0.8"/>'+
-          // South America
-          '<path d="M 250,320 Q 240,380 260,450 Q 290,510 290,540 Q 320,530 310,480 Q 300,400 285,350 Q 275,330 260,320 Z" fill="#d4af6908" stroke="#d4af6930" stroke-width="0.8"/>'+
-          // Europe
-          '<path d="M 440,150 Q 430,180 445,210 L 470,215 Q 490,200 500,180 L 510,165 Q 495,150 475,145 Q 455,142 440,150 Z" fill="#d4af6908" stroke="#d4af6930" stroke-width="0.8"/>'+
-          // Ireland/UK
-          '<path d="M 420,160 Q 415,170 420,182 Q 430,185 435,175 Q 435,165 425,158 Z" fill="#d4af6908" stroke="#d4af6930" stroke-width="0.8"/>'+
-          // Iberia
-          '<path d="M 445,210 Q 440,225 450,245 Q 470,250 490,240 Q 495,220 485,210 Q 465,205 445,210 Z" fill="#d4af6908" stroke="#d4af6930" stroke-width="0.8"/>'+
-          // Africa
-          '<path d="M 460,260 Q 445,310 460,360 Q 475,410 480,440 Q 510,440 520,410 Q 530,360 525,310 Q 515,270 490,255 Q 470,250 460,260 Z" fill="#d4af6908" stroke="#d4af6930" stroke-width="0.8"/>'+
-          // East Africa (Ethiopia zone)
-          '<path d="M 560,295 Q 545,320 555,360 Q 580,375 620,370 Q 635,345 625,315 Q 600,290 560,295 Z" fill="#d4af6908" stroke="#d4af6930" stroke-width="0.8"/>'+
-          // India/Middle East
-          '<path d="M 600,190 Q 630,220 660,245 Q 690,265 720,275 Q 710,235 685,215 Q 660,195 635,188 Q 610,188 600,190 Z" fill="#d4af6908" stroke="#d4af6930" stroke-width="0.8"/>'+
-          // Japan
-          '<path d="M 790,210 Q 785,225 795,240 Q 815,235 820,220 Q 815,205 800,205 Z" fill="#d4af6908" stroke="#d4af6930" stroke-width="0.8"/>'+
-          // Cuba
-          '<ellipse cx="225" cy="370" rx="20" ry="6" fill="#d4af6908" stroke="#d4af6930" stroke-width="0.8"/>'+
-        '</g>'+
-        // Hotspots
+        // Hotspot markers only — no continent paths, no labels
         '<g id="wm-hotspots">'+
           WM.map(function(r){
-            return '<g class="wm-hotspot" data-region="'+r.id+'" onclick="wmClick(\''+r.id+'\')" style="cursor:pointer">'+
-              '<circle cx="'+r.coords[0]+'" cy="'+r.coords[1]+'" r="14" fill="'+r.color+'" opacity="0.08">'+
-                '<animate attributeName="r" values="10;18;10" dur="2.5s" repeatCount="indefinite"/>'+
-                '<animate attributeName="opacity" values="0.1;0.02;0.1" dur="2.5s" repeatCount="indefinite"/>'+
+            return '<g class="wm-hotspot" data-region="'+r.id+'" '+
+              'onclick="wmClick(\''+r.id+'\')" '+
+              'onmouseenter="wmHover(\''+r.id+'\')" '+
+              'onmouseleave="wmUnhover()" '+
+              'style="cursor:pointer">'+
+              // Outer pulse ring
+              '<circle class="wm-dot-pulse" cx="'+r.coords[0]+'" cy="'+r.coords[1]+'" r="14" fill="none" stroke="'+r.color+'" stroke-width="0.8" opacity="0.15">'+
+                '<animate attributeName="r" values="8;20;8" dur="3s" repeatCount="indefinite"/>'+
+                '<animate attributeName="opacity" values="0.2;0;0.2" dur="3s" repeatCount="indefinite"/>'+
               '</circle>'+
-              '<circle cx="'+r.coords[0]+'" cy="'+r.coords[1]+'" r="6" fill="'+r.color+'" opacity="0.25"/>'+
-              '<circle cx="'+r.coords[0]+'" cy="'+r.coords[1]+'" r="3" fill="'+r.color+'" filter="url(#wm-glow)"/>'+
-              '<text x="'+r.coords[0]+'" y="'+(r.coords[1]-12)+'" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="6" fill="'+r.color+'" opacity="0.7" letter-spacing="0.05em">'+r.name.toUpperCase()+'</text>'+
+              // Mid glow ring
+              '<circle class="wm-dot-ring" cx="'+r.coords[0]+'" cy="'+r.coords[1]+'" r="7" fill="'+r.color+'" opacity="0.12" filter="url(#wm-glow)"/>'+
+              // Core dot
+              '<circle class="wm-dot-core" cx="'+r.coords[0]+'" cy="'+r.coords[1]+'" r="3.5" fill="'+r.color+'" opacity="0.7" filter="url(#wm-glow-strong)"/>'+
+              // Bright center
+              '<circle cx="'+r.coords[0]+'" cy="'+r.coords[1]+'" r="1.5" fill="white" opacity="0.5"/>'+
             '</g>';
           }).join('')+
         '</g>'+
       '</svg>'+
+      // Guide card at bottom
+      '<div class="play-world-guide" id="playGuide">'+
+        '<div class="play-world-guide-text" id="playGuideText">Choose a region. Listen for its rhythm, touch, scale colour, and story.</div>'+
+      '</div>'+
     '</div>'+
-    '<div class="play-world-footer">'+
-      '<span style="font-family:JetBrains Mono;font-size:0.55rem;color:var(--dim);letter-spacing:0.1em;text-transform:uppercase">'+WM.length+' traditions to explore</span>'+
-    '</div>'+
+    '<div class="play-world-count">'+WM.length+' traditions</div>'+
   '</div>';
 
   el.innerHTML=html;
@@ -5031,6 +5012,22 @@ window.wmClick=function(regionId){
       (r.learnFirst?'<div class="wm-cta" style="border-color:'+r.color+'"><div class="wm-cta-label" style="color:'+r.color+'">Start Here</div><p class="wm-cta-text">'+r.learnFirst+'</p></div>':'')+
     '</div>'+
   '</div>';
+};
+
+// ═══ Hover handler — region name in guide card ═══
+window.wmHover=function(regionId){
+  var WM=window.WORLD_MAP_REGIONS||[];
+  var r=WM.find(function(x){return x.id===regionId;});
+  if(!r)return;
+  var guide=document.getElementById('playGuideText');
+  if(!guide)return;
+  guide.innerHTML='<div class="play-world-guide-region">'+r.name+'</div>'+
+    '<div class="play-world-guide-tradition">'+r.tradition+'</div>';
+};
+window.wmUnhover=function(){
+  var guide=document.getElementById('playGuideText');
+  if(!guide)return;
+  guide.innerHTML='Choose a region. Listen for its rhythm, touch, scale colour, and story.';
 };
 
 // ═══ MASTERY NODE - "BEYOND" ═══
