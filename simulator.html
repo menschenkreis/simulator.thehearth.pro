@@ -789,7 +789,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 .play-world-header{position:absolute;top:12px;left:16px;z-index:10;pointer-events:none;}
 .play-world-title{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;}
 .play-world-sub{font-size:0.75rem;color:var(--dim);margin:4px 0 0 0;line-height:1.5;max-width:500px;}
-.play-world-map-container{flex:1;display:flex;align-items:center;justify-content:center;overflow:hidden;min-height:0;position:relative;background:url('images/play-world-atlas.png') center center / contain no-repeat;}
+.play-world-map-container{flex:1;display:flex;align-items:center;justify-content:center;overflow:hidden;min-height:0;position:relative;background:url('images/play-world-atlas.webp') center center / contain no-repeat;}
 .world-map-svg{width:100%;height:100%;display:block;position:absolute;top:0;left:0;}
 .wm-hotspot{cursor:pointer;}
 .wm-hotspot:hover .wm-dot-core{r:5;opacity:1;}
@@ -1489,7 +1489,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
   border-radius: 8px;
   background:
     linear-gradient(to bottom, rgba(0,0,0,0.45), rgba(0,0,0,0.55)),
-    url("images/knowing-shelf-band.png");
+    url("images/knowing-shelf-band.webp");
   background-size: 100% 100%;
   background-position: center;
   background-repeat: no-repeat;
@@ -2496,7 +2496,7 @@ function showFoundation(){
     '<button class="back-btn" onclick="backToMap()">&larr; Map</button>'+
     // Neck scene container
     '<div class="found-neck-wrap">'+
-      '<img src="images/foundation-threshold-neck.png" alt="Foundation threshold neck" draggable="false">'+
+      '<img src="images/foundation-threshold-neck.webp" alt="Foundation threshold neck" draggable="false">'+
       '<svg class="found-neck-svg" viewBox="0 0 500 700" preserveAspectRatio="xMidYMid meet">'+
         svgZones+
       '</svg>'+
@@ -3826,7 +3826,7 @@ function showKnowing(){
     // ── Shelf scene (books only) ──
     // Progressive dark overlay: stronger on higher shelves
     var shelfOverlay=isRecommended?Math.min(0.55+(lv.level-recommendedLevel)*0.08,0.75):0.45;
-    html+='<div class="knowing-shelf-scene" style="background:linear-gradient(to bottom,rgba(0,0,0,'+shelfOverlay+'),rgba(0,0,0,'+(shelfOverlay+0.1)+')),url(\"images/knowing-shelf-band.png\");background-size:100% 100%;background-position:center;background-repeat:no-repeat;">';
+    html+='<div class="knowing-shelf-scene" style="background:linear-gradient(to bottom,rgba(0,0,0,'+shelfOverlay+'),rgba(0,0,0,'+(shelfOverlay+0.1)+')),url(\"images/knowing-shelf-band.webp\");background-size:100% 100%;background-position:center;background-repeat:no-repeat;">';
 
     // Book carousel
     html+='<div style="position:relative">';

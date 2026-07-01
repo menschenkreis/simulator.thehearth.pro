@@ -54,7 +54,7 @@
     });
     el.innerHTML=sceneStart('sf-map','World Map of Guitar','Touch a region. Learn how guitar speaks there.','Play is a map, not a menu. Click one place and listen for its hand, pulse, scale colour, and story.','images/character-symbols/Encouraging Face Lightbulb.png','play')+
       '<div class="sf-stage" style="padding:0;min-height:0;flex:1"><div class="sf-map-wrap">'+
-        '<img class="sf-map-img" src="images/play-world-atlas.png" alt="World Map of Guitar">'+
+        '<img class="sf-map-img" src="images/play-world-atlas.webp" alt="World Map of Guitar">'+
         '<svg viewBox="0 0 900 600" class="sf-map-svg">'+
           '<defs><filter id="sf-glow"><feGaussianBlur stdDeviation="6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>'+
           svgHotspots+
