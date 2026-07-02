@@ -137,11 +137,6 @@
 
 
 /* === SCENE: image + SVG overlay === */
-/* === FOUNDATION GATE SVG + LAYOUT === */
-.foundation-gate-wrap{position:relative;display:flex;flex-direction:column;align-items:center;flex:1;justify-content:center;isolation:isolate;}
-.foundation-gate-svg{position:absolute;inset:40px 50%;transform:translateX(-50%);width:min(860px,96vw);max-height:680px;pointer-events:none;z-index:0;opacity:0.9;}
-.foundation-gate-wrap>*{position:relative;z-index:1;}
-@media(max-width:720px){.foundation-gate-svg{width:118vw;opacity:0.55;}}
 
 .node-info{background:var(--panel) !important;border:2px solid var(--gold) !important;border-radius:12px !important;box-shadow:0 4px 16px rgba(255,140,66,0.15) !important;}
 [data-theme="sparks"] .node-info h4{color:var(--gold) !important;font-size:1.2rem !important;font-family:DM Sans,sans-serif !important;font-weight:700 !important;}
@@ -2025,6 +2020,9 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 <script src="assets/js/lessons-the-tool.js"></script>
 <script src="assets/js/lessons-the-guitar.js"></script>
 <script src="assets/js/lessons-speaking.js"></script>
+<script src="assets/js/lessons-rhythm-pulse.js"></script>
+<script src="assets/js/lessons-first-shapes.js"></script>
+<script src="assets/js/lessons-first-conversation.js"></script>
 <script src="assets/js/lessons-conversations.js"></script>
 <script src="assets/js/video-roadmap.js"></script>
 <script src="assets/js/doing.js?v=6"></script>
@@ -2628,12 +2626,14 @@ function showFoundationTopic(topicId){
   // Map topic IDs to their lesson data and block labels
   var lessonMap = {
     'f-how-to-learn':          { lesson: window.LESSON_HOW_TO_LEARN,          label: 'BLOCK 01 - HOW TO LEARN' },
-    'f-learning-a-language':    { lesson: window.LESSON_LEARNING_A_LANGUAGE,   label: 'BLOCK 02 - LEARNING A LANGUAGE' },
-    'f-language-of-music':      { lesson: window.LESSON_LANGUAGE_OF_MUSIC,     label: 'BLOCK 03 - THE LANGUAGE OF MUSIC' },
-    'f-language-of-guitar':     { lesson: window.LESSON_LANGUAGE_OF_GUITAR,    label: 'BLOCK 04 - THE LANGUAGE OF GUITAR' },
-    'f-the-guitar':             { lesson: window.LESSON_THE_GUITAR,            label: 'BLOCK 05 - THE GUITAR' },
-    'f-speaking':               { lesson: window.LESSON_SPEAKING,              label: 'BLOCK 06 - SPEAKING WITH THE GUITAR' },
-    'f-conversations':          { lesson: window.LESSON_CONVERSATIONS,         label: 'BLOCK 07 - GUITAR CONVERSATIONS' }
+    'f-music-language':        { lesson: window.LESSON_LEARNING_A_LANGUAGE,   label: 'BLOCK 02 - MUSIC AS LANGUAGE' },
+    'f-musical-alphabet':      { lesson: window.LESSON_LANGUAGE_OF_MUSIC,     label: 'BLOCK 03 - THE MUSICAL ALPHABET' },
+    'f-rhythm-pulse':          { lesson: window.LESSON_RHYTHM_PULSE,          label: 'BLOCK 04 - RHYTHM & PULSE' },
+    'f-guitar-map':            { lesson: window.LESSON_LANGUAGE_OF_GUITAR,    label: 'BLOCK 05 - THE GUITAR MAP' },
+    'f-instrument-body':       { lesson: window.LESSON_THE_GUITAR,            label: 'BLOCK 06 - THE INSTRUMENT BODY' },
+    'f-hands-sound':           { lesson: window.LESSON_SPEAKING,              label: 'BLOCK 07 - HANDS & SOUND' },
+    'f-first-shapes':          { lesson: window.LESSON_FIRST_SHAPES,          label: 'BLOCK 08 - FIRST SHAPES' },
+    'f-first-conversation':    { lesson: window.LESSON_CONVERSATIONS,         label: 'BLOCK 09 - FIRST CONVERSATION' }
   };
   var lessonInfo = lessonMap[topicId];
   if(lessonInfo && lessonInfo.lesson && window.TeachingEngine){
@@ -2656,44 +2656,8 @@ function showFoundationTopic(topicId){
     engine.start(lessonInfo.lesson);
     return;
   }
-  const nextTopic=topicIdx<F.topics.length-1?F.topics[topicIdx+1]:null;
-  const completed=JSON.parse(localStorage.getItem('hearth-foundation-progress')||'{}');
-  const isCompleted=completed[topicId];
-  const rainbow=['#e74c3c','#e67e22','#f1c40f','#2ecc71','#3498db','#9b59b6','#e84393'];
-  const color=rainbow[topicIdx];
-
-  function renderStep(idx){
-    const s=topic.steps[idx];
-    const isLast=idx===topic.steps.length-1;
-    let html='<div class="lp-body" style="--accent:'+color+'">'+
-      '<div class="lp-tags" style="display:none">'+topic.tags.map(t=>'<span style="border-color:'+color+'30;color:'+color+'">'+t+'</span>').join('')+'</div>'+
-      '<h3 style="color:'+color+'">'+s.title+'</h3>'+
-      s.body;
-    if(isLast){
-      html+='<div style="display:flex;gap:8px;margin-top:16px">'+
-        '<button class="lp-next" style="flex:1;background:'+color+';color:white;border:none;padding:12px;border-radius:8px;font-family:DM Sans,sans-serif;font-size:0.9rem;font-weight:600;cursor:pointer" onclick="playSfx(\'success\');completeFoundationTopic(\''+topicId+'\')">Mark Complete</button>';
-      if(nextTopic){
-        const nextColor=rainbow[topicIdx+1];
-        html+='<button class="lp-next" style="flex:1;background:'+nextColor+'18;color:'+nextColor+';border:2px solid '+nextColor+'60;padding:12px;border-radius:8px;font-family:DM Sans,sans-serif;font-size:0.9rem;font-weight:600;cursor:pointer" onclick="showFoundationTopic(\''+nextTopic.id+'\')">Next: '+nextTopic.title+'</button>';
-      }
-      html+='</div>';
-    } else {
-      html+='<button class="lp-next" style="background:'+color+'18;color:'+color+';border:2px solid '+color+'40;padding:10px 20px;border-radius:8px;font-family:DM Sans,sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer" onclick="nextFStep(\''+topicId+'\','+(idx+1)+')">Next: '+topic.steps[idx+1].label+'</button>';
-    }
-    html+='</div>';
-    return html;
-  }
-
-  el.innerHTML='<div class="lesson-page" style="border-top:4px solid '+color+'">'+
-    '<div class="lp-back" onclick="showFoundation()">\u2190 Foundation</div>'+
-    '<div style="display:flex;justify-content:flex-end;margin-bottom:2px"><button id="ttsBtn" onclick="ttsToggle()" style="background:'+color+'18;color:'+color+';border:1px solid '+color+'40;padding:6px 14px;border-radius:6px;cursor:pointer;font-family:inherit;font-size:0.75rem;font-weight:600">Read aloud</button></div>'+
-    '<div class="lp-header">'+
-      '<div class="lp-tag" style="color:'+color+'">'+topic.num+' / '+F.tag+(isCompleted?' \u00b7 Complete':'')+'</div>'+
-      '<h2 style="color:'+color+'">'+topic.title+'</h2>'+
-      '<div class="lp-subtitle">'+topic.subtitle+'</div>'+
-    '</div>'+
-    '<div id="fStepBody">'+renderStep(0)+'</div>'+
-  '</div>';
+  // Fallback: use renderFoundationTopicStep for proper guide + tabs layout
+  renderFoundationTopicStep(topicId, 0);
   window._fTopic=topicId;
 }
 
@@ -2782,24 +2746,6 @@ function renderFoundationTopicStep(topicId, stepIndex){
     + '</div>';
 }
 
-function completeFoundationTopic(topicId, nextTopicId){
-  if(typeof playSfx === 'function') playSfx('success');
-  var progress = JSON.parse(localStorage.getItem('hearth-foundation-progress') || '{}');
-  progress[topicId] = true;
-  localStorage.setItem('hearth-foundation-progress', JSON.stringify(progress));
-
-  if(nextTopicId){
-    showFoundationTopic(nextTopicId);
-  } else {
-    showFoundation();
-  }
-}
-
-function nextFStep(topicId, idx){
-  renderFoundationTopicStep(topicId, idx);
-}
-
-
 window.completeFoundationTopic=function(tid){
   const progress=JSON.parse(localStorage.getItem('hearth-foundation-progress')||'{}');
   progress[tid]=true;
@@ -2811,39 +2757,6 @@ window.completeFoundationTopic=function(tid){
   else showFoundation();
 };
 
-window.nextFStep=function(tid,idx){goFStep(tid,idx);};
-window.goFStep=function(tid,idx){
-  if(window.speechSynthesis)window.speechSynthesis.cancel();_ttsPlaying=false;
-  const F=window.FOUNDATION;if(!F)return;
-  const topic=F.topics.find(t=>t.id===tid);if(!topic)return;
-  const topicIdx=F.topics.indexOf(topic);
-  const nextTopic=topicIdx<F.topics.length-1?F.topics[topicIdx+1]:null;
-  const completed=JSON.parse(localStorage.getItem('hearth-foundation-progress')||'{}');
-  const isCompleted=completed[tid];
-  const rainbow=['#e74c3c','#e67e22','#f1c40f','#2ecc71','#3498db','#9b59b6','#e84393'];
-  const color=rainbow[topicIdx];
-  const s=topic.steps[idx];
-  const body=document.getElementById('fStepBody');
-  if(body){
-    const isLast=idx===topic.steps.length-1;
-    let html='<div class="lp-body" style="--accent:'+color+'">'+
-      s.body;
-    if(isLast){
-      html+='<div style="display:flex;gap:8px;margin-top:16px">'+
-        '<button class="lp-next" style="flex:1;background:'+color+';color:white;border:none;padding:12px;border-radius:8px;font-family:DM Sans,sans-serif;font-size:0.9rem;font-weight:600;cursor:pointer" onclick="playSfx(\'success\');completeFoundationTopic(\''+tid+'\')">Mark Complete</button>';
-      if(nextTopic){
-        const nextColor=rainbow[topicIdx+1];
-        html+='<button class="lp-next" style="flex:1;background:'+nextColor+'18;color:'+nextColor+';border:2px solid '+nextColor+'60;padding:12px;border-radius:8px;font-family:DM Sans,sans-serif;font-size:0.9rem;font-weight:600;cursor:pointer" onclick="showFoundationTopic(\''+nextTopic.id+'\')">Next: '+nextTopic.title+'</button>';
-      }
-      html+='</div>';
-    } else {
-      html+='<button class="lp-next" style="background:'+color+'18;color:'+color+';border:2px solid '+color+'40;padding:10px 20px;border-radius:8px;font-family:DM Sans,sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer" onclick="nextFStep(\''+tid+'\','+(idx+1)+')">Next: '+topic.steps[idx+1].label+'</button>';
-    }
-    html+='</div>';
-    body.innerHTML=html;
-    body.scrollTop=0;
-  }
-};
 // ═══ DOING NODE ═══
 function showDoing(){
   document.querySelectorAll('.pnl').forEach(function(p){p.classList.remove('on')});
