@@ -62,6 +62,8 @@ The page loaded and requested the Foundation lesson scripts successfully. The in
 
 For now, the route guard lives in `tools/prototype_smoke_check.py`, where it checks the current `showFoundationTopic()` mapping directly.
 
+The guard checks exact topic-to-lesson pairings, so accidental route swaps should fail the smoke check.
+
 ## Recommended Next Bite
 
 Decide whether the two loaded-but-not-currently-mapped files should be removed, routed, or kept as archive content:

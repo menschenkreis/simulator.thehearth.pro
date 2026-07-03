@@ -260,6 +260,43 @@ def count_top_level_objects(source: str) -> int:
     return count
 
 
+def extract_object_entry_source(text: str, entry_key: str) -> str | None:
+    match = re.search(rf"['\"]{re.escape(entry_key)}['\"]\s*:\s*\{{", text)
+    if not match:
+        return None
+
+    start = match.start()
+    brace_start = text.find("{", match.start(), match.end())
+    depth = 0
+    in_string = False
+    escape = False
+    quote = ""
+
+    for index in range(brace_start, len(text)):
+        char = text[index]
+
+        if in_string:
+            if escape:
+                escape = False
+            elif char == "\\":
+                escape = True
+            elif char == quote:
+                in_string = False
+            continue
+
+        if char in ("'", '"'):
+            in_string = True
+            quote = char
+        elif char == "{":
+            depth += 1
+        elif char == "}":
+            depth -= 1
+            if depth == 0:
+                return text[start : index + 1]
+
+    return None
+
+
 def main() -> int:
     failures = []
 
@@ -370,10 +407,14 @@ def main() -> int:
 
     simulator = read_text("simulator.html")
     for topic_id, lesson_global in FOUNDATION_ROUTE_MARKERS.items():
-        if f"'{topic_id}'" not in simulator:
+        route_source = extract_object_entry_source(simulator, topic_id)
+        if route_source is None:
             failures.append(f"simulator.html is missing Foundation topic route: {topic_id}")
-        if lesson_global not in simulator:
-            failures.append(f"simulator.html is missing Foundation lesson route global: {lesson_global}")
+            continue
+        if lesson_global not in route_source:
+            failures.append(
+                f"simulator.html route {topic_id} no longer points to {lesson_global}"
+            )
 
     for lesson_global, source_file in LOADED_UNMAPPED_LESSONS.items():
         if f'<script src="{source_file}"></script>' not in simulator:
