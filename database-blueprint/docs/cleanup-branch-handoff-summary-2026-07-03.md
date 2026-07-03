@@ -35,7 +35,8 @@ Commits on this branch:
 | `e3967ca` | Extracted fifth Foundation lesson seed: The Guitar. |
 | `84fc8fd` | Extracted sixth Foundation lesson seed: Speaking with the Guitar. |
 | `f95fe17` | Extracted seventh Foundation lesson seed: Guitar Conversations. |
-| current commit | Extracted eighth Foundation lesson seed: How to Learn. |
+| `a80f72c` | Extracted eighth Foundation lesson seed: How to Learn. |
+| current commit | Extracted ninth Foundation lesson seed: Rhythm & Pulse. |
 
 ## What Changed
 
@@ -87,6 +88,9 @@ These were extracted as proof-of-format lesson seeds.
 - `database-blueprint/seeds/foundation_how_to_learn_lesson_v2.json`
   - 16 steps
   - source: `assets/js/lessons-how-to-learn.js`
+- `database-blueprint/seeds/foundation_rhythm_pulse_lesson_v2.json`
+  - 15 steps
+  - source: `assets/js/lessons-rhythm-pulse.js`
 
 ### Added scene-first reference seed files
 
@@ -120,7 +124,7 @@ Current passing result:
 
 ```text
 Prototype smoke check passed.
-Checked 19 key files, 2 content banks, 6 seed files, and 8 lesson seeds.
+Checked 19 key files, 2 content banks, 6 seed files, and 9 lesson seeds.
 ```
 
 ## What Did Not Change

@@ -153,6 +153,11 @@ LESSON_SEEDS = {
         "step_count": 16,
         "allowed_types": ["speak", "ask", "cards", "video", "action", "end"],
     },
+    "database-blueprint/seeds/foundation_rhythm_pulse_lesson_v2.json": {
+        "lesson_id": "f-rhythm-pulse",
+        "step_count": 15,
+        "allowed_types": ["speak", "ask", "cards", "video", "action", "end"],
+    },
 }
 
 

@@ -91,6 +91,7 @@ Extracted lesson seeds so far:
 - `database-blueprint/seeds/foundation_language_of_music_lesson_v2.json`
 - `database-blueprint/seeds/foundation_learning_a_language_lesson_v2.json`
 - `database-blueprint/seeds/foundation_language_of_guitar_lesson_v2.json`
+- `database-blueprint/seeds/foundation_rhythm_pulse_lesson_v2.json`
 - `database-blueprint/seeds/foundation_the_guitar_lesson_v2.json`
 - `database-blueprint/seeds/foundation_speaking_lesson_v2.json`
 - `database-blueprint/seeds/foundation_conversations_lesson_v2.json`
