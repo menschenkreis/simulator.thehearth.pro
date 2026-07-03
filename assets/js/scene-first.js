@@ -322,20 +322,146 @@
   // SceneFirst methods for study
   // (added to SceneFirst object below)
 
-  window.showCreate=function(){
-    inject(); const el=panel(); if(!el)return; const ing=window.CAULDRON_INGREDIENTS||[]; const c=read('hearth-create-current',{prompt:'Select ingredients and stir the cauldron.',ingredients:[],notes:'',title:'Untitled Song Seed',selected:[]});
-    const sel=new Set(c.selected||[]);
-    const allBtns=ing.map(x=>{const active=sel.has(x.id);return '<button class="sf-ing'+(active?' active':'')+'" style="--c:'+x.color+'" onclick="SceneFirst.toggleCreate(\''+esc(x.id)+'\')"><span>'+esc(x.symbol)+'</span> '+esc(x.name)+'</button>';}).join('');
-    const stirBtn=sel.size>0?'<button class="sf-stir-btn" onclick="SceneFirst.stirCauldron()">🔥 Stir the Cauldron</button>':'';
-    const hint=sel.size>0?'':'<div class="sf-dim" style="font-size:.65rem;margin-top:6px;text-align:center">Select ingredients, then stir</div>';
-    el.innerHTML=sceneStart('sf-create','The Cauldron','Create begins with one object: the cauldron. Ingredients are constraints. The song seed appears after you throw something in.','Do not judge the spark too early. Add one ingredient, catch what bubbles up, then shape it.','images/character-symbols/Celebrator with sparks.png','create')+'<div class="sf-stage" style="flex-direction:column;min-height:auto;padding-bottom:0"><img src="assets/svg/cauldron.svg" style="width:100%;max-width:200px;height:auto;display:block;margin:0 auto" /><div style="text-align:center;color:var(--gold);font-family:Cinzel;font-size:.85rem;margin:8px auto 0;max-width:420px;line-height:1.5;white-space:pre-line">'+esc(c.prompt||'Select ingredients and stir the cauldron.')+'</div></div><div class="sf-stage" style="min-height:auto;padding-top:8px;flex-direction:column"><div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;max-width:520px;width:100%">'+allBtns+'</div>'+stirBtn+hint+'</div><div id="sf-create-work" class="sf-drawer">'+createDrawer(c)+'</div></div></div>';
+    // ═══ CREATE: Cauldron Upgrade ═══
+  const CREATE_HEAT_LEVELS = [
+    {id:'low',label:'Low Heat',levels:[1,2],guide:'Playful pressure. Enough spark to begin.',color:'#44cc44'},
+    {id:'medium',label:'Medium Heat',levels:[2,3],guide:'Focused pressure. Make one clear choice.',color:'#ffcc00'},
+    {id:'high',label:'High Heat',levels:[3,4],guide:'Emotional pressure. Let the idea show its teeth.',color:'#ff8800'},
+    {id:'alchemy',label:'Alchemy',levels:[4,5],guide:'Maximum exposure. No hiding behind cleverness.',color:'#ff4444'}
+  ];
+
+  const CREATE_MUTATIONS = {
+    simpler:'Strip it down. Use fewer notes, fewer words, and one clearer emotional target.',
+    darker:'Let the hidden ache speak. Keep the surface controlled, but make the meaning sharper.',
+    stranger:'Break one expected choice. Let the idea wobble without becoming nonsense.',
+    rhythmic:'Make rhythm lead. The words or notes must obey the pulse.',
+    oneNote:'Use one note only. Change rhythm, silence, and touch until it says something.'
   };
-  function createDrawer(c){
-    if(!c.ingredients||!c.ingredients.length)return '<div style="text-align:center;color:var(--dim);font-size:.75rem;padding:12px">Add ingredients and stir. The workstation opens after the cauldron speaks.</div>';
-    return '<input id="sf-create-title" value="'+esc(c.title||'Untitled Song Seed')+'" style="width:100%;box-sizing:border-box;background:#0d0b08;border:1px solid var(--border);border-radius:9px;color:var(--text);padding:9px;margin-bottom:8px"><textarea id="sf-create-notes" style="width:100%;box-sizing:border-box;background:#0d0b08;border:1px solid var(--border);border-radius:9px;color:var(--text);padding:9px;min-height:90px" placeholder="Capture the seed: chords, lyric, riff, structure...">'+esc(c.notes||'')+'</textarea><div class="sf-chiprow"><button onclick="SceneFirst.saveCreate()">Save Seed</button><button onclick="SceneFirst.newCreate()">New Seed</button></div>';
+
+  let _createHeat = 'medium';
+
+  function getCreateSeed(){
+    try{return JSON.parse(localStorage.getItem('hearth-create-current')||'{}')}catch(e){return{}}
+  }
+  function saveCreateSeed(c){localStorage.setItem('hearth-create-current',JSON.stringify(c));}
+
+  function createHeatGlow(){
+    var h = CREATE_HEAT_LEVELS.find(function(x){return x.id===_createHeat;});
+    return h ? h.color : '#ffcc00';
   }
 
-  // PRACTISE: Candle Timer — the candle becomes the practice timer.
+  function renderCreate(){
+    inject(); var el=panel(); if(!el)return;
+    var ing=window.CAULDRON_INGREDIENTS||[];
+    var c=getCreateSeed();
+    var sel=new Set(c.selected||[]);
+    var hasSeed = c.prompt && c.prompt.length > 0;
+
+    // Ingredient buttons
+    var allBtns=ing.map(function(x){
+      var active=sel.has(x.id);
+      return '<button class="sf-ing'+(active?' active':'')+'" style="--c:'+x.color+'" onclick="SceneFirst.toggleCreate(\''+esc(x.id)+'\')"><span>'+esc(x.symbol)+'</span> '+esc(x.name)+'</button>';
+    }).join('');
+
+    // Heat pills
+    var heatPills = CREATE_HEAT_LEVELS.map(function(h){
+      var active = _createHeat === h.id;
+      return '<button class="practice-pill'+(active?' active':'')+'" style="'+(active?'border-color:'+h.color+';color:'+h.color+'':'')+'" onclick="SceneFirst.setHeat(\''+h.id+'\')">'+esc(h.label)+'</button>';
+    }).join('');
+
+    // Stir button
+    var stirBtn = sel.size > 0 ? '<button class="sf-stir-btn" onclick="SceneFirst.stirCauldron()">🔥 Stir the Cauldron</button>' : '';
+    var hint = sel.size > 0 ? '' : '<div style="font-size:.62rem;color:var(--dim);margin-top:6px;text-align:center">Select ingredients, then choose heat</div>';
+
+    // Heat glow color for cauldron
+    var glowCol = createHeatGlow();
+
+    // SVG cauldron with heat-responsive glow
+    var cauldronSvg = '<svg viewBox="0 0 260 320" style="width:100%;max-width:220px;height:auto;display:block;margin:0 auto">'+
+      '<defs>'+
+        '<radialGradient id="cauldronGlow"><stop offset="0%" stop-color="'+glowCol+'" stop-opacity="0.35"/><stop offset="100%" stop-color="'+glowCol+'" stop-opacity="0"/></radialGradient>'+
+      '</defs>'+
+      '<circle cx="130" cy="160" r="120" fill="url(#cauldronGlow)"/>'+
+      '<ellipse cx="130" cy="260" rx="80" ry="18" fill="rgba(0,0,0,0.25)"/>'+
+      '<path d="M60,140 Q60,240 130,250 Q200,240 200,140 L200,120 Q130,100 60,120Z" fill="#1a1510" stroke="'+glowCol+'" stroke-opacity="0.4" stroke-width="2"/>'+
+      '<path d="M55,120 Q130,95 205,120 L200,125 Q130,100 60,125Z" fill="#2a1f14" stroke="'+glowCol+'" stroke-opacity="0.3"/>'+
+      '<path d="M100,110 L100,80 Q130,70 160,80 L160,110" fill="none" stroke="#3a2a18" stroke-width="4" stroke-linecap="round"/>'+
+      (sel.size > 0 ?
+        '<path d="M130,100 C120,85 125,70 130,60 C135,70 140,85 130,100Z" fill="'+glowCol+'" opacity="0.8"><animate attributeName="d" dur="1.2s" repeatCount="indefinite" values="M130,100 C120,85 125,70 130,60 C135,70 140,85 130,100Z;M130,95 C118,80 122,65 130,52 C138,65 142,80 130,95Z;M130,100 C120,85 125,70 130,60 C135,70 140,85 130,100Z"/></path>'+
+        '<path d="M130,85 C125,75 127,65 130,58 C133,65 135,75 130,85Z" fill="#fff2b8" opacity="0.6"></path>'
+        : '')+
+    '</svg>';
+
+    // Workstation (only if seed exists)
+    var workstation = '';
+    if(hasSeed){
+      var heatLabel = CREATE_HEAT_LEVELS.find(function(x){return x.id===_createHeat;});
+      var ingChips = (c.ingredients||[]).map(function(i){return '<span style="background:rgba(212,175,105,0.12);border:1px solid rgba(212,175,105,0.25);border-radius:999px;padding:3px 8px;font-size:.62rem;color:var(--gold)">'+esc(i)+'</span>';}).join(' ');
+
+      var mutBtns = Object.keys(CREATE_MUTATIONS).map(function(k){
+        return '<button class="practice-pill" onclick="SceneFirst.mutateSeed(\''+k+'\')">'+esc(k.charAt(0).toUpperCase()+k.slice(1))+'</button>';
+      }).join('');
+
+      workstation =
+        '<div class="practice-session-controls" style="margin-top:16px">'+
+          '<input id="create-title" value="'+esc(c.title||'Untitled Song Seed')+'" style="width:100%;box-sizing:border-box;background:rgba(0,0,0,0.25);border:1px solid var(--border);border-radius:8px;color:var(--text);padding:10px;font-family:Cinzel;font-size:.85rem;margin-bottom:10px" placeholder="Song seed title">'+
+          '<div style="font-family:JetBrains Mono;font-size:.58rem;color:'+(heatLabel?heatLabel.color:'var(--gold)')+';letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px">'+(heatLabel?esc(heatLabel.label):'')+'</div>'+
+          '<div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:10px">'+ingChips+'</div>'+
+          (c.prompt?'<div style="font-size:.78rem;color:var(--text);line-height:1.6;margin-bottom:6px;white-space:pre-line">'+esc(c.prompt)+'</div>':'')+
+          (c.constraint?'<div style="font-size:.68rem;color:var(--dim);margin-bottom:4px"><b>Constraint:</b> '+esc(c.constraint)+'</div>':'')+
+          (c.payoff?'<div style="font-size:.68rem;color:var(--amber);margin-bottom:10px"><b>Payoff:</b> '+esc(c.payoff)+'</div>':'')+
+          '<div style="font-family:Cinzel;font-size:.72rem;color:var(--gold);margin:10px 0 4px">Shape the Seed</div>'+
+          '<textarea id="create-notes" style="width:100%;box-sizing:border-box;background:rgba(0,0,0,0.25);border:1px solid var(--border);border-radius:8px;color:var(--text);padding:10px;min-height:60px;font:inherit" placeholder="Notes, chords, structure...">'+esc(c.notes||'')+'</textarea>'+
+          '<textarea id="create-first-lyric" style="width:100%;box-sizing:border-box;background:rgba(0,0,0,0.25);border:1px solid var(--border);border-radius:8px;color:var(--text);padding:10px;min-height:50px;font:inherit;margin-top:6px" placeholder="First lyric line...">'+esc(c.firstLyric||'')+'</textarea>'+
+          '<input id="create-riff" value="'+esc(c.riffIdea||'')+'" style="width:100%;box-sizing:border-box;background:rgba(0,0,0,0.25);border:1px solid var(--border);border-radius:8px;color:var(--text);padding:10px;font:inherit;margin-top:6px" placeholder="Riff idea...">'+
+          '<input id="create-rhythm" value="'+esc(c.rhythmIdea||'')+'" style="width:100%;box-sizing:border-box;background:rgba(0,0,0,0.25);border:1px solid var(--border);border-radius:8px;color:var(--text);padding:10px;font:inherit;margin-top:6px" placeholder="Rhythm idea...">'+
+          (c.mutation?'<div style="font-size:.68rem;color:var(--amber);margin-top:8px;font-style:italic">Mutation: '+esc(c.mutation)+'</div>':'')+
+          '<div style="font-family:Cinzel;font-size:.72rem;color:var(--gold);margin:12px 0 4px">Mutate</div>'+
+          '<div class="practice-choice-row">'+mutBtns+'</div>'+
+          '<div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap">'+
+            '<button class="practice-light-btn" style="width:auto;margin-top:0" onclick="SceneFirst.saveSeed()">Save Seed</button>'+
+            '<button class="practice-pill" onclick="SceneFirst.newCreate()">New Seed</button>'+
+          '</div>'+
+        '</div>';
+    }
+
+    el.innerHTML =
+      '<div class="sk-wrap">'+
+        '<button class="back-btn" onclick="backToMap()">\u2190 Map</button>'+
+        '<div class="sk-scene">'+
+          '<div class="sk-top">'+
+            '<div><div class="sk-kicker">Create</div>'+
+            '<div class="sk-title">The Cauldron</div>'+
+            '<div class="sk-sub">Create begins with one object: the cauldron. Ingredients are constraints. The song seed appears after you throw something in.</div></div>'+
+            '<div class="sk-guide">'+
+              '<img src="images/character-symbols/Celebrator with sparks.png">'+
+              '<div>'+(hasSeed?'Shape the seed. Mutate it. Save it when it sings.':'Do not judge the spark too early. Add one ingredient, catch what bubbles up, then shape it.')+'</div>'+
+            '</div>'+
+          '</div>'+
+          '<div class="sf-stage" style="flex-direction:column;min-height:auto;padding:8px 18px">'+
+            cauldronSvg+
+            '<div style="text-align:center;color:var(--gold);font-family:Cinzel;font-size:.82rem;margin:8px auto 0;max-width:420px;line-height:1.5;white-space:pre-line">'+esc(c.prompt||'Select ingredients and stir the cauldron.')+'</div>'+
+          '</div>'+
+          (hasSeed ? '' :
+            '<div class="sf-stage" style="min-height:auto;padding:8px 18px;flex-direction:column">'+
+              '<div style="font-family:Cinzel;font-size:.72rem;color:var(--gold);margin-bottom:6px">Heat</div>'+
+              '<div class="practice-choice-row" style="justify-content:center">'+heatPills+'</div>'+
+              '<div style="font-family:Cinzel;font-size:.72rem;color:var(--gold);margin:12px 0 6px">Ingredients</div>'+
+              '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;max-width:520px;width:100%">'+allBtns+'</div>'+
+              stirBtn+hint+
+            '</div>'
+          )+
+          '<div id="sf-create-work">'+workstation+'</div>'+
+        '</div>'+
+      '</div>';
+  }
+
+  window.showCreate = function(){
+    _createHeat = 'medium';
+    renderCreate();
+  };
+
+// PRACTISE: Candle Timer — the candle becomes the practice timer.
   const PRACTICE_CANDLE = {
     durationMinutes: 20,
     focus: "Clean",
@@ -630,11 +756,75 @@
     studyEnter(){var d=STUDY_DOORS[_skIdx];if(d.state==='locked')return;_skPanel=true;renderStudyDoorPanel(d.id);},
     studyBack(){_skPanel=false;renderStudyChamber();},
     studyTry(id){var d=STUDY_DOORS.find(function(x){return x.id===id;});if(!d)return;var el=document.getElementById('sk-drawer');if(!el)return;el.innerHTML='<div style="padding:8px"><div class="sk-kicker" style="color:'+d.color+'">Try This</div><div style="font-size:.82rem;color:var(--text);line-height:1.6;margin:8px 0">'+esc(d.action)+'</div><div class="sk-panel-btns"><button class="secondary" onclick="SceneFirst.studyBack()">Back to Chamber</button></div></div>';},
-    toggleCreate(id){const c=read('hearth-create-current',{title:'Untitled Song Seed',ingredients:[],notes:'',selected:[]});const sel=new Set(c.selected||[]);if(sel.has(id))sel.delete(id);else sel.add(id);c.selected=Array.from(sel);write('hearth-create-current',c);showCreate();},
-    stirCauldron(){const c=read('hearth-create-current',{});const sel=c.selected||[];if(!sel.length)return;const CI=window.CAULDRON_INGREDIENTS||[];const CC=window.CREATE_COMBOS||[];let result=null;if(sel.length===1){const ing=CI.find(x=>x.id===sel[0]);if(ing){const prompt=ing.prompts[Math.floor(Math.random()*ing.prompts.length)];result={constraint:'Single ingredient: '+ing.name,prompt:ing.symbol+' '+ing.name+': '+prompt,level:1,labels:[ing.symbol+' '+ing.name]};}}else{const sorted=sel.slice().sort();const match=CC.find(x=>x.ingredients.slice().sort().join(',')===sorted.join(','));if(match){const labels=sel.map(id=>{const ing=CI.find(x=>x.id===id);return ing?ing.symbol+' '+ing.name:id;});result={constraint:match.constraint,prompt:match.prompt,level:match.level,labels:labels};}else{const prompts=sel.map(id=>{const ing=CI.find(x=>x.id===id);return ing?ing.prompts[Math.floor(Math.random()*ing.prompts.length)]:'';});const labels=sel.map(id=>{const ing=CI.find(x=>x.id===id);return ing?ing.symbol+' '+ing.name:id;});result={constraint:'Combine: '+labels.join(' + '),prompt:prompts.join('\n\n'),level:sel.length,labels:labels};}}
-    if(!result)return;const levelBadge=result.level<=2?'⚗️':result.level<=3?'🔥':'💀';const levelNames=['','Ingredient','Filter','Forge','Collision','Alchemy'];c.prompt=levelBadge+' L'+result.level+' '+levelNames[result.level]+': '+result.labels.join(' + ')+'\n'+result.constraint+'\n'+result.prompt;c.ingredients=sel.map(id=>{const ing=CI.find(x=>x.id===id);return ing?ing.name:id;});write('hearth-create-current',c);showCreate();},
-    saveCreate(){const c=read('hearth-create-current',{});const t=document.getElementById('sf-create-title'),n=document.getElementById('sf-create-notes');if(t)c.title=t.value;if(n)c.notes=n.value;write('hearth-create-current',c);const ps=read('hearth-create-projects',[]);ps.push({...c,savedAt:new Date().toISOString()});write('hearth-create-projects',ps);showCreate();},
-    newCreate(){write('hearth-create-current',{title:'Untitled Song Seed',ingredients:[],prompt:'Add one ingredient.',notes:''});showCreate();},
+    toggleCreate(id){var c=getCreateSeed();var sel=new Set(c.selected||[]);if(sel.has(id))sel.delete(id);else sel.add(id);c.selected=Array.from(sel);saveCreateSeed(c);renderCreate();},
+    stirCauldron(){
+      var c=getCreateSeed();var sel=c.selected||[];if(!sel.length)return;
+      var CI=window.CAULDRON_INGREDIENTS||[];var CC=window.CREATE_COMBOS||[];
+      var heat=CREATE_HEAT_LEVELS.find(function(x){return x.id===_createHeat;});
+      var heatRange=heat?heat.levels:[2,3];
+      var result=null;
+      if(sel.length===1){
+        var ing=CI.find(function(x){return x.id===sel[0];});
+        if(ing){
+          var prompt=ing.prompts[Math.floor(Math.random()*ing.prompts.length)];
+          result={constraint:'Single ingredient: '+ing.name,prompt:ing.symbol+' '+ing.name+': '+prompt,level:1,labels:[ing.symbol+' '+ing.name],payoff:''};
+        }
+      }else{
+        var sorted=sel.slice().sort();
+        var match=CC.find(function(x){return x.ingredients.slice().sort().join(',')===sorted.join(',');});
+        if(match){
+          var labels=sel.map(function(id){var ing=CI.find(function(x){return x.id===id;});return ing?ing.symbol+' '+ing.name:id;});
+          result={constraint:match.constraint,prompt:match.prompt,level:match.level,labels:labels,payoff:match.payoff||''};
+        }else{
+          var prompts=sel.map(function(id){var ing=CI.find(function(x){return x.id===id;});return ing?ing.prompts[Math.floor(Math.random()*ing.prompts.length)]:'';});
+          var labels=sel.map(function(id){var ing=CI.find(function(x){return x.id===id;});return ing?ing.symbol+' '+ing.name:id;});
+          result={constraint:'Combine: '+labels.join(' + '),prompt:prompts.join('\n\n'),level:sel.length,labels:labels,payoff:''};
+        }
+      }
+      if(!result)return;
+      var levelBadge=result.level<=2?'⚗️':result.level<=3?'🔥':'💀';
+      var levelNames=['','Ingredient','Filter','Forge','Collision','Alchemy'];
+      var seed={
+        id:'seed-'+Date.now(),
+        createdAt:new Date().toISOString(),
+        title:'Untitled Song Seed',
+        heat:_createHeat,
+        ingredients:sel.map(function(id){var ing=CI.find(function(x){return x.id===id;});return ing?ing.name:id;}),
+        prompt:levelBadge+' L'+result.level+' '+levelNames[result.level]+': '+result.labels.join(' + ')+'\n'+result.constraint+'\n'+result.prompt,
+        constraint:result.constraint,
+        payoff:result.payoff||'',
+        mutation:'',
+        notes:'',
+        firstLyric:'',
+        riffIdea:'',
+        rhythmIdea:''
+      };
+      saveCreateSeed(seed);
+      renderCreate();
+    },
+    saveSeed(){
+      var c=getCreateSeed();
+      var t=document.getElementById('create-title');
+      var n=document.getElementById('create-notes');
+      var fl=document.getElementById('create-first-lyric');
+      var ri=document.getElementById('create-riff');
+      var rr=document.getElementById('create-rhythm');
+      if(t)c.title=t.value;if(n)c.notes=n.value;
+      if(fl)c.firstLyric=fl.value;if(ri)c.riffIdea=ri.value;if(rr)c.rhythmIdea=rr.value;
+      saveCreateSeed(c);
+      var ps=read('hearth-create-projects',[]);
+      ps.push(Object.assign({},c,{savedAt:new Date().toISOString()}));
+      write('hearth-create-projects',ps);
+      renderCreate();
+    },
+    newCreate(){saveCreateSeed({title:'Untitled Song Seed',ingredients:[],selected:[],prompt:'',constraint:'',payoff:'',mutation:'',notes:'',firstLyric:'',riffIdea:'',rhythmIdea:''});renderCreate();},
+    setHeat(id){_createHeat=id;renderCreate();},
+    mutateSeed(type){
+      var c=getCreateSeed();
+      c.mutation=CREATE_MUTATIONS[type]||'';
+      saveCreateSeed(c);
+      renderCreate();
+    },
     openMastery(id){const b=beyond.find(x=>x.id===id);const el=document.getElementById('sf-drawer');if(!b||!el)return;el.innerHTML='<div class="sf-kicker" style="color:'+b.color+'">Phoenix Seal</div><h3 style="font-family:Cinzel;color:'+b.color+';margin:5px 0">'+esc(b.name)+'</h3><div class="sf-master-list"><div class="sf-master-card"><b>Beyond Artist</b><p>'+esc(b.artist)+'</p></div><div class="sf-master-card"><b>Why this matters</b><p>'+esc(b.why)+'</p></div><div class="sf-master-card"><b>Go beyond practice</b><p>'+esc(b.practice)+'</p></div><div class="sf-master-card"><b>Phoenix question</b><p>What changes in you after studying this boundary-crosser?</p></div></div><div class="sf-proof-grid" style="margin-top:10px"><textarea placeholder="What did you observe in the master artist?"></textarea><textarea placeholder="What will you try that goes beyond your current map?"></textarea><textarea placeholder="What evidence/recording/note will prove the transformation?"></textarea></div>';}
   };
 })();
