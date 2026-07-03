@@ -39,6 +39,7 @@ Commits on this branch:
 - `database-blueprint/docs/foundation-lesson-inventory-2026-07-03.md`
 - `database-blueprint/docs/teaching-engine-lesson-seed-schema-v1.md`
 - `database-blueprint/docs/local-storage-and-api-inventory-2026-07-03.md`
+- `database-blueprint/docs/scene-first-override-inventory-2026-07-03.md`
 
 ### Added Create node seed files
 
@@ -171,6 +172,8 @@ This would help Martin design the backend migration safely.
 
 ### Option C - Inspect `scene-first.js` in detail
 
+Status: completed in `database-blueprint/docs/scene-first-override-inventory-2026-07-03.md`.
+
 Create a document showing:
 
 - which functions it overrides
@@ -182,8 +185,8 @@ This would prepare for the most important frontend architecture cleanup.
 
 ## Suggested Next Step
 
-Choose Option C next.
+Extract low-risk scene-first data constants into seed/reference files.
 
 Reason:
 
-The localStorage/API inventory is now done. The next biggest architecture risk is `scene-first.js`, because it loads late and can override node screens defined elsewhere.
+The `scene-first.js` inventory is now done. The safest next move is to extract data constants such as `HEARTH_BODY_ZONES`, `STUDY_DOORS`, and the Mastery phoenix seal data without changing runtime behavior.
