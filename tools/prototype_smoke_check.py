@@ -86,6 +86,30 @@ SEED_FILES = {
         "count": 8,
         "fields": ["id", "name", "symbol", "color", "prompts"],
     },
+    "database-blueprint/seeds/hearth_body_zones_v2.json": {
+        "count": 6,
+        "fields": [
+            "id",
+            "label",
+            "seal",
+            "x",
+            "y",
+            "r",
+            "guide",
+            "notice",
+            "tryThis",
+            "apply",
+            "sourceNote",
+        ],
+    },
+    "database-blueprint/seeds/study_key_doors_v2.json": {
+        "count": 6,
+        "fields": ["id", "label", "symbol", "state", "color", "guide", "action", "mode"],
+    },
+    "database-blueprint/seeds/mastery_phoenix_seals_v2.json": {
+        "count": 4,
+        "fields": ["id", "name", "artist", "color", "why", "practice"],
+    },
 }
 
 LESSON_SEEDS = {

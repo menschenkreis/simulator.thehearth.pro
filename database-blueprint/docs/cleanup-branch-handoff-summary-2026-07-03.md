@@ -29,6 +29,7 @@ Commits on this branch:
 | `0a7f196` | Added Foundation lesson inventory. |
 | `0436257` | Added TeachingEngine lesson seed schema and first Threshold lesson seed. |
 | `df65f66` | Extracted second Foundation lesson seed: Language of Music. |
+| current commit | Extracted scene-first reference seed files. |
 
 ## What Changed
 
@@ -63,6 +64,20 @@ These were extracted as proof-of-format lesson seeds.
   - 10 steps
   - source: `assets/js/lessons-language-of-music.js`
 
+### Added scene-first reference seed files
+
+These were extracted from low-risk data constants in `assets/js/scene-first.js`.
+
+- `database-blueprint/seeds/hearth_body_zones_v2.json`
+  - 6 records
+  - source: `HEARTH_BODY_ZONES`
+- `database-blueprint/seeds/study_key_doors_v2.json`
+  - 6 records
+  - source: `STUDY_DOORS`
+- `database-blueprint/seeds/mastery_phoenix_seals_v2.json`
+  - 4 records
+  - source: Mastery phoenix seal data
+
 ### Added/expanded smoke check
 
 - `tools/prototype_smoke_check.py`
@@ -73,6 +88,7 @@ The smoke check now verifies:
 - key browser globals/exports are still present
 - Create content banks still look intact
 - extracted Create seed files are valid JSON and have expected counts
+- extracted scene-first reference seed files are valid JSON and have expected counts
 - extracted Foundation lesson seeds are valid JSON and have expected lesson IDs/step counts
 - Foundation lesson files still expose expected lesson globals
 
@@ -80,7 +96,7 @@ Current passing result:
 
 ```text
 Prototype smoke check passed.
-Checked 19 key files, 2 content banks, 3 seed files, and 2 lesson seeds.
+Checked 19 key files, 2 content banks, 6 seed files, and 2 lesson seeds.
 ```
 
 ## What Did Not Change
@@ -185,8 +201,9 @@ This would prepare for the most important frontend architecture cleanup.
 
 ## Suggested Next Step
 
-Extract low-risk scene-first data constants into seed/reference files.
+Choose the next migration lane:
 
-Reason:
+- continue extracting small Foundation lessons into lesson seeds, or
+- start designing the explicit node renderer registry that will eventually replace the `scene-first.js` override pattern.
 
-The `scene-first.js` inventory is now done. The safest next move is to extract data constants such as `HEARTH_BODY_ZONES`, `STUDY_DOORS`, and the Mastery phoenix seal data without changing runtime behavior.
+The safest practical next move is probably one more small Foundation lesson extraction. The bigger renderer-registry cleanup should wait until there are browser-level checks around the main node screens.

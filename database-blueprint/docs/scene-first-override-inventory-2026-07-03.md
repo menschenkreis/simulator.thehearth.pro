@@ -78,6 +78,10 @@ Role:
 
 Renders the Hearth body chamber and body-system hotspot interactions.
 
+Extracted reference seed:
+
+- `database-blueprint/seeds/hearth_body_zones_v2.json`
+
 Storage:
 
 No major persistent state found except internal active/debug variables.
@@ -115,6 +119,10 @@ Owns:
 Role:
 
 Renders the rotating Study key chamber with six doors.
+
+Extracted reference seed:
+
+- `database-blueprint/seeds/study_key_doors_v2.json`
 
 Conflict:
 
@@ -178,6 +186,10 @@ Owns:
 Role:
 
 Renders the Mastery phoenix scene and phoenix seals.
+
+Extracted reference seed:
+
+- `database-blueprint/seeds/mastery_phoenix_seals_v2.json`
 
 ### Journey support
 
