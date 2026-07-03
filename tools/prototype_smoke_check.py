@@ -94,6 +94,11 @@ LESSON_SEEDS = {
         "step_count": 7,
         "allowed_types": ["speak", "ask", "cards", "video", "action", "end"],
     },
+    "database-blueprint/seeds/foundation_language_of_music_lesson_v2.json": {
+        "lesson_id": "f-language-of-music",
+        "step_count": 10,
+        "allowed_types": ["speak", "ask", "cards", "video", "action", "end"],
+    },
 }
 
 
