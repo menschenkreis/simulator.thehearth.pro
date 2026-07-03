@@ -46,6 +46,7 @@ Commits on this branch:
 
 - `database-blueprint/docs/codebase-cleanup-plan-2026-07-03.md`
 - `database-blueprint/docs/active-code-inventory-2026-07-03.md`
+- `database-blueprint/docs/extracted-seed-index-2026-07-03.md`
 - `database-blueprint/docs/foundation-lesson-inventory-2026-07-03.md`
 - `database-blueprint/docs/foundation-migration-status-2026-07-03.md`
 - `database-blueprint/docs/teaching-engine-lesson-seed-schema-v1.md`
