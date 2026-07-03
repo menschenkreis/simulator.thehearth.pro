@@ -148,6 +148,11 @@ LESSON_SEEDS = {
         "step_count": 10,
         "allowed_types": ["speak", "ask", "cards", "video", "action", "end"],
     },
+    "database-blueprint/seeds/foundation_how_to_learn_lesson_v2.json": {
+        "lesson_id": "f-how-to-learn",
+        "step_count": 16,
+        "allowed_types": ["speak", "ask", "cards", "video", "action", "end"],
+    },
 }
 
 
