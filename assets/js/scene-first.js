@@ -167,52 +167,161 @@
       '<div id="sf-drawer" class="sf-drawer"></div></div></div>';
   };
 
-  // STUDY: 8-level key chamber. Rings = levels, doors = current level locks.
-  const STUDY_LEVELS=[
-    {id:'L1',name:'Origin',color:'#ff4444'},{id:'L2',name:'Duality',color:'#ff8800'},
-    {id:'L3',name:'Creation',color:'#ffdd00'},{id:'L4',name:'Structure',color:'#00cc44'},
-    {id:'L5',name:'Change',color:'#00cccc'},{id:'L6',name:'Harmony',color:'#3366ff'},
-    {id:'L7',name:'Wisdom',color:'#6633cc'},{id:'L8',name:'Power',color:'#cc33ff'}
+  // STUDY: Rotating Key Chamber — 6 doors of clarity
+  const STUDY_DOORS = [
+    {id:'word',label:'Word',symbol:'\u25c7',state:'open',color:'#ff4444',guide:'A misunderstood word can blank everything after it.',action:'Choose one unclear term and clear it before continuing.',mode:'Dictionary / terms'},
+    {id:'sound',label:'Sound',symbol:'\u266a',state:'recommended',color:'#ff8800',guide:'Your ear learns before your fingers obey.',action:'Listen to two notes and decide which feels like home.',mode:'Listening / ear training'},
+    {id:'shape',label:'Shape',symbol:'\u2301',state:'open',color:'#ffcc00',guide:'A concept becomes easier when you can see where it lives.',action:'Compare one tab pattern to the fretboard.',mode:'Tab / notation / fretboard'},
+    {id:'pattern',label:'Pattern',symbol:'\u2736',state:'open',color:'#44cc44',guide:'Study connects separate facts into a map.',action:'Link notes to intervals, scales, and chords.',mode:'Concept relationships'},
+    {id:'test',label:'Test',symbol:'?',state:'open',color:'#3366ff',guide:'If you can explain it simply, it is becoming yours.',action:'Answer one tiny recall question.',mode:'Quiz / recall'},
+    {id:'review',label:'Review',symbol:'\u21ba',state:'locked',color:'#6633cc',guide:'Forgetting is not failure. It is a signal to revisit.',action:'Return to one weak concept.',mode:'Spaced review'}
   ];
-  const STUDY_JOURNEY_LEVELS = STUDY_LEVELS;
-  function studyTopicLevel(item,idx){
-    const src=(item.t.source||'')+' '+(item.t.qjam||'')+' '+(item.t.level||'');
-    const m=src.match(/(?:QJam\s*)?L(?:evel)?\s*(\d)/i); if(m)return Math.max(1,Math.min(8,Number(m[1])));
-    return Math.max(1,Math.min(8,Math.floor(idx/7)+1));
+  window.STUDY_DOORS = STUDY_DOORS;
+
+  let _skIdx = 0;
+  let _skPanel = false;
+
+  function skGuideText(){
+    var d = STUDY_DOORS[_skIdx];
+    if(_skPanel) return '';
+    if(d.state==='locked') return 'This door is locked. Open more doors first, or start with the Word door.';
+    if(d.state==='recommended') return d.guide + ' This door is recommended next.';
+    return d.guide;
   }
-  function levelTopics(){
-    const K=window.KNOWING; if(!K||!K.categories)return [];
-    const all=K.categories.flatMap(c=>c.topics.map(t=>({c,t})));
-    return all.map((x,i)=>({...x,level:studyTopicLevel(x,i)}));
+
+  function renderStudyChamber(){
+    inject(); var el=panel(); if(!el)return;
+    var d = STUDY_DOORS[_skIdx];
+    var total = STUDY_DOORS.length;
+
+    // Build 3 visible doors: prev, current, next
+    var prevIdx = (_skIdx - 1 + total) % total;
+    var nextIdx = (_skIdx + 1) % total;
+    var prev = STUDY_DOORS[prevIdx];
+    var curr = STUDY_DOORS[_skIdx];
+    var next = STUDY_DOORS[nextIdx];
+
+    function doorStateColor(s){
+      if(s==='locked') return '#666';
+      if(s==='recommended') return AMBER;
+      if(s==='open') return GOLD;
+      return '#888';
+    }
+
+    // SVG door chamber
+    var svg = '<svg viewBox="0 0 560 360" class="sk-door-svg">';
+
+    // Floor / stage
+    svg += '<ellipse cx="280" cy="320" rx="200" ry="20" fill="'+GOLD+'" opacity=".06"/>';
+
+    // Side doors (dimmed, smaller)
+    function sideDoor(x, door, opacity){
+      var col = doorStateColor(door.state);
+      return '<g class="door-group" style="opacity:'+opacity+'" onclick="SceneFirst.studyRotate('+(door===prev?'-1':'1')+')">'+
+        '<rect x="'+(x-28)+'" y="100" width="56" height="180" rx="14" fill="'+col+'" opacity=".12" stroke="'+col+'" stroke-opacity=".3" class="door-shape"/>'+
+        '<text x="'+x+'" y="185" text-anchor="middle" fill="'+col+'" font-family="Cinzel,serif" font-size="18" opacity=".6">'+door.symbol+'</text>'+
+        '<text x="'+x+'" y="208" text-anchor="middle" fill="'+col+'" font-family="JetBrains Mono" font-size="8" opacity=".5">'+esc(door.label)+'</text>'+
+        '</g>';
+    }
+    svg += sideDoor(110, prev, '.35');
+    svg += sideDoor(450, next, '.35');
+
+    // Central door (large, bright)
+    var cCol = doorStateColor(curr.state);
+    var cOp = curr.state==='locked' ? '.25' : '.6';
+    var glowId = 'sk-glow-'+curr.id;
+    svg += '<defs><radialGradient id="'+glowId+'"><stop offset="0%" stop-color="'+cCol+'" stop-opacity=".25"/><stop offset="100%" stop-color="'+cCol+'" stop-opacity="0"/></radialGradient></defs>';
+    svg += '<circle cx="280" cy="190" r="110" fill="url(#'+glowId+')"/>';
+    svg += '<g class="door-group" onclick="SceneFirst.studyEnter()">';
+    svg += '<rect x="218" y="55" width="124" height="260" rx="24" fill="'+cCol+'" opacity="'+cOp+'" stroke="'+cCol+'" stroke-width="2" stroke-opacity=".5" class="door-shape"/>';
+    // Keyhole
+    svg += '<circle cx="280" cy="175" r="12" fill="none" stroke="'+GOLD+'" stroke-width="1.5" opacity=".7"/>';
+    svg += '<rect x="278" y="175" width="4" height="14" rx="2" fill="'+GOLD+'" opacity=".7"/>';
+    // Symbol
+    svg += '<text x="280" y="145" text-anchor="middle" fill="'+cCol+'" font-family="Cinzel,serif" font-size="32">'+curr.symbol+'</text>';
+    // Label
+    svg += '<text x="280" y="220" text-anchor="middle" fill="'+cCol+'" font-family="Cinzel,serif" font-size="16" font-weight="600">'+esc(curr.label)+'</text>';
+    // State badge
+    var stateLabel = curr.state==='locked'?'LOCKED':curr.state==='recommended'?'RECOMMENDED':'OPEN';
+    svg += '<text x="280" y="245" text-anchor="middle" fill="'+cCol+'" font-family="JetBrains Mono" font-size="8" opacity=".7">'+stateLabel+'</text>';
+    svg += '</g>';
+
+    // Rotate arrows
+    svg += '<g style="cursor:pointer" onclick="SceneFirst.studyRotate(-1)">';
+    svg += '<text x="30" y="200" fill="'+GOLD+'" font-size="24" opacity=".4" font-family="DM Sans">\u2039</text>';
+    svg += '</g>';
+    svg += '<g style="cursor:pointer" onclick="SceneFirst.studyRotate(1)">';
+    svg += '<text x="530" y="200" fill="'+GOLD+'" font-size="24" opacity=".4" font-family="DM Sans">\u203a</text>';
+    svg += '</g>';
+
+    // Door index dots
+    STUDY_DOORS.forEach(function(dd,i){
+      var dotX = 220 + i*24;
+      var dotOp = i===_skIdx ? '1' : '.25';
+      var dotR = i===_skIdx ? '3.5' : '2.5';
+      svg += '<circle cx="'+dotX+'" cy="340" r="'+dotR+'" fill="'+GOLD+'" opacity="'+dotOp+'"/>';
+    });
+
+    svg += '</svg>';
+
+    el.innerHTML =
+      '<div class="sk-wrap">'+
+        '<button class="back-btn" onclick="backToMap()">\u2190 Map</button>'+
+        '<div class="sk-scene">'+
+          '<div class="sk-top">'+
+            '<div><div class="sk-kicker">Study</div>'+
+            '<div class="sk-title">The Key Chamber</div>'+
+            '<div class="sk-sub">Study is where the books unlock doors. Choose the kind of clarity you need.</div></div>'+
+            '<div class="sk-guide">'+
+              '<img src="images/character-symbols/Thinking Question Mark.png">'+
+              '<div>'+esc(skGuideText())+'</div>'+
+            '</div>'+
+          '</div>'+
+          '<div class="sk-stage">'+svg+'</div>'+
+        '</div>'+
+        '<div class="sk-drawer" id="sk-drawer">'+
+          '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">'+
+            '<div><div class="sk-kicker" style="color:'+cCol+'">'+esc(curr.mode)+'</div>'+
+            '<div style="font-family:Cinzel;color:var(--gold);font-size:.9rem">'+esc(curr.label)+' Door</div></div>'+
+            (curr.state!=='locked'?
+              '<button class="sf-primary" style="--sf:'+cCol+'" onclick="SceneFirst.studyEnter()">Enter Door</button>':
+              '<button class="sf-secondary" disabled style="opacity:.4">Locked</button>')+
+          '</div>'+
+          '<div style="font-size:.75rem;color:var(--dim);line-height:1.5">'+esc(curr.guide)+'</div>'+
+          '<div style="font-size:.72rem;color:var(--amber);margin-top:6px">'+esc(curr.action)+'</div>'+
+        '</div>'+
+      '</div>';
   }
-  function activeStudyLevel(){return Number(localStorage.getItem('hearth-study-active-level')||'1')||1;}
-  function setActiveStudyLevel(n){localStorage.setItem('hearth-study-active-level',String(Math.max(1,Math.min(8,n))));showStudy();}
-  window.showStudy=function(){
-    inject(); const el=panel(); if(!el)return; const K=window.KNOWING; if(!K){el.innerHTML='Study data loading';return;}
-    const topics=levelTopics(); const st=read('hearth-study-locks',{}); const active=activeStudyLevel();
-    const activeTopics=topics.filter(x=>x.level===active); const current=activeTopics.find(x=>st[x.t.id]!=='open'&&st[x.t.id]!=='mastered')||activeTopics[0]||topics[0];
-    const cx0=280, cy0=190; let rings='', doors='';
-    STUDY_LEVELS.forEach((lvl,i)=>{
-      const n=i+1, r=48+i*18, levelItems=topics.filter(x=>x.level===n), open=levelItems.filter(x=>st[x.t.id]==='open'||st[x.t.id]==='mastered').length, pct=levelItems.length?open/levelItems.length:0;
-      const op=n===active?.62:.16+pct*.25;
-      rings+='<circle onclick="SceneFirst.studyLevel('+n+')" cx="'+cx0+'" cy="'+cy0+'" r="'+r+'" fill="none" stroke="'+lvl.color+'" stroke-opacity="'+op+'" stroke-width="'+(n===active?3:1.4)+'" stroke-dasharray="'+(n===active?'':'5 7')+'" style="cursor:pointer"/>';
-      const lx=cx0+r+18, ly=cy0-4;
-      rings+='<text onclick="SceneFirst.studyLevel('+n+')" x="'+lx+'" y="'+ly+'" fill="'+lvl.color+'" font-family="JetBrains Mono" font-size="8" style="cursor:pointer">'+lvl.id+'</text>';
-    });
-    activeTopics.slice(0,10).forEach((x,i)=>{
-      const a=(i/Math.max(10,activeTopics.slice(0,10).length))*Math.PI*2-Math.PI/2;
-      const r=142, cx=cx0+r*Math.cos(a), cy=cy0+r*Math.sin(a);
-      const s=st[x.t.id]||'locked', col=s==='mastered'?'#2ecc71':s==='open'?STUDY_LEVELS[active-1].color:s==='cracked'?AMBER:'#666';
-      doors+='<g class="door" onclick="StudyKey.openSession(\''+esc(x.c.id)+'\',\''+esc(x.t.id)+'\')"><rect x="'+(cx-17)+'" y="'+(cy-28)+'" width="34" height="56" rx="13" fill="'+col+'" opacity=".30" stroke="'+col+'"/><circle cx="'+(cx+8)+'" cy="'+cy+'" r="3" fill="'+GOLD+'"/><text x="'+cx+'" y="'+(cy+41)+'" text-anchor="middle" fill="'+col+'" font-family="JetBrains Mono" font-size="7">'+esc(x.t.title.slice(0,12))+'</text></g>';
-    });
-    const lvl=STUDY_LEVELS[active-1];
-    const svg='<svg viewBox="0 0 560 400">'+rings+'<circle cx="'+cx0+'" cy="'+cy0+'" r="34" fill="'+lvl.color+'" opacity=".10"/><text x="'+cx0+'" y="'+(cy0+13)+'" text-anchor="middle" font-size="78" fill="'+GOLD+'" opacity=".9">⚿</text>'+doors+'</svg>';
-    const opened=activeTopics.filter(x=>st[x.t.id]==='open'||st[x.t.id]==='mastered').length;
-    el.innerHTML=sceneStart('sf-key','The Key Chamber','Eight concentric rings. Each ring is a level. Move through the doors systematically: define, draw, do, then unlock.','Now the chamber has order: choose a level ring, then open the next lock on that ring. No random study wandering.','images/character-symbols/Thinking Question Mark.png','study')+'<div class="sf-stage">'+svg+'</div><div class="sf-drawer"><div class="sf-kicker" style="color:'+lvl.color+'">'+lvl.id+' · '+lvl.name+' · '+opened+'/'+activeTopics.length+' opened</div><button class="sf-primary" style="--sf:'+lvl.color+'" onclick="StudyKey.openSession(\''+esc(current?current.c.id:'')+'\',\''+esc(current?current.t.id:'')+'\')">Turn Today\'s '+lvl.id+' Key</button> <span style="color:var(--dim);margin-left:8px">'+esc(current?current.t.title:'No lock in this level')+'</span><div class="sf-chiprow">'+STUDY_JOURNEY_LEVELS.map((l,i)=>'<button onclick="SceneFirst.studyLevel('+(i+1)+')" style="color:'+l.color+';border-color:'+l.color+'55">'+l.id+'</button>').join('')+'</div></div></div></div>';
+
+  function renderStudyDoorPanel(doorId){
+    inject(); var el=panel(); if(!el)return;
+    var d = STUDY_DOORS.find(function(x){return x.id===doorId;});
+    if(!d){renderStudyChamber();return;}
+    el.innerHTML =
+      '<div class="sk-panel">'+
+        '<button class="back-btn" onclick="SceneFirst.studyBack()">\u2190 Back to Chamber</button>'+
+        '<div class="sk-panel-card">'+
+          '<div class="sk-mode">'+esc(d.mode)+'</div>'+
+          '<h3>'+d.symbol+' '+esc(d.label)+'</h3>'+
+          '<div class="sk-guide-text">'+esc(d.guide)+'</div>'+
+          '<div class="sk-action">'+esc(d.action)+'</div>'+
+          '<div class="sk-panel-btns">'+
+            '<button class="secondary" onclick="SceneFirst.studyBack()">Back to Chamber</button>'+
+            '<button onclick="SceneFirst.studyTry(\''+esc(d.id)+'\')">Try This</button>'+
+          '</div>'+
+        '</div>'+
+      '</div>';
+  }
+
+  window.showStudy = function(){
+    _skPanel = false;
+    _skIdx = 0;
+    renderStudyChamber();
   };
 
+  // SceneFirst methods for study
+  // (added to SceneFirst object below)
 
-  // CREATE: central cauldron first; workstation appears after ingredient.
   window.showCreate=function(){
     inject(); const el=panel(); if(!el)return; const ing=window.CAULDRON_INGREDIENTS||[]; const c=read('hearth-create-current',{prompt:'Select ingredients and stir the cauldron.',ingredients:[],notes:'',title:'Untitled Song Seed',selected:[]});
     const sel=new Set(c.selected||[]);
@@ -287,7 +396,10 @@
     openPlay(id){if(window.PlayWorld&&PlayWorld.detail)return PlayWorld.detail(id);},
     mapHover(id){var rs=window.WORLD_MAP_REGIONS||[];var r=rs.find(function(x){return x.id===id;});if(!r)return;var g=document.getElementById('sf-map-guide-text');if(!g)return;g.innerHTML='<div class="sf-map-guide-region">'+esc(r.name)+'</div><div class="sf-map-guide-tradition">'+esc(r.tradition)+'</div>';},
     mapUnhover(){var g=document.getElementById('sf-map-guide-text');if(!g)return;g.innerHTML='Choose a region. Listen for its rhythm, touch, scale colour, and story.';},
-    studyLevel(n){setActiveStudyLevel(n);},
+    studyRotate(dir){_skIdx=(_skIdx+dir+STUDY_DOORS.length)%STUDY_DOORS.length;renderStudyChamber();},
+    studyEnter(){var d=STUDY_DOORS[_skIdx];if(d.state==='locked')return;_skPanel=true;renderStudyDoorPanel(d.id);},
+    studyBack(){_skPanel=false;renderStudyChamber();},
+    studyTry(id){var d=STUDY_DOORS.find(function(x){return x.id===id;});if(!d)return;var el=document.getElementById('sk-drawer');if(!el)return;el.innerHTML='<div style="padding:8px"><div class="sk-kicker" style="color:'+d.color+'">Try This</div><div style="font-size:.82rem;color:var(--text);line-height:1.6;margin:8px 0">'+esc(d.action)+'</div><div class="sk-panel-btns"><button class="secondary" onclick="SceneFirst.studyBack()">Back to Chamber</button></div></div>';},
     toggleCreate(id){const c=read('hearth-create-current',{title:'Untitled Song Seed',ingredients:[],notes:'',selected:[]});const sel=new Set(c.selected||[]);if(sel.has(id))sel.delete(id);else sel.add(id);c.selected=Array.from(sel);write('hearth-create-current',c);showCreate();},
     stirCauldron(){const c=read('hearth-create-current',{});const sel=c.selected||[];if(!sel.length)return;const CI=window.CAULDRON_INGREDIENTS||[];const CC=window.CREATE_COMBOS||[];let result=null;if(sel.length===1){const ing=CI.find(x=>x.id===sel[0]);if(ing){const prompt=ing.prompts[Math.floor(Math.random()*ing.prompts.length)];result={constraint:'Single ingredient: '+ing.name,prompt:ing.symbol+' '+ing.name+': '+prompt,level:1,labels:[ing.symbol+' '+ing.name]};}}else{const sorted=sel.slice().sort();const match=CC.find(x=>x.ingredients.slice().sort().join(',')===sorted.join(','));if(match){const labels=sel.map(id=>{const ing=CI.find(x=>x.id===id);return ing?ing.symbol+' '+ing.name:id;});result={constraint:match.constraint,prompt:match.prompt,level:match.level,labels:labels};}else{const prompts=sel.map(id=>{const ing=CI.find(x=>x.id===id);return ing?ing.prompts[Math.floor(Math.random()*ing.prompts.length)]:'';});const labels=sel.map(id=>{const ing=CI.find(x=>x.id===id);return ing?ing.symbol+' '+ing.name:id;});result={constraint:'Combine: '+labels.join(' + '),prompt:prompts.join('\n\n'),level:sel.length,labels:labels};}}
     if(!result)return;const levelBadge=result.level<=2?'⚗️':result.level<=3?'🔥':'💀';const levelNames=['','Ingredient','Filter','Forge','Collision','Alchemy'];c.prompt=levelBadge+' L'+result.level+' '+levelNames[result.level]+': '+result.labels.join(' + ')+'\n'+result.constraint+'\n'+result.prompt;c.ingredients=sel.map(id=>{const ing=CI.find(x=>x.id===id);return ing?ing.name:id;});write('hearth-create-current',c);showCreate();},

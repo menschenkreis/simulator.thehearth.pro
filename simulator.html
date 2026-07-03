@@ -1014,6 +1014,32 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
   .node-info h4{font-size:1rem;}
   .node-info p{font-size:0.82rem;}
 
+  /* ═══ STUDY KEY CHAMBER ═══ */
+  .sk-wrap{padding:18px;max-width:980px;margin:0 auto;display:flex;flex-direction:column}
+  .sk-scene{position:relative;border:1px solid var(--border);border-radius:22px;overflow:hidden;background:radial-gradient(circle at 50% 35%,rgba(212,175,105,.13),rgba(13,11,8,.96) 55%,#080704);box-shadow:0 20px 60px rgba(0,0,0,.35)}
+  .sk-scene::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 20% 20%,rgba(232,160,32,.08),transparent 24%),radial-gradient(circle at 80% 70%,rgba(138,106,170,.09),transparent 28%);pointer-events:none}
+  .sk-top{position:relative;z-index:2;display:flex;justify-content:space-between;gap:14px;align-items:flex-start;padding:18px}
+  .sk-kicker{font-family:JetBrains Mono;font-size:.58rem;color:var(--gold);letter-spacing:.16em;text-transform:uppercase}
+  .sk-title{font-family:Cinzel;color:var(--gold);font-size:1.55rem;font-weight:800;margin:2px 0}
+  .sk-sub{font-size:.78rem;color:var(--dim);line-height:1.55;max-width:560px}
+  .sk-guide{display:flex;gap:9px;align-items:center;max-width:290px;background:rgba(13,11,8,.58);border:1px solid var(--border);border-radius:13px;padding:10px;font-size:.72rem;color:var(--text);line-height:1.42}
+  .sk-guide img{width:68px;height:68px;object-fit:contain;filter:drop-shadow(0 4px 12px rgba(0,0,0,.42));animation:char-float 3s ease-in-out infinite}
+  .sk-stage{position:relative;z-index:2;display:flex;justify-content:center;align-items:center;min-height:320px;padding:8px 18px 18px}
+  .sk-door-svg{width:min(560px,100%);display:block}
+  .sk-door-svg .door-group{cursor:pointer;transition:transform .3s}
+  .sk-door-svg .door-group:hover .door-shape{filter:drop-shadow(0 0 12px rgba(212,175,105,.3))}
+  .sk-drawer{position:relative;z-index:2;margin:0 18px 18px;background:rgba(13,11,8,.74);border:1px solid var(--border);border-radius:16px;padding:14px;color:var(--text);font-size:.78rem;line-height:1.55}
+  .sk-panel{padding:18px;max-width:980px;margin:0 auto}
+  .sk-panel-card{background:rgba(13,11,8,.74);border:1px solid var(--border);border-radius:16px;padding:20px}
+  .sk-panel-card h3{font-family:Cinzel;color:var(--gold);font-size:1rem;margin:0 0 4px 0}
+  .sk-panel-card .sk-mode{font-family:JetBrains Mono;font-size:.6rem;color:var(--dim);letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px}
+  .sk-panel-card .sk-guide-text{font-size:.82rem;color:var(--text);line-height:1.6;margin-bottom:8px}
+  .sk-panel-card .sk-action{font-size:.78rem;color:var(--amber);line-height:1.5}
+  .sk-panel-btns{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap}
+  .sk-panel-btns button{background:var(--gold);color:#0d0b08;border:none;border-radius:999px;padding:10px 16px;font-family:DM Sans;font-weight:900;cursor:pointer;font-size:.75rem}
+  .sk-panel-btns button.secondary{background:rgba(13,11,8,.6);color:var(--gold);border:1px solid rgba(212,175,105,.3)}
+  @media(max-width:780px){.sk-top{flex-direction:column}.sk-guide{max-width:none}}
+
   /* ═══ HEARTH BODY CHAMBER ═══ */
   .hb-wrap{padding:18px;max-width:980px;margin:0 auto;display:flex;flex-direction:column}
   .hb-scene{position:relative;border:1px solid var(--border);border-radius:22px;overflow:hidden;background:radial-gradient(circle at 50% 35%,rgba(212,175,105,.13),rgba(13,11,8,.96) 55%,#080704);box-shadow:0 20px 60px rgba(0,0,0,.35)}
