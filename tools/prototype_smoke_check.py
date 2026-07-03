@@ -123,6 +123,11 @@ LESSON_SEEDS = {
         "step_count": 10,
         "allowed_types": ["speak", "ask", "cards", "video", "action", "end"],
     },
+    "database-blueprint/seeds/foundation_learning_a_language_lesson_v2.json": {
+        "lesson_id": "f-learning-a-language",
+        "step_count": 10,
+        "allowed_types": ["speak", "ask", "cards", "video", "action", "end"],
+    },
 }
 
 
