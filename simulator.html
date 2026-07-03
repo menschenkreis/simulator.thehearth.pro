@@ -1478,22 +1478,33 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 /* === KNOWING SHELF SCENE === */
 .knowing-shelf-scene {
   position: relative;
-  min-height: 190px;
-  padding: 18px 28px 12px;
-  margin-bottom: 8px;
+  min-height: 180px;
+  padding: 14px 24px 0;
+  margin-bottom: 6px;
   border-radius: 8px;
+  border: 1px solid rgba(212,175,105,0.08);
   background:
-    linear-gradient(to bottom, rgba(0,0,0,0.45), rgba(0,0,0,0.55)),
+    linear-gradient(to bottom, rgba(13,11,8,0.82) 0%, rgba(13,11,8,0.72) 60%, rgba(13,11,8,0.65) 100%),
     url("images/knowing-shelf-band.webp");
-  background-size: 100% 100%;
-  background-position: center;
+  background-size: cover;
+  background-position: center 40%;
   background-repeat: no-repeat;
   overflow: hidden;
 }
+.knowing-shelf-scene::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 16px;
+  right: 16px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(212,175,105,0.12) 20%, rgba(212,175,105,0.18) 50%, rgba(212,175,105,0.12) 80%, transparent);
+  border-radius: 1px;
+}
 .knowing-shelf-scene .book-carousel {
-  height: 155px;
+  height: 150px;
   align-items: flex-end;
-  padding-bottom: 18px;
+  padding-bottom: 14px;
 }
 </style>
 </head>
@@ -3737,9 +3748,7 @@ function showKnowing(){
     '</div>';
 
     // ── Shelf scene (books only) ──
-    // Progressive dark overlay: stronger on higher shelves
-    var shelfOverlay=isRecommended?Math.min(0.55+(lv.level-recommendedLevel)*0.08,0.75):0.45;
-    html+='<div class="knowing-shelf-scene" style="background:linear-gradient(to bottom,rgba(0,0,0,'+shelfOverlay+'),rgba(0,0,0,'+(shelfOverlay+0.1)+')),url(\"images/knowing-shelf-band.webp\");background-size:100% 100%;background-position:center;background-repeat:no-repeat;">';
+    html+='<div class="knowing-shelf-scene">';
 
     // Book carousel
     html+='<div style="position:relative">';
@@ -3747,7 +3756,7 @@ function showKnowing(){
       html+='<button onclick="_scrollShelf(\'shelf-l'+lv.level+'\',-1)" style="position:absolute;left:-8px;top:50%;transform:translateY(-50%);z-index:2;background:var(--card);border:1px solid var(--border);color:var(--dim);width:28px;height:28px;border-radius:50%;cursor:pointer;font-size:0.8rem;display:flex;align-items:center;justify-content:center">\u2039</button>';
     }
 
-    html+='<div id="shelf-l'+lv.level+'" class="book-carousel" style="display:flex;align-items:flex-end;gap:10px;overflow-x:auto;scroll-behavior:smooth;padding:4px 16px 8px;scrollbar-width:none;-ms-overflow-style:none">';
+    html+='<div id="shelf-l'+lv.level+'" class="book-carousel" style="display:flex;align-items:flex-end;gap:10px;overflow-x:auto;scroll-behavior:smooth;padding:4px 16px 8px;scrollbar-width:none;-ms-overflow-style:none;position:relative;">';
     // hide scrollbar
     html+='<style>#shelf-l'+lv.level+'::-webkit-scrollbar{display:none}</style>';
 
@@ -3791,9 +3800,9 @@ function showKnowing(){
           'display:flex;flex-direction:column;align-items:center;justify-content:flex-end;'+
           'padding:8px 4px 10px;'+
           'position:relative;'+
-          'box-shadow:inset 3px 0 6px rgba(0,0,0,0.2),inset -2px 0 3px rgba(255,255,255,0.05),2px 3px 10px rgba(0,0,0,0.35);'+
+          'box-shadow:inset 3px 0 6px rgba(0,0,0,0.2),inset -2px 0 3px rgba(255,255,255,0.05),0 2px 6px rgba(0,0,0,0.4),0 4px 12px rgba(0,0,0,0.2);'+
           'flex-shrink:0'+
-        '" onmouseover="this.style.transform=\'translateY(-6px) scale(1.02)\';this.style.boxShadow=\'inset 3px 0 6px rgba(0,0,0,0.2),inset -2px 0 3px rgba(255,255,255,0.05),3px 6px 20px rgba(212,175,105,0.25)\'" onmouseout="this.style.transform=\'translateY(0) scale(1)\';this.style.boxShadow=\'inset 3px 0 6px rgba(0,0,0,0.2),inset -2px 0 3px rgba(255,255,255,0.05),2px 3px 10px rgba(0,0,0,0.35)\'">'+
+        '" onmouseover="this.style.transform=\'translateY(-6px) scale(1.02)\';this.style.boxShadow=\'inset 3px 0 6px rgba(0,0,0,0.2),inset -2px 0 3px rgba(255,255,255,0.05),0 4px 16px rgba(212,175,105,0.2)\'" onmouseout="this.style.transform=\'translateY(0) scale(1)\';this.style.boxShadow=\'inset 3px 0 6px rgba(0,0,0,0.2),inset -2px 0 3px rgba(255,255,255,0.05),0 2px 6px rgba(0,0,0,0.4),0 4px 12px rgba(0,0,0,0.2)\'">'+
           // Spine ridge
           '<div style="position:absolute;left:5px;top:8px;bottom:8px;width:1px;background:rgba(255,255,255,0.1)"></div>'+
           // Title (vertical, reading top-to-bottom like a real book spine)
