@@ -335,24 +335,253 @@
     return '<input id="sf-create-title" value="'+esc(c.title||'Untitled Song Seed')+'" style="width:100%;box-sizing:border-box;background:#0d0b08;border:1px solid var(--border);border-radius:9px;color:var(--text);padding:9px;margin-bottom:8px"><textarea id="sf-create-notes" style="width:100%;box-sizing:border-box;background:#0d0b08;border:1px solid var(--border);border-radius:9px;color:var(--text);padding:9px;min-height:90px" placeholder="Capture the seed: chords, lyric, riff, structure...">'+esc(c.notes||'')+'</textarea><div class="sf-chiprow"><button onclick="SceneFirst.saveCreate()">Save Seed</button><button onclick="SceneFirst.newCreate()">New Seed</button></div>';
   }
 
-  // PRACTISE: calm altar room first; controls live in the drawer.
-  function practicePrefs(){try{const s=JSON.parse(localStorage.getItem('hearth-practice-state')||'{}');return {time:s.altarTime||20,focus:s.altarFocus||'All',intention:s.altarIntention||'Clean, focused practice'}}catch(e){return {time:20,focus:'All',intention:'Clean, focused practice'}}}
-  function practiceSavePrefs(p){const s=read('hearth-practice-state',{});s.altarTime=p.time;s.altarFocus=p.focus;s.altarIntention=p.intention;write('hearth-practice-state',s)}
-  function practiceCategories(){const P=window.PRACTICE;return P&&P.drills?['All',...new Set(P.drills.map(d=>d.category))]:['All']}
-  function practiceNext(focus){const P=window.PRACTICE;if(!P||!P.drills)return null;const ds=focus&&focus!=='All'?P.drills.filter(d=>d.category===focus):P.drills;return ds[0]||P.drills[0]}
-  function practiceDrawer(p,d){
-    const cats=practiceCategories();
-    return '<div class="sf-kicker" style="color:'+AMBER+'">Today\'s practice candle</div><div style="font-family:Cinzel;color:var(--gold);font-size:1rem;margin:5px 0">'+p.time+' min · '+esc(p.focus)+'</div><div style="color:var(--dim);font-size:.74rem;margin-bottom:10px">Intention: '+esc(p.intention)+'</div><div class="sf-chiprow">'+[10,20,30,45,60].map(t=>'<button onclick="SceneFirst.practiceTime('+t+')">'+t+'m</button>').join('')+'</div><div class="sf-chiprow">'+cats.map(c=>'<button onclick="SceneFirst.practiceFocus(\''+esc(c)+'\')">'+esc(c)+'</button>').join('')+'</div><textarea id="sf-practice-intention" style="width:100%;box-sizing:border-box;background:#0d0b08;border:1px solid var(--border);border-radius:10px;color:var(--text);padding:9px;margin-top:10px;min-height:62px" placeholder="What is the one clean thing today?">'+esc(p.intention)+'</textarea><div class="sf-chiprow"><button onclick="SceneFirst.savePracticeIntention()">Save Intention</button><button onclick="startTemplePractice()">Light Candle</button>'+(d?'<button onclick="showPracticeDrill(\''+esc(d.id)+'\')">Open '+esc(d.title)+'</button>':'')+'</div>';
-  }
-
-  window.showPractice=function(){
-    inject(); const el=panel(); if(!el)return; const p=practicePrefs(); const d=practiceNext(p.focus);
-    const flame='<svg viewBox="0 0 560 390"><defs><radialGradient id="altarGlow"><stop offset="0%" stop-color="'+AMBER+'" stop-opacity=".34"/><stop offset="100%" stop-color="'+AMBER+'" stop-opacity="0"/></radialGradient></defs><ellipse cx="280" cy="300" rx="190" ry="32" fill="'+GOLD+'" opacity=".12"/><circle cx="280" cy="205" r="150" fill="url(#altarGlow)"/><path d="M210,285 Q280,245 350,285 L330,315 Q280,335 230,315Z" fill="#1a1510" stroke="'+GOLD+'" stroke-opacity=".35"/><rect x="250" y="215" width="60" height="88" rx="18" fill="#3a2a18" stroke="'+GOLD+'" stroke-opacity=".45"/><path d="M280,145 C250,185 258,220 280,238 C305,215 308,185 280,145Z" fill="'+AMBER+'" opacity=".86"><animate attributeName="d" dur="1.4s" repeatCount="indefinite" values="M280,145 C250,185 258,220 280,238 C305,215 308,185 280,145Z;M280,135 C260,180 252,215 280,242 C315,210 300,180 280,135Z;M280,145 C250,185 258,220 280,238 C305,215 308,185 280,145Z"/></path><path d="M280,172 C267,198 270,216 282,228 C294,213 294,194 280,172Z" fill="#fff2b8" opacity=".72"/><text x="280" y="355" text-anchor="middle" fill="'+AMBER+'" font-family="JetBrains Mono" font-size="10">'+esc(p.focus)+' \u00b7 '+p.time+' MINUTES</text></svg>';
-    el.innerHTML=sceneStart('sf-practise','Practise Room','One candle. One intention. One focused contact with the instrument. The details stay below until you need them.','This room should calm the brain: choose one thing, light the candle, practise, then write what happened.','images/character-full/Encouraging.png','practise')+'<div class="sf-stage">'+flame+'</div><div class="sf-drawer">'+practiceDrawer(p,d)+'</div></div></div>';
+  // PRACTISE: Candle Timer — the candle becomes the practice timer.
+  const PRACTICE_CANDLE = {
+    durationMinutes: 20,
+    focus: "Clean",
+    timerId: null,
+    startedAt: null,
+    totalMs: 20 * 60 * 1000,
+    running: false,
+    complete: false
   };
 
+  function setPracticeDuration(minutes) {
+    PRACTICE_CANDLE.durationMinutes = minutes;
+    PRACTICE_CANDLE.totalMs = minutes * 60 * 1000;
+    updatePracticeTimeReadout(PRACTICE_CANDLE.totalMs);
+    renderPracticeCandle();
+  }
 
-  // MASTERY: Phoenix Rising.
+  function setPracticeFocus(focus) {
+    PRACTICE_CANDLE.focus = focus;
+    renderPracticeCandle();
+  }
+
+  function lightPracticeCandle() {
+    if (PRACTICE_CANDLE.running) return;
+    PRACTICE_CANDLE.startedAt = Date.now();
+    PRACTICE_CANDLE.running = true;
+    PRACTICE_CANDLE.complete = false;
+    clearInterval(PRACTICE_CANDLE.timerId);
+    PRACTICE_CANDLE.timerId = setInterval(updatePracticeCandle, 250);
+    updatePracticeCandle();
+  }
+
+  function endPracticeCandle() {
+    clearInterval(PRACTICE_CANDLE.timerId);
+    PRACTICE_CANDLE.running = false;
+    PRACTICE_CANDLE.complete = true;
+    setPracticeCandleVisual(1, true);
+    showPracticeReflection();
+  }
+
+  function updatePracticeCandle() {
+    const elapsed = Date.now() - PRACTICE_CANDLE.startedAt;
+    const progress = Math.min(1, elapsed / PRACTICE_CANDLE.totalMs);
+    const remaining = Math.max(0, PRACTICE_CANDLE.totalMs - elapsed);
+    setPracticeCandleVisual(progress, false);
+    updatePracticeTimeReadout(remaining);
+    if (progress >= 1) endPracticeCandle();
+  }
+
+  function setPracticeCandleVisual(progress, complete) {
+    const flame = document.getElementById("practiceFlameGroup");
+    const glow = document.getElementById("practiceCandleGlow");
+    const clip = document.getElementById("practiceWaxClipRect");
+    const ember = document.getElementById("practiceEmber");
+    const wick = document.getElementById("practiceWickPath");
+    if (!flame || !glow || !clip || !ember) return;
+
+    if (complete) {
+      flame.style.opacity = "0";
+      flame.style.transition = "opacity 1.2s";
+      glow.style.opacity = "0";
+      glow.style.transition = "opacity 1.2s";
+      ember.style.opacity = "1";
+      ember.style.transition = "opacity 0.8s";
+      if (wick) wick.style.opacity = "0.3";
+      return;
+    }
+
+    const waxVisible = Math.max(0.18, 1 - progress * 0.82);
+    const flameScale = Math.max(0.32, 1 - progress * 0.62);
+    const glowOpacity = Math.max(0.12, 1 - progress * 0.75);
+    const fullHeight = 220;
+    const newHeight = fullHeight * waxVisible;
+    const newY = 126 + (fullHeight - newHeight);
+
+    flame.style.opacity = "1";
+    flame.style.transform = "translate(130px, 76px) scale(" + flameScale + ")";
+    glow.style.opacity = String(glowOpacity);
+    ember.style.opacity = "0";
+    clip.setAttribute("y", String(newY));
+    clip.setAttribute("height", String(newHeight));
+  }
+
+  function updatePracticeTimeReadout(ms) {
+    const el = document.getElementById("practiceTimeReadout");
+    if (!el) return;
+    const totalSeconds = Math.ceil(ms / 1000);
+    const minutes = Math.floor(totalSeconds / 60);
+    const seconds = String(totalSeconds % 60).padStart(2, "0");
+    el.textContent = minutes + ":" + seconds;
+  }
+
+  function showPracticeReflection() {
+    const panel = document.getElementById("practiceReflectionPanel");
+    if (panel) panel.hidden = false;
+  }
+
+  function savePracticeEmber() {
+    const feeling = (document.getElementById("practiceFeeling") || {}).value || "";
+    const blockers = (document.getElementById("practiceBlockers") || {}).value || "";
+    const nextStep = (document.getElementById("practiceNextStep") || {}).value || "";
+    const key = "hearth-practice-log";
+    const existing = JSON.parse(localStorage.getItem(key) || "[]");
+    existing.push({
+      id: "practice-" + Date.now(),
+      date: new Date().toISOString(),
+      minutes: PRACTICE_CANDLE.durationMinutes,
+      focus: PRACTICE_CANDLE.focus,
+      feeling: feeling,
+      blockers: blockers.split(",").map(function(x){ return x.trim(); }).filter(Boolean),
+      nextStep: nextStep
+    });
+    localStorage.setItem(key, JSON.stringify(existing));
+    renderPracticeCandle();
+  }
+
+  function renderPracticeCandle(){
+    inject(); var el=panel(); if(!el)return;
+    var durations = [5, 10, 20, 30];
+    var focuses = ["Warm", "Clean", "Groove", "Carry"];
+    var running = PRACTICE_CANDLE.running;
+    var complete = PRACTICE_CANDLE.complete;
+
+    // Duration pills
+    var durPills = durations.map(function(m){
+      var active = PRACTICE_CANDLE.durationMinutes === m;
+      return '<button class="practice-pill'+(active?' active':'')+'" onclick="SceneFirst.practiceDuration('+m+')">'+m+'m</button>';
+    }).join('');
+
+    // Focus pills
+    var focPills = focuses.map(function(f){
+      var active = PRACTICE_CANDLE.focus === f;
+      return '<button class="practice-pill'+(active?' active':'')+'" onclick="SceneFirst.practiceFocusNew(\''+f+'\')">'+f+'</button>';
+    }).join('');
+
+    // Controls (hidden when running)
+    var controls = '<div class="practice-session-controls" id="practiceControls"'+(running||complete?' hidden':'')+'>'+
+      '<div class="practice-choice-label">Candle Length</div>'+
+      '<div class="practice-choice-row">'+durPills+'</div>'+
+      '<div class="practice-choice-label">Focus</div>'+
+      '<div class="practice-choice-row">'+focPills+'</div>'+
+      '<button class="practice-light-btn" onclick="SceneFirst.lightCandle()">Light Candle</button>'+
+    '</div>';
+
+    // Reflection panel (hidden until complete)
+    var reflection = '<div class="practice-reflection-panel" id="practiceReflectionPanel"'+(complete?'':' hidden')+'>'+
+      '<h3>Leave an Ember</h3>'+
+      '<label>What happened?</label>'+
+      '<textarea id="practiceFeeling" rows="3"></textarea>'+
+      '<label>What blocked you?</label>'+
+      '<input id="practiceBlockers" placeholder="buzzing, rushing, tension">'+
+      '<label>What should return next time?</label>'+
+      '<input id="practiceNextStep" placeholder="repeat slower tomorrow">'+
+      '<button class="practice-light-btn" onclick="SceneFirst.saveEmber()">Save Ember</button>'+
+    '</div>';
+
+    // SVG candle
+    var svg = '<svg class="practice-candle-svg" viewBox="0 0 260 420" role="img" aria-label="Practice candle timer">'+
+      '<defs>'+
+        '<radialGradient id="practiceFlameGlow" cx="50%" cy="50%" r="55%">'+
+          '<stop offset="0%" stop-color="#ffd36a" stop-opacity="0.85"/>'+
+          '<stop offset="45%" stop-color="#e8a020" stop-opacity="0.28"/>'+
+          '<stop offset="100%" stop-color="#e8a020" stop-opacity="0"/>'+
+        '</radialGradient>'+
+        '<linearGradient id="practiceWax" x1="0" x2="0" y1="0" y2="1">'+
+          '<stop offset="0%" stop-color="#f4d89a"/>'+
+          '<stop offset="45%" stop-color="#d7a94f"/>'+
+          '<stop offset="100%" stop-color="#8a5a22"/>'+
+        '</linearGradient>'+
+        '<linearGradient id="practiceWick" x1="0" x2="0" y1="0" y2="1">'+
+          '<stop offset="0%" stop-color="#3c2a18"/>'+
+          '<stop offset="100%" stop-color="#100b06"/>'+
+        '</linearGradient>'+
+        '<filter id="practiceSoftGlow">'+
+          '<feGaussianBlur stdDeviation="8" result="blur"/>'+
+          '<feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>'+
+        '</filter>'+
+      '</defs>'+
+      '<ellipse cx="130" cy="372" rx="92" ry="22" fill="rgba(0,0,0,0.35)"/>'+
+      '<g id="practiceCandleGlow" style="opacity:0">'+
+        '<circle cx="130" cy="86" r="96" fill="url(#practiceFlameGlow)"/>'+
+      '</g>'+
+      '<g id="practiceFlameGroup" transform="translate(130 76) scale(1)" style="opacity:0;transform-origin:130px 76px">'+
+        '<path d="M0,-58 C28,-24 30,10 0,42 C-30,10 -24,-22 0,-58Z" fill="#e8a020" filter="url(#practiceSoftGlow)">'+
+          (running?'<animate attributeName="d" dur="1.4s" repeatCount="indefinite" values="M0,-58 C28,-24 30,10 0,42 C-30,10 -24,-22 0,-58Z;M0,-52 C25,-20 28,12 0,44 C-28,12 -22,-18 0,-52Z;M0,-58 C28,-24 30,10 0,42 C-30,10 -24,-22 0,-58Z"/>':'')+
+        '</path>'+
+        '<path d="M0,-28 C14,-8 13,15 0,31 C-14,15 -12,-8 0,-28Z" fill="#ffe6a3"/>'+
+      '</g>'+
+      '<path id="practiceWickPath" d="M130,132 C128,116 132,101 130,88" stroke="url(#practiceWick)" stroke-width="5" stroke-linecap="round" fill="none"/>'+
+      '<clipPath id="practiceWaxClip">'+
+        '<rect id="practiceWaxClipRect" x="74" y="126" width="112" height="220" rx="28"/>'+
+      '</clipPath>'+
+      '<rect x="74" y="126" width="112" height="220" rx="28" fill="rgba(80,48,18,0.45)"/>'+
+      '<g clip-path="url(#practiceWaxClip)">'+
+        '<rect id="practiceWaxBody" x="74" y="126" width="112" height="220" rx="28" fill="url(#practiceWax)"/>'+
+        '<path d="M77,152 C95,142 109,160 130,150 C151,140 165,154 183,146 L183,126 L77,126Z" fill="#ffe2a6" opacity="0.82"/>'+
+      '</g>'+
+      '<rect x="74" y="126" width="112" height="220" rx="28" fill="none" stroke="rgba(255,220,150,0.45)" stroke-width="2"/>'+
+      '<g id="practiceEmber" style="opacity:0">'+
+        '<circle cx="130" cy="114" r="8" fill="#e8731a" filter="url(#practiceSoftGlow)"/>'+
+        '<circle cx="130" cy="114" r="3" fill="#ffd36a"/>'+
+      '</g>'+
+    '</svg>';
+
+    el.innerHTML =
+      '<div class="sk-wrap">'+
+        '<button class="back-btn" onclick="backToMap()">\u2190 Map</button>'+
+        '<div class="sk-scene">'+
+          '<div class="sk-top">'+
+            '<div><div class="sk-kicker">Practise Room</div>'+
+            '<div class="sk-title">Candle Timer</div>'+
+            '<div class="sk-sub">One candle. One intention. Light the candle to begin your practice session.</div></div>'+
+            '<div class="sk-guide">'+
+              '<img src="images/character-full/Encouraging.png">'+
+              '<div>'+(running?'The candle is burning. Focus on your practice.':'The candle is ready. Choose your duration and focus, then light it.')+'</div>'+
+            '</div>'+
+          '</div>'+
+          '<div class="practice-candle-stage">'+
+            svg+
+            '<div class="practice-time-readout" id="practiceTimeReadout">'+(complete?'Session complete':PRACTICE_CANDLE.durationMinutes+':00')+'</div>'+
+          '</div>'+
+        '</div>'+
+        controls+
+        reflection+
+      '</div>';
+
+    // Set initial candle state
+    if (running) {
+      updatePracticeCandle();
+    } else if (!complete) {
+      // Unlit state - show candle but no flame
+      var flame = document.getElementById("practiceFlameGroup");
+      var glow = document.getElementById("practiceCandleGlow");
+      if (flame) flame.style.opacity = "0";
+      if (glow) glow.style.opacity = "0";
+    }
+  }
+
+  window.showPractice = function(){
+    PRACTICE_CANDLE.running = false;
+    PRACTICE_CANDLE.complete = false;
+    clearInterval(PRACTICE_CANDLE.timerId);
+    renderPracticeCandle();
+  };
+
+// MASTERY: Phoenix Rising.
   const beyond=[
     {id:'microtones',name:'Hear Between Notes',artist:'Maddie Ashman',color:'#9b59b6',why:'Beyond the 12-fret map: microtonal colour, bends, maqam/raga/blues territory.',practice:'Bend slowly between two frets and hold the in-between pitch until it stops sounding wrong.'},
     {id:'voice',name:'Find Your Voice',artist:'Jimi Hendrix / Sister Rosetta Tharpe',color:'#ff6b35',why:'Beyond copying technique: touch, tone, timing and identity become unmistakable.',practice:'Play one simple phrase three ways until one version sounds like you.'},
@@ -389,8 +618,10 @@
   }
 
   window.SceneFirst={
-    practiceTime(t){practiceSavePrefs({...practicePrefs(),time:t});showPractice();},
-    practiceFocus(f){practiceSavePrefs({...practicePrefs(),focus:f});showPractice();},
+    practiceDuration(m){setPracticeDuration(m);},
+    practiceFocusNew(f){setPracticeFocus(f);},
+    lightCandle(){lightPracticeCandle();},
+    saveEmber(){savePracticeEmber();},
     savePracticeIntention(){const el=document.getElementById('sf-practice-intention');if(el)practiceSavePrefs({...practicePrefs(),intention:el.value});},
     openHearth(node){const el=document.getElementById('sf-drawer');const title=window.NODE_DATA&&NODE_DATA[node]?NODE_DATA[node].title:node;if(el)el.innerHTML='<b>'+esc(title)+'</b><br><span style="color:var(--dim)">This region opens the '+esc(title)+' learning system.</span><div class="sf-chiprow"><button onclick="enterNodeAction(NODE_DATA[\''+node+'\'])">Enter '+esc(title)+'</button></div>';},
     openPlay(id){if(window.PlayWorld&&PlayWorld.detail)return PlayWorld.detail(id);},

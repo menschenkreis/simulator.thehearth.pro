@@ -1040,6 +1040,21 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
   .sk-panel-btns button.secondary{background:rgba(13,11,8,.6);color:var(--gold);border:1px solid rgba(212,175,105,.3)}
   @media(max-width:780px){.sk-top{flex-direction:column}.sk-guide{max-width:none}}
 
+  /* ═══ PRACTICE CANDLE TIMER ═══ */
+  .practice-candle-stage{display:grid;place-items:center;min-height:460px;position:relative}
+  .practice-candle-svg{width:min(320px,72vw);height:auto;filter:drop-shadow(0 26px 45px rgba(0,0,0,.55))}
+  .practice-time-readout{margin-top:-18px;font-family:JetBrains Mono,monospace;color:var(--gold);letter-spacing:.12em;font-size:.78rem;text-transform:uppercase}
+  .practice-session-controls,.practice-reflection-panel{max-width:720px;margin:18px auto 0;background:rgba(13,11,8,.72);border:1px solid var(--border);border-radius:14px;padding:16px}
+  .practice-choice-label{font-family:Cinzel;color:var(--gold);font-size:.72rem;margin:10px 0 4px;letter-spacing:.08em;text-transform:uppercase}
+  .practice-choice-row{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0}
+  .practice-pill{border:1px solid var(--border);background:rgba(13,11,8,.6);color:var(--text);border-radius:999px;padding:8px 12px;cursor:pointer;font-family:DM Sans;font-size:.72rem}
+  .practice-pill.active{border-color:var(--gold);color:var(--gold);box-shadow:0 0 14px rgba(212,175,105,.18)}
+  .practice-light-btn{width:100%;margin-top:12px;border:0;border-radius:10px;padding:12px 14px;background:linear-gradient(180deg,#f0b847,#d89219);color:#120d07;font-family:Cinzel,serif;font-weight:800;cursor:pointer}
+  .practice-reflection-panel h3{font-family:Cinzel;color:var(--gold);font-size:1rem;margin:0 0 10px}
+  .practice-reflection-panel label{font-family:JetBrains Mono;font-size:.62rem;color:var(--dim);letter-spacing:.08em;text-transform:uppercase;display:block;margin-top:10px}
+  .practice-reflection-panel textarea,.practice-reflection-panel input{width:100%;box-sizing:border-box;margin-top:4px;background:rgba(0,0,0,.25);border:1px solid var(--border);border-radius:8px;color:var(--text);padding:10px;font:inherit}
+  @media(max-width:680px){.practice-candle-stage{min-height:360px}.practice-candle-svg{width:min(280px,85vw)}}
+
   /* ═══ HEARTH BODY CHAMBER ═══ */
   .hb-wrap{padding:18px;max-width:980px;margin:0 auto;display:flex;flex-direction:column}
   .hb-scene{position:relative;border:1px solid var(--border);border-radius:22px;overflow:hidden;background:radial-gradient(circle at 50% 35%,rgba(212,175,105,.13),rgba(13,11,8,.96) 55%,#080704);box-shadow:0 20px 60px rgba(0,0,0,.35)}
