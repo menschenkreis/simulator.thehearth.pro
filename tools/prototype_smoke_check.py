@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import json
 import re
 import sys
 from pathlib import Path
@@ -57,6 +58,21 @@ CONTENT_BANKS = {
         "array_name": "CREATE_COMBOS",
         "min_items": 25,
         "fields": ["ingredients", "level", "constraint", "prompt", "payoff"],
+    },
+}
+
+SEED_FILES = {
+    "database-blueprint/seeds/create_obstructions_v2.json": {
+        "count": 50,
+        "fields": ["level", "category", "constraint", "prompt", "payoff"],
+    },
+    "database-blueprint/seeds/create_combos_v2.json": {
+        "count": 32,
+        "fields": ["ingredients", "level", "constraint", "prompt", "payoff"],
+    },
+    "database-blueprint/seeds/create_cauldron_ingredients_v2.json": {
+        "count": 8,
+        "fields": ["id", "name", "symbol", "color", "prompts"],
     },
 }
 
@@ -158,6 +174,37 @@ def main() -> int:
             if not re.search(rf"\b{re.escape(field)}\s*:", array_source):
                 failures.append(f"{relative_path} is missing content field: {field}")
 
+    for relative_path, spec in SEED_FILES.items():
+        path = ROOT / relative_path
+        if not path.exists():
+            failures.append(f"Missing seed file: {relative_path}")
+            continue
+
+        try:
+            seed = json.loads(path.read_text(encoding="utf-8"))
+        except json.JSONDecodeError as error:
+            failures.append(f"{relative_path} is not valid JSON: {error}")
+            continue
+
+        records = seed.get("records")
+        if not isinstance(records, list):
+            failures.append(f"{relative_path} must contain a records list")
+            continue
+
+        if len(records) != spec["count"]:
+            failures.append(
+                f"{relative_path} has {len(records)} records; expected {spec['count']}"
+            )
+
+        for index, record in enumerate(records):
+            if not isinstance(record, dict):
+                failures.append(f"{relative_path} record {index} is not an object")
+                continue
+            for field in spec["fields"]:
+                if field not in record:
+                    failures.append(f"{relative_path} record {index} is missing field: {field}")
+                    break
+
     if failures:
         print("Prototype smoke check failed:")
         for failure in failures:
@@ -165,7 +212,10 @@ def main() -> int:
         return 1
 
     print("Prototype smoke check passed.")
-    print(f"Checked {len(REQUIRED_MARKERS)} key files and {len(CONTENT_BANKS)} content banks.")
+    print(
+        f"Checked {len(REQUIRED_MARKERS)} key files, "
+        f"{len(CONTENT_BANKS)} content banks, and {len(SEED_FILES)} seed files."
+    )
     return 0
 
 
