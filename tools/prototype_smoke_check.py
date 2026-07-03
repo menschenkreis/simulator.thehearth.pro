@@ -88,6 +88,14 @@ SEED_FILES = {
     },
 }
 
+LESSON_SEEDS = {
+    "database-blueprint/seeds/foundation_threshold_lesson_v2.json": {
+        "lesson_id": "f-threshold",
+        "step_count": 7,
+        "allowed_types": ["speak", "ask", "cards", "video", "action", "end"],
+    },
+}
+
 
 def read_text(relative_path: str) -> str:
     return (ROOT / relative_path).read_text(encoding="utf-8")
@@ -217,6 +225,52 @@ def main() -> int:
                     failures.append(f"{relative_path} record {index} is missing field: {field}")
                     break
 
+    for relative_path, spec in LESSON_SEEDS.items():
+        path = ROOT / relative_path
+        if not path.exists():
+            failures.append(f"Missing lesson seed file: {relative_path}")
+            continue
+
+        try:
+            seed = json.loads(path.read_text(encoding="utf-8"))
+        except json.JSONDecodeError as error:
+            failures.append(f"{relative_path} is not valid JSON: {error}")
+            continue
+
+        lesson = seed.get("lesson")
+        if not isinstance(lesson, dict):
+            failures.append(f"{relative_path} must contain a lesson object")
+            continue
+
+        if lesson.get("id") != spec["lesson_id"]:
+            failures.append(
+                f"{relative_path} lesson id is {lesson.get('id')!r}; "
+                f"expected {spec['lesson_id']!r}"
+            )
+
+        steps = lesson.get("steps")
+        if not isinstance(steps, list):
+            failures.append(f"{relative_path} lesson must contain a steps list")
+            continue
+
+        if len(steps) != spec["step_count"]:
+            failures.append(
+                f"{relative_path} has {len(steps)} steps; expected {spec['step_count']}"
+            )
+
+        for index, step in enumerate(steps):
+            if not isinstance(step, dict):
+                failures.append(f"{relative_path} step {index} is not an object")
+                continue
+            if step.get("type") not in spec["allowed_types"]:
+                failures.append(
+                    f"{relative_path} step {index} has invalid type: {step.get('type')!r}"
+                )
+            if "order" not in step:
+                failures.append(f"{relative_path} step {index} is missing order")
+            if "text" not in step:
+                failures.append(f"{relative_path} step {index} is missing text")
+
     if failures:
         print("Prototype smoke check failed:")
         for failure in failures:
@@ -226,7 +280,8 @@ def main() -> int:
     print("Prototype smoke check passed.")
     print(
         f"Checked {len(REQUIRED_MARKERS)} key files, "
-        f"{len(CONTENT_BANKS)} content banks, and {len(SEED_FILES)} seed files."
+        f"{len(CONTENT_BANKS)} content banks, "
+        f"{len(SEED_FILES)} seed files, and {len(LESSON_SEEDS)} lesson seeds."
     )
     return 0
 
