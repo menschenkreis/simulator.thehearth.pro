@@ -133,6 +133,11 @@ LESSON_SEEDS = {
         "step_count": 10,
         "allowed_types": ["speak", "ask", "cards", "video", "action", "end"],
     },
+    "database-blueprint/seeds/foundation_the_guitar_lesson_v2.json": {
+        "lesson_id": "f-the-guitar",
+        "step_count": 8,
+        "allowed_types": ["speak", "ask", "cards", "video", "action", "end"],
+    },
 }
 
 
