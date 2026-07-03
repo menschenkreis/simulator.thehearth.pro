@@ -23,15 +23,117 @@
     return '<div class="sf-wrap"><button class="back-btn" onclick="backToMap()">← Map</button><div class="sf-scene '+kind+'"><div class="sf-top"><div><div class="sf-node-ident"><img src="'+icon+'" alt=""><div><div class="sf-kicker">'+esc(kind.replace('sf-','').replace('-',' '))+'</div><div class="sf-title">'+esc(nodeTitle)+'</div></div></div><div class="sf-sub">'+esc(sub)+'</div></div><div class="sf-guide"><img src="'+img+'"><div>'+esc(guide)+'</div></div></div>';
   }
 
-  window.showHearth=function(){
-    // Delegate to hearth-brain.js SVG loader
-    if(window.HearthBrain && window.HearthBrain.render){
-      window.HearthBrain.render();
-      return;
-    }
-    // Fallback: empty panel
+  // ═══ HEARTH BODY CHAMBER ═══
+  const HEARTH_BODY_ZONES=[
+    {id:'brain',label:'Brain',seal:'B',x:'48%',y:'8%',r:32,guide:'Attention, memory, habit, emotion, and learning loops.',notice:'The brain learns what you repeat, not what you meant to repeat.',tryThis:'Choose one tiny movement and repeat it slowly ten times.',apply:'Play open \u2192 fret 2 \u2192 open on one string. Keep the timing even.',sourceNote:'Future source notes: neuroscience of practice, myelin, deliberate practice.'},
+    {id:'hands',label:'Hands',seal:'H',x:'22%',y:'38%',r:30,guide:'Fingers, tendons, nerves, dexterity, and safe movement.',notice:'Tension in one finger often spreads into the whole hand.',tryThis:'Lift one finger slowly while the others stay relaxed. Make the movement smaller if the hand locks.',apply:'Play a 1-2-3-4 chromatic pattern slowly. Aim for quiet fingers, not speed.',sourceNote:'Future source notes: hand anatomy, tendon care, classical technique.'},
+    {id:'ears',label:'Ears',seal:'E',x:'72%',y:'14%',r:28,guide:'Listening, pitch, rhythm perception, and audiation.',notice:'Your ear starts learning before your fingers know what to do.',tryThis:'Sing one note, then find it on the guitar.',apply:'Play two notes and decide which one feels like home.',sourceNote:'Future source notes: ear training, audiation, music cognition.'},
+    {id:'eyes',label:'Eyes',seal:'I',x:'68%',y:'26%',r:26,guide:'Pattern recognition, notation, tab, and fretboard maps.',notice:'The eye turns repeated shapes into maps.',tryThis:'Look at a simple tab pattern and trace where it lives on the guitar before playing.',apply:'Read 0-2-0 on one string, then play it while watching the fretboard.',sourceNote:'Future source notes: visual learning, notation, fretboard mapping.'},
+    {id:'breath',label:'Breath / Body',seal:'Br',x:'35%',y:'52%',r:30,guide:'Posture, relaxation, body scan, and nervous system regulation.',notice:'If the breath locks, the hands usually tighten too.',tryThis:'Exhale before changing chords. Notice whether the hand softens.',apply:'Play Am slowly while breathing out before each change.',sourceNote:'Future source notes: posture, relaxation, somatic learning.'},
+    {id:'heart',label:'Heart / Feeling',seal:'Hrt',x:'52%',y:'44%',r:30,guide:'Motivation, confidence, shame, joy, identity, and expression.',notice:'Feeling is not separate from learning. It changes what the body allows.',tryThis:'Record one imperfect take and listen for one thing that worked.',apply:'End practice with one musical conversation, even if it is messy.',sourceNote:'Future source notes: performance psychology, motivation, reflective practice.'}
+  ];
+  window.HEARTH_BODY_ZONES=HEARTH_BODY_ZONES;
+
+  let _hbDebug=false;
+  let _hbActiveZone=null;
+
+  function renderHearthBody(){
     inject(); const el=panel(); if(!el)return;
-    el.innerHTML='<div style="padding:40px;text-align:center;color:var(--dim)">Brain map loading...</div>';
+    const imgSrc='images/hearth-body-guitar.png';
+    // SVG hotspots
+    let svgZones='';
+    let seals='';
+    HEARTH_BODY_ZONES.forEach(function(z){
+      svgZones+='<circle class="hb-zone'+(_hbDebug?' debug':'')+'" data-zone="'+z.id+'" '+
+        'onclick="HearthBody.openZone(\''+esc(z.id)+'\')" '+
+        'onmouseenter="HearthBody.hoverZone(\''+esc(z.id)+'\')" '+
+        'onmouseleave="HearthBody.unhoverZone()" '+
+        'cx="'+z.x+'" cy="'+z.y+'" r="'+z.r+'" />';
+      // Seal (positioned over hotspot)
+      seals+='<div class="hb-seal" id="seal-'+z.id+'" style="left:calc('+z.x+' - 19px);top:calc('+z.y+' - 19px)">'+
+        '<span class="seal-icon">'+esc(z.seal)+'</span></div>';
+    });
+
+    el.innerHTML=
+      '<div class="hb-wrap">'+
+        '<button class="back-btn" onclick="backToMap()">\u2190 Map</button>'+
+        '<div class="hb-scene">'+
+          '<div class="hb-top">'+
+            '<div><div class="hb-kicker">The Hearth</div>'+
+            '<div class="hb-title">The Body Behind the Instrument</div>'+
+            '<div class="hb-sub">Choose a system to see how you learn. Each zone is a doorway into the body\u2019s role in music.</div></div>'+
+            '<div class="hb-guide">'+
+              '<img src="images/character-full/Encouraging.png">'+
+              '<div>This is the body behind the instrument. Choose a system to see how you learn.</div>'+
+            '</div>'+
+          '</div>'+
+          '<div class="hb-body-wrap">'+
+            '<img src="'+imgSrc+'" alt="Body behind the instrument" onerror="this.style.display=\'none\'">'+
+            '<svg viewBox="0 0 100 100" preserveAspectRatio="none" class="hb-body-svg">'+
+              svgZones+
+            '</svg>'+
+            seals+
+            '<div class="hb-guide-bar" id="hb-guide-bar">'+
+              '<div class="hb-guide-text">This is the body behind the instrument. Choose a system to see how you learn.</div>'+
+            '</div>'+
+          '</div>'+
+        '</div>'+
+      '</div>';
+  }
+
+  function renderHearthChamber(zoneId){
+    inject(); const el=panel(); if(!el)return;
+    const z=HEARTH_BODY_ZONES.find(function(x){return x.id===zoneId;});
+    if(!z){renderHearthBody();return;}
+    el.innerHTML=
+      '<div class="hb-chamber">'+
+        '<button class="back-btn" onclick="HearthBody.back()">\u2190 Back to Body</button>'+
+        '<div class="hb-chamber-card">'+
+          '<div class="hb-kicker">'+esc(z.seal)+' \u00B7 '+esc(z.label)+'</div>'+
+          '<h3>'+esc(z.label)+'</h3>'+
+          '<p style="font-size:.82rem;color:var(--text);line-height:1.6;margin:0">'+esc(z.guide)+'</p>'+
+          '<div class="hb-chamber-cards">'+
+            '<div class="hb-chamber-item"><h4>Notice</h4><p>'+esc(z.notice)+'</p></div>'+
+            '<div class="hb-chamber-item"><h4>Try</h4><p>'+esc(z.tryThis)+'</p></div>'+
+            '<div class="hb-chamber-item"><h4>Apply on Guitar</h4><p>'+esc(z.apply)+'</p></div>'+
+          '</div>'+
+          '<div class="hb-source-toggle" onclick="var n=this.nextElementSibling;n.classList.toggle(\'open\')">Source Notes</div>'+
+          '<div class="hb-source-notes">'+esc(z.sourceNote)+'</div>'+
+        '</div>'+
+      '</div>';
+  }
+
+  window.HearthBody={
+    hoverZone: function(id){
+      var z=HEARTH_BODY_ZONES.find(function(x){return x.id===id;});
+      if(!z)return;
+      var bar=document.getElementById('hb-guide-bar');
+      if(bar)bar.innerHTML='<div class="hb-guide-zone">'+esc(z.label)+'</div><div class="hb-guide-text">'+esc(z.guide)+'</div>';
+      var seal=document.getElementById('seal-'+id);
+      if(seal)seal.classList.add('bright');
+    },
+    unhoverZone: function(){
+      var bar=document.getElementById('hb-guide-bar');
+      if(bar)bar.innerHTML='<div class="hb-guide-text">This is the body behind the instrument. Choose a system to see how you learn.</div>';
+      HEARTH_BODY_ZONES.forEach(function(z){var s=document.getElementById('seal-'+z.id);if(s)s.classList.remove('bright');});
+    },
+    openZone: function(id){
+      _hbActiveZone=id;
+      renderHearthChamber(id);
+    },
+    back: function(){
+      _hbActiveZone=null;
+      renderHearthBody();
+    },
+    toggleDebug: function(){
+      _hbDebug=!_hbDebug;
+      renderHearthBody();
+    }
+  };
+
+  window.showHearth=function(){
+    // Body chamber is the active Hearth renderer
+    renderHearthBody();
   };
 
   // ═══ PLAY: world atlas image with glowing markers ═══
