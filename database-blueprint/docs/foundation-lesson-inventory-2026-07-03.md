@@ -94,7 +94,9 @@ Extracted lesson seeds so far:
 - `database-blueprint/seeds/foundation_rhythm_pulse_lesson_v2.json`
 - `database-blueprint/seeds/foundation_first_shapes_lesson_v2.json`
 - `database-blueprint/seeds/foundation_the_guitar_lesson_v2.json`
+- `database-blueprint/seeds/foundation_the_tool_lesson_v2.json`
 - `database-blueprint/seeds/foundation_speaking_lesson_v2.json`
+- `database-blueprint/seeds/foundation_first_conversation_lesson_v2.json`
 - `database-blueprint/seeds/foundation_conversations_lesson_v2.json`
 
 Likely backend fields:

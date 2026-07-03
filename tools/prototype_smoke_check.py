@@ -163,6 +163,16 @@ LESSON_SEEDS = {
         "step_count": 9,
         "allowed_types": ["speak", "ask", "cards", "video", "action", "end"],
     },
+    "database-blueprint/seeds/foundation_the_tool_lesson_v2.json": {
+        "lesson_id": "f-the-tool",
+        "step_count": 10,
+        "allowed_types": ["speak", "ask", "cards", "video", "action", "end"],
+    },
+    "database-blueprint/seeds/foundation_first_conversation_lesson_v2.json": {
+        "lesson_id": "f-first-conversation",
+        "step_count": 9,
+        "allowed_types": ["speak", "ask", "cards", "video", "action", "end"],
+    },
 }
 
 

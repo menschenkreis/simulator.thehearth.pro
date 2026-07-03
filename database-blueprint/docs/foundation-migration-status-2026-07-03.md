@@ -20,13 +20,15 @@ This does not mean the simulator is reading from the backend yet. It means the l
 | `assets/js/lessons-the-guitar.js` | `database-blueprint/seeds/foundation_the_guitar_lesson_v2.json` | Extracted |
 | `assets/js/lessons-speaking.js` | `database-blueprint/seeds/foundation_speaking_lesson_v2.json` | Extracted |
 | `assets/js/lessons-conversations.js` | `database-blueprint/seeds/foundation_conversations_lesson_v2.json` | Extracted |
+| `assets/js/lessons-the-tool.js` | `database-blueprint/seeds/foundation_the_tool_lesson_v2.json` | Extracted, loaded but not currently mapped |
+| `assets/js/lessons-first-conversation.js` | `database-blueprint/seeds/foundation_first_conversation_lesson_v2.json` | Extracted, loaded but not currently mapped |
 
-## Smaller Lesson Files Not Yet Extracted
+## Smaller Lesson Files Not Yet Routed
 
 | Source file | Current note |
 |---|---|
-| `assets/js/lessons-the-tool.js` | Loaded by the app, but not currently mapped in `showFoundationTopic()`. Safe to inspect before deciding whether to extract. |
-| `assets/js/lessons-first-conversation.js` | Loaded by the app, but not currently mapped in `showFoundationTopic()`. Safe to inspect before deciding whether to extract. |
+| `assets/js/lessons-the-tool.js` | Seed extracted, but the current `showFoundationTopic()` mapping does not appear to use it directly. |
+| `assets/js/lessons-first-conversation.js` | Seed extracted, but the current `showFoundationTopic()` mapping does not appear to use it directly. |
 
 ## Do Not Flatten Blindly
 
@@ -41,20 +43,20 @@ The smoke check currently validates:
 - 19 key app files
 - 2 Create content banks
 - 6 general seed files
-- 10 Foundation lesson seed files
+- 12 Foundation lesson seed files
 
 Current expected result:
 
 ```text
 Prototype smoke check passed.
-Checked 19 key files, 2 content banks, 6 seed files, and 10 lesson seeds.
+Checked 19 key files, 2 content banks, 6 seed files, and 12 lesson seeds.
 ```
 
 ## Recommended Next Bite
 
-Inspect the two loaded-but-not-currently-mapped files:
+Decide whether the two loaded-but-not-currently-mapped files should be removed, routed, or kept as archive content:
 
 - `assets/js/lessons-the-tool.js`
 - `assets/js/lessons-first-conversation.js`
 
-Those may still be useful content seeds, but the handoff note should clearly say they are not part of the current Foundation topic route.
+The safest next architecture step is a browser-level check around the Foundation topic route before changing how these lessons are wired.

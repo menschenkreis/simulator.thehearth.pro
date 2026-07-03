@@ -37,7 +37,8 @@ Commits on this branch:
 | `f95fe17` | Extracted seventh Foundation lesson seed: Guitar Conversations. |
 | `a80f72c` | Extracted eighth Foundation lesson seed: How to Learn. |
 | `abf72d0` | Extracted ninth Foundation lesson seed: Rhythm & Pulse. |
-| current commit | Extracted tenth Foundation lesson seed: First Shapes. |
+| `6f62a43` | Extracted tenth Foundation lesson seed: First Shapes. |
+| current commit | Extracted loaded-but-unmapped Foundation lesson seeds. |
 
 ## What Changed
 
@@ -96,6 +97,14 @@ These were extracted as proof-of-format lesson seeds.
 - `database-blueprint/seeds/foundation_first_shapes_lesson_v2.json`
   - 9 steps
   - source: `assets/js/lessons-first-shapes.js`
+- `database-blueprint/seeds/foundation_the_tool_lesson_v2.json`
+  - 10 steps
+  - source: `assets/js/lessons-the-tool.js`
+  - note: loaded by the app, but not currently mapped in `showFoundationTopic()`
+- `database-blueprint/seeds/foundation_first_conversation_lesson_v2.json`
+  - 9 steps
+  - source: `assets/js/lessons-first-conversation.js`
+  - note: loaded by the app, but not currently mapped in `showFoundationTopic()`
 
 ### Added scene-first reference seed files
 
@@ -129,7 +138,7 @@ Current passing result:
 
 ```text
 Prototype smoke check passed.
-Checked 19 key files, 2 content banks, 6 seed files, and 10 lesson seeds.
+Checked 19 key files, 2 content banks, 6 seed files, and 12 lesson seeds.
 ```
 
 ## What Did Not Change
