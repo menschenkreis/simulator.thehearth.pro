@@ -158,6 +158,11 @@ LESSON_SEEDS = {
         "step_count": 15,
         "allowed_types": ["speak", "ask", "cards", "video", "action", "end"],
     },
+    "database-blueprint/seeds/foundation_first_shapes_lesson_v2.json": {
+        "lesson_id": "f-first-shapes",
+        "step_count": 9,
+        "allowed_types": ["speak", "ask", "cards", "video", "action", "end"],
+    },
 }
 
 
