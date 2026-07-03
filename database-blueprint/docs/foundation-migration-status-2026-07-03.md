@@ -44,13 +44,23 @@ The smoke check currently validates:
 - 2 Create content banks
 - 6 general seed files
 - 12 Foundation lesson seed files
+- 10 active Foundation topic routes
+- 2 loaded-but-currently-unmapped Foundation lesson files
 
 Current expected result:
 
 ```text
 Prototype smoke check passed.
-Checked 19 key files, 2 content banks, 6 seed files, and 12 lesson seeds.
+Checked 19 key files, 2 content banks, 6 seed files, 12 lesson seeds, and 10 Foundation routes.
 ```
+
+## Browser Check Note
+
+A local browser preview was opened through `http://127.0.0.1:8765/simulator.html`.
+
+The page loaded and requested the Foundation lesson scripts successfully. The in-app browser's read-only JavaScript inspection did not expose page globals reliably enough to use as the final guard.
+
+For now, the route guard lives in `tools/prototype_smoke_check.py`, where it checks the current `showFoundationTopic()` mapping directly.
 
 ## Recommended Next Bite
 
@@ -59,4 +69,4 @@ Decide whether the two loaded-but-not-currently-mapped files should be removed, 
 - `assets/js/lessons-the-tool.js`
 - `assets/js/lessons-first-conversation.js`
 
-The safest next architecture step is a browser-level check around the Foundation topic route before changing how these lessons are wired.
+The safest next architecture step is adding a visual or interaction check that can click through Foundation topics reliably before changing how these lessons are wired.

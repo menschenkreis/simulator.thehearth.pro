@@ -175,6 +175,24 @@ LESSON_SEEDS = {
     },
 }
 
+FOUNDATION_ROUTE_MARKERS = {
+    "f-threshold": "LESSON_THRESHOLD",
+    "f-how-to-learn": "LESSON_HOW_TO_LEARN",
+    "f-music-language": "LESSON_LEARNING_A_LANGUAGE",
+    "f-musical-alphabet": "LESSON_LANGUAGE_OF_MUSIC",
+    "f-rhythm-pulse": "LESSON_RHYTHM_PULSE",
+    "f-guitar-map": "LESSON_LANGUAGE_OF_GUITAR",
+    "f-instrument-body": "LESSON_THE_GUITAR",
+    "f-hands-sound": "LESSON_SPEAKING",
+    "f-first-shapes": "LESSON_FIRST_SHAPES",
+    "f-first-conversation": "LESSON_CONVERSATIONS",
+}
+
+LOADED_UNMAPPED_LESSONS = {
+    "LESSON_THE_TOOL": "assets/js/lessons-the-tool.js",
+    "LESSON_FIRST_CONVERSATION": "assets/js/lessons-first-conversation.js",
+}
+
 
 def read_text(relative_path: str) -> str:
     return (ROOT / relative_path).read_text(encoding="utf-8")
@@ -350,6 +368,23 @@ def main() -> int:
             if "text" not in step:
                 failures.append(f"{relative_path} step {index} is missing text")
 
+    simulator = read_text("simulator.html")
+    for topic_id, lesson_global in FOUNDATION_ROUTE_MARKERS.items():
+        if f"'{topic_id}'" not in simulator:
+            failures.append(f"simulator.html is missing Foundation topic route: {topic_id}")
+        if lesson_global not in simulator:
+            failures.append(f"simulator.html is missing Foundation lesson route global: {lesson_global}")
+
+    for lesson_global, source_file in LOADED_UNMAPPED_LESSONS.items():
+        if f'<script src="{source_file}"></script>' not in simulator:
+            failures.append(f"simulator.html no longer loads unmapped lesson file: {source_file}")
+        route_pattern = rf"['\"]f-[^'\"]+['\"]\s*:\s*\{{[^}}]*{re.escape(lesson_global)}"
+        if re.search(route_pattern, simulator):
+            failures.append(
+                f"{lesson_global} is now mapped in showFoundationTopic; "
+                "update Foundation migration docs and route expectations"
+            )
+
     if failures:
         print("Prototype smoke check failed:")
         for failure in failures:
@@ -360,7 +395,8 @@ def main() -> int:
     print(
         f"Checked {len(REQUIRED_MARKERS)} key files, "
         f"{len(CONTENT_BANKS)} content banks, "
-        f"{len(SEED_FILES)} seed files, and {len(LESSON_SEEDS)} lesson seeds."
+        f"{len(SEED_FILES)} seed files, {len(LESSON_SEEDS)} lesson seeds, "
+        f"and {len(FOUNDATION_ROUTE_MARKERS)} Foundation routes."
     )
     return 0
 

@@ -132,13 +132,15 @@ The smoke check now verifies:
 - extracted Create seed files are valid JSON and have expected counts
 - extracted scene-first reference seed files are valid JSON and have expected counts
 - extracted Foundation lesson seeds are valid JSON and have expected lesson IDs/step counts
+- Foundation topic routes still point to the expected active lesson globals
+- loaded-but-unmapped Foundation lesson files remain clearly unmapped
 - Foundation lesson files still expose expected lesson globals
 
 Current passing result:
 
 ```text
 Prototype smoke check passed.
-Checked 19 key files, 2 content banks, 6 seed files, and 12 lesson seeds.
+Checked 19 key files, 2 content banks, 6 seed files, 12 lesson seeds, and 10 Foundation routes.
 ```
 
 ## What Did Not Change
