@@ -46,6 +46,18 @@ REQUIRED_MARKERS = {
         "const CREATE_COMBOS",
         "window.CREATE_COMBOS",
     ],
+    "assets/js/lessons-threshold.js": ["window.LESSON_THRESHOLD", "steps:"],
+    "assets/js/lessons-how-to-learn.js": ["window.LESSON_HOW_TO_LEARN", "steps:"],
+    "assets/js/lessons-learning-a-language.js": ["window.LESSON_LEARNING_A_LANGUAGE", "steps:"],
+    "assets/js/lessons-language-of-music.js": ["window.LESSON_LANGUAGE_OF_MUSIC", "steps:"],
+    "assets/js/lessons-language-of-guitar.js": ["window.LESSON_LANGUAGE_OF_GUITAR", "steps:"],
+    "assets/js/lessons-the-tool.js": ["window.LESSON_THE_TOOL", "steps:"],
+    "assets/js/lessons-the-guitar.js": ["window.LESSON_THE_GUITAR", "steps:"],
+    "assets/js/lessons-speaking.js": ["window.LESSON_SPEAKING", "steps:"],
+    "assets/js/lessons-rhythm-pulse.js": ["window.LESSON_RHYTHM_PULSE", "steps:"],
+    "assets/js/lessons-first-shapes.js": ["window.LESSON_FIRST_SHAPES", "steps:"],
+    "assets/js/lessons-first-conversation.js": ["window.LESSON_FIRST_CONVERSATION", "steps:"],
+    "assets/js/lessons-conversations.js": ["window.LESSON_CONVERSATIONS", "steps:"],
 }
 
 CONTENT_BANKS = {
