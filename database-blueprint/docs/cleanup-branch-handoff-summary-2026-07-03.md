@@ -32,7 +32,8 @@ Commits on this branch:
 | `04be5e5` | Extracted scene-first reference seed files. |
 | `dcfa0fd` | Extracted third Foundation lesson seed: Learning a Language. |
 | `84522cd` | Extracted fourth Foundation lesson seed: Language of Guitar. |
-| current commit | Extracted fifth Foundation lesson seed: The Guitar. |
+| `e3967ca` | Extracted fifth Foundation lesson seed: The Guitar. |
+| current commit | Extracted sixth Foundation lesson seed: Speaking with the Guitar. |
 
 ## What Changed
 
@@ -75,6 +76,9 @@ These were extracted as proof-of-format lesson seeds.
 - `database-blueprint/seeds/foundation_the_guitar_lesson_v2.json`
   - 8 steps
   - source: `assets/js/lessons-the-guitar.js`
+- `database-blueprint/seeds/foundation_speaking_lesson_v2.json`
+  - 10 steps
+  - source: `assets/js/lessons-speaking.js`
 
 ### Added scene-first reference seed files
 
@@ -108,7 +112,7 @@ Current passing result:
 
 ```text
 Prototype smoke check passed.
-Checked 19 key files, 2 content banks, 6 seed files, and 5 lesson seeds.
+Checked 19 key files, 2 content banks, 6 seed files, and 6 lesson seeds.
 ```
 
 ## What Did Not Change

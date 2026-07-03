@@ -95,6 +95,7 @@ The current JavaScript uses values like `TeachingCHAR.neutral`. Seed files shoul
 - `encouraging`
 - `thinking`
 - `celebratory`
+- `lightbulb`
 
 The frontend can map these keys back to image paths or character assets.
 

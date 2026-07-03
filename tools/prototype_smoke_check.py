@@ -138,6 +138,11 @@ LESSON_SEEDS = {
         "step_count": 8,
         "allowed_types": ["speak", "ask", "cards", "video", "action", "end"],
     },
+    "database-blueprint/seeds/foundation_speaking_lesson_v2.json": {
+        "lesson_id": "f-speaking",
+        "step_count": 10,
+        "allowed_types": ["speak", "ask", "cards", "video", "action", "end"],
+    },
 }
 
 
