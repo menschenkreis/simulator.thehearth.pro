@@ -30,7 +30,8 @@ Commits on this branch:
 | `0436257` | Added TeachingEngine lesson seed schema and first Threshold lesson seed. |
 | `df65f66` | Extracted second Foundation lesson seed: Language of Music. |
 | `04be5e5` | Extracted scene-first reference seed files. |
-| current commit | Extracted third Foundation lesson seed: Learning a Language. |
+| `dcfa0fd` | Extracted third Foundation lesson seed: Learning a Language. |
+| current commit | Extracted fourth Foundation lesson seed: Language of Guitar. |
 
 ## What Changed
 
@@ -67,6 +68,9 @@ These were extracted as proof-of-format lesson seeds.
 - `database-blueprint/seeds/foundation_learning_a_language_lesson_v2.json`
   - 10 steps
   - source: `assets/js/lessons-learning-a-language.js`
+- `database-blueprint/seeds/foundation_language_of_guitar_lesson_v2.json`
+  - 10 steps
+  - source: `assets/js/lessons-language-of-guitar.js`
 
 ### Added scene-first reference seed files
 
@@ -100,7 +104,7 @@ Current passing result:
 
 ```text
 Prototype smoke check passed.
-Checked 19 key files, 2 content banks, 6 seed files, and 3 lesson seeds.
+Checked 19 key files, 2 content banks, 6 seed files, and 4 lesson seeds.
 ```
 
 ## What Did Not Change

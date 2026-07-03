@@ -89,6 +89,7 @@ Extracted lesson seeds so far:
 - `database-blueprint/seeds/foundation_threshold_lesson_v2.json`
 - `database-blueprint/seeds/foundation_language_of_music_lesson_v2.json`
 - `database-blueprint/seeds/foundation_learning_a_language_lesson_v2.json`
+- `database-blueprint/seeds/foundation_language_of_guitar_lesson_v2.json`
 
 Likely backend fields:
 
