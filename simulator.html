@@ -2024,6 +2024,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 <script src="assets/js/foundation.js"></script>
 <script src="assets/js/teaching-engine.js"></script>
 <script src="assets/js/fretboard.js"></script>
+<script src="assets/js/lessons-threshold.js"></script>
 <script src="assets/js/lessons-how-to-learn.js"></script>
 <script src="assets/js/lessons-learning-a-language.js"></script>
 <script src="assets/js/lessons-language-of-music.js"></script>
@@ -2636,6 +2637,7 @@ function showFoundationTopic(topicId){
   // ── INTERACTIVE LESSON OVERRIDE ──
   // Map topic IDs to their lesson data and block labels
   var lessonMap = {
+    'f-threshold':             { lesson: window.LESSON_THRESHOLD,             label: 'THE THRESHOLD' },
     'f-how-to-learn':          { lesson: window.LESSON_HOW_TO_LEARN,          label: 'BLOCK 01 - HOW TO LEARN' },
     'f-music-language':        { lesson: window.LESSON_LEARNING_A_LANGUAGE,   label: 'BLOCK 02 - MUSIC AS LANGUAGE' },
     'f-musical-alphabet':      { lesson: window.LESSON_LANGUAGE_OF_MUSIC,     label: 'BLOCK 03 - THE MUSICAL ALPHABET' },
