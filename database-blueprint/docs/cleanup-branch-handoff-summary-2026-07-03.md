@@ -38,6 +38,7 @@ Commits on this branch:
 - `database-blueprint/docs/active-code-inventory-2026-07-03.md`
 - `database-blueprint/docs/foundation-lesson-inventory-2026-07-03.md`
 - `database-blueprint/docs/teaching-engine-lesson-seed-schema-v1.md`
+- `database-blueprint/docs/local-storage-and-api-inventory-2026-07-03.md`
 
 ### Added Create node seed files
 
@@ -157,6 +158,8 @@ Avoid for now:
 
 ### Option B - Create a localStorage/API inventory
 
+Status: completed in `database-blueprint/docs/local-storage-and-api-inventory-2026-07-03.md`.
+
 Make a handoff doc listing:
 
 - localStorage keys
@@ -179,8 +182,8 @@ This would prepare for the most important frontend architecture cleanup.
 
 ## Suggested Next Step
 
-Choose Option B next.
+Choose Option C next.
 
 Reason:
 
-Before changing fragile frontend routing, it would help Martin to know exactly what the browser is currently saving locally and what the API is already trying to read/write.
+The localStorage/API inventory is now done. The next biggest architecture risk is `scene-first.js`, because it loads late and can override node screens defined elsewhere.
