@@ -31,6 +31,12 @@ CORE_MARKERS = {
         "findRouteByTopic",
         "listTopicLessons",
     ],
+    "core/renderer-registry.js": [
+        "HearthRendererRegistry",
+        "createRegistry",
+        "requireRenderer",
+        "register",
+    ],
 }
 
 ACTIVE_ROUTE_COUNT = 10

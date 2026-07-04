@@ -39,6 +39,7 @@ Those pieces can use the core, but they should not live inside the core.
 | `foundation-adapter.js` | Pure Foundation route lookup helpers. |
 | `foundation-route-manifest.json` | Clean Foundation topic-to-lesson seed route list. |
 | `action-renderer-manifest.json` | Stable keys for custom interactive lesson renderers. |
+| `renderer-registry.js` | Small interface for registering and calling action renderers by key. |
 
 ## Current Core Shape
 
