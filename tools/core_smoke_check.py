@@ -37,6 +37,12 @@ CORE_MARKERS = {
         "requireRenderer",
         "register",
     ],
+    "core/lesson-view-model.js": [
+        "HearthLessonViewModel",
+        "buildLessonViewModel",
+        "buildTopicLessonViewModel",
+        "summarizeStep",
+    ],
 }
 
 ACTIVE_ROUTE_COUNT = 10
@@ -185,6 +191,18 @@ def main() -> int:
                     f"core_seed_loader loaded {len(route_seeds)} route seeds; "
                     f"expected {ACTIVE_ROUTE_COUNT + UNMAPPED_ROUTE_COUNT}"
                 )
+            for lesson_id, seed in route_seeds.items():
+                steps = seed.get("lesson", {}).get("steps", [])
+                if not steps:
+                    failures.append(f"{lesson_id} has no steps for view model")
+                    continue
+                if steps[0].get("order") != 1:
+                    failures.append(f"{lesson_id} first view-model step must have order 1")
+                if steps[-1].get("type") not in {"speak", "end"}:
+                    failures.append(
+                        f"{lesson_id} last view-model step has unexpected type: "
+                        f"{steps[-1].get('type')!r}"
+                    )
         except (ValueError, json.JSONDecodeError) as error:
             failures.append(f"core_seed_loader failed to load route seeds: {error}")
 

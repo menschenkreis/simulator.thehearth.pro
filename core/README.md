@@ -40,6 +40,7 @@ Those pieces can use the core, but they should not live inside the core.
 | `foundation-route-manifest.json` | Clean Foundation topic-to-lesson seed route list. |
 | `action-renderer-manifest.json` | Stable keys for custom interactive lesson renderers. |
 | `renderer-registry.js` | Small interface for registering and calling action renderers by key. |
+| `lesson-view-model.js` | Converts lesson seeds into frontend-friendly lesson view objects. |
 
 ## Current Core Shape
 
@@ -51,10 +52,16 @@ Those pieces can use the core, but they should not live inside the core.
 - `lessonSummary(seed)`
 - `buildRouteSummary(routeManifest, lessonSeedsById)`
 
-The module works in both:
+`lesson-view-model.js` currently exposes:
 
-- browser globals: `window.HearthLessonCore`
-- CommonJS/Node: `require("./lesson-core.js")`
+- `buildLessonViewModel(seed, options)`
+- `buildTopicLessonViewModel(routeResult, options)`
+- `summarizeStep(step, index)`
+
+The core modules work in both:
+
+- browser globals, such as `window.HearthLessonCore`
+- CommonJS/Node, such as `require("./lesson-core.js")`
 
 ## First Rebuild Rule
 

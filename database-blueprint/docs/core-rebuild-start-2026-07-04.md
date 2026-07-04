@@ -16,9 +16,11 @@ The goal is not to patch the messy prototype forever. The goal is to build a reu
 | `core/foundation-route-manifest.json` | Clean Foundation topic-to-lesson seed route list. |
 | `core/action-renderer-manifest.json` | Stable renderer-key contract for custom action lesson steps. |
 | `core/renderer-registry.js` | Small interface for registering and calling action renderers by key. |
+| `core/lesson-view-model.js` | Converts lesson seeds into frontend-friendly lesson view objects. |
 | `tools/core_smoke_check.py` | Validates the new core files, route manifest, and linked lesson seed files. |
 | `tools/core_seed_loader.py` | Shared loader for core manifests and lesson seeds. |
 | `tools/print_foundation_core_summary.py` | Prints the clean Foundation topic-to-lesson route summary. |
+| `tools/print_lesson_view_models.py` | Prints lesson view-model summaries from clean seeds. |
 
 ## Why This Is Safer Than Refactoring The Prototype First
 
