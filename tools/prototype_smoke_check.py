@@ -40,6 +40,7 @@ REQUIRED_MARKERS = {
         "adapters/doing-drill-detail-viewer.js",
         "adapters/doing-drill-board-viewer.js",
         "adapters/doing-entry-viewer.js",
+        "adapters/doing-explorer-viewer.js",
         "adapters/doing-map-viewer.js",
         "assets/js/journey.js",
     ],
@@ -201,6 +202,11 @@ REQUIRED_MARKERS = {
         "HearthDoingEntryViewer",
         "renderDoingEntry",
         "doing-calm",
+    ],
+    "adapters/doing-explorer-viewer.js": [
+        "HearthDoingExplorerViewer",
+        "renderDoingExplorer",
+        "doing-explore",
     ],
     "adapters/doing-map-viewer.js": [
         "HearthDoingMapViewer",
@@ -594,6 +600,7 @@ def main() -> int:
         "adapters/doing-drill-detail-viewer.js",
         "adapters/doing-drill-board-viewer.js",
         "adapters/doing-entry-viewer.js",
+        "adapters/doing-explorer-viewer.js",
         "adapters/doing-map-viewer.js",
     ]
     previous_index = -1

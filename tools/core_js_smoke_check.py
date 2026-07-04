@@ -63,6 +63,7 @@ eval(readText(root + "/adapters/doing-drill-board-model.js"));
 eval(readText(root + "/adapters/doing-drill-detail-viewer.js"));
 eval(readText(root + "/adapters/doing-drill-board-viewer.js"));
 eval(readText(root + "/adapters/doing-entry-viewer.js"));
+eval(readText(root + "/adapters/doing-explorer-viewer.js"));
 eval(readText(root + "/adapters/doing-map-viewer.js"));
 
 var seed = JSON.parse(readText(root + "/database-blueprint/seeds/foundation_conversations_lesson_v2.json"));
@@ -173,6 +174,15 @@ var doingEntryHtml = HearthDoingEntryViewer.renderDoingEntry({{
 assert(doingEntryHtml.indexOf("doing-calm") !== -1, "Doing entry viewer should render entry shell");
 assert(doingEntryHtml.indexOf("Recommended next") !== -1, "Doing entry viewer should render recommendation");
 assert(doingEntryHtml.indexOf("Open Training Map") !== -1, "Doing entry viewer should render map action");
+var doingExplorerHtml = HearthDoingExplorerViewer.renderDoingExplorer({{
+  activeTab: "notes"
+}});
+assert(doingExplorerHtml.indexOf("doing-explore") !== -1, "Doing explorer viewer should render explorer shell");
+assert(doingExplorerHtml.indexOf("exp-fretboard-svg") !== -1, "Doing explorer viewer should render note locator");
+assert(
+  HearthDoingExplorerViewer.renderDoingExplorer({{ activeTab: "tab" }}).indexOf("Tab + Notation") !== -1,
+  "Doing explorer viewer should render tab panel"
+);
 var doingMapHtml = HearthDoingMapViewer.renderDoingMap({{
   zones: HearthDoingConfig.guitarZones,
   doingDebug: true
