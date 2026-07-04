@@ -1734,6 +1734,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 <script src="adapters/foundation-seed-loader.js"></script>
 <script src="adapters/foundation-lesson-launcher.js"></script>
 <script src="adapters/foundation-lesson-shell.js"></script>
+<script src="adapters/foundation-ui-utils.js"></script>
 <script src="core/lesson-view-model.js"></script>
 <script src="core/lesson-session.js"></script>
 <script src="core/learner-progress.js"></script>
@@ -2334,14 +2335,17 @@ function rainbowBlocks(items, opts){
 
 // ═══ FOUNDATION TOPIC VIEWER ═══
 function foundationEscape(value){
-  return String(value || '').replace(/[&<>"']/g, function(ch){
-    return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[ch];
-  });
+  return window.HearthFoundationUiUtils
+    ? window.HearthFoundationUiUtils.escapeHtml(value)
+    : String(value || '').replace(/[&<>"']/g, function(ch){
+        return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[ch];
+      });
 }
 
 function foundationColor(index){
-  var colors = ['#e74c3c','#e67e22','#f1c40f','#2ecc71','#3498db','#42d6c5','#9b59b6','#d76aa8','#d4af69','#ffb347'];
-  return colors[index % colors.length];
+  return window.HearthFoundationUiUtils
+    ? window.HearthFoundationUiUtils.colorForIndex(index)
+    : ['#e74c3c','#e67e22','#f1c40f','#2ecc71','#3498db','#42d6c5','#9b59b6','#d76aa8','#d4af69','#ffb347'][index % 10];
 }
 
 async function showFoundationTopic(topicId){

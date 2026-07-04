@@ -44,6 +44,7 @@ eval(readText(root + "/adapters/foundation-action-renderers.js"));
 eval(readText(root + "/adapters/foundation-seed-loader.js"));
 eval(readText(root + "/adapters/foundation-lesson-launcher.js"));
 eval(readText(root + "/adapters/foundation-lesson-shell.js"));
+eval(readText(root + "/adapters/foundation-ui-utils.js"));
 eval(readText(root + "/adapters/foundation-audio.js"));
 eval(readText(root + "/core/lesson-view-model.js"));
 eval(readText(root + "/core/lesson-session.js"));
@@ -85,6 +86,8 @@ var fakeTeachContainer = HearthFoundationLessonShell.renderFoundationLessonShell
 }});
 assert(fakeShellTarget.innerHTML.indexOf("TEST LABEL") !== -1, "Foundation shell should render label");
 assert(fakeTeachContainer.id === "teach-container", "Foundation shell should return teach container");
+assert(HearthFoundationUiUtils.escapeHtml("<x>") === "&lt;x&gt;", "Foundation UI utils should escape HTML");
+assert(HearthFoundationUiUtils.colorForIndex(0) === "#e74c3c", "Foundation UI utils should return stable colors");
 assert(typeof HearthFoundationAudio.playTone === "function", "Foundation audio adapter should expose playTone");
 assert(typeof _l1_playTone === "function", "Foundation audio adapter should keep legacy helper name");
 
