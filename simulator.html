@@ -1777,6 +1777,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 <script src="adapters/doing-map-controller.js"></script>
 <script src="adapters/doing-panel-controller.js"></script>
 <script src="adapters/knowing-level-model.js"></script>
+<script src="adapters/knowing-shelf-controller.js"></script>
 <script src="assets/js/doing.js?v=6"></script>
 <script src="assets/js/knowing.js?v=6"></script>
 <script src="assets/js/knowing-concepts.js?v=1"></script>
@@ -2325,11 +2326,11 @@ function showKnowing(){
   el.innerHTML=html;
 }
 
-// Carousel scroll helper
-window._scrollShelf=function(id,dir){
-  const el=document.getElementById(id);if(!el)return;
-  el.scrollBy({left:dir*200,behavior:'smooth'});
-};
+if(window.HearthKnowingShelfController){
+  window.HearthKnowingShelfController.bindShelfGlobals({
+    documentRef:document
+  });
+}
 
 window.showKnowingBook=function(catId,levelFilter){
   if(typeof window.openBook==='function'){

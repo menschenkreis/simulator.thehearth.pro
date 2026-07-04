@@ -50,6 +50,7 @@ REQUIRED_MARKERS = {
         "adapters/doing-map-controller.js",
         "adapters/doing-panel-controller.js",
         "adapters/knowing-level-model.js",
+        "adapters/knowing-shelf-controller.js",
         "assets/js/journey.js",
     ],
     "assets/js/scene-first.js": [
@@ -261,6 +262,11 @@ REQUIRED_MARKERS = {
         "HearthKnowingLevelModel",
         "buildLevels",
         "recommendedLevel",
+    ],
+    "adapters/knowing-shelf-controller.js": [
+        "HearthKnowingShelfController",
+        "bindShelfGlobals",
+        "scrollShelf",
     ],
     "adapters/teaching-engine-core-adapter.js": [
         "HearthTeachingEngineCoreAdapter",
@@ -658,6 +664,7 @@ def main() -> int:
         "adapters/doing-map-controller.js",
         "adapters/doing-panel-controller.js",
         "adapters/knowing-level-model.js",
+        "adapters/knowing-shelf-controller.js",
     ]
     previous_index = -1
     for script_path in expected_script_order:
