@@ -16,6 +16,8 @@ REQUIRED_MARKERS = {
         "assets/js/scene-first.js",
         "core/renderer-registry.js",
         "adapters/action-renderer-registry-bootstrap.js",
+        "core/foundation-adapter.js",
+        "adapters/foundation-route-manifest-runtime.js",
         "core/lesson-session.js",
         "adapters/teaching-engine-core-adapter.js",
         "assets/js/teaching-engine.js",
@@ -73,6 +75,11 @@ REQUIRED_MARKERS = {
     ],
     "core/lesson-view-model.js": ["HearthLessonViewModel", "buildLessonViewModel"],
     "core/renderer-registry.js": ["HearthRendererRegistry", "createRegistry"],
+    "core/foundation-adapter.js": ["HearthFoundationAdapter", "findRouteByTopic"],
+    "adapters/foundation-route-manifest-runtime.js": [
+        "HearthFoundationRouteManifest",
+        "f-first-conversation",
+    ],
     "adapters/action-renderer-registry-bootstrap.js": [
         "HearthActionRendererRegistry",
         "createRegistry",
@@ -209,17 +216,17 @@ LESSON_SEEDS = {
     },
 }
 
-FOUNDATION_ROUTE_MARKERS = {
-    "f-threshold": "LESSON_THRESHOLD",
-    "f-how-to-learn": "LESSON_HOW_TO_LEARN",
-    "f-music-language": "LESSON_LEARNING_A_LANGUAGE",
-    "f-musical-alphabet": "LESSON_LANGUAGE_OF_MUSIC",
-    "f-rhythm-pulse": "LESSON_RHYTHM_PULSE",
-    "f-guitar-map": "LESSON_LANGUAGE_OF_GUITAR",
-    "f-instrument-body": "LESSON_THE_GUITAR",
-    "f-hands-sound": "LESSON_SPEAKING",
-    "f-first-shapes": "LESSON_FIRST_SHAPES",
-    "f-first-conversation": "LESSON_CONVERSATIONS",
+CLEAN_FOUNDATION_ROUTE_IDS = {
+    "f-threshold": "f-threshold",
+    "f-how-to-learn": "f-how-to-learn",
+    "f-music-language": "f-learning-a-language",
+    "f-musical-alphabet": "f-language-of-music",
+    "f-rhythm-pulse": "f-rhythm-pulse",
+    "f-guitar-map": "f-language-of-guitar",
+    "f-instrument-body": "f-the-guitar",
+    "f-hands-sound": "f-speaking",
+    "f-first-shapes": "f-first-shapes",
+    "f-first-conversation": "f-conversations",
 }
 
 LOADED_UNMAPPED_LESSONS = {
@@ -444,6 +451,8 @@ def main() -> int:
         "assets/js/foundation.js",
         "core/renderer-registry.js",
         "adapters/action-renderer-registry-bootstrap.js",
+        "core/foundation-adapter.js",
+        "adapters/foundation-route-manifest-runtime.js",
         "core/lesson-view-model.js",
         "core/lesson-session.js",
         "core/learner-progress.js",
@@ -462,14 +471,21 @@ def main() -> int:
             failures.append(f"simulator.html loads {script_path} out of clean-core bridge order")
         previous_index = current_index
 
-    for topic_id, lesson_global in FOUNDATION_ROUTE_MARKERS.items():
-        route_source = extract_object_entry_source(simulator, topic_id)
-        if route_source is None:
-            failures.append(f"simulator.html is missing Foundation topic route: {topic_id}")
-            continue
-        if lesson_global not in route_source:
+    runtime_manifest = read_text("adapters/foundation-route-manifest-runtime.js")
+    for topic_id, lesson_id in CLEAN_FOUNDATION_ROUTE_IDS.items():
+        clean_route_pattern = (
+            rf'topic_id:\s*"{re.escape(topic_id)}"[\s\S]*?'
+            rf'lesson_id:\s*"{re.escape(lesson_id)}"'
+        )
+        fallback_route_pattern = (
+            rf"['\"]{re.escape(topic_id)}['\"]\s*:\s*"
+            rf"['\"]{re.escape(lesson_id)}['\"]"
+        )
+        if not re.search(clean_route_pattern, runtime_manifest):
+            failures.append(f"runtime Foundation manifest is missing route: {topic_id} -> {lesson_id}")
+        if not re.search(fallback_route_pattern, simulator):
             failures.append(
-                f"simulator.html route {topic_id} no longer points to {lesson_global}"
+                f"simulator.html fallback route {topic_id} no longer points to {lesson_id}"
             )
 
     for lesson_global, source_file in LOADED_UNMAPPED_LESSONS.items():
@@ -493,7 +509,7 @@ def main() -> int:
         f"Checked {len(REQUIRED_MARKERS)} key files, "
         f"{len(CONTENT_BANKS)} content banks, "
         f"{len(SEED_FILES)} seed files, {len(LESSON_SEEDS)} lesson seeds, "
-        f"and {len(FOUNDATION_ROUTE_MARKERS)} Foundation routes."
+        f"and {len(CLEAN_FOUNDATION_ROUTE_IDS)} Foundation routes."
     )
     return 0
 

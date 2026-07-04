@@ -37,6 +37,8 @@ function assert(condition, message) {{
 var root = {str(ROOT)!r};
 eval(readText(root + "/core/renderer-registry.js"));
 eval(readText(root + "/adapters/action-renderer-registry-bootstrap.js"));
+eval(readText(root + "/core/foundation-adapter.js"));
+eval(readText(root + "/adapters/foundation-route-manifest-runtime.js"));
 eval(readText(root + "/core/lesson-view-model.js"));
 eval(readText(root + "/core/lesson-session.js"));
 eval(readText(root + "/core/learner-progress.js"));
@@ -44,6 +46,14 @@ eval(readText(root + "/adapters/browser-progress-store.js"));
 eval(readText(root + "/adapters/teaching-engine-core-adapter.js"));
 
 var seed = JSON.parse(readText(root + "/database-blueprint/seeds/foundation_conversations_lesson_v2.json"));
+var foundationManifest = JSON.parse(readText(root + "/core/foundation-route-manifest.json"));
+
+assert(
+  JSON.stringify(HearthFoundationRouteManifest.routes) === JSON.stringify(foundationManifest.routes),
+  "runtime Foundation manifest should match core JSON manifest"
+);
+var musicRoute = HearthFoundationAdapter.findRouteByTopic(HearthFoundationRouteManifest, "f-music-language");
+assert(musicRoute.lesson_id === "f-learning-a-language", "Foundation adapter should map topic to clean lesson id");
 
 var registry = HearthRendererRegistry.createRegistry();
 registry.register("foundation.fake_renderer", function(context) {{
