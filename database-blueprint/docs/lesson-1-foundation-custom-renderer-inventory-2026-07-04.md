@@ -192,6 +192,14 @@ For action steps, store this kind of shape:
 
 The backend should not store JavaScript render functions.
 
+## Core Manifest
+
+The clean core now records these renderer keys in:
+
+- `core/action-renderer-manifest.json`
+
+That manifest is the backend/frontend contract. It says which renderer keys exist and what kind of configuration each renderer expects.
+
 ## Migration Recommendation
 
 Do not extract this file as a normal lesson seed yet.

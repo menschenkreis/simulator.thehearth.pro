@@ -27,6 +27,7 @@ CORE_MARKERS = {
 
 ACTIVE_ROUTE_COUNT = 10
 UNMAPPED_ROUTE_COUNT = 2
+ACTION_RENDERER_COUNT = 4
 
 
 def read_json(relative_path: str) -> dict:
@@ -134,6 +135,57 @@ def main() -> int:
             if route_status == "loaded_but_not_currently_mapped" and route.get("topic_id") is not None:
                 failures.append(f"unmapped route for {lesson_id} must have topic_id null")
 
+    renderer_manifest_path = ROOT / "core/action-renderer-manifest.json"
+    if not renderer_manifest_path.exists():
+        failures.append("Missing core/action-renderer-manifest.json")
+    else:
+        try:
+            renderer_manifest = read_json("core/action-renderer-manifest.json")
+        except json.JSONDecodeError as error:
+            failures.append(f"core/action-renderer-manifest.json is not valid JSON: {error}")
+            renderer_manifest = {}
+
+        renderers = renderer_manifest.get("renderers")
+        if not isinstance(renderers, list):
+            failures.append("action-renderer-manifest.json must contain a renderers list")
+            renderers = []
+
+        if len(renderers) != ACTION_RENDERER_COUNT:
+            failures.append(
+                f"action-renderer-manifest.json has {len(renderers)} renderers; "
+                f"expected {ACTION_RENDERER_COUNT}"
+            )
+
+        core_source = (ROOT / "core/lesson-core.js").read_text(encoding="utf-8")
+        renderer_keys = set()
+        for index, renderer in enumerate(renderers):
+            if not isinstance(renderer, dict):
+                failures.append(f"renderer {index} is not an object")
+                continue
+
+            renderer_key = renderer.get("renderer_key")
+            if not renderer_key:
+                failures.append(f"renderer {index} is missing renderer_key")
+                continue
+
+            if renderer_key in renderer_keys:
+                failures.append(f"duplicate renderer_key: {renderer_key}")
+            renderer_keys.add(renderer_key)
+
+            for field in [
+                "source_file",
+                "source_step_order",
+                "node_id",
+                "interaction_type",
+                "frontend_owned_behaviors",
+                "config_shape",
+            ]:
+                if field not in renderer:
+                    failures.append(f"{renderer_key} is missing field: {field}")
+
+            if renderer_key not in core_source:
+                failures.append(f"{renderer_key} is missing from lesson-core.js ACTION_RENDERER_KEYS")
+
     if failures:
         print("Core smoke check failed:")
         for failure in failures:
@@ -143,7 +195,8 @@ def main() -> int:
     print("Core smoke check passed.")
     print(
         f"Checked {len(CORE_MARKERS)} core files, "
-        f"{ACTIVE_ROUTE_COUNT} active routes, and {UNMAPPED_ROUTE_COUNT} unmapped routes."
+        f"{ACTIVE_ROUTE_COUNT} active routes, {UNMAPPED_ROUTE_COUNT} unmapped routes, "
+        f"and {ACTION_RENDERER_COUNT} action renderers."
     )
     return 0
 

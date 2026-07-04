@@ -37,6 +37,7 @@ Those pieces can use the core, but they should not live inside the core.
 |---|---|
 | `lesson-core.js` | Pure lesson seed validation and lesson summary helpers. |
 | `foundation-route-manifest.json` | Clean Foundation topic-to-lesson seed route list. |
+| `action-renderer-manifest.json` | Stable keys for custom interactive lesson renderers. |
 
 ## Current Core Shape
 

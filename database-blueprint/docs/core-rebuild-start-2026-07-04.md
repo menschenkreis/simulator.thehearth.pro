@@ -13,6 +13,7 @@ The goal is not to patch the messy prototype forever. The goal is to build a reu
 | `core/README.md` | Explains what belongs in the clean core and what stays outside it. |
 | `core/lesson-core.js` | Pure lesson seed validation and summary helpers. |
 | `core/foundation-route-manifest.json` | Clean Foundation topic-to-lesson seed route list. |
+| `core/action-renderer-manifest.json` | Stable renderer-key contract for custom action lesson steps. |
 | `tools/core_smoke_check.py` | Validates the new core files, route manifest, and linked lesson seed files. |
 
 ## Why This Is Safer Than Refactoring The Prototype First
