@@ -34,6 +34,7 @@ The goal is not to patch the messy prototype forever. The goal is to build a reu
 | `adapters/doing-explorer-viewer.js` | Renders the Doing fretboard explorer tabs and panels. |
 | `adapters/doing-map-controller.js` | Binds Doing map zone, debug, and back-to-map handlers. |
 | `adapters/doing-map-viewer.js` | Renders the Doing guitar-body training map. |
+| `adapters/doing-panel-controller.js` | Opens and coordinates the Doing panel using the smaller Doing adapters. |
 | `adapters/doing-ui-utils.js` | Shared text and display helpers for the legacy Doing view. |
 | `adapters/foundation-action-renderers.js` | Registers existing Foundation action render functions behind stable renderer keys. |
 | `adapters/foundation-audio.js` | Shared tone helper for legacy Foundation action renderers. |

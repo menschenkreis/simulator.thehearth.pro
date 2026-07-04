@@ -71,6 +71,7 @@ eval(readText(root + "/adapters/doing-explorer-viewer.js"));
 eval(readText(root + "/adapters/doing-explorer-controller.js"));
 eval(readText(root + "/adapters/doing-map-viewer.js"));
 eval(readText(root + "/adapters/doing-map-controller.js"));
+eval(readText(root + "/adapters/doing-panel-controller.js"));
 
 var seed = JSON.parse(readText(root + "/database-blueprint/seeds/foundation_conversations_lesson_v2.json"));
 var foundationManifest = JSON.parse(readText(root + "/core/foundation-route-manifest.json"));
@@ -243,6 +244,10 @@ assert(
   HearthDoingMapController.stateForZone({{ view: "explorer" }}).activeExpTab === "notes",
   "Doing map controller should route explorer zones to notes tab"
 );
+var doingPanelState = {{ doingView: "map", activeSearch: "" }};
+HearthDoingPanelController.applyState(doingPanelState, {{ doingView: "training", activeSearch: "pick" }});
+assert(doingPanelState.doingView === "training", "Doing panel controller should apply view state");
+assert(doingPanelState.activeSearch === "pick", "Doing panel controller should apply search state");
 var fakeMapTarget = {{ innerHTML: "" }};
 var fakeMapFoundation = {{
   guideLine: "Guide line",
