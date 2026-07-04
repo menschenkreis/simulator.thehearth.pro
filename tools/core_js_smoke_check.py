@@ -39,6 +39,7 @@ eval(readText(root + "/core/renderer-registry.js"));
 eval(readText(root + "/adapters/action-renderer-registry-bootstrap.js"));
 eval(readText(root + "/core/foundation-adapter.js"));
 eval(readText(root + "/adapters/foundation-route-manifest-runtime.js"));
+eval(readText(root + "/adapters/foundation-action-renderers.js"));
 eval(readText(root + "/core/lesson-view-model.js"));
 eval(readText(root + "/core/lesson-session.js"));
 eval(readText(root + "/core/learner-progress.js"));
@@ -62,6 +63,32 @@ registry.register("foundation.fake_renderer", function(context) {{
 assert(registry.has("foundation.fake_renderer"), "renderer registry should register keys");
 assert(registry.render("foundation.fake_renderer", {{ step: {{ type: "action" }} }}) === "rendered:action", "renderer registry should call renderer");
 assert(HearthActionRendererRegistry.keys().length === 0, "bootstrap should create an empty shared registry");
+
+var fakeFoundationLesson = {{ steps: [] }};
+[4, 12, 15, 18].forEach(function(order) {{
+  fakeFoundationLesson.steps[order - 1] = {{
+    type: "action",
+    render: function(container, advance) {{
+      container.called = order;
+      if (advance) advance();
+      return order;
+    }}
+  }};
+}});
+var foundationRendererRegistry = HearthRendererRegistry.createRegistry();
+HearthFoundationActionRenderers.registerLegacyFoundationActionRenderers(
+  fakeFoundationLesson,
+  foundationRendererRegistry
+);
+assert(foundationRendererRegistry.keys().length === 4, "Foundation action adapter should register four renderers");
+var fakeContainer = {{}};
+var didAdvance = false;
+foundationRendererRegistry.render("foundation.body_scan", {{
+  container: fakeContainer,
+  advance: function() {{ didAdvance = true; }}
+}});
+assert(fakeContainer.called === 4, "Foundation body scan renderer should call source action");
+assert(didAdvance === true, "Foundation action wrapper should pass advance callback");
 
 var viewModel = HearthLessonViewModel.buildLessonViewModel(seed, {{ current_step_index: 2 }});
 assert(viewModel.id === "f-conversations", "view model lesson id mismatch");
