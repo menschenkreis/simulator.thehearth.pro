@@ -38,6 +38,7 @@ var root = {str(ROOT)!r};
 eval(readText(root + "/core/lesson-view-model.js"));
 eval(readText(root + "/core/lesson-session.js"));
 eval(readText(root + "/core/learner-progress.js"));
+eval(readText(root + "/adapters/browser-progress-store.js"));
 
 var seed = JSON.parse(readText(root + "/database-blueprint/seeds/foundation_conversations_lesson_v2.json"));
 
@@ -72,6 +73,31 @@ assert(lessonProgress.status === "completed", "progress should mark lesson compl
 assert(lessonProgress.last_step_index === 3, "progress should keep last step");
 assert(lessonProgress.wrong_answers === 1, "progress should track wrong answers");
 assert(HearthLearnerProgress.summarizeProgress(progress).completed_count === 1, "progress summary mismatch");
+
+var fakeStorage = {{
+  values: {{}},
+  getItem: function(key) {{
+    return this.values[key] || null;
+  }},
+  setItem: function(key, value) {{
+    this.values[key] = String(value);
+  }},
+  removeItem: function(key) {{
+    delete this.values[key];
+  }}
+}};
+var store = HearthBrowserProgressStore.createBrowserProgressStore({{
+  progressCore: HearthLearnerProgress,
+  storage: fakeStorage,
+  storage_key: "test.progress"
+}});
+store.markLessonStarted("f-conversations", {{ now: "2026-07-04T00:05:00.000Z" }});
+store.updateLessonStep("f-conversations", 4, {{ now: "2026-07-04T00:06:00.000Z" }});
+var storedProgress = store.load();
+assert(storedProgress.lessons["f-conversations"].status === "in_progress", "adapter should save progress");
+assert(storedProgress.lessons["f-conversations"].last_step_index === 4, "adapter should save last step");
+store.clear();
+assert(store.load().lessons["f-conversations"] === undefined, "adapter should clear progress");
 
 "Core JS smoke check passed.";
 """

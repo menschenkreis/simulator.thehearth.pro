@@ -95,12 +95,22 @@ The core modules work in both:
 
 Do not move the whole app into this folder at once.
 
-Move one stable contract at a time:
+Move one stable contract at a time. Completed first-pass contracts:
 
 1. lesson seed contracts
 2. Foundation route manifest
 3. action renderer keys
 4. renderer registry
-5. node routing
+5. Foundation route lookup
+6. lesson view model shape
+7. lesson session state
+8. learner progress record
+9. browser progress storage adapter
+
+Likely next contracts:
+
+1. TeachingEngine-to-core adapter
+2. action renderer implementations
+3. node routing beyond Foundation
 
 That order keeps the rebuild understandable and easier for Martin to connect to a general simulator backend.
