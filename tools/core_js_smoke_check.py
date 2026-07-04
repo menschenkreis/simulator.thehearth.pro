@@ -36,6 +36,7 @@ function assert(condition, message) {{
 
 var root = {str(ROOT)!r};
 eval(readText(root + "/core/renderer-registry.js"));
+eval(readText(root + "/adapters/action-renderer-registry-bootstrap.js"));
 eval(readText(root + "/core/lesson-view-model.js"));
 eval(readText(root + "/core/lesson-session.js"));
 eval(readText(root + "/core/learner-progress.js"));
@@ -50,6 +51,7 @@ registry.register("foundation.fake_renderer", function(context) {{
 }});
 assert(registry.has("foundation.fake_renderer"), "renderer registry should register keys");
 assert(registry.render("foundation.fake_renderer", {{ step: {{ type: "action" }} }}) === "rendered:action", "renderer registry should call renderer");
+assert(HearthActionRendererRegistry.keys().length === 0, "bootstrap should create an empty shared registry");
 
 var viewModel = HearthLessonViewModel.buildLessonViewModel(seed, {{ current_step_index: 2 }});
 assert(viewModel.id === "f-conversations", "view model lesson id mismatch");

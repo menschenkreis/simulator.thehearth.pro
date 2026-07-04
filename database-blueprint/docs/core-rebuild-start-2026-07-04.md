@@ -19,6 +19,7 @@ The goal is not to patch the messy prototype forever. The goal is to build a reu
 | `core/lesson-view-model.js` | Converts lesson seeds into frontend-friendly lesson view objects. |
 | `core/lesson-session.js` | Pure lesson navigation and answer evaluation state. |
 | `core/learner-progress.js` | Pure learner progress record helpers for lessons. |
+| `adapters/action-renderer-registry-bootstrap.js` | Creates the shared browser action-renderer registry instance. |
 | `adapters/browser-progress-store.js` | Replaceable localStorage adapter for clean learner progress records. |
 | `adapters/teaching-engine-core-adapter.js` | DOM-free lesson controller connecting seeds, session state, view models, and progress. |
 | `tools/core_smoke_check.py` | Validates the new core files, route manifest, and linked lesson seed files. |
