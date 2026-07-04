@@ -22,6 +22,7 @@ The goal is not to patch the messy prototype forever. The goal is to build a reu
 | `adapters/action-renderer-registry-bootstrap.js` | Creates the shared browser action-renderer registry instance. |
 | `adapters/browser-progress-store.js` | Replaceable localStorage adapter for clean learner progress records. |
 | `adapters/doing-config.js` | Holds Doing drill levels, filters, map zones, state labels, and plain coaching copy. |
+| `adapters/doing-drill-board-model.js` | Filters Doing drills and calculates board counts, summaries, and next drill. |
 | `adapters/doing-map-viewer.js` | Renders the Doing guitar-body training map. |
 | `adapters/doing-ui-utils.js` | Shared text and display helpers for the legacy Doing view. |
 | `adapters/foundation-action-renderers.js` | Registers existing Foundation action render functions behind stable renderer keys. |
@@ -94,7 +95,7 @@ The Foundation lesson host shell, panel opening flow, neck-path map screen, reus
 
 The legacy Foundation topic tab view and topic launch/completion flow are also now adapter-owned, leaving `simulator.html` with only small wrapper functions for that fallback path.
 
-The Doing cleanup has begun with stable drill config, UI helpers, and the guitar-body map renderer moved into adapters, so the large Doing screen can be split apart without changing its behavior first.
+The Doing cleanup has begun with stable drill config, board filtering logic, UI helpers, and the guitar-body map renderer moved into adapters, so the large Doing screen can be split apart without changing its behavior first.
 
 ## Next Core Steps
 

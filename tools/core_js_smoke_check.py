@@ -59,6 +59,7 @@ eval(readText(root + "/adapters/foundation-progress-bridge.js"));
 eval(readText(root + "/adapters/teaching-engine-core-adapter.js"));
 eval(readText(root + "/adapters/doing-ui-utils.js"));
 eval(readText(root + "/adapters/doing-config.js"));
+eval(readText(root + "/adapters/doing-drill-board-model.js"));
 eval(readText(root + "/adapters/doing-map-viewer.js"));
 
 var seed = JSON.parse(readText(root + "/database-blueprint/seeds/foundation_conversations_lesson_v2.json"));
@@ -115,6 +116,27 @@ assert(HearthDoingConfig.guitarZones.length === 6, "Doing config should expose g
 assert(HearthDoingConfig.focusCats.length === 6, "Doing config should expose focus categories");
 assert(HearthDoingUiUtils.escapeHtml("<pick>") === "&lt;pick&gt;", "Doing UI utils should escape HTML");
 assert(HearthDoingUiUtils.drillShort({{ title: "Alternate Picking" }}) === "AP", "Doing UI utils should build drill initials");
+var fakeDoing = {{
+  categories: [
+    {{
+      id: "picking",
+      title: "Picking",
+      drills: [
+        {{ id: "alt-1", title: "Alternate Picking", style: "rock", source: "Test", difficulty: 8 }},
+        {{ id: "funk-1", title: "Funk Grid", style: "funk", source: "Test", difficulty: 1 }}
+      ]
+    }}
+  ]
+}};
+var fakeBoardOptions = {{
+  doing: fakeDoing,
+  config: HearthDoingConfig,
+  activeStyle: "rock",
+  activeLevel: "all",
+  activeSearch: ""
+}};
+assert(HearthDoingDrillBoardModel.countForGenre(fakeBoardOptions, "rock") === 1, "Doing board model should count genre drills");
+assert(HearthDoingDrillBoardModel.findNextDrill(fakeDoing, {{}}, HearthDoingConfig.stateOrder).drill.id === "alt-1", "Doing board model should find next drill");
 var doingMapHtml = HearthDoingMapViewer.renderDoingMap({{
   zones: HearthDoingConfig.guitarZones,
   doingDebug: true
