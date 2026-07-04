@@ -7,6 +7,8 @@ import json
 import sys
 from pathlib import Path
 
+from core_seed_loader import foundation_topic_index, load_foundation_route_seeds
+
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -159,6 +161,26 @@ def main() -> int:
 
             if route_status == "loaded_but_not_currently_mapped" and route.get("topic_id") is not None:
                 failures.append(f"unmapped route for {lesson_id} must have topic_id null")
+
+        try:
+            topic_index = foundation_topic_index()
+            if set(topic_index) != EXPECTED_ACTIVE_TOPICS:
+                failures.append(
+                    "core_seed_loader foundation topic index differs from expected set: "
+                    f"{sorted(topic_index)}"
+                )
+        except (ValueError, json.JSONDecodeError) as error:
+            failures.append(f"core_seed_loader failed to build topic index: {error}")
+
+        try:
+            route_seeds = load_foundation_route_seeds(include_unmapped=True)
+            if len(route_seeds) != ACTIVE_ROUTE_COUNT + UNMAPPED_ROUTE_COUNT:
+                failures.append(
+                    f"core_seed_loader loaded {len(route_seeds)} route seeds; "
+                    f"expected {ACTIVE_ROUTE_COUNT + UNMAPPED_ROUTE_COUNT}"
+                )
+        except (ValueError, json.JSONDecodeError) as error:
+            failures.append(f"core_seed_loader failed to load route seeds: {error}")
 
     renderer_manifest_path = ROOT / "core/action-renderer-manifest.json"
     if not renderer_manifest_path.exists():
