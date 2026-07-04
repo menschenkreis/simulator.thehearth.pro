@@ -13,6 +13,7 @@ Adapters are allowed to connect the clean core to those outside systems.
 | `action-renderer-registry-bootstrap.js` | Creates the shared browser action-renderer registry instance. |
 | `browser-progress-store.js` | Saves and loads clean learner progress records from browser localStorage. |
 | `doing-config.js` | Holds Doing drill levels, filters, map zones, state labels, and plain coaching copy. |
+| `doing-map-viewer.js` | Renders the Doing guitar-body training map. |
 | `doing-ui-utils.js` | Shared text and display helpers for the legacy Doing view. |
 | `foundation-action-renderers.js` | Registers existing Foundation action render functions behind stable renderer keys. |
 | `foundation-audio.js` | Shared tone helper for legacy Foundation action renderers. |

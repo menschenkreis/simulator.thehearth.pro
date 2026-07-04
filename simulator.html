@@ -1763,6 +1763,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 <script src="assets/js/video-roadmap.js"></script>
 <script src="adapters/doing-ui-utils.js"></script>
 <script src="adapters/doing-config.js"></script>
+<script src="adapters/doing-map-viewer.js"></script>
 <script src="assets/js/doing.js?v=6"></script>
 <script src="assets/js/knowing.js?v=6"></script>
 <script src="assets/js/knowing-concepts.js?v=1"></script>
@@ -2456,41 +2457,11 @@ function showDoing(){
 
   /* === Guitar Map View === */
   function renderMap(){
-    var svgZones='';
-    guitarZones.forEach(function(zone){
-      svgZones+='<polygon class="doing-map-zone'+(doingDebug?' debug':'')+'" '+
-        'data-zone="'+esc(zone.id)+'" '+
-        'points="'+esc(zone.points)+'" '+
-        'onmouseenter="showDoingBubble(this)" '+
-        'onmouseleave="hideDoingBubble()" '+
-        'onclick="enterDoingZone(\''+esc(zone.id)+'\')"/>';
+    if(!window.HearthDoingMapViewer) return '';
+    return window.HearthDoingMapViewer.renderDoingMap({
+      zones:guitarZones,
+      doingDebug:doingDebug
     });
-
-    /* Training seals */
-    var seals='';
-    guitarZones.forEach(function(zone){
-      if(!zone.seal)return;
-      seals+='<div class="doing-seal" data-seal="'+esc(zone.id)+'" style="left:'+esc(zone.seal.x)+';top:'+esc(zone.seal.y)+'">'+
-        '<span class="seal-icon">'+zone.seal.icon+'</span></div>';
-    });
-
-    var html='<div class="doing-map-wrap" id="doing-map-container">'+
-      '<img src="images/doing-guitar-map.png" alt="Guitar training map" draggable="false">'+
-      '<svg class="doing-map-svg" viewBox="0 0 1280 960" preserveAspectRatio="xMidYMid meet">'+
-        svgZones+
-      '</svg>'+
-      seals+
-      '<div class="doing-map-title-overlay">'+
-        '<h2>Doing</h2>'+
-        '<p>The guitar body is the training map.</p>'+
-      '</div>'+
-      '<div class="doing-map-info" id="doing-map-info">'+
-        '<div class="gc-title">Choose a training chamber</div>'+
-        '<div class="gc-body">Touch part of the guitar: left hand, right hand, rhythm, chords, scales, or map.</div>'+
-      '</div>'+
-      '<button class="doing-map-debug-btn'+(doingDebug?' active':'')+'" onclick="toggleDoingDebug()" title="Debug: show hotspots">⚙</button>'+
-    '</div>';
-    return html;
   }
 
   /* === Mode toggle === */
