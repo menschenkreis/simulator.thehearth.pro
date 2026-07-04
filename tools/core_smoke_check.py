@@ -43,6 +43,13 @@ CORE_MARKERS = {
         "buildTopicLessonViewModel",
         "summarizeStep",
     ],
+    "core/lesson-session.js": [
+        "HearthLessonSession",
+        "createLessonSession",
+        "advanceLesson",
+        "evaluateChoice",
+        "completeLesson",
+    ],
 }
 
 ACTIVE_ROUTE_COUNT = 10

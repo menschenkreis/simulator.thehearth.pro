@@ -41,6 +41,12 @@ Those pieces can use the core, but they should not live inside the core.
 | `action-renderer-manifest.json` | Stable keys for custom interactive lesson renderers. |
 | `renderer-registry.js` | Small interface for registering and calling action renderers by key. |
 | `lesson-view-model.js` | Converts lesson seeds into frontend-friendly lesson view objects. |
+| `lesson-session.js` | Pure lesson navigation and answer evaluation state. |
+
+## Checks
+
+- `python3 tools/core_smoke_check.py`
+- `python3 tools/core_js_smoke_check.py`
 
 ## Current Core Shape
 
@@ -57,6 +63,16 @@ Those pieces can use the core, but they should not live inside the core.
 - `buildLessonViewModel(seed, options)`
 - `buildTopicLessonViewModel(routeResult, options)`
 - `summarizeStep(step, index)`
+
+`lesson-session.js` currently exposes:
+
+- `createLessonSession(seed, options)`
+- `getCurrentStep(seed, session)`
+- `advanceLesson(seed, session)`
+- `goBack(seed, session)`
+- `completeLesson(seed, session)`
+- `evaluateChoice(seed, session, choiceIndex)`
+- `normalizeResponse(response)`
 
 The core modules work in both:
 

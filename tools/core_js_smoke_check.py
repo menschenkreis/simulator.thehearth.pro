@@ -1,0 +1,83 @@
+#!/usr/bin/env python3
+"""Run a small behavior check against the browser-compatible core modules."""
+
+from __future__ import annotations
+
+import shutil
+import subprocess
+from pathlib import Path
+
+
+ROOT = Path(__file__).resolve().parents[1]
+
+
+def main() -> int:
+    if not shutil.which("osascript"):
+        print("Core JS smoke check skipped: osascript is not available.")
+        return 0
+
+    script = f"""
+ObjC.import('Foundation');
+
+function readText(path) {{
+  var text = $.NSString.stringWithContentsOfFileEncodingError(
+    path,
+    $.NSUTF8StringEncoding,
+    null
+  );
+  return ObjC.unwrap(text);
+}}
+
+function assert(condition, message) {{
+  if (!condition) {{
+    throw new Error(message);
+  }}
+}}
+
+var root = {str(ROOT)!r};
+eval(readText(root + "/core/lesson-view-model.js"));
+eval(readText(root + "/core/lesson-session.js"));
+
+var seed = JSON.parse(readText(root + "/database-blueprint/seeds/foundation_conversations_lesson_v2.json"));
+
+var viewModel = HearthLessonViewModel.buildLessonViewModel(seed, {{ current_step_index: 2 }});
+assert(viewModel.id === "f-conversations", "view model lesson id mismatch");
+assert(viewModel.current_step.type === "ask", "view model current step should be ask");
+assert(viewModel.next_step_index === 3, "view model next step mismatch");
+
+var session = HearthLessonSession.createLessonSession(seed, {{ step_index: 2 }});
+var wrong = HearthLessonSession.evaluateChoice(seed, session, 1);
+assert(wrong.result.valid === true, "wrong choice should be valid");
+assert(wrong.result.correct === false, "wrong choice should be incorrect");
+assert(wrong.result.next_action === "reexplain", "wrong choice should reexplain");
+assert(wrong.state.scores["interval-melody"].wrong === 1, "wrong score not tracked");
+
+var correct = HearthLessonSession.evaluateChoice(seed, wrong.state, 0);
+assert(correct.result.correct === true, "correct choice should be correct");
+assert(correct.result.next_action === "show_response", "correct choice should show response");
+assert(correct.state.scores["interval-melody"].right === 1, "right score not tracked");
+
+var advanced = HearthLessonSession.advanceLesson(seed, correct.state);
+assert(advanced.step_index === 3, "advance should move one step forward");
+assert(advanced.history.length === 1, "advance should remember previous step");
+
+"Core JS smoke check passed.";
+"""
+
+    result = subprocess.run(
+        ["osascript", "-l", "JavaScript", "-e", script],
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+
+    if result.returncode != 0:
+        print(result.stderr.strip() or result.stdout.strip())
+        return result.returncode
+
+    print(result.stdout.strip())
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
