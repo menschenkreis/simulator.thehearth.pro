@@ -203,6 +203,24 @@ function createTeachingEngine(containerEl, opts){
   }
 
   function renderAction(step, lesson){
+    var rendererKey = step.renderer_key || step.rendererKey;
+    var rendererRegistry = opts.rendererRegistry || window.HearthActionRendererRegistry || null;
+    if(rendererKey && rendererRegistry && typeof rendererRegistry.has === 'function' && rendererRegistry.has(rendererKey)){
+      rendererRegistry.render(rendererKey, {
+        container: container,
+        step: step,
+        lesson: lesson,
+        state: state,
+        advance: function(){ advance(lesson); },
+        config: step.renderer_config || step.rendererConfig || {}
+      });
+      return;
+    }
+
+    if(rendererKey && window.console && console.warn){
+      console.warn('Missing action renderer:', rendererKey);
+    }
+
     if(typeof step.render === 'function'){
       step.render(container, function(){ advance(lesson); }, lesson, state);
       return;

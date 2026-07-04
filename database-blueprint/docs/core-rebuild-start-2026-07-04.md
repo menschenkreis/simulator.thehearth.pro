@@ -63,11 +63,13 @@ It now runs beside the current lesson UI in shadow mode.
 
 `assets/js/teaching-engine.js` still renders the visible lesson experience, but it creates a clean `HearthTeachingEngineCoreAdapter` controller in shadow mode. That controller follows step movement, answers, completion, and progress storage while the old UI remains in place.
 
+The same engine can now ask an optional action renderer registry for `renderer_key` / `renderer_config` action steps. Existing inline action render functions still work as the fallback path.
+
 ## Next Core Steps
 
 Recommended order:
 
-1. Move action renderer implementations behind the renderer registry.
+1. Move Foundation action renderer implementations behind the renderer registry.
 2. Move Foundation topic lesson launching toward the clean route adapter.
 3. Replace TeachingEngine rendering one step type at a time.
 4. Keep old UI behavior available until each replacement is checked.

@@ -14,6 +14,7 @@ ROOT = Path(__file__).resolve().parents[1]
 REQUIRED_MARKERS = {
     "simulator.html": [
         "assets/js/scene-first.js",
+        "core/renderer-registry.js",
         "core/lesson-session.js",
         "adapters/teaching-engine-core-adapter.js",
         "assets/js/teaching-engine.js",
@@ -29,6 +30,8 @@ REQUIRED_MARKERS = {
         "function createTeachingEngine",
         "function createCoreController",
         "HearthTeachingEngineCoreAdapter",
+        "HearthActionRendererRegistry",
+        "renderer_key",
         "function showGradientFailsafe",
     ],
     "assets/js/journey.js": [
@@ -68,6 +71,7 @@ REQUIRED_MARKERS = {
         "buildRouteSummary",
     ],
     "core/lesson-view-model.js": ["HearthLessonViewModel", "buildLessonViewModel"],
+    "core/renderer-registry.js": ["HearthRendererRegistry", "createRegistry"],
     "core/lesson-session.js": ["HearthLessonSession", "evaluateChoice"],
     "core/learner-progress.js": ["HearthLearnerProgress", "recordLessonAnswer"],
     "adapters/browser-progress-store.js": [
@@ -433,6 +437,7 @@ def main() -> int:
     simulator = read_text("simulator.html")
     expected_script_order = [
         "assets/js/foundation.js",
+        "core/renderer-registry.js",
         "core/lesson-view-model.js",
         "core/lesson-session.js",
         "core/learner-progress.js",

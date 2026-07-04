@@ -35,6 +35,7 @@ function assert(condition, message) {{
 }}
 
 var root = {str(ROOT)!r};
+eval(readText(root + "/core/renderer-registry.js"));
 eval(readText(root + "/core/lesson-view-model.js"));
 eval(readText(root + "/core/lesson-session.js"));
 eval(readText(root + "/core/learner-progress.js"));
@@ -42,6 +43,13 @@ eval(readText(root + "/adapters/browser-progress-store.js"));
 eval(readText(root + "/adapters/teaching-engine-core-adapter.js"));
 
 var seed = JSON.parse(readText(root + "/database-blueprint/seeds/foundation_conversations_lesson_v2.json"));
+
+var registry = HearthRendererRegistry.createRegistry();
+registry.register("foundation.fake_renderer", function(context) {{
+  return "rendered:" + context.step.type;
+}});
+assert(registry.has("foundation.fake_renderer"), "renderer registry should register keys");
+assert(registry.render("foundation.fake_renderer", {{ step: {{ type: "action" }} }}) === "rendered:action", "renderer registry should call renderer");
 
 var viewModel = HearthLessonViewModel.buildLessonViewModel(seed, {{ current_step_index: 2 }});
 assert(viewModel.id === "f-conversations", "view model lesson id mismatch");
