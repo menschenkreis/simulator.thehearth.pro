@@ -61,6 +61,7 @@ eval(readText(root + "/adapters/doing-ui-utils.js"));
 eval(readText(root + "/adapters/doing-config.js"));
 eval(readText(root + "/adapters/doing-drill-board-model.js"));
 eval(readText(root + "/adapters/doing-drill-board-viewer.js"));
+eval(readText(root + "/adapters/doing-entry-viewer.js"));
 eval(readText(root + "/adapters/doing-map-viewer.js"));
 
 var seed = JSON.parse(readText(root + "/database-blueprint/seeds/foundation_conversations_lesson_v2.json"));
@@ -150,6 +151,16 @@ var doingBoardHtml = HearthDoingDrillBoardViewer.renderDoingDrillBoard({{
 }});
 assert(doingBoardHtml.indexOf("doing-fretboard-stage") !== -1, "Doing board viewer should render board shell");
 assert(doingBoardHtml.indexOf("1/2 mastered in view") !== -1, "Doing board viewer should render mastered count");
+var doingEntryHtml = HearthDoingEntryViewer.renderDoingEntry({{
+  focusCats: HearthDoingConfig.focusCats,
+  nextDrill: {{ cat: fakeDoing.categories[0], drill: fakeDoing.categories[0].drills[0] }},
+  levels: HearthDoingConfig.levels,
+  config: HearthDoingConfig,
+  ui: HearthDoingUiUtils
+}});
+assert(doingEntryHtml.indexOf("doing-calm") !== -1, "Doing entry viewer should render entry shell");
+assert(doingEntryHtml.indexOf("Recommended next") !== -1, "Doing entry viewer should render recommendation");
+assert(doingEntryHtml.indexOf("Open Training Map") !== -1, "Doing entry viewer should render map action");
 var doingMapHtml = HearthDoingMapViewer.renderDoingMap({{
   zones: HearthDoingConfig.guitarZones,
   doingDebug: true

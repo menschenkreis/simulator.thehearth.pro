@@ -24,6 +24,7 @@ The goal is not to patch the messy prototype forever. The goal is to build a reu
 | `adapters/doing-config.js` | Holds Doing drill levels, filters, map zones, state labels, and plain coaching copy. |
 | `adapters/doing-drill-board-model.js` | Filters Doing drills and calculates board counts, summaries, and next drill. |
 | `adapters/doing-drill-board-viewer.js` | Renders the Doing level/string drill board. |
+| `adapters/doing-entry-viewer.js` | Renders the Doing entry panel and recommended next drill. |
 | `adapters/doing-map-viewer.js` | Renders the Doing guitar-body training map. |
 | `adapters/doing-ui-utils.js` | Shared text and display helpers for the legacy Doing view. |
 | `adapters/foundation-action-renderers.js` | Registers existing Foundation action render functions behind stable renderer keys. |

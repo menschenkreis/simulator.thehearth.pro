@@ -1765,6 +1765,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 <script src="adapters/doing-config.js"></script>
 <script src="adapters/doing-drill-board-model.js"></script>
 <script src="adapters/doing-drill-board-viewer.js"></script>
+<script src="adapters/doing-entry-viewer.js"></script>
 <script src="adapters/doing-map-viewer.js"></script>
 <script src="assets/js/doing.js?v=6"></script>
 <script src="assets/js/knowing.js?v=6"></script>
@@ -2323,36 +2324,14 @@ function showDoing(){
 
   /* === Entry panel === */
   function renderEntry(){
-    /* Find recommended drill */
-    var recDrill=nextDrill;
-    var recHtml='';
-    if(recDrill){
-      var rd=recDrill.drill;
-      var rc=recDrill.cat;
-      var rl=getDoingLevel(rd);
-      var rlObj=levels.find(function(l){return l.level===rl;})||levels[0];
-      recHtml='<div class="doing-rec-drill" data-cat="'+esc(rc.id)+'" data-drill="'+esc(rd.id)+'">'+
-        '<div class="rec-label">Recommended next</div>'+
-        '<div class="rec-title">'+esc(rd.title)+'</div>'+
-        '<div class="rec-meta">'+esc(rc.title)+' &middot; '+esc(rlObj.name)+' &middot; '+esc(rd.duration||'5 min')+'</div>'+
-      '</div>';
-    }
-
-    var html='<div class="doing-calm">'+
-      '<h2 style="font-family:Cinzel,serif;color:var(--gold);font-size:1.1rem;margin:0 0 4px">Doing</h2>'+
-      '<p style="color:var(--dim);font-size:0.8rem;margin:0 0 16px">Train one physical skill at a time.</p>'+
-      '<div class="doing-focus-grid">';
-    focusCats.forEach(function(fc){
-      html+='<button class="doing-focus-btn" data-focus="'+fc.id+'">'+fc.icon+' '+fc.label+'</button>';
+    if(!window.HearthDoingEntryViewer) return '';
+    return window.HearthDoingEntryViewer.renderDoingEntry({
+      focusCats:focusCats,
+      nextDrill:nextDrill,
+      levels:levels,
+      config:doingConfig,
+      ui:doingUi
     });
-    html+='</div>'+
-      recHtml+
-      '<div class="doing-quick-links">'+
-        '<button class="doing-link-btn" data-action="open-map">&#9654; Open Training Map</button>'+
-        '<button class="doing-link-btn" data-action="open-explorer">&#9654; Open Fretboard Explorer</button>'+
-      '</div>'+
-    '</div>';
-    return html;
   }
 
   /* === Guitar Map View === */
