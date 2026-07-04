@@ -23,6 +23,7 @@ Adapters are allowed to connect the clean core to those outside systems.
 | `doing-entry-viewer.js` | Renders the Doing entry panel and recommended next drill. |
 | `doing-explorer-controller.js` | Binds the Doing explorer note-locator behavior. |
 | `doing-explorer-viewer.js` | Renders the Doing fretboard explorer tabs and panels. |
+| `doing-map-controller.js` | Binds Doing map zone, debug, and back-to-map handlers. |
 | `doing-map-viewer.js` | Renders the Doing guitar-body training map. |
 | `doing-ui-utils.js` | Shared text and display helpers for the legacy Doing view. |
 | `foundation-action-renderers.js` | Registers existing Foundation action render functions behind stable renderer keys. |

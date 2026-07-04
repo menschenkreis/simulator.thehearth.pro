@@ -1774,6 +1774,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 <script src="adapters/doing-explorer-viewer.js"></script>
 <script src="adapters/doing-explorer-controller.js"></script>
 <script src="adapters/doing-map-viewer.js"></script>
+<script src="adapters/doing-map-controller.js"></script>
 <script src="assets/js/doing.js?v=6"></script>
 <script src="assets/js/knowing.js?v=6"></script>
 <script src="assets/js/knowing-concepts.js?v=1"></script>
@@ -2380,35 +2381,21 @@ function showDoing(){
   }
 
   /* === Map zone internal handlers === */
-  window._enterDoingZone=function(zoneId){
-    var zone=guitarZones.find(function(z){return z.id===zoneId;});
-    if(!zone)return;
-    if(zone.view==='explorer'){
-      doingView='explorer';
-      activeExpTab='notes';
-    } else {
-      doingView='training';
-      activeStyle='all';
-      activeLevel='all';
-    }
-    shell();
-  };
-  window._toggleDoingDebug=function(){
-    doingDebug=!doingDebug;
-    document.querySelectorAll('.doing-map-zone').forEach(function(z){
-      z.classList.toggle('debug',doingDebug);
+  if(window.HearthDoingMapController){
+    window.HearthDoingMapController.bindDoingMapGlobals({
+      zones:guitarZones,
+      documentRef:document,
+      setState:function(nextState){
+        if(Object.prototype.hasOwnProperty.call(nextState,'doingView')) doingView=nextState.doingView;
+        if(Object.prototype.hasOwnProperty.call(nextState,'activeExpTab')) activeExpTab=nextState.activeExpTab;
+        if(Object.prototype.hasOwnProperty.call(nextState,'activeStyle')) activeStyle=nextState.activeStyle;
+        if(Object.prototype.hasOwnProperty.call(nextState,'activeLevel')) activeLevel=nextState.activeLevel;
+      },
+      getDebug:function(){return doingDebug;},
+      setDebug:function(nextDebug){doingDebug=nextDebug;},
+      shell:shell
     });
-    var btn=document.querySelector('.doing-map-debug-btn');
-    if(btn){
-      btn.classList.toggle('active',doingDebug);
-      btn.textContent=doingDebug?'DEBUG ON':'debug';
-    }
-  };
-  window._doingZones=guitarZones;
-  window._doingBackToMap=function(){
-    doingView='map';
-    shell();
-  };
+  }
 
   shell();
 }

@@ -70,6 +70,7 @@ eval(readText(root + "/adapters/doing-entry-viewer.js"));
 eval(readText(root + "/adapters/doing-explorer-viewer.js"));
 eval(readText(root + "/adapters/doing-explorer-controller.js"));
 eval(readText(root + "/adapters/doing-map-viewer.js"));
+eval(readText(root + "/adapters/doing-map-controller.js"));
 
 var seed = JSON.parse(readText(root + "/database-blueprint/seeds/foundation_conversations_lesson_v2.json"));
 var foundationManifest = JSON.parse(readText(root + "/core/foundation-route-manifest.json"));
@@ -238,6 +239,10 @@ var doingMapHtml = HearthDoingMapViewer.renderDoingMap({{
 assert(doingMapHtml.indexOf("doing-map-wrap") !== -1, "Doing map viewer should render map shell");
 assert(doingMapHtml.indexOf("doing-map-zone debug") !== -1, "Doing map viewer should render debug zones");
 assert(typeof HearthDoingMapViewer.showDoingBubble === "function", "Doing map viewer should expose bubble helper");
+assert(
+  HearthDoingMapController.stateForZone({{ view: "explorer" }}).activeExpTab === "notes",
+  "Doing map controller should route explorer zones to notes tab"
+);
 var fakeMapTarget = {{ innerHTML: "" }};
 var fakeMapFoundation = {{
   guideLine: "Guide line",
