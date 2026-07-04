@@ -42,6 +42,7 @@ Those pieces can use the core, but they should not live inside the core.
 | `renderer-registry.js` | Small interface for registering and calling action renderers by key. |
 | `lesson-view-model.js` | Converts lesson seeds into frontend-friendly lesson view objects. |
 | `lesson-session.js` | Pure lesson navigation and answer evaluation state. |
+| `learner-progress.js` | Pure learner progress record helpers for lessons. |
 
 ## Checks
 
@@ -73,6 +74,17 @@ Those pieces can use the core, but they should not live inside the core.
 - `completeLesson(seed, session)`
 - `evaluateChoice(seed, session, choiceIndex)`
 - `normalizeResponse(response)`
+
+`learner-progress.js` currently exposes:
+
+- `createProgressRecord(options)`
+- `normalizeProgressRecord(record, options)`
+- `getLessonProgress(record, lessonId)`
+- `markLessonStarted(record, lessonId, options)`
+- `updateLessonStep(record, lessonId, stepIndex, options)`
+- `markLessonCompleted(record, lessonId, options)`
+- `recordLessonAnswer(record, lessonId, concept, correct, options)`
+- `summarizeProgress(record)`
 
 The core modules work in both:
 

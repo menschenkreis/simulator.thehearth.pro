@@ -50,6 +50,13 @@ CORE_MARKERS = {
         "evaluateChoice",
         "completeLesson",
     ],
+    "core/learner-progress.js": [
+        "HearthLearnerProgress",
+        "createProgressRecord",
+        "markLessonCompleted",
+        "recordLessonAnswer",
+        "summarizeProgress",
+    ],
 }
 
 ACTIVE_ROUTE_COUNT = 10

@@ -37,6 +37,7 @@ function assert(condition, message) {{
 var root = {str(ROOT)!r};
 eval(readText(root + "/core/lesson-view-model.js"));
 eval(readText(root + "/core/lesson-session.js"));
+eval(readText(root + "/core/learner-progress.js"));
 
 var seed = JSON.parse(readText(root + "/database-blueprint/seeds/foundation_conversations_lesson_v2.json"));
 
@@ -60,6 +61,17 @@ assert(correct.state.scores["interval-melody"].right === 1, "right score not tra
 var advanced = HearthLessonSession.advanceLesson(seed, correct.state);
 assert(advanced.step_index === 3, "advance should move one step forward");
 assert(advanced.history.length === 1, "advance should remember previous step");
+
+var progress = HearthLearnerProgress.createProgressRecord({{ now: "2026-07-04T00:00:00.000Z" }});
+progress = HearthLearnerProgress.markLessonStarted(progress, "f-conversations", {{ now: "2026-07-04T00:01:00.000Z" }});
+progress = HearthLearnerProgress.updateLessonStep(progress, "f-conversations", 3, {{ now: "2026-07-04T00:02:00.000Z" }});
+progress = HearthLearnerProgress.recordLessonAnswer(progress, "f-conversations", "interval-melody", false, {{ now: "2026-07-04T00:03:00.000Z" }});
+progress = HearthLearnerProgress.markLessonCompleted(progress, "f-conversations", {{ now: "2026-07-04T00:04:00.000Z" }});
+var lessonProgress = HearthLearnerProgress.getLessonProgress(progress, "f-conversations");
+assert(lessonProgress.status === "completed", "progress should mark lesson completed");
+assert(lessonProgress.last_step_index === 3, "progress should keep last step");
+assert(lessonProgress.wrong_answers === 1, "progress should track wrong answers");
+assert(HearthLearnerProgress.summarizeProgress(progress).completed_count === 1, "progress summary mismatch");
 
 "Core JS smoke check passed.";
 """
