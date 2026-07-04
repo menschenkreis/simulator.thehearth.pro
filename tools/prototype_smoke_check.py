@@ -25,6 +25,7 @@ REQUIRED_MARKERS = {
         "adapters/foundation-action-renderers.js",
         "adapters/foundation-audio.js",
         "core/lesson-session.js",
+        "adapters/foundation-progress-bridge.js",
         "adapters/teaching-engine-core-adapter.js",
         "assets/js/teaching-engine.js",
         "assets/js/journey.js",
@@ -117,6 +118,11 @@ REQUIRED_MARKERS = {
     ],
     "core/lesson-session.js": ["HearthLessonSession", "evaluateChoice"],
     "core/learner-progress.js": ["HearthLearnerProgress", "recordLessonAnswer"],
+    "adapters/foundation-progress-bridge.js": [
+        "HearthFoundationProgressBridge",
+        "markFoundationLessonCompleted",
+        "hearth-foundation-progress",
+    ],
     "adapters/browser-progress-store.js": [
         "HearthBrowserProgressStore",
         "createBrowserProgressStore",
@@ -492,6 +498,7 @@ def main() -> int:
         "core/lesson-session.js",
         "core/learner-progress.js",
         "adapters/browser-progress-store.js",
+        "adapters/foundation-progress-bridge.js",
         "adapters/teaching-engine-core-adapter.js",
         "assets/js/teaching-engine.js",
     ]

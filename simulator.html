@@ -1738,6 +1738,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 <script src="core/lesson-session.js"></script>
 <script src="core/learner-progress.js"></script>
 <script src="adapters/browser-progress-store.js"></script>
+<script src="adapters/foundation-progress-bridge.js"></script>
 <script src="adapters/teaching-engine-core-adapter.js"></script>
 <script src="assets/js/teaching-engine.js"></script>
 <script src="assets/js/fretboard.js"></script>
@@ -2363,9 +2364,9 @@ async function showFoundationTopic(topicId){
     if(!teachContainer) return;
     var engine=window._teachEngine=TeachingEngine(teachContainer,{
       onComplete:function(scores){
-        var progress=JSON.parse(localStorage.getItem('hearth-foundation-progress')||'{}');
-        progress[topicId]=true;
-        localStorage.setItem('hearth-foundation-progress',JSON.stringify(progress));
+        if(window.HearthFoundationProgressBridge){
+          window.HearthFoundationProgressBridge.markFoundationLessonCompleted(topicId, lessonInfo);
+        }
         // Go back to pyramid - let student choose next block
         showFoundation();
       }

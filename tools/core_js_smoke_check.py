@@ -49,6 +49,7 @@ eval(readText(root + "/core/lesson-view-model.js"));
 eval(readText(root + "/core/lesson-session.js"));
 eval(readText(root + "/core/learner-progress.js"));
 eval(readText(root + "/adapters/browser-progress-store.js"));
+eval(readText(root + "/adapters/foundation-progress-bridge.js"));
 eval(readText(root + "/adapters/teaching-engine-core-adapter.js"));
 
 var seed = JSON.parse(readText(root + "/database-blueprint/seeds/foundation_conversations_lesson_v2.json"));
@@ -177,6 +178,23 @@ assert(storedProgress.lessons["f-conversations"].status === "in_progress", "adap
 assert(storedProgress.lessons["f-conversations"].last_step_index === 4, "adapter should save last step");
 store.clear();
 assert(store.load().lessons["f-conversations"] === undefined, "adapter should clear progress");
+
+var progressBridgeStorage = {{
+  values: {{}},
+  getItem: function(key) {{ return this.values[key] || null; }},
+  setItem: function(key, value) {{ this.values[key] = String(value); }},
+  removeItem: function(key) {{ delete this.values[key]; }}
+}};
+var progressBridgeResult = HearthFoundationProgressBridge.markFoundationLessonCompleted(
+  "f-first-conversation",
+  {{ lesson_id: "f-conversations" }},
+  {{ storage: progressBridgeStorage, now: "2026-07-04T00:10:00.000Z" }}
+);
+var legacyProgress = JSON.parse(progressBridgeStorage.values["hearth-foundation-progress"]);
+var cleanProgress = JSON.parse(progressBridgeStorage.values["hearth.cleanProgress.v1"]);
+assert(progressBridgeResult.lesson_id === "f-conversations", "progress bridge should return lesson id");
+assert(legacyProgress["f-first-conversation"] === true, "progress bridge should write legacy topic progress");
+assert(cleanProgress.lessons["f-conversations"].status === "completed", "progress bridge should write clean progress");
 
 var controllerStore = HearthBrowserProgressStore.createBrowserProgressStore({{
   progressCore: HearthLearnerProgress,
