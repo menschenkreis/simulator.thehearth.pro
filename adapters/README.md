@@ -16,6 +16,7 @@ Adapters are allowed to connect the clean core to those outside systems.
 | `foundation-audio.js` | Shared tone helper for legacy Foundation action renderers. |
 | `foundation-lesson-launcher.js` | Resolves Foundation topics into TeachingEngine lesson objects. |
 | `foundation-lesson-shell.js` | Renders the Foundation TeachingEngine host shell. |
+| `foundation-map-viewer.js` | Renders the Foundation neck-path map screen. |
 | `foundation-progress-bridge.js` | Writes old Foundation topic progress and clean learner progress together. |
 | `foundation-route-manifest-runtime.js` | Browser-friendly copy of the clean Foundation route manifest. |
 | `foundation-seed-loader.js` | Loads clean Foundation seed JSON and translates it for the current TeachingEngine. |

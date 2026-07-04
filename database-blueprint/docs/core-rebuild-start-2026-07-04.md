@@ -25,6 +25,7 @@ The goal is not to patch the messy prototype forever. The goal is to build a reu
 | `adapters/foundation-audio.js` | Shared tone helper for legacy Foundation action renderers. |
 | `adapters/foundation-lesson-launcher.js` | Resolves Foundation topics into TeachingEngine lesson objects. |
 | `adapters/foundation-lesson-shell.js` | Renders the Foundation TeachingEngine host shell. |
+| `adapters/foundation-map-viewer.js` | Renders the Foundation neck-path map screen. |
 | `adapters/foundation-progress-bridge.js` | Writes old Foundation topic progress and clean learner progress together. |
 | `adapters/foundation-route-manifest-runtime.js` | Browser-friendly copy of the clean Foundation route manifest. |
 | `adapters/foundation-seed-loader.js` | Loads clean Foundation seed JSON and translates it for the current TeachingEngine. |
@@ -83,7 +84,7 @@ Foundation lesson launching now tries to load clean seed JSON through `HearthFou
 
 The launch decision itself now lives in `HearthFoundationLessonLauncher`, not inside the large `simulator.html` page.
 
-The Foundation lesson host shell, tone helper, progress completion bridge, and simple UI helpers now live in focused adapters instead of being owned directly by the large page or old lesson file.
+The Foundation lesson host shell, neck-path map screen, tone helper, progress completion bridge, and simple UI helpers now live in focused adapters instead of being owned directly by the large page or old lesson file.
 
 The legacy Foundation topic tab view is also now adapter-owned, leaving `simulator.html` with only small wrapper functions for that fallback path.
 

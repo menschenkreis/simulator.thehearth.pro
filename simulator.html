@@ -1735,6 +1735,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 <script src="adapters/foundation-lesson-launcher.js"></script>
 <script src="adapters/foundation-lesson-shell.js"></script>
 <script src="adapters/foundation-ui-utils.js"></script>
+<script src="adapters/foundation-map-viewer.js"></script>
 <script src="adapters/foundation-topic-viewer.js"></script>
 <script src="core/lesson-view-model.js"></script>
 <script src="core/lesson-session.js"></script>
@@ -2136,124 +2137,16 @@ function showFoundation(){
   document.getElementById('p-foundation').classList.add('on');
   const F=window.FOUNDATION;if(!F)return;
   const el=document.getElementById('p-foundation');
-  const completed=JSON.parse(localStorage.getItem('hearth-foundation-progress')||'{}');
-  const doneCount=Object.keys(completed).filter(k=>completed[k]).length;
-  const pct=Math.round(doneCount/F.topics.length*100);
-
-  // Determine which topics are accessible: first not-done one + all completed
-  const firstIncomplete=F.topics.findIndex(t=>!completed[t.id]);
-  const activeIdx=firstIncomplete===-1?F.topics.length-1:firstIncomplete;
-
-  // ── Fret zone geometry (SVG viewBox 0 0 500 700, portrait) ──
-  // Frets run from bottom (foreground, wide) to arch (background, narrow)
-  // Image: fretboard path on floor leading to glowing archway
-  const fretZones=[];
-  const fretCount=F.topics.length;
-  const topY=115, botY=645;
-  const spacing=(botY-topY)/(fretCount-1);
-  for(let i=0;i<fretCount;i++){
-    const t=F.topics[i];
-    const isDone=completed[t.id];
-    const isActive=i===activeIdx;
-    const isLocked=i>activeIdx&&!isDone;
-    // Perspective: bottom frets wider, top frets narrower
-    const progress=i/(fretCount-1); // 0=bottom, 1=top
-    const neckWidth=280-progress*180; // 280 at bottom, 100 at top
-    const cy=botY-i*spacing;
-    const cx=250;
-    fretZones.push({
-      topic:t, idx:i, isDone, isActive, isLocked,
-      x:cx-neckWidth/2, y:cy-22, w:neckWidth, h:44, cy:cy, cx:cx
+  const completed=window.HearthFoundationProgressBridge
+    ? window.HearthFoundationProgressBridge.readLegacyProgress()
+    : JSON.parse(localStorage.getItem('hearth-foundation-progress')||'{}');
+  if(window.HearthFoundationMapViewer){
+    window.HearthFoundationMapViewer.renderFoundationMap({
+      foundation:F,
+      targetEl:el,
+      completed:completed
     });
   }
-
-  // ── Build SVG fret zones ──
-  let svgZones='';
-  fretZones.forEach(function(fz){
-    const cls=fz.isDone?'done':fz.isActive?'active':fz.isLocked?'locked':'';
-    const opacity=fz.isLocked?'0.3':fz.isDone?'0.8':'1';
-    svgZones+='<rect class="found-neck-zone '+cls+'" '+
-      'data-fret="'+fz.idx+'" '+
-      'x="'+fz.x+'" y="'+fz.y+'" width="'+fz.w+'" height="'+fz.h+'" rx="4" '+
-      'onclick="showFoundationTopic(\''+fz.topic.id+'\')"/>';
-    // Fret number
-    const numCls=fz.isDone?'done':fz.isActive?'active':fz.isLocked?'locked':'';
-    svgZones+='<text class="found-neck-num '+numCls+'" x="'+fz.cx+'" y="'+(fz.cy+5)+'" text-anchor="middle">'+fz.idx+'</text>';
-  });
-
-  // ── Guide character speech ──
-  const speechByBlock={
-    'f-threshold':'You stand at the threshold. Ten frets ahead. Touch the first to begin.',
-    'f-how-to-learn':'Learning is a skill. Three barriers block it. Let’s clear them.',
-    'f-learning-a-language':'Music speaks before words. Listen first, then play.',
-    'f-language-of-music':'Twelve notes. Infinite conversation. Let’s learn the alphabet.',
-    'f-language-of-guitar':'The fretboard is your map. Every note has a home on it.',
-    'f-the-guitar':'Know the instrument. It’s an extension of your body.',
-    'f-speaking':'Right hand makes sound. Left hand changes pitch. Both together make music.',
-    'f-conversations':'Your first chord. The doorway opens.',
-    'f-rhythm':'Pulse is the heartbeat. Without it, notes are just noise.',
-    'f-first-shapes':'Three chords. Thousands of songs. Shapes are the shortcut.'
-  };
-  const completedSummary={
-    'f-threshold':'You know the map, the guide, and the path. Step onto the neck.',
-    'f-how-to-learn':'You learned the three barriers. Gradient, mass, misunderstood words. Ready for music.',
-    'f-learning-a-language':'Music is a language. You know how to listen. Now let’s speak.',
-    'f-language-of-music':'Twelve notes, intervals, and the building blocks of harmony. The alphabet is set.',
-    'f-language-of-guitar':'You can read the fretboard. Notes have homes. The map is yours.',
-    'f-the-guitar':'You know the instrument’s body. Posture, parts, purpose.',
-    'f-speaking':'Both hands working together. The instrument responds.',
-    'f-conversations':'First chord played. The foundation is laid.',
-    'f-rhythm':'You feel the pulse now. The heartbeat of music lives in you.',
-    'f-first-shapes':'Three shapes. The gateway to every song.'
-  };
-
-  var speechText;
-  if(doneCount===F.topics.length){
-    speechText='Threshold complete. You’ve crossed the first neck. Journey awaits.';
-  } else if(activeIdx>0&&completed[F.topics[activeIdx-1].id]){
-    speechText=completedSummary[F.topics[activeIdx-1].id]||speechByBlock[F.topics[activeIdx].id];
-  } else {
-    speechText=speechByBlock[F.topics[activeIdx].id]||F.guideLine;
-  }
-
-  // ── Start button text ──
-  var startLabel='Start Fret '+(activeIdx);
-  if(doneCount===F.topics.length) startLabel='Journey Awaits';
-  var startAction=doneCount===F.topics.length?"backToMap()":"showFoundationTopic('"+F.topics[activeIdx].id+"')";
-
-  // ── Assemble HTML ──
-  let html='<div style="padding:16px;max-width:900px;margin:0 auto;display:flex;flex-direction:column;height:100%;box-sizing:border-box">'+
-    '<button class="back-btn" onclick="backToMap()">&larr; Map</button>'+
-    // Neck scene container
-    '<div class="found-neck-wrap">'+
-      '<img src="images/foundation-threshold-neck.webp" alt="Foundation threshold neck" draggable="false">'+
-      '<svg class="found-neck-svg" viewBox="0 0 500 700" preserveAspectRatio="xMidYMid meet">'+
-        svgZones+
-      '</svg>'+
-      // Title overlay
-      '<div class="found-neck-title">'+
-        '<h2>Foundation</h2>'+
-        '<p>Threshold</p>'+
-      '</div>'+
-      // Progress
-      '<div class="found-neck-progress">'+
-        '<span>'+doneCount+'/'+F.topics.length+' frets crossed</span>'+
-      '</div>'+
-      // Guide character + speech bubble
-      '<div class="found-neck-guide">'+
-        '<img src="images/character-full/Encouraging.png" alt="">'+
-        '<div class="found-neck-bubble">'+
-          '<p>'+speechText+'</p>'+
-        '</div>'+
-      '</div>'+
-      // Start button
-      '<div class="found-neck-start">'+
-        '<button onclick="'+startAction+'">'+startLabel+'</button>'+
-      '</div>'+
-    '</div>'+
-  '</div>';
-
-  el.innerHTML=html;
 }
 
 // ═══ REUSABLE RAINBOW BLOCKS HELPER ═══

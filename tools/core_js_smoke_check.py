@@ -45,6 +45,7 @@ eval(readText(root + "/adapters/foundation-seed-loader.js"));
 eval(readText(root + "/adapters/foundation-lesson-launcher.js"));
 eval(readText(root + "/adapters/foundation-lesson-shell.js"));
 eval(readText(root + "/adapters/foundation-ui-utils.js"));
+eval(readText(root + "/adapters/foundation-map-viewer.js"));
 eval(readText(root + "/adapters/foundation-topic-viewer.js"));
 eval(readText(root + "/adapters/foundation-audio.js"));
 eval(readText(root + "/core/lesson-view-model.js"));
@@ -89,6 +90,23 @@ assert(fakeShellTarget.innerHTML.indexOf("TEST LABEL") !== -1, "Foundation shell
 assert(fakeTeachContainer.id === "teach-container", "Foundation shell should return teach container");
 assert(HearthFoundationUiUtils.escapeHtml("<x>") === "&lt;x&gt;", "Foundation UI utils should escape HTML");
 assert(HearthFoundationUiUtils.colorForIndex(0) === "#e74c3c", "Foundation UI utils should return stable colors");
+var fakeMapTarget = {{ innerHTML: "" }};
+var fakeMapFoundation = {{
+  guideLine: "Guide line",
+  topics: [
+    {{ id: "f-threshold" }},
+    {{ id: "f-how-to-learn" }},
+    {{ id: "f-learning-a-language" }}
+  ]
+}};
+var fakeMapResult = HearthFoundationMapViewer.renderFoundationMap({{
+  foundation: fakeMapFoundation,
+  targetEl: fakeMapTarget,
+  completed: {{ "f-threshold": true }}
+}});
+assert(fakeMapResult.done_count === 1, "Foundation map viewer should count completed frets");
+assert(fakeMapResult.active_index === 1, "Foundation map viewer should choose first incomplete fret");
+assert(fakeMapTarget.innerHTML.indexOf("found-neck-wrap") !== -1, "Foundation map viewer should render map shell");
 var fakeTopicTarget = {{ innerHTML: "" }};
 var fakeFoundation = {{
   tag: "TEST",
