@@ -37,6 +37,7 @@ REQUIRED_MARKERS = {
         "adapters/doing-ui-utils.js",
         "adapters/doing-config.js",
         "adapters/doing-drill-board-model.js",
+        "adapters/doing-drill-board-viewer.js",
         "adapters/doing-map-viewer.js",
         "assets/js/journey.js",
     ],
@@ -183,6 +184,11 @@ REQUIRED_MARKERS = {
         "HearthDoingDrillBoardModel",
         "countForGenre",
         "findNextDrill",
+    ],
+    "adapters/doing-drill-board-viewer.js": [
+        "HearthDoingDrillBoardViewer",
+        "renderDoingDrillBoard",
+        "doing-fretboard-stage",
     ],
     "adapters/doing-map-viewer.js": [
         "HearthDoingMapViewer",
@@ -573,6 +579,7 @@ def main() -> int:
         "adapters/doing-ui-utils.js",
         "adapters/doing-config.js",
         "adapters/doing-drill-board-model.js",
+        "adapters/doing-drill-board-viewer.js",
         "adapters/doing-map-viewer.js",
     ]
     previous_index = -1

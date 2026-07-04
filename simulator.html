@@ -1764,6 +1764,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 <script src="adapters/doing-ui-utils.js"></script>
 <script src="adapters/doing-config.js"></script>
 <script src="adapters/doing-drill-board-model.js"></script>
+<script src="adapters/doing-drill-board-viewer.js"></script>
 <script src="adapters/doing-map-viewer.js"></script>
 <script src="assets/js/doing.js?v=6"></script>
 <script src="assets/js/knowing.js?v=6"></script>
@@ -2248,76 +2249,17 @@ function showDoing(){
 
   function render(){
     normalizeActiveStyle();
-    var totalDrills=0, doneDrills=0;
-    D.categories.forEach(function(c){c.drills.forEach(function(d){
-      if(isVisible(c,d)){totalDrills++;if(getState(d.id)==='mastered')doneDrills++;}
-    });});
-
-    var html='<div class="doing-controls">'+
-      '<div id="doing-level-filters" class="doing-level-rail">'+
-        '<span class="doing-level-filter'+(activeLevel==='all'?' active':'')+'" data-level="all">All frets<span class="filter-count">'+countForAllGenresAllLevels()+'</span></span>';
-    levels.forEach(function(lv){
-      var lvCount=countForLevelAnyGenre(lv.level);
-      html+='<span class="doing-level-filter'+(String(activeLevel)===String(lv.level)?' active':'')+(lvCount===0?' disabled':'')+'" data-level="'+lv.level+'">'+lv.label+'<span class="filter-count">'+lvCount+'</span></span>';
+    if(!window.HearthDoingDrillBoardViewer) return '';
+    return window.HearthDoingDrillBoardViewer.renderDoingDrillBoard({
+      doing:D,
+      config:doingConfig,
+      ui:doingUi,
+      boardModel:doingBoard,
+      progress:progress,
+      activeStyle:activeStyle,
+      activeLevel:activeLevel,
+      activeSearch:activeSearch
     });
-    html+='</div>'+
-      '<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">'+
-        '<input id="doing-search" class="doing-search" type="text" placeholder="Search drills..." value="'+esc(activeSearch)+'">'+
-        '<div id="style-filters" style="display:flex;gap:6px;flex-wrap:wrap">'+
-          '<span class="style-filter'+(activeStyle==='all'?' active':'')+'" data-style="all">All genres<span class="filter-count">'+countForGenre('all')+'</span></span>';
-    genreFilters.forEach(function(g){
-      var genreCount=countForGenre(g.id);
-      html+='<span class="style-filter'+(activeStyle===g.id?' active':'')+(genreCount===0?' disabled':'')+'" data-style="'+esc(g.id)+'">'+esc(g.label)+'<span class="filter-count">'+genreCount+'</span></span>';
-    });
-    html+='</div></div></div>';
-
-    html+='<div class="doing-fretboard-stage">'+
-      '<div class="doing-string-labels" aria-label="Standard guitar tuning">';
-    stringRows.forEach(function(row){
-      html+='<div class="doing-string-note" title="'+esc(row.hint)+'">'+esc(row.label)+'</div>';
-    });
-    html+='</div>'+
-      '<div class="doing-fretboard-wrap"><div class="doing-fretboard">'+
-      '<div class="doing-fret-header">';
-    levels.forEach(function(lv){
-      html+='<div class="doing-level-head" title="'+esc(lv.tag)+'">'+
-        '<div class="doing-level-roman">'+esc(lv.label.replace('Level ',''))+'</div>'+
-        '<div class="doing-level-name">'+esc(lv.name)+'</div>'+
-      '</div>';
-    });
-    html+='</div>';
-
-    stringRows.forEach(function(row){
-      var filtered=rowDrills(row);
-      html+='<div class="doing-string-row" data-string="'+esc(row.id)+'" style="--string-weight:'+esc(row.weight)+'">';
-      levels.forEach(function(lv){
-        var drills=filtered.filter(function(item){return getDoingLevel(item.drill)===lv.level;});
-        html+='<div class="doing-fret-cell">';
-        if(drills.length){
-          drills.forEach(function(item){
-            var drill=item.drill;
-            var cat=item.cat;
-            var state=getState(drill.id);
-            html+='<button class="drill-dot" data-cat="'+esc(cat.id)+'" data-drill="'+esc(drill.id)+'" data-state="'+esc(state)+'" data-short="'+esc(drillShort(drill))+'" title="'+esc(cat.title+': '+drill.title)+'"></button>';
-          });
-        } else {
-          html+='<span class="doing-empty-fret">-</span>';
-        }
-        html+='</div>';
-      });
-      html+='</div>';
-    });
-
-    html+='</div></div></div>'+
-    '<div class="doing-legend">'+
-      '<span><i></i> Untouched</span>'+
-      '<span><i style="border-color:#e8a020"></i> In training</span>'+
-      '<span class="done"><i></i> Mastered</span>'+
-      '<span style="margin-left:auto">'+doneDrills+'/'+totalDrills+' mastered in view</span>'+
-    '</div>'+
-    (totalDrills===0?'<div style="margin-top:10px;color:var(--dim);font-size:0.75rem">No drills match this search and filter combination.</div>':'');
-
-    return html;
   }
 
   window.showDoingDrill=function(catId,drillId){

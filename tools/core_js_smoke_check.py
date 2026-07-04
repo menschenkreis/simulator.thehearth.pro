@@ -60,6 +60,7 @@ eval(readText(root + "/adapters/teaching-engine-core-adapter.js"));
 eval(readText(root + "/adapters/doing-ui-utils.js"));
 eval(readText(root + "/adapters/doing-config.js"));
 eval(readText(root + "/adapters/doing-drill-board-model.js"));
+eval(readText(root + "/adapters/doing-drill-board-viewer.js"));
 eval(readText(root + "/adapters/doing-map-viewer.js"));
 
 var seed = JSON.parse(readText(root + "/database-blueprint/seeds/foundation_conversations_lesson_v2.json"));
@@ -137,6 +138,18 @@ var fakeBoardOptions = {{
 }};
 assert(HearthDoingDrillBoardModel.countForGenre(fakeBoardOptions, "rock") === 1, "Doing board model should count genre drills");
 assert(HearthDoingDrillBoardModel.findNextDrill(fakeDoing, {{}}, HearthDoingConfig.stateOrder).drill.id === "alt-1", "Doing board model should find next drill");
+var doingBoardHtml = HearthDoingDrillBoardViewer.renderDoingDrillBoard({{
+  doing: fakeDoing,
+  config: HearthDoingConfig,
+  ui: HearthDoingUiUtils,
+  boardModel: HearthDoingDrillBoardModel,
+  progress: {{ "alt-1": "mastered" }},
+  activeStyle: "all",
+  activeLevel: "all",
+  activeSearch: ""
+}});
+assert(doingBoardHtml.indexOf("doing-fretboard-stage") !== -1, "Doing board viewer should render board shell");
+assert(doingBoardHtml.indexOf("1/2 mastered in view") !== -1, "Doing board viewer should render mastered count");
 var doingMapHtml = HearthDoingMapViewer.renderDoingMap({{
   zones: HearthDoingConfig.guitarZones,
   doingDebug: true

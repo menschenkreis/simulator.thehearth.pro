@@ -14,6 +14,7 @@ Adapters are allowed to connect the clean core to those outside systems.
 | `browser-progress-store.js` | Saves and loads clean learner progress records from browser localStorage. |
 | `doing-config.js` | Holds Doing drill levels, filters, map zones, state labels, and plain coaching copy. |
 | `doing-drill-board-model.js` | Filters Doing drills and calculates board counts, summaries, and next drill. |
+| `doing-drill-board-viewer.js` | Renders the Doing level/string drill board. |
 | `doing-map-viewer.js` | Renders the Doing guitar-body training map. |
 | `doing-ui-utils.js` | Shared text and display helpers for the legacy Doing view. |
 | `foundation-action-renderers.js` | Registers existing Foundation action render functions behind stable renderer keys. |
