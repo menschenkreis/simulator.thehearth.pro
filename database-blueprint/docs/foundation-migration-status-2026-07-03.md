@@ -36,6 +36,10 @@ This does not mean the simulator is reading from the backend yet. It means the l
 |---|---|
 | `assets/js/lesson-1-foundation.js` | Contains custom action renderers. This should become lesson data plus frontend renderer keys, not plain JSON only. |
 
+Detailed inventory:
+
+- `database-blueprint/docs/lesson-1-foundation-custom-renderer-inventory-2026-07-04.md`
+
 ## Current Safety Check
 
 The smoke check currently validates:

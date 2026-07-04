@@ -38,7 +38,11 @@ Commits on this branch:
 | `a80f72c` | Extracted eighth Foundation lesson seed: How to Learn. |
 | `abf72d0` | Extracted ninth Foundation lesson seed: Rhythm & Pulse. |
 | `6f62a43` | Extracted tenth Foundation lesson seed: First Shapes. |
-| current commit | Extracted loaded-but-unmapped Foundation lesson seeds. |
+| `97a73a2` | Extracted loaded-but-unmapped Foundation lesson seeds. |
+| `d153361` | Added Foundation route guard to smoke check. |
+| `53f9b75` | Tightened Foundation route smoke check. |
+| `80c4137` | Added extracted seed index. |
+| current commit | Added Lesson 1 Foundation custom renderer inventory. |
 
 ## What Changed
 
@@ -49,6 +53,7 @@ Commits on this branch:
 - `database-blueprint/docs/extracted-seed-index-2026-07-03.md`
 - `database-blueprint/docs/foundation-lesson-inventory-2026-07-03.md`
 - `database-blueprint/docs/foundation-migration-status-2026-07-03.md`
+- `database-blueprint/docs/lesson-1-foundation-custom-renderer-inventory-2026-07-04.md`
 - `database-blueprint/docs/teaching-engine-lesson-seed-schema-v1.md`
 - `database-blueprint/docs/local-storage-and-api-inventory-2026-07-03.md`
 - `database-blueprint/docs/scene-first-override-inventory-2026-07-03.md`
