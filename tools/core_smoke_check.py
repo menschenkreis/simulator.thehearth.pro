@@ -23,11 +23,29 @@ CORE_MARKERS = {
         "What Belongs Here",
         "What Does Not Belong Here",
     ],
+    "core/foundation-adapter.js": [
+        "HearthFoundationAdapter",
+        "getLessonForTopic",
+        "findRouteByTopic",
+        "listTopicLessons",
+    ],
 }
 
 ACTIVE_ROUTE_COUNT = 10
 UNMAPPED_ROUTE_COUNT = 2
 ACTION_RENDERER_COUNT = 4
+EXPECTED_ACTIVE_TOPICS = {
+    "f-threshold",
+    "f-how-to-learn",
+    "f-music-language",
+    "f-musical-alphabet",
+    "f-rhythm-pulse",
+    "f-guitar-map",
+    "f-instrument-body",
+    "f-hands-sound",
+    "f-first-shapes",
+    "f-first-conversation",
+}
 
 
 def read_json(relative_path: str) -> dict:
@@ -72,6 +90,13 @@ def main() -> int:
             failures.append(
                 f"foundation route manifest has {len(active_routes)} active routes; "
                 f"expected {ACTIVE_ROUTE_COUNT}"
+            )
+
+        active_topics = {route.get("topic_id") for route in active_routes}
+        if active_topics != EXPECTED_ACTIVE_TOPICS:
+            failures.append(
+                "foundation active topics differ from expected set: "
+                f"{sorted(active_topics)}"
             )
 
         if len(unmapped_routes) != UNMAPPED_ROUTE_COUNT:
