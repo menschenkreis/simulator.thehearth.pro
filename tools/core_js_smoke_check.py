@@ -43,6 +43,7 @@ eval(readText(root + "/adapters/foundation-route-manifest-runtime.js"));
 eval(readText(root + "/adapters/foundation-action-renderers.js"));
 eval(readText(root + "/adapters/foundation-seed-loader.js"));
 eval(readText(root + "/adapters/foundation-lesson-launcher.js"));
+eval(readText(root + "/adapters/foundation-lesson-shell.js"));
 eval(readText(root + "/adapters/foundation-audio.js"));
 eval(readText(root + "/core/lesson-view-model.js"));
 eval(readText(root + "/core/lesson-session.js"));
@@ -70,6 +71,19 @@ assert(
   HearthFoundationLessonLauncher.FALLBACK_LESSON_ID_BY_TOPIC_ID["f-first-conversation"] === "f-conversations",
   "Foundation launcher should expose clean fallback lesson ids"
 );
+var fakeShellTarget = {{
+  innerHTML: "",
+  querySelector: function(selector) {{
+    return selector === "#teach-container" && this.innerHTML.indexOf("teach-container") !== -1
+      ? {{ id: "teach-container" }}
+      : null;
+  }}
+}};
+var fakeTeachContainer = HearthFoundationLessonShell.renderFoundationLessonShell(fakeShellTarget, {{
+  label: "TEST LABEL"
+}});
+assert(fakeShellTarget.innerHTML.indexOf("TEST LABEL") !== -1, "Foundation shell should render label");
+assert(fakeTeachContainer.id === "teach-container", "Foundation shell should return teach container");
 assert(typeof HearthFoundationAudio.playTone === "function", "Foundation audio adapter should expose playTone");
 assert(typeof _l1_playTone === "function", "Foundation audio adapter should keep legacy helper name");
 

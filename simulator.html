@@ -1733,6 +1733,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 <script src="adapters/foundation-route-manifest-runtime.js"></script>
 <script src="adapters/foundation-seed-loader.js"></script>
 <script src="adapters/foundation-lesson-launcher.js"></script>
+<script src="adapters/foundation-lesson-shell.js"></script>
 <script src="core/lesson-view-model.js"></script>
 <script src="core/lesson-session.js"></script>
 <script src="core/learner-progress.js"></script>
@@ -2356,12 +2357,11 @@ async function showFoundationTopic(topicId){
   if(lessonInfo && lessonInfo.lesson && window.TeachingEngine){
     document.querySelectorAll('.pnl').forEach(p=>p.classList.remove('on'));
     el.classList.add('on');
-    el.innerHTML='<div style="padding:16px;max-width:800px;margin:0 auto;height:100%;display:flex;flex-direction:column;box-sizing:border-box">'+
-      '<button class="back-btn" onclick="showFoundation()" style="flex-shrink:0">← Foundation</button>'+
-      '<div style="text-align:center;margin:12px 0 4px;flex-shrink:0"><span style="font-family:Cinzel,serif;color:var(--gold);font-size:0.85rem;letter-spacing:2px">'+lessonInfo.label+'</span></div>'+
-      '<div id="teach-container" style="flex:1;display:flex;align-items:center;justify-content:center;min-height:0"></div>'+
-    '</div>';
-    var engine=window._teachEngine=TeachingEngine(document.getElementById('teach-container'),{
+    var teachContainer = window.HearthFoundationLessonShell
+      ? window.HearthFoundationLessonShell.renderFoundationLessonShell(el, lessonInfo)
+      : null;
+    if(!teachContainer) return;
+    var engine=window._teachEngine=TeachingEngine(teachContainer,{
       onComplete:function(scores){
         var progress=JSON.parse(localStorage.getItem('hearth-foundation-progress')||'{}');
         progress[topicId]=true;

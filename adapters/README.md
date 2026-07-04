@@ -15,6 +15,7 @@ Adapters are allowed to connect the clean core to those outside systems.
 | `foundation-action-renderers.js` | Registers existing Foundation action render functions behind stable renderer keys. |
 | `foundation-audio.js` | Shared tone helper for legacy Foundation action renderers. |
 | `foundation-lesson-launcher.js` | Resolves Foundation topics into TeachingEngine lesson objects. |
+| `foundation-lesson-shell.js` | Renders the Foundation TeachingEngine host shell. |
 | `foundation-route-manifest-runtime.js` | Browser-friendly copy of the clean Foundation route manifest. |
 | `foundation-seed-loader.js` | Loads clean Foundation seed JSON and translates it for the current TeachingEngine. |
 | `teaching-engine-core-adapter.js` | DOM-free lesson controller that connects seeds, session rules, view models, and progress. |
