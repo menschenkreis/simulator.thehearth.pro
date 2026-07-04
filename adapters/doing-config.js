@@ -65,6 +65,72 @@
     mastered: "Mastered"
   };
 
+  var guitarZones = [
+    {
+      id: "left-hand",
+      label: "Left Hand",
+      hint: "Fretboard drills - chromatic, legato, barre, stretches",
+      points: "335,28 495,120 520,180 395,260 300,195 310,115",
+      categories: ["fretting", "arpeggios"],
+      view: "training",
+      seal: { icon: "L", x: "32%", y: "18%" }
+    },
+    {
+      id: "right-hand",
+      label: "Right Hand",
+      hint: "Picking, strumming, rest stroke, free stroke, tone",
+      points: "690,230 820,200 870,320 830,440 710,420 660,330",
+      categories: ["picking", "speed"],
+      view: "training",
+      seal: { icon: "R", x: "63%", y: "32%" }
+    },
+    {
+      id: "rhythm",
+      label: "Rhythm",
+      hint: "Strumming, metronome, groove, feel",
+      points: "520,340 680,340 720,520 660,680 480,640 440,460",
+      categories: ["rhythm"],
+      view: "training",
+      seal: { icon: "\u266A", x: "50%", y: "55%" }
+    },
+    {
+      id: "chords",
+      label: "Chords",
+      hint: "Chord diagrams, chord changes, barre shapes, inversions",
+      points: "400,195 520,185 580,290 560,370 460,380 395,300",
+      categories: ["arpeggios", "fretting"],
+      view: "training",
+      seal: { icon: "C", x: "40%", y: "30%" }
+    },
+    {
+      id: "scales",
+      label: "Scales",
+      hint: "Scale explorer, pentatonic boxes, modes, patterns",
+      points: "170,18 340,25 380,100 340,200 260,220 140,140",
+      categories: ["scales"],
+      view: "training",
+      seal: { icon: "S", x: "21%", y: "12%" }
+    },
+    {
+      id: "tuning",
+      label: "Map / Tuning",
+      hint: "Fretboard explorer, note finder, tuning, E/A highways",
+      points: "40,5 160,15 180,120 150,180 60,135 30,55",
+      categories: [],
+      view: "explorer",
+      seal: { icon: "\u2699", x: "8%", y: "8%" }
+    }
+  ];
+
+  var focusCats = [
+    { id: "right-hand", label: "Right Hand", icon: "&#x1F44B;", categories: ["picking", "styles", "speed"] },
+    { id: "left-hand", label: "Left Hand", icon: "&#x270B;", categories: ["fretting", "arpeggios"] },
+    { id: "rhythm", label: "Rhythm", icon: "&#x1F3B5;", categories: ["rhythm"] },
+    { id: "chords", label: "Chords", icon: "&#x1F3B8;", categories: ["arpeggios", "fretting"] },
+    { id: "scales", label: "Scales", icon: "&#x1F3B9;", categories: ["scales"] },
+    { id: "fretboard", label: "Fretboard Map", icon: "&#x1F5FA;", categories: [] }
+  ];
+
   var coachingByCategory = {
     picking: {
       whatDo: "Strum or pick the pattern slowly. One motion at a time.",
@@ -154,6 +220,8 @@
     drillLevels: drillLevels,
     stateOrder: stateOrder,
     stateLabels: stateLabels,
+    guitarZones: guitarZones,
+    focusCats: focusCats,
     coachingByCategory: coachingByCategory,
     coachForCategory: coachForCategory,
     levelForDrill: levelForDrill

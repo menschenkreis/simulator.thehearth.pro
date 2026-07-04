@@ -169,6 +169,7 @@ REQUIRED_MARKERS = {
         "HearthDoingConfig",
         "levelForDrill",
         "coachForCategory",
+        "guitarZones",
     ],
     "adapters/teaching-engine-core-adapter.js": [
         "HearthTeachingEngineCoreAdapter",

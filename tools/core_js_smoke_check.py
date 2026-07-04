@@ -109,6 +109,8 @@ assert(HearthDoingConfig.levelForDrill({{ id: "alt-1", difficulty: 8 }}) === 1, 
 assert(HearthDoingConfig.levelForDrill({{ id: "unknown", difficulty: 9 }}) === 8, "Doing config should clamp fallback drill levels");
 assert(HearthDoingConfig.coachForCategory("picking").whatDo.indexOf("pick") !== -1, "Doing config should return category coaching");
 assert(HearthDoingConfig.coachForCategory("missing").pass.indexOf("dead notes") !== -1, "Doing config should fall back to fretting coaching");
+assert(HearthDoingConfig.guitarZones.length === 6, "Doing config should expose guitar map zones");
+assert(HearthDoingConfig.focusCats.length === 6, "Doing config should expose focus categories");
 var fakeMapTarget = {{ innerHTML: "" }};
 var fakeMapFoundation = {{
   guideLine: "Guide line",
