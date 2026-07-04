@@ -34,6 +34,7 @@ REQUIRED_MARKERS = {
         "adapters/foundation-progress-bridge.js",
         "adapters/teaching-engine-core-adapter.js",
         "assets/js/teaching-engine.js",
+        "adapters/doing-ui-utils.js",
         "adapters/doing-config.js",
         "assets/js/journey.js",
     ],
@@ -170,6 +171,11 @@ REQUIRED_MARKERS = {
         "levelForDrill",
         "coachForCategory",
         "guitarZones",
+    ],
+    "adapters/doing-ui-utils.js": [
+        "HearthDoingUiUtils",
+        "escapeHtml",
+        "drillShort",
     ],
     "adapters/teaching-engine-core-adapter.js": [
         "HearthTeachingEngineCoreAdapter",
@@ -551,6 +557,7 @@ def main() -> int:
         "adapters/foundation-progress-bridge.js",
         "adapters/teaching-engine-core-adapter.js",
         "assets/js/teaching-engine.js",
+        "adapters/doing-ui-utils.js",
         "adapters/doing-config.js",
     ]
     previous_index = -1

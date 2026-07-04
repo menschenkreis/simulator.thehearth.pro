@@ -57,6 +57,7 @@ eval(readText(root + "/core/learner-progress.js"));
 eval(readText(root + "/adapters/browser-progress-store.js"));
 eval(readText(root + "/adapters/foundation-progress-bridge.js"));
 eval(readText(root + "/adapters/teaching-engine-core-adapter.js"));
+eval(readText(root + "/adapters/doing-ui-utils.js"));
 eval(readText(root + "/adapters/doing-config.js"));
 
 var seed = JSON.parse(readText(root + "/database-blueprint/seeds/foundation_conversations_lesson_v2.json"));
@@ -111,6 +112,8 @@ assert(HearthDoingConfig.coachForCategory("picking").whatDo.indexOf("pick") !== 
 assert(HearthDoingConfig.coachForCategory("missing").pass.indexOf("dead notes") !== -1, "Doing config should fall back to fretting coaching");
 assert(HearthDoingConfig.guitarZones.length === 6, "Doing config should expose guitar map zones");
 assert(HearthDoingConfig.focusCats.length === 6, "Doing config should expose focus categories");
+assert(HearthDoingUiUtils.escapeHtml("<pick>") === "&lt;pick&gt;", "Doing UI utils should escape HTML");
+assert(HearthDoingUiUtils.drillShort({{ title: "Alternate Picking" }}) === "AP", "Doing UI utils should build drill initials");
 var fakeMapTarget = {{ innerHTML: "" }};
 var fakeMapFoundation = {{
   guideLine: "Guide line",

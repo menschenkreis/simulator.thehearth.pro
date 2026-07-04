@@ -22,6 +22,7 @@ The goal is not to patch the messy prototype forever. The goal is to build a reu
 | `adapters/action-renderer-registry-bootstrap.js` | Creates the shared browser action-renderer registry instance. |
 | `adapters/browser-progress-store.js` | Replaceable localStorage adapter for clean learner progress records. |
 | `adapters/doing-config.js` | Holds Doing drill levels, filters, map zones, state labels, and plain coaching copy. |
+| `adapters/doing-ui-utils.js` | Shared text and display helpers for the legacy Doing view. |
 | `adapters/foundation-action-renderers.js` | Registers existing Foundation action render functions behind stable renderer keys. |
 | `adapters/foundation-audio.js` | Shared tone helper for legacy Foundation action renderers. |
 | `adapters/foundation-lesson-launcher.js` | Resolves Foundation topics into TeachingEngine lesson objects. |

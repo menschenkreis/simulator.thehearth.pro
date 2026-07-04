@@ -1761,6 +1761,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 <script src="assets/js/lessons-first-conversation.js"></script>
 <script src="assets/js/lessons-conversations.js"></script>
 <script src="assets/js/video-roadmap.js"></script>
+<script src="adapters/doing-ui-utils.js"></script>
 <script src="adapters/doing-config.js"></script>
 <script src="assets/js/doing.js?v=6"></script>
 <script src="assets/js/knowing.js?v=6"></script>
@@ -2180,19 +2181,16 @@ function showDoing(){
   var stateLabels=doingConfig.stateLabels;
   var guitarZones=doingConfig.guitarZones;
   var focusCats=doingConfig.focusCats;
+  var doingUi=window.HearthDoingUiUtils;if(!doingUi)return;
 
   function esc(s){
-    return String(s||'').replace(/[&<>"']/g,function(ch){
-      return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch];
-    });
+    return doingUi.escapeHtml(s);
   }
   function textOnly(html){
-    return String(html||'').replace(/<[^>]*>/g,' ').replace(/\s+/g,' ').trim();
+    return doingUi.textOnly(html);
   }
   function firstSentence(html){
-    var txt=textOnly(html);
-    var m=txt.match(/^(.{20,160}?[.!?])\s/);
-    return m?m[1]:txt.slice(0,150);
+    return doingUi.firstSentence(html);
   }
   function getDoingLevel(drill){
     return doingConfig.levelForDrill(drill);
@@ -2251,8 +2249,7 @@ function showDoing(){
     }
   }
   function drillShort(drill){
-    var words=drill.title.replace(/[^\w\s]/g,' ').split(/\s+/).filter(Boolean);
-    return words.slice(0,2).map(function(w){return w[0];}).join('').toUpperCase().slice(0,2)||'D';
+    return doingUi.drillShort(drill);
   }
   function rowDrills(row){
     var items=[];
