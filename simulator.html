@@ -1738,6 +1738,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 <script src="adapters/rainbow-blocks-viewer.js"></script>
 <script src="adapters/foundation-map-viewer.js"></script>
 <script src="adapters/foundation-topic-viewer.js"></script>
+<script src="adapters/foundation-topic-controller.js"></script>
 <script src="core/lesson-view-model.js"></script>
 <script src="core/lesson-session.js"></script>
 <script src="core/learner-progress.js"></script>
@@ -2150,78 +2151,22 @@ function showFoundation(){
   }
 }
 
-// ═══ FOUNDATION TOPIC VIEWER ═══
-function foundationEscape(value){
-  return window.HearthFoundationUiUtils
-    ? window.HearthFoundationUiUtils.escapeHtml(value)
-    : String(value || '').replace(/[&<>"']/g, function(ch){
-        return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[ch];
-      });
-}
-
-function foundationColor(index){
-  return window.HearthFoundationUiUtils
-    ? window.HearthFoundationUiUtils.colorForIndex(index)
-    : ['#e74c3c','#e67e22','#f1c40f','#2ecc71','#3498db','#42d6c5','#9b59b6','#d76aa8','#d4af69','#ffb347'][index % 10];
-}
-
 async function showFoundationTopic(topicId){
-  playSfx('drill-click');
-  const F=window.FOUNDATION;if(!F)return;
-  const topic=F.topics.find(t=>t.id===topicId);if(!topic)return;
-  setNotebookContext('f-'+topicId,topic.title);
-  const el=document.getElementById('p-foundation');
-
-  // ── INTERACTIVE LESSON OVERRIDE ──
-  var lessonInfo = window.HearthFoundationLessonLauncher
-    ? await window.HearthFoundationLessonLauncher.resolveFoundationLesson(topicId)
-    : null;
-  if(lessonInfo && lessonInfo.lesson && window.TeachingEngine){
-    document.querySelectorAll('.pnl').forEach(p=>p.classList.remove('on'));
-    el.classList.add('on');
-    var teachContainer = window.HearthFoundationLessonShell
-      ? window.HearthFoundationLessonShell.renderFoundationLessonShell(el, lessonInfo)
-      : null;
-    if(!teachContainer) return;
-    var engine=window._teachEngine=TeachingEngine(teachContainer,{
-      onComplete:function(scores){
-        if(window.HearthFoundationProgressBridge){
-          window.HearthFoundationProgressBridge.markFoundationLessonCompleted(topicId, lessonInfo);
-        }
-        // Go back to pyramid - let student choose next block
-        showFoundation();
-      }
-    });
-    engine.start(lessonInfo.lesson);
-    return;
+  if(window.HearthFoundationTopicController){
+    return window.HearthFoundationTopicController.showFoundationTopic(topicId);
   }
-  // Fallback: use renderFoundationTopicStep for proper guide + tabs layout
-  renderFoundationTopicStep(topicId, 0);
-  window._fTopic=topicId;
 }
 
 function renderFoundationTopicStep(topicId, stepIndex){
-  if(!window.HearthFoundationTopicViewer) return;
-  window.HearthFoundationTopicViewer.renderFoundationTopicStep({
-    foundation: window.FOUNDATION,
-    targetEl: document.getElementById('p-foundation'),
-    topicId: topicId,
-    stepIndex: stepIndex || 0,
-    completed: window.HearthFoundationProgressBridge
-      ? window.HearthFoundationProgressBridge.readLegacyProgress()
-      : JSON.parse(localStorage.getItem('hearth-foundation-progress') || '{}')
-  });
+  if(window.HearthFoundationTopicController){
+    return window.HearthFoundationTopicController.renderFoundationTopicStep(topicId, stepIndex);
+  }
 }
 
 window.completeFoundationTopic=function(tid){
-  if(window.HearthFoundationProgressBridge){
-    window.HearthFoundationProgressBridge.markFoundationTopicCompleted(tid);
+  if(window.HearthFoundationTopicController){
+    return window.HearthFoundationTopicController.completeFoundationTopic(tid);
   }
-  const F=window.FOUNDATION;if(!F)return;
-  const idx=F.topics.findIndex(t=>t.id===tid);
-  const next=F.topics[idx+1];
-  if(next) showFoundationTopic(next.id);
-  else showFoundation();
 };
 
 // ═══ DOING NODE ═══

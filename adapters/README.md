@@ -20,6 +20,7 @@ Adapters are allowed to connect the clean core to those outside systems.
 | `foundation-progress-bridge.js` | Writes old Foundation topic progress and clean learner progress together. |
 | `foundation-route-manifest-runtime.js` | Browser-friendly copy of the clean Foundation route manifest. |
 | `foundation-seed-loader.js` | Loads clean Foundation seed JSON and translates it for the current TeachingEngine. |
+| `foundation-topic-controller.js` | Opens Foundation topics, launches lessons, renders fallback topic pages, and completes progress. |
 | `foundation-topic-viewer.js` | Renders the legacy Foundation topic tab fallback view. |
 | `foundation-ui-utils.js` | Shared color and HTML escaping helpers for Foundation views. |
 | `rainbow-blocks-viewer.js` | Keeps the old reusable rainbow block renderer outside the large page. |

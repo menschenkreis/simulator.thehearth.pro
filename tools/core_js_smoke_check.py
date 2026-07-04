@@ -48,6 +48,7 @@ eval(readText(root + "/adapters/foundation-ui-utils.js"));
 eval(readText(root + "/adapters/rainbow-blocks-viewer.js"));
 eval(readText(root + "/adapters/foundation-map-viewer.js"));
 eval(readText(root + "/adapters/foundation-topic-viewer.js"));
+eval(readText(root + "/adapters/foundation-topic-controller.js"));
 eval(readText(root + "/adapters/foundation-audio.js"));
 eval(readText(root + "/core/lesson-view-model.js"));
 eval(readText(root + "/core/lesson-session.js"));
@@ -145,6 +146,19 @@ var fakeTopicResult = HearthFoundationTopicViewer.renderFoundationTopicStep({{
 assert(fakeTopicResult.topic_id === "f-test", "Foundation topic viewer should return topic id");
 assert(fakeTopicTarget.innerHTML.indexOf("foundation-topic-page") !== -1, "Foundation topic viewer should render page shell");
 assert(fakeTopicTarget.innerHTML.indexOf("Test Topic") !== -1, "Foundation topic viewer should render topic title");
+var fakeControllerTarget = {{ innerHTML: "" }};
+globalThis.document = {{
+  getElementById: function(id) {{
+    return id === "p-foundation" ? fakeControllerTarget : null;
+  }}
+}};
+globalThis.localStorage = {{
+  getItem: function() {{ return "{{}}"; }}
+}};
+globalThis.FOUNDATION = fakeFoundation;
+var fakeControllerResult = HearthFoundationTopicController.renderFoundationTopicStep("f-test", 0);
+assert(fakeControllerResult.topic_id === "f-test", "Foundation topic controller should delegate fallback rendering");
+assert(fakeControllerTarget.innerHTML.indexOf("foundation-topic-page") !== -1, "Foundation topic controller should render fallback page");
 assert(typeof HearthFoundationAudio.playTone === "function", "Foundation audio adapter should expose playTone");
 assert(typeof _l1_playTone === "function", "Foundation audio adapter should keep legacy helper name");
 
