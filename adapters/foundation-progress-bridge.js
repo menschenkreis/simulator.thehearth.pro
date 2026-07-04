@@ -64,11 +64,21 @@
     };
   }
 
+  function markFoundationTopicCompleted(topicId, options) {
+    options = options || {};
+    return {
+      topic_id: topicId,
+      lesson_id: null,
+      legacy_progress: writeLegacyProgress(topicId, options.storage || root.localStorage)
+    };
+  }
+
   return {
     version: "0.1.0",
     LEGACY_STORAGE_KEY: LEGACY_STORAGE_KEY,
     readLegacyProgress: readLegacyProgress,
     writeLegacyProgress: writeLegacyProgress,
+    markFoundationTopicCompleted: markFoundationTopicCompleted,
     markFoundationLessonCompleted: markFoundationLessonCompleted
   };
 });

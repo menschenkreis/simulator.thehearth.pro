@@ -2465,9 +2465,9 @@ function renderFoundationTopicStep(topicId, stepIndex){
 }
 
 window.completeFoundationTopic=function(tid){
-  const progress=JSON.parse(localStorage.getItem('hearth-foundation-progress')||'{}');
-  progress[tid]=true;
-  localStorage.setItem('hearth-foundation-progress',JSON.stringify(progress));
+  if(window.HearthFoundationProgressBridge){
+    window.HearthFoundationProgressBridge.markFoundationTopicCompleted(tid);
+  }
   const F=window.FOUNDATION;if(!F)return;
   const idx=F.topics.findIndex(t=>t.id===tid);
   const next=F.topics[idx+1];

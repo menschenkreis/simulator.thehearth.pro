@@ -195,6 +195,11 @@ var cleanProgress = JSON.parse(progressBridgeStorage.values["hearth.cleanProgres
 assert(progressBridgeResult.lesson_id === "f-conversations", "progress bridge should return lesson id");
 assert(legacyProgress["f-first-conversation"] === true, "progress bridge should write legacy topic progress");
 assert(cleanProgress.lessons["f-conversations"].status === "completed", "progress bridge should write clean progress");
+HearthFoundationProgressBridge.markFoundationTopicCompleted("f-threshold", {{
+  storage: progressBridgeStorage
+}});
+legacyProgress = JSON.parse(progressBridgeStorage.values["hearth-foundation-progress"]);
+assert(legacyProgress["f-threshold"] === true, "progress bridge should write fallback topic progress");
 
 var controllerStore = HearthBrowserProgressStore.createBrowserProgressStore({{
   progressCore: HearthLearnerProgress,

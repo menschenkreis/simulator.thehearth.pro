@@ -121,6 +121,7 @@ REQUIRED_MARKERS = {
     "adapters/foundation-progress-bridge.js": [
         "HearthFoundationProgressBridge",
         "markFoundationLessonCompleted",
+        "markFoundationTopicCompleted",
         "hearth-foundation-progress",
     ],
     "adapters/browser-progress-store.js": [
