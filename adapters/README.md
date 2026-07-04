@@ -16,6 +16,7 @@ Adapters are allowed to connect the clean core to those outside systems.
 | `doing-drill-board-model.js` | Filters Doing drills and calculates board counts, summaries, and next drill. |
 | `doing-drill-detail-viewer.js` | Renders the Doing single-drill detail card. |
 | `doing-drill-board-viewer.js` | Renders the Doing level/string drill board. |
+| `doing-shell-viewer.js` | Renders the outer Doing shell and progress header. |
 | `doing-entry-viewer.js` | Renders the Doing entry panel and recommended next drill. |
 | `doing-explorer-controller.js` | Binds the Doing explorer note-locator behavior. |
 | `doing-explorer-viewer.js` | Renders the Doing fretboard explorer tabs and panels. |

@@ -62,6 +62,7 @@ eval(readText(root + "/adapters/doing-config.js"));
 eval(readText(root + "/adapters/doing-drill-board-model.js"));
 eval(readText(root + "/adapters/doing-drill-detail-viewer.js"));
 eval(readText(root + "/adapters/doing-drill-board-viewer.js"));
+eval(readText(root + "/adapters/doing-shell-viewer.js"));
 eval(readText(root + "/adapters/doing-entry-viewer.js"));
 eval(readText(root + "/adapters/doing-explorer-viewer.js"));
 eval(readText(root + "/adapters/doing-explorer-controller.js"));
@@ -154,6 +155,15 @@ var doingBoardHtml = HearthDoingDrillBoardViewer.renderDoingDrillBoard({{
 }});
 assert(doingBoardHtml.indexOf("doing-fretboard-stage") !== -1, "Doing board viewer should render board shell");
 assert(doingBoardHtml.indexOf("1/2 mastered in view") !== -1, "Doing board viewer should render mastered count");
+var doingShellHtml = HearthDoingShellViewer.renderDoingShell({{
+  doing: {{ title: "Doing Test", subtitle: "Practice test" }},
+  ui: HearthDoingUiUtils,
+  progressSummary: {{ mastered: 1, touched: 2 }},
+  contentHtml: '<div id="doing-fretboard">Inner</div>'
+}});
+assert(doingShellHtml.indexOf("doing-shell") !== -1, "Doing shell viewer should render shell wrapper");
+assert(doingShellHtml.indexOf("Doing Test") !== -1, "Doing shell viewer should render title");
+assert(doingShellHtml.indexOf("doing-fretboard") !== -1, "Doing shell viewer should include inner content");
 var doingDetailHtml = HearthDoingDrillDetailViewer.renderDoingDrillDetail({{
   cat: fakeDoing.categories[0],
   drill: fakeDoing.categories[0].drills[0],

@@ -1766,6 +1766,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 <script src="adapters/doing-drill-board-model.js"></script>
 <script src="adapters/doing-drill-detail-viewer.js"></script>
 <script src="adapters/doing-drill-board-viewer.js"></script>
+<script src="adapters/doing-shell-viewer.js"></script>
 <script src="adapters/doing-entry-viewer.js"></script>
 <script src="adapters/doing-explorer-viewer.js"></script>
 <script src="adapters/doing-explorer-controller.js"></script>
@@ -2250,7 +2251,6 @@ function showDoing(){
 
   /* === Counts === */
   var progressSummary=doingBoard.summarizeProgress(D,progress,stateOrder);
-  var mastered=progressSummary.mastered, touched=progressSummary.touched;
 
   /* === Next recommended drill === */
   function findNextDrill(){
@@ -2299,27 +2299,21 @@ function showDoing(){
       return;
     }
   /* === Main shell === */
-    var html='<div class="doing-shell">'+
-    '<button class="back-btn" onclick="window._doingBackToMap()">&larr; Map</button>'+
-    '<div class="doing-hero">'+
-      '<img class="doing-hero-icon" src="images/doing-icon.png" alt="">'+
-      '<div><div class="doing-kicker">Do Node &middot; Training Chamber</div>'+
-      '<h2>'+esc(D.title)+'</h2>'+
-      '<p style="font-size:0.82rem;color:var(--dim)">'+esc(D.subtitle||'Train one physical skill at a time.')+'</p></div>'+
-      '<div class="doing-stat-strip">'+
-        '<div class="doing-stat"><strong>'+mastered+'</strong><span>mastered</span></div>'+
-        '<div class="doing-stat"><strong>'+touched+'</strong><span>touched</span></div>'+
-      '</div>'+
-    '</div>';
+    var contentHtml='';
 
     if(doingView==='training'){
-      html+='<div id="doing-fretboard">'+render()+'</div>';
+      contentHtml='<div id="doing-fretboard">'+render()+'</div>';
     } else if(doingView==='explorer'){
-      html+=renderExplorerView();
+      contentHtml=renderExplorerView();
     }
 
-    html+='</div>';
-    el.innerHTML=html;
+    if(!window.HearthDoingShellViewer) return;
+    el.innerHTML=window.HearthDoingShellViewer.renderDoingShell({
+      doing:D,
+      ui:doingUi,
+      progressSummary:progressSummary,
+      contentHtml:contentHtml
+    });
     bindControls();
     if(doingView==='explorer'&&activeExpTab==='notes') bindExplorer();
     bindDrillPreviews();

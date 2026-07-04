@@ -39,6 +39,7 @@ REQUIRED_MARKERS = {
         "adapters/doing-drill-board-model.js",
         "adapters/doing-drill-detail-viewer.js",
         "adapters/doing-drill-board-viewer.js",
+        "adapters/doing-shell-viewer.js",
         "adapters/doing-entry-viewer.js",
         "adapters/doing-explorer-viewer.js",
         "adapters/doing-explorer-controller.js",
@@ -198,6 +199,11 @@ REQUIRED_MARKERS = {
         "HearthDoingDrillBoardViewer",
         "renderDoingDrillBoard",
         "doing-fretboard-stage",
+    ],
+    "adapters/doing-shell-viewer.js": [
+        "HearthDoingShellViewer",
+        "renderDoingShell",
+        "doing-shell",
     ],
     "adapters/doing-entry-viewer.js": [
         "HearthDoingEntryViewer",
@@ -605,6 +611,7 @@ def main() -> int:
         "adapters/doing-drill-board-model.js",
         "adapters/doing-drill-detail-viewer.js",
         "adapters/doing-drill-board-viewer.js",
+        "adapters/doing-shell-viewer.js",
         "adapters/doing-entry-viewer.js",
         "adapters/doing-explorer-viewer.js",
         "adapters/doing-explorer-controller.js",
