@@ -22,9 +22,13 @@ The goal is not to patch the messy prototype forever. The goal is to build a reu
 | `adapters/action-renderer-registry-bootstrap.js` | Creates the shared browser action-renderer registry instance. |
 | `adapters/browser-progress-store.js` | Replaceable localStorage adapter for clean learner progress records. |
 | `adapters/foundation-action-renderers.js` | Registers existing Foundation action render functions behind stable renderer keys. |
+| `adapters/foundation-audio.js` | Shared tone helper for legacy Foundation action renderers. |
 | `adapters/foundation-lesson-launcher.js` | Resolves Foundation topics into TeachingEngine lesson objects. |
+| `adapters/foundation-lesson-shell.js` | Renders the Foundation TeachingEngine host shell. |
+| `adapters/foundation-progress-bridge.js` | Writes old Foundation topic progress and clean learner progress together. |
 | `adapters/foundation-route-manifest-runtime.js` | Browser-friendly copy of the clean Foundation route manifest. |
 | `adapters/foundation-seed-loader.js` | Loads clean Foundation seed JSON and translates it for the current TeachingEngine. |
+| `adapters/foundation-ui-utils.js` | Shared color and HTML escaping helpers for Foundation views. |
 | `adapters/teaching-engine-core-adapter.js` | DOM-free lesson controller connecting seeds, session state, view models, and progress. |
 | `tools/core_smoke_check.py` | Validates the new core files, route manifest, and linked lesson seed files. |
 | `tools/core_js_smoke_check.py` | Loads the clean JavaScript core and checks basic lesson behavior. |
@@ -77,6 +81,8 @@ Foundation topic launching now asks `HearthFoundationAdapter` and `HearthFoundat
 Foundation lesson launching now tries to load clean seed JSON through `HearthFoundationSeedLoader`. If that load fails, the old `window.LESSON_*` globals remain the fallback path.
 
 The launch decision itself now lives in `HearthFoundationLessonLauncher`, not inside the large `simulator.html` page.
+
+The Foundation lesson host shell, tone helper, progress completion bridge, and simple UI helpers now live in focused adapters instead of being owned directly by the large page or old lesson file.
 
 ## Next Core Steps
 
