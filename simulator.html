@@ -1764,6 +1764,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 <script src="adapters/doing-ui-utils.js"></script>
 <script src="adapters/doing-config.js"></script>
 <script src="adapters/doing-drill-board-model.js"></script>
+<script src="adapters/doing-drill-adjust-controller.js"></script>
 <script src="adapters/doing-drill-preview-controller.js"></script>
 <script src="adapters/doing-drill-detail-viewer.js"></script>
 <script src="adapters/doing-drill-board-viewer.js"></script>
@@ -2394,13 +2395,12 @@ function showDoing(){
       btn.onclick=function(){ activeExpTab=btn.getAttribute('data-etab'); shell(); };
     });
     /* Drill adjust buttons */
-    el.querySelectorAll('.doing-adj-btn').forEach(function(btn){
-      btn.onclick=function(){
-        var adj=btn.getAttribute('data-adj');
-        if(adj==='easier') alert('Easier mode coming soon. Try slowing the BPM.');
-        if(adj==='harder') alert('Harder mode coming soon. Try adding accents or increasing BPM.');
-      };
-    });
+    if(window.HearthDoingDrillAdjustController){
+      window.HearthDoingDrillAdjustController.bindDrillAdjustButtons({
+        rootEl:el,
+        alertFn:alert
+      });
+    }
     if(doingView!=='training') return;
     var styleFilters=document.getElementById('style-filters');
     if(styleFilters){

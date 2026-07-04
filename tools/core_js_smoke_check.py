@@ -60,6 +60,7 @@ eval(readText(root + "/adapters/teaching-engine-core-adapter.js"));
 eval(readText(root + "/adapters/doing-ui-utils.js"));
 eval(readText(root + "/adapters/doing-config.js"));
 eval(readText(root + "/adapters/doing-drill-board-model.js"));
+eval(readText(root + "/adapters/doing-drill-adjust-controller.js"));
 eval(readText(root + "/adapters/doing-drill-preview-controller.js"));
 eval(readText(root + "/adapters/doing-drill-detail-viewer.js"));
 eval(readText(root + "/adapters/doing-drill-board-viewer.js"));
@@ -144,6 +145,10 @@ var fakeBoardOptions = {{
 }};
 assert(HearthDoingDrillBoardModel.countForGenre(fakeBoardOptions, "rock") === 1, "Doing board model should count genre drills");
 assert(HearthDoingDrillBoardModel.findNextDrill(fakeDoing, {{}}, HearthDoingConfig.stateOrder).drill.id === "alt-1", "Doing board model should find next drill");
+assert(
+  HearthDoingDrillAdjustController.messageForAdjustment("easier").indexOf("slowing the BPM") !== -1,
+  "Doing drill adjust controller should return easier message"
+);
 assert(
   HearthDoingDrillPreviewController.findDrill(fakeDoing, "picking", "alt-1").drill.title === "Alternate Picking",
   "Doing drill preview controller should find drill records"

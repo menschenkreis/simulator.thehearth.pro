@@ -23,6 +23,7 @@ The goal is not to patch the messy prototype forever. The goal is to build a reu
 | `adapters/browser-progress-store.js` | Replaceable localStorage adapter for clean learner progress records. |
 | `adapters/doing-config.js` | Holds Doing drill levels, filters, map zones, state labels, and plain coaching copy. |
 | `adapters/doing-drill-board-model.js` | Filters Doing drills and calculates board counts, summaries, and next drill. |
+| `adapters/doing-drill-adjust-controller.js` | Binds Doing easier/harder drill adjustment buttons. |
 | `adapters/doing-drill-preview-controller.js` | Binds Doing drill-dot click and hover preview behavior. |
 | `adapters/doing-drill-detail-viewer.js` | Renders the Doing single-drill detail card. |
 | `adapters/doing-drill-board-viewer.js` | Renders the Doing level/string drill board. |
