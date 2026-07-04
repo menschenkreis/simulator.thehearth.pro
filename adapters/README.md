@@ -22,6 +22,7 @@ Adapters are allowed to connect the clean core to those outside systems.
 | `foundation-seed-loader.js` | Loads clean Foundation seed JSON and translates it for the current TeachingEngine. |
 | `foundation-topic-viewer.js` | Renders the legacy Foundation topic tab fallback view. |
 | `foundation-ui-utils.js` | Shared color and HTML escaping helpers for Foundation views. |
+| `rainbow-blocks-viewer.js` | Keeps the old reusable rainbow block renderer outside the large page. |
 | `teaching-engine-core-adapter.js` | DOM-free lesson controller that connects seeds, session rules, view models, and progress. |
 
 ## Rule

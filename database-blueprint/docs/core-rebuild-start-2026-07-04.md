@@ -31,6 +31,7 @@ The goal is not to patch the messy prototype forever. The goal is to build a reu
 | `adapters/foundation-seed-loader.js` | Loads clean Foundation seed JSON and translates it for the current TeachingEngine. |
 | `adapters/foundation-topic-viewer.js` | Renders the legacy Foundation topic tab fallback view. |
 | `adapters/foundation-ui-utils.js` | Shared color and HTML escaping helpers for Foundation views. |
+| `adapters/rainbow-blocks-viewer.js` | Keeps the old reusable rainbow block renderer outside the large page. |
 | `adapters/teaching-engine-core-adapter.js` | DOM-free lesson controller connecting seeds, session state, view models, and progress. |
 | `tools/core_smoke_check.py` | Validates the new core files, route manifest, and linked lesson seed files. |
 | `tools/core_js_smoke_check.py` | Loads the clean JavaScript core and checks basic lesson behavior. |
@@ -84,7 +85,7 @@ Foundation lesson launching now tries to load clean seed JSON through `HearthFou
 
 The launch decision itself now lives in `HearthFoundationLessonLauncher`, not inside the large `simulator.html` page.
 
-The Foundation lesson host shell, neck-path map screen, tone helper, progress completion bridge, and simple UI helpers now live in focused adapters instead of being owned directly by the large page or old lesson file.
+The Foundation lesson host shell, neck-path map screen, reusable rainbow block renderer, tone helper, progress completion bridge, and simple UI helpers now live in focused adapters instead of being owned directly by the large page or old lesson file.
 
 The legacy Foundation topic tab view is also now adapter-owned, leaving `simulator.html` with only small wrapper functions for that fallback path.
 

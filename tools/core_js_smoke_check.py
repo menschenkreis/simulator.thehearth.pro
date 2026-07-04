@@ -45,6 +45,7 @@ eval(readText(root + "/adapters/foundation-seed-loader.js"));
 eval(readText(root + "/adapters/foundation-lesson-launcher.js"));
 eval(readText(root + "/adapters/foundation-lesson-shell.js"));
 eval(readText(root + "/adapters/foundation-ui-utils.js"));
+eval(readText(root + "/adapters/rainbow-blocks-viewer.js"));
 eval(readText(root + "/adapters/foundation-map-viewer.js"));
 eval(readText(root + "/adapters/foundation-topic-viewer.js"));
 eval(readText(root + "/adapters/foundation-audio.js"));
@@ -90,6 +91,17 @@ assert(fakeShellTarget.innerHTML.indexOf("TEST LABEL") !== -1, "Foundation shell
 assert(fakeTeachContainer.id === "teach-container", "Foundation shell should return teach container");
 assert(HearthFoundationUiUtils.escapeHtml("<x>") === "&lt;x&gt;", "Foundation UI utils should escape HTML");
 assert(HearthFoundationUiUtils.colorForIndex(0) === "#e74c3c", "Foundation UI utils should return stable colors");
+var rainbowHtml = HearthRainbowBlocksViewer.renderRainbowBlocks([
+  {{ id: "one", title: "One", done: true }},
+  {{ id: "two", title: "Two", locked: true }}
+], {{
+  title: "Rainbow Test",
+  sources: ["Source A"],
+  clickFn: "openRainbow"
+}});
+assert(rainbowHtml.indexOf("Rainbow Test") !== -1, "rainbow blocks viewer should render title");
+assert(rainbowHtml.indexOf("1/2 blocks") !== -1, "rainbow blocks viewer should count completed blocks");
+assert(typeof rainbowBlocks === "function", "rainbow blocks viewer should keep legacy global helper");
 var fakeMapTarget = {{ innerHTML: "" }};
 var fakeMapFoundation = {{
   guideLine: "Guide line",

@@ -1735,6 +1735,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 <script src="adapters/foundation-lesson-launcher.js"></script>
 <script src="adapters/foundation-lesson-shell.js"></script>
 <script src="adapters/foundation-ui-utils.js"></script>
+<script src="adapters/rainbow-blocks-viewer.js"></script>
 <script src="adapters/foundation-map-viewer.js"></script>
 <script src="adapters/foundation-topic-viewer.js"></script>
 <script src="core/lesson-view-model.js"></script>
@@ -2148,84 +2149,6 @@ function showFoundation(){
     });
   }
 }
-
-// ═══ REUSABLE RAINBOW BLOCKS HELPER ═══
-function rainbowBlocks(items, opts){
-  const rainbow=['#e74c3c','#e67e22','#f1c40f','#2ecc71','#3498db','#9b59b6','#e84393','#1abc9c','#e84393'];
-  const maxWidth=560, minWidth=220;
-  const n=items.length;
-  const step=n>1?(maxWidth-minWidth)/(n-1):0;
-  const doneCount=items.filter(i=>i.done).length;
-  const firstIncomplete=items.findIndex(i=>!i.done);
-  const activeIdx=firstIncomplete===-1?n-1:firstIncomplete;
-
-  let html='<div style="padding:24px;max-width:800px;margin:0 auto">'+
-    '<button class="back-btn" onclick="backToMap()">← Map</button>'+
-    '<div style="display:flex;align-items:center;gap:12px;margin-bottom:20px">'+
-      (opts.icon?'<img src="'+opts.icon+'" style="width:64px;height:64px;border-radius:50%;object-fit:cover;border:3px solid var(--gold);box-shadow:0 0 16px rgba(212,175,105,0.12)"/>':'<div style="width:64px;height:64px;border-radius:50%;border:3px solid var(--gold);box-shadow:0 0 16px rgba(212,175,105,0.12);display:flex;align-items:center;justify-content:center;font-family:Cinzel,serif;color:var(--gold);font-size:1.5rem;font-weight:700">'+opts.title.charAt(0)+'</div>')+
-      '<div><h2 style="font-family:\'DM Sans\',sans-serif;color:var(--gold);font-size:1.3rem;margin:0;font-weight:700">'+opts.title+'</h2>'+
-      '<div style="font-family:JetBrains Mono;font-size:0.65rem;color:var(--amber);margin-top:4px">'+doneCount+'/'+n+' blocks</div>'+
-    '</div></div>'+
-    '<div style="display:flex;flex-direction:column;align-items:center;gap:0;margin-top:20px">';
-
-  for(let i=n-1; i>=0; i--){
-    const it=items[i];
-    const w=maxWidth-step*i;
-    const isDone=it.done;
-    const isLocked=it.locked;
-    const num=i+1;
-    const color=rainbow[i%rainbow.length];
-
-    if(isLocked){
-      html+='<div style="'+
-        'width:'+w+'px;padding:8px 12px;'+
-        'background:transparent;'+
-        'border:1px dashed '+color+'40;'+
-        'border-radius:6px;'+
-        'text-align:center;'+
-        'position:relative;'+
-        'z-index:'+(n-i)+
-      '">'+
-        '<div style="display:flex;align-items:center;justify-content:center;gap:8px">'+
-          '<span style="font-family:\'DM Sans\',sans-serif;font-size:1.2rem;color:'+color+'40">'+num+'</span>'+
-          '<span style="font-family:\'DM Sans\',sans-serif;font-size:1rem;color:'+color+'30;font-weight:600">'+it.title+'</span>'+
-          (it.count?'<span style="font-family:JetBrains Mono;font-size:0.55rem;color:'+color+'30">'+it.count+' '+it.countLabel+'</span>':'')+
-        '</div>'+
-      '</div>';
-    } else {
-      const bg=isDone?color:color+'18';
-      const border=isDone?color:color+'60';
-      const textCol=isDone?'#fff':color;
-      const numCol=isDone?'rgba(255,255,255,0.7)':color;
-      const clickAttr=opts.clickFn?'onclick="'+opts.clickFn+'(\''+it.id+'\')"':'';
-      html+='<div '+clickAttr+' style="'+
-        'width:'+w+'px;padding:12px 16px;'+
-        'background:'+bg+';'+
-        'border:2px solid '+border+';'+
-        'border-radius:6px;'+
-        'cursor:pointer;transition:all 0.15s;'+
-        'text-align:center;'+
-        'position:relative;'+
-        'z-index:'+(n-i)+
-      '">'+
-        '<div style="display:flex;align-items:center;justify-content:center;gap:8px">'+
-          '<span style="font-family:\'DM Sans\',sans-serif;font-size:2rem;color:'+numCol+';opacity:'+(isDone?'1':'0.6')+';font-weight:700">'+num+'</span>'+
-          '<span style="font-family:\'DM Sans\',sans-serif;font-size:1.15rem;color:'+textCol+';font-weight:700">'+it.title+'</span>'+
-          (it.count?'<span style="font-family:JetBrains Mono;font-size:0.55rem;color:'+(isDone?'rgba(255,255,255,0.6)':color)+'">'+it.count+' '+it.countLabel+'</span>':'')+
-          (isDone?'<span style="font-size:0.8rem;color:rgba(255,255,255,0.8)">&#10003;</span>':'')+
-        '</div>'+
-      '</div>';
-    }
-  }
-
-  html+='</div>'+
-    '<div style="margin-top:24px;padding-top:12px;border-top:1px solid var(--border);text-align:center">'+
-      '<p style="font-size:0.6rem;color:var(--dim)">Sources: '+opts.sources.join(' · ')+'</p>'+
-    '</div>'+
-  '</div>';
-  return html;
-}
-
 
 // ═══ FOUNDATION TOPIC VIEWER ═══
 function foundationEscape(value){
