@@ -2817,29 +2817,13 @@ function showDoing(){
 
 // ═══ DOING MAP INTERACTION
 function showDoingBubble(zoneEl){
-  var zoneId=zoneEl.getAttribute('data-zone');
-  var zones=window._doingZones||[];
-  var zone=zones.find(function(z){return z.id===zoneId;});
-  if(!zone)return;
-  // Brighten matching seal
-  document.querySelectorAll('.doing-seal').forEach(function(s){s.classList.remove('bright');});
-  var seal=document.querySelector('[data-seal="'+zoneId+'"]');
-  if(seal) seal.classList.add('bright');
-  // Update guide card
-  var card=document.getElementById('doing-map-info');
-  if(card){
-    card.classList.add('active');
-    card.querySelector('.gc-title').textContent=zone.label;
-    card.querySelector('.gc-body').textContent=zone.hint;
+  if(window.HearthDoingMapViewer){
+    return window.HearthDoingMapViewer.showDoingBubble(zoneEl);
   }
 }
 function hideDoingBubble(){
-  document.querySelectorAll('.doing-seal').forEach(function(s){s.classList.remove('bright');});
-  var card=document.getElementById('doing-map-info');
-  if(card){
-    card.classList.remove('active');
-    card.querySelector('.gc-title').textContent='Choose a training chamber';
-    card.querySelector('.gc-body').textContent='Touch part of the guitar: left hand, right hand, rhythm, chords, scales, or map.';
+  if(window.HearthDoingMapViewer){
+    return window.HearthDoingMapViewer.hideDoingBubble();
   }
 }
 function enterDoingZone(zoneId){

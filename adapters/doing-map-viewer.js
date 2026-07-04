@@ -72,8 +72,50 @@
       "</div>";
   }
 
+  function showDoingBubble(zoneEl) {
+    var zoneId = zoneEl.getAttribute("data-zone");
+    var zones = root._doingZones || [];
+    var zone = zones.find(function findZone(z) {
+      return z.id === zoneId;
+    });
+    if (!zone) {
+      return null;
+    }
+
+    Array.prototype.forEach.call(root.document.querySelectorAll(".doing-seal"), function dimSeal(seal) {
+      seal.classList.remove("bright");
+    });
+    var activeSeal = root.document.querySelector('[data-seal="' + zoneId + '"]');
+    if (activeSeal) {
+      activeSeal.classList.add("bright");
+    }
+
+    var card = root.document.getElementById("doing-map-info");
+    if (card) {
+      card.classList.add("active");
+      card.querySelector(".gc-title").textContent = zone.label;
+      card.querySelector(".gc-body").textContent = zone.hint;
+    }
+    return zone;
+  }
+
+  function hideDoingBubble() {
+    Array.prototype.forEach.call(root.document.querySelectorAll(".doing-seal"), function dimSeal(seal) {
+      seal.classList.remove("bright");
+    });
+
+    var card = root.document.getElementById("doing-map-info");
+    if (card) {
+      card.classList.remove("active");
+      card.querySelector(".gc-title").textContent = "Choose a training chamber";
+      card.querySelector(".gc-body").textContent = "Touch part of the guitar: left hand, right hand, rhythm, chords, scales, or map.";
+    }
+  }
+
   return {
     version: "0.1.0",
+    hideDoingBubble: hideDoingBubble,
+    showDoingBubble: showDoingBubble,
     renderDoingMap: renderDoingMap
   };
 });

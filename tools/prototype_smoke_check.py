@@ -181,6 +181,7 @@ REQUIRED_MARKERS = {
     "adapters/doing-map-viewer.js": [
         "HearthDoingMapViewer",
         "renderDoingMap",
+        "showDoingBubble",
         "doing-map-wrap",
     ],
     "adapters/teaching-engine-core-adapter.js": [
