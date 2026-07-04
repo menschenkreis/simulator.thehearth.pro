@@ -22,6 +22,7 @@ REQUIRED_MARKERS = {
         "adapters/foundation-seed-loader.js",
         "adapters/foundation-lesson-launcher.js",
         "adapters/foundation-action-renderers.js",
+        "adapters/foundation-audio.js",
         "core/lesson-session.js",
         "adapters/teaching-engine-core-adapter.js",
         "assets/js/teaching-engine.js",
@@ -51,6 +52,11 @@ REQUIRED_MARKERS = {
         "LESSON_1_FOUNDATION",
         "steps:",
         "window.LESSON_1_FOUNDATION",
+    ],
+    "adapters/foundation-audio.js": [
+        "HearthFoundationAudio",
+        "playTone",
+        "_l1_playTone",
     ],
     "assets/js/create-obstructions.js": [
         "const CREATE_OBSTRUCTIONS",
@@ -494,13 +500,27 @@ def main() -> int:
         previous_index = current_index
 
     lesson_1_script_index = simulator.find('<script src="assets/js/lesson-1-foundation.js"></script>')
+    foundation_audio_script_index = simulator.find('<script src="adapters/foundation-audio.js"></script>')
     foundation_renderer_script_index = simulator.find(
         '<script src="adapters/foundation-action-renderers.js"></script>'
     )
-    if lesson_1_script_index == -1 or foundation_renderer_script_index == -1:
-        failures.append("simulator.html must load lesson-1-foundation.js and foundation-action-renderers.js")
+    if (
+        lesson_1_script_index == -1
+        or foundation_audio_script_index == -1
+        or foundation_renderer_script_index == -1
+    ):
+        failures.append(
+            "simulator.html must load foundation-audio.js, lesson-1-foundation.js, "
+            "and foundation-action-renderers.js"
+        )
+    elif lesson_1_script_index < foundation_audio_script_index:
+        failures.append("foundation-audio.js must load before lesson-1-foundation.js")
     elif foundation_renderer_script_index < lesson_1_script_index:
         failures.append("foundation-action-renderers.js must load after lesson-1-foundation.js")
+
+    lesson_1_source = read_text("assets/js/lesson-1-foundation.js")
+    if "function _l1_playTone" in lesson_1_source:
+        failures.append("_l1_playTone should live in adapters/foundation-audio.js")
 
     runtime_manifest = read_text("adapters/foundation-route-manifest-runtime.js")
     launcher_source = read_text("adapters/foundation-lesson-launcher.js")
