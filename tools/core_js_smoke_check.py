@@ -117,6 +117,13 @@ assert(controllerAnswer.result.next_action === "reexplain", "controller should e
 var controllerProgress = controllerStore.load();
 assert(controllerProgress.lessons["f-conversations"].wrong_answers === 1, "controller should record answer progress");
 
+var directLessonController = HearthTeachingEngineCoreAdapter.createTeachingLessonController({{
+  seed: seed.lesson
+}});
+var directLessonState = directLessonController.goToStep(2);
+assert(directLessonState.lesson_id === "f-conversations", "controller should accept direct lesson objects");
+assert(directLessonState.view_model.current_step.type === "ask", "direct lesson controller should expose current step");
+
 "Core JS smoke check passed.";
 """
 

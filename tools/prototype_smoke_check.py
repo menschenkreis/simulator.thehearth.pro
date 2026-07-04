@@ -14,6 +14,8 @@ ROOT = Path(__file__).resolve().parents[1]
 REQUIRED_MARKERS = {
     "simulator.html": [
         "assets/js/scene-first.js",
+        "core/lesson-session.js",
+        "adapters/teaching-engine-core-adapter.js",
         "assets/js/teaching-engine.js",
         "assets/js/journey.js",
     ],
@@ -25,6 +27,8 @@ REQUIRED_MARKERS = {
     "assets/js/teaching-engine.js": [
         "window.TeachingEngine",
         "function createTeachingEngine",
+        "function createCoreController",
+        "HearthTeachingEngineCoreAdapter",
         "function showGradientFailsafe",
     ],
     "assets/js/journey.js": [
@@ -62,6 +66,17 @@ REQUIRED_MARKERS = {
         "HearthLessonCore",
         "validateLessonSeed",
         "buildRouteSummary",
+    ],
+    "core/lesson-view-model.js": ["HearthLessonViewModel", "buildLessonViewModel"],
+    "core/lesson-session.js": ["HearthLessonSession", "evaluateChoice"],
+    "core/learner-progress.js": ["HearthLearnerProgress", "recordLessonAnswer"],
+    "adapters/browser-progress-store.js": [
+        "HearthBrowserProgressStore",
+        "createBrowserProgressStore",
+    ],
+    "adapters/teaching-engine-core-adapter.js": [
+        "HearthTeachingEngineCoreAdapter",
+        "createTeachingLessonController",
     ],
     "core/foundation-route-manifest.json": [
         '"node_id": "foundation"',
@@ -416,6 +431,26 @@ def main() -> int:
                 failures.append(f"{relative_path} step {index} is missing text")
 
     simulator = read_text("simulator.html")
+    expected_script_order = [
+        "assets/js/foundation.js",
+        "core/lesson-view-model.js",
+        "core/lesson-session.js",
+        "core/learner-progress.js",
+        "adapters/browser-progress-store.js",
+        "adapters/teaching-engine-core-adapter.js",
+        "assets/js/teaching-engine.js",
+    ]
+    previous_index = -1
+    for script_path in expected_script_order:
+        script_tag = f'<script src="{script_path}"></script>'
+        current_index = simulator.find(script_tag)
+        if current_index == -1:
+            failures.append(f"simulator.html is missing script tag: {script_path}")
+            continue
+        if current_index < previous_index:
+            failures.append(f"simulator.html loads {script_path} out of clean-core bridge order")
+        previous_index = current_index
+
     for topic_id, lesson_global in FOUNDATION_ROUTE_MARKERS.items():
         route_source = extract_object_entry_source(simulator, topic_id)
         if route_source is None:

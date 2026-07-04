@@ -51,20 +51,26 @@ That means the old simulator can keep running while the new core gets stronger.
 
 It does not render screens.
 
-It does not replace `TeachingEngine`.
+It does not fully replace `TeachingEngine`.
 
-It does not change `simulator.html`.
+It does not control the visible lesson UI yet.
 
-It does not change current runtime behavior.
+It now runs beside the current lesson UI in shadow mode.
+
+## Current Prototype Bridge
+
+`simulator.html` loads the clean lesson/session/progress modules before `assets/js/teaching-engine.js`.
+
+`assets/js/teaching-engine.js` still renders the visible lesson experience, but it creates a clean `HearthTeachingEngineCoreAdapter` controller in shadow mode. That controller follows step movement, answers, completion, and progress storage while the old UI remains in place.
 
 ## Next Core Steps
 
 Recommended order:
 
-1. Add a renderer-key manifest for custom action steps.
-2. Add a tiny renderer registry interface.
-3. Build a clean Foundation route adapter that reads `foundation-route-manifest.json`.
-4. Only then connect the prototype UI to the clean core.
+1. Move action renderer implementations behind the renderer registry.
+2. Move Foundation topic lesson launching toward the clean route adapter.
+3. Replace TeachingEngine rendering one step type at a time.
+4. Keep old UI behavior available until each replacement is checked.
 
 ## Safety Checks
 
@@ -72,9 +78,12 @@ Run both:
 
 ```bash
 python3 tools/core_smoke_check.py
+python3 tools/core_js_smoke_check.py
 python3 tools/prototype_smoke_check.py
 ```
 
 The core check validates the rebuild work.
+
+The JavaScript check validates clean-core behavior.
 
 The prototype check validates that the old simulator handoff still has its expected files, seeds, and routes.

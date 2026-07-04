@@ -29,14 +29,26 @@
     return core;
   }
 
+  function normalizeSeed(input) {
+    if (input && input.lesson) {
+      return input;
+    }
+
+    return {
+      generated_from: "runtime_lesson_object",
+      lesson: input || {}
+    };
+  }
+
   function getLessonId(seed) {
+    seed = normalizeSeed(seed);
     return seed && seed.lesson && seed.lesson.id ? seed.lesson.id : null;
   }
 
   function createTeachingLessonController(options) {
     options = options || {};
 
-    var seed = options.seed;
+    var seed = normalizeSeed(options.seed);
     var sessions = requireCore("HearthLessonSession", options.sessionCore || sessionCore, "createLessonSession");
     var views = requireCore("HearthLessonViewModel", options.viewModelCore || viewModelCore, "buildLessonViewModel");
     var progress = options.progressCore || progressCore || null;
