@@ -21,6 +21,7 @@ The goal is not to patch the messy prototype forever. The goal is to build a reu
 | `core/learner-progress.js` | Pure learner progress record helpers for lessons. |
 | `adapters/action-renderer-registry-bootstrap.js` | Creates the shared browser action-renderer registry instance. |
 | `adapters/browser-progress-store.js` | Replaceable localStorage adapter for clean learner progress records. |
+| `adapters/doing-config.js` | Holds Doing drill levels, filters, state labels, and plain coaching copy. |
 | `adapters/foundation-action-renderers.js` | Registers existing Foundation action render functions behind stable renderer keys. |
 | `adapters/foundation-audio.js` | Shared tone helper for legacy Foundation action renderers. |
 | `adapters/foundation-lesson-launcher.js` | Resolves Foundation topics into TeachingEngine lesson objects. |
@@ -90,6 +91,8 @@ The launch decision itself now lives in `HearthFoundationLessonLauncher`, not in
 The Foundation lesson host shell, panel opening flow, neck-path map screen, reusable rainbow block renderer, tone helper, progress completion bridge, and simple UI helpers now live in focused adapters instead of being owned directly by the large page or old lesson file.
 
 The legacy Foundation topic tab view and topic launch/completion flow are also now adapter-owned, leaving `simulator.html` with only small wrapper functions for that fallback path.
+
+The Doing cleanup has begun with stable drill config moved into `HearthDoingConfig`, so the large Doing screen can be split apart without changing its behavior first.
 
 ## Next Core Steps
 

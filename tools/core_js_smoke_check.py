@@ -57,6 +57,7 @@ eval(readText(root + "/core/learner-progress.js"));
 eval(readText(root + "/adapters/browser-progress-store.js"));
 eval(readText(root + "/adapters/foundation-progress-bridge.js"));
 eval(readText(root + "/adapters/teaching-engine-core-adapter.js"));
+eval(readText(root + "/adapters/doing-config.js"));
 
 var seed = JSON.parse(readText(root + "/database-blueprint/seeds/foundation_conversations_lesson_v2.json"));
 var foundationManifest = JSON.parse(readText(root + "/core/foundation-route-manifest.json"));
@@ -104,6 +105,10 @@ var rainbowHtml = HearthRainbowBlocksViewer.renderRainbowBlocks([
 assert(rainbowHtml.indexOf("Rainbow Test") !== -1, "rainbow blocks viewer should render title");
 assert(rainbowHtml.indexOf("1/2 blocks") !== -1, "rainbow blocks viewer should count completed blocks");
 assert(typeof rainbowBlocks === "function", "rainbow blocks viewer should keep legacy global helper");
+assert(HearthDoingConfig.levelForDrill({{ id: "alt-1", difficulty: 8 }}) === 1, "Doing config should map known drill levels");
+assert(HearthDoingConfig.levelForDrill({{ id: "unknown", difficulty: 9 }}) === 8, "Doing config should clamp fallback drill levels");
+assert(HearthDoingConfig.coachForCategory("picking").whatDo.indexOf("pick") !== -1, "Doing config should return category coaching");
+assert(HearthDoingConfig.coachForCategory("missing").pass.indexOf("dead notes") !== -1, "Doing config should fall back to fretting coaching");
 var fakeMapTarget = {{ innerHTML: "" }};
 var fakeMapFoundation = {{
   guideLine: "Guide line",

@@ -34,6 +34,7 @@ REQUIRED_MARKERS = {
         "adapters/foundation-progress-bridge.js",
         "adapters/teaching-engine-core-adapter.js",
         "assets/js/teaching-engine.js",
+        "adapters/doing-config.js",
         "assets/js/journey.js",
     ],
     "assets/js/scene-first.js": [
@@ -163,6 +164,11 @@ REQUIRED_MARKERS = {
     "adapters/browser-progress-store.js": [
         "HearthBrowserProgressStore",
         "createBrowserProgressStore",
+    ],
+    "adapters/doing-config.js": [
+        "HearthDoingConfig",
+        "levelForDrill",
+        "coachForCategory",
     ],
     "adapters/teaching-engine-core-adapter.js": [
         "HearthTeachingEngineCoreAdapter",
@@ -544,6 +550,7 @@ def main() -> int:
         "adapters/foundation-progress-bridge.js",
         "adapters/teaching-engine-core-adapter.js",
         "assets/js/teaching-engine.js",
+        "adapters/doing-config.js",
     ]
     previous_index = -1
     for script_path in expected_script_order:
