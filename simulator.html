@@ -1726,10 +1726,12 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 </div>
 
 <script src="assets/js/foundation.js"></script>
+<script src="core/lesson-core.js"></script>
 <script src="core/renderer-registry.js"></script>
 <script src="adapters/action-renderer-registry-bootstrap.js"></script>
 <script src="core/foundation-adapter.js"></script>
 <script src="adapters/foundation-route-manifest-runtime.js"></script>
+<script src="adapters/foundation-seed-loader.js"></script>
 <script src="core/lesson-view-model.js"></script>
 <script src="core/lesson-session.js"></script>
 <script src="core/learner-progress.js"></script>
@@ -2339,7 +2341,7 @@ function foundationColor(index){
   return colors[index % colors.length];
 }
 
-function showFoundationTopic(topicId){
+async function showFoundationTopic(topicId){
   playSfx('drill-click');
   const F=window.FOUNDATION;if(!F)return;
   const topic=F.topics.find(t=>t.id===topicId);if(!topic)return;
@@ -2393,6 +2395,18 @@ function showFoundationTopic(topicId){
   var lessonInfo = lessonId
     ? { lesson: lessonById[lessonId], label: labelByTopicId[topicId], route: route }
     : null;
+  if(route && window.HearthFoundationSeedLoader){
+    try{
+      var loadedSeed = await window.HearthFoundationSeedLoader.loadSeedForRoute(route);
+      if(loadedSeed && loadedSeed.lesson){
+        lessonInfo = { lesson: loadedSeed.lesson, label: labelByTopicId[topicId], route: route, seed: loadedSeed.seed };
+      }
+    }catch(error){
+      if(window.console && console.warn){
+        console.warn('Foundation seed load fell back to legacy lesson:', error.message);
+      }
+    }
+  }
   if(lessonInfo && lessonInfo.lesson && window.TeachingEngine){
     document.querySelectorAll('.pnl').forEach(p=>p.classList.remove('on'));
     el.classList.add('on');

@@ -35,11 +35,13 @@ function assert(condition, message) {{
 }}
 
 var root = {str(ROOT)!r};
+eval(readText(root + "/core/lesson-core.js"));
 eval(readText(root + "/core/renderer-registry.js"));
 eval(readText(root + "/adapters/action-renderer-registry-bootstrap.js"));
 eval(readText(root + "/core/foundation-adapter.js"));
 eval(readText(root + "/adapters/foundation-route-manifest-runtime.js"));
 eval(readText(root + "/adapters/foundation-action-renderers.js"));
+eval(readText(root + "/adapters/foundation-seed-loader.js"));
 eval(readText(root + "/core/lesson-view-model.js"));
 eval(readText(root + "/core/lesson-session.js"));
 eval(readText(root + "/core/learner-progress.js"));
@@ -55,6 +57,13 @@ assert(
 );
 var musicRoute = HearthFoundationAdapter.findRouteByTopic(HearthFoundationRouteManifest, "f-music-language");
 assert(musicRoute.lesson_id === "f-learning-a-language", "Foundation adapter should map topic to clean lesson id");
+
+var normalizedSeedLesson = HearthFoundationSeedLoader.normalizeSeedForTeachingEngine(seed);
+assert(normalizedSeedLesson.id === "f-conversations", "seed loader should keep lesson id");
+assert(normalizedSeedLesson.completeText.indexOf("clean notes") !== -1, "seed loader should map complete_text");
+assert(normalizedSeedLesson.steps[1].charSize === "big", "seed loader should map char_size");
+assert(normalizedSeedLesson.steps[2].char.indexOf("Thinking") !== -1, "seed loader should map char_key");
+assert(normalizedSeedLesson.steps[2].choices[0].response.char.indexOf("Celebratory") !== -1, "seed loader should map response char_key");
 
 var registry = HearthRendererRegistry.createRegistry();
 registry.register("foundation.fake_renderer", function(context) {{

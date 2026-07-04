@@ -23,6 +23,7 @@ The goal is not to patch the messy prototype forever. The goal is to build a reu
 | `adapters/browser-progress-store.js` | Replaceable localStorage adapter for clean learner progress records. |
 | `adapters/foundation-action-renderers.js` | Registers existing Foundation action render functions behind stable renderer keys. |
 | `adapters/foundation-route-manifest-runtime.js` | Browser-friendly copy of the clean Foundation route manifest. |
+| `adapters/foundation-seed-loader.js` | Loads clean Foundation seed JSON and translates it for the current TeachingEngine. |
 | `adapters/teaching-engine-core-adapter.js` | DOM-free lesson controller connecting seeds, session state, view models, and progress. |
 | `tools/core_smoke_check.py` | Validates the new core files, route manifest, and linked lesson seed files. |
 | `tools/core_js_smoke_check.py` | Loads the clean JavaScript core and checks basic lesson behavior. |
@@ -72,12 +73,14 @@ Existing `LESSON_1_FOUNDATION` custom action render functions are now registered
 
 Foundation topic launching now asks `HearthFoundationAdapter` and `HearthFoundationRouteManifest` which clean lesson ID belongs to a topic. The old runtime lesson globals remain the lesson source until the browser can load seed files/API data directly.
 
+Foundation lesson launching now tries to load clean seed JSON through `HearthFoundationSeedLoader`. If that load fails, the old `window.LESSON_*` globals remain the fallback path.
+
 ## Next Core Steps
 
 Recommended order:
 
 1. Move Foundation action renderer implementations out of the old lesson file.
-2. Load Foundation lesson seeds/API data directly instead of old lesson globals.
+2. Make seed/API loading the default path in deployed environments.
 3. Replace TeachingEngine rendering one step type at a time.
 4. Keep old UI behavior available until each replacement is checked.
 
