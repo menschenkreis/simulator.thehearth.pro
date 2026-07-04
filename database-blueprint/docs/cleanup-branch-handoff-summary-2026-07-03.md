@@ -42,13 +42,15 @@ Commits on this branch:
 | `d153361` | Added Foundation route guard to smoke check. |
 | `53f9b75` | Tightened Foundation route smoke check. |
 | `80c4137` | Added extracted seed index. |
-| current commit | Added Lesson 1 Foundation custom renderer inventory. |
+| `d453182` | Added Lesson 1 Foundation custom renderer inventory. |
+| current commit | Started clean simulator core rebuild. |
 
 ## What Changed
 
 ### Added cleanup and inventory docs
 
 - `database-blueprint/docs/codebase-cleanup-plan-2026-07-03.md`
+- `database-blueprint/docs/core-rebuild-start-2026-07-04.md`
 - `database-blueprint/docs/active-code-inventory-2026-07-03.md`
 - `database-blueprint/docs/extracted-seed-index-2026-07-03.md`
 - `database-blueprint/docs/foundation-lesson-inventory-2026-07-03.md`

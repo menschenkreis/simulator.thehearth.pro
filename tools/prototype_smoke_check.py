@@ -58,6 +58,16 @@ REQUIRED_MARKERS = {
     "assets/js/lessons-first-shapes.js": ["window.LESSON_FIRST_SHAPES", "steps:"],
     "assets/js/lessons-first-conversation.js": ["window.LESSON_FIRST_CONVERSATION", "steps:"],
     "assets/js/lessons-conversations.js": ["window.LESSON_CONVERSATIONS", "steps:"],
+    "core/lesson-core.js": [
+        "HearthLessonCore",
+        "validateLessonSeed",
+        "buildRouteSummary",
+    ],
+    "core/foundation-route-manifest.json": [
+        '"node_id": "foundation"',
+        '"route_status": "active"',
+        '"route_status": "loaded_but_not_currently_mapped"',
+    ],
 }
 
 CONTENT_BANKS = {
