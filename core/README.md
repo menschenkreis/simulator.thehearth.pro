@@ -106,11 +106,11 @@ Move one stable contract at a time. Completed first-pass contracts:
 7. lesson session state
 8. learner progress record
 9. browser progress storage adapter
+10. TeachingEngine-to-core controller adapter
 
 Likely next contracts:
 
-1. TeachingEngine-to-core adapter
-2. action renderer implementations
-3. node routing beyond Foundation
+1. action renderer implementations
+2. node routing beyond Foundation
 
 That order keeps the rebuild understandable and easier for Martin to connect to a general simulator backend.

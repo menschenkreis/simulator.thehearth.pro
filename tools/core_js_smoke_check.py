@@ -39,6 +39,7 @@ eval(readText(root + "/core/lesson-view-model.js"));
 eval(readText(root + "/core/lesson-session.js"));
 eval(readText(root + "/core/learner-progress.js"));
 eval(readText(root + "/adapters/browser-progress-store.js"));
+eval(readText(root + "/adapters/teaching-engine-core-adapter.js"));
 
 var seed = JSON.parse(readText(root + "/database-blueprint/seeds/foundation_conversations_lesson_v2.json"));
 
@@ -98,6 +99,23 @@ assert(storedProgress.lessons["f-conversations"].status === "in_progress", "adap
 assert(storedProgress.lessons["f-conversations"].last_step_index === 4, "adapter should save last step");
 store.clear();
 assert(store.load().lessons["f-conversations"] === undefined, "adapter should clear progress");
+
+var controllerStore = HearthBrowserProgressStore.createBrowserProgressStore({{
+  progressCore: HearthLearnerProgress,
+  storage: fakeStorage,
+  storage_key: "controller.progress"
+}});
+var controller = HearthTeachingEngineCoreAdapter.createTeachingLessonController({{
+  seed: seed,
+  progressStore: controllerStore
+}});
+controller.start({{ now: "2026-07-04T00:07:00.000Z" }});
+var controllerState = controller.goToStep(2, {{ now: "2026-07-04T00:08:00.000Z" }});
+assert(controllerState.view_model.current_step.type === "ask", "controller should expose ask view model");
+var controllerAnswer = controller.answerChoice(1, {{ now: "2026-07-04T00:09:00.000Z" }});
+assert(controllerAnswer.result.next_action === "reexplain", "controller should evaluate wrong answer");
+var controllerProgress = controllerStore.load();
+assert(controllerProgress.lessons["f-conversations"].wrong_answers === 1, "controller should record answer progress");
 
 "Core JS smoke check passed.";
 """

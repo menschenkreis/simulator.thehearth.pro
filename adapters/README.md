@@ -11,6 +11,7 @@ Adapters are allowed to connect the clean core to those outside systems.
 | File | Role |
 |---|---|
 | `browser-progress-store.js` | Saves and loads clean learner progress records from browser localStorage. |
+| `teaching-engine-core-adapter.js` | DOM-free lesson controller that connects seeds, session rules, view models, and progress. |
 
 ## Rule
 
