@@ -1737,6 +1737,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 <script src="adapters/foundation-ui-utils.js"></script>
 <script src="adapters/rainbow-blocks-viewer.js"></script>
 <script src="adapters/foundation-map-viewer.js"></script>
+<script src="adapters/foundation-panel-controller.js"></script>
 <script src="adapters/foundation-topic-viewer.js"></script>
 <script src="adapters/foundation-topic-controller.js"></script>
 <script src="core/lesson-view-model.js"></script>
@@ -2122,32 +2123,20 @@ function calcOverallLevel(progress) {
 }
 
 function startFoundationLesson(topicId){
-  showFoundationTopic(topicId);
+  if(window.HearthFoundationPanelController){
+    return window.HearthFoundationPanelController.startFoundationLesson(topicId);
+  }
 }
 function startLesson1(){
-  // Start the first incomplete block, or Block 01
-  var F=window.FOUNDATION;
-  var completed=JSON.parse(localStorage.getItem('hearth-foundation-progress')||'{}');
-  var nextTopic=F.topics.find(function(t){return !completed[t.id];});
-  var topicId=nextTopic?nextTopic.id:'f-how-to-learn';
-  showFoundationTopic(topicId);
+  if(window.HearthFoundationPanelController){
+    return window.HearthFoundationPanelController.startLesson1();
+  }
 }
 
 
 function showFoundation(){
-  document.querySelectorAll('.pnl').forEach(p=>p.classList.remove('on'));
-  document.getElementById('p-foundation').classList.add('on');
-  const F=window.FOUNDATION;if(!F)return;
-  const el=document.getElementById('p-foundation');
-  const completed=window.HearthFoundationProgressBridge
-    ? window.HearthFoundationProgressBridge.readLegacyProgress()
-    : JSON.parse(localStorage.getItem('hearth-foundation-progress')||'{}');
-  if(window.HearthFoundationMapViewer){
-    window.HearthFoundationMapViewer.renderFoundationMap({
-      foundation:F,
-      targetEl:el,
-      completed:completed
-    });
+  if(window.HearthFoundationPanelController){
+    return window.HearthFoundationPanelController.showFoundation();
   }
 }
 

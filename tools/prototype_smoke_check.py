@@ -25,6 +25,7 @@ REQUIRED_MARKERS = {
         "adapters/foundation-ui-utils.js",
         "adapters/rainbow-blocks-viewer.js",
         "adapters/foundation-map-viewer.js",
+        "adapters/foundation-panel-controller.js",
         "adapters/foundation-topic-viewer.js",
         "adapters/foundation-topic-controller.js",
         "adapters/foundation-action-renderers.js",
@@ -119,6 +120,11 @@ REQUIRED_MARKERS = {
         "HearthFoundationMapViewer",
         "renderFoundationMap",
         "found-neck-wrap",
+    ],
+    "adapters/foundation-panel-controller.js": [
+        "HearthFoundationPanelController",
+        "showFoundation",
+        "startLesson1",
     ],
     "adapters/foundation-topic-viewer.js": [
         "HearthFoundationTopicViewer",
@@ -528,6 +534,7 @@ def main() -> int:
         "adapters/foundation-ui-utils.js",
         "adapters/rainbow-blocks-viewer.js",
         "adapters/foundation-map-viewer.js",
+        "adapters/foundation-panel-controller.js",
         "adapters/foundation-topic-viewer.js",
         "adapters/foundation-topic-controller.js",
         "core/lesson-view-model.js",

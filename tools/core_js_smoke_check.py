@@ -47,6 +47,7 @@ eval(readText(root + "/adapters/foundation-lesson-shell.js"));
 eval(readText(root + "/adapters/foundation-ui-utils.js"));
 eval(readText(root + "/adapters/rainbow-blocks-viewer.js"));
 eval(readText(root + "/adapters/foundation-map-viewer.js"));
+eval(readText(root + "/adapters/foundation-panel-controller.js"));
 eval(readText(root + "/adapters/foundation-topic-viewer.js"));
 eval(readText(root + "/adapters/foundation-topic-controller.js"));
 eval(readText(root + "/adapters/foundation-audio.js"));
@@ -120,6 +121,34 @@ var fakeMapResult = HearthFoundationMapViewer.renderFoundationMap({{
 assert(fakeMapResult.done_count === 1, "Foundation map viewer should count completed frets");
 assert(fakeMapResult.active_index === 1, "Foundation map viewer should choose first incomplete fret");
 assert(fakeMapTarget.innerHTML.indexOf("found-neck-wrap") !== -1, "Foundation map viewer should render map shell");
+var fakePanelTarget = {{
+  innerHTML: "",
+  classList: {{
+    added: "",
+    add: function(name) {{ this.added = name; }}
+  }}
+}};
+var fakeHiddenPanel = {{
+  classList: {{
+    removed: "",
+    remove: function(name) {{ this.removed = name; }}
+  }}
+}};
+globalThis.document = {{
+  querySelectorAll: function(selector) {{
+    return selector === ".pnl" ? [fakeHiddenPanel] : [];
+  }},
+  getElementById: function(id) {{
+    return id === "p-foundation" ? fakePanelTarget : null;
+  }}
+}};
+globalThis.localStorage = {{
+  getItem: function() {{ return "{{}}"; }}
+}};
+globalThis.FOUNDATION = fakeMapFoundation;
+var fakePanelResult = HearthFoundationPanelController.showFoundation();
+assert(fakePanelResult.fret_count === 3, "Foundation panel controller should render map through map viewer");
+assert(fakePanelTarget.classList.added === "on", "Foundation panel controller should show panel");
 var fakeTopicTarget = {{ innerHTML: "" }};
 var fakeFoundation = {{
   tag: "TEST",
