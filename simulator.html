@@ -2175,14 +2175,11 @@ function showDoing(){
   var progress=JSON.parse(localStorage.getItem('hearth-doing-progress')||'{}');
   var doingConfig=window.HearthDoingConfig;if(!doingConfig)return;
 
-  var genreFilters=doingConfig.genreFilters;
-
   var activeStyle='all';
   var activeLevel='all';
   var activeSearch='';
 
   var levels=doingConfig.levels;
-  var stringRows=doingConfig.stringRows;
   var stateOrder=doingConfig.stateOrder;
   var stateLabels=doingConfig.stateLabels;
   var guitarZones=doingConfig.guitarZones;
@@ -2203,46 +2200,19 @@ function showDoing(){
   function esc(s){
     return doingUi.escapeHtml(s);
   }
-  function textOnly(html){
-    return doingUi.textOnly(html);
-  }
-  function firstSentence(html){
-    return doingUi.firstSentence(html);
-  }
   function getDoingLevel(drill){
     return doingConfig.levelForDrill(drill);
   }
   function getState(drillId){
     return doingBoard.getState(progress,stateOrder,drillId);
   }
-  function matchesGenre(drill,genreId){
-    return doingBoard.matchesGenre(doingConfig,drill,genreId);
-  }
-  function drillMatchesSearch(cat,drill){
-    return doingBoard.drillMatchesSearch(cat,drill,activeSearch);
-  }
-  function isVisible(cat,drill){
-    return doingBoard.isVisible(boardOptions(),cat,drill);
-  }
   function countForGenre(genreId){
     return doingBoard.countForGenre(boardOptions(),genreId);
-  }
-  function countForLevelAnyGenre(level){
-    return doingBoard.countForLevelAnyGenre(boardOptions(),level);
-  }
-  function countForAllGenresAllLevels(){
-    return doingBoard.countForAllGenresAllLevels(boardOptions());
   }
   function normalizeActiveStyle(){
     if(activeStyle!=='all'&&countForGenre(activeStyle)===0){
       activeStyle='all';
     }
-  }
-  function drillShort(drill){
-    return doingUi.drillShort(drill);
-  }
-  function rowDrills(row){
-    return doingBoard.rowDrills(boardOptions(),row);
   }
 
   function render(){
@@ -2279,11 +2249,7 @@ function showDoing(){
 
   /* === Counts === */
   var progressSummary=doingBoard.summarizeProgress(D,progress,stateOrder);
-  var total=progressSummary.total, mastered=progressSummary.mastered, touched=progressSummary.touched;
-
-  /* === Weakest category === */
-  var weakestInfo=doingBoard.weakestCategory(D,progress,stateOrder);
-  var weakest=weakestInfo.title;
+  var mastered=progressSummary.mastered, touched=progressSummary.touched;
 
   /* === Next recommended drill === */
   function findNextDrill(){
@@ -2293,7 +2259,6 @@ function showDoing(){
 
   /* === State === */
   var doingView='map';
-  var activeMode='training';
   var activeExpTab='notes';
   var doingDebug=false;
 
@@ -2316,14 +2281,6 @@ function showDoing(){
       zones:guitarZones,
       doingDebug:doingDebug
     });
-  }
-
-  /* === Mode toggle === */
-  function modeToggleHtml(){
-    return '<div class="doing-mode-toggle">'+
-      '<button class="doing-mode-btn'+(activeMode==='training'?' active':'')+'" data-mode="training">Training</button>'+
-      '<button class="doing-mode-btn'+(activeMode==='explorer'?' active':'')+'" data-mode="explorer">Explorer</button>'+
-    '</div>';
   }
 
   /* === Explorer tabs HTML === */
@@ -2496,10 +2453,6 @@ function showDoing(){
         else if(action==='open-explorer'){doingView='explorer';activeExpTab='notes';}
         shell();
       };
-    });
-    /* Mode toggle */
-    el.querySelectorAll('.doing-mode-btn').forEach(function(btn){
-      btn.onclick=function(){ activeMode=btn.dataset.mode; doingView=activeMode; shell(); };
     });
     /* Explorer tabs */
     el.querySelectorAll('.doing-exp-tab').forEach(function(btn){
