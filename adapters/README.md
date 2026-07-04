@@ -13,6 +13,7 @@ Adapters are allowed to connect the clean core to those outside systems.
 | `action-renderer-registry-bootstrap.js` | Creates the shared browser action-renderer registry instance. |
 | `browser-progress-store.js` | Saves and loads clean learner progress records from browser localStorage. |
 | `doing-config.js` | Holds Doing drill levels, filters, map zones, state labels, and plain coaching copy. |
+| `doing-controls-controller.js` | Binds general Doing view buttons, tabs, filters, and search. |
 | `doing-drill-board-model.js` | Filters Doing drills and calculates board counts, summaries, and next drill. |
 | `doing-drill-adjust-controller.js` | Binds Doing easier/harder drill adjustment buttons. |
 | `doing-drill-preview-controller.js` | Binds Doing drill-dot click and hover preview behavior. |

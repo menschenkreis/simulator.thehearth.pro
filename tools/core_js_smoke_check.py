@@ -60,6 +60,7 @@ eval(readText(root + "/adapters/teaching-engine-core-adapter.js"));
 eval(readText(root + "/adapters/doing-ui-utils.js"));
 eval(readText(root + "/adapters/doing-config.js"));
 eval(readText(root + "/adapters/doing-drill-board-model.js"));
+eval(readText(root + "/adapters/doing-controls-controller.js"));
 eval(readText(root + "/adapters/doing-drill-adjust-controller.js"));
 eval(readText(root + "/adapters/doing-drill-preview-controller.js"));
 eval(readText(root + "/adapters/doing-drill-detail-viewer.js"));
@@ -145,6 +146,14 @@ var fakeBoardOptions = {{
 }};
 assert(HearthDoingDrillBoardModel.countForGenre(fakeBoardOptions, "rock") === 1, "Doing board model should count genre drills");
 assert(HearthDoingDrillBoardModel.findNextDrill(fakeDoing, {{}}, HearthDoingConfig.stateOrder).drill.id === "alt-1", "Doing board model should find next drill");
+assert(
+  HearthDoingControlsController.stateForFocus("fretboard", HearthDoingConfig.focusCats).doingView === "explorer",
+  "Doing controls controller should route fretboard focus to explorer"
+);
+assert(
+  HearthDoingControlsController.stateForQuickLink("open-map").doingView === "training",
+  "Doing controls controller should route map quick link to training"
+);
 assert(
   HearthDoingDrillAdjustController.messageForAdjustment("easier").indexOf("slowing the BPM") !== -1,
   "Doing drill adjust controller should return easier message"

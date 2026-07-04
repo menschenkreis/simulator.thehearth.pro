@@ -1764,6 +1764,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 <script src="adapters/doing-ui-utils.js"></script>
 <script src="adapters/doing-config.js"></script>
 <script src="adapters/doing-drill-board-model.js"></script>
+<script src="adapters/doing-controls-controller.js"></script>
 <script src="adapters/doing-drill-adjust-controller.js"></script>
 <script src="adapters/doing-drill-preview-controller.js"></script>
 <script src="adapters/doing-drill-detail-viewer.js"></script>
@@ -2357,77 +2358,25 @@ function showDoing(){
 
   /* === Bind controls === */
   function bindControls(){
-    /* Focus buttons */
-    el.querySelectorAll('.doing-focus-btn').forEach(function(btn){
-      btn.onclick=function(){
-        var focusId=btn.getAttribute('data-focus');
-        if(focusId==='fretboard'){doingView='explorer';activeExpTab='notes';}
-        else{
-          /* Filter by focus category */
-          var fc=focusCats.find(function(f){return f.id===focusId;});
-          if(fc&&fc.categories.length){
-            /* Find first matching category for filter */
-            activeStyle='all';
-            activeLevel='all';
-            doingView='training';
-          } else {
-            doingView='training';
-          }
-        }
-        shell();
-      };
+    if(!window.HearthDoingControlsController) return;
+    window.HearthDoingControlsController.bindDoingControls({
+      rootEl:el,
+      documentRef:document,
+      doingView:doingView,
+      focusCats:focusCats,
+      setState:function(nextState){
+        if(Object.prototype.hasOwnProperty.call(nextState,'doingView')) doingView=nextState.doingView;
+        if(Object.prototype.hasOwnProperty.call(nextState,'activeExpTab')) activeExpTab=nextState.activeExpTab;
+        if(Object.prototype.hasOwnProperty.call(nextState,'activeStyle')) activeStyle=nextState.activeStyle;
+        if(Object.prototype.hasOwnProperty.call(nextState,'activeLevel')) activeLevel=nextState.activeLevel;
+        if(Object.prototype.hasOwnProperty.call(nextState,'activeSearch')) activeSearch=nextState.activeSearch;
+      },
+      shell:shell,
+      showDoingDrill:showDoingDrill,
+      rerenderBoard:rerenderBoard,
+      normalizeActiveStyle:normalizeActiveStyle,
+      alertFn:alert
     });
-    /* Recommended drill */
-    el.querySelectorAll('.doing-rec-drill').forEach(function(card){
-      card.onclick=function(){showDoingDrill(card.getAttribute('data-cat'),card.getAttribute('data-drill'));};
-    });
-    /* Quick links */
-    el.querySelectorAll('.doing-link-btn').forEach(function(btn){
-      btn.onclick=function(){
-        var action=btn.getAttribute('data-action');
-        if(action==='open-map'){doingView='training';}
-        else if(action==='open-explorer'){doingView='explorer';activeExpTab='notes';}
-        shell();
-      };
-    });
-    /* Explorer tabs */
-    el.querySelectorAll('.doing-exp-tab').forEach(function(btn){
-      btn.onclick=function(){ activeExpTab=btn.getAttribute('data-etab'); shell(); };
-    });
-    /* Drill adjust buttons */
-    if(window.HearthDoingDrillAdjustController){
-      window.HearthDoingDrillAdjustController.bindDrillAdjustButtons({
-        rootEl:el,
-        alertFn:alert
-      });
-    }
-    if(doingView!=='training') return;
-    var styleFilters=document.getElementById('style-filters');
-    if(styleFilters){
-      styleFilters.addEventListener('click',function(e){
-        var btn=e.target.closest('.style-filter');
-        if(!btn||btn.classList.contains('disabled'))return;
-        activeStyle=btn.getAttribute('data-style')||'all';
-        rerenderBoard();
-      });
-    }
-    var levelFilt=document.getElementById('doing-level-filters');
-    if(levelFilt){
-      levelFilt.addEventListener('click',function(e){
-        var btn=e.target.closest('.doing-level-filter');
-        if(!btn||btn.classList.contains('disabled'))return;
-        activeLevel=btn.getAttribute('data-level')||'all';
-        normalizeActiveStyle();
-        rerenderBoard();
-      });
-    }
-    var searchInput=document.getElementById('doing-search');
-    if(searchInput){
-      searchInput.addEventListener('input',function(){
-        activeSearch=this.value.trim();
-        rerenderBoard(true);
-      });
-    }
   }
 
   /* === Map zone internal handlers === */

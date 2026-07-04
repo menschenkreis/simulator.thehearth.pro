@@ -22,6 +22,7 @@ The goal is not to patch the messy prototype forever. The goal is to build a reu
 | `adapters/action-renderer-registry-bootstrap.js` | Creates the shared browser action-renderer registry instance. |
 | `adapters/browser-progress-store.js` | Replaceable localStorage adapter for clean learner progress records. |
 | `adapters/doing-config.js` | Holds Doing drill levels, filters, map zones, state labels, and plain coaching copy. |
+| `adapters/doing-controls-controller.js` | Binds general Doing view buttons, tabs, filters, and search. |
 | `adapters/doing-drill-board-model.js` | Filters Doing drills and calculates board counts, summaries, and next drill. |
 | `adapters/doing-drill-adjust-controller.js` | Binds Doing easier/harder drill adjustment buttons. |
 | `adapters/doing-drill-preview-controller.js` | Binds Doing drill-dot click and hover preview behavior. |
