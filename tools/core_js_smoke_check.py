@@ -60,6 +60,7 @@ eval(readText(root + "/adapters/teaching-engine-core-adapter.js"));
 eval(readText(root + "/adapters/doing-ui-utils.js"));
 eval(readText(root + "/adapters/doing-config.js"));
 eval(readText(root + "/adapters/doing-drill-board-model.js"));
+eval(readText(root + "/adapters/doing-drill-detail-viewer.js"));
 eval(readText(root + "/adapters/doing-drill-board-viewer.js"));
 eval(readText(root + "/adapters/doing-entry-viewer.js"));
 eval(readText(root + "/adapters/doing-map-viewer.js"));
@@ -151,6 +152,17 @@ var doingBoardHtml = HearthDoingDrillBoardViewer.renderDoingDrillBoard({{
 }});
 assert(doingBoardHtml.indexOf("doing-fretboard-stage") !== -1, "Doing board viewer should render board shell");
 assert(doingBoardHtml.indexOf("1/2 mastered in view") !== -1, "Doing board viewer should render mastered count");
+var doingDetailHtml = HearthDoingDrillDetailViewer.renderDoingDrillDetail({{
+  cat: fakeDoing.categories[0],
+  drill: fakeDoing.categories[0].drills[0],
+  level: HearthDoingConfig.levels[0],
+  state: "mastered",
+  config: HearthDoingConfig,
+  ui: HearthDoingUiUtils
+}});
+assert(doingDetailHtml.indexOf("doing-drill-card") !== -1, "Doing detail viewer should render detail card");
+assert(doingDetailHtml.indexOf("Alternate Picking") !== -1, "Doing detail viewer should render drill title");
+assert(doingDetailHtml.indexOf("Pass condition") !== -1, "Doing detail viewer should render coaching sections");
 var doingEntryHtml = HearthDoingEntryViewer.renderDoingEntry({{
   focusCats: HearthDoingConfig.focusCats,
   nextDrill: {{ cat: fakeDoing.categories[0], drill: fakeDoing.categories[0].drills[0] }},

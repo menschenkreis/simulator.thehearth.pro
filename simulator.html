@@ -1764,6 +1764,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 <script src="adapters/doing-ui-utils.js"></script>
 <script src="adapters/doing-config.js"></script>
 <script src="adapters/doing-drill-board-model.js"></script>
+<script src="adapters/doing-drill-detail-viewer.js"></script>
 <script src="adapters/doing-drill-board-viewer.js"></script>
 <script src="adapters/doing-entry-viewer.js"></script>
 <script src="adapters/doing-map-viewer.js"></script>
@@ -2243,11 +2244,6 @@ function showDoing(){
     return doingBoard.rowDrills(boardOptions(),row);
   }
 
-  /* === Plain coaching for drill card === */
-  function plainCoach(cat,drill){
-    return doingConfig.coachForCategory(cat.id);
-  }
-
   function render(){
     normalizeActiveStyle();
     if(!window.HearthDoingDrillBoardViewer) return '';
@@ -2269,37 +2265,15 @@ function showDoing(){
     var drill=cat.drills.find(function(d){return d.id===drillId;});if(!drill)return;
     var state=getState(drillId);
     var lv=levels.find(function(l){return l.level===getDoingLevel(drill);})||levels[0];
-    var coach=plainCoach(cat,drill);
-    var videoHtml=drill.video?'<a href="'+esc(drill.video)+'" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:7px;color:var(--gold);text-decoration:none;font-size:0.75rem">Watch external demo</a>':'';
-    var stateButtons=['practiced','clean','mastered'].map(function(s){
-      return '<button class="doing-state-btn '+(s==='mastered'?'mastered ':'')+(state===s?'active':'')+'" onclick="setDoingDrillState(\''+esc(catId)+'\',\''+esc(drillId)+'\',\''+s+'\')">'+stateLabels[s]+'</button>';
-    }).join('');
-
-    el.innerHTML='<div class="doing-drill-page">'+
-      '<button class="back-btn" onclick="showDoing()">&larr; Back</button>'+
-      '<div class="doing-drill-card doing-drill-card--clean">'+
-        '<div class="doing-kicker">'+esc(cat.title)+' &middot; '+esc(lv.name)+'</div>'+
-        '<h2>'+esc(drill.title)+'</h2>'+
-        '<div style="display:flex;gap:6px;margin:8px 0 16px;flex-wrap:wrap">'+
-          '<span class="tag">BPM '+esc(drill.bpm)+'</span>'+
-          '<span class="tag">'+esc(drill.duration)+'</span>'+
-          videoHtml+
-        '</div>'+
-        '<div class="doing-drill-sections">'+
-          '<div class="doing-drill-section"><div class="ds-label">What to do</div><div class="ds-text">'+esc(coach.whatDo)+'</div></div>'+
-          '<div class="doing-drill-section"><div class="ds-label">How to do it</div><div class="ds-text">'+esc(coach.howDo)+'</div></div>'+
-          '<div class="doing-drill-section"><div class="ds-label">How long</div><div class="ds-text">'+esc(coach.howLong)+'</div></div>'+
-          '<div class="doing-drill-section"><div class="ds-label">Listen / feel</div><div class="ds-text">'+esc(coach.listen)+'</div></div>'+
-          '<div class="doing-drill-section"><div class="ds-label">Common mistake</div><div class="ds-text">'+esc(coach.mistake)+'</div></div>'+
-          '<div class="doing-drill-section"><div class="ds-label">Pass condition</div><div class="ds-text">'+esc(coach.pass)+'</div></div>'+
-        '</div>'+
-        '<div class="doing-drill-adjust">'+
-          '<button class="doing-adj-btn" data-adj="easier">&#8592; Easier</button>'+
-          '<button class="doing-adj-btn" data-adj="harder">Harder &#8594;</button>'+
-        '</div>'+
-        '<div class="doing-state-buttons">'+stateButtons+'</div>'+
-      '</div>'+
-    '</div>';
+    if(!window.HearthDoingDrillDetailViewer) return;
+    el.innerHTML=window.HearthDoingDrillDetailViewer.renderDoingDrillDetail({
+      cat:cat,
+      drill:drill,
+      level:lv,
+      state:state,
+      config:doingConfig,
+      ui:doingUi
+    });
   };
 
   /* === Counts === */
