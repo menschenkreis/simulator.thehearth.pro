@@ -1768,6 +1768,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 <script src="adapters/doing-drill-board-viewer.js"></script>
 <script src="adapters/doing-entry-viewer.js"></script>
 <script src="adapters/doing-explorer-viewer.js"></script>
+<script src="adapters/doing-explorer-controller.js"></script>
 <script src="adapters/doing-map-viewer.js"></script>
 <script src="assets/js/doing.js?v=6"></script>
 <script src="assets/js/knowing.js?v=6"></script>
@@ -2362,61 +2363,11 @@ function showDoing(){
 
   /* === Explorer note binding === */
   function bindExplorer(){
-    var activeNote=null;
-    var NOTES=['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
-    var TUNING=[40,45,50,55,59,64];
-    var STRING_NAMES=['E','A','D','G','B','e'];
-    function noteFromMidi(m){ return NOTES[((m%12)+12)%12]; }
-    function renderFretboard(highlightNote){
-      var svg=document.getElementById('exp-fretboard-svg');
-      if(!svg) return;
-      var left=60,right=900,topY=25,bottomY=230;
-      var fretW=(right-left)/12;
-      var noteX=function(f){return f===0?left-30:left+(f-0.5)*fretW;};
-      var xForF=function(f){return left+f*fretW;};
-      var yForS=function(i){return topY+i*((bottomY-topY)/5);};
-      var s='';
-      s+='<rect x="'+(left-42)+'" y="10" width="'+(right-left+84)+'" height="240" rx="12" fill="rgba(18,13,9,.5)"/>';
-      [3,5,7,9].forEach(function(f){ s+='<circle cx="'+noteX(f)+'" cy="'+((topY+bottomY)/2)+'" r="9" fill="rgba(212,175,105,.1)"/>'; });
-      s+='<circle cx="'+noteX(12)+'" cy="'+((topY+bottomY)/2-22)+'" r="7" fill="rgba(212,175,105,.12)"/>';
-      s+='<circle cx="'+noteX(12)+'" cy="'+((topY+bottomY)/2+22)+'" r="7" fill="rgba(212,175,105,.12)"/>';
-      for(var f=0;f<=12;f++){ s+='<line x1="'+xForF(f)+'" y1="'+(topY-14)+'" x2="'+xForF(f)+'" y2="'+(bottomY+14)+'" stroke="'+(f===0?'#d4af69':'rgba(245,237,216,.25)')+'" stroke-width="'+(f===0?6:1.5)+'"/>'; }
-      STRING_NAMES.forEach(function(name,si){
-        var y=yForS(si);
-        s+='<line x1="'+(left-30)+'" y1="'+y+'" x2="'+right+'" y2="'+y+'" stroke="rgba(245,237,216,.5)" stroke-width="'+(3.6-si*0.32)+'" stroke-linecap="round"/>';
-        s+='<text x="28" y="'+y+'" text-anchor="middle" dominant-baseline="central" fill="#d4af69" font-family="Cinzel,serif" font-size="13" font-weight="700">'+name+'</text>';
-        for(var f2=0;f2<=12;f2++){
-          var note=noteFromMidi(TUNING[si]+f2);
-          var isActive=highlightNote&&note===highlightNote;
-          var opacity=highlightNote?(isActive?1:0.18):0.5;
-          s+='<g transform="translate('+noteX(f2)+','+y+')">';
-          s+='<circle r="'+(f2===0?11:13)+'" fill="'+(isActive?'#d4af69':'#19130f')+'" stroke="'+(isActive?'#f5edd8':'rgba(212,175,105,.18)')+'" stroke-width="1.5" opacity="'+opacity+'"/>';
-          s+='<text font-family="JetBrains Mono,monospace" font-size="9" font-weight="700" fill="'+(isActive?'#0d0b08':'#6f6250')+'" text-anchor="middle" dominant-baseline="central" opacity="'+opacity+'">'+note+'</text>';
-          s+='</g>';
-        }
-      });
-      svg.innerHTML=s;
-      var res=document.getElementById('exp-note-result');
-      if(res){
-        if(!highlightNote){ res.textContent=''; }
-        else {
-          var positions=[];
-          STRING_NAMES.forEach(function(name,si){
-            for(var ff=0;ff<=12;ff++){ if(noteFromMidi(TUNING[si]+ff)===highlightNote) positions.push(name+' fret '+ff); }
-          });
-          res.innerHTML='<b style="color:var(--gold)">'+highlightNote+'</b>: '+positions.join(', ');
-        }
-      }
-    }
-    el.querySelectorAll('.doing-exp-note-btn').forEach(function(btn){
-      btn.onclick=function(){
-        var note=btn.dataset.enote;
-        activeNote=(activeNote===note)?null:note;
-        el.querySelectorAll('.doing-exp-note-btn').forEach(function(b){b.classList.toggle('active',b.dataset.enote===activeNote);});
-        renderFretboard(activeNote);
-      };
+    if(!window.HearthDoingExplorerController) return;
+    window.HearthDoingExplorerController.bindExplorerNoteLocator({
+      rootEl:el,
+      documentRef:document
     });
-    renderFretboard(null);
   }
 
   /* === Bind controls === */

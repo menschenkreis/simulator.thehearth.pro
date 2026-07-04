@@ -64,6 +64,7 @@ eval(readText(root + "/adapters/doing-drill-detail-viewer.js"));
 eval(readText(root + "/adapters/doing-drill-board-viewer.js"));
 eval(readText(root + "/adapters/doing-entry-viewer.js"));
 eval(readText(root + "/adapters/doing-explorer-viewer.js"));
+eval(readText(root + "/adapters/doing-explorer-controller.js"));
 eval(readText(root + "/adapters/doing-map-viewer.js"));
 
 var seed = JSON.parse(readText(root + "/database-blueprint/seeds/foundation_conversations_lesson_v2.json"));
@@ -182,6 +183,15 @@ assert(doingExplorerHtml.indexOf("exp-fretboard-svg") !== -1, "Doing explorer vi
 assert(
   HearthDoingExplorerViewer.renderDoingExplorer({{ activeTab: "tab" }}).indexOf("Tab + Notation") !== -1,
   "Doing explorer viewer should render tab panel"
+);
+assert(HearthDoingExplorerController.noteFromMidi(40) === "E", "Doing explorer controller should map MIDI notes");
+assert(
+  HearthDoingExplorerController.positionsForNote("E").indexOf("E fret 0") !== -1,
+  "Doing explorer controller should find note positions"
+);
+assert(
+  HearthDoingExplorerController.renderFretboardSvg("E").indexOf("#d4af69") !== -1,
+  "Doing explorer controller should render highlighted fretboard SVG"
 );
 var doingMapHtml = HearthDoingMapViewer.renderDoingMap({{
   zones: HearthDoingConfig.guitarZones,

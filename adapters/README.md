@@ -17,6 +17,7 @@ Adapters are allowed to connect the clean core to those outside systems.
 | `doing-drill-detail-viewer.js` | Renders the Doing single-drill detail card. |
 | `doing-drill-board-viewer.js` | Renders the Doing level/string drill board. |
 | `doing-entry-viewer.js` | Renders the Doing entry panel and recommended next drill. |
+| `doing-explorer-controller.js` | Binds the Doing explorer note-locator behavior. |
 | `doing-explorer-viewer.js` | Renders the Doing fretboard explorer tabs and panels. |
 | `doing-map-viewer.js` | Renders the Doing guitar-body training map. |
 | `doing-ui-utils.js` | Shared text and display helpers for the legacy Doing view. |
