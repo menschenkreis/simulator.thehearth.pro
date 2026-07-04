@@ -22,6 +22,7 @@ The goal is not to patch the messy prototype forever. The goal is to build a reu
 | `adapters/action-renderer-registry-bootstrap.js` | Creates the shared browser action-renderer registry instance. |
 | `adapters/browser-progress-store.js` | Replaceable localStorage adapter for clean learner progress records. |
 | `adapters/foundation-action-renderers.js` | Registers existing Foundation action render functions behind stable renderer keys. |
+| `adapters/foundation-lesson-launcher.js` | Resolves Foundation topics into TeachingEngine lesson objects. |
 | `adapters/foundation-route-manifest-runtime.js` | Browser-friendly copy of the clean Foundation route manifest. |
 | `adapters/foundation-seed-loader.js` | Loads clean Foundation seed JSON and translates it for the current TeachingEngine. |
 | `adapters/teaching-engine-core-adapter.js` | DOM-free lesson controller connecting seeds, session state, view models, and progress. |
@@ -74,6 +75,8 @@ Existing `LESSON_1_FOUNDATION` custom action render functions are now registered
 Foundation topic launching now asks `HearthFoundationAdapter` and `HearthFoundationRouteManifest` which clean lesson ID belongs to a topic. The old runtime lesson globals remain the lesson source until the browser can load seed files/API data directly.
 
 Foundation lesson launching now tries to load clean seed JSON through `HearthFoundationSeedLoader`. If that load fails, the old `window.LESSON_*` globals remain the fallback path.
+
+The launch decision itself now lives in `HearthFoundationLessonLauncher`, not inside the large `simulator.html` page.
 
 ## Next Core Steps
 

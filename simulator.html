@@ -1732,6 +1732,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 <script src="core/foundation-adapter.js"></script>
 <script src="adapters/foundation-route-manifest-runtime.js"></script>
 <script src="adapters/foundation-seed-loader.js"></script>
+<script src="adapters/foundation-lesson-launcher.js"></script>
 <script src="core/lesson-view-model.js"></script>
 <script src="core/lesson-session.js"></script>
 <script src="core/learner-progress.js"></script>
@@ -2347,66 +2348,11 @@ async function showFoundationTopic(topicId){
   const topic=F.topics.find(t=>t.id===topicId);if(!topic)return;
   setNotebookContext('f-'+topicId,topic.title);
   const el=document.getElementById('p-foundation');
-  const topicIdx=F.topics.indexOf(topic);
 
   // ── INTERACTIVE LESSON OVERRIDE ──
-  // Clean route adapter first; old globals stay as the runtime lesson source.
-  var lessonById = {
-    'f-threshold': window.LESSON_THRESHOLD,
-    'f-how-to-learn': window.LESSON_HOW_TO_LEARN,
-    'f-learning-a-language': window.LESSON_LEARNING_A_LANGUAGE,
-    'f-language-of-music': window.LESSON_LANGUAGE_OF_MUSIC,
-    'f-rhythm-pulse': window.LESSON_RHYTHM_PULSE,
-    'f-language-of-guitar': window.LESSON_LANGUAGE_OF_GUITAR,
-    'f-the-guitar': window.LESSON_THE_GUITAR,
-    'f-speaking': window.LESSON_SPEAKING,
-    'f-first-shapes': window.LESSON_FIRST_SHAPES,
-    'f-conversations': window.LESSON_CONVERSATIONS
-  };
-  var labelByTopicId = {
-    'f-threshold': 'THE THRESHOLD',
-    'f-how-to-learn': 'BLOCK 01 - HOW TO LEARN',
-    'f-music-language': 'BLOCK 02 - MUSIC AS LANGUAGE',
-    'f-musical-alphabet': 'BLOCK 03 - THE MUSICAL ALPHABET',
-    'f-rhythm-pulse': 'BLOCK 04 - RHYTHM & PULSE',
-    'f-guitar-map': 'BLOCK 05 - THE GUITAR MAP',
-    'f-instrument-body': 'BLOCK 06 - THE INSTRUMENT BODY',
-    'f-hands-sound': 'BLOCK 07 - HANDS & SOUND',
-    'f-first-shapes': 'BLOCK 08 - FIRST SHAPES',
-    'f-first-conversation': 'BLOCK 09 - FIRST CONVERSATION'
-  };
-  var fallbackLessonIdByTopicId = {
-    'f-threshold': 'f-threshold',
-    'f-how-to-learn': 'f-how-to-learn',
-    'f-music-language': 'f-learning-a-language',
-    'f-musical-alphabet': 'f-language-of-music',
-    'f-rhythm-pulse': 'f-rhythm-pulse',
-    'f-guitar-map': 'f-language-of-guitar',
-    'f-instrument-body': 'f-the-guitar',
-    'f-hands-sound': 'f-speaking',
-    'f-first-shapes': 'f-first-shapes',
-    'f-first-conversation': 'f-conversations'
-  };
-  var route = null;
-  if(window.HearthFoundationAdapter && window.HearthFoundationRouteManifest){
-    route = window.HearthFoundationAdapter.findRouteByTopic(window.HearthFoundationRouteManifest, topicId);
-  }
-  var lessonId = route ? route.lesson_id : fallbackLessonIdByTopicId[topicId];
-  var lessonInfo = lessonId
-    ? { lesson: lessonById[lessonId], label: labelByTopicId[topicId], route: route }
+  var lessonInfo = window.HearthFoundationLessonLauncher
+    ? await window.HearthFoundationLessonLauncher.resolveFoundationLesson(topicId)
     : null;
-  if(route && window.HearthFoundationSeedLoader){
-    try{
-      var loadedSeed = await window.HearthFoundationSeedLoader.loadSeedForRoute(route);
-      if(loadedSeed && loadedSeed.lesson){
-        lessonInfo = { lesson: loadedSeed.lesson, label: labelByTopicId[topicId], route: route, seed: loadedSeed.seed };
-      }
-    }catch(error){
-      if(window.console && console.warn){
-        console.warn('Foundation seed load fell back to legacy lesson:', error.message);
-      }
-    }
-  }
   if(lessonInfo && lessonInfo.lesson && window.TeachingEngine){
     document.querySelectorAll('.pnl').forEach(p=>p.classList.remove('on'));
     el.classList.add('on');

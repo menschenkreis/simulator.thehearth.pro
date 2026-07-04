@@ -20,6 +20,7 @@ REQUIRED_MARKERS = {
         "core/foundation-adapter.js",
         "adapters/foundation-route-manifest-runtime.js",
         "adapters/foundation-seed-loader.js",
+        "adapters/foundation-lesson-launcher.js",
         "adapters/foundation-action-renderers.js",
         "core/lesson-session.js",
         "adapters/teaching-engine-core-adapter.js",
@@ -80,6 +81,11 @@ REQUIRED_MARKERS = {
         "HearthFoundationSeedLoader",
         "normalizeSeedForTeachingEngine",
         "loadSeedForRoute",
+    ],
+    "adapters/foundation-lesson-launcher.js": [
+        "HearthFoundationLessonLauncher",
+        "resolveFoundationLesson",
+        "FALLBACK_LESSON_ID_BY_TOPIC_ID",
     ],
     "core/lesson-view-model.js": ["HearthLessonViewModel", "buildLessonViewModel"],
     "core/renderer-registry.js": ["HearthRendererRegistry", "createRegistry"],
@@ -468,6 +474,7 @@ def main() -> int:
         "core/foundation-adapter.js",
         "adapters/foundation-route-manifest-runtime.js",
         "adapters/foundation-seed-loader.js",
+        "adapters/foundation-lesson-launcher.js",
         "core/lesson-view-model.js",
         "core/lesson-session.js",
         "core/learner-progress.js",
@@ -496,6 +503,7 @@ def main() -> int:
         failures.append("foundation-action-renderers.js must load after lesson-1-foundation.js")
 
     runtime_manifest = read_text("adapters/foundation-route-manifest-runtime.js")
+    launcher_source = read_text("adapters/foundation-lesson-launcher.js")
     for topic_id, lesson_id in CLEAN_FOUNDATION_ROUTE_IDS.items():
         clean_route_pattern = (
             rf'topic_id:\s*"{re.escape(topic_id)}"[\s\S]*?'
@@ -507,9 +515,9 @@ def main() -> int:
         )
         if not re.search(clean_route_pattern, runtime_manifest):
             failures.append(f"runtime Foundation manifest is missing route: {topic_id} -> {lesson_id}")
-        if not re.search(fallback_route_pattern, simulator):
+        if not re.search(fallback_route_pattern, launcher_source):
             failures.append(
-                f"simulator.html fallback route {topic_id} no longer points to {lesson_id}"
+                f"Foundation launcher fallback route {topic_id} no longer points to {lesson_id}"
             )
 
     for lesson_global, source_file in LOADED_UNMAPPED_LESSONS.items():

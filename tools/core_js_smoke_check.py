@@ -42,6 +42,7 @@ eval(readText(root + "/core/foundation-adapter.js"));
 eval(readText(root + "/adapters/foundation-route-manifest-runtime.js"));
 eval(readText(root + "/adapters/foundation-action-renderers.js"));
 eval(readText(root + "/adapters/foundation-seed-loader.js"));
+eval(readText(root + "/adapters/foundation-lesson-launcher.js"));
 eval(readText(root + "/core/lesson-view-model.js"));
 eval(readText(root + "/core/lesson-session.js"));
 eval(readText(root + "/core/learner-progress.js"));
@@ -64,6 +65,10 @@ assert(normalizedSeedLesson.completeText.indexOf("clean notes") !== -1, "seed lo
 assert(normalizedSeedLesson.steps[1].charSize === "big", "seed loader should map char_size");
 assert(normalizedSeedLesson.steps[2].char.indexOf("Thinking") !== -1, "seed loader should map char_key");
 assert(normalizedSeedLesson.steps[2].choices[0].response.char.indexOf("Celebratory") !== -1, "seed loader should map response char_key");
+assert(
+  HearthFoundationLessonLauncher.FALLBACK_LESSON_ID_BY_TOPIC_ID["f-first-conversation"] === "f-conversations",
+  "Foundation launcher should expose clean fallback lesson ids"
+);
 
 var registry = HearthRendererRegistry.createRegistry();
 registry.register("foundation.fake_renderer", function(context) {{
