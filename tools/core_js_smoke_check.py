@@ -60,6 +60,7 @@ eval(readText(root + "/adapters/teaching-engine-core-adapter.js"));
 eval(readText(root + "/adapters/doing-ui-utils.js"));
 eval(readText(root + "/adapters/doing-config.js"));
 eval(readText(root + "/adapters/doing-drill-board-model.js"));
+eval(readText(root + "/adapters/doing-drill-preview-controller.js"));
 eval(readText(root + "/adapters/doing-drill-detail-viewer.js"));
 eval(readText(root + "/adapters/doing-drill-board-viewer.js"));
 eval(readText(root + "/adapters/doing-shell-viewer.js"));
@@ -143,6 +144,19 @@ var fakeBoardOptions = {{
 }};
 assert(HearthDoingDrillBoardModel.countForGenre(fakeBoardOptions, "rock") === 1, "Doing board model should count genre drills");
 assert(HearthDoingDrillBoardModel.findNextDrill(fakeDoing, {{}}, HearthDoingConfig.stateOrder).drill.id === "alt-1", "Doing board model should find next drill");
+assert(
+  HearthDoingDrillPreviewController.findDrill(fakeDoing, "picking", "alt-1").drill.title === "Alternate Picking",
+  "Doing drill preview controller should find drill records"
+);
+var doingPreviewHtml = HearthDoingDrillPreviewController.renderPreviewHtml({{
+  cat: fakeDoing.categories[0],
+  drill: fakeDoing.categories[0].drills[0],
+  stateLabel: "Mastered",
+  level: 1,
+  ui: HearthDoingUiUtils
+}});
+assert(doingPreviewHtml.indexOf("Alternate Picking") !== -1, "Doing drill preview controller should render title");
+assert(doingPreviewHtml.indexOf("Mastered") !== -1, "Doing drill preview controller should render state label");
 var doingBoardHtml = HearthDoingDrillBoardViewer.renderDoingDrillBoard({{
   doing: fakeDoing,
   config: HearthDoingConfig,

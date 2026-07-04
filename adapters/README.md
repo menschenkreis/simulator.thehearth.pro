@@ -14,6 +14,7 @@ Adapters are allowed to connect the clean core to those outside systems.
 | `browser-progress-store.js` | Saves and loads clean learner progress records from browser localStorage. |
 | `doing-config.js` | Holds Doing drill levels, filters, map zones, state labels, and plain coaching copy. |
 | `doing-drill-board-model.js` | Filters Doing drills and calculates board counts, summaries, and next drill. |
+| `doing-drill-preview-controller.js` | Binds Doing drill-dot click and hover preview behavior. |
 | `doing-drill-detail-viewer.js` | Renders the Doing single-drill detail card. |
 | `doing-drill-board-viewer.js` | Renders the Doing level/string drill board. |
 | `doing-shell-viewer.js` | Renders the outer Doing shell and progress header. |

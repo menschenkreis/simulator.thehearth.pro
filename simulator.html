@@ -1764,6 +1764,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 <script src="adapters/doing-ui-utils.js"></script>
 <script src="adapters/doing-config.js"></script>
 <script src="adapters/doing-drill-board-model.js"></script>
+<script src="adapters/doing-drill-preview-controller.js"></script>
 <script src="adapters/doing-drill-detail-viewer.js"></script>
 <script src="adapters/doing-drill-board-viewer.js"></script>
 <script src="adapters/doing-shell-viewer.js"></script>
@@ -2320,28 +2321,17 @@ function showDoing(){
   }
 
   /* === Drill dot hover previews === */
-  var previewEl=null;
   function bindDrillPreviews(){
-    el.querySelectorAll('.drill-dot').forEach(function(dot){
-      dot.onclick=function(){showDoingDrill(this.getAttribute('data-cat'),this.getAttribute('data-drill'));};
-      dot.onmouseenter=function(){
-        var catId=this.getAttribute('data-cat');
-        var drillId=this.getAttribute('data-drill');
-        var cat=D.categories.find(function(c){return c.id===catId;});
-        if(!cat)return;
-        var drill=cat.drills.find(function(d){return d.id===drillId;});
-        if(!drill)return;
-        var st=getState(drillId);
-        var stLabel=st?stateLabels[st]:'Untouched';
-        var lv=getDoingLevel(drill);
-        if(!previewEl){previewEl=document.createElement('div');previewEl.className='doing-drill-dot-preview';document.body.appendChild(previewEl);}
-        previewEl.innerHTML='<div class="pdp-skill">'+esc(cat.title)+'</div><div class="pdp-title">'+esc(drill.title)+'</div><div class="pdp-meta">Level '+lv+' &middot; '+esc(drill.duration)+' &middot; BPM '+esc(drill.bpm)+'</div><div class="pdp-state">'+esc(stLabel)+'</div>';
-        var r=this.getBoundingClientRect();
-        previewEl.style.display='block';
-        previewEl.style.left=(r.right+8)+'px';
-        previewEl.style.top=(r.top-10)+'px';
-      };
-      dot.onmouseleave=function(){if(previewEl)previewEl.style.display='none';};
+    if(!window.HearthDoingDrillPreviewController) return;
+    window.HearthDoingDrillPreviewController.bindDrillPreviews({
+      rootEl:el,
+      documentRef:document,
+      doing:D,
+      ui:doingUi,
+      stateLabels:stateLabels,
+      getState:getState,
+      getLevel:getDoingLevel,
+      onOpenDrill:showDoingDrill
     });
   }
 

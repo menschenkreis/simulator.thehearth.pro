@@ -37,6 +37,7 @@ REQUIRED_MARKERS = {
         "adapters/doing-ui-utils.js",
         "adapters/doing-config.js",
         "adapters/doing-drill-board-model.js",
+        "adapters/doing-drill-preview-controller.js",
         "adapters/doing-drill-detail-viewer.js",
         "adapters/doing-drill-board-viewer.js",
         "adapters/doing-shell-viewer.js",
@@ -189,6 +190,11 @@ REQUIRED_MARKERS = {
         "HearthDoingDrillBoardModel",
         "countForGenre",
         "findNextDrill",
+    ],
+    "adapters/doing-drill-preview-controller.js": [
+        "HearthDoingDrillPreviewController",
+        "bindDrillPreviews",
+        "renderPreviewHtml",
     ],
     "adapters/doing-drill-detail-viewer.js": [
         "HearthDoingDrillDetailViewer",
@@ -609,6 +615,7 @@ def main() -> int:
         "adapters/doing-ui-utils.js",
         "adapters/doing-config.js",
         "adapters/doing-drill-board-model.js",
+        "adapters/doing-drill-preview-controller.js",
         "adapters/doing-drill-detail-viewer.js",
         "adapters/doing-drill-board-viewer.js",
         "adapters/doing-shell-viewer.js",
