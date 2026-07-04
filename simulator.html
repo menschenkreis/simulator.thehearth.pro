@@ -1735,6 +1735,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 <script src="adapters/foundation-lesson-launcher.js"></script>
 <script src="adapters/foundation-lesson-shell.js"></script>
 <script src="adapters/foundation-ui-utils.js"></script>
+<script src="adapters/foundation-topic-viewer.js"></script>
 <script src="core/lesson-view-model.js"></script>
 <script src="core/lesson-session.js"></script>
 <script src="core/learner-progress.js"></script>
@@ -2384,88 +2385,16 @@ async function showFoundationTopic(topicId){
 }
 
 function renderFoundationTopicStep(topicId, stepIndex){
-  var F = window.FOUNDATION;
-  var topic = F.topics.find(function(t){ return t.id === topicId; });
-  if(!topic) return;
-
-  var el = document.getElementById('p-foundation');
-  var topicIdx = F.topics.indexOf(topic);
-  var color = foundationColor(topicIdx);
-  var completed = JSON.parse(localStorage.getItem('hearth-foundation-progress') || '{}');
-  var isCompleted = !!completed[topicId];
-  var steps = topic.steps || [];
-  var step = steps[stepIndex] || steps[0];
-  var isLast = stepIndex === steps.length - 1;
-
-  window._fTopic = topicId;
-  window._fTopicStep = stepIndex;
-
-  var tabs = steps.map(function(s, idx){
-    return '<button class="foundation-step-tab ' + (idx === stepIndex ? 'is-on' : '') + '" onclick="renderFoundationTopicStep(\'' + topicId + '\',' + idx + ')" type="button">'
-      + foundationEscape(s.label || ('Step ' + (idx + 1)))
-      + '</button>';
-  }).join('');
-
-  var nextTopic = F.topics.slice(topicIdx + 1).find(function(t){ return t.status !== 'coming-soon'; });
-  var action;
-  if(isLast){
-    action = '<button type="button" style="background:' + color + ';color:#0d0b08;border:0" onclick="completeFoundationTopic(\'' + topicId + '\')">'
-      + (isCompleted ? 'Return to Path' : 'Set This Fret')
-      + '</button>';
-    if(nextTopic){
-      action += '<button type="button" style="background:' + color + '18;color:' + color + ';border:1px solid ' + color + '55" onclick="completeFoundationTopic(\'' + topicId + '\',\'' + nextTopic.id + '\')">'
-        + 'Set & Continue'
-        + '</button>';
-    }
-  } else {
-    action = '<button type="button" style="background:' + color + '18;color:' + color + ';border:1px solid ' + color + '55" onclick="renderFoundationTopicStep(\'' + topicId + '\',' + (stepIndex + 1) + ')">'
-      + 'Next: ' + foundationEscape(steps[stepIndex + 1].label || 'Continue')
-      + '</button>';
-  }
-
-  var readButton = typeof ttsToggle === 'function'
-    ? '<button class="foundation-topic-read" id="ttsBtn" onclick="ttsToggle()" type="button">Read aloud</button>'
-    : '';
-
-  // ── Guide expression by step type ──
-  var stepLabel = (step.label || '').toLowerCase();
-  var guideImg = 'Encouraging.png';
-  var guideSpeech = '';
-  if(stepLabel === 'understand'){ guideImg = 'Neutral.png'; guideSpeech = 'Let me explain this clearly.'; }
-  else if(stepLabel === 'experience'){ guideImg = 'Encouraging.png'; guideSpeech = 'Feel this in your hands. I\u2019ll guide you.'; }
-  else if(stepLabel === 'apply'){ guideImg = 'Thinking.png'; guideSpeech = 'Now try it yourself. Think through each step.'; }
-  else if(stepLabel === 'own'){ guideImg = 'Celebratory.png'; guideSpeech = 'You\u2019ve got this. This fret is yours.'; }
-  else { guideImg = 'Encouraging.png'; }
-
-  el.innerHTML = '<div class="foundation-topic-page" style="--accent:' + color + '">' 
-    + '<div class="foundation-topic-wrap">'
-    + '<div class="foundation-topic-top">'
-    + '<div class="foundation-topic-back" onclick="showFoundation()">&#8592; Foundation Path</div>'
-    + readButton
-    + '</div>'
-    + '<div class="foundation-topic-grid">'
-    + '<aside class="foundation-topic-side">'
-    + '<div class="foundation-topic-guide">'
-    + '<img src="images/character-full/' + guideImg + '" alt="Guide character"/>'
-    + (guideSpeech ? '<div class="foundation-guide-bubble"><p>' + guideSpeech + '</p></div>' : '')
-    + '</div>'
-    + '<div class="foundation-topic-meta">'
-    + '<span>' + foundationEscape(topic.num) + ' / ' + foundationEscape(F.tag) + (isCompleted ? ' / COMPLETE' : '') + '</span>'
-    + '<h2>' + foundationEscape(topic.title) + '</h2>'
-    + '<p>' + foundationEscape(topic.subtitle || topic.micro || '') + '</p>'
-    + '</div>'
-    + '</aside>'
-    + '<main>'
-    + '<div class="foundation-step-tabs">' + tabs + '</div>'
-    + '<article class="foundation-topic-card">'
-    + '<h3>' + foundationEscape(step.title || step.label) + '</h3>'
-    + (step.body || '')
-    + '<div class="foundation-topic-actions">' + action + '</div>'
-    + '</article>'
-    + '</main>'
-    + '</div>'
-    + '</div>'
-    + '</div>';
+  if(!window.HearthFoundationTopicViewer) return;
+  window.HearthFoundationTopicViewer.renderFoundationTopicStep({
+    foundation: window.FOUNDATION,
+    targetEl: document.getElementById('p-foundation'),
+    topicId: topicId,
+    stepIndex: stepIndex || 0,
+    completed: window.HearthFoundationProgressBridge
+      ? window.HearthFoundationProgressBridge.readLegacyProgress()
+      : JSON.parse(localStorage.getItem('hearth-foundation-progress') || '{}')
+  });
 }
 
 window.completeFoundationTopic=function(tid){
