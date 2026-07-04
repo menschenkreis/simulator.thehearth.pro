@@ -72,6 +72,7 @@ eval(readText(root + "/adapters/doing-explorer-controller.js"));
 eval(readText(root + "/adapters/doing-map-viewer.js"));
 eval(readText(root + "/adapters/doing-map-controller.js"));
 eval(readText(root + "/adapters/doing-panel-controller.js"));
+eval(readText(root + "/adapters/knowing-level-model.js"));
 
 var seed = JSON.parse(readText(root + "/database-blueprint/seeds/foundation_conversations_lesson_v2.json"));
 var foundationManifest = JSON.parse(readText(root + "/core/foundation-route-manifest.json"));
@@ -248,6 +249,23 @@ var doingPanelState = {{ doingView: "map", activeSearch: "" }};
 HearthDoingPanelController.applyState(doingPanelState, {{ doingView: "training", activeSearch: "pick" }});
 assert(doingPanelState.doingView === "training", "Doing panel controller should apply view state");
 assert(doingPanelState.activeSearch === "pick", "Doing panel controller should apply search state");
+var fakeKnowing = {{
+  categories: [
+    {{
+      id: "rhythm",
+      title: "Rhythm",
+      topics: [
+        {{ id: "pulse", title: "Pulse", source: "QJam L1", difficulty: 1 }},
+        {{ id: "sync", title: "Syncopation", source: "QJam L2", difficulty: 2 }}
+      ]
+    }}
+  ]
+}};
+var knowingLevels = HearthKnowingLevelModel.buildLevels(fakeKnowing, {{ pulse: true }});
+assert(knowingLevels.length === 8, "Knowing level model should create eight levels");
+assert(knowingLevels[0].totalTopics === 1, "Knowing level model should count level topics");
+assert(knowingLevels[0].totalDone === 1, "Knowing level model should count completed topics");
+assert(HearthKnowingLevelModel.recommendedLevel(knowingLevels) === 2, "Knowing level model should recommend next shelf");
 var fakeMapTarget = {{ innerHTML: "" }};
 var fakeMapFoundation = {{
   guideLine: "Guide line",

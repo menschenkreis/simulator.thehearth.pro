@@ -1776,6 +1776,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 <script src="adapters/doing-map-viewer.js"></script>
 <script src="adapters/doing-map-controller.js"></script>
 <script src="adapters/doing-panel-controller.js"></script>
+<script src="adapters/knowing-level-model.js"></script>
 <script src="assets/js/doing.js?v=6"></script>
 <script src="assets/js/knowing.js?v=6"></script>
 <script src="assets/js/knowing-concepts.js?v=1"></script>
@@ -2205,48 +2206,9 @@ function showKnowing(){
   const K=window.KNOWING;if(!K)return;
   const el=document.getElementById('p-foundation');
   const completed=JSON.parse(localStorage.getItem('hearth-knowing-progress')||'{}');
-  const kState=JSON.parse(localStorage.getItem('hearth-knowing-state')||'{}');
-  const currentLevel=kState.bookLevel||1;
-
-  const getTopicLevel=window.getKnowingTopicLevel||function(topic){
-    const match=String(topic.source||'').match(/\bQJam\s*L([1-8])\b/i);
-    return match?parseInt(match[1],10):Math.max(1,Math.min(8,topic.difficulty||1));
-  };
-
-  // Group all topics by the 8-level QJam roadmap across all categories.
-  const levels=[
-    {level:1,label:'Level I',sub:'Foundations',color:'#c47a3a'},
-    {level:2,label:'Level II',sub:'Development',color:'#4A6741'},
-    {level:3,label:'Level III',sub:'Systems',color:'#5B3A6B'},
-    {level:4,label:'Level IV',sub:'Navigation',color:'#2C5F7C'},
-    {level:5,label:'Level V',sub:'Expansion',color:'#8B6914'},
-    {level:6,label:'Level VI',sub:'Advanced Harmony',color:'#6B3A3A'},
-    {level:7,label:'Level VII',sub:'Modal Fluency',color:'#3A5B6B'},
-    {level:8,label:'Level VIII',sub:'Mastery',color:'#6B5B3A'}
-  ];
-
-  // For each level, collect the categories that have topics at that level
-  levels.forEach(lv=>{
-    lv.categories=[];
-    K.categories.forEach(cat=>{
-      const topics=cat.topics.filter(t=>getTopicLevel(t)===lv.level);
-      const done=topics.filter(t=>completed[t.id]).length;
-      lv.categories.push({...cat,topics,done,total:topics.length,hasTopics:topics.length>0});
-    });
-    // Total progress for this level
-    lv.totalTopics=lv.categories.reduce((a,c)=>a+c.total,0);
-    lv.totalDone=lv.categories.reduce((a,c)=>a+c.done,0);
-  });
-
-  // All shelves are browseable — levels are recommendations, not locks
-  // Calculate recommendation level based on progress
-  let recommendedLevel=1;
-  for(let i=0;i<levels.length-1;i++){
-    const lv=levels[i];
-    if(recommendedLevel>=lv.level && (lv.totalTopics===0 || lv.totalDone/lv.totalTopics>=0.5)){
-      recommendedLevel=levels[i+1].level;
-    }
-  }
+  if(!window.HearthKnowingLevelModel)return;
+  const levels=window.HearthKnowingLevelModel.buildLevels(K,completed);
+  const recommendedLevel=window.HearthKnowingLevelModel.recommendedLevel(levels);
 
   let html='<div style="padding:20px;max-width:900px;margin:0 auto">'+
     '<button class="back-btn" onclick="backToMap()">← Map</button>'+

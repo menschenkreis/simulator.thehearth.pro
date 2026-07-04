@@ -49,6 +49,7 @@ REQUIRED_MARKERS = {
         "adapters/doing-map-viewer.js",
         "adapters/doing-map-controller.js",
         "adapters/doing-panel-controller.js",
+        "adapters/knowing-level-model.js",
         "assets/js/journey.js",
     ],
     "assets/js/scene-first.js": [
@@ -255,6 +256,11 @@ REQUIRED_MARKERS = {
         "HearthDoingPanelController",
         "showDoing",
         "applyState",
+    ],
+    "adapters/knowing-level-model.js": [
+        "HearthKnowingLevelModel",
+        "buildLevels",
+        "recommendedLevel",
     ],
     "adapters/teaching-engine-core-adapter.js": [
         "HearthTeachingEngineCoreAdapter",
@@ -651,6 +657,7 @@ def main() -> int:
         "adapters/doing-map-viewer.js",
         "adapters/doing-map-controller.js",
         "adapters/doing-panel-controller.js",
+        "adapters/knowing-level-model.js",
     ]
     previous_index = -1
     for script_path in expected_script_order:

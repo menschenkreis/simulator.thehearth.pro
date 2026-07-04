@@ -27,6 +27,7 @@ Adapters are allowed to connect the clean core to those outside systems.
 | `doing-map-viewer.js` | Renders the Doing guitar-body training map. |
 | `doing-panel-controller.js` | Opens and coordinates the Doing panel using the smaller Doing adapters. |
 | `doing-ui-utils.js` | Shared text and display helpers for the legacy Doing view. |
+| `knowing-level-model.js` | Groups Knowing topics into the 8-level bookshelf roadmap. |
 | `foundation-action-renderers.js` | Registers existing Foundation action render functions behind stable renderer keys. |
 | `foundation-audio.js` | Shared tone helper for legacy Foundation action renderers. |
 | `foundation-lesson-launcher.js` | Resolves Foundation topics into TeachingEngine lesson objects. |
