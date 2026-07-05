@@ -1700,15 +1700,15 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
         <!-- Foundation → Knowing (right fork) -->
         <line class="gold-conn" data-path="knowing" x1="376" y1="88" x2="540" y2="265"/>
         <!-- Doing → Practise → Hearth (left path) -->
-        <line class="gold-conn" data-path="doing" x1="172" y1="323" x2="189" y2="348"/>
-        <line class="gold-conn" data-path="doing" x1="253" y1="418" x2="312" y2="464"/>
+        <line class="gold-conn" data-path="doing" x1="180" y1="317" x2="215" y2="354"/>
+        <line class="gold-conn" data-path="doing" x1="281" y1="423" x2="317" y2="459"/>
         <!-- Practise → Play -->
-        <line class="gold-conn" data-path="doing" x1="196" y1="432" x2="107" y2="638"/>
+        <line class="gold-conn" data-path="doing" x1="225" y1="430" x2="111" y2="640"/>
         <!-- Knowing → Study → Hearth (right path) -->
-        <line class="gold-conn" data-path="knowing" x1="528" y1="323" x2="511" y2="348"/>
-        <line class="gold-conn" data-path="knowing" x1="447" y1="418" x2="388" y2="464"/>
+        <line class="gold-conn" data-path="knowing" x1="520" y1="317" x2="485" y2="354"/>
+        <line class="gold-conn" data-path="knowing" x1="419" y1="423" x2="383" y2="459"/>
         <!-- Study → Create -->
-        <line class="gold-conn" data-path="knowing" x1="504" y1="432" x2="593" y2="638"/>
+        <line class="gold-conn" data-path="knowing" x1="475" y1="430" x2="589" y2="640"/>
         <!-- Hearth → Play (cross) -->
         <line class="gold-conn dim" data-path="journey" x1="305" y1="512" x2="110" y2="668"/>
         <!-- Hearth → Create (cross) -->
@@ -1721,12 +1721,12 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
         <line class="gold-conn dim" data-path="knowing" x1="595" y1="706" x2="375" y2="800"/>
 
         <!-- ═══ FOUNDATION → PRACTISE / STUDY (thin) ═══ -->
-        <line class="gold-conn dim" data-path="doing" x1="331" y1="117" x2="234" y2="344" stroke-width="1"/>
-        <line class="gold-conn dim" data-path="knowing" x1="369" y1="117" x2="466" y2="344" stroke-width="1"/>
+        <line class="gold-conn dim" data-path="doing" x1="337" y1="115" x2="248" y2="345" stroke-width="1"/>
+        <line class="gold-conn dim" data-path="knowing" x1="363" y1="115" x2="452" y2="345" stroke-width="1"/>
 
         <!-- ═══ DOING ↔ KNOWING / PRACTISE ↔ STUDY / PLAY ↔ CREATE (thin) ═══ -->
         <line class="gold-conn dim" data-path="journey" x1="194" y1="283" x2="506" y2="283" stroke-width="1"/>
-        <line class="gold-conn dim" data-path="journey" x1="263" y1="388" x2="437" y2="388" stroke-width="1"/>
+        <line class="gold-conn dim" data-path="journey" x1="296" y1="388" x2="404" y2="388" stroke-width="1"/>
         <line class="gold-conn dim" data-path="journey" x1="136" y1="682" x2="564" y2="682" stroke-width="1"/>
 
         <!-- ═══ PERIMETER CURVE (outer ring) ═══ -->
@@ -1749,16 +1749,16 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
           <animateMotion dur="6s" begin="3s" repeatCount="indefinite" path="M 350,99 L 350,189 L 350,200 L 350,290 L 350,302 L 350,369 L 350,380 L 350,447 L 350,540 L 350,595 L 350,607 L 350,662 L 350,674 L 350,729 L 350,740 L 350,784"/>
         </circle>
         <circle r="2" fill="#e8a020" opacity="0.5">
-          <animateMotion dur="5s" repeatCount="indefinite" path="M 324,88 L 160,265 L 160,305 L 310,475"/>
+          <animateMotion dur="5s" repeatCount="indefinite" path="M 324,88 L 160,265 L 180,317 L 215,354 L 281,423 L 317,459"/>
         </circle>
         <circle r="2" fill="#e8a020" opacity="0.5">
-          <animateMotion dur="5s" repeatCount="indefinite" path="M 376,88 L 540,265 L 540,305 L 390,475"/>
+          <animateMotion dur="5s" repeatCount="indefinite" path="M 376,88 L 540,265 L 520,317 L 485,354 L 419,423 L 383,459"/>
         </circle>
         <circle r="1.5" fill="#d4af69" opacity="0.4">
-          <animateMotion dur="7s" repeatCount="indefinite" path="M 196,432 L 107,638"/>
+          <animateMotion dur="7s" repeatCount="indefinite" path="M 225,430 L 111,640"/>
         </circle>
         <circle r="1.5" fill="#d4af69" opacity="0.4">
-          <animateMotion dur="7s" repeatCount="indefinite" path="M 504,432 L 593,638"/>
+          <animateMotion dur="7s" repeatCount="indefinite" path="M 475,430 L 589,640"/>
         </circle>
 
         <!-- ═══ ORBITING DOTS around nodes ═══ -->
@@ -1839,10 +1839,10 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
         </g>
 
         <g class="mn-g unlocked" onmouseenter="showNodePreview('practise',event)" onmouseleave="hideNodePreview()" onclick="showNodeInfo('practise')" data-node="practise">
-          <circle class="mn-ring" cx="215" cy="388" r="48"/>
-          <circle class="touch-area" cx="215" cy="388" r="65" fill="transparent" opacity="0" pointer-events="all"/>
-          <clipPath id="clip-practise"><circle cx="215" cy="388" r="48"/></clipPath>
-          <image href="images/map-nodes-generated-v1-alpha/practise.png" x="174" y="347" width="82" height="82" clip-path="url(#clip-practise)"/>
+          <circle class="mn-ring" cx="248" cy="388" r="48"/>
+          <circle class="touch-area" cx="248" cy="388" r="65" fill="transparent" opacity="0" pointer-events="all"/>
+          <clipPath id="clip-practise"><circle cx="248" cy="388" r="48"/></clipPath>
+          <image href="images/map-nodes-generated-v1-alpha/practise.png" x="207" y="347" width="82" height="82" clip-path="url(#clip-practise)"/>
         </g>
 
         <g class="mn-g unlocked" onmouseenter="showNodePreview('play',event)" onmouseleave="hideNodePreview()" onclick="showNodeInfo('play')" data-node="play">
@@ -1862,10 +1862,10 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
         </g>
 
         <g class="mn-g unlocked" onmouseenter="showNodePreview('study',event)" onmouseleave="hideNodePreview()" onclick="showNodeInfo('study')" data-node="study">
-          <circle class="mn-ring" cx="485" cy="388" r="48"/>
-          <circle class="touch-area" cx="485" cy="388" r="65" fill="transparent" opacity="0" pointer-events="all"/>
-          <clipPath id="clip-study"><circle cx="485" cy="388" r="48"/></clipPath>
-          <image href="images/map-nodes-generated-v1-alpha/study.png" x="444" y="347" width="82" height="82" clip-path="url(#clip-study)"/>
+          <circle class="mn-ring" cx="452" cy="388" r="48"/>
+          <circle class="touch-area" cx="452" cy="388" r="65" fill="transparent" opacity="0" pointer-events="all"/>
+          <clipPath id="clip-study"><circle cx="452" cy="388" r="48"/></clipPath>
+          <image href="images/map-nodes-generated-v1-alpha/study.png" x="411" y="347" width="82" height="82" clip-path="url(#clip-study)"/>
         </g>
 
         <g class="mn-g unlocked" onmouseenter="showNodePreview('create',event)" onmouseleave="hideNodePreview()" onclick="showNodeInfo('create')" data-node="create">
@@ -2213,7 +2213,7 @@ function nT(id){ showNodeInfo(id); if(id==='foundation') showFoundation(); }
 const NODE_POS = {
   foundation: [350,73], hearth: [350,494], mastery: [350,813],
   doing: [146,283], knowing: [554,283],
-  practise: [215,388], study: [485,388],
+  practise: [248,388], study: [452,388],
   play: [88,682], create: [612,682]
 };
 
