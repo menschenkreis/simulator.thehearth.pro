@@ -92,6 +92,7 @@ eval(readText(root + "/adapters/practice-drill-viewer.js"));
 eval(readText(root + "/adapters/practice-session-model.js"));
 eval(readText(root + "/adapters/practice-session-viewer.js"));
 eval(readText(root + "/adapters/practice-ui-utils.js"));
+eval(readText(root + "/adapters/play-world-viewer.js"));
 
 var seed = JSON.parse(readText(root + "/database-blueprint/seeds/foundation_conversations_lesson_v2.json"));
 var foundationManifest = JSON.parse(readText(root + "/core/foundation-route-manifest.json"));
@@ -402,6 +403,9 @@ assert(practiceFinishHtml.indexOf("Nailed it!") >= 0, "Practice session viewer s
 var todayIso = new Date().toISOString();
 assert(HearthPracticeUiUtils.calcStreak([{{ ts: todayIso }}]) === 1, "Practice UI utils should count today's streak");
 assert(HearthPracticeUiUtils.feelingEmoji("getting") === "💪", "Practice UI utils should map feeling emoji");
+var playWorldHtml = HearthPlayWorldViewer.renderPlayWorld([{{ id: "and", coords: [10, 20], color: "#fff" }}]);
+assert(playWorldHtml.indexOf("World Map of Guitar") >= 0, "Play world viewer should render title");
+assert(playWorldHtml.indexOf("wmClick('and')") >= 0, "Play world viewer should render hotspot action");
 var fakeShelfScrolled = {{ left: 0, behavior: "" }};
 var fakeShelfDocument = {{
   getElementById: function(id) {{

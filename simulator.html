@@ -1796,6 +1796,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 <script src="adapters/practice-session-model.js"></script>
 <script src="adapters/practice-session-viewer.js"></script>
 <script src="adapters/practice-ui-utils.js"></script>
+<script src="adapters/play-world-viewer.js"></script>
 <script src="assets/js/doing.js?v=6"></script>
 <script src="assets/js/knowing.js?v=6"></script>
 <script src="assets/js/knowing-concepts.js?v=1"></script>
@@ -2589,53 +2590,8 @@ function showPlay(){
   document.getElementById('p-foundation').classList.add('on');
   const el=document.getElementById('p-foundation');
   const WM=window.WORLD_MAP_REGIONS||[];
-
-  let html='<div class="play-world-wrap">'+
-    '<button class="back-btn" onclick="backToMap()">← Map</button>'+
-    '<div class="play-world-header">'+
-      '<div class="play-world-title">'+
-        '<span style="font-family:\'Cinzel\',serif;color:var(--gold);font-size:1.4rem;font-weight:700;letter-spacing:0.08em">PLAY</span>'+
-        '<span style="font-family:JetBrains Mono;font-size:0.6rem;color:var(--amber);letter-spacing:0.12em;margin-left:8px;text-transform:uppercase">World Map of Guitar</span>'+
-      '</div>'+
-    '</div>'+
-    '<div class="play-world-map-container" id="playWorldMap">'+
-      '<svg viewBox="0 0 900 600" xmlns="http://www.w3.org/2000/svg" class="world-map-svg" id="worldMapSvg">'+
-        '<defs>'+
-          '<filter id="wm-glow"><feGaussianBlur stdDeviation="6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>'+
-          '<filter id="wm-glow-strong"><feGaussianBlur stdDeviation="10" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>'+
-        '</defs>'+
-        // Hotspot markers only — no continent paths, no labels
-        '<g id="wm-hotspots">'+
-          WM.map(function(r){
-            return '<g class="wm-hotspot" data-region="'+r.id+'" '+
-              'onclick="wmClick(\''+r.id+'\')" '+
-              'onmouseenter="wmHover(\''+r.id+'\')" '+
-              'onmouseleave="wmUnhover()" '+
-              'style="cursor:pointer">'+
-              // Outer pulse ring
-              '<circle class="wm-dot-pulse" cx="'+r.coords[0]+'" cy="'+r.coords[1]+'" r="14" fill="none" stroke="'+r.color+'" stroke-width="0.8" opacity="0.15">'+
-                '<animate attributeName="r" values="8;20;8" dur="3s" repeatCount="indefinite"/>'+
-                '<animate attributeName="opacity" values="0.2;0;0.2" dur="3s" repeatCount="indefinite"/>'+
-              '</circle>'+
-              // Mid glow ring
-              '<circle class="wm-dot-ring" cx="'+r.coords[0]+'" cy="'+r.coords[1]+'" r="7" fill="'+r.color+'" opacity="0.12" filter="url(#wm-glow)"/>'+
-              // Core dot
-              '<circle class="wm-dot-core" cx="'+r.coords[0]+'" cy="'+r.coords[1]+'" r="3.5" fill="'+r.color+'" opacity="0.7" filter="url(#wm-glow-strong)"/>'+
-              // Bright center
-              '<circle cx="'+r.coords[0]+'" cy="'+r.coords[1]+'" r="1.5" fill="white" opacity="0.5"/>'+
-            '</g>';
-          }).join('')+
-        '</g>'+
-      '</svg>'+
-      // Guide card at bottom
-      '<div class="play-world-guide" id="playGuide">'+
-        '<div class="play-world-guide-text" id="playGuideText">Choose a region. Listen for its rhythm, touch, scale colour, and story.</div>'+
-      '</div>'+
-    '</div>'+
-    '<div class="play-world-count">'+WM.length+' traditions</div>'+
-  '</div>';
-
-  el.innerHTML=html;
+  if(!window.HearthPlayWorldViewer)return;
+  el.innerHTML=window.HearthPlayWorldViewer.renderPlayWorld(WM);
 }
 
 // ═══ World map - click a region ═══
