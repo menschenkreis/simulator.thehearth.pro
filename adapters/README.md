@@ -33,6 +33,7 @@ Adapters are allowed to connect the clean core to those outside systems.
 | `knowing-book-viewer.js` | Renders the opened Knowing book category screen. |
 | `knowing-topic-viewer.js` | Renders the Knowing encyclopedia topic screen. |
 | `knowing-progress-controller.js` | Updates legacy Knowing topic completion progress. |
+| `knowing-panel-controller.js` | Opens and coordinates the Knowing shelf, book, and topic screens. |
 | `foundation-action-renderers.js` | Registers existing Foundation action render functions behind stable renderer keys. |
 | `foundation-audio.js` | Shared tone helper for legacy Foundation action renderers. |
 | `foundation-lesson-launcher.js` | Resolves Foundation topics into TeachingEngine lesson objects. |

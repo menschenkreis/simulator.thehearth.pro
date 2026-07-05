@@ -1782,6 +1782,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 <script src="adapters/knowing-book-viewer.js"></script>
 <script src="adapters/knowing-topic-viewer.js"></script>
 <script src="adapters/knowing-progress-controller.js"></script>
+<script src="adapters/knowing-panel-controller.js"></script>
 <script src="assets/js/doing.js?v=6"></script>
 <script src="assets/js/knowing.js?v=6"></script>
 <script src="assets/js/knowing-concepts.js?v=1"></script>
@@ -2206,73 +2207,16 @@ function toggleDoingDebug(){
 }
 // ═══ KNOWING NODE - BOOKSHELF UI ═══
 function showKnowing(){
-  document.querySelectorAll('.pnl').forEach(p=>p.classList.remove('on'));
-  document.getElementById('p-foundation').classList.add('on');
-  const K=window.KNOWING;if(!K)return;
-  const el=document.getElementById('p-foundation');
-  const completed=JSON.parse(localStorage.getItem('hearth-knowing-progress')||'{}');
-  if(!window.HearthKnowingLevelModel)return;
-  const levels=window.HearthKnowingLevelModel.buildLevels(K,completed);
-  const recommendedLevel=window.HearthKnowingLevelModel.recommendedLevel(levels);
-  if(!window.HearthKnowingShelfViewer)return;
-  el.innerHTML=window.HearthKnowingShelfViewer.renderKnowingShelf({
-    knowing:K,
-    levels:levels,
-    recommendedLevel:recommendedLevel
-  });
-}
-
-if(window.HearthKnowingShelfController){
-  window.HearthKnowingShelfController.bindShelfGlobals({
-    documentRef:document
-  });
-}
-
-window.showKnowingBook=function(catId,levelFilter){
-  if(typeof window.openBook==='function'){
-    const K=window.KNOWING;
-    const cat=K&&K.categories.find(c=>c.id===catId);
-    if(cat&&typeof setNotebookContext==='function')setNotebookContext(catId,cat.title);
-    window.openBook(catId,levelFilter);
-    return;
+  if(window.HearthKnowingPanelController){
+    return window.HearthKnowingPanelController.showKnowing();
   }
-  const K=window.KNOWING;if(!K)return;
-  const cat=K.categories.find(c=>c.id===catId);if(!cat)return;
-  setNotebookContext(catId,cat.title);
-  const el=document.getElementById('p-foundation');
-  const completed=JSON.parse(localStorage.getItem('hearth-knowing-progress')||'{}');
-  if(!window.HearthKnowingBookViewer)return;
-  el.innerHTML=window.HearthKnowingBookViewer.renderKnowingBook({
-    knowing:K,
-    cat:cat,
-    completed:completed
-  });
-};
+}
 
-// ═══ KNOWING TOPIC VIEW (encyclopedia - just read, no quiz) ═══
-
-window.showKnowingTopic=function(catId,topicId){
-  playSfx('drill-click');
-  const K=window.KNOWING;if(!K)return;
-  const cat=K.categories.find(c=>c.id===catId);if(!cat)return;
-  const topic=cat.topics.find(t=>t.id===topicId);if(!topic)return;
-  setNotebookContext(catId+'-'+topicId,topic.title);
-  const el=document.getElementById('p-foundation');
-  const completed=JSON.parse(localStorage.getItem('hearth-knowing-progress')||'{}');
-  if(!window.HearthKnowingTopicViewer)return;
-  el.innerHTML=window.HearthKnowingTopicViewer.renderKnowingTopic({
-    knowing:K,
-    cat:cat,
-    topic:topic,
-    completed:completed
-  });
-};
-
-if(window.HearthKnowingProgressController){
-  window.HearthKnowingProgressController.bindProgressGlobals({
+if(window.HearthKnowingPanelController){
+  window.HearthKnowingPanelController.bindKnowingGlobals({
+    documentRef:document,
     storage:localStorage,
-    playSfx:playSfx,
-    showTopic:showKnowingTopic
+    playSfx:playSfx
   });
 }
 
