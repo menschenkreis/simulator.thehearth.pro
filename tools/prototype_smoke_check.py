@@ -83,6 +83,7 @@ REQUIRED_MARKERS = {
         "adapters/notebook-controller.js",
         "adapters/dictionary-controller.js",
         "assets/js/journey.js",
+        "NODE LAYOUT RESCUE LAYER",
     ],
     "assets/js/scene-first.js": [
         "showCreate",

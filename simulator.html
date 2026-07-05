@@ -1210,6 +1210,235 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 }
 @media(min-width:701px){.mobile-character{display:none;}}
 
+/* ═══ NODE LAYOUT RESCUE LAYER ═══
+   Keeps the newer node screens from clipping, overflowing, or forcing awkward columns. */
+.pnl.on{width:100%;min-width:0;}
+.pnl.on > *{min-width:0;}
+.top-center{min-width:0;overflow-x:auto;scrollbar-width:none;}
+.top-center::-webkit-scrollbar{display:none;}
+.top-center > div{min-width:max-content;}
+
+.sf-wrap,
+.sk-wrap,
+.hb-wrap,
+.play-world,
+.pw-shrine,
+.study-key,
+.study-session,
+.doing-shell,
+.doing-drill-page,
+.practice-dashboard,
+.practice-drill-page,
+.mastery-wrap,
+.cauldron-wrap{
+  width:100%;
+  max-width:min(1080px,100%);
+  margin-left:auto;
+  margin-right:auto;
+  padding-left:clamp(12px,2vw,22px);
+  padding-right:clamp(12px,2vw,22px);
+  min-width:0;
+}
+
+.sf-scene,
+.sk-scene,
+.hb-scene,
+.pw-hero,
+.pw-map,
+.pw-index,
+.sk-hero,
+.ss-hero,
+.doing-drill-card,
+.doing-guide-card,
+.practice-session-controls,
+.practice-reflection-panel,
+.cauldron-workstation,
+.cauldron-ingredients{
+  max-width:100%;
+  min-width:0;
+  overflow-wrap:anywhere;
+}
+
+.sf-top,
+.sk-top,
+.hb-top,
+.pw-hero,
+.sk-hero,
+.ss-hero,
+.doing-hero{
+  grid-template-columns:minmax(0,1fr) minmax(180px,280px) !important;
+  align-items:start;
+}
+.sf-guide,
+.sk-guide,
+.hb-guide,
+.pw-guide,
+.shrine-guide,
+.doing-guide-card{
+  min-width:0;
+  max-width:100% !important;
+}
+.sf-guide img,
+.sk-guide img,
+.hb-guide img,
+.pw-guide img,
+.shrine-guide img,
+.doing-guide-card img,
+.found-neck-guide img{
+  flex:0 0 auto;
+  width:clamp(52px,8vw,82px) !important;
+  height:clamp(52px,8vw,82px) !important;
+  object-fit:contain;
+}
+
+.sf-stage,
+.sk-stage{
+  min-height:clamp(220px,38vh,360px) !important;
+  padding:clamp(10px,2vw,18px) !important;
+  min-width:0;
+}
+.practice-candle-stage{
+  min-height:clamp(280px,46vh,430px) !important;
+  padding:8px 0 12px;
+}
+.practice-candle-svg{
+  width:min(300px,70vw) !important;
+  max-height:52vh;
+}
+.practice-session-controls,
+.practice-reflection-panel{
+  width:min(720px,100%);
+}
+
+.sk-grid,
+.ss-grid,
+.pw-grid,
+.doing-drill-layout{
+  grid-template-columns:minmax(0,1fr) minmax(220px,310px) !important;
+}
+.hb-chamber-cards,
+.doing-entry-grid,
+.doing-practice-grid,
+.lens-seals{
+  grid-template-columns:repeat(auto-fit,minmax(180px,1fr)) !important;
+}
+.pw-index{
+  max-height:min(590px,62vh) !important;
+}
+.pw-map svg,
+.sk-door-svg,
+.practice-candle-svg,
+.hb-body-wrap img,
+.found-neck-wrap img{
+  max-width:100%;
+  height:auto;
+}
+.hb-body-wrap{
+  max-height:calc(100vh - 190px);
+  display:grid;
+  place-items:center;
+}
+.hb-body-wrap img{
+  max-height:calc(100vh - 210px);
+  object-fit:contain;
+}
+.hb-guide-bar{
+  max-width:min(420px,calc(100% - 28px));
+  min-width:0;
+}
+
+.cauldron-ingredients-grid{
+  grid-template-columns:repeat(auto-fit,minmax(118px,1fr)) !important;
+}
+.cauldron-prompt-text{
+  max-width:min(460px,92%);
+  margin-left:auto;
+  margin-right:auto;
+  overflow-wrap:anywhere;
+}
+
+@media(max-width:900px){
+  .sf-top,
+  .sk-top,
+  .hb-top,
+  .pw-hero,
+  .sk-hero,
+  .ss-hero,
+  .doing-hero,
+  .sk-grid,
+  .ss-grid,
+  .pw-grid,
+  .doing-drill-layout{
+    grid-template-columns:1fr !important;
+  }
+  .doing-stat-strip{justify-content:flex-start;}
+  .sf-guide,
+  .sk-guide,
+  .hb-guide,
+  .pw-guide,
+  .shrine-guide{
+    width:100%;
+  }
+  .hb-guide-bar{
+    position:relative !important;
+    left:auto !important;
+    bottom:auto !important;
+    transform:none !important;
+    margin:10px auto 0;
+  }
+}
+
+@media(max-width:700px){
+  html,body{overflow:hidden;}
+  .top{align-items:center;}
+  .top-center{
+    order:3;
+    width:100%;
+    justify-content:flex-start;
+    padding-bottom:4px;
+  }
+  .top-tool{font-size:0.62rem !important;padding:7px 9px !important;}
+  .pnl{height:calc(100vh - 72px);padding-bottom:calc(12px + env(safe-area-inset-bottom,0px));}
+  .sf-wrap,
+  .sk-wrap,
+  .hb-wrap,
+  .play-world,
+  .pw-shrine,
+  .study-key,
+  .study-session,
+  .doing-shell,
+  .doing-drill-page{
+    padding:12px !important;
+  }
+  .sf-scene,
+  .sk-scene,
+  .hb-scene,
+  .pw-hero,
+  .sk-hero,
+  .ss-hero{
+    border-radius:14px !important;
+  }
+  .sf-title,
+  .sk-title,
+  .hb-title,
+  .pw-hero h2,
+  .sk-hero h2,
+  .ss-hero h2{
+    font-size:1.25rem !important;
+    line-height:1.15;
+  }
+  .sf-stage,
+  .sk-stage{
+    min-height:220px !important;
+  }
+  .practice-candle-stage{min-height:300px !important;}
+  .practice-candle-svg{width:min(250px,82vw) !important;}
+  .hb-body-wrap,
+  .hb-body-wrap img{
+    max-height:none;
+  }
+}
+
 </style>
 </head>
 <body>
