@@ -92,6 +92,7 @@ eval(readText(root + "/adapters/practice-drill-viewer.js"));
 eval(readText(root + "/adapters/practice-session-model.js"));
 eval(readText(root + "/adapters/practice-session-viewer.js"));
 eval(readText(root + "/adapters/practice-ui-utils.js"));
+eval(readText(root + "/adapters/practice-metronome-controller.js"));
 eval(readText(root + "/adapters/play-world-viewer.js"));
 eval(readText(root + "/adapters/mastery-viewer.js"));
 eval(readText(root + "/adapters/create-cauldron-model.js"));
@@ -407,6 +408,10 @@ assert(practiceFinishHtml.indexOf("Nailed it!") >= 0, "Practice session viewer s
 var todayIso = new Date().toISOString();
 assert(HearthPracticeUiUtils.calcStreak([{{ ts: todayIso }}]) === 1, "Practice UI utils should count today's streak");
 assert(HearthPracticeUiUtils.feelingEmoji("getting") === "💪", "Practice UI utils should map feeling emoji");
+var metroState = HearthPracticeMetronomeController.createState(80, 10, 1000);
+assert(metroState.targetSeconds === 600, "Practice metronome controller should create timer state");
+assert(HearthPracticeMetronomeController.clampBpm(500) === 220, "Practice metronome controller should cap BPM");
+assert(HearthPracticeMetronomeController.timerState({{ timerStart: 1000, targetSeconds: 600 }}, 61000).text === "09:00", "Practice metronome controller should format remaining time");
 var playWorldHtml = HearthPlayWorldViewer.renderPlayWorld([{{ id: "and", coords: [10, 20], color: "#fff" }}]);
 assert(playWorldHtml.indexOf("World Map of Guitar") >= 0, "Play world viewer should render title");
 assert(playWorldHtml.indexOf("wmClick('and')") >= 0, "Play world viewer should render hotspot action");

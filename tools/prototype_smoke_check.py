@@ -69,6 +69,7 @@ REQUIRED_MARKERS = {
         "adapters/practice-session-model.js",
         "adapters/practice-session-viewer.js",
         "adapters/practice-ui-utils.js",
+        "adapters/practice-metronome-controller.js",
         "adapters/play-world-viewer.js",
         "adapters/mastery-viewer.js",
         "adapters/create-cauldron-model.js",
@@ -382,6 +383,11 @@ REQUIRED_MARKERS = {
         "HearthPracticeUiUtils",
         "calcStreak",
         "timeAgo",
+    ],
+    "adapters/practice-metronome-controller.js": [
+        "HearthPracticeMetronomeController",
+        "createState",
+        "timerState",
     ],
     "adapters/play-world-viewer.js": [
         "HearthPlayWorldViewer",
@@ -825,6 +831,7 @@ def main() -> int:
         "adapters/practice-session-model.js",
         "adapters/practice-session-viewer.js",
         "adapters/practice-ui-utils.js",
+        "adapters/practice-metronome-controller.js",
         "adapters/play-world-viewer.js",
         "adapters/mastery-viewer.js",
         "adapters/create-cauldron-model.js",

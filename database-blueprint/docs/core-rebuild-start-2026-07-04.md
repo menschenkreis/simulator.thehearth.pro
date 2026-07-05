@@ -68,6 +68,7 @@ The goal is not to patch the messy prototype forever. The goal is to build a reu
 | `adapters/practice-session-model.js` | Decides Practice drill completion outcomes and next drill. |
 | `adapters/practice-session-viewer.js` | Renders the timed Practice candle session screen. |
 | `adapters/practice-ui-utils.js` | Shared Practice display helpers for streaks, relative time, and feeling labels. |
+| `adapters/practice-metronome-controller.js` | Runs the Practice candle timer and Web Audio metronome controls. |
 | `adapters/play-world-viewer.js` | Renders the Play world-map overview screen. |
 | `adapters/mastery-viewer.js` | Renders the Mastery and Masters at Play screens. |
 | `adapters/create-cauldron-model.js` | Resolves selected Create ingredients into a cauldron prompt result. |

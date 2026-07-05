@@ -1796,6 +1796,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 <script src="adapters/practice-session-model.js"></script>
 <script src="adapters/practice-session-viewer.js"></script>
 <script src="adapters/practice-ui-utils.js"></script>
+<script src="adapters/practice-metronome-controller.js"></script>
 <script src="adapters/play-world-viewer.js"></script>
 <script src="adapters/mastery-viewer.js"></script>
 <script src="adapters/create-cauldron-model.js"></script>
@@ -2438,99 +2439,35 @@ window.startDrillPractice=function(drillId,targetMinutes){
     startBpm:startBpm
   });
 
-  window._metro={playing:false,bpm:startBpm,ts:4,beat:0,interval:null,ctx:null,timerStart:Date.now(),timerInterval:null,targetSeconds:sessionMinutes*60,timeUp:false};
+  window._metro=window.HearthPracticeMetronomeController?
+    window.HearthPracticeMetronomeController.createState(startBpm,sessionMinutes):
+    {playing:false,bpm:startBpm,ts:4,beat:0,interval:null,ctx:null,timerStart:Date.now(),timerInterval:null,targetSeconds:sessionMinutes*60,timeUp:false};
   _startTimer();
 }
 
 // ── Metronome engine (Web Audio API) ──
 window._metroToggle=function(){
-  const m=window._metro;if(!m)return;
-  if(m.playing){
-    m.playing=false;
-    clearInterval(m.interval);
-    document.getElementById('metro-toggle').textContent='▶';
-  } else {
-    m.playing=true;
-    if(!m.ctx) m.ctx=new (window.AudioContext||window.webkitAudioContext)();
-    m.beat=0;
-    const intervalMs=60000/m.bpm;
-    m.interval=setInterval(()=>_metroTick(),intervalMs);
-    document.getElementById('metro-toggle').textContent='⏸';
-  }
+  if(window.HearthPracticeMetronomeController)window.HearthPracticeMetronomeController.toggle(window._metro,document,_metroTick);
 };
 
 function _metroTick(){
-  const m=window._metro;if(!m||!m.ctx)return;
-  const osc=m.ctx.createOscillator();
-  const gain=m.ctx.createGain();
-  osc.connect(gain);gain.connect(m.ctx.destination);
-  osc.frequency.value=m.beat===0?1000:800;
-  gain.gain.value=0.15;
-  osc.start(m.ctx.currentTime);
-  gain.gain.exponentialRampToValueAtTime(0.001,m.ctx.currentTime+0.08);
-  osc.stop(m.ctx.currentTime+0.08);
-  m.beat=(m.beat+1)%m.ts;
+  if(window.HearthPracticeMetronomeController)window.HearthPracticeMetronomeController.tick(window._metro);
 }
 
 window._metroBpm=function(delta){
-  const m=window._metro;if(!m)return;
-  m.bpm=Math.max(30,Math.min(220,m.bpm+delta));
-  const d=document.getElementById('bpm-display');if(d)d.textContent=m.bpm;
-  if(m.playing){
-    clearInterval(m.interval);
-    m.interval=setInterval(()=>_metroTick(),60000/m.bpm);
-  }
+  if(window.HearthPracticeMetronomeController)window.HearthPracticeMetronomeController.adjustBpm(window._metro,delta,document,_metroTick);
 };
 
 window._metroTs=function(ts){
-  const m=window._metro;if(!m)return;
-  m.ts=ts;m.beat=0;
-  [4,3,6].forEach(t=>{
-    const btn=document.getElementById('ts-'+t);if(!btn)return;
-    if(t===ts){btn.style.borderColor=CANDLE;btn.style.background=CANDLE+'20';btn.style.color=CANDLE;}
-    else{btn.style.borderColor='var(--border)';btn.style.background='var(--card)';btn.style.color='var(--dim)';}
-  });
+  if(window.HearthPracticeMetronomeController)window.HearthPracticeMetronomeController.setTimeSignature(window._metro,ts,CANDLE,document);
 };
 
 function _startTimer(){
-  const m=window._metro;if(!m)return;
-  m.timerStart=Date.now();
-  m.timerInterval=setInterval(()=>{
-    const elapsed=Math.floor((Date.now()-m.timerStart)/1000);
-    const remaining=Math.max(0,(m.targetSeconds||0)-elapsed);
-    const min=String(Math.floor(remaining/60)).padStart(2,'0');
-    const sec=String(remaining%60).padStart(2,'0');
-    const d=document.getElementById('timer-display');if(d)d.textContent=min+':'+sec;
-    const progress=m.targetSeconds?Math.min(1,elapsed/m.targetSeconds):0;
-    const burn=Math.max(0.08,1-progress);
-    const brightness=Math.max(0.28,1-progress*0.72);
-    const candle=document.getElementById('session-candle');
-    if(candle){
-      candle.style.setProperty('--burn',(burn*100).toFixed(1)+'%');
-      candle.style.setProperty('--flame-bright',brightness.toFixed(3));
-    }
-    const flame=document.getElementById('candle-flame');
-    if(flame){
-      flame.style.opacity=String(Math.max(0.32,brightness));
-    }
-    if(remaining<=0&&!m.timeUp){
-      m.timeUp=true;
-      if(m.interval)clearInterval(m.interval);
-      m.playing=false;
-      const toggle=document.getElementById('metro-toggle');if(toggle)toggle.textContent='▶';
-      const note=document.querySelector('.practice-panel-title');
-      if(note)note.textContent='Candle Complete';
-    }
-  },1000);
+  if(window.HearthPracticeMetronomeController)window.HearthPracticeMetronomeController.startTimer(window._metro,document);
 }
 
 function _stopTimer(){
-  const m=window._metro;if(!m)return;
-  if(m.interval)clearInterval(m.interval);
-  if(m.timerInterval)clearInterval(m.timerInterval);
-  m.playing=false;
-  const elapsed=m.timerStart?Math.round((Date.now()-m.timerStart)/60000):0;
-  return Math.max(elapsed,1);
+  return window.HearthPracticeMetronomeController?window.HearthPracticeMetronomeController.stopTimer(window._metro):1;
 }
 
 // ── Finish drill → self-assessment result ──

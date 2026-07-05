@@ -59,6 +59,7 @@ Adapters are allowed to connect the clean core to those outside systems.
 | `practice-session-model.js` | Decides Practice drill completion outcomes and next drill. |
 | `practice-session-viewer.js` | Renders the timed Practice candle session screen. |
 | `practice-ui-utils.js` | Shared Practice display helpers for streaks, relative time, and feeling labels. |
+| `practice-metronome-controller.js` | Runs the Practice candle timer and Web Audio metronome controls. |
 | `play-world-viewer.js` | Renders the Play world-map overview screen. |
 | `mastery-viewer.js` | Renders the Mastery and Masters at Play screens. |
 | `create-cauldron-model.js` | Resolves selected Create ingredients into a cauldron prompt result. |
