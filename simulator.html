@@ -1792,6 +1792,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 <script src="adapters/practice-state.js"></script>
 <script src="adapters/practice-guide-model.js"></script>
 <script src="adapters/practice-dashboard-viewer.js"></script>
+<script src="adapters/practice-drill-viewer.js"></script>
 <script src="assets/js/doing.js?v=6"></script>
 <script src="assets/js/knowing.js?v=6"></script>
 <script src="assets/js/knowing-concepts.js?v=1"></script>
@@ -2391,54 +2392,20 @@ function showPractice(){
 window.showPracticeDrill=function(drillId){
   const P=window.PRACTICE;if(!P)return;
   const drill=P.drills.find(d=>d.id===drillId);if(!drill)return;
+  if(!window.HearthPracticeDrillViewer)return;
   const el=document.getElementById('p-foundation');
   const state=_getPracticeState();
   const done=!!(state.completed&&state.completed[drillId]);
   const prevAttempts=_getSessionLog().filter(s=>s.drillId===drillId);
   const drillGuide=window.HearthPracticeGuideModel?window.HearthPracticeGuideModel.drillGuideText(drill):'Sit with this drill. Listen for what changes between the first repetition and the last.';
 
-  el.innerHTML='<div style="padding:20px;max-width:900px;margin:0 auto">'+
-    '<button class="back-btn" onclick="playSfx('+"'"+'book-close'+"'"+');showPractice()">← Back to Temple</button>'+
-    '<div style="display:flex;gap:20px;align-items:flex-start;margin-top:12px">'+
-    // Left: character
-    '<div style="flex:0 0 120px;display:flex;flex-direction:column;align-items:center;position:sticky;top:20px">'+
-      '<img src="images/character-full/Thinking.png" style="width:100px;height:100px;object-fit:contain;filter:drop-shadow(0 4px 12px rgba(0,0,0,0.4));animation:char-float 3s ease-in-out infinite"/>'+
-      '<div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:10px 12px;margin-top:8px;max-width:140px;text-align:center;position:relative">'+
-        '<div style="position:absolute;left:-6px;top:50%;transform:translateY(-50%);width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-right:6px solid var(--border)"></div>'+
-        '<div style="font-size:0.65rem;color:var(--text);line-height:1.4">'+drillGuide+'</div>'+
-      '</div>'+
-    '</div>'+
-    // Right: drill content
-    '<div style="flex:1">'+
-    '<div style="border-top:4px solid '+CANDLE+';padding-top:16px;margin-bottom:20px">'+
-      '<div style="font-family:JetBrains Mono;font-size:0.55rem;color:'+CANDLE+';letter-spacing:0.15em;text-transform:uppercase">'+drill.category.toUpperCase()+(done?' · MASTERED':'')+'</div>'+
-      '<h2 style="font-family:Cinzel,serif;color:var(--text);font-size:1.2rem;margin:6px 0;font-weight:700">'+drill.title+'</h2>'+
-      '<div style="font-size:0.75rem;color:var(--dim)">'+drill.description+'</div>'+
-      '<div style="display:flex;gap:12px;margin-top:8px">'+
-        '<div style="font-size:0.7rem;color:'+CANDLE+'">⏱ '+drill.duration+'</div>'+
-        '<div style="font-size:0.7rem;color:var(--dim)">Difficulty '+drill.difficulty+'</div>'+
-      '</div>'+
-    '</div>'+
-    '<div style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:16px;margin-bottom:20px">'+
-      '<div style="font-family:JetBrains Mono;font-size:0.6rem;color:'+CANDLE+';letter-spacing:0.1em;margin-bottom:8px">HOW TO PRACTICE</div>'+
-      '<div style="font-size:0.82rem;color:var(--text);line-height:1.6">'+drill.instructions+'</div>'+
-    '</div>'+
-    (prevAttempts.length?(
-      '<div style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:16px;margin-bottom:20px">'+
-        '<div style="font-family:JetBrains Mono;font-size:0.6rem;color:'+CANDLE+';letter-spacing:0.1em;margin-bottom:8px">HISTORY ('+prevAttempts.length+')</div>'+
-        prevAttempts.slice(-3).reverse().map(a=>
-          '<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border)">'+
-            '<div style="font-size:0.75rem;color:var(--dim)">'+_timeAgo(new Date(a.ts))+'</div>'+
-            '<div style="font-size:0.75rem;color:var(--dim)">'+a.bpm+' BPM · '+a.minutes+' min</div>'+
-            '<div style="font-size:0.75rem">'+_feelingEmoji(a.feeling)+'</div>'+
-          '</div>'
-        ).join('')+
-      '</div>'
-    ):'')+
-    '<div style="text-align:center">'+
-      '<button onclick="startDrillPractice(\''+drillId+'\')" style="background:'+CANDLE+';color:#0d0b08;border:none;padding:16px 40px;border-radius:8px;font-family:Cinzel,serif;font-size:1rem;font-weight:700;cursor:pointer;letter-spacing:0.05em">🕯 Start Practising</button>'+
-    '</div>'+
-  '</div>';
+  el.innerHTML=window.HearthPracticeDrillViewer.renderPracticeDrill({
+    candleColor:CANDLE,
+    done:done,
+    drill:drill,
+    drillGuide:drillGuide,
+    prevAttempts:prevAttempts
+  });
 }
 
 // ── Practice mode (with metronome) ──
