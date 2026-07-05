@@ -37,6 +37,7 @@ The goal is not to patch the messy prototype forever. The goal is to build a reu
 | `adapters/doing-panel-controller.js` | Opens and coordinates the Doing panel using the smaller Doing adapters. |
 | `adapters/doing-ui-utils.js` | Shared text and display helpers for the legacy Doing view. |
 | `adapters/knowing-level-model.js` | Groups Knowing topics into the 8-level bookshelf roadmap. |
+| `adapters/knowing-shelf-viewer.js` | Renders the Knowing bookshelf screen. |
 | `adapters/knowing-shelf-controller.js` | Binds Knowing shelf carousel browser behavior. |
 | `adapters/foundation-action-renderers.js` | Registers existing Foundation action render functions behind stable renderer keys. |
 | `adapters/foundation-audio.js` | Shared tone helper for legacy Foundation action renderers. |

@@ -73,6 +73,7 @@ eval(readText(root + "/adapters/doing-map-viewer.js"));
 eval(readText(root + "/adapters/doing-map-controller.js"));
 eval(readText(root + "/adapters/doing-panel-controller.js"));
 eval(readText(root + "/adapters/knowing-level-model.js"));
+eval(readText(root + "/adapters/knowing-shelf-viewer.js"));
 eval(readText(root + "/adapters/knowing-shelf-controller.js"));
 
 var seed = JSON.parse(readText(root + "/database-blueprint/seeds/foundation_conversations_lesson_v2.json"));
@@ -267,6 +268,13 @@ assert(knowingLevels.length === 8, "Knowing level model should create eight leve
 assert(knowingLevels[0].totalTopics === 1, "Knowing level model should count level topics");
 assert(knowingLevels[0].totalDone === 1, "Knowing level model should count completed topics");
 assert(HearthKnowingLevelModel.recommendedLevel(knowingLevels) === 2, "Knowing level model should recommend next shelf");
+var knowingShelfHtml = HearthKnowingShelfViewer.renderKnowingShelf({{
+  knowing: fakeKnowing,
+  levels: knowingLevels,
+  recommendedLevel: 2
+}});
+assert(knowingShelfHtml.indexOf("knowing-shelf-scene") !== -1, "Knowing shelf viewer should render shelf scene");
+assert(knowingShelfHtml.indexOf("showKnowingBook") !== -1, "Knowing shelf viewer should render book action");
 var fakeShelfScrolled = {{ left: 0, behavior: "" }};
 var fakeShelfDocument = {{
   getElementById: function(id) {{

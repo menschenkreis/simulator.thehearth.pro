@@ -50,6 +50,7 @@ REQUIRED_MARKERS = {
         "adapters/doing-map-controller.js",
         "adapters/doing-panel-controller.js",
         "adapters/knowing-level-model.js",
+        "adapters/knowing-shelf-viewer.js",
         "adapters/knowing-shelf-controller.js",
         "assets/js/journey.js",
     ],
@@ -262,6 +263,11 @@ REQUIRED_MARKERS = {
         "HearthKnowingLevelModel",
         "buildLevels",
         "recommendedLevel",
+    ],
+    "adapters/knowing-shelf-viewer.js": [
+        "HearthKnowingShelfViewer",
+        "renderKnowingShelf",
+        "knowing-shelf-scene",
     ],
     "adapters/knowing-shelf-controller.js": [
         "HearthKnowingShelfController",
@@ -664,6 +670,7 @@ def main() -> int:
         "adapters/doing-map-controller.js",
         "adapters/doing-panel-controller.js",
         "adapters/knowing-level-model.js",
+        "adapters/knowing-shelf-viewer.js",
         "adapters/knowing-shelf-controller.js",
     ]
     previous_index = -1
