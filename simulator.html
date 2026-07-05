@@ -1803,6 +1803,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 <script src="adapters/create-cauldron-viewer.js"></script>
 <script src="adapters/create-cauldron-controller.js"></script>
 <script src="adapters/text-to-speech-controller.js"></script>
+<script src="adapters/header-tools-controller.js"></script>
 <script src="assets/js/doing.js?v=6"></script>
 <script src="assets/js/knowing.js?v=6"></script>
 <script src="assets/js/knowing-concepts.js?v=1"></script>
@@ -2697,130 +2698,43 @@ let _savedPanel = null;
 
 // === HEADER TOOLS ===
 function toggleSearch(){
-  var sp=document.getElementById('searchPanel');
-  var pp=document.getElementById('progressPanel');
-  var st=document.getElementById('settingsPanel');
-  pp.classList.remove('show');st.classList.remove('show');
-  sp.classList.toggle('show');
-  if(sp.classList.contains('show')){setTimeout(()=>document.getElementById('searchInput').focus(),100);}
+  if(window.HearthHeaderToolsController)window.HearthHeaderToolsController.toggleSearch(document,setTimeout);
 }
 function toggleProgress(){
-  var sp=document.getElementById('searchPanel');
-  var pp=document.getElementById('progressPanel');
-  var st=document.getElementById('settingsPanel');
-  sp.classList.remove('show');st.classList.remove('show');
-  pp.classList.toggle('show');
-  if(pp.classList.contains('show'))renderProgress();
+  if(window.HearthHeaderToolsController)window.HearthHeaderToolsController.toggleProgress(document,renderProgress);
 }
 function toggleSettings(){
-  var sp=document.getElementById('searchPanel');
-  var pp=document.getElementById('progressPanel');
-  var st=document.getElementById('settingsPanel');
-  sp.classList.remove('show');pp.classList.remove('show');
-  st.classList.toggle('show');
+  if(window.HearthHeaderToolsController)window.HearthHeaderToolsController.toggleSettings(document);
 }
-// Close panels on outside click
-document.addEventListener('click',function(e){
-  if(!e.target.closest('.top')&&!e.target.closest('.search-panel')&&!e.target.closest('.progress-panel')&&!e.target.closest('.settings-panel')){
-    document.getElementById('searchPanel').classList.remove('show');
-    document.getElementById('progressPanel').classList.remove('show');
-    document.getElementById('settingsPanel').classList.remove('show');
-  }
-});
+if(window.HearthHeaderToolsController)window.HearthHeaderToolsController.bindOutsideClick(document);
 
 function doSearch(q){
-  var results=document.getElementById('searchResults');
-  if(!q||q.length<2){results.innerHTML='';return;}
-  q=q.toLowerCase();
-  var found=[];
-  // Search foundation topics
-  if(window.FOUNDATION_TOPICS){window.FOUNDATION_TOPICS.forEach(function(t){if(t.title&&t.title.toLowerCase().includes(q))found.push({title:t.title,tag:'Foundation',action:function(){sw('foundation');}});});}
-  // Search knowing categories
-  if(window.KNOWING&&window.KNOWING.categories){window.KNOWING.categories.forEach(function(c){
-    if(c.title&&c.title.toLowerCase().includes(q))found.push({title:c.title,tag:'Know',action:function(){sw('theory');}});
-    if(c.topics)c.topics.forEach(function(t){if(t.title&&t.title.toLowerCase().includes(q))found.push({title:t.title,tag:'Know',action:function(){sw('theory');}});});
-  });}
-  // Search doing drills
-  if(window.DOING&&window.DOING.drills){window.DOING.drills.forEach(function(d){if(d.title&&d.title.toLowerCase().includes(q))found.push({title:d.title,tag:'Do',action:function(){sw('drill');}});});}
-  // Search play regions
-  if(window.PLAY_REGIONS){window.PLAY_REGIONS.forEach(function(r){if(r.name&&r.name.toLowerCase().includes(q))found.push({title:r.name,tag:'Play',action:function(){sw('lesson');}});});}
-  // Limit
-  found=found.slice(0,12);
-  if(found.length===0){results.innerHTML='<div style="padding:12px;color:var(--dim);font-size:0.8rem;">No results</div>';return;}
-  results.innerHTML=found.map(function(r,i){
-    return '<div class="search-result-item" data-idx="'+i+'">'
-      +'<div class="sr-title">'+r.title+'</div>'
-      +'<div class="sr-tag">'+r.tag+'</div></div>';
-  }).join('');
-  // Wire up click handlers
-  window._searchActions=found.map(function(r){return r.action;});
-  results.querySelectorAll('.search-result-item').forEach(function(el){
-    el.onclick=function(){document.getElementById('searchPanel').classList.remove('show');var idx=parseInt(el.getAttribute('data-idx'));if(window._searchActions[idx])window._searchActions[idx]();};
+  if(window.HearthHeaderToolsController)window.HearthHeaderToolsController.renderSearch(q,{
+    document:document,
+    data:{
+      foundationTopics:window.FOUNDATION_TOPICS,
+      knowing:window.KNOWING,
+      doing:window.DOING,
+      playRegions:window.PLAY_REGIONS
+    },
+    navigate:sw
   });
 }
 
 function renderProgress(){
-  var c=document.getElementById('progressContent');
-  var html='';
-  // Foundation progress
-  var fDone=0,fTotal=10;
-  try{fDone=Object.keys(JSON.parse(localStorage.getItem('fProgress')||'{}')).length;}catch(e){}
-  html+='<div class="progress-row"><span class="progress-label">Foundation</span>'
-    +'<div class="progress-bar"><div class="progress-fill" style="width:'+Math.round(fDone/fTotal*100)+'%"></div></div>'
-    +'<span style="font-family:JetBrains Mono;font-size:0.65rem;color:var(--dim)">'+fDone+'/'+fTotal+'</span></div>';
-  // Doing progress
-  var dDone=0,dTotal=48;
-  try{dDone=Object.keys(JSON.parse(localStorage.getItem('dProgress')||'{}')).length;}catch(e){}
-  html+='<div class="progress-row"><span class="progress-label">Doing</span>'
-    +'<div class="progress-bar"><div class="progress-fill" style="width:'+Math.round(dDone/dTotal*100)+'%"></div></div>'
-    +'<span style="font-family:JetBrains Mono;font-size:0.65rem;color:var(--dim)">'+dDone+'/'+dTotal+'</span></div>';
-  // Knowing progress
-  var kDone=0,kTotal=9;
-  try{kDone=Object.keys(JSON.parse(localStorage.getItem('kProgress')||'{}')).length;}catch(e){}
-  html+='<div class="progress-row"><span class="progress-label">Knowing</span>'
-    +'<div class="progress-bar"><div class="progress-fill" style="width:'+Math.round(kDone/kTotal*100)+'%"></div></div>'
-    +'<span style="font-family:JetBrains Mono;font-size:0.65rem;color:var(--dim)">'+kDone+'/'+kTotal+'</span></div>';
-  // Streak
-  var streak=parseInt(localStorage.getItem('streak')||'0');
-  html+='<div class="progress-row"><span class="progress-label">🔥 Streak</span><span style="font-family:JetBrains Mono;font-size:0.65rem;color:var(--amber)">'+streak+' days</span></div>';
-  c.innerHTML=html;
+  if(window.HearthHeaderToolsController)window.HearthHeaderToolsController.renderProgress(document,localStorage);
 }
 
 function toggleSound(){
-  var audioMuted=localStorage.getItem('hearthSoundMuted')==='true';
-  var newMuted=!audioMuted;
-  localStorage.setItem('hearthSoundMuted',newMuted?'true':'false');
-  var btn=document.getElementById('soundToggle');
-  if(btn)btn.textContent=newMuted?'Off':'On';
-  var audio=document.getElementById('hearthAudio');
-  if(!audio)return;
-  if(newMuted){
-    audio.pause();
-  } else {
-    audio.play().catch(function(){});
-  }
+  if(window.HearthHeaderToolsController)window.HearthHeaderToolsController.toggleSound(document,localStorage);
 }
 function toggleParticles(){
-  var pOff=localStorage.getItem('hearthParticles')==='off';
-  var newState=pOff?'on':'off';
-  localStorage.setItem('hearthParticles',newState);
-  var btn=document.getElementById('particleToggle');
-  if(btn)btn.textContent=newState==='on'?'On':'Off';
-  if(newState==='off'){
-    var canvas=document.getElementById('emberCanvas');
-    if(canvas&&canvas.style)canvas.style.display='none';
-  } else {
-    var canvas=document.getElementById('emberCanvas');
-    if(canvas&&canvas.style){canvas.style.display='';setTimeout(function(){window.dispatchEvent(new Event('resize'));},100);}
-  }
+  if(window.HearthHeaderToolsController)window.HearthHeaderToolsController.toggleParticles(document,localStorage);
 }
 
 // Restore settings on load
 (function(){
-  var m=localStorage.getItem('hearthSoundMuted');
-  if(m==='true'){var btn=document.getElementById('soundToggle');if(btn)btn.textContent='Off';var a=document.getElementById('hearthAudio');if(a)a.pause();}
-  // Always enable particles
-  localStorage.setItem('hearthParticles','on');
+  if(window.HearthHeaderToolsController)window.HearthHeaderToolsController.restoreSettings(document,localStorage);
 })();
 
 function backToMap(){

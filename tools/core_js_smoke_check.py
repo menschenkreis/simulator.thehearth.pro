@@ -99,6 +99,7 @@ eval(readText(root + "/adapters/create-cauldron-model.js"));
 eval(readText(root + "/adapters/create-cauldron-viewer.js"));
 eval(readText(root + "/adapters/create-cauldron-controller.js"));
 eval(readText(root + "/adapters/text-to-speech-controller.js"));
+eval(readText(root + "/adapters/header-tools-controller.js"));
 
 var seed = JSON.parse(readText(root + "/database-blueprint/seeds/foundation_conversations_lesson_v2.json"));
 var foundationManifest = JSON.parse(readText(root + "/core/foundation-route-manifest.json"));
@@ -448,6 +449,26 @@ var ttsVoice = HearthTextToSpeechController.preferredVoice([
   {{ name: "Samantha", lang: "en-US" }}
 ]);
 assert(ttsVoice.name === "Samantha", "Text-to-speech controller should choose preferred voices");
+var headerSearchResults = HearthHeaderToolsController.collectSearchResults("scale", {{
+  foundationTopics: [{{ title: "Threshold" }}],
+  knowing: {{ categories: [{{ title: "Harmony", topics: [{{ title: "Major Scale" }}] }}] }},
+  doing: {{ drills: [{{ title: "Scale Shapes" }}] }},
+  playRegions: [{{ name: "Andes" }}]
+}}, function() {{}});
+assert(headerSearchResults.length === 2, "Header tools controller should collect matching search results");
+var headerStorage = {{
+  values: {{
+    fProgress: JSON.stringify({{ a: true, b: true }}),
+    dProgress: JSON.stringify({{ c: true }}),
+    kProgress: JSON.stringify({{}}),
+    streak: "3"
+  }},
+  getItem: function(key) {{ return this.values[key] || null; }},
+  setItem: function(key, value) {{ this.values[key] = String(value); }}
+}};
+var headerCounts = HearthHeaderToolsController.progressCounts(headerStorage);
+assert(headerCounts.foundation.done === 2, "Header tools controller should count Foundation progress");
+assert(HearthHeaderToolsController.renderProgressHtml(headerCounts).indexOf("3 days") >= 0, "Header tools controller should render streak progress");
 var fakeShelfScrolled = {{ left: 0, behavior: "" }};
 var fakeShelfDocument = {{
   getElementById: function(id) {{

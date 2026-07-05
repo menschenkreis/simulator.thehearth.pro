@@ -61,6 +61,7 @@ The goal is not to patch the messy prototype forever. The goal is to build a reu
 | `adapters/foundation-topic-controller.js` | Opens Foundation topics, launches lessons, renders fallback topic pages, and completes progress. |
 | `adapters/foundation-topic-viewer.js` | Renders the legacy Foundation topic tab fallback view. |
 | `adapters/foundation-ui-utils.js` | Shared color and HTML escaping helpers for Foundation views. |
+| `adapters/header-tools-controller.js` | Coordinates legacy search, progress, and settings header panels. |
 | `adapters/practice-state.js` | Wraps legacy Practice localStorage state, log, preferences, and drill selection. |
 | `adapters/practice-guide-model.js` | Chooses contextual Practice Temple guidance from preferences and session history. |
 | `adapters/practice-dashboard-viewer.js` | Renders the Practice Temple dashboard screen. |
