@@ -101,6 +101,7 @@ eval(readText(root + "/adapters/create-cauldron-controller.js"));
 eval(readText(root + "/adapters/text-to-speech-controller.js"));
 eval(readText(root + "/adapters/header-tools-controller.js"));
 eval(readText(root + "/adapters/references-panel-controller.js"));
+eval(readText(root + "/adapters/link-deposit-controller.js"));
 
 var seed = JSON.parse(readText(root + "/database-blueprint/seeds/foundation_conversations_lesson_v2.json"));
 var foundationManifest = JSON.parse(readText(root + "/core/foundation-route-manifest.json"));
@@ -476,6 +477,17 @@ var referencesHtml = HearthReferencesPanelController.renderReferencesHtml({{
 }});
 assert(referencesHtml.indexOf("Foundation") >= 0, "References panel controller should render source groups");
 assert(referencesHtml.indexOf("&lt;A&gt;") >= 0, "References panel controller should escape source text");
+assert(HearthLinkDepositController.titleFromUrl("https://www.youtube.com/watch?v=abc123") === "YouTube Video abc123", "Link deposit controller should infer YouTube titles");
+var linkPayload = HearthLinkDepositController.videoPayload({{
+  key_name: "yt-1",
+  title: "Scale Video",
+  url: "https://youtube.com/watch?v=abc",
+  category: "scales",
+  level_num: 2,
+  notes: "major scale"
+}});
+assert(linkPayload.youtube_url.indexOf("youtube.com") >= 0, "Link deposit controller should build video payload");
+assert(HearthLinkDepositController.matchingTopicWords({{ title: "Major Scale", description: "", category: "scales" }}, "major scale practice").length >= 1, "Link deposit controller should match topic words");
 var fakeShelfScrolled = {{ left: 0, behavior: "" }};
 var fakeShelfDocument = {{
   getElementById: function(id) {{

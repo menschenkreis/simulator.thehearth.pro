@@ -1805,6 +1805,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 <script src="adapters/text-to-speech-controller.js"></script>
 <script src="adapters/header-tools-controller.js"></script>
 <script src="adapters/references-panel-controller.js"></script>
+<script src="adapters/link-deposit-controller.js"></script>
 <script src="assets/js/doing.js?v=6"></script>
 <script src="assets/js/knowing.js?v=6"></script>
 <script src="assets/js/knowing-concepts.js?v=1"></script>
@@ -3416,83 +3417,22 @@ updateInsightCount();
 <img src="images/character-neutral.png" class="mobile-character" alt="Guide" />
 <script>// YouTube Link Deposit
 function toggleLinkDeposit(){
-  var p=document.getElementById('linkDepositPanel');
-  var sp=document.getElementById('searchPanel');
-  var pp=document.getElementById('progressPanel');
-  var st=document.getElementById('settingsPanel');
-  sp.classList.remove('show');pp.classList.remove('show');st.classList.remove('show');
-  p.classList.toggle('show');
-  if(p.classList.contains('show')) document.getElementById('linkDepositUrl').focus();
+  if(window.HearthLinkDepositController)window.HearthLinkDepositController.togglePanel({
+    document:document,
+    delay:setTimeout,
+    closePanels:function(){
+      if(window.HearthHeaderToolsController)window.HearthHeaderToolsController.closePanels(document);
+    }
+  });
 }
 async function depositLink(){
-  var url=document.getElementById('linkDepositUrl').value.trim();
-  var title=document.getElementById('linkDepositTitle').value.trim();
-  var cat=document.getElementById('linkDepositCat').value;
-  var lvl=parseInt(document.getElementById('linkDepositLevel').value)||1;
-  var notes=document.getElementById('linkDepositNotes').value.trim();
-  var status=document.getElementById('linkDepositStatus');
-  if(!url){status.textContent='Paste a URL first';status.style.color='#e74c3c';return;}
-  if(!title){var m=url.match(/[?&]v=([^&]+)/);title=m?'YouTube Video '+m[1]:'YouTube Link';}
-  var key='yt-'+Date.now();
-  status.textContent='Saving + auto-linking...';status.style.color='var(--dim)';
-  try{
-    // Save video
-    var token=localStorage.getItem('hearth-admin-token')||'';var r=await fetch('https://thehearth.pro/api/?a=content-videos',{method:'POST',headers:{'Content-Type':'application/json','Authorization':token?'Bearer '+token:''},body:JSON.stringify({key_name:key,title:title,youtube_url:url,category:cat,level_num:lvl,description:notes})});
-    var d=await r.json();
-    if(!d.ok){status.textContent='Error: '+(d.error||'unknown');status.style.color='#e74c3c';return;}
-    var videoId=d.id;
-    // Auto-link to matching content
-    var searchText=(title+' '+notes+' '+cat).toLowerCase();
-    var links=[];
-    try{
-      // Match against topics
-      var topics=await fetch('https://thehearth.pro/api/?a=content-topics').then(r=>r.json());
-      for(var t of topics){
-        var tWords=(t.title+' '+(t.description||'')+' '+(t.category||'')).toLowerCase().split(/[\s,;:\-]+/);
-        var match=tWords.filter(w=>w.length>3 && searchText.includes(w));
-        if(match.length>=1){
-          await fetch('https://thehearth.pro/api/?a=content-videos',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:videoId,topic_id:t.id})});
-          links.push('topic: '+t.title);
-          break;
-        }
-      }
-    }catch(e){}
-    try{
-      // Match against glossary
-      var glossary=await fetch('https://thehearth.pro/api/?a=content-glossary').then(r=>r.json());
-      for(var g of glossary){
-        if(searchText.includes(g.term.toLowerCase())){
-          links.push('term: '+g.term);
-        }
-      }
-    }catch(e){}
-    var linkText=links.length?' Linked to: '+links.join(', '):'';
-    status.textContent='Saved! ✓'+linkText;
-    status.style.color='#2ecc71';
-    document.getElementById('linkDepositUrl').value='';
-    document.getElementById('linkDepositTitle').value='';
-    document.getElementById('linkDepositNotes').value='';
-  }catch(e){status.textContent='Network error';status.style.color='#e74c3c';}
+  if(window.HearthLinkDepositController)await window.HearthLinkDepositController.depositLink({
+    document:document,
+    fetch:fetch,
+    storage:localStorage
+  });
 }
-// Auto-fill title from YouTube URL
-document.addEventListener('DOMContentLoaded',function(){
-  var urlEl=document.getElementById('linkDepositUrl');
-  if(urlEl){
-    urlEl.addEventListener('paste',function(){
-      setTimeout(function(){
-        var url=urlEl.value.trim();
-        var titleEl=document.getElementById('linkDepositTitle');
-        if(!titleEl.value && url.includes('youtube.com')){
-          // Fetch title via oembed
-          fetch('https://www.youtube.com/oembed?url='+encodeURIComponent(url)+'&format=json')
-            .then(function(r){return r.json();})
-            .then(function(d){if(d.title)titleEl.value=d.title;})
-            .catch(function(){});
-        }
-      },100);
-    });
-  }
-});
+if(window.HearthLinkDepositController)window.HearthLinkDepositController.bindTitleAutofill({document:document,fetch:fetch,delay:setTimeout});
 
 if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js').catch(()=>{})}</script>
 <script>

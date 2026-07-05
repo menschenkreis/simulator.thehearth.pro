@@ -40,6 +40,7 @@ Adapters are allowed to connect the clean core to those outside systems.
 | `knowing-study-session-model.js` | Resolves Study Session topic context, color, and previous/next topics. |
 | `knowing-study-session-viewer.js` | Renders the guided Study Session screen. |
 | `knowing-study-quiz-controller.js` | Handles guided Study Session quiz answer interactions. |
+| `link-deposit-controller.js` | Handles the legacy YouTube link deposit popup and API save flow. |
 | `foundation-action-renderers.js` | Registers existing Foundation action render functions behind stable renderer keys. |
 | `foundation-audio.js` | Shared tone helper for legacy Foundation action renderers. |
 | `foundation-lesson-launcher.js` | Resolves Foundation topics into TeachingEngine lesson objects. |
