@@ -53,6 +53,7 @@ REQUIRED_MARKERS = {
         "adapters/knowing-shelf-viewer.js",
         "adapters/knowing-shelf-controller.js",
         "adapters/knowing-book-viewer.js",
+        "adapters/knowing-topic-viewer.js",
         "assets/js/journey.js",
     ],
     "assets/js/scene-first.js": [
@@ -279,6 +280,11 @@ REQUIRED_MARKERS = {
         "HearthKnowingBookViewer",
         "renderKnowingBook",
         "renderTopicRow",
+    ],
+    "adapters/knowing-topic-viewer.js": [
+        "HearthKnowingTopicViewer",
+        "renderKnowingTopic",
+        "nextTopicFor",
     ],
     "adapters/teaching-engine-core-adapter.js": [
         "HearthTeachingEngineCoreAdapter",
@@ -679,6 +685,7 @@ def main() -> int:
         "adapters/knowing-shelf-viewer.js",
         "adapters/knowing-shelf-controller.js",
         "adapters/knowing-book-viewer.js",
+        "adapters/knowing-topic-viewer.js",
     ]
     previous_index = -1
     for script_path in expected_script_order:

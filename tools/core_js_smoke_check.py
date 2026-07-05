@@ -76,6 +76,7 @@ eval(readText(root + "/adapters/knowing-level-model.js"));
 eval(readText(root + "/adapters/knowing-shelf-viewer.js"));
 eval(readText(root + "/adapters/knowing-shelf-controller.js"));
 eval(readText(root + "/adapters/knowing-book-viewer.js"));
+eval(readText(root + "/adapters/knowing-topic-viewer.js"));
 
 var seed = JSON.parse(readText(root + "/database-blueprint/seeds/foundation_conversations_lesson_v2.json"));
 var foundationManifest = JSON.parse(readText(root + "/core/foundation-route-manifest.json"));
@@ -283,6 +284,18 @@ var knowingBookHtml = HearthKnowingBookViewer.renderKnowingBook({{
 }});
 assert(knowingBookHtml.indexOf("Back to shelf") !== -1, "Knowing book viewer should render back action");
 assert(knowingBookHtml.indexOf("showKnowingTopic") !== -1, "Knowing book viewer should render topic action");
+var knowingTopicHtml = HearthKnowingTopicViewer.renderKnowingTopic({{
+  knowing: fakeKnowing,
+  cat: fakeKnowing.categories[0],
+  topic: fakeKnowing.categories[0].topics[0],
+  completed: {{ pulse: true }}
+}});
+assert(knowingTopicHtml.indexOf("Back to Rhythm") !== -1, "Knowing topic viewer should render book back action");
+assert(knowingTopicHtml.indexOf("Mark as understood") === -1, "Knowing topic viewer should reflect completed topic");
+assert(
+  HearthKnowingTopicViewer.nextTopicFor(fakeKnowing.categories[0], fakeKnowing.categories[0].topics[0]).id === "sync",
+  "Knowing topic viewer should find next topic"
+);
 var fakeShelfScrolled = {{ left: 0, behavior: "" }};
 var fakeShelfDocument = {{
   getElementById: function(id) {{
