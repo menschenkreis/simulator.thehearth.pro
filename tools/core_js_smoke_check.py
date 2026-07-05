@@ -354,6 +354,7 @@ assert(HearthPracticeState.preferences({{ altarTime: 10 }}).time === 10, "Practi
 assert(HearthPracticeState.nextDrill(fakePractice, "Scales", {{ completed: {{}} }}).id === "scale", "Practice state should choose next focused drill");
 assert(HearthPracticeGuideModel.guideText({{ time: 5, focus: "All" }}, [], null).indexOf("Five minutes") === 0, "Practice guide model should guide short sessions");
 assert(HearthPracticeGuideModel.guideText({{ time: 20, focus: "All" }}, [{{ feeling: "stuck" }}], null).indexOf("Last time was a wall") === 0, "Practice guide model should respond to last session");
+assert(HearthPracticeGuideModel.drillGuideText({{ category: "Scales" }}).indexOf("Scales are not exercises") === 0, "Practice guide model should guide drill categories");
 var practiceDashboardHtml = HearthPracticeDashboardViewer.renderPracticeDashboard({{
   categories: ["All", "Scales"],
   completedCount: 1,

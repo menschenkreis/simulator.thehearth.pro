@@ -347,6 +347,7 @@ REQUIRED_MARKERS = {
     "adapters/practice-guide-model.js": [
         "HearthPracticeGuideModel",
         "guideText",
+        "drillGuideText",
     ],
     "adapters/practice-dashboard-viewer.js": [
         "HearthPracticeDashboardViewer",

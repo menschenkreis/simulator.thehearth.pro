@@ -45,8 +45,22 @@
     return "Choose a candle, open the book, and make one clear promise to the hands. The temple does not ask for perfection. It asks for presence.";
   }
 
+  function drillGuideText(drill) {
+    var category = drill && drill.category;
+    if (category === "Warm-Up") return "Warm-up is not optional. It is the bridge between rest and play. Start slow, feel the blood flow, then begin.";
+    if (category === "Technique") return "Technique is not about speed. It is about control. If you cannot play it slow and clean, you cannot play it fast and clean.";
+    if (category === "Scales") return "Scales are not exercises. They are vocabulary. Learn the shape, then learn to speak with it.";
+    if (category === "Chords") return "Chords are shapes, but they are also sounds. Listen to each string - is every note ringing?";
+    if (category === "Rhythm") return "Rhythm is the foundation. Without it, notes are just noise. Feel the pulse in your body before you play it with your hands.";
+    if (category === "Speed") return "Speed is a byproduct of clean repetition. Never practice faster than you can play clean. The speed will come.";
+    if (category === "Ear Training") return "The ear is the most important tool. Train it like you train your fingers - daily, patiently, with intention.";
+    if (category === "Music") return "This is why we practice. Not to play exercises, but to play music. Apply what you know.";
+    return "Sit with this drill. Listen for what changes between the first repetition and the last.";
+  }
+
   return {
     version: "0.1.0",
+    drillGuideText: drillGuideText,
     guideText: guideText
   };
 });

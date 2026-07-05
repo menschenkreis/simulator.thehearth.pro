@@ -2395,18 +2395,7 @@ window.showPracticeDrill=function(drillId){
   const state=_getPracticeState();
   const done=!!(state.completed&&state.completed[drillId]);
   const prevAttempts=_getSessionLog().filter(s=>s.drillId===drillId);
-
-  // Guide comment based on drill context
-  var drillGuide='';
-  if(drill.category==='Warm-Up')drillGuide='Warm-up is not optional. It is the bridge between rest and play. Start slow, feel the blood flow, then begin.';
-  else if(drill.category==='Technique')drillGuide='Technique is not about speed. It is about control. If you cannot play it slow and clean, you cannot play it fast and clean.';
-  else if(drill.category==='Scales')drillGuide='Scales are not exercises. They are vocabulary. Learn the shape, then learn to speak with it.';
-  else if(drill.category==='Chords')drillGuide='Chords are shapes, but they are also sounds. Listen to each string - is every note ringing?';
-  else if(drill.category==='Rhythm')drillGuide='Rhythm is the foundation. Without it, notes are just noise. Feel the pulse in your body before you play it with your hands.';
-  else if(drill.category==='Speed')drillGuide='Speed is a byproduct of clean repetition. Never practice faster than you can play clean. The speed will come.';
-  else if(drill.category==='Ear Training')drillGuide='The ear is the most important tool. Train it like you train your fingers - daily, patiently, with intention.';
-  else if(drill.category==='Music')drillGuide='This is why we practice. Not to play exercises, but to play music. Apply what you know.';
-  else drillGuide='Sit with this drill. Listen for what changes between the first repetition and the last.';
+  const drillGuide=window.HearthPracticeGuideModel?window.HearthPracticeGuideModel.drillGuideText(drill):'Sit with this drill. Listen for what changes between the first repetition and the last.';
 
   el.innerHTML='<div style="padding:20px;max-width:900px;margin:0 auto">'+
     '<button class="back-btn" onclick="playSfx('+"'"+'book-close'+"'"+');showPractice()">← Back to Temple</button>'+
