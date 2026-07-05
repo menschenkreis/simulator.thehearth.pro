@@ -1793,6 +1793,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 <script src="adapters/practice-guide-model.js"></script>
 <script src="adapters/practice-dashboard-viewer.js"></script>
 <script src="adapters/practice-drill-viewer.js"></script>
+<script src="adapters/practice-session-model.js"></script>
 <script src="adapters/practice-session-viewer.js"></script>
 <script src="assets/js/doing.js?v=6"></script>
 <script src="assets/js/knowing.js?v=6"></script>
@@ -2540,37 +2541,18 @@ window._finishDrill=function(drillId,feeling){
 
   const state=_getPracticeState();
   if(!state.completed)state.completed={};
-
-  let nextAction='';
-  let nextDrill=null;
-
-  if(feeling==='nailed'){
+  const outcome=window.HearthPracticeSessionModel?window.HearthPracticeSessionModel.finishOutcome(P,drill,feeling):null;if(!outcome)return;
+  const nextDrill=outcome.nextDrill;
+  if(outcome.markComplete){
     state.completed[drillId]=true;
-    const idx=P.drills.findIndex(d=>d.id===drillId);
-    nextDrill=P.drills[idx+1];
-    nextAction=nextDrill?
-      'Next up: <strong>'+nextDrill.title+'</strong> - ready?':
-      'You\'ve worked through all the drills! Loop back and reinforce.';
-  } else if(feeling==='getting'){
-    nextAction='Good - keep practising <strong>'+drill.title+'</strong>. Repetition is the teacher.';
-    nextDrill=drill;
-  } else if(feeling==='stuck'){
-    const idx=P.drills.findIndex(d=>d.id===drillId);
-    const prevDrill=idx>0?P.drills[idx-1]:null;
-    if(prevDrill){
-      nextAction='Gradient too steep? Totally fine. Drop back to <strong>'+prevDrill.title+'</strong> and strengthen the foundation.';
-      nextDrill=prevDrill;
-    } else {
-      nextAction='Take it slow - there\'s no rush. Try <strong>'+drill.title+'</strong> again at a lower tempo.';
-      nextDrill=drill;
-    }
   }
   state.currentDrill=nextDrill?nextDrill.id:drillId;
   _savePracticeState(state);
 
   const el=document.getElementById('p-foundation');
-  const emoji=feeling==='nailed'?'🔥':feeling==='getting'?'💪':'🤔';
-  const msg=feeling==='nailed'?'Nailed it!':feeling==='getting'?'Getting there - keep going':'Skipped gradient detected - stepping back';
+  const emoji=outcome.emoji;
+  const msg=outcome.message;
+  const nextAction=outcome.nextAction;
 
   el.innerHTML='<div style="padding:20px;max-width:500px;margin:0 auto;text-align:center">'+
     '<div style="font-size:3rem;margin-bottom:12px">'+emoji+'</div>'+
