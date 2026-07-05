@@ -1807,6 +1807,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 <script src="adapters/references-panel-controller.js"></script>
 <script src="adapters/link-deposit-controller.js"></script>
 <script src="adapters/recorder-controller.js"></script>
+<script src="adapters/notebook-controller.js"></script>
 <script src="assets/js/doing.js?v=6"></script>
 <script src="assets/js/knowing.js?v=6"></script>
 <script src="assets/js/knowing-concepts.js?v=1"></script>
@@ -2798,130 +2799,34 @@ function assessLesson(){ if(window.Journey) window.Journey.saveLessonDraft(); }
 
 // ═══ NOTEBOOK ═══
 function populateNotebook(){
-  const el=document.getElementById('notebook-content');if(!el)return;
-  const nodes=['foundation','doing','knowing','practice','play','create'];
-  const nodeNames=['Foundation','Do','Know','Practice','Play','Create'];
-  const rainbow=['#e74c3c','#e67e22','#f1c40f','#2ecc71','#3498db','#9b59b6'];
-  let totalDone=0, totalItems=0;
-
-  let html='<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px">';
-
-  nodes.forEach((nodeId,i)=>{
-    const progress=JSON.parse(localStorage.getItem('hearth-'+nodeId+'-progress')||'{}');
-    const doneKeys=Object.keys(progress).filter(k=>progress[k]);
-    const color=rainbow[i%rainbow.length];
-    let total=0;
-    if(nodeId==='foundation'&&window.FOUNDATION) total=window.FOUNDATION.topics.length;
-    else if(nodeId==='doing'&&window.DOING) total=window.DOING.categories.reduce((s,c)=>s+c.drills.length,0);
-    else if(nodeId==='knowing'&&window.KNOWING) total=window.KNOWING.categories.reduce((s,c)=>s+c.topics.length,0);
-    else if(nodeId==='practice'&&window.PRACTICE&&window.PRACTICE.topics) total=window.PRACTICE.topics.length;
-    else if(nodeId==='play'&&window.WORLD_MAP_REGIONS) total=window.WORLD_MAP_REGIONS.length;
-    else if(nodeId==='create'&&window.CREATE) total=window.CREATE.categories.reduce((s,c)=>s+c.topics.length,0);
-
-    totalDone+=doneKeys.length;
-    totalItems+=total;
-    const pct=total>0?Math.round(doneKeys.length/total*100):0;
-
-    html+='<div style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:12px;text-align:center">'+
-      '<div style="font-family:\'DM Sans\',sans-serif;font-size:0.75rem;color:'+color+';font-weight:700">'+nodeNames[i]+'</div>'+
-      '<div style="font-family:Cinzel,serif;font-size:1.4rem;color:'+color+';margin:4px 0">'+pct+'%</div>'+
-      '<div style="font-size:0.6rem;color:var(--dim)">'+doneKeys.length+'/'+total+'</div>'+
-    '</div>';
-  });
-
-  html+='</div>';
-
-  // Overall progress
-  const overallPct=totalItems>0?Math.round(totalDone/totalItems*100):0;
-  html+='<div style="background:var(--card);border:2px solid var(--gold);border-radius:8px;padding:16px;text-align:center;margin-bottom:16px">'+
-    '<div style="font-family:JetBrains Mono;font-size:0.55rem;color:var(--gold);letter-spacing:0.15em;margin-bottom:2px">OVERALL PROGRESS</div>'+
-    '<div style="font-family:Cinzel,serif;font-size:2rem;color:var(--gold)">'+overallPct+'%</div>'+
-    '<div style="font-size:0.7rem;color:var(--dim)">'+totalDone+' of '+totalItems+' completed</div>'+
-  '</div>';
-
-  el.innerHTML=html;
+  if(window.HearthNotebookController)window.HearthNotebookController.populateNotebook(document,localStorage,window);
 }
 
 // ═══ NOTEBOOK OVERLAY ═══
 var _nbContext = 'general';
 var _nbContextKey = 'hearth-notebook-general';
+var _nbState = {context:'general',key:'hearth-notebook-general'};
 
 window.setNotebookContext = function(context, label) {
-  _nbContext = context;
-  _nbContextKey = 'hearth-notebook-' + context;
-  var ctxEl = document.getElementById('nb-context');
-  if (ctxEl) ctxEl.textContent = label || context;
-  // Load notes for this context
-  var notes = localStorage.getItem(_nbContextKey) || '';
-  var ta = document.getElementById('nb-notes');
-  if (ta) ta.value = notes;
+  if(window.HearthNotebookController)_nbState=window.HearthNotebookController.setContext(_nbState,context,label,document,localStorage);
+  _nbContext = _nbState.context;
+  _nbContextKey = _nbState.key;
 };
 
 window.toggleNotebook = function() {
-  var overlay = document.getElementById('notebook-overlay');
-  if (!overlay) return;
-  var isOpen = overlay.style.display === 'flex';
-  if (isOpen) {
-    overlay.style.display = 'none';
-  } else {
-    overlay.style.display = 'flex';
-    // Load current context notes
-    var notes = localStorage.getItem(_nbContextKey) || '';
-    var ta = document.getElementById('nb-notes');
-    if (ta) { ta.value = notes; ta.focus(); }
-    // Populate progress
-    populateNotebookProgress();
-  }
+  if(window.HearthNotebookController)_nbState=window.HearthNotebookController.toggleNotebook(_nbState,document,localStorage,window);
 };
 
 window.saveNotebookNotes = function() {
-  var ta = document.getElementById('nb-notes');
-  if (!ta) return;
-  localStorage.setItem(_nbContextKey, ta.value);
-  var saved = document.getElementById('nb-saved');
-  if (saved) {
-    saved.textContent = 'Saved ' + new Date().toLocaleTimeString();
-    saved.style.color = 'var(--gold)';
-    setTimeout(function() { saved.style.color = 'var(--dim)'; }, 1500);
-  }
+  if(window.HearthNotebookController)window.HearthNotebookController.saveNotes(_nbState,document,localStorage,setTimeout);
 };
 
 window.clearNotebookNotes = function() {
-  if (!confirm('Clear notes for this section?')) return;
-  localStorage.removeItem(_nbContextKey);
-  var ta = document.getElementById('nb-notes');
-  if (ta) ta.value = '';
+  if(window.HearthNotebookController)window.HearthNotebookController.clearNotes(_nbState,document,localStorage,confirm);
 };
 
 function populateNotebookProgress() {
-  var el = document.getElementById('nb-progress');
-  if (!el) return;
-  var nodes = ['foundation','doing','knowing','practice','play','create'];
-  var nodeNames = ['Fnd','Do','Know','Prac','Play','Create'];
-  var colors = ['#e74c3c','#e67e22','#f1c40f','#2ecc71','#3498db','#9b59b6'];
-  var totalDone = 0, totalItems = 0;
-
-  var html = '<div style="display:grid;grid-template-columns:repeat(6,1fr);gap:6px">';
-  nodes.forEach(function(nodeId, i) {
-    var progress = JSON.parse(localStorage.getItem('hearth-' + nodeId + '-progress') || '{}');
-    var done = Object.keys(progress).filter(function(k) { return progress[k]; }).length;
-    var total = 0;
-    if (nodeId === 'foundation' && window.FOUNDATION) total = window.FOUNDATION.topics.length;
-    else if (nodeId === 'doing' && window.DOING) total = window.DOING.categories.reduce(function(s,c) { return s + c.drills.length; }, 0);
-    else if (nodeId === 'knowing' && window.KNOWING) total = window.KNOWING.categories.reduce(function(s,c) { return s + c.topics.length; }, 0);
-    else if (nodeId === 'practice' && window.PRACTICE && window.PRACTICE.topics) total = window.PRACTICE.topics.length;
-    else if (nodeId === 'play' && window.WORLD_MAP_REGIONS) total = window.WORLD_MAP_REGIONS.length;
-    else if (nodeId === 'create' && window.CREATE) total = window.CREATE.categories.reduce(function(s,c) { return s + c.topics.length; }, 0);
-    totalDone += done;
-    totalItems += total;
-    var pct = total > 0 ? Math.round(done / total * 100) : 0;
-    html += '<div style="text-align:center;padding:6px 2px;background:var(--card);border-radius:6px;border:1px solid var(--border)">' +
-      '<div style="font-size:0.55rem;color:' + colors[i] + ';font-weight:600">' + nodeNames[i] + '</div>' +
-      '<div style="font-family:Cinzel;font-size:0.9rem;color:' + colors[i] + '">' + pct + '%</div>' +
-    '</div>';
-  });
-  html += '</div>';
-  el.innerHTML = html;
+  if(window.HearthNotebookController)window.HearthNotebookController.populateNotebookProgress(document,localStorage,window);
 }
 
 // ═══ GLOSSARY ═══

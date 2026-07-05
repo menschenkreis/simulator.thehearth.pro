@@ -75,6 +75,7 @@ The goal is not to patch the messy prototype forever. The goal is to build a reu
 | `adapters/references-panel-controller.js` | Renders and opens the legacy References header popup. |
 | `adapters/recorder-controller.js` | Updates the legacy recorder button and status state. |
 | `adapters/mastery-viewer.js` | Renders the Mastery and Masters at Play screens. |
+| `adapters/notebook-controller.js` | Handles legacy notebook notes, context, and progress summaries. |
 | `adapters/create-cauldron-model.js` | Resolves selected Create ingredients into a cauldron prompt result. |
 | `adapters/create-cauldron-viewer.js` | Renders the Create Cauldron dashboard screen. |
 | `adapters/create-cauldron-controller.js` | Updates Create Cauldron ingredient selection and reset UI. |

@@ -66,6 +66,7 @@ Adapters are allowed to connect the clean core to those outside systems.
 | `references-panel-controller.js` | Renders and opens the legacy References header popup. |
 | `recorder-controller.js` | Updates the legacy recorder button and status state. |
 | `mastery-viewer.js` | Renders the Mastery and Masters at Play screens. |
+| `notebook-controller.js` | Handles legacy notebook notes, context, and progress summaries. |
 | `create-cauldron-model.js` | Resolves selected Create ingredients into a cauldron prompt result. |
 | `create-cauldron-viewer.js` | Renders the Create Cauldron dashboard screen. |
 | `create-cauldron-controller.js` | Updates Create Cauldron ingredient selection and reset UI. |

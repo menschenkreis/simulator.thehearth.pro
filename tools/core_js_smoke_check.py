@@ -103,6 +103,7 @@ eval(readText(root + "/adapters/header-tools-controller.js"));
 eval(readText(root + "/adapters/references-panel-controller.js"));
 eval(readText(root + "/adapters/link-deposit-controller.js"));
 eval(readText(root + "/adapters/recorder-controller.js"));
+eval(readText(root + "/adapters/notebook-controller.js"));
 
 var seed = JSON.parse(readText(root + "/database-blueprint/seeds/foundation_conversations_lesson_v2.json"));
 var foundationManifest = JSON.parse(readText(root + "/core/foundation-route-manifest.json"));
@@ -502,6 +503,22 @@ var recorderDoc = {{
 assert(HearthRecorderController.toggleRecording(false, recorderDoc) === true, "Recorder controller should toggle recording on");
 assert(recorderButtonClass.added === "on", "Recorder controller should mark button active");
 assert(recorderStatus.textContent === "Recording...", "Recorder controller should update status text");
+var notebookStorage = {{
+  values: {{ "hearth-foundation-progress": JSON.stringify({{ one: true }}) }},
+  getItem: function(key) {{ return this.values[key] || null; }},
+  setItem: function(key, value) {{ this.values[key] = String(value); }},
+  removeItem: function(key) {{ delete this.values[key]; }}
+}};
+var notebookSummary = HearthNotebookController.progressSummary(notebookStorage, {{
+  FOUNDATION: {{ topics: [{{}}, {{}}] }},
+  DOING: {{ categories: [] }},
+  KNOWING: {{ categories: [] }},
+  PRACTICE: {{ topics: [] }},
+  WORLD_MAP_REGIONS: [],
+  CREATE: {{ categories: [] }}
+}});
+assert(notebookSummary.nodes[0].pct === 50, "Notebook controller should calculate node progress");
+assert(HearthNotebookController.renderMiniProgressHtml(notebookSummary).indexOf("Fnd") >= 0, "Notebook controller should render mini progress");
 var fakeShelfScrolled = {{ left: 0, behavior: "" }};
 var fakeShelfDocument = {{
   getElementById: function(id) {{
