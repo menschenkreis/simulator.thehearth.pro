@@ -94,6 +94,7 @@ eval(readText(root + "/adapters/practice-session-viewer.js"));
 eval(readText(root + "/adapters/practice-ui-utils.js"));
 eval(readText(root + "/adapters/play-world-viewer.js"));
 eval(readText(root + "/adapters/mastery-viewer.js"));
+eval(readText(root + "/adapters/create-cauldron-viewer.js"));
 
 var seed = JSON.parse(readText(root + "/database-blueprint/seeds/foundation_conversations_lesson_v2.json"));
 var foundationManifest = JSON.parse(readText(root + "/core/foundation-route-manifest.json"));
@@ -414,6 +415,9 @@ var masteryHtml = HearthMasteryViewer.renderMastery({{ beyond: [{{ title: "Micro
 assert(masteryHtml.indexOf("What Lies Beyond") >= 0, "Mastery viewer should render mastery title");
 var mastersHtml = HearthMasteryViewer.renderMastersLibrary([{{ name: "Shai", instrument: "Piano", color: "#d4af69", description: "Desc", why: "Why", listen: ["Listen"], channel: "https://example.com" }}]);
 assert(mastersHtml.indexOf("Watch Masters at Work") >= 0, "Mastery viewer should render masters library");
+var cauldronHtml = HearthCreateCauldronViewer.renderCauldron({{ ingredients: [{{ id: "melody", symbol: "M", name: "Melody", color: "#c45a20" }}], savedNotes: "idea" }});
+assert(cauldronHtml.indexOf("The Cauldron") >= 0, "Create cauldron viewer should render title");
+assert(cauldronHtml.indexOf("cauldronToggle('melody')") >= 0, "Create cauldron viewer should render ingredient action");
 var fakeShelfScrolled = {{ left: 0, behavior: "" }};
 var fakeShelfDocument = {{
   getElementById: function(id) {{

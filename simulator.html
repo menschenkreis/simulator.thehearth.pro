@@ -1798,6 +1798,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 <script src="adapters/practice-ui-utils.js"></script>
 <script src="adapters/play-world-viewer.js"></script>
 <script src="adapters/mastery-viewer.js"></script>
+<script src="adapters/create-cauldron-viewer.js"></script>
 <script src="assets/js/doing.js?v=6"></script>
 <script src="assets/js/knowing.js?v=6"></script>
 <script src="assets/js/knowing-concepts.js?v=1"></script>
@@ -2680,49 +2681,9 @@ function showCreate(){
   document.getElementById('p-foundation').classList.add('on');
   const el=document.getElementById('p-foundation');
   const CI=window.CAULDRON_INGREDIENTS||[];
-
-  var ingredientsHtml=CI.map(function(ing){
-    return '<button class="cauldron-ingredient" data-id="'+ing.id+'" onclick="cauldronToggle(\''+ing.id+'\')" style="--ic:'+ing.color+'">'+
-      '<span class="ci-symbol">'+ing.symbol+'</span>'+
-      '<span class="ci-name">'+ing.name+'</span>'+
-    '</button>';
-  }).join('');
-
-  // Load saved notes
+  if(!window.HearthCreateCauldronViewer)return;
   var savedNotes=localStorage.getItem('cauldron-notes')||'';
-
-  el.innerHTML='<div class="cauldron-wrap">'+
-    '<div class="cauldron-header">'+
-      '<div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">'+
-        '<div style="width:10px;height:10px;border-radius:50%;background:#c45a20;box-shadow:0 0 12px #c45a20"></div>'+
-        '<span style="font-family:JetBrains Mono;font-size:0.6rem;color:#c45a20;letter-spacing:0.12em;text-transform:uppercase">Create · The Cauldron</span>'+
-      '</div>'+
-      '<p style="font-size:0.8rem;color:var(--dim);margin:4px 0 0 0;line-height:1.6;max-width:480px">'+
-        'Toss ingredients into the cauldron. Pick one element of songwriting, or mix several. The cauldron brews a creative obstruction - a constraint that pushes you somewhere you wouldn\'t go alone.'+
-      '</p>'+
-    '</div>'+
-
-    '<div class="cauldron-vessel" id="cauldronVessel">'+
-      '<img src="assets/svg/cauldron.svg" style="width:100%;max-width:320px;height:auto;display:block;margin:0 auto" />'+
-      '<div class="cauldron-prompt-text" id="cauldronPrompt" style="position:relative;margin-top:-120px;z-index:2">The cauldron is still. Add an ingredient.</div>'+
-    '</div>'+
-
-    '<div class="cauldron-ingredients">'+
-      '<div class="cauldron-ingredients-label">Choose Your Ingredients</div>'+
-      '<div class="cauldron-ingredients-grid">'+ingredientsHtml+'</div>'+
-      '<button class="cauldron-stir-btn" id="cauldronStirBtn" onclick="cauldronMix()" style="display:none">🔥 Stir the Cauldron</button>'+
-      '<div id="cauldronHint" style="font-size:0.65rem;color:var(--dim);margin-top:8px;text-align:center">Select 1+ ingredients, then stir</div>'+
-    '</div>'+
-
-    '<div class="cauldron-workstation">'+
-      '<div class="cauldron-ingredients-label">Workstation</div>'+
-      '<textarea class="cauldron-notes" id="cauldronNotes" placeholder="Write your ideas here..." oninput="saveCauldronNotes()">'+savedNotes+'</textarea>'+
-      '<div class="cauldron-workstation-tools">'+
-        '<button class="cauldron-tool-btn" onclick="cauldronClear()">Clear</button>'+
-        '<button class="cauldron-tool-btn" onclick="cauldronMix()">Stir Again</button>'+
-      '</div>'+
-    '</div>'+
-  '</div>';
+  el.innerHTML=window.HearthCreateCauldronViewer.renderCauldron({ingredients:CI,savedNotes:savedNotes});
 }
 
 // ═══ Cauldron interactions ═══
