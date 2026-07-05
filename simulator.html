@@ -1779,6 +1779,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 <script src="adapters/knowing-level-model.js"></script>
 <script src="adapters/knowing-shelf-viewer.js"></script>
 <script src="adapters/knowing-shelf-controller.js"></script>
+<script src="adapters/knowing-book-viewer.js"></script>
 <script src="assets/js/doing.js?v=6"></script>
 <script src="assets/js/knowing.js?v=6"></script>
 <script src="assets/js/knowing-concepts.js?v=1"></script>
@@ -2238,54 +2239,12 @@ window.showKnowingBook=function(catId,levelFilter){
   setNotebookContext(catId,cat.title);
   const el=document.getElementById('p-foundation');
   const completed=JSON.parse(localStorage.getItem('hearth-knowing-progress')||'{}');
-  const catIdx=K.categories.indexOf(cat);
-  const bookColors=['#8B4513','#4A6741','#5B3A6B','#2C5F7C','#8B6914','#6B3A3A','#3A5B6B','#5B4A3A','#6B5B3A','#3A4A6B'];
-  const color=bookColors[catIdx%bookColors.length];
-
-  // Book open view - white theme with character
-  let html='<div style="padding:20px;max-width:900px;margin:0 auto">'+
-    '<button class="back-btn" onclick="playSfx(\'book-close\');showKnowing()">← Back to shelf</button>'+
-    '<div style="display:flex;gap:20px;align-items:flex-start">'+
-
-    // Left: character giving context
-    '<div style="flex:0 0 120px;display:flex;flex-direction:column;align-items:center;position:sticky;top:20px">'+
-      '<img src="images/character-full/Encouraging.png" style="width:120px;height:120px;object-fit:contain;filter:drop-shadow(0 4px 12px rgba(0,0,0,0.4));animation:char-float 3s ease-in-out infinite"/>'+
-      '<div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:10px 12px;margin-top:8px;max-width:140px;text-align:center;position:relative">'+
-        '<div style="position:absolute;left:-6px;top:50%;transform:translateY(-50%);width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-right:6px solid var(--border)"></div>'+
-        '<div style="font-size:0.65rem;color:var(--text);line-height:1.4">This is your <strong style="color:var(--gold)">'+cat.title+'</strong> reference. '+cat.description.substring(0,80)+'...</div>'+
-      '</div>'+
-    '</div>'+
-
-    // Right: book content on white
-    '<div style="flex:1;background:#fdfaf7;border:1px solid #e0d8cc;border-radius:8px;overflow:hidden;color:#333">'+
-    '<div style="background:linear-gradient(135deg,'+color+','+color+'dd);padding:20px;text-align:center">'+
-    '<h2 style="font-family:Cinzel;color:rgba(255,255,255,0.95);font-size:1.1rem;margin:0">'+cat.title+'</h2>'+
-    '<p style="font-size:0.65rem;color:rgba(255,255,255,0.6);margin:6px 0 0 0">'+cat.description+'</p>'+
-  '</div>';
-
-  // Topics as pages
-  html+='<div style="padding:12px 16px">';
-  cat.topics.forEach((topic,i)=>{
-    const isDone=completed[topic.id];
-    const diffLabel=['','Beginner','Intermediate','Advanced'][topic.difficulty];
-
-    html+='<div onclick="playSfx(\'click\');showKnowingTopic(\''+catId+'\',\''+topic.id+'\')" style="'+
-      'padding:12px 14px;'+
-      'border-bottom:'+(i<cat.topics.length-1?'1px solid var(--border)':'none')+';'+
-      'cursor:pointer;transition:background 0.15s;'+
-      'display:flex;align-items:center;gap:10px'+
-    '" onmouseover="this.style.background=\'var(--bg)\'" onmouseout="this.style.background=\'transparent\'">'+
-      '<span style="font-family:JetBrains Mono;font-size:0.65rem;color:'+(isDone?color:'var(--gold)')+';opacity:0.5;min-width:20px">'+String(i+1).padStart(2,'0')+'</span>'+
-      '<div style="flex:1">'+
-        '<div style="font-family:Cinzel;font-size:0.85rem;color:'+(isDone?color:'var(--text)')+'">'+topic.title+'</div>'+
-        '<div style="font-size:0.6rem;color:var(--dim);margin-top:2px">'+diffLabel+' · '+topic.source+'</div>'+
-      '</div>'+
-      '<span style="font-size:0.7rem;color:'+(isDone?color:'var(--dim)')+'">'+(isDone?'&#10003;':'&#8594;')+'</span>'+
-    '</div>';
+  if(!window.HearthKnowingBookViewer)return;
+  el.innerHTML=window.HearthKnowingBookViewer.renderKnowingBook({
+    knowing:K,
+    cat:cat,
+    completed:completed
   });
-  html+='</div></div></div>';
-
-  el.innerHTML=html;
 };
 
 // ═══ KNOWING TOPIC VIEW (encyclopedia - just read, no quiz) ═══

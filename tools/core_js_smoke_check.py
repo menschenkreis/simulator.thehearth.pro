@@ -75,6 +75,7 @@ eval(readText(root + "/adapters/doing-panel-controller.js"));
 eval(readText(root + "/adapters/knowing-level-model.js"));
 eval(readText(root + "/adapters/knowing-shelf-viewer.js"));
 eval(readText(root + "/adapters/knowing-shelf-controller.js"));
+eval(readText(root + "/adapters/knowing-book-viewer.js"));
 
 var seed = JSON.parse(readText(root + "/database-blueprint/seeds/foundation_conversations_lesson_v2.json"));
 var foundationManifest = JSON.parse(readText(root + "/core/foundation-route-manifest.json"));
@@ -275,6 +276,13 @@ var knowingShelfHtml = HearthKnowingShelfViewer.renderKnowingShelf({{
 }});
 assert(knowingShelfHtml.indexOf("knowing-shelf-scene") !== -1, "Knowing shelf viewer should render shelf scene");
 assert(knowingShelfHtml.indexOf("showKnowingBook") !== -1, "Knowing shelf viewer should render book action");
+var knowingBookHtml = HearthKnowingBookViewer.renderKnowingBook({{
+  knowing: fakeKnowing,
+  cat: fakeKnowing.categories[0],
+  completed: {{ pulse: true }}
+}});
+assert(knowingBookHtml.indexOf("Back to shelf") !== -1, "Knowing book viewer should render back action");
+assert(knowingBookHtml.indexOf("showKnowingTopic") !== -1, "Knowing book viewer should render topic action");
 var fakeShelfScrolled = {{ left: 0, behavior: "" }};
 var fakeShelfDocument = {{
   getElementById: function(id) {{
