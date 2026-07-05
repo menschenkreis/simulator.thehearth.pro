@@ -59,6 +59,7 @@ REQUIRED_MARKERS = {
         "adapters/knowing-study-model.js",
         "adapters/knowing-study-dashboard-viewer.js",
         "adapters/knowing-study-question-model.js",
+        "adapters/knowing-study-session-model.js",
         "assets/js/journey.js",
     ],
     "assets/js/scene-first.js": [
@@ -315,6 +316,11 @@ REQUIRED_MARKERS = {
         "HearthKnowingStudyQuestionModel",
         "generateQuestions",
         "extractTerms",
+    ],
+    "adapters/knowing-study-session-model.js": [
+        "HearthKnowingStudySessionModel",
+        "topicContext",
+        "difficultyLabel",
     ],
     "adapters/teaching-engine-core-adapter.js": [
         "HearthTeachingEngineCoreAdapter",
@@ -721,6 +727,7 @@ def main() -> int:
         "adapters/knowing-study-model.js",
         "adapters/knowing-study-dashboard-viewer.js",
         "adapters/knowing-study-question-model.js",
+        "adapters/knowing-study-session-model.js",
     ]
     previous_index = -1
     for script_path in expected_script_order:

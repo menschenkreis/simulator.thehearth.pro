@@ -1786,6 +1786,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 <script src="adapters/knowing-study-model.js"></script>
 <script src="adapters/knowing-study-dashboard-viewer.js"></script>
 <script src="adapters/knowing-study-question-model.js"></script>
+<script src="adapters/knowing-study-session-model.js"></script>
 <script src="assets/js/doing.js?v=6"></script>
 <script src="assets/js/knowing.js?v=6"></script>
 <script src="assets/js/knowing-concepts.js?v=1"></script>
@@ -2247,17 +2248,16 @@ function showStudy(){
 // ── Study session (the actual guided flow) ──
 window.showStudySession=function(catId,topicId){
   const K=window.KNOWING;if(!K)return;
-  const cat=K.categories.find(c=>c.id===catId);if(!cat)return;
-  const topic=cat.topics.find(t=>t.id===topicId);if(!topic)return;
+  if(!window.HearthKnowingStudySessionModel)return;
   const el=document.getElementById('p-foundation');
   const completed=JSON.parse(localStorage.getItem('hearth-knowing-progress')||'{}');
-  const catIdx=K.categories.indexOf(cat);
-  const bookColors=['#8B4513','#4A6741','#5B3A6B','#2C5F7C','#8B6914','#6B3A3A','#3A5B6B','#5B4A3A','#6B5B3A','#3A4A6B'];
-  const color=bookColors[catIdx%bookColors.length];
-  const topicIdx=cat.topics.indexOf(topic);
-  const prevTopic=topicIdx>0?cat.topics[topicIdx-1]:null;
-  const nextTopic=topicIdx<cat.topics.length-1?cat.topics[topicIdx+1]:null;
-  const isDone=completed[topicId];
+  const session=window.HearthKnowingStudySessionModel.topicContext(K,catId,topicId,completed);if(!session)return;
+  const cat=session.cat;
+  const topic=session.topic;
+  const color=session.color;
+  const prevTopic=session.prevTopic;
+  const nextTopic=session.nextTopic;
+  const isDone=session.isDone;
 
   // Save position
   const kState=JSON.parse(localStorage.getItem('hearth-knowing-state')||'{}');
@@ -2348,7 +2348,7 @@ window.showStudySession=function(catId,topicId){
     '<div style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:20px;margin-bottom:16px">'+
       '<div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap">'+
         '<span style="border:1px solid '+color+'30;color:'+color+';padding:3px 8px;border-radius:4px;font-size:0.65rem;font-family:JetBrains Mono">'+cat.title.toUpperCase()+'</span>'+
-        '<span style="border:1px solid '+color+'30;color:'+color+';padding:3px 8px;border-radius:4px;font-size:0.65rem;font-family:JetBrains Mono">'+(['','BEGINNER','INTERMEDIATE','ADVANCED'][topic.difficulty])+'</span>'+
+        '<span style="border:1px solid '+color+'30;color:'+color+';padding:3px 8px;border-radius:4px;font-size:0.65rem;font-family:JetBrains Mono">'+session.difficultyLabel+'</span>'+
         (isDone?'<span style="border:1px solid #2ecc7130;color:#2ecc71;padding:3px 8px;border-radius:4px;font-size:0.65rem;font-family:JetBrains Mono">\u2713 UNDERSTOOD</span>':'')+
       '</div>'+
       '<h2 style="font-family:Cinzel,serif;color:var(--text);font-size:1.2rem;margin:0 0 6px 0;font-weight:700">'+topic.title+'</h2>'+
@@ -2415,15 +2415,14 @@ window._answerQuiz=function(qIdx,optIdx){
 // ── Self-assessment after studying ──
 window._studyAssess=function(catId,topicId,feeling){
   const K=window.KNOWING;if(!K)return;
-  const cat=K.categories.find(c=>c.id===catId);if(!cat)return;
-  const topic=cat.topics.find(t=>t.id===topicId);if(!topic)return;
+  if(!window.HearthKnowingStudySessionModel)return;
+  const session=window.HearthKnowingStudySessionModel.topicContext(K,catId,topicId,{});if(!session)return;
+  const cat=session.cat;
+  const topic=session.topic;
   const el=document.getElementById('p-foundation');
-  const topicIdx=cat.topics.indexOf(topic);
-  const prevTopic=topicIdx>0?cat.topics[topicIdx-1]:null;
-  const nextTopic=topicIdx<cat.topics.length-1?cat.topics[topicIdx+1]:null;
-  const catIdx=K.categories.indexOf(cat);
-  const bookColors=['#8B4513','#4A6741','#5B3A6B','#2C5F7C','#8B6914','#6B3A3A','#3A5B6B','#5B4A3A','#6B5B3A','#3A4A6B'];
-  const color=bookColors[catIdx%bookColors.length];
+  const prevTopic=session.prevTopic;
+  const nextTopic=session.nextTopic;
+  const color=session.color;
 
   window._quizScore=null;
   let nextAction='', nextBtn='';

@@ -82,6 +82,7 @@ eval(readText(root + "/adapters/knowing-panel-controller.js"));
 eval(readText(root + "/adapters/knowing-study-model.js"));
 eval(readText(root + "/adapters/knowing-study-dashboard-viewer.js"));
 eval(readText(root + "/adapters/knowing-study-question-model.js"));
+eval(readText(root + "/adapters/knowing-study-session-model.js"));
 
 var seed = JSON.parse(readText(root + "/database-blueprint/seeds/foundation_conversations_lesson_v2.json"));
 var foundationManifest = JSON.parse(readText(root + "/core/foundation-route-manifest.json"));
@@ -326,6 +327,9 @@ assert(studyDashboardHtml.indexOf("sync") >= 0, "Knowing study dashboard viewer 
 var studyQuestions = HearthKnowingStudyQuestionModel.generateQuestions(fakeKnowing.categories[0].topics[0]);
 assert(studyQuestions.length === 4, "Knowing study question model should build term and reflection questions");
 assert(studyQuestions[0].correct >= 0, "Knowing study question model should track correct term option");
+var studySession = HearthKnowingStudySessionModel.topicContext(fakeKnowing, "rhythm", "pulse", {{ pulse: true }});
+assert(studySession.nextTopic.id === "sync", "Knowing study session model should find next topic");
+assert(studySession.isDone === true, "Knowing study session model should read completed topic");
 var fakeShelfScrolled = {{ left: 0, behavior: "" }};
 var fakeShelfDocument = {{
   getElementById: function(id) {{
