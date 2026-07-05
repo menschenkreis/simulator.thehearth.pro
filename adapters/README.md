@@ -52,6 +52,7 @@ Adapters are allowed to connect the clean core to those outside systems.
 | `foundation-topic-controller.js` | Opens Foundation topics, launches lessons, renders fallback topic pages, and completes progress. |
 | `foundation-topic-viewer.js` | Renders the legacy Foundation topic tab fallback view. |
 | `foundation-ui-utils.js` | Shared color and HTML escaping helpers for Foundation views. |
+| `practice-state.js` | Wraps legacy Practice localStorage state, log, preferences, and drill selection. |
 | `rainbow-blocks-viewer.js` | Keeps the old reusable rainbow block renderer outside the large page. |
 | `teaching-engine-core-adapter.js` | DOM-free lesson controller that connects seeds, session rules, view models, and progress. |
 

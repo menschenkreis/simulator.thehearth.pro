@@ -85,6 +85,7 @@ eval(readText(root + "/adapters/knowing-study-question-model.js"));
 eval(readText(root + "/adapters/knowing-study-session-model.js"));
 eval(readText(root + "/adapters/knowing-study-session-viewer.js"));
 eval(readText(root + "/adapters/knowing-study-quiz-controller.js"));
+eval(readText(root + "/adapters/practice-state.js"));
 
 var seed = JSON.parse(readText(root + "/database-blueprint/seeds/foundation_conversations_lesson_v2.json"));
 var foundationManifest = JSON.parse(readText(root + "/core/foundation-route-manifest.json"));
@@ -342,6 +343,13 @@ assert(studyOutcomeHtml.indexOf("Understood!") >= 0, "Knowing study session view
 var studyQuizScore = HearthKnowingStudyQuizController.scoreResult({{ correct: 3, total: 3 }}, 4);
 assert(studyQuizScore.passed === true, "Knowing study quiz controller should pass scores at 75 percent");
 assert(typeof _answerQuiz === "function", "Knowing study quiz controller should bind answer global");
+var fakePractice = {{ drills: [
+  {{ id: "warm", title: "Warmup", category: "Hands" }},
+  {{ id: "scale", title: "Scale", category: "Scales" }}
+] }};
+assert(HearthPracticeState.categories(fakePractice).length === 3, "Practice state should list all drill categories");
+assert(HearthPracticeState.preferences({{ altarTime: 10 }}).time === 10, "Practice state should read saved time preference");
+assert(HearthPracticeState.nextDrill(fakePractice, "Scales", {{ completed: {{}} }}).id === "scale", "Practice state should choose next focused drill");
 var fakeShelfScrolled = {{ left: 0, behavior: "" }};
 var fakeShelfDocument = {{
   getElementById: function(id) {{

@@ -1789,6 +1789,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 <script src="adapters/knowing-study-session-model.js"></script>
 <script src="adapters/knowing-study-session-viewer.js"></script>
 <script src="adapters/knowing-study-quiz-controller.js"></script>
+<script src="adapters/practice-state.js"></script>
 <script src="assets/js/doing.js?v=6"></script>
 <script src="assets/js/knowing.js?v=6"></script>
 <script src="assets/js/knowing-concepts.js?v=1"></script>
@@ -2305,44 +2306,28 @@ const CANDLE='#e8a020';
 const CANDLE_DIM='#e8a02030';
 
 function _getPracticeState(){
-  return JSON.parse(localStorage.getItem('hearth-practice-state')||'{}');
+  return window.HearthPracticeState?window.HearthPracticeState.readState(localStorage):{};
 }
 function _savePracticeState(s){
-  localStorage.setItem('hearth-practice-state',JSON.stringify(s));
+  if(window.HearthPracticeState)window.HearthPracticeState.writeState(s,localStorage);
 }
 function _getSessionLog(){
-  return JSON.parse(localStorage.getItem('hearth-practice-log')||'[]');
+  return window.HearthPracticeState?window.HearthPracticeState.readLog(localStorage):[];
 }
 function _saveSessionLog(l){
-  localStorage.setItem('hearth-practice-log',JSON.stringify(l));
+  if(window.HearthPracticeState)window.HearthPracticeState.writeLog(l,localStorage);
 }
 function _practicePrefs(){
-  const s=_getPracticeState();
-  return {
-    time:s.altarTime||20,
-    focus:s.altarFocus||'All',
-    intention:s.altarIntention||'Clean, focused practice'
-  };
+  return window.HearthPracticeState?window.HearthPracticeState.preferences(_getPracticeState()):{time:20,focus:'All',intention:'Clean, focused practice'};
 }
 function _practiceCategories(){
-  const P=window.PRACTICE;if(!P)return ['All'];
-  return ['All',...new Set(P.drills.map(d=>d.category))];
+  return window.HearthPracticeState?window.HearthPracticeState.categories(window.PRACTICE):['All'];
 }
 function _practiceFilteredDrills(focus){
-  const P=window.PRACTICE;if(!P)return [];
-  return focus&&focus!=='All'?P.drills.filter(d=>d.category===focus):P.drills;
+  return window.HearthPracticeState?window.HearthPracticeState.filteredDrills(window.PRACTICE,focus):[];
 }
 function _practiceNextDrill(focus){
-  const P=window.PRACTICE;if(!P)return null;
-  const state=_getPracticeState();
-  const drills=_practiceFilteredDrills(focus);
-  if(!drills.length)return P.drills[0]||null;
-  if(state.currentDrill){
-    const current=drills.find(d=>d.id===state.currentDrill);
-    if(current)return current;
-  }
-  const completed=state.completed||{};
-  return drills.find(d=>!completed[d.id])||drills[0];
+  return window.HearthPracticeState?window.HearthPracticeState.nextDrill(window.PRACTICE,focus,_getPracticeState()):null;
 }
 function _practiceGuideText(prefs,log,nextDrill){
   // Contextual guide comments that change based on state
