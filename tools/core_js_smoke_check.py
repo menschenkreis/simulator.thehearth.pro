@@ -104,6 +104,7 @@ eval(readText(root + "/adapters/references-panel-controller.js"));
 eval(readText(root + "/adapters/link-deposit-controller.js"));
 eval(readText(root + "/adapters/recorder-controller.js"));
 eval(readText(root + "/adapters/notebook-controller.js"));
+eval(readText(root + "/adapters/dictionary-controller.js"));
 
 var seed = JSON.parse(readText(root + "/database-blueprint/seeds/foundation_conversations_lesson_v2.json"));
 var foundationManifest = JSON.parse(readText(root + "/core/foundation-route-manifest.json"));
@@ -519,6 +520,13 @@ var notebookSummary = HearthNotebookController.progressSummary(notebookStorage, 
 }});
 assert(notebookSummary.nodes[0].pct === 50, "Notebook controller should calculate node progress");
 assert(HearthNotebookController.renderMiniProgressHtml(notebookSummary).indexOf("Fnd") >= 0, "Notebook controller should render mini progress");
+var dictionaryTerms = [
+  {{ ch: "Music Theory", term: "Scale <Test>", def: "A sequence" }},
+  {{ ch: "Technique", term: "Strumming", def: "Sweeping" }}
+];
+assert(HearthDictionaryController.chapterCounts(dictionaryTerms)["Music Theory"] === 1, "Dictionary controller should count chapters");
+var dictionaryChapter = HearthDictionaryController.renderChapterHtml(dictionaryTerms, "Music Theory");
+assert(dictionaryChapter.html.indexOf("&lt;Test&gt;") >= 0, "Dictionary controller should escape term text");
 var fakeShelfScrolled = {{ left: 0, behavior: "" }};
 var fakeShelfDocument = {{
   getElementById: function(id) {{

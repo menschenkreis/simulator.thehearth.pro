@@ -1808,6 +1808,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 <script src="adapters/link-deposit-controller.js"></script>
 <script src="adapters/recorder-controller.js"></script>
 <script src="adapters/notebook-controller.js"></script>
+<script src="adapters/dictionary-controller.js"></script>
 <script src="assets/js/doing.js?v=6"></script>
 <script src="assets/js/knowing.js?v=6"></script>
 <script src="assets/js/knowing-concepts.js?v=1"></script>
@@ -2903,109 +2904,15 @@ const DICTIONARY = [
 ];
 
 function populateDictionary(){
-  const el=document.getElementById('glossary-list');if(!el)return;
-  const countEl=document.getElementById('glossary-count');
-  const searchEl=document.getElementById('glossary-search');
-  if(countEl) countEl.textContent=DICTIONARY.length+' terms';
-  if(searchEl){searchEl.value='';searchEl.oninput=function(){filterGlossary(this.value);};}
-
-  // Count terms per chapter
-  const chapters={};
-  const chapterOrder=['Foundational Terms','Music Theory','Guitar Anatomy','Technique'];
-  DICTIONARY.forEach(g=>{
-    if(!chapters[g.ch]) chapters[g.ch]=0;
-    chapters[g.ch]++;
-  });
-
-  // Show category buttons
-  let html='';
-  const colors=['#e74c3c','#e67e22','#f1c40f','#2ecc71','#3498db','#9b59b6'];
-  chapterOrder.forEach((ch,i)=>{
-    if(!chapters[ch])return;
-    const color=colors[i%colors.length];
-    html+='<div onclick="showDictChapter(\''+ch+'\')" style="'+
-      'padding:10px 14px;'+
-      'background:'+color+'12;'+
-      'border:2px solid '+color+'40;'+
-      'border-radius:8px;'+
-      'cursor:pointer;transition:all 0.15s;'+
-      'display:flex;justify-content:space-between;align-items:center;'+
-      'margin-bottom:8px'+
-    '" onmouseover="this.style.borderColor=\''+color+'\'" onmouseout="this.style.borderColor=\''+color+'40\'">'+
-      '<span style="font-family:Cinzel,serif;font-size:0.85rem;color:'+color+';font-weight:600">'+ch+'</span>'+
-      '<span style="font-family:JetBrains Mono;font-size:0.6rem;color:var(--dim)">'+chapters[ch]+' terms</span>'+
-    '</div>';
-  });
-  el.innerHTML=html;
+  if(window.HearthDictionaryController)window.HearthDictionaryController.populateDictionary(document,DICTIONARY);
 }
 
 function showDictChapter(chapter){
-  const el=document.getElementById('glossary-list');if(!el)return;
-  const countEl=document.getElementById('glossary-count');
-  const searchEl=document.getElementById('glossary-search');
-
-  // Filter terms for this chapter, sort alphabetically
-  const terms=DICTIONARY.filter(g=>g.ch===chapter).sort((a,b)=>a.term.localeCompare(b.term));
-  if(countEl) countEl.textContent=terms.length+' terms';
-
-  const colorMap={'Foundational Terms':'#e74c3c','Music Theory':'#e67e22','Guitar Anatomy':'#f1c40f','Technique':'#2ecc71'};
-  const color=colorMap[chapter]||'var(--gold)';
-
-  let html='<div style="margin-bottom:12px">'+
-    '<button onclick="populateDictionary()" style="background:none;border:1px solid var(--border);color:var(--dim);padding:6px 12px;border-radius:4px;cursor:pointer;font-family:inherit;font-size:0.7rem">\u2190 All Chapters</button>'+
-  '</div>'+
-  '<div style="font-family:Cinzel,serif;font-size:0.7rem;color:'+color+';letter-spacing:0.15em;text-transform:uppercase;padding:10px 12px 4px 12px;border-bottom:1px solid var(--border)">'+chapter+'</div>';
-
-  terms.forEach(g=>{
-    html+='<div class="glossary-item" data-term="'+g.term.toLowerCase()+'" style="padding:10px 12px;border-bottom:1px solid var(--border);cursor:default">'+
-      '<div style="display:flex;align-items:baseline;gap:8px">'+
-        '<span style="font-family:\'DM Sans\',sans-serif;font-size:0.85rem;color:var(--gold);font-weight:600">'+g.term+'</span>'+
-      '</div>'+
-      '<div style="font-size:0.75rem;color:var(--dim);line-height:1.5;margin-top:2px">'+g.def+'</div>'+
-    '</div>';
-  });
-  el.innerHTML=html;
-
-  // Update search to filter within this chapter
-  if(searchEl){
-    searchEl.oninput=function(){
-      const q=this.value.toLowerCase().trim();
-      let visible=0;
-      el.querySelectorAll('.glossary-item').forEach(item=>{
-        const term=item.getAttribute('data-term');
-        const text=item.textContent.toLowerCase();
-        const show=!q||term.includes(q)||text.includes(q);
-        item.style.display=show?'block':'none';
-        if(show) visible++;
-      });
-      if(countEl){
-        if(q) countEl.textContent=visible+' result'+(visible!==1?'s':'')+' for \''+q+'\'';
-        else countEl.textContent=terms.length+' terms';
-      }
-    };
-  }
+  if(window.HearthDictionaryController)window.HearthDictionaryController.showChapter(chapter,document,DICTIONARY);
 }
 
 function filterGlossary(query){
-  const q=query.toLowerCase().trim();
-  let visible=0;
-  document.querySelectorAll('.glossary-item').forEach(item=>{
-    const term=item.getAttribute('data-term');
-    const text=item.textContent.toLowerCase();
-    const show=!q||term.includes(q)||text.includes(q);
-    item.style.display=show?'block':'none';
-    if(show) visible++;
-  });
-  document.querySelectorAll('.dict-chapter').forEach(ch=>{
-    const items=ch.querySelectorAll('.glossary-item');
-    const anyVisible=Array.from(items).some(i=>i.style.display!=='none');
-    ch.style.display=anyVisible?'block':'none';
-  });
-  const countEl=document.getElementById('glossary-count');
-  if(countEl){
-    if(q) countEl.textContent=visible+' result'+(visible!==1?'s':'')+' for \''+q+'\'';
-    else countEl.textContent=DICTIONARY.length+' terms';
-  }
+  if(window.HearthDictionaryController)window.HearthDictionaryController.filterGlossary(query,document,DICTIONARY);
 }
 
 

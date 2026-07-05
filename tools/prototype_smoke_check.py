@@ -81,6 +81,7 @@ REQUIRED_MARKERS = {
         "adapters/link-deposit-controller.js",
         "adapters/recorder-controller.js",
         "adapters/notebook-controller.js",
+        "adapters/dictionary-controller.js",
         "assets/js/journey.js",
     ],
     "assets/js/scene-first.js": [
@@ -451,6 +452,11 @@ REQUIRED_MARKERS = {
         "HearthNotebookController",
         "progressSummary",
         "renderMiniProgressHtml",
+    ],
+    "adapters/dictionary-controller.js": [
+        "HearthDictionaryController",
+        "renderChapterHtml",
+        "filterGlossary",
     ],
     "adapters/teaching-engine-core-adapter.js": [
         "HearthTeachingEngineCoreAdapter",
@@ -879,6 +885,7 @@ def main() -> int:
         "adapters/link-deposit-controller.js",
         "adapters/recorder-controller.js",
         "adapters/notebook-controller.js",
+        "adapters/dictionary-controller.js",
     ]
     previous_index = -1
     for script_path in expected_script_order:
