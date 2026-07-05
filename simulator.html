@@ -1784,6 +1784,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 <script src="adapters/knowing-progress-controller.js"></script>
 <script src="adapters/knowing-panel-controller.js"></script>
 <script src="adapters/knowing-study-model.js"></script>
+<script src="adapters/knowing-study-dashboard-viewer.js"></script>
 <script src="assets/js/doing.js?v=6"></script>
 <script src="assets/js/knowing.js?v=6"></script>
 <script src="assets/js/knowing-concepts.js?v=1"></script>
@@ -2233,59 +2234,13 @@ function showStudy(){
   const kState=JSON.parse(localStorage.getItem('hearth-knowing-state')||'{}');
   const quizScores=JSON.parse(localStorage.getItem('hearth-knowing-quiz')||'{}');
   if(!window.HearthKnowingStudyModel)return;
+  if(!window.HearthKnowingStudyDashboardViewer)return;
   const studyState=window.HearthKnowingStudyModel.dashboardState(K,completed,kState,quizScores);
-  const currentCat=studyState.currentCat;
-  const currentTopic=studyState.currentTopic;
-  const prevTopic=studyState.previousTopic;
-  const totalTopics=studyState.summary.totalTopics;
-  const doneTopics=studyState.summary.doneTopics;
-  const quizPassed=studyState.summary.quizPassed;
-  const pct=studyState.summary.percent;
-
-  // Progress bar
-  let progressHtml='<div style="margin-bottom:20px">'+
-    '<div style="display:flex;justify-content:space-between;font-size:0.65rem;color:var(--dim);margin-bottom:6px"><span>'+doneTopics+'/'+totalTopics+' concepts understood</span><span>'+pct+'%</span></div>'+
-    '<div style="height:4px;background:var(--border);border-radius:2px;overflow:hidden"><div style="height:100%;width:'+pct+'%;background:linear-gradient(to right,#5B3A6B,#8a6aaa);border-radius:2px;transition:width 0.4s"></div></div>'+
-    '<div style="display:flex;justify-content:space-between;font-size:0.6rem;color:var(--dim);margin-top:6px"><span>\uD83D\uDCC4 '+quizPassed+' quizzes passed</span><span>\uD83D\uDCCF '+K.categories.length+' disciplines</span></div>'+
-  '</div>';
-
-  // What's next card
-  let nextUpHtml='';
-  if(currentTopic){
-    nextUpHtml='<div style="background:var(--card);border:1px solid #5B3A6B40;border-radius:8px;padding:16px;margin-bottom:20px">'+
-      '<div style="font-family:JetBrains Mono;font-size:0.6rem;color:#8a6aaa;letter-spacing:0.12em;margin-bottom:8px">WHAT\'S NEXT</div>'+
-      (prevTopic?'<div style="font-size:0.7rem;color:var(--dim);margin-bottom:6px">From last time: <span style="color:var(--text)">'+prevTopic.title+'</span></div>':'')+
-      '<div style="color:var(--text);font-size:0.95rem;font-weight:700;font-family:Cinzel,serif;margin-bottom:2px">'+currentTopic.title+'</div>'+
-      '<div style="font-size:0.7rem;color:var(--dim)">'+currentCat.title+' \u00B7 '+currentTopic.source+'</div>'+
-      '<button onclick="showStudySession(\''+currentCat.id+'\',\''+currentTopic.id+'\')" style="margin-top:10px;background:#5B3A6B;color:white;border:none;padding:10px 20px;border-radius:6px;cursor:pointer;font-family:DM Sans,sans-serif;font-size:0.8rem;font-weight:600">Begin Study Session</button>'+
-    '</div>';
-  }
-
-  // All categories as study topics
-  let catListHtml='<div style="font-family:JetBrains Mono;font-size:0.6rem;color:#8a6aaa;letter-spacing:0.12em;margin-bottom:10px">ALL DISCIPLINES</div>';
-  K.categories.forEach(cat=>{
-    const catDone=cat.topics.filter(t=>completed[t.id]).length;
-    catListHtml+='<div style="margin-bottom:8px">'+
-      '<div style="font-size:0.7rem;color:var(--dim);margin-bottom:2px;font-weight:600">'+cat.title+' <span style="color:#8a6aaa">'+catDone+'/'+cat.topics.length+'</span></div>'+
-      '<div style="display:flex;flex-wrap:wrap;gap:4px">'+
-      cat.topics.map(t=>{
-        const done=completed[t.id];
-        return '<div onclick="showStudySession(\''+cat.id+'\',\''+t.id+'\')" style="cursor:pointer;padding:6px 10px;border:1px solid '+(done?'#8a6aaa40':'var(--border)')+';border-radius:4px;background:'+(done?'#8a6aaa08':'var(--card)')+';font-size:0.7rem;color:'+(done?'#8a6aaa':'var(--text)')+';transition:all 0.15s" onmouseover="this.style.borderColor=\'#8a6aaa\'" onmouseout="this.style.borderColor=\''+(done?'#8a6aaa40':'var(--border)')+'\'">'+t.title+'</div>';
-      }).join('')+
-      '</div></div>';
+  el.innerHTML=window.HearthKnowingStudyDashboardViewer.renderStudyDashboard({
+    knowing:K,
+    completed:completed,
+    studyState:studyState
   });
-
-  el.innerHTML='<div style="padding:20px;max-width:650px;margin:0 auto">'+
-    '<button class="back-btn" onclick="backToMap()">← Map</button>'+
-    '<div style="text-align:center;margin-bottom:24px">'+
-      '<div style="font-size:2rem;margin-bottom:6px">\uD83D\uDCC4</div>'+
-      '<div style="font-family:Cinzel,serif;color:#8a6aaa;font-size:1.3rem;font-weight:700">Study Lab</div>'+
-      '<div style="font-size:0.7rem;color:var(--dim);margin-top:4px;font-style:italic">Guided study sessions. Context. Terms. Deep questions. Understanding.</div>'+
-    '</div>'+
-    progressHtml+
-    nextUpHtml+
-    catListHtml+
-  '</div>';
 }
 
 // ── Study session (the actual guided flow) ──
