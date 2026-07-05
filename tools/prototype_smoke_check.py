@@ -532,15 +532,15 @@ TAXONOMY_DOCS = [
 ]
 
 MAP_NODE_IMAGES = [
-    "images/map-nodes-clean/hearth.png",
-    "images/map-nodes-clean/foundation.png",
-    "images/map-nodes-clean/mastery.png",
-    "images/map-nodes-clean/doing.png",
-    "images/map-nodes-clean/practise.png",
-    "images/map-nodes-clean/play.png",
-    "images/map-nodes-clean/knowing.png",
-    "images/map-nodes-clean/study.png",
-    "images/map-nodes-clean/create.png",
+    "images/map-nodes-generated-v1/hearth.png",
+    "images/map-nodes-generated-v1/foundation.png",
+    "images/map-nodes-generated-v1/mastery.png",
+    "images/map-nodes-generated-v1/doing.png",
+    "images/map-nodes-generated-v1/practise.png",
+    "images/map-nodes-generated-v1/play.png",
+    "images/map-nodes-generated-v1/knowing.png",
+    "images/map-nodes-generated-v1/study.png",
+    "images/map-nodes-generated-v1/create.png",
 ]
 
 LESSON_SEEDS = {
