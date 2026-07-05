@@ -397,6 +397,7 @@ REQUIRED_MARKERS = {
         "HearthCreateCauldronViewer",
         "renderCauldron",
         "renderIngredient",
+        "renderMixResult",
     ],
     "adapters/create-cauldron-model.js": [
         "HearthCreateCauldronModel",

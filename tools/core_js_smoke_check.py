@@ -426,6 +426,8 @@ var cauldronResult = HearthCreateCauldronModel.mixResult(
 );
 assert(cauldronResult.constraint === "Single ingredient: Melody", "Create cauldron model should mix one ingredient");
 assert(cauldronResult.prompt === "write a hook", "Create cauldron model should pick ingredient prompt");
+var cauldronResultHtml = HearthCreateCauldronViewer.renderMixResult(cauldronResult);
+assert(cauldronResultHtml.indexOf("Single ingredient: Melody") >= 0, "Create cauldron viewer should render mix result");
 var fakeShelfScrolled = {{ left: 0, behavior: "" }};
 var fakeShelfDocument = {{
   getElementById: function(id) {{

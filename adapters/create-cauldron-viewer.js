@@ -56,9 +56,24 @@
     '</div>';
   }
 
+  function renderMixResult(result) {
+    if (!result) return "";
+    var levelBadge = result.level <= 2 ? "⚗️" : result.level <= 3 ? "🔥" : "💀";
+    var levelNames = ["", "Ingredient", "Filter", "Forge", "Collision", "Alchemy"];
+    var levelName = levelNames[result.level] || "";
+    var labelHtml = result.labels.map(function renderLabel(label, index) {
+      return '<span class="cauldron-mix-label" style="color:' + result.colors[index] + '">' + label + '</span>';
+    }).join(' ');
+    return levelBadge + ' <span style="font-size:0.65rem;color:var(--dim);text-transform:uppercase;letter-spacing:0.08em">Level ' + result.level + ': ' + levelName + '</span><br>' +
+      '<span class="cauldron-mix-row">' + labelHtml + '</span><br>' +
+      '<span class="cauldron-constraint">' + result.constraint + '</span><br>' +
+      '<span class="cauldron-prompt-body">' + result.prompt + '</span>';
+  }
+
   return {
     version: "0.1.0",
     renderCauldron: renderCauldron,
-    renderIngredient: renderIngredient
+    renderIngredient: renderIngredient,
+    renderMixResult: renderMixResult
   };
 });

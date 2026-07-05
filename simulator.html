@@ -2727,14 +2727,7 @@ window.cauldronMix=function(){
   _cauldronLastPrompt=result;
   vessel.classList.add('cauldron-bubbling');
   setTimeout(function(){
-    var levelBadge=result.level<=2?'⚗️':result.level<=3?'🔥':'💀';
-    var levelNames=['','Ingredient','Filter','Forge','Collision','Alchemy'];
-    var levelName=levelNames[result.level]||'';
-    var labelHtml=result.labels.map(function(l,i){return '<span class="cauldron-mix-label" style="color:'+result.colors[i]+'">'+l+'</span>';}).join(' ');
-    textEl.innerHTML=levelBadge+' <span style="font-size:0.65rem;color:var(--dim);text-transform:uppercase;letter-spacing:0.08em">Level '+result.level+': '+levelName+'</span><br>'+
-      '<span class="cauldron-mix-row">'+labelHtml+'</span><br>'+
-      '<span class="cauldron-constraint">'+result.constraint+'</span><br>'+
-      '<span class="cauldron-prompt-body">'+result.prompt+'</span>';
+    textEl.innerHTML=window.HearthCreateCauldronViewer?window.HearthCreateCauldronViewer.renderMixResult(result):result.prompt;
     textEl.style.color='';
   },150);
   setTimeout(function(){vessel.classList.remove('cauldron-bubbling');},600);
