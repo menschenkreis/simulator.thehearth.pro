@@ -75,6 +75,7 @@ REQUIRED_MARKERS = {
         "adapters/create-cauldron-model.js",
         "adapters/create-cauldron-viewer.js",
         "adapters/create-cauldron-controller.js",
+        "adapters/text-to-speech-controller.js",
         "assets/js/journey.js",
     ],
     "assets/js/scene-first.js": [
@@ -415,6 +416,11 @@ REQUIRED_MARKERS = {
         "HearthCreateCauldronController",
         "syncSelectionUi",
         "resetCauldronUi",
+    ],
+    "adapters/text-to-speech-controller.js": [
+        "HearthTextToSpeechController",
+        "readableText",
+        "preferredVoice",
     ],
     "adapters/teaching-engine-core-adapter.js": [
         "HearthTeachingEngineCoreAdapter",
@@ -837,6 +843,7 @@ def main() -> int:
         "adapters/create-cauldron-model.js",
         "adapters/create-cauldron-viewer.js",
         "adapters/create-cauldron-controller.js",
+        "adapters/text-to-speech-controller.js",
     ]
     previous_index = -1
     for script_path in expected_script_order:

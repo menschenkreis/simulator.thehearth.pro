@@ -74,6 +74,7 @@ The goal is not to patch the messy prototype forever. The goal is to build a reu
 | `adapters/create-cauldron-model.js` | Resolves selected Create ingredients into a cauldron prompt result. |
 | `adapters/create-cauldron-viewer.js` | Renders the Create Cauldron dashboard screen. |
 | `adapters/create-cauldron-controller.js` | Updates Create Cauldron ingredient selection and reset UI. |
+| `adapters/text-to-speech-controller.js` | Controls legacy lesson read-aloud behavior and TTS button state. |
 | `adapters/rainbow-blocks-viewer.js` | Keeps the old reusable rainbow block renderer outside the large page. |
 | `adapters/teaching-engine-core-adapter.js` | DOM-free lesson controller connecting seeds, session state, view models, and progress. |
 | `tools/core_smoke_check.py` | Validates the new core files, route manifest, and linked lesson seed files. |

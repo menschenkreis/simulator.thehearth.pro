@@ -1802,6 +1802,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 <script src="adapters/create-cauldron-model.js"></script>
 <script src="adapters/create-cauldron-viewer.js"></script>
 <script src="adapters/create-cauldron-controller.js"></script>
+<script src="adapters/text-to-speech-controller.js"></script>
 <script src="assets/js/doing.js?v=6"></script>
 <script src="assets/js/knowing.js?v=6"></script>
 <script src="assets/js/knowing-concepts.js?v=1"></script>
@@ -2673,35 +2674,23 @@ window.cauldronClear=function(){
 // ═══ TEXT-TO-SPEECH ═══
 let _ttsUtterance=null;
 let _ttsPlaying=false;
+let _ttsState={utterance:null,playing:false};
+function syncTtsState(state){
+  _ttsState=state||{utterance:null,playing:false};
+  _ttsUtterance=_ttsState.utterance;
+  _ttsPlaying=_ttsState.playing;
+}
 function ttsToggle(){
-  if(_ttsPlaying&&window.speechSynthesis.speaking){window.speechSynthesis.cancel();_ttsPlaying=false;updateTtsBtn();return;}
-  const body=document.getElementById('fStepBody');
-  if(!body)return;
-  // Get text only from paragraphs, skip checkboxes
-  const paragraphs=body.querySelectorAll('p');
-  const text=Array.from(paragraphs).map(p=>p.textContent).join(' ').replace(/☐/g,'');
-  if(!text.trim())return;
-  const u=new SpeechSynthesisUtterance(text);
-  u.rate=0.85;u.pitch=1.1;u.lang='en-US';
-  // Pick the best voice available
-  const voices=window.speechSynthesis.getVoices();
-  const preferred=['Google US English','Microsoft Zira','Samantha','Karen','Victoria','Alex','Google UK English Female'];
-  let voice=voices.find(v=>preferred.some(p=>v.name.includes(p)));
-  if(!voice) voice=voices.find(v=>v.lang.startsWith('en')&&v.name.includes('Female'));
-  if(!voice) voice=voices.find(v=>v.lang.startsWith('en'));
-  if(voice) u.voice=voice;
-  u.onend=function(){_ttsPlaying=false;updateTtsBtn();};
-  window.speechSynthesis.cancel();
-  window.speechSynthesis.speak(u);
-  _ttsPlaying=true;
-  updateTtsBtn();
+  if(!window.HearthTextToSpeechController)return;
+  syncTtsState(window.HearthTextToSpeechController.toggle(_ttsState,{
+    document:document,
+    speechSynthesis:window.speechSynthesis,
+    Utterance:window.SpeechSynthesisUtterance,
+    onStateChange:syncTtsState
+  }));
 }
 function updateTtsBtn(){
-  const btn=document.getElementById('ttsBtn');
-  if(!btn)return;
-  btn.textContent=_ttsPlaying?'Stop':'Read aloud';
-  btn.style.background=_ttsPlaying?'var(--ember)':'var(--card)';
-  btn.style.color=_ttsPlaying?'white':'var(--gold)';
+  if(window.HearthTextToSpeechController)window.HearthTextToSpeechController.updateButton(_ttsPlaying,document);
 }
 
 let _savedPanel = null;

@@ -98,6 +98,7 @@ eval(readText(root + "/adapters/mastery-viewer.js"));
 eval(readText(root + "/adapters/create-cauldron-model.js"));
 eval(readText(root + "/adapters/create-cauldron-viewer.js"));
 eval(readText(root + "/adapters/create-cauldron-controller.js"));
+eval(readText(root + "/adapters/text-to-speech-controller.js"));
 
 var seed = JSON.parse(readText(root + "/database-blueprint/seeds/foundation_conversations_lesson_v2.json"));
 var foundationManifest = JSON.parse(readText(root + "/core/foundation-route-manifest.json"));
@@ -435,6 +436,18 @@ assert(cauldronResult.prompt === "write a hook", "Create cauldron model should p
 var cauldronResultHtml = HearthCreateCauldronViewer.renderMixResult(cauldronResult);
 assert(cauldronResultHtml.indexOf("Single ingredient: Melody") >= 0, "Create cauldron viewer should render mix result");
 assert(typeof HearthCreateCauldronController.syncSelectionUi === "function", "Create cauldron controller should expose selection sync");
+var ttsText = HearthTextToSpeechController.readableText({{
+  querySelectorAll: function() {{
+    return [{{ textContent: "Hello ☐" }}, {{ textContent: "world" }}];
+  }}
+}});
+assert(ttsText.indexOf("☐") === -1, "Text-to-speech controller should remove checkbox symbols");
+assert(ttsText.indexOf("Hello") >= 0 && ttsText.indexOf("world") >= 0, "Text-to-speech controller should collect paragraph text");
+var ttsVoice = HearthTextToSpeechController.preferredVoice([
+  {{ name: "Other", lang: "en-US" }},
+  {{ name: "Samantha", lang: "en-US" }}
+]);
+assert(ttsVoice.name === "Samantha", "Text-to-speech controller should choose preferred voices");
 var fakeShelfScrolled = {{ left: 0, behavior: "" }};
 var fakeShelfDocument = {{
   getElementById: function(id) {{
