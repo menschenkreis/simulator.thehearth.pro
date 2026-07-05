@@ -128,11 +128,38 @@
     '</div>';
   }
 
+  function renderResultButton(session, button) {
+    button = button || {};
+    if (button.target === "study") {
+      return '<button class="back-btn" onclick="showStudy()">' + button.label + '</button>';
+    }
+    var color = button.tone === "stuck" ? "#e74c3c" : session.color;
+    return '<button onclick="showStudySession(\'' + session.cat.id + '\',\'' + button.targetTopicId + '\')" style="background:' + color + ';color:white;border:none;padding:12px 24px;border-radius:8px;font-family:DM Sans,sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer">' + button.label + '</button>';
+  }
+
+  function renderAssessmentResult(options) {
+    options = options || {};
+    var session = options.session;
+    var outcome = options.outcome;
+    if (!session || !outcome) return "";
+    return '<div style="padding:20px;max-width:500px;margin:0 auto;text-align:center">' +
+      '<div style="font-size:3rem;margin-bottom:12px">' + outcome.emoji + '</div>' +
+      '<div style="font-family:Cinzel,serif;color:var(--text);font-size:1.2rem;font-weight:700;margin-bottom:8px">' + outcome.message + '</div>' +
+      '<div style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:16px;margin:16px 0;font-size:0.85rem;color:var(--text)">' + outcome.actionText + '</div>' +
+      '<div style="display:flex;gap:8px;justify-content:center">' +
+        renderResultButton(session, outcome.button) +
+        '<button class="back-btn" onclick="showStudy()">← Study Lab</button>' +
+      '</div>' +
+    '</div>';
+  }
+
   return {
     version: "0.1.0",
     renderAssessment: renderAssessment,
+    renderAssessmentResult: renderAssessmentResult,
     renderContext: renderContext,
     renderQuiz: renderQuiz,
+    renderResultButton: renderResultButton,
     renderStudySession: renderStudySession,
     renderTerms: renderTerms,
     renderVideo: renderVideo

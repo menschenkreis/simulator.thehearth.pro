@@ -334,6 +334,10 @@ assert(studySession.isDone === true, "Knowing study session model should read co
 var studySessionHtml = HearthKnowingStudySessionViewer.renderStudySession({{ session: studySession, questions: studyQuestions }});
 assert(studySessionHtml.indexOf("DEEPEN YOUR UNDERSTANDING") >= 0, "Knowing study session viewer should render quiz section");
 assert(studySessionHtml.indexOf("HOW WELL DO YOU UNDERSTAND THIS?") >= 0, "Knowing study session viewer should render self assessment");
+var studyOutcome = HearthKnowingStudySessionModel.assessmentOutcome(studySession, "nailed");
+assert(studyOutcome.markComplete === true, "Knowing study session model should mark nailed topics complete");
+var studyOutcomeHtml = HearthKnowingStudySessionViewer.renderAssessmentResult({{ session: studySession, outcome: studyOutcome }});
+assert(studyOutcomeHtml.indexOf("Understood!") >= 0, "Knowing study session viewer should render assessment result");
 var fakeShelfScrolled = {{ left: 0, behavior: "" }};
 var fakeShelfDocument = {{
   getElementById: function(id) {{

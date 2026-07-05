@@ -2322,52 +2322,19 @@ window._studyAssess=function(catId,topicId,feeling){
   const K=window.KNOWING;if(!K)return;
   if(!window.HearthKnowingStudySessionModel)return;
   const session=window.HearthKnowingStudySessionModel.topicContext(K,catId,topicId,{});if(!session)return;
-  const cat=session.cat;
-  const topic=session.topic;
   const el=document.getElementById('p-foundation');
-  const prevTopic=session.prevTopic;
-  const nextTopic=session.nextTopic;
-  const color=session.color;
 
   window._quizScore=null;
-  let nextAction='', nextBtn='';
-
-  if(feeling==='nailed'){
+  const outcome=window.HearthKnowingStudySessionModel.assessmentOutcome(session,feeling);if(!outcome)return;
+  if(outcome.markComplete){
     const progress=JSON.parse(localStorage.getItem('hearth-knowing-progress')||'{}');
     progress[topicId]=true;
     localStorage.setItem('hearth-knowing-progress',JSON.stringify(progress));
-    if(nextTopic){
-      nextAction='You understand <strong>'+topic.title+'</strong>. Ready for <strong>'+nextTopic.title+'</strong>?';
-      nextBtn='<button onclick="showStudySession(\''+catId+'\',\''+nextTopic.id+'\')" style="background:'+color+';color:white;border:none;padding:12px 24px;border-radius:8px;font-family:DM Sans,sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer">Study Next Concept</button>';
-    } else {
-      nextAction='You\'ve completed all topics in <strong>'+cat.title+'</strong>! Pick another discipline.';
-      nextBtn='<button class="back-btn" onclick="showStudy()">← Study Lab</button>';
-    }
-  } else if(feeling==='review'){
-    nextAction='Good call. Re-read <strong>'+topic.title+'</strong> - focus on the terms that felt unclear.';
-    nextBtn='<button onclick="showStudySession(\''+catId+'\',\''+topicId+'\')" style="background:'+color+';color:white;border:none;padding:12px 24px;border-radius:8px;font-family:DM Sans,sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer">Study Again</button>';
-  } else if(feeling==='stuck'){
-    if(prevTopic){
-      nextAction='Something didn\'t click. Was there a word in <strong>'+topic.title+'</strong> you didn\'t fully get? Go back to <strong>'+prevTopic.title+'</strong> - gaps are always built on earlier gaps.';
-      nextBtn='<button onclick="showStudySession(\''+catId+'\',\''+prevTopic.id+'\')" style="background:#e74c3c;color:white;border:none;padding:12px 24px;border-radius:8px;font-family:DM Sans,sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer">Go Back: '+prevTopic.title+'</button>';
-    } else {
-      nextAction='Something\'s not clicking. Re-read slowly - if a word doesn\'t make sense, look it up. That\'s usually the barrier.';
-      nextBtn='<button onclick="showStudySession(\''+catId+'\',\''+topicId+'\')" style="background:'+color+';color:white;border:none;padding:12px 24px;border-radius:8px;font-family:DM Sans,sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer">Try Again</button>';
-    }
   }
-
-  const emoji=feeling==='nailed'?'\uD83D\uDCD6':feeling==='review'?'\uD83D\uDD04':'\u2753';
-  const msg=feeling==='nailed'?'Understood!':feeling==='review'?'Let\'s review':'Missing something - going back';
-
-  el.innerHTML='<div style="padding:20px;max-width:500px;margin:0 auto;text-align:center">'+
-    '<div style="font-size:3rem;margin-bottom:12px">'+emoji+'</div>'+
-    '<div style="font-family:Cinzel,serif;color:var(--text);font-size:1.2rem;font-weight:700;margin-bottom:8px">'+msg+'</div>'+
-    '<div style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:16px;margin:16px 0;font-size:0.85rem;color:var(--text)">'+nextAction+'</div>'+
-    '<div style="display:flex;gap:8px;justify-content:center">'+
-      nextBtn+
-      '<button class="back-btn" onclick="showStudy()">← Study Lab</button>'+
-    '</div>'+
-  '</div>';
+  el.innerHTML=window.HearthKnowingStudySessionViewer.renderAssessmentResult({
+    session:session,
+    outcome:outcome
+  });
 };
 
 // ═══ PRACTICE NODE - THE TEMPLE ═══

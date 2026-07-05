@@ -321,11 +321,13 @@ REQUIRED_MARKERS = {
     "adapters/knowing-study-session-model.js": [
         "HearthKnowingStudySessionModel",
         "topicContext",
+        "assessmentOutcome",
         "difficultyLabel",
     ],
     "adapters/knowing-study-session-viewer.js": [
         "HearthKnowingStudySessionViewer",
         "renderStudySession",
+        "renderAssessmentResult",
         "renderQuiz",
     ],
     "adapters/teaching-engine-core-adapter.js": [
