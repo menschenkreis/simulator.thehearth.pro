@@ -390,6 +390,14 @@ assert(practiceSessionHtml.indexOf("METRONOME") >= 0, "Practice session viewer s
 var practiceFinishOutcome = HearthPracticeSessionModel.finishOutcome(fakePractice, fakePractice.drills[0], "nailed");
 assert(practiceFinishOutcome.markComplete === true, "Practice session model should mark nailed drills complete");
 assert(practiceFinishOutcome.nextDrill.id === "scale", "Practice session model should choose following drill");
+var practiceFinishHtml = HearthPracticeSessionViewer.renderFinishResult({{
+  bpm: 80,
+  candleColor: "#e8a020",
+  drill: fakePractice.drills[0],
+  minutes: 10,
+  outcome: practiceFinishOutcome
+}});
+assert(practiceFinishHtml.indexOf("Nailed it!") >= 0, "Practice session viewer should render finish message");
 var fakeShelfScrolled = {{ left: 0, behavior: "" }};
 var fakeShelfDocument = {{
   getElementById: function(id) {{

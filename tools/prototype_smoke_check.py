@@ -364,6 +364,7 @@ REQUIRED_MARKERS = {
     ],
     "adapters/practice-session-viewer.js": [
         "HearthPracticeSessionViewer",
+        "renderFinishResult",
         "renderPracticeSession",
         "renderMetronome",
     ],

@@ -2550,20 +2550,13 @@ window._finishDrill=function(drillId,feeling){
   _savePracticeState(state);
 
   const el=document.getElementById('p-foundation');
-  const emoji=outcome.emoji;
-  const msg=outcome.message;
-  const nextAction=outcome.nextAction;
-
-  el.innerHTML='<div style="padding:20px;max-width:500px;margin:0 auto;text-align:center">'+
-    '<div style="font-size:3rem;margin-bottom:12px">'+emoji+'</div>'+
-    '<div style="font-family:Cinzel,serif;color:var(--text);font-size:1.2rem;font-weight:700;margin-bottom:8px">'+msg+'</div>'+
-    '<div style="font-size:0.8rem;color:var(--dim);margin-bottom:8px">'+drill.title+' · '+minutes+' min · '+bpm+' BPM</div>'+
-    '<div style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:16px;margin:16px 0;font-size:0.85rem;color:var(--text)">'+nextAction+'</div>'+
-    '<div style="display:flex;gap:8px;justify-content:center">'+
-      (nextDrill?'<button onclick="startDrillPractice(\''+nextDrill.id+'\')" style="background:'+CANDLE+';color:#0d0b08;border:none;padding:12px 24px;border-radius:8px;font-family:DM Sans,sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer">Keep Practising</button>':'')+
-      '<button class="back-btn" onclick="showPractice()">← Dashboard</button>'+
-    '</div>'+
-  '</div>';
+  el.innerHTML=window.HearthPracticeSessionViewer.renderFinishResult({
+    bpm:bpm,
+    candleColor:CANDLE,
+    drill:drill,
+    minutes:minutes,
+    outcome:outcome
+  });
 };
 
 // ── Quick session launcher ──

@@ -95,8 +95,31 @@
       '</div></div></div>';
   }
 
+  function renderFinishResult(options) {
+    options = options || {};
+    var drill = options.drill;
+    var outcome = options.outcome;
+    if (!drill || !outcome) return "";
+    var bpm = options.bpm || 60;
+    var candleColor = options.candleColor || "#e8a020";
+    var minutes = options.minutes || 1;
+    var nextDrill = outcome.nextDrill;
+
+    return '<div style="padding:20px;max-width:500px;margin:0 auto;text-align:center">' +
+      '<div style="font-size:3rem;margin-bottom:12px">' + escapeHtml(outcome.emoji) + '</div>' +
+      '<div style="font-family:Cinzel,serif;color:var(--text);font-size:1.2rem;font-weight:700;margin-bottom:8px">' + escapeHtml(outcome.message) + '</div>' +
+      '<div style="font-size:0.8rem;color:var(--dim);margin-bottom:8px">' + escapeHtml(drill.title) + ' · ' + escapeHtml(minutes) + ' min · ' + escapeHtml(bpm) + ' BPM</div>' +
+      '<div style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:16px;margin:16px 0;font-size:0.85rem;color:var(--text)">' + outcome.nextAction + '</div>' +
+      '<div style="display:flex;gap:8px;justify-content:center">' +
+        (nextDrill ? '<button onclick="startDrillPractice(\'' + escapeHtml(nextDrill.id) + '\')" style="background:' + candleColor + ';color:#0d0b08;border:none;padding:12px 24px;border-radius:8px;font-family:DM Sans,sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer">Keep Practising</button>' : '') +
+        '<button class="back-btn" onclick="showPractice()">← Dashboard</button>' +
+      '</div>' +
+    '</div>';
+  }
+
   return {
     version: "0.1.0",
+    renderFinishResult: renderFinishResult,
     renderAssessmentButtons: renderAssessmentButtons,
     renderMetronome: renderMetronome,
     renderPracticeSession: renderPracticeSession
