@@ -54,6 +54,7 @@ Adapters are allowed to connect the clean core to those outside systems.
 | `foundation-ui-utils.js` | Shared color and HTML escaping helpers for Foundation views. |
 | `practice-state.js` | Wraps legacy Practice localStorage state, log, preferences, and drill selection. |
 | `practice-guide-model.js` | Chooses contextual Practice Temple guidance from preferences and session history. |
+| `practice-dashboard-viewer.js` | Renders the Practice Temple dashboard screen. |
 | `rainbow-blocks-viewer.js` | Keeps the old reusable rainbow block renderer outside the large page. |
 | `teaching-engine-core-adapter.js` | DOM-free lesson controller that connects seeds, session rules, view models, and progress. |
 

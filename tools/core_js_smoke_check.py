@@ -87,6 +87,7 @@ eval(readText(root + "/adapters/knowing-study-session-viewer.js"));
 eval(readText(root + "/adapters/knowing-study-quiz-controller.js"));
 eval(readText(root + "/adapters/practice-state.js"));
 eval(readText(root + "/adapters/practice-guide-model.js"));
+eval(readText(root + "/adapters/practice-dashboard-viewer.js"));
 
 var seed = JSON.parse(readText(root + "/database-blueprint/seeds/foundation_conversations_lesson_v2.json"));
 var foundationManifest = JSON.parse(readText(root + "/core/foundation-route-manifest.json"));
@@ -353,6 +354,18 @@ assert(HearthPracticeState.preferences({{ altarTime: 10 }}).time === 10, "Practi
 assert(HearthPracticeState.nextDrill(fakePractice, "Scales", {{ completed: {{}} }}).id === "scale", "Practice state should choose next focused drill");
 assert(HearthPracticeGuideModel.guideText({{ time: 5, focus: "All" }}, [], null).indexOf("Five minutes") === 0, "Practice guide model should guide short sessions");
 assert(HearthPracticeGuideModel.guideText({{ time: 20, focus: "All" }}, [{{ feeling: "stuck" }}], null).indexOf("Last time was a wall") === 0, "Practice guide model should respond to last session");
+var practiceDashboardHtml = HearthPracticeDashboardViewer.renderPracticeDashboard({{
+  categories: ["All", "Scales"],
+  completedCount: 1,
+  guide: "Begin with Scale.",
+  nextDrill: fakePractice.drills[1],
+  prefs: {{ time: 10, focus: "Scales" }},
+  stats: {{ streak: 2, totalMinutes: 30, totalSessions: 3 }},
+  timeChoices: [5, 10],
+  visibleDrills: fakePractice.drills
+}});
+assert(practiceDashboardHtml.indexOf("Practice Temple") >= 0, "Practice dashboard viewer should render title");
+assert(practiceDashboardHtml.indexOf("Light Candle") >= 0, "Practice dashboard viewer should render start action");
 var fakeShelfScrolled = {{ left: 0, behavior: "" }};
 var fakeShelfDocument = {{
   getElementById: function(id) {{

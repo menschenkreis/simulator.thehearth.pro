@@ -63,6 +63,7 @@ The goal is not to patch the messy prototype forever. The goal is to build a reu
 | `adapters/foundation-ui-utils.js` | Shared color and HTML escaping helpers for Foundation views. |
 | `adapters/practice-state.js` | Wraps legacy Practice localStorage state, log, preferences, and drill selection. |
 | `adapters/practice-guide-model.js` | Chooses contextual Practice Temple guidance from preferences and session history. |
+| `adapters/practice-dashboard-viewer.js` | Renders the Practice Temple dashboard screen. |
 | `adapters/rainbow-blocks-viewer.js` | Keeps the old reusable rainbow block renderer outside the large page. |
 | `adapters/teaching-engine-core-adapter.js` | DOM-free lesson controller connecting seeds, session state, view models, and progress. |
 | `tools/core_smoke_check.py` | Validates the new core files, route manifest, and linked lesson seed files. |
