@@ -60,6 +60,7 @@ Adapters are allowed to connect the clean core to those outside systems.
 | `practice-session-viewer.js` | Renders the timed Practice candle session screen. |
 | `practice-ui-utils.js` | Shared Practice display helpers for streaks, relative time, and feeling labels. |
 | `play-world-viewer.js` | Renders the Play world-map overview screen. |
+| `mastery-viewer.js` | Renders the Mastery and Masters at Play screens. |
 | `rainbow-blocks-viewer.js` | Keeps the old reusable rainbow block renderer outside the large page. |
 | `teaching-engine-core-adapter.js` | DOM-free lesson controller that connects seeds, session rules, view models, and progress. |
 

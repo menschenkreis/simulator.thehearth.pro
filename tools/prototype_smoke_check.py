@@ -70,6 +70,7 @@ REQUIRED_MARKERS = {
         "adapters/practice-session-viewer.js",
         "adapters/practice-ui-utils.js",
         "adapters/play-world-viewer.js",
+        "adapters/mastery-viewer.js",
         "assets/js/journey.js",
     ],
     "assets/js/scene-first.js": [
@@ -384,6 +385,11 @@ REQUIRED_MARKERS = {
         "renderPlayWorld",
         "renderRegionDetail",
         "renderHotspot",
+    ],
+    "adapters/mastery-viewer.js": [
+        "HearthMasteryViewer",
+        "renderMastery",
+        "renderMastersLibrary",
     ],
     "adapters/teaching-engine-core-adapter.js": [
         "HearthTeachingEngineCoreAdapter",
@@ -801,6 +807,7 @@ def main() -> int:
         "adapters/practice-session-viewer.js",
         "adapters/practice-ui-utils.js",
         "adapters/play-world-viewer.js",
+        "adapters/mastery-viewer.js",
     ]
     previous_index = -1
     for script_path in expected_script_order:

@@ -93,6 +93,7 @@ eval(readText(root + "/adapters/practice-session-model.js"));
 eval(readText(root + "/adapters/practice-session-viewer.js"));
 eval(readText(root + "/adapters/practice-ui-utils.js"));
 eval(readText(root + "/adapters/play-world-viewer.js"));
+eval(readText(root + "/adapters/mastery-viewer.js"));
 
 var seed = JSON.parse(readText(root + "/database-blueprint/seeds/foundation_conversations_lesson_v2.json"));
 var foundationManifest = JSON.parse(readText(root + "/core/foundation-route-manifest.json"));
@@ -409,6 +410,10 @@ assert(playWorldHtml.indexOf("wmClick('and')") >= 0, "Play world viewer should r
 var playRegionHtml = HearthPlayWorldViewer.renderRegionDetail({{ id: "and", name: "Andes", tradition: "Andean Guitar", color: "#fff", description: "Mountain songs", keyArtists: ["A"], scales: ["S"], techniques: ["T"], listenTo: ["L"], learnFirst: "Start" }});
 assert(playRegionHtml.indexOf("Andean Guitar") >= 0, "Play world viewer should render region detail");
 assert(playRegionHtml.indexOf("Essential Listening") >= 0, "Play world viewer should render listening section");
+var masteryHtml = HearthMasteryViewer.renderMastery({{ beyond: [{{ title: "Microtonal", artist: "Artist", tag: "Beyond", color: "#9b59b6", description: "Desc", why: "Why", listen: ["Listen"], reflect: "Reflect" }}] }});
+assert(masteryHtml.indexOf("What Lies Beyond") >= 0, "Mastery viewer should render mastery title");
+var mastersHtml = HearthMasteryViewer.renderMastersLibrary([{{ name: "Shai", instrument: "Piano", color: "#d4af69", description: "Desc", why: "Why", listen: ["Listen"], channel: "https://example.com" }}]);
+assert(mastersHtml.indexOf("Watch Masters at Work") >= 0, "Mastery viewer should render masters library");
 var fakeShelfScrolled = {{ left: 0, behavior: "" }};
 var fakeShelfDocument = {{
   getElementById: function(id) {{
