@@ -56,6 +56,7 @@ REQUIRED_MARKERS = {
         "adapters/knowing-topic-viewer.js",
         "adapters/knowing-progress-controller.js",
         "adapters/knowing-panel-controller.js",
+        "adapters/knowing-study-model.js",
         "assets/js/journey.js",
     ],
     "assets/js/scene-first.js": [
@@ -297,6 +298,11 @@ REQUIRED_MARKERS = {
         "HearthKnowingPanelController",
         "bindKnowingGlobals",
         "showKnowing",
+    ],
+    "adapters/knowing-study-model.js": [
+        "HearthKnowingStudyModel",
+        "dashboardState",
+        "summarizeProgress",
     ],
     "adapters/teaching-engine-core-adapter.js": [
         "HearthTeachingEngineCoreAdapter",
@@ -700,6 +706,7 @@ def main() -> int:
         "adapters/knowing-topic-viewer.js",
         "adapters/knowing-progress-controller.js",
         "adapters/knowing-panel-controller.js",
+        "adapters/knowing-study-model.js",
     ]
     previous_index = -1
     for script_path in expected_script_order:

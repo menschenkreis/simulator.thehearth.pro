@@ -1783,6 +1783,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 <script src="adapters/knowing-topic-viewer.js"></script>
 <script src="adapters/knowing-progress-controller.js"></script>
 <script src="adapters/knowing-panel-controller.js"></script>
+<script src="adapters/knowing-study-model.js"></script>
 <script src="assets/js/doing.js?v=6"></script>
 <script src="assets/js/knowing.js?v=6"></script>
 <script src="assets/js/knowing-concepts.js?v=1"></script>
@@ -2231,30 +2232,15 @@ function showStudy(){
   const completed=JSON.parse(localStorage.getItem('hearth-knowing-progress')||'{}');
   const kState=JSON.parse(localStorage.getItem('hearth-knowing-state')||'{}');
   const quizScores=JSON.parse(localStorage.getItem('hearth-knowing-quiz')||'{}');
-
-  // Stats
-  let totalTopics=0, doneTopics=0, quizPassed=0;
-  K.categories.forEach(cat=>{
-    totalTopics+=cat.topics.length;
-    cat.topics.forEach(t=>{
-      if(completed[t.id]) doneTopics++;
-      if(quizScores[t.id]&&quizScores[t.id].passed) quizPassed++;
-    });
-  });
-
-  // Find current topic
-  let currentCat=null, currentTopic=null;
-  if(kState.lastTopic){
-    K.categories.forEach(cat=>{const t=cat.topics.find(x=>x.id===kState.lastTopic);if(t){currentCat=cat;currentTopic=t;}});
-  }
-  if(!currentTopic){
-    for(const cat of K.categories){
-      const t=cat.topics.find(x=>!completed[x.id]);
-      if(t){currentCat=cat;currentTopic=t;break;}
-    }
-  }
-
-  const pct=totalTopics?Math.round(doneTopics/totalTopics*100):0;
+  if(!window.HearthKnowingStudyModel)return;
+  const studyState=window.HearthKnowingStudyModel.dashboardState(K,completed,kState,quizScores);
+  const currentCat=studyState.currentCat;
+  const currentTopic=studyState.currentTopic;
+  const prevTopic=studyState.previousTopic;
+  const totalTopics=studyState.summary.totalTopics;
+  const doneTopics=studyState.summary.doneTopics;
+  const quizPassed=studyState.summary.quizPassed;
+  const pct=studyState.summary.percent;
 
   // Progress bar
   let progressHtml='<div style="margin-bottom:20px">'+
@@ -2266,7 +2252,6 @@ function showStudy(){
   // What's next card
   let nextUpHtml='';
   if(currentTopic){
-    const prevTopic=currentCat?currentCat.topics[currentCat.topics.indexOf(currentTopic)-1]:null;
     nextUpHtml='<div style="background:var(--card);border:1px solid #5B3A6B40;border-radius:8px;padding:16px;margin-bottom:20px">'+
       '<div style="font-family:JetBrains Mono;font-size:0.6rem;color:#8a6aaa;letter-spacing:0.12em;margin-bottom:8px">WHAT\'S NEXT</div>'+
       (prevTopic?'<div style="font-size:0.7rem;color:var(--dim);margin-bottom:6px">From last time: <span style="color:var(--text)">'+prevTopic.title+'</span></div>':'')+
