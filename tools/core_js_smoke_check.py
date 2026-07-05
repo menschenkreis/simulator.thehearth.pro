@@ -89,6 +89,7 @@ eval(readText(root + "/adapters/practice-state.js"));
 eval(readText(root + "/adapters/practice-guide-model.js"));
 eval(readText(root + "/adapters/practice-dashboard-viewer.js"));
 eval(readText(root + "/adapters/practice-drill-viewer.js"));
+eval(readText(root + "/adapters/practice-session-viewer.js"));
 
 var seed = JSON.parse(readText(root + "/database-blueprint/seeds/foundation_conversations_lesson_v2.json"));
 var foundationManifest = JSON.parse(readText(root + "/core/foundation-route-manifest.json"));
@@ -377,6 +378,14 @@ var practiceDrillHtml = HearthPracticeDrillViewer.renderPracticeDrill({{
 }});
 assert(practiceDrillHtml.indexOf("HOW TO PRACTICE") >= 0, "Practice drill viewer should render instructions section");
 assert(practiceDrillHtml.indexOf("MASTERED") >= 0, "Practice drill viewer should render completed state");
+var practiceSessionHtml = HearthPracticeSessionViewer.renderPracticeSession({{
+  candleColor: "#e8a020",
+  drill: fakePractice.drills[1],
+  sessionMinutes: 10,
+  startBpm: 80
+}});
+assert(practiceSessionHtml.indexOf("Candle Practice") >= 0, "Practice session viewer should render title");
+assert(practiceSessionHtml.indexOf("METRONOME") >= 0, "Practice session viewer should render metronome");
 var fakeShelfScrolled = {{ left: 0, behavior: "" }};
 var fakeShelfDocument = {{
   getElementById: function(id) {{

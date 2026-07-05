@@ -56,6 +56,7 @@ Adapters are allowed to connect the clean core to those outside systems.
 | `practice-guide-model.js` | Chooses contextual Practice Temple guidance from preferences and session history. |
 | `practice-dashboard-viewer.js` | Renders the Practice Temple dashboard screen. |
 | `practice-drill-viewer.js` | Renders the Practice drill detail screen. |
+| `practice-session-viewer.js` | Renders the timed Practice candle session screen. |
 | `rainbow-blocks-viewer.js` | Keeps the old reusable rainbow block renderer outside the large page. |
 | `teaching-engine-core-adapter.js` | DOM-free lesson controller that connects seeds, session rules, view models, and progress. |
 

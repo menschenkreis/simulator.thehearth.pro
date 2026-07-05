@@ -66,6 +66,7 @@ REQUIRED_MARKERS = {
         "adapters/practice-guide-model.js",
         "adapters/practice-dashboard-viewer.js",
         "adapters/practice-drill-viewer.js",
+        "adapters/practice-session-viewer.js",
         "assets/js/journey.js",
     ],
     "assets/js/scene-first.js": [
@@ -359,6 +360,11 @@ REQUIRED_MARKERS = {
         "HearthPracticeDrillViewer",
         "renderPracticeDrill",
         "renderAttemptHistory",
+    ],
+    "adapters/practice-session-viewer.js": [
+        "HearthPracticeSessionViewer",
+        "renderPracticeSession",
+        "renderMetronome",
     ],
     "adapters/teaching-engine-core-adapter.js": [
         "HearthTeachingEngineCoreAdapter",
@@ -772,6 +778,7 @@ def main() -> int:
         "adapters/practice-guide-model.js",
         "adapters/practice-dashboard-viewer.js",
         "adapters/practice-drill-viewer.js",
+        "adapters/practice-session-viewer.js",
     ]
     previous_index = -1
     for script_path in expected_script_order:
