@@ -1787,6 +1787,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 <script src="adapters/knowing-study-dashboard-viewer.js"></script>
 <script src="adapters/knowing-study-question-model.js"></script>
 <script src="adapters/knowing-study-session-model.js"></script>
+<script src="adapters/knowing-study-session-viewer.js"></script>
 <script src="assets/js/doing.js?v=6"></script>
 <script src="assets/js/knowing.js?v=6"></script>
 <script src="assets/js/knowing-concepts.js?v=1"></script>
@@ -2249,118 +2250,22 @@ function showStudy(){
 window.showStudySession=function(catId,topicId){
   const K=window.KNOWING;if(!K)return;
   if(!window.HearthKnowingStudySessionModel)return;
+  if(!window.HearthKnowingStudySessionViewer)return;
   const el=document.getElementById('p-foundation');
   const completed=JSON.parse(localStorage.getItem('hearth-knowing-progress')||'{}');
   const session=window.HearthKnowingStudySessionModel.topicContext(K,catId,topicId,completed);if(!session)return;
-  const cat=session.cat;
   const topic=session.topic;
-  const color=session.color;
-  const prevTopic=session.prevTopic;
-  const nextTopic=session.nextTopic;
-  const isDone=session.isDone;
 
   // Save position
   const kState=JSON.parse(localStorage.getItem('hearth-knowing-state')||'{}');
   kState.lastTopic=topicId;
   localStorage.setItem('hearth-knowing-state',JSON.stringify(kState));
 
-  // Context card
-  let contextHtml='';
-  if(prevTopic||nextTopic){
-    contextHtml='<div style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:16px;margin-bottom:16px">'+
-      '<div style="font-family:JetBrains Mono;font-size:0.6rem;color:'+color+';letter-spacing:0.12em;margin-bottom:8px">WHERE THIS FITS</div>'+
-      '<div style="display:flex;gap:12px;align-items:center;font-size:0.75rem">'+
-        (prevTopic?'<div style="flex:1;opacity:0.5"><div style="font-size:0.6rem;color:var(--dim)">Before</div><div style="color:var(--text)">'+prevTopic.title+'</div></div>':'')+
-        '<div style="flex:1;padding:8px;border:2px solid '+color+';border-radius:6px;text-align:center"><div style="font-size:0.6rem;color:'+color+'">Now</div><div style="color:var(--text);font-weight:600">'+topic.title+'</div></div>'+
-        (nextTopic?'<div style="flex:1;opacity:0.5"><div style="font-size:0.6rem;color:var(--dim)">Next</div><div style="color:var(--text)">'+nextTopic.title+'</div></div>':'')+
-      '</div>'+
-      '<div style="font-size:0.7rem;color:var(--dim);margin-top:8px;font-style:italic">'+cat.description+'</div>'+
-    '</div>';
-  }
-
-  // Terms
-  const termMatches=topic.body.match(/<strong>([^<]+)<\/strong>/g)||[];
-  const terms=termMatches.map(m=>m.replace(/<\/?strong>/g,'')).filter(t=>t.length<40);
-  let termsHtml='';
-  if(terms.length){
-    termsHtml='<div style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:16px;margin-bottom:16px">'+
-      '<div style="font-family:JetBrains Mono;font-size:0.6rem;color:'+color+';letter-spacing:0.12em;margin-bottom:8px">KEY TERMS</div>'+
-      '<div style="display:flex;flex-wrap:wrap;gap:6px">'+
-      terms.map(t=>'<span style="background:'+color+'18;border:1px solid '+color+'30;color:'+color+';padding:4px 10px;border-radius:4px;font-size:0.72rem;font-weight:600">'+t+'</span>').join('')+
-      '</div></div>';
-  }
-
-  // Content
-  const contentHtml='<div style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:20px;line-height:1.7;font-size:0.85rem;color:var(--text);margin-bottom:16px">'+topic.body+'</div>';
-
-  // Video placeholder
-  const videoHtml='<div style="background:var(--card);border:1px dashed var(--border);border-radius:8px;padding:20px;margin-bottom:16px;text-align:center">'+
-    '<div style="font-size:1.5rem;margin-bottom:6px">\uD83C\uDFAC</div>'+
-    '<div style="font-size:0.75rem;color:var(--dim)">Video lesson coming soon</div>'+
-    '<div style="font-size:0.65rem;color:var(--dim);margin-top:4px">Source: '+topic.source+'</div>'+
-  '</div>';
-
-  // Questions
   const questions=_generateQuestions(topic);
-  let quizHtml='';
-  if(questions.length){
-    quizHtml='<div style="background:var(--card);border:1px solid '+color+'40;border-radius:8px;padding:16px;margin-bottom:16px">'+
-      '<div style="font-family:JetBrains Mono;font-size:0.6rem;color:'+color+';letter-spacing:0.12em;margin-bottom:12px">DEEPEN YOUR UNDERSTANDING</div>'+
-      '<div id="quiz-area">'+
-      questions.map((q,i)=>
-        '<div id="q'+i+'" style="margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid var(--border)">'+
-          '<div style="font-size:0.8rem;color:var(--text);font-weight:600;margin-bottom:8px">'+(i+1)+'. '+q.question+'</div>'+
-          '<div style="display:flex;flex-direction:column;gap:6px">'+
-          q.options.map((opt,oi)=>
-            '<button onclick="_answerQuiz('+i+','+oi+')" style="text-align:left;padding:8px 12px;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:6px;cursor:pointer;font-family:DM Sans,sans-serif;font-size:0.75rem;transition:all 0.15s" onmouseover="this.style.borderColor=\''+color+'\'" onmouseout="this.style.borderColor=\'var(--border)\'">'+opt+'</button>'
-          ).join('')+
-          '</div>'+
-          '<div id="q'+i+'-fb" style="margin-top:6px;font-size:0.72rem;display:none"></div>'+
-        '</div>'
-      ).join('')+
-      '</div>'+
-      '<div id="quiz-result" style="display:none;margin-top:12px;padding:12px;border-radius:6px;text-align:center"></div>'+
-    '</div>';
-  }
-
-  // Self-assessment
-  const assessHtml='<div style="font-family:JetBrains Mono;font-size:0.6rem;color:'+color+';letter-spacing:0.12em;text-align:center;margin-bottom:10px">HOW WELL DO YOU UNDERSTAND THIS?</div>'+
-    '<div style="display:flex;gap:8px;margin-bottom:20px">'+
-      '<button onclick="_studyAssess(\''+catId+'\',\''+topicId+'\',\'nailed\')" style="flex:1;background:#2ecc7118;border:2px solid #2ecc7140;color:#2ecc71;padding:14px 8px;border-radius:8px;cursor:pointer;font-family:DM Sans,sans-serif;text-align:center">'+
-        '<div style="font-size:1.3rem">\uD83D\uDCD6</div>'+
-        '<div style="font-size:0.75rem;font-weight:700">Got It</div>'+
-        '<div style="font-size:0.6rem;color:var(--dim)">Move to next concept</div>'+
-      '</button>'+
-      '<button onclick="_studyAssess(\''+catId+'\',\''+topicId+'\',\'review\')" style="flex:1;background:'+color+'12;border:2px solid '+color+'30;color:'+color+';padding:14px 8px;border-radius:8px;cursor:pointer;font-family:DM Sans,sans-serif;text-align:center">'+
-        '<div style="font-size:1.3rem">\uD83D\uDD04</div>'+
-        '<div style="font-size:0.75rem;font-weight:700">Need Review</div>'+
-        '<div style="font-size:0.6rem;color:var(--dim)">Go back and re-read</div>'+
-      '</button>'+
-      '<button onclick="_studyAssess(\''+catId+'\',\''+topicId+'\',\'stuck\')" style="flex:1;background:#e74c3c10;border:2px solid #e74c3c30;color:#e74c3c;padding:14px 8px;border-radius:8px;cursor:pointer;font-family:DM Sans,sans-serif;text-align:center">'+
-        '<div style="font-size:1.3rem">\u2753</div>'+
-        '<div style="font-size:0.75rem;font-weight:700">Missing Something</div>'+
-        '<div style="font-size:0.6rem;color:var(--dim)">Check for misunderstood words</div>'+
-      '</button>'+
-    '</div>';
-
-  el.innerHTML='<div style="padding:20px;max-width:700px;margin:0 auto">'+
-    '<button class="back-btn" onclick="showStudy()">← Back to Study Lab</button>'+
-    '<div style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:20px;margin-bottom:16px">'+
-      '<div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap">'+
-        '<span style="border:1px solid '+color+'30;color:'+color+';padding:3px 8px;border-radius:4px;font-size:0.65rem;font-family:JetBrains Mono">'+cat.title.toUpperCase()+'</span>'+
-        '<span style="border:1px solid '+color+'30;color:'+color+';padding:3px 8px;border-radius:4px;font-size:0.65rem;font-family:JetBrains Mono">'+session.difficultyLabel+'</span>'+
-        (isDone?'<span style="border:1px solid #2ecc7130;color:#2ecc71;padding:3px 8px;border-radius:4px;font-size:0.65rem;font-family:JetBrains Mono">\u2713 UNDERSTOOD</span>':'')+
-      '</div>'+
-      '<h2 style="font-family:Cinzel,serif;color:var(--text);font-size:1.2rem;margin:0 0 6px 0;font-weight:700">'+topic.title+'</h2>'+
-      '<div style="font-size:0.7rem;color:var(--dim)">'+topic.source+'</div>'+
-    '</div>'+
-    contextHtml+
-    termsHtml+
-    contentHtml+
-    videoHtml+
-    quizHtml+
-    assessHtml+
-  '</div>';
+  el.innerHTML=window.HearthKnowingStudySessionViewer.renderStudySession({
+    session:session,
+    questions:questions
+  });
 
   window._currentQuiz=questions;
   window._quizScore={correct:0,total:0};
