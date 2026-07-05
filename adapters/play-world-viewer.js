@@ -55,9 +55,49 @@
     '</div>';
   }
 
+  function renderList(items) {
+    return (items || []).map(function renderItem(item) {
+      return '<li>' + item + '</li>';
+    }).join('');
+  }
+
+  function renderArtistTags(region) {
+    return (region.keyArtists || []).map(function renderArtist(artist) {
+      return '<span class="wm-artist-tag" style="border-color:' + region.color + '30;color:' + region.color + '">' + artist + '</span>';
+    }).join('');
+  }
+
+  function renderRegionDetail(region) {
+    if (!region) return "";
+    var listenHtml = renderList(region.listenTo);
+    var artistsHtml = renderArtistTags(region);
+    var scalesHtml = renderList(region.scales);
+    var techHtml = renderList(region.techniques);
+
+    return '<div class="wm-region-detail" style="--region-color:' + region.color + '">' +
+      '<button onclick="showPlay()" class="back-btn">←  Back to World Map</button>' +
+      '<div class="wm-region-header">' +
+        '<div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">' +
+          '<div style="width:10px;height:10px;border-radius:50%;background:' + region.color + ';box-shadow:0 0 12px ' + region.color + '"></div>' +
+          '<span style="font-family:JetBrains Mono;font-size:0.6rem;color:' + region.color + ';letter-spacing:0.12em;text-transform:uppercase">' + region.name + '</span>' +
+        '</div>' +
+        '<h2 style="font-family:\'Cinzel\',serif;color:' + region.color + ';font-size:1.4rem;margin:0;font-weight:700;letter-spacing:0.03em">' + region.tradition + '</h2>' +
+      '</div>' +
+      '<div class="wm-region-body">' +
+        '<p class="wm-region-desc">' + region.description + '</p>' +
+        (artistsHtml ? '<div class="wm-section"><div class="wm-section-label">Key Artists</div><div class="wm-artists">' + artistsHtml + '</div></div>' : '') +
+        (scalesHtml ? '<div class="wm-section"><div class="wm-section-label">Scales & Modes</div><ul class="wm-list">' + scalesHtml + '</ul></div>' : '') +
+        (techHtml ? '<div class="wm-section"><div class="wm-section-label">Techniques</div><ul class="wm-list">' + techHtml + '</ul></div>' : '') +
+        (listenHtml ? '<div class="wm-section"><div class="wm-section-label">Essential Listening</div><ul class="wm-list">' + listenHtml + '</ul></div>' : '') +
+        (region.learnFirst ? '<div class="wm-cta" style="border-color:' + region.color + '"><div class="wm-cta-label" style="color:' + region.color + '">Start Here</div><p class="wm-cta-text">' + region.learnFirst + '</p></div>' : '') +
+      '</div>' +
+    '</div>';
+  }
+
   return {
     version: "0.1.0",
     renderHotspot: renderHotspot,
-    renderPlayWorld: renderPlayWorld
+    renderPlayWorld: renderPlayWorld,
+    renderRegionDetail: renderRegionDetail
   };
 });

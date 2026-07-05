@@ -406,6 +406,9 @@ assert(HearthPracticeUiUtils.feelingEmoji("getting") === "💪", "Practice UI ut
 var playWorldHtml = HearthPlayWorldViewer.renderPlayWorld([{{ id: "and", coords: [10, 20], color: "#fff" }}]);
 assert(playWorldHtml.indexOf("World Map of Guitar") >= 0, "Play world viewer should render title");
 assert(playWorldHtml.indexOf("wmClick('and')") >= 0, "Play world viewer should render hotspot action");
+var playRegionHtml = HearthPlayWorldViewer.renderRegionDetail({{ id: "and", name: "Andes", tradition: "Andean Guitar", color: "#fff", description: "Mountain songs", keyArtists: ["A"], scales: ["S"], techniques: ["T"], listenTo: ["L"], learnFirst: "Start" }});
+assert(playRegionHtml.indexOf("Andean Guitar") >= 0, "Play world viewer should render region detail");
+assert(playRegionHtml.indexOf("Essential Listening") >= 0, "Play world viewer should render listening section");
 var fakeShelfScrolled = {{ left: 0, behavior: "" }};
 var fakeShelfDocument = {{
   getElementById: function(id) {{

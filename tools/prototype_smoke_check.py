@@ -382,6 +382,7 @@ REQUIRED_MARKERS = {
     "adapters/play-world-viewer.js": [
         "HearthPlayWorldViewer",
         "renderPlayWorld",
+        "renderRegionDetail",
         "renderHotspot",
     ],
     "adapters/teaching-engine-core-adapter.js": [

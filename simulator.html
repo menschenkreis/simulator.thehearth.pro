@@ -2600,30 +2600,8 @@ window.wmClick=function(regionId){
   const r=WM.find(function(x){return x.id===regionId;});
   if(!r)return;
   const el=document.getElementById('p-foundation');
-
-  var listenHtml=(r.listenTo||[]).map(function(t){return '<li>'+t+'</li>';}).join('');
-  var artistsHtml=(r.keyArtists||[]).map(function(a){return '<span class="wm-artist-tag" style="border-color:'+r.color+'30;color:'+r.color+'">'+a+'</span>';}).join('');
-  var scalesHtml=(r.scales||[]).map(function(s){return '<li>'+s+'</li>';}).join('');
-  var techHtml=(r.techniques||[]).map(function(t){return '<li>'+t+'</li>';}).join('');
-
-  el.innerHTML='<div class="wm-region-detail" style="--region-color:'+r.color+'">'+
-    '<button onclick="showPlay()" class="back-btn">←  Back to World Map</button>'+
-    '<div class="wm-region-header">'+
-      '<div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">'+
-        '<div style="width:10px;height:10px;border-radius:50%;background:'+r.color+';box-shadow:0 0 12px '+r.color+'"></div>'+
-        '<span style="font-family:JetBrains Mono;font-size:0.6rem;color:'+r.color+';letter-spacing:0.12em;text-transform:uppercase">'+r.name+'</span>'+
-      '</div>'+
-      '<h2 style="font-family:\'Cinzel\',serif;color:'+r.color+';font-size:1.4rem;margin:0;font-weight:700;letter-spacing:0.03em">'+r.tradition+'</h2>'+
-    '</div>'+
-    '<div class="wm-region-body">'+
-      '<p class="wm-region-desc">'+r.description+'</p>'+
-      (artistsHtml?'<div class="wm-section"><div class="wm-section-label">Key Artists</div><div class="wm-artists">'+artistsHtml+'</div></div>':'')+
-      (scalesHtml?'<div class="wm-section"><div class="wm-section-label">Scales & Modes</div><ul class="wm-list">'+scalesHtml+'</ul></div>':'')+
-      (techHtml?'<div class="wm-section"><div class="wm-section-label">Techniques</div><ul class="wm-list">'+techHtml+'</ul></div>':'')+
-      (listenHtml?'<div class="wm-section"><div class="wm-section-label">Essential Listening</div><ul class="wm-list">'+listenHtml+'</ul></div>':'')+
-      (r.learnFirst?'<div class="wm-cta" style="border-color:'+r.color+'"><div class="wm-cta-label" style="color:'+r.color+'">Start Here</div><p class="wm-cta-text">'+r.learnFirst+'</p></div>':'')+
-    '</div>'+
-  '</div>';
+  if(!window.HearthPlayWorldViewer)return;
+  el.innerHTML=window.HearthPlayWorldViewer.renderRegionDetail(r);
 };
 
 // ═══ Hover handler — region name in guide card ═══
