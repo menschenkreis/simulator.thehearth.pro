@@ -73,6 +73,7 @@ The goal is not to patch the messy prototype forever. The goal is to build a reu
 | `adapters/practice-metronome-controller.js` | Runs the Practice candle timer and Web Audio metronome controls. |
 | `adapters/play-world-viewer.js` | Renders the Play world-map overview screen. |
 | `adapters/references-panel-controller.js` | Renders and opens the legacy References header popup. |
+| `adapters/recorder-controller.js` | Updates the legacy recorder button and status state. |
 | `adapters/mastery-viewer.js` | Renders the Mastery and Masters at Play screens. |
 | `adapters/create-cauldron-model.js` | Resolves selected Create ingredients into a cauldron prompt result. |
 | `adapters/create-cauldron-viewer.js` | Renders the Create Cauldron dashboard screen. |

@@ -1806,6 +1806,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 <script src="adapters/header-tools-controller.js"></script>
 <script src="adapters/references-panel-controller.js"></script>
 <script src="adapters/link-deposit-controller.js"></script>
+<script src="adapters/recorder-controller.js"></script>
 <script src="assets/js/doing.js?v=6"></script>
 <script src="assets/js/knowing.js?v=6"></script>
 <script src="assets/js/knowing-concepts.js?v=1"></script>
@@ -3111,7 +3112,9 @@ function tt(){if(tO){clearInterval(tI);tO=false;document.getElementById('tg').te
 function tx(){clearInterval(tI);tO=false;tR=tS;document.getElementById('tg').textContent='Start';document.getElementById('td').classList.remove('run');utd();}
 
 let rc=false;
-function rv(){rc=!rc;const b=document.getElementById('rb'),s=document.getElementById('rs');rc?(b.classList.add('on'),b.textContent='⏹',s.textContent='Recording...'):(b.classList.remove('on'),b.textContent='⏺',s.textContent='Saved');}
+function rv(){
+  if(window.HearthRecorderController)rc=window.HearthRecorderController.toggleRecording(rc,document);
+}
 
 function toggleCredits(){
   const el=document.getElementById('credits-overlay');

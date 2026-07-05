@@ -102,6 +102,7 @@ eval(readText(root + "/adapters/text-to-speech-controller.js"));
 eval(readText(root + "/adapters/header-tools-controller.js"));
 eval(readText(root + "/adapters/references-panel-controller.js"));
 eval(readText(root + "/adapters/link-deposit-controller.js"));
+eval(readText(root + "/adapters/recorder-controller.js"));
 
 var seed = JSON.parse(readText(root + "/database-blueprint/seeds/foundation_conversations_lesson_v2.json"));
 var foundationManifest = JSON.parse(readText(root + "/core/foundation-route-manifest.json"));
@@ -488,6 +489,19 @@ var linkPayload = HearthLinkDepositController.videoPayload({{
 }});
 assert(linkPayload.youtube_url.indexOf("youtube.com") >= 0, "Link deposit controller should build video payload");
 assert(HearthLinkDepositController.matchingTopicWords({{ title: "Major Scale", description: "", category: "scales" }}, "major scale practice").length >= 1, "Link deposit controller should match topic words");
+var recorderButtonClass = {{ added: "", removed: "", add: function(name) {{ this.added = name; }}, remove: function(name) {{ this.removed = name; }} }};
+var recorderButton = {{ classList: recorderButtonClass, textContent: "" }};
+var recorderStatus = {{ textContent: "" }};
+var recorderDoc = {{
+  getElementById: function(id) {{
+    if (id === "rec-btn") return recorderButton;
+    if (id === "rs") return recorderStatus;
+    return null;
+  }}
+}};
+assert(HearthRecorderController.toggleRecording(false, recorderDoc) === true, "Recorder controller should toggle recording on");
+assert(recorderButtonClass.added === "on", "Recorder controller should mark button active");
+assert(recorderStatus.textContent === "Recording...", "Recorder controller should update status text");
 var fakeShelfScrolled = {{ left: 0, behavior: "" }};
 var fakeShelfDocument = {{
   getElementById: function(id) {{
