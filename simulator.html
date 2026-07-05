@@ -1788,6 +1788,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 <script src="adapters/knowing-study-question-model.js"></script>
 <script src="adapters/knowing-study-session-model.js"></script>
 <script src="adapters/knowing-study-session-viewer.js"></script>
+<script src="adapters/knowing-study-quiz-controller.js"></script>
 <script src="assets/js/doing.js?v=6"></script>
 <script src="assets/js/knowing.js?v=6"></script>
 <script src="assets/js/knowing-concepts.js?v=1"></script>
@@ -2276,46 +2277,6 @@ function _generateQuestions(topic){
   if(!window.HearthKnowingStudyQuestionModel)return [];
   return window.HearthKnowingStudyQuestionModel.generateQuestions(topic);
 }
-
-// ── Answer quiz question ──
-window._answerQuiz=function(qIdx,optIdx){
-  const qs=window._currentQuiz;if(!qs||!qs[qIdx])return;
-  const q=qs[qIdx];
-  const isCorrect=optIdx===q.correct;
-  const fb=document.getElementById('q'+qIdx+'-fb');
-  if(!fb)return;
-
-  const qDiv=document.getElementById('q'+qIdx);
-  if(qDiv){
-    qDiv.querySelectorAll('button').forEach((btn,i)=>{
-      btn.disabled=true;btn.style.cursor='default';btn.onmouseover=null;btn.onmouseout=null;
-      if(i===q.correct) btn.style.borderColor='#2ecc71';
-      else if(i===optIdx&&!isCorrect) btn.style.borderColor='#e74c3c';
-    });
-  }
-
-  fb.style.display='block';
-  fb.style.color=isCorrect?'#2ecc71':'#e74c3c';
-  fb.innerHTML=(isCorrect?'\u2713 Correct!':'\u2717 Not quite - ')+q.explanation;
-
-  if(!window._quizScore) window._quizScore={correct:0,total:0};
-  window._quizScore.total++;
-  if(isCorrect) window._quizScore.correct++;
-
-  if(window._quizScore.total===qs.length){
-    const result=document.getElementById('quiz-result');
-    if(result){
-      const pct=Math.round(window._quizScore.correct/qs.length*100);
-      const passed=pct>=75;
-      result.style.display='block';
-      result.style.background=passed?'#2ecc7110':'#e74c3c10';
-      result.style.border='1px solid '+(passed?'#2ecc7140':'#e74c3c40');
-      result.style.color=passed?'#2ecc71':'#e74c3c';
-      result.innerHTML=(passed?'\u2713 ':'\u2717 ')+'Score: '+window._quizScore.correct+'/'+qs.length+' ('+pct+'%)'+
-        (passed?' - Well understood!':' - Review the sections above and try again');
-    }
-  }
-};
 
 // ── Self-assessment after studying ──
 window._studyAssess=function(catId,topicId,feeling){

@@ -84,6 +84,7 @@ eval(readText(root + "/adapters/knowing-study-dashboard-viewer.js"));
 eval(readText(root + "/adapters/knowing-study-question-model.js"));
 eval(readText(root + "/adapters/knowing-study-session-model.js"));
 eval(readText(root + "/adapters/knowing-study-session-viewer.js"));
+eval(readText(root + "/adapters/knowing-study-quiz-controller.js"));
 
 var seed = JSON.parse(readText(root + "/database-blueprint/seeds/foundation_conversations_lesson_v2.json"));
 var foundationManifest = JSON.parse(readText(root + "/core/foundation-route-manifest.json"));
@@ -338,6 +339,9 @@ var studyOutcome = HearthKnowingStudySessionModel.assessmentOutcome(studySession
 assert(studyOutcome.markComplete === true, "Knowing study session model should mark nailed topics complete");
 var studyOutcomeHtml = HearthKnowingStudySessionViewer.renderAssessmentResult({{ session: studySession, outcome: studyOutcome }});
 assert(studyOutcomeHtml.indexOf("Understood!") >= 0, "Knowing study session viewer should render assessment result");
+var studyQuizScore = HearthKnowingStudyQuizController.scoreResult({{ correct: 3, total: 3 }}, 4);
+assert(studyQuizScore.passed === true, "Knowing study quiz controller should pass scores at 75 percent");
+assert(typeof _answerQuiz === "function", "Knowing study quiz controller should bind answer global");
 var fakeShelfScrolled = {{ left: 0, behavior: "" }};
 var fakeShelfDocument = {{
   getElementById: function(id) {{

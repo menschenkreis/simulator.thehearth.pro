@@ -48,6 +48,7 @@ The goal is not to patch the messy prototype forever. The goal is to build a reu
 | `adapters/knowing-study-question-model.js` | Builds Study Session questions from Knowing topic content. |
 | `adapters/knowing-study-session-model.js` | Resolves Study Session topic context, color, and previous/next topics. |
 | `adapters/knowing-study-session-viewer.js` | Renders the guided Study Session screen. |
+| `adapters/knowing-study-quiz-controller.js` | Handles guided Study Session quiz answer interactions. |
 | `adapters/foundation-action-renderers.js` | Registers existing Foundation action render functions behind stable renderer keys. |
 | `adapters/foundation-audio.js` | Shared tone helper for legacy Foundation action renderers. |
 | `adapters/foundation-lesson-launcher.js` | Resolves Foundation topics into TeachingEngine lesson objects. |
