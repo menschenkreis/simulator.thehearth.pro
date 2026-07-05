@@ -187,9 +187,13 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 .top-right{display:flex;align-items:center;gap:6px;flex-shrink:0;flex:1;justify-content:flex-end;}
 .top-logo-icon{height:28px;width:auto;}
 .top-logo-letters{height:16px;width:auto;}
-.top-tool{padding:4px 10px;font-family:'JetBrains Mono',monospace;font-size:0.6rem;color:var(--dim);cursor:pointer;border-radius:3px;transition:all 0.15s;letter-spacing:0.08em;text-transform:uppercase;}
+.top-nav-group{display:flex;gap:4px;padding:3px;border:1px solid rgba(212,175,105,0.08);border-radius:8px;background:rgba(0,0,0,0.12);}
+.top-tool,.top-action{border:0;background:transparent;padding:7px 10px;font-family:'JetBrains Mono',monospace;font-size:0.6rem;color:var(--dim);cursor:pointer;border-radius:6px;transition:all 0.15s;letter-spacing:0.08em;text-transform:uppercase;min-height:32px;}
 .top-tool:hover{color:var(--gold);background:rgba(212,175,105,0.08);}
 .top-tool.on{color:var(--gold);background:rgba(212,175,105,0.1);}
+.top-action{border:1px solid rgba(212,175,105,0.08);background:rgba(0,0,0,0.08);}
+.top-action:hover{color:var(--gold);border-color:rgba(212,175,105,0.25);background:rgba(212,175,105,0.08);}
+.toolkit-btn,.insight-star{display:none!important;}
 
 /* Search panel */
 .search-panel{position:absolute;top:100%;left:0;right:0;background:var(--panel);border-bottom:1px solid var(--border);padding:12px 16px;z-index:50;display:none;}
@@ -984,9 +988,8 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
   .top-brand span{font-size:0.65rem !important;}
   .top-brand{gap:4px;flex:0 0 auto;}
   .top-brand span{display:none;}
-  .top-tool{font-size:0.7rem;padding:8px 10px;flex-shrink:0;white-space:nowrap;letter-spacing:0.06em;min-height:36px;display:flex;align-items:center;justify-content:center;border-radius:6px;}
-  .top-right{flex:0 0 auto;}
-  .top-right button{display:none;}
+  .top-tool,.top-action{font-size:0.7rem;padding:8px 10px;flex-shrink:0;white-space:nowrap;letter-spacing:0.06em;min-height:36px;display:flex;align-items:center;justify-content:center;border-radius:6px;}
+  .top-right{flex:0 0 auto;gap:4px;flex-wrap:wrap;justify-content:center;}
 
   /* ═══ MAP ═══ */
   .map{padding:4px;}
@@ -1397,7 +1400,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
     justify-content:flex-start;
     padding-bottom:4px;
   }
-  .top-tool{font-size:0.62rem !important;padding:7px 9px !important;}
+  .top-tool,.top-action{font-size:0.62rem !important;padding:7px 9px !important;}
   .pnl{height:calc(100vh - 72px);padding-bottom:calc(12px + env(safe-area-inset-bottom,0px));}
   .sf-wrap,
   .sk-wrap,
@@ -1452,17 +1455,17 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
     <span style="font-family:'Cinzel',serif;color:#fff;font-size:0.9rem;letter-spacing:0.08em;">The Hearth Mastery</span>
   </div>
   <div class="top-center">
-    <div style="display:flex;gap:2px;">
-      <div class="top-tool on" onclick="sw('map')">Map</div>
-      <div class="top-tool" onclick="sw('lesson')">Journey</div>
-      <div class="top-tool" onclick="toggleLinkDeposit()" title="Save a YouTube link">YT</div>
-      <div class="top-tool" onclick="toggleProgress()">Progress</div>
-      <div class="top-tool" onclick="toggleSettings()">Settings</div>
-      <div class="top-tool" onclick="toggleReferences()">References</div>
+    <div class="top-nav-group" aria-label="Main places">
+      <button type="button" class="top-tool on" onclick="sw('map')">Map</button>
+      <button type="button" class="top-tool" onclick="sw('lesson')">Journey</button>
     </div>
   </div>
   <div class="top-right">
-    <button onclick="toggleCredits()" style="background:none;border:none;color:var(--dim);font-size:0.8rem;cursor:pointer;padding:4px 8px;min-height:unset;" title="Credits">©</button>
+    <button type="button" class="top-action" onclick="toggleSearch()">Search</button>
+    <button type="button" class="top-action" onclick="toggleToolkit()">Tools</button>
+    <button type="button" class="top-action" onclick="toggleProgress()">Progress</button>
+    <button type="button" class="top-action" onclick="toggleSettings()">Settings</button>
+    <button type="button" class="top-action" onclick="toggleCredits()" title="Credits">©</button>
   </div>
   <!-- Toolkit Button -->
   <div class="toolkit-btn" id="toolkitBtn" onclick="toggleToolkit()" title="Toolkit">
@@ -1520,6 +1523,18 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
           <button class="toolkit-quick-btn" onclick="toggleNotebook();toggleToolkit()">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3h12l2 2v16H5V3z"/><path d="M17 3v4h2"/><line x1="8" y1="9" x2="16" y2="9"/><line x1="8" y1="12" x2="14" y2="12"/><line x1="8" y1="15" x2="15" y2="15"/></svg>
             Notes
+          </button>
+          <button class="toolkit-quick-btn" onclick="toggleInsightPanel();toggleToolkit()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2.7 5.5 6.1.9-4.4 4.3 1 6.1L12 16.9 6.6 19.8l1-6.1-4.4-4.3 6.1-.9L12 3z"/></svg>
+            Insights
+          </button>
+          <button class="toolkit-quick-btn" onclick="toggleReferences();toggleToolkit()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h7a3 3 0 0 1 3 3v11a3 3 0 0 0-3-3H4z"/><path d="M20 5h-7a3 3 0 0 0-3 3v11a3 3 0 0 1 3-3h7z"/></svg>
+            References
+          </button>
+          <button class="toolkit-quick-btn" onclick="toggleLinkDeposit();toggleToolkit()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.1 0l2-2a5 5 0 0 0-7.1-7.1l-1.1 1.1"/><path d="M14 11a5 5 0 0 0-7.1 0l-2 2A5 5 0 0 0 12 20.1l1.1-1.1"/></svg>
+            Save Link
           </button>
           <button class="toolkit-quick-btn" onclick="toggleBeatBot();toggleToolkit()">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="6" width="12" height="10" rx="2"/><line x1="12" y1="6" x2="12" y2="3"/><circle cx="12" cy="2" r="1"/><circle cx="9" cy="10" r="1.5"/><circle cx="15" cy="10" r="1.5"/><line x1="9" y1="14" x2="15" y2="14"/><rect x="8" y="16" width="8" height="5" rx="1"/></svg>
@@ -1777,7 +1792,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
           <circle class="touch-area" cx="350" cy="73" r="65" fill="transparent" opacity="0" pointer-events="all"/>
           <circle class="foundation-glow" id="foundation-ring" cx="350" cy="73" r="60" stroke="rgba(255,255,255,0.25)" stroke-width="1" fill="none" stroke-dasharray="3 4"/>
           <clipPath id="clip-foundation"><circle cx="350" cy="73" r="48"/></clipPath>
-          <image href="images/foundation-icon.png" x="314" y="37" width="72" height="72" clip-path="url(#clip-foundation)"/>
+          <image href="images/map-nodes/foundation.png" x="314" y="37" width="72" height="72" clip-path="url(#clip-foundation)"/>
         </g>
 
         <!-- ═══ THE HEARTH (center) ═══ -->
@@ -1785,7 +1800,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
           <circle class="mn-ring" cx="350" cy="494" r="48"/>
           <circle class="touch-area" cx="350" cy="494" r="65" fill="transparent" opacity="0" pointer-events="all"/>
           <clipPath id="clip-hearth"><circle cx="350" cy="494" r="48"/></clipPath>
-          <image href="images/hearth-icon.png" x="302" y="446" width="96" height="96" clip-path="url(#clip-hearth)"/>
+          <image href="images/map-nodes/hearth.png" x="302" y="446" width="96" height="96" clip-path="url(#clip-hearth)"/>
         </g>
 
         <!-- ═══ MASTERY (bottom) with 8 level rings ═══ -->
@@ -1805,7 +1820,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
           <circle class="mn-ring" cx="350" cy="813" r="48"/>
           <circle class="touch-area" cx="350" cy="813" r="65" fill="transparent" opacity="0" pointer-events="all"/>
           <clipPath id="clip-mastery"><circle cx="350" cy="813" r="48"/></clipPath>
-          <image href="images/mastery-icon.png" x="302" y="765" width="96" height="96" clip-path="url(#clip-mastery)"/>
+          <image href="images/map-nodes/mastery.png" x="302" y="765" width="96" height="96" clip-path="url(#clip-mastery)"/>
         </g>
 
         <!-- ═══ LEFT BRANCH - DOING PATH ═══ -->
@@ -1814,21 +1829,21 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
           <circle class="mn-ring" cx="146" cy="283" r="48"/>
           <circle class="touch-area" cx="146" cy="283" r="65" fill="transparent" opacity="0" pointer-events="all"/>
           <clipPath id="clip-doing"><circle cx="146" cy="283" r="48"/></clipPath>
-          <image href="images/doing-icon.png" x="98" y="235" width="96" height="96" clip-path="url(#clip-doing)"/>
+          <image href="images/map-nodes/doing.png" x="98" y="235" width="96" height="96" clip-path="url(#clip-doing)"/>
         </g>
 
         <g class="mn-g unlocked" onmouseenter="showNodePreview('practise',event)" onmouseleave="hideNodePreview()" onclick="showNodeInfo('practise')" data-node="practise">
           <circle class="mn-ring" cx="248" cy="388" r="48"/>
           <circle class="touch-area" cx="248" cy="388" r="65" fill="transparent" opacity="0" pointer-events="all"/>
           <clipPath id="clip-practise"><circle cx="248" cy="388" r="48"/></clipPath>
-          <image href="images/practise-icon.png" x="212" y="352" width="72" height="72" clip-path="url(#clip-practise)"/>
+          <image href="images/map-nodes/practise.png" x="212" y="352" width="72" height="72" clip-path="url(#clip-practise)"/>
         </g>
 
         <g class="mn-g unlocked" onmouseenter="showNodePreview('play',event)" onmouseleave="hideNodePreview()" onclick="showNodeInfo('play')" data-node="play">
           <circle class="mn-ring" cx="88" cy="682" r="48"/>
           <circle class="touch-area" cx="88" cy="682" r="65" fill="transparent" opacity="0" pointer-events="all"/>
           <clipPath id="clip-play"><circle cx="88" cy="682" r="48"/></clipPath>
-          <image href="images/play-icon.png" x="52" y="646" width="72" height="72" clip-path="url(#clip-play)"/>
+          <image href="images/map-nodes/play.png" x="52" y="646" width="72" height="72" clip-path="url(#clip-play)"/>
         </g>
 
         <!-- ═══ RIGHT BRANCH - KNOWING PATH ═══ -->
@@ -1837,21 +1852,21 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
           <circle class="mn-ring" cx="554" cy="283" r="48"/>
           <circle class="touch-area" cx="554" cy="283" r="65" fill="transparent" opacity="0" pointer-events="all"/>
           <clipPath id="clip-knowing"><circle cx="554" cy="283" r="48"/></clipPath>
-          <image href="images/knowing-icon.png" x="518" y="247" width="72" height="72" clip-path="url(#clip-knowing)"/>
+          <image href="images/map-nodes/knowing.png" x="518" y="247" width="72" height="72" clip-path="url(#clip-knowing)"/>
         </g>
 
         <g class="mn-g unlocked" onmouseenter="showNodePreview('study',event)" onmouseleave="hideNodePreview()" onclick="showNodeInfo('study')" data-node="study">
           <circle class="mn-ring" cx="452" cy="388" r="48"/>
           <circle class="touch-area" cx="452" cy="388" r="65" fill="transparent" opacity="0" pointer-events="all"/>
           <clipPath id="clip-study"><circle cx="452" cy="388" r="48"/></clipPath>
-          <image href="images/study-icon.png" x="416" y="352" width="72" height="72" clip-path="url(#clip-study)"/>
+          <image href="images/map-nodes/study.png" x="416" y="352" width="72" height="72" clip-path="url(#clip-study)"/>
         </g>
 
         <g class="mn-g unlocked" onmouseenter="showNodePreview('create',event)" onmouseleave="hideNodePreview()" onclick="showNodeInfo('create')" data-node="create">
           <circle class="mn-ring" cx="612" cy="682" r="48"/>
           <circle class="touch-area" cx="612" cy="682" r="65" fill="transparent" opacity="0" pointer-events="all"/>
           <clipPath id="clip-create"><circle cx="612" cy="682" r="48"/></clipPath>
-          <image href="images/create-icon.png" x="564" y="634" width="96" height="96" clip-path="url(#clip-create)"/>
+          <image href="images/map-nodes/create.png" x="564" y="634" width="96" height="96" clip-path="url(#clip-create)"/>
         </g>
         <!-- Travelling flame -->
         <g id="travel-flame" style="transform:translate(350px,73px);transition:transform 1.2s cubic-bezier(0.4,0,0.2,1)">
@@ -2057,15 +2072,15 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 <script src="assets/js/references.js"></script>
 <script>
 const NODE_DATA = {
-  hearth: { emoji:'', tag:'ORIGIN', title:'The Hearth', desc:'Your progress dashboard. See how you\'re doing across all paths.', enter:true, action:'hearth' },
-  foundation: { emoji:'', tag:'HOME NODE', title:'Foundation', desc:'Before you play a note - learn how learning works, how to hold the guitar, tune it, and produce your first clean sound. 7 core topics.', enter:true, action:'foundation', icon:'images/foundation-icon.png' },
-  mastery: { emoji:'', tag:'FINAL', title:'Mastery', desc:'Come home to yourself. What is YOUR sound? The student becomes the artist.', enter:true, action:'mastery' },
-  doing: { emoji:'', tag:'DOING PATH', title:'Do', desc:'Open-world drill library. Every technique, every style. Click a dot to dive in.', enter:true, action:'doing', icon:'images/doing-icon.png' },
-  practise: { emoji:'', tag:'DOING PATH', title:'Practise', desc:'Session-based. "How much time have you got?" Select drills, combine variations, timer starts, practise, give feedback.', enter:true, action:'practice' },
-  play: { emoji:'', tag:'DOING PATH', title:'Play', desc:'Explore guitar traditions from around the world. Click a region on the world map - Ethiopian jazz, Delta blues, flamenco, bossa nova and more. Discover YOUR sound.', enter:true, action:'play' },
-  knowing: { emoji:'', tag:'KNOWING PATH', title:'Know', desc:'All music theory, categorised beautifully. Always accessible like an encyclopedia. Understand the why.', enter:true, action:'knowing', icon:'images/knowing-icon.png' },
-  study: { emoji:'', tag:'KNOWING PATH', title:'Study', desc:'Your lab. Guided study sessions with context, deepening questions, and self-assessment. Where understanding deepens.', enter:true, action:'study' },
-  create: { emoji:'', tag:'KNOWING PATH', title:'Create', desc:'Write your own music. Arrange songs for solo guitar. Record yourself. The student becomes the creator.', enter:true, action:'create' }
+  hearth: { emoji:'', tag:'ORIGIN', title:'The Hearth', desc:'Your progress dashboard. See how you\'re doing across all paths.', enter:true, action:'hearth', icon:'images/map-nodes/hearth.png' },
+  foundation: { emoji:'', tag:'HOME NODE', title:'Foundation', desc:'Before you play a note - learn how learning works, how to hold the guitar, tune it, and produce your first clean sound. 7 core topics.', enter:true, action:'foundation', icon:'images/map-nodes/foundation.png' },
+  mastery: { emoji:'', tag:'FINAL', title:'Mastery', desc:'Come home to yourself. What is YOUR sound? The student becomes the artist.', enter:true, action:'mastery', icon:'images/map-nodes/mastery.png' },
+  doing: { emoji:'', tag:'DOING PATH', title:'Do', desc:'Open-world drill library. Every technique, every style. Click a dot to dive in.', enter:true, action:'doing', icon:'images/map-nodes/doing.png' },
+  practise: { emoji:'', tag:'DOING PATH', title:'Practise', desc:'Session-based. "How much time have you got?" Select drills, combine variations, timer starts, practise, give feedback.', enter:true, action:'practice', icon:'images/map-nodes/practise.png' },
+  play: { emoji:'', tag:'DOING PATH', title:'Play', desc:'Explore guitar traditions from around the world. Click a region on the world map - Ethiopian jazz, Delta blues, flamenco, bossa nova and more. Discover YOUR sound.', enter:true, action:'play', icon:'images/map-nodes/play.png' },
+  knowing: { emoji:'', tag:'KNOWING PATH', title:'Know', desc:'All music theory, categorised beautifully. Always accessible like an encyclopedia. Understand the why.', enter:true, action:'knowing', icon:'images/map-nodes/knowing.png' },
+  study: { emoji:'', tag:'KNOWING PATH', title:'Study', desc:'Your lab. Guided study sessions with context, deepening questions, and self-assessment. Where understanding deepens.', enter:true, action:'study', icon:'images/map-nodes/study.png' },
+  create: { emoji:'', tag:'KNOWING PATH', title:'Create', desc:'Write your own music. Arrange songs for solo guitar. Record yourself. The student becomes the creator.', enter:true, action:'create', icon:'images/map-nodes/create.png' }
 };
 
 let _activeNode = null;
@@ -2198,15 +2213,15 @@ const NODE_POS = {
 
 // ═══ NODE HOVER PREVIEW ═══
 const NODE_HOVER_DATA={
-  foundation:{img:'images/foundation-icon.png',label:'Foundation'},
-  hearth:{img:'images/hearth-icon.png',label:'The Hearth'},
-  doing:{img:'images/doing-icon.png',label:'Do'},
-  knowing:{img:'images/knowing-icon.png',label:'Know'},
-  play:{img:'images/play-icon.png',label:'Play'},
-  mastery:{img:'images/mastery-icon.png',label:'Mastery'},
-  practise:{img:'images/practise-icon.png',label:'Practise'},
-  study:{img:'images/study-icon.png',label:'Study'},
-  create:{img:'images/create-icon.png',label:'Create'}
+  foundation:{img:'images/map-nodes/foundation.png',label:'Foundation'},
+  hearth:{img:'images/map-nodes/hearth.png',label:'The Hearth'},
+  doing:{img:'images/map-nodes/doing.png',label:'Do'},
+  knowing:{img:'images/map-nodes/knowing.png',label:'Know'},
+  play:{img:'images/map-nodes/play.png',label:'Play'},
+  mastery:{img:'images/map-nodes/mastery.png',label:'Mastery'},
+  practise:{img:'images/map-nodes/practise.png',label:'Practise'},
+  study:{img:'images/map-nodes/study.png',label:'Study'},
+  create:{img:'images/map-nodes/create.png',label:'Create'}
 };
 
 // Hover handled by CSS - grow + glow on the node itself

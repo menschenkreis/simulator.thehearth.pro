@@ -527,6 +527,22 @@ HANDOFF_DOCS = [
     "database-blueprint/docs/prototype-cleanup-handoff-2026-07-05.md",
 ]
 
+TAXONOMY_DOCS = [
+    "database-blueprint/docs/ui-navigation-taxonomy-2026-07-05.md",
+]
+
+MAP_NODE_IMAGES = [
+    "images/map-nodes/hearth.png",
+    "images/map-nodes/foundation.png",
+    "images/map-nodes/mastery.png",
+    "images/map-nodes/doing.png",
+    "images/map-nodes/practise.png",
+    "images/map-nodes/play.png",
+    "images/map-nodes/knowing.png",
+    "images/map-nodes/study.png",
+    "images/map-nodes/create.png",
+]
+
 LESSON_SEEDS = {
     "database-blueprint/seeds/foundation_threshold_lesson_v2.json": {
         "lesson_id": "f-threshold",
@@ -782,6 +798,23 @@ def main() -> int:
         doc_text = path.read_text(encoding="utf-8")
         if "core/" not in doc_text or "adapters/" not in doc_text:
             failures.append(f"{relative_path} should explain both core/ and adapters/")
+
+    for relative_path in TAXONOMY_DOCS:
+        path = ROOT / relative_path
+        if not path.exists():
+            failures.append(f"Missing UI taxonomy doc: {relative_path}")
+            continue
+        doc_text = path.read_text(encoding="utf-8")
+        for marker in ("Places", "Tools", "Utilities", "Capture"):
+            if marker not in doc_text:
+                failures.append(f"{relative_path} is missing taxonomy marker: {marker}")
+
+    for relative_path in MAP_NODE_IMAGES:
+        path = ROOT / relative_path
+        if not path.exists():
+            failures.append(f"Missing map node image: {relative_path}")
+        elif path.stat().st_size == 0:
+            failures.append(f"Map node image is empty: {relative_path}")
 
     for relative_path, spec in LESSON_SEEDS.items():
         path = ROOT / relative_path
