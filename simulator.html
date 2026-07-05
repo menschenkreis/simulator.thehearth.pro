@@ -182,15 +182,15 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 }
 .top-title{font-family:'Cinzel',serif;color:var(--gold);font-size:0.9rem;font-weight:700;letter-spacing:0.08em;}
 .top-spacer{flex:1;}
-.top-brand{display:flex;align-items:center;gap:8px;flex:1 1 auto;min-width:0;}
-.top-center{display:flex;justify-content:center;flex-shrink:0;}
+.top-brand{display:flex;align-items:center;gap:8px;flex:1 1 auto;min-width:0;padding-right:180px;}
+.top-center{display:flex;justify-content:center;flex-shrink:0;position:absolute;left:50%;top:7px;transform:translateX(-50%);z-index:2;}
 .top-right{display:flex;align-items:center;gap:6px;flex:1 0 auto;justify-content:flex-end;flex-wrap:nowrap;}
 .top-logo-icon{height:28px;width:auto;}
 .top-logo-letters{height:16px;width:auto;}
-.top-nav-group{display:flex;gap:4px;padding:3px;border:1px solid rgba(212,175,105,0.08);border-radius:8px;background:rgba(0,0,0,0.12);}
-.top-tool,.top-action{border:0;background:transparent;padding:7px 10px;font-family:'JetBrains Mono',monospace;font-size:0.6rem;color:var(--dim);cursor:pointer;border-radius:6px;transition:all 0.15s;letter-spacing:0.08em;text-transform:uppercase;min-height:32px;}
+.top-nav-group{display:flex;gap:5px;padding:4px;border:1px solid rgba(212,175,105,0.28);border-radius:10px;background:rgba(0,0,0,0.28);box-shadow:0 0 18px rgba(212,175,105,0.08);}
+.top-tool,.top-action{border:0;background:transparent;padding:7px 10px;font-family:'JetBrains Mono',monospace;font-size:0.6rem;color:var(--dim);cursor:pointer;border-radius:7px;transition:all 0.15s;letter-spacing:0.08em;text-transform:uppercase;min-height:32px;}
 .top-tool:hover{color:var(--gold);background:rgba(212,175,105,0.08);}
-.top-tool.on{color:var(--gold);background:rgba(212,175,105,0.1);}
+.top-tool.on{color:#0d0b08;background:var(--gold);}
 .top-action{border:1px solid rgba(212,175,105,0.08);background:rgba(0,0,0,0.08);}
 .top-action:hover{color:var(--gold);border-color:rgba(212,175,105,0.25);background:rgba(212,175,105,0.08);}
 .toolkit-btn,.insight-star{display:none!important;}
@@ -986,8 +986,10 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
   .top::-webkit-scrollbar{display:none;}
   .top-logo-icon{height:18px;}
   .top-brand span{font-size:0.65rem !important;}
-  .top-brand{gap:4px;flex:0 0 auto;}
+  .top-brand{gap:4px;flex:0 0 auto;padding-right:0;}
   .top-brand span{display:none;}
+  .top-center{position:static;transform:none;order:0;}
+  .top-nav-group{padding:4px;gap:4px;}
   .top-tool,.top-action{font-size:0.7rem;padding:8px 10px;flex-shrink:0;white-space:nowrap;letter-spacing:0.06em;min-height:36px;display:flex;align-items:center;justify-content:center;border-radius:6px;}
   .top-right{flex:0 0 auto;gap:4px;flex-wrap:nowrap;justify-content:flex-end;}
 
@@ -1399,6 +1401,8 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
     width:auto;
     justify-content:center;
     padding-bottom:0;
+    position:static;
+    transform:none;
   }
   .top-tool,.top-action{font-size:0.62rem !important;padding:7px 9px !important;}
   .pnl{height:calc(100vh - 72px);padding-bottom:calc(12px + env(safe-area-inset-bottom,0px));}
@@ -1792,7 +1796,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
           <circle class="touch-area" cx="350" cy="73" r="65" fill="transparent" opacity="0" pointer-events="all"/>
           <circle class="foundation-glow" id="foundation-ring" cx="350" cy="73" r="60" stroke="rgba(255,255,255,0.25)" stroke-width="1" fill="none" stroke-dasharray="3 4"/>
           <clipPath id="clip-foundation"><circle cx="350" cy="73" r="48"/></clipPath>
-          <image href="images/map-nodes-clean/foundation.png" x="302" y="25" width="96" height="96" clip-path="url(#clip-foundation)"/>
+          <image href="images/map-nodes-clean/foundation.png" x="309" y="32" width="82" height="82" clip-path="url(#clip-foundation)"/>
         </g>
 
         <!-- ═══ THE HEARTH (center) ═══ -->
@@ -1800,7 +1804,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
           <circle class="mn-ring" cx="350" cy="494" r="48"/>
           <circle class="touch-area" cx="350" cy="494" r="65" fill="transparent" opacity="0" pointer-events="all"/>
           <clipPath id="clip-hearth"><circle cx="350" cy="494" r="48"/></clipPath>
-          <image href="images/map-nodes-clean/hearth.png" x="302" y="446" width="96" height="96" clip-path="url(#clip-hearth)"/>
+          <image href="images/map-nodes-clean/hearth.png" x="309" y="453" width="82" height="82" clip-path="url(#clip-hearth)"/>
         </g>
 
         <!-- ═══ MASTERY (bottom) with 8 level rings ═══ -->
@@ -1820,7 +1824,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
           <circle class="mn-ring" cx="350" cy="813" r="48"/>
           <circle class="touch-area" cx="350" cy="813" r="65" fill="transparent" opacity="0" pointer-events="all"/>
           <clipPath id="clip-mastery"><circle cx="350" cy="813" r="48"/></clipPath>
-          <image href="images/map-nodes-clean/mastery.png" x="302" y="765" width="96" height="96" clip-path="url(#clip-mastery)"/>
+          <image href="images/map-nodes-clean/mastery.png" x="309" y="772" width="82" height="82" clip-path="url(#clip-mastery)"/>
         </g>
 
         <!-- ═══ LEFT BRANCH - DOING PATH ═══ -->
@@ -1829,21 +1833,21 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
           <circle class="mn-ring" cx="146" cy="283" r="48"/>
           <circle class="touch-area" cx="146" cy="283" r="65" fill="transparent" opacity="0" pointer-events="all"/>
           <clipPath id="clip-doing"><circle cx="146" cy="283" r="48"/></clipPath>
-          <image href="images/map-nodes-clean/doing.png" x="98" y="235" width="96" height="96" clip-path="url(#clip-doing)"/>
+          <image href="images/map-nodes-clean/doing.png" x="105" y="242" width="82" height="82" clip-path="url(#clip-doing)"/>
         </g>
 
         <g class="mn-g unlocked" onmouseenter="showNodePreview('practise',event)" onmouseleave="hideNodePreview()" onclick="showNodeInfo('practise')" data-node="practise">
           <circle class="mn-ring" cx="248" cy="388" r="48"/>
           <circle class="touch-area" cx="248" cy="388" r="65" fill="transparent" opacity="0" pointer-events="all"/>
           <clipPath id="clip-practise"><circle cx="248" cy="388" r="48"/></clipPath>
-          <image href="images/map-nodes-clean/practise.png" x="200" y="340" width="96" height="96" clip-path="url(#clip-practise)"/>
+          <image href="images/map-nodes-clean/practise.png" x="207" y="346" width="82" height="82" clip-path="url(#clip-practise)"/>
         </g>
 
         <g class="mn-g unlocked" onmouseenter="showNodePreview('play',event)" onmouseleave="hideNodePreview()" onclick="showNodeInfo('play')" data-node="play">
           <circle class="mn-ring" cx="88" cy="682" r="48"/>
           <circle class="touch-area" cx="88" cy="682" r="65" fill="transparent" opacity="0" pointer-events="all"/>
           <clipPath id="clip-play"><circle cx="88" cy="682" r="48"/></clipPath>
-          <image href="images/map-nodes-clean/play.png" x="40" y="634" width="96" height="96" clip-path="url(#clip-play)"/>
+          <image href="images/map-nodes-clean/play.png" x="47" y="641" width="82" height="82" clip-path="url(#clip-play)"/>
         </g>
 
         <!-- ═══ RIGHT BRANCH - KNOWING PATH ═══ -->
@@ -1852,21 +1856,21 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
           <circle class="mn-ring" cx="554" cy="283" r="48"/>
           <circle class="touch-area" cx="554" cy="283" r="65" fill="transparent" opacity="0" pointer-events="all"/>
           <clipPath id="clip-knowing"><circle cx="554" cy="283" r="48"/></clipPath>
-          <image href="images/map-nodes-clean/knowing.png" x="506" y="235" width="96" height="96" clip-path="url(#clip-knowing)"/>
+          <image href="images/map-nodes-clean/knowing.png" x="513" y="242" width="82" height="82" clip-path="url(#clip-knowing)"/>
         </g>
 
         <g class="mn-g unlocked" onmouseenter="showNodePreview('study',event)" onmouseleave="hideNodePreview()" onclick="showNodeInfo('study')" data-node="study">
           <circle class="mn-ring" cx="452" cy="388" r="48"/>
           <circle class="touch-area" cx="452" cy="388" r="65" fill="transparent" opacity="0" pointer-events="all"/>
           <clipPath id="clip-study"><circle cx="452" cy="388" r="48"/></clipPath>
-          <image href="images/map-nodes-clean/study.png" x="404" y="340" width="96" height="96" clip-path="url(#clip-study)"/>
+          <image href="images/map-nodes-clean/study.png" x="411" y="347" width="82" height="82" clip-path="url(#clip-study)"/>
         </g>
 
         <g class="mn-g unlocked" onmouseenter="showNodePreview('create',event)" onmouseleave="hideNodePreview()" onclick="showNodeInfo('create')" data-node="create">
           <circle class="mn-ring" cx="612" cy="682" r="48"/>
           <circle class="touch-area" cx="612" cy="682" r="65" fill="transparent" opacity="0" pointer-events="all"/>
           <clipPath id="clip-create"><circle cx="612" cy="682" r="48"/></clipPath>
-          <image href="images/map-nodes-clean/create.png" x="564" y="634" width="96" height="96" clip-path="url(#clip-create)"/>
+          <image href="images/map-nodes-clean/create.png" x="571" y="641" width="82" height="82" clip-path="url(#clip-create)"/>
         </g>
         <!-- Travelling flame -->
         <g id="travel-flame" style="transform:translate(350px,73px);transition:transform 1.2s cubic-bezier(0.4,0,0.2,1)">
