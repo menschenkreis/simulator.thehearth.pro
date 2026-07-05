@@ -91,6 +91,7 @@ eval(readText(root + "/adapters/practice-dashboard-viewer.js"));
 eval(readText(root + "/adapters/practice-drill-viewer.js"));
 eval(readText(root + "/adapters/practice-session-model.js"));
 eval(readText(root + "/adapters/practice-session-viewer.js"));
+eval(readText(root + "/adapters/practice-ui-utils.js"));
 
 var seed = JSON.parse(readText(root + "/database-blueprint/seeds/foundation_conversations_lesson_v2.json"));
 var foundationManifest = JSON.parse(readText(root + "/core/foundation-route-manifest.json"));
@@ -398,6 +399,9 @@ var practiceFinishHtml = HearthPracticeSessionViewer.renderFinishResult({{
   outcome: practiceFinishOutcome
 }});
 assert(practiceFinishHtml.indexOf("Nailed it!") >= 0, "Practice session viewer should render finish message");
+var todayIso = new Date().toISOString();
+assert(HearthPracticeUiUtils.calcStreak([{{ ts: todayIso }}]) === 1, "Practice UI utils should count today's streak");
+assert(HearthPracticeUiUtils.feelingEmoji("getting") === "💪", "Practice UI utils should map feeling emoji");
 var fakeShelfScrolled = {{ left: 0, behavior: "" }};
 var fakeShelfDocument = {{
   getElementById: function(id) {{

@@ -67,6 +67,7 @@ The goal is not to patch the messy prototype forever. The goal is to build a reu
 | `adapters/practice-drill-viewer.js` | Renders the Practice drill detail screen. |
 | `adapters/practice-session-model.js` | Decides Practice drill completion outcomes and next drill. |
 | `adapters/practice-session-viewer.js` | Renders the timed Practice candle session screen. |
+| `adapters/practice-ui-utils.js` | Shared Practice display helpers for streaks, relative time, and feeling labels. |
 | `adapters/rainbow-blocks-viewer.js` | Keeps the old reusable rainbow block renderer outside the large page. |
 | `adapters/teaching-engine-core-adapter.js` | DOM-free lesson controller connecting seeds, session state, view models, and progress. |
 | `tools/core_smoke_check.py` | Validates the new core files, route manifest, and linked lesson seed files. |

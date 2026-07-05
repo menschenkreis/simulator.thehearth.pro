@@ -1795,6 +1795,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 <script src="adapters/practice-drill-viewer.js"></script>
 <script src="adapters/practice-session-model.js"></script>
 <script src="adapters/practice-session-viewer.js"></script>
+<script src="adapters/practice-ui-utils.js"></script>
 <script src="assets/js/doing.js?v=6"></script>
 <script src="assets/js/knowing.js?v=6"></script>
 <script src="assets/js/knowing-concepts.js?v=1"></script>
@@ -2568,36 +2569,19 @@ window.startQuickSession=function(sessionId){
 
 // ── Helpers ──
 function _statBox(icon,value,label,extra){
-  return '<div style="flex:1;background:var(--card);border:1px solid var(--border);border-radius:8px;padding:12px 8px;text-align:center">'+
-    '<div style="font-size:1.2rem;margin-bottom:2px">'+icon+'</div>'+
-    '<div style="font-family:Cinzel,serif;color:var(--text);font-size:1.1rem;font-weight:700">'+value+extra+'</div>'+
-    '<div style="font-size:0.6rem;color:var(--dim)">'+label+'</div>'+
-  '</div>';
+  return window.HearthPracticeUiUtils?window.HearthPracticeUiUtils.statBox(icon,value,label,extra):'';
 }
 
 function _calcStreak(log){
-  if(!log.length)return 0;
-  const days=log.map(s=>new Date(s.ts).toDateString());
-  const unique=[...new Set(days)].sort((a,b)=>new Date(b)-new Date(a));
-  let streak=1;
-  for(let i=1;i<unique.length;i++){
-    const diff=(new Date(unique[i-1])-new Date(unique[i]))/(1000*60*60*24);
-    if(Math.round(diff)===1)streak++;else break;
-  }
-  if(unique[0]!==new Date().toDateString())return 0;
-  return streak;
+  return window.HearthPracticeUiUtils?window.HearthPracticeUiUtils.calcStreak(log):0;
 }
 
 function _timeAgo(date){
-  const s=Math.floor((Date.now()-date.getTime())/1000);
-  if(s<60)return 'just now';
-  if(s<3600)return Math.floor(s/60)+'m ago';
-  if(s<86400)return Math.floor(s/3600)+'h ago';
-  return Math.floor(s/86400)+'d ago';
+  return window.HearthPracticeUiUtils?window.HearthPracticeUiUtils.timeAgo(date):'';
 }
 
-function _feelingEmoji(f){return f==='nailed'?'🔥':f==='getting'?'💪':'🤔';}
-function _feelingColor(f){return f==='nailed'?'#2ecc71':f==='getting'?CANDLE:'#e74c3c';}
+function _feelingEmoji(f){return window.HearthPracticeUiUtils?window.HearthPracticeUiUtils.feelingEmoji(f):'';}
+function _feelingColor(f){return window.HearthPracticeUiUtils?window.HearthPracticeUiUtils.feelingColor(f,CANDLE):'#e74c3c';}
 
 // ═══ PLAY NODE - WORLD MAP ═══
 function showPlay(){
