@@ -41,6 +41,7 @@ The goal is not to patch the messy prototype forever. The goal is to build a reu
 | `adapters/knowing-shelf-controller.js` | Binds Knowing shelf carousel browser behavior. |
 | `adapters/knowing-book-viewer.js` | Renders the opened Knowing book category screen. |
 | `adapters/knowing-topic-viewer.js` | Renders the Knowing encyclopedia topic screen. |
+| `adapters/knowing-progress-controller.js` | Updates legacy Knowing topic completion progress. |
 | `adapters/foundation-action-renderers.js` | Registers existing Foundation action render functions behind stable renderer keys. |
 | `adapters/foundation-audio.js` | Shared tone helper for legacy Foundation action renderers. |
 | `adapters/foundation-lesson-launcher.js` | Resolves Foundation topics into TeachingEngine lesson objects. |

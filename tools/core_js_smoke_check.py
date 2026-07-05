@@ -77,6 +77,7 @@ eval(readText(root + "/adapters/knowing-shelf-viewer.js"));
 eval(readText(root + "/adapters/knowing-shelf-controller.js"));
 eval(readText(root + "/adapters/knowing-book-viewer.js"));
 eval(readText(root + "/adapters/knowing-topic-viewer.js"));
+eval(readText(root + "/adapters/knowing-progress-controller.js"));
 
 var seed = JSON.parse(readText(root + "/database-blueprint/seeds/foundation_conversations_lesson_v2.json"));
 var foundationManifest = JSON.parse(readText(root + "/core/foundation-route-manifest.json"));
@@ -295,6 +296,16 @@ assert(knowingTopicHtml.indexOf("Mark as understood") === -1, "Knowing topic vie
 assert(
   HearthKnowingTopicViewer.nextTopicFor(fakeKnowing.categories[0], fakeKnowing.categories[0].topics[0]).id === "sync",
   "Knowing topic viewer should find next topic"
+);
+var fakeKnowingStorage = {{
+  value: "{{}}",
+  getItem: function() {{ return this.value; }},
+  setItem: function(key, value) {{ this.value = value; }}
+}};
+HearthKnowingProgressController.markTopic({{ topicId: "pulse", storage: fakeKnowingStorage }});
+assert(
+  HearthKnowingProgressController.readProgress(fakeKnowingStorage).pulse === true,
+  "Knowing progress controller should mark topic complete"
 );
 var fakeShelfScrolled = {{ left: 0, behavior: "" }};
 var fakeShelfDocument = {{

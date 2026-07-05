@@ -1781,6 +1781,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 <script src="adapters/knowing-shelf-controller.js"></script>
 <script src="adapters/knowing-book-viewer.js"></script>
 <script src="adapters/knowing-topic-viewer.js"></script>
+<script src="adapters/knowing-progress-controller.js"></script>
 <script src="assets/js/doing.js?v=6"></script>
 <script src="assets/js/knowing.js?v=6"></script>
 <script src="assets/js/knowing-concepts.js?v=1"></script>
@@ -2267,15 +2268,13 @@ window.showKnowingTopic=function(catId,topicId){
   });
 };
 
-// ═══ KNOWING: MARK AS UNDERSTOOD ═══
-window.markKnowingTopic=function(catId,topicId){
-  const completed=JSON.parse(localStorage.getItem('hearth-knowing-progress')||'{}');
-  completed[topicId]=true;
-  localStorage.setItem('hearth-knowing-progress',JSON.stringify(completed));
-  if(typeof playSfx==='function') playSfx('success');
-  // Re-render the topic view to show the updated state
-  showKnowingTopic(catId,topicId);
-};
+if(window.HearthKnowingProgressController){
+  window.HearthKnowingProgressController.bindProgressGlobals({
+    storage:localStorage,
+    playSfx:playSfx,
+    showTopic:showKnowingTopic
+  });
+}
 
 // ═══ STUDY NODE - GUIDED STUDY SESSIONS ═══
 // Dashboard → Context → Terms → Content → Questions → Self-Assess
