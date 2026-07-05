@@ -63,6 +63,7 @@ Adapters are allowed to connect the clean core to those outside systems.
 | `mastery-viewer.js` | Renders the Mastery and Masters at Play screens. |
 | `create-cauldron-model.js` | Resolves selected Create ingredients into a cauldron prompt result. |
 | `create-cauldron-viewer.js` | Renders the Create Cauldron dashboard screen. |
+| `create-cauldron-controller.js` | Updates Create Cauldron ingredient selection and reset UI. |
 | `rainbow-blocks-viewer.js` | Keeps the old reusable rainbow block renderer outside the large page. |
 | `teaching-engine-core-adapter.js` | DOM-free lesson controller that connects seeds, session rules, view models, and progress. |
 

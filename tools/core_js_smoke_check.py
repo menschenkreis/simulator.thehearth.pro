@@ -96,6 +96,7 @@ eval(readText(root + "/adapters/play-world-viewer.js"));
 eval(readText(root + "/adapters/mastery-viewer.js"));
 eval(readText(root + "/adapters/create-cauldron-model.js"));
 eval(readText(root + "/adapters/create-cauldron-viewer.js"));
+eval(readText(root + "/adapters/create-cauldron-controller.js"));
 
 var seed = JSON.parse(readText(root + "/database-blueprint/seeds/foundation_conversations_lesson_v2.json"));
 var foundationManifest = JSON.parse(readText(root + "/core/foundation-route-manifest.json"));
@@ -428,6 +429,7 @@ assert(cauldronResult.constraint === "Single ingredient: Melody", "Create cauldr
 assert(cauldronResult.prompt === "write a hook", "Create cauldron model should pick ingredient prompt");
 var cauldronResultHtml = HearthCreateCauldronViewer.renderMixResult(cauldronResult);
 assert(cauldronResultHtml.indexOf("Single ingredient: Melody") >= 0, "Create cauldron viewer should render mix result");
+assert(typeof HearthCreateCauldronController.syncSelectionUi === "function", "Create cauldron controller should expose selection sync");
 var fakeShelfScrolled = {{ left: 0, behavior: "" }};
 var fakeShelfDocument = {{
   getElementById: function(id) {{

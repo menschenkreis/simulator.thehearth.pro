@@ -1800,6 +1800,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 <script src="adapters/mastery-viewer.js"></script>
 <script src="adapters/create-cauldron-model.js"></script>
 <script src="adapters/create-cauldron-viewer.js"></script>
+<script src="adapters/create-cauldron-controller.js"></script>
 <script src="assets/js/doing.js?v=6"></script>
 <script src="assets/js/knowing.js?v=6"></script>
 <script src="assets/js/knowing-concepts.js?v=1"></script>
@@ -2700,18 +2701,7 @@ window.cauldronToggle=function(ingredientId){
   }else{
     _cauldronSelected.add(ingredientId);
   }
-  document.querySelectorAll('.cauldron-ingredient').forEach(function(btn){
-    if(_cauldronSelected.has(btn.dataset.id)){
-      btn.classList.add('selected');
-    }else{
-      btn.classList.remove('selected');
-    }
-  });
-  var stirBtn=document.getElementById('cauldronStirBtn');
-  var count=_cauldronSelected.size;
-  if(stirBtn) stirBtn.style.display=count>0?'inline-block':'none';
-  var hint=document.getElementById('cauldronHint');
-  if(hint) hint.style.display=count>0?'none':'block';
+  if(window.HearthCreateCauldronController)window.HearthCreateCauldronController.syncSelectionUi(_cauldronSelected,document);
 };
 
 window.cauldronMix=function(){
@@ -2738,16 +2728,9 @@ window.cauldronReroll=function(){cauldronMix();};
 window.saveCauldronNotes=function(){var notes=document.getElementById('cauldronNotes');if(notes)localStorage.setItem('cauldron-notes',notes.value);};
 
 window.cauldronClear=function(){
-  var textEl=document.getElementById('cauldronPrompt');
-  if(textEl)textEl.innerHTML='Select ingredients and stir the cauldron.';
-  if(textEl)textEl.style.color='';
   _cauldronSelected.clear();
   _cauldronLastPrompt=null;
-  document.querySelectorAll('.cauldron-ingredient').forEach(function(btn){btn.classList.remove('selected');});
-  var stirBtn=document.getElementById('cauldronStirBtn');
-  if(stirBtn)stirBtn.style.display='none';
-  var hint=document.getElementById('cauldronHint');
-  if(hint)hint.style.display='block';
+  if(window.HearthCreateCauldronController)window.HearthCreateCauldronController.resetCauldronUi(document);
 };
 
 // ═══ TEXT-TO-SPEECH ═══
