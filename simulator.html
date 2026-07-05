@@ -1804,6 +1804,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 <script src="adapters/create-cauldron-controller.js"></script>
 <script src="adapters/text-to-speech-controller.js"></script>
 <script src="adapters/header-tools-controller.js"></script>
+<script src="adapters/references-panel-controller.js"></script>
 <script src="assets/js/doing.js?v=6"></script>
 <script src="assets/js/knowing.js?v=6"></script>
 <script src="assets/js/knowing-concepts.js?v=1"></script>
@@ -3934,32 +3935,16 @@ window.playSfx=function(type){
 <script>
 // References panel
 function toggleReferences(){
-  var rp=document.getElementById('refsPanel');
-  if(!rp)return;
-  rp.classList.toggle('show');
-  if(rp.classList.contains('show')){
-    renderReferences();
-    // Close other panels
-    document.getElementById('searchPanel').classList.remove('show');
-    document.getElementById('progressPanel').classList.remove('show');
-    document.getElementById('settingsPanel').classList.remove('show');
-  }
-}
-function renderReferences(){
-  var el=document.getElementById('refsContent');
-  if(!el)return;
-  var html='<h3 style="font-family:Cinzel;font-size:0.85rem;color:var(--gold);margin:0 0 12px 0">References</h3>';
-  var nodes=['FOUNDATION','DOING','KNOWING','PLAY','PRACTICE'];
-  var labels={FOUNDATION:'Foundation',DOING:'Do',KNOWING:'Know',PLAY:'Play',PRACTICE:'Practice'};
-  nodes.forEach(function(k){
-    var data=window[k];
-    if(data&&data.sources&&data.sources.length){
-      html+='<div style="margin-bottom:10px">'+
-        '<div style="font-family:JetBrains Mono;font-size:0.55rem;color:var(--amber);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:2px">'+labels[k]+'</div>'+
-        '<div style="font-size:0.65rem;color:var(--dim);line-height:1.5">'+data.sources.join('<br>')+'</div></div>';
+  if(window.HearthReferencesPanelController)window.HearthReferencesPanelController.toggleReferences({
+    document:document,
+    data:window,
+    closePanels:function(){
+      if(window.HearthHeaderToolsController)window.HearthHeaderToolsController.closePanels(document);
     }
   });
-  el.innerHTML=html||'<div style="color:var(--dim);font-size:0.7rem">No references loaded.</div>';
+}
+function renderReferences(){
+  if(window.HearthReferencesPanelController)window.HearthReferencesPanelController.renderReferences(document,window);
 }
 </script>
 

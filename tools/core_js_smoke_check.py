@@ -100,6 +100,7 @@ eval(readText(root + "/adapters/create-cauldron-viewer.js"));
 eval(readText(root + "/adapters/create-cauldron-controller.js"));
 eval(readText(root + "/adapters/text-to-speech-controller.js"));
 eval(readText(root + "/adapters/header-tools-controller.js"));
+eval(readText(root + "/adapters/references-panel-controller.js"));
 
 var seed = JSON.parse(readText(root + "/database-blueprint/seeds/foundation_conversations_lesson_v2.json"));
 var foundationManifest = JSON.parse(readText(root + "/core/foundation-route-manifest.json"));
@@ -469,6 +470,12 @@ var headerStorage = {{
 var headerCounts = HearthHeaderToolsController.progressCounts(headerStorage);
 assert(headerCounts.foundation.done === 2, "Header tools controller should count Foundation progress");
 assert(HearthHeaderToolsController.renderProgressHtml(headerCounts).indexOf("3 days") >= 0, "Header tools controller should render streak progress");
+var referencesHtml = HearthReferencesPanelController.renderReferencesHtml({{
+  FOUNDATION: {{ sources: ["Source <A>"] }},
+  DOING: {{ sources: [] }}
+}});
+assert(referencesHtml.indexOf("Foundation") >= 0, "References panel controller should render source groups");
+assert(referencesHtml.indexOf("&lt;A&gt;") >= 0, "References panel controller should escape source text");
 var fakeShelfScrolled = {{ left: 0, behavior: "" }};
 var fakeShelfDocument = {{
   getElementById: function(id) {{
