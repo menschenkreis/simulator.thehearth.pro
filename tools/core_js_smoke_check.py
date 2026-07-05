@@ -94,6 +94,7 @@ eval(readText(root + "/adapters/practice-session-viewer.js"));
 eval(readText(root + "/adapters/practice-ui-utils.js"));
 eval(readText(root + "/adapters/play-world-viewer.js"));
 eval(readText(root + "/adapters/mastery-viewer.js"));
+eval(readText(root + "/adapters/create-cauldron-model.js"));
 eval(readText(root + "/adapters/create-cauldron-viewer.js"));
 
 var seed = JSON.parse(readText(root + "/database-blueprint/seeds/foundation_conversations_lesson_v2.json"));
@@ -418,6 +419,13 @@ assert(mastersHtml.indexOf("Watch Masters at Work") >= 0, "Mastery viewer should
 var cauldronHtml = HearthCreateCauldronViewer.renderCauldron({{ ingredients: [{{ id: "melody", symbol: "M", name: "Melody", color: "#c45a20" }}], savedNotes: "idea" }});
 assert(cauldronHtml.indexOf("The Cauldron") >= 0, "Create cauldron viewer should render title");
 assert(cauldronHtml.indexOf("cauldronToggle('melody')") >= 0, "Create cauldron viewer should render ingredient action");
+var cauldronResult = HearthCreateCauldronModel.mixResult(
+  [{{ id: "melody", symbol: "M", name: "Melody", color: "#c45a20", prompts: ["write a hook"] }}],
+  [],
+  ["melody"]
+);
+assert(cauldronResult.constraint === "Single ingredient: Melody", "Create cauldron model should mix one ingredient");
+assert(cauldronResult.prompt === "write a hook", "Create cauldron model should pick ingredient prompt");
 var fakeShelfScrolled = {{ left: 0, behavior: "" }};
 var fakeShelfDocument = {{
   getElementById: function(id) {{

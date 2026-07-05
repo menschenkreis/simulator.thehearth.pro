@@ -71,6 +71,7 @@ REQUIRED_MARKERS = {
         "adapters/practice-ui-utils.js",
         "adapters/play-world-viewer.js",
         "adapters/mastery-viewer.js",
+        "adapters/create-cauldron-model.js",
         "adapters/create-cauldron-viewer.js",
         "assets/js/journey.js",
     ],
@@ -396,6 +397,11 @@ REQUIRED_MARKERS = {
         "HearthCreateCauldronViewer",
         "renderCauldron",
         "renderIngredient",
+    ],
+    "adapters/create-cauldron-model.js": [
+        "HearthCreateCauldronModel",
+        "mixResult",
+        "matchingCombo",
     ],
     "adapters/teaching-engine-core-adapter.js": [
         "HearthTeachingEngineCoreAdapter",
@@ -814,6 +820,7 @@ def main() -> int:
         "adapters/practice-ui-utils.js",
         "adapters/play-world-viewer.js",
         "adapters/mastery-viewer.js",
+        "adapters/create-cauldron-model.js",
         "adapters/create-cauldron-viewer.js",
     ]
     previous_index = -1

@@ -1798,6 +1798,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 <script src="adapters/practice-ui-utils.js"></script>
 <script src="adapters/play-world-viewer.js"></script>
 <script src="adapters/mastery-viewer.js"></script>
+<script src="adapters/create-cauldron-model.js"></script>
 <script src="adapters/create-cauldron-viewer.js"></script>
 <script src="assets/js/doing.js?v=6"></script>
 <script src="assets/js/knowing.js?v=6"></script>
@@ -2721,27 +2722,7 @@ window.cauldronMix=function(){
   var vessel=document.getElementById('cauldronVessel');
   var textEl=document.getElementById('cauldronPrompt');
   if(!vessel||!textEl)return;
-  var result=null;
-  if(selected.length===1){
-    var ing=CI.find(function(i){return i.id===selected[0];});
-    if(ing){
-      var prompt=ing.prompts[Math.floor(Math.random()*ing.prompts.length)];
-      result={constraint:'Single ingredient: '+ing.name,prompt:prompt,level:1,colors:[ing.color],labels:[ing.symbol+' '+ing.name]};
-    }
-  }else{
-    var sorted=selected.slice().sort();
-    var match=CC.find(function(c){return c.ingredients.slice().sort().join(',')===sorted.join(',');});
-    if(match){
-      var colors=selected.map(function(id){var ing=CI.find(function(i){return i.id===id;});return ing?ing.color:'#d4af69';});
-      var labels=selected.map(function(id){var ing=CI.find(function(i){return i.id===id;});return ing?ing.symbol+' '+ing.name:id;});
-      result={constraint:match.constraint,prompt:match.prompt,level:match.level,colors:colors,labels:labels};
-    }else{
-      var prompts=selected.map(function(id){var ing=CI.find(function(i){return i.id===id;});return ing?ing.prompts[Math.floor(Math.random()*ing.prompts.length)]:'';});
-      var colors=selected.map(function(id){var ing=CI.find(function(i){return i.id===id;});return ing?ing.color:'#d4af69';});
-      var labels=selected.map(function(id){var ing=CI.find(function(i){return i.id===id;});return ing?ing.symbol+' '+ing.name:id;});
-      result={constraint:'Combine: '+labels.join(' + '),prompt:prompts.join('<br><br>'),level:selected.length,colors:colors,labels:labels};
-    }
-  }
+  var result=window.HearthCreateCauldronModel?window.HearthCreateCauldronModel.mixResult(CI,CC,selected):null;
   if(!result)return;
   _cauldronLastPrompt=result;
   vessel.classList.add('cauldron-bubbling');
