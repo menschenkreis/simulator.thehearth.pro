@@ -521,6 +521,11 @@ SEED_FILES = {
     },
 }
 
+HANDOFF_DOCS = [
+    "database-blueprint/docs/core-rebuild-start-2026-07-04.md",
+    "database-blueprint/docs/prototype-cleanup-handoff-2026-07-05.md",
+]
+
 LESSON_SEEDS = {
     "database-blueprint/seeds/foundation_threshold_lesson_v2.json": {
         "lesson_id": "f-threshold",
@@ -767,6 +772,15 @@ def main() -> int:
                 if field not in record:
                     failures.append(f"{relative_path} record {index} is missing field: {field}")
                     break
+
+    for relative_path in HANDOFF_DOCS:
+        path = ROOT / relative_path
+        if not path.exists():
+            failures.append(f"Missing handoff doc: {relative_path}")
+            continue
+        doc_text = path.read_text(encoding="utf-8")
+        if "core/" not in doc_text or "adapters/" not in doc_text:
+            failures.append(f"{relative_path} should explain both core/ and adapters/")
 
     for relative_path, spec in LESSON_SEEDS.items():
         path = ROOT / relative_path
