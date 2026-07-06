@@ -117,20 +117,20 @@ Each node is a distinct experience with its own visual metaphor, layout, interac
 
 ---
 
-## 07 — Hearth (Dashboard / HQ)
+## 07 — Hearth (Body + Learning System)
 
-**Shape:** A dashboard / command center
-**Visual:** Clean, data-rich. Progress bars, streaks, recent activity, what's next. Like a pilot's dashboard or a game status screen.
-**Interaction:** At-a-glance overview. Where am I? What's next? What have I done? Jump to any node from here.
-**Purpose:** Headquarters. Step back, see the full picture, decide where to go next.
+**Shape:** A body / inner learning map
+**Visual:** The body behind the instrument. Zones for brain, hands, ears, breath/body, and heart/feeling.
+**Interaction:** Choose a body or mind zone to see what role it plays in guitar learning.
+**Purpose:** Explain what is happening behind the instrument. This is where the student understands the body, mind, feelings, and habits involved in practice.
 **Content:**
-- Overall progress (how far through Foundation, Doing, etc.)
-- Current streak & practice history
-- What's next (the next unfinished topic/drill)
-- Recent activity (what you did last)
-- Quick links to each node
-- Level / rank / achievements
-**Asset needed:** Dashboard UI (mostly built already, needs polish)
+- Brain and memory
+- Hands and safe movement
+- Ears and listening
+- Breath, body, and tension
+- Heart, feeling, motivation, confidence, and expression
+- Habits that shape practice
+**Asset needed:** Body-behind-the-instrument visual and zone polish
 
 ---
 
