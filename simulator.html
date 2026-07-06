@@ -212,6 +212,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 .search-result-item:hover{background:rgba(212,175,105,0.06);}
 .search-result-item .sr-title{font-size:0.85rem;color:var(--text);font-weight:600;}
 .search-result-item .sr-tag{font-size:0.6rem;font-family:'JetBrains Mono',monospace;color:var(--dim);text-transform:uppercase;letter-spacing:0.08em;margin-top:2px;}
+.search-empty{padding:10px 2px;color:var(--dim);font-size:0.76rem;line-height:1.45;}
 
 /* Progress panel */
 .progress-panel{position:absolute;top:100%;left:0;right:0;background:var(--panel);border-bottom:1px solid var(--border);padding:16px;z-index:50;display:none;}
@@ -229,6 +230,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 .settings-panel h3{font-family:'Cinzel',serif;font-size:0.85rem;color:var(--gold);margin:0 0 10px 0;}
 .settings-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;}
 .settings-label{font-size:0.8rem;color:var(--text);}
+.settings-note{display:block;color:var(--dim);font-size:0.64rem;margin-top:2px;}
 .theme-btn{padding:4px 10px;font-size:0.65rem;font-family:'JetBrains Mono',monospace;border:1px solid var(--border);background:none;color:var(--dim);border-radius:4px;cursor:pointer;text-transform:uppercase;letter-spacing:0.06em;}
 .theme-btn.active{color:var(--gold);border-color:var(--gold);}
 
@@ -1546,31 +1548,31 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
       <div class="toolkit-section">
         <div class="toolkit-section-title">Quick Access</div>
         <div class="toolkit-quick-btns">
-          <button class="toolkit-quick-btn" onclick="openFretboard();toggleToolkit()">
+          <button class="toolkit-quick-btn" onclick="openFretboard();closeUtilityPanels()">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="1"/><line x1="2" y1="7" x2="22" y2="7"/><line x1="2" y1="10" x2="22" y2="10"/><line x1="2" y1="13" x2="22" y2="13"/><line x1="2" y1="16" x2="22" y2="16"/><line x1="6" y1="4" x2="6" y2="20"/><line x1="10" y1="4" x2="10" y2="20"/><line x1="14" y1="4" x2="14" y2="20"/><line x1="18" y1="4" x2="18" y2="20"/></svg>
             Fretboard
           </button>
-          <button class="toolkit-quick-btn" onclick="sw('theory');toggleToolkit()">
+          <button class="toolkit-quick-btn" onclick="sw('theory');closeUtilityPanels()">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5L4 6v13l8-1z"/><path d="M12 5l8 1v13l-8-1z"/><line x1="12" y1="5" x2="12" y2="18"/><path d="M12 5L12 2l2 1.5L12 5"/></svg>
             Dictionary
           </button>
-          <button class="toolkit-quick-btn" onclick="toggleNotebook();toggleToolkit()">
+          <button class="toolkit-quick-btn" onclick="toggleNotebook();closeUtilityPanels()">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3h12l2 2v16H5V3z"/><path d="M17 3v4h2"/><line x1="8" y1="9" x2="16" y2="9"/><line x1="8" y1="12" x2="14" y2="12"/><line x1="8" y1="15" x2="15" y2="15"/></svg>
             Notes
           </button>
-          <button class="toolkit-quick-btn" onclick="toggleInsightPanel();toggleToolkit()">
+          <button class="toolkit-quick-btn" onclick="toggleInsightPanel()">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2.7 5.5 6.1.9-4.4 4.3 1 6.1L12 16.9 6.6 19.8l1-6.1-4.4-4.3 6.1-.9L12 3z"/></svg>
             Insights
           </button>
-          <button class="toolkit-quick-btn" onclick="toggleReferences();toggleToolkit()">
+          <button class="toolkit-quick-btn" onclick="toggleReferences()">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h7a3 3 0 0 1 3 3v11a3 3 0 0 0-3-3H4z"/><path d="M20 5h-7a3 3 0 0 0-3 3v11a3 3 0 0 1 3-3h7z"/></svg>
             References
           </button>
-          <button class="toolkit-quick-btn" onclick="toggleLinkDeposit();toggleToolkit()">
+          <button class="toolkit-quick-btn" onclick="toggleLinkDeposit()">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.1 0l2-2a5 5 0 0 0-7.1-7.1l-1.1 1.1"/><path d="M14 11a5 5 0 0 0-7.1 0l-2 2A5 5 0 0 0 12 20.1l1.1-1.1"/></svg>
             Save Link
           </button>
-          <button class="toolkit-quick-btn" onclick="toggleBeatBot();toggleToolkit()">
+          <button class="toolkit-quick-btn" onclick="toggleBeatBot()">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="6" width="12" height="10" rx="2"/><line x1="12" y1="6" x2="12" y2="3"/><circle cx="12" cy="2" r="1"/><circle cx="9" cy="10" r="1.5"/><circle cx="15" cy="10" r="1.5"/><line x1="9" y1="14" x2="15" y2="14"/><rect x="8" y="16" width="8" height="5" rx="1"/></svg>
             Beat Bot
           </button>
@@ -1606,8 +1608,10 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
   </div>
   <!-- Search Panel -->
   <div class="search-panel" id="searchPanel">
-    <input type="text" id="searchInput" placeholder="Search topics, drills, concepts..." oninput="doSearch(this.value)">
-    <div class="search-results" id="searchResults"></div>
+    <input type="text" id="searchInput" placeholder="Search nodes, drills, concepts..." oninput="doSearch(this.value)">
+    <div class="search-results" id="searchResults">
+      <div class="search-empty">Type at least two letters to search across Foundation, Do, Know, and Play.</div>
+    </div>
   </div>
   <!-- Progress Panel -->
   <div class="progress-panel" id="progressPanel">
@@ -1616,14 +1620,14 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
   </div>
   <!-- Settings Panel -->
   <div class="settings-panel" id="settingsPanel">
-    <h3>Sound</h3>
+    <h3>Audio</h3>
     <div class="settings-row">
-      <span class="settings-label">Hearth Crackle</span>
+      <span class="settings-label">Hearth Crackle<span class="settings-note">Ambient fire bed</span></span>
       <button class="theme-btn" id="soundToggle" onclick="toggleSound()">On</button>
     </div>
-    <h3 style="margin-top:12px">Performance</h3>
+    <h3 style="margin-top:12px">Visuals</h3>
     <div class="settings-row">
-      <span class="settings-label">Particles</span>
+      <span class="settings-label">Ember Particles<span class="settings-note">Background atmosphere</span></span>
       <button class="theme-btn" id="particleToggle" onclick="toggleParticles()">On</button>
     </div>
     <h3 style="margin-top:12px">Admin</h3>
@@ -3352,8 +3356,10 @@ function updateInsightCount(){
 }
 function toggleInsightPanel(){
   var panel = document.getElementById('insightPanel');
-  panel.classList.toggle('show');
-  if(panel.classList.contains('show')){
+  var wasOpen = panel.classList.contains('show');
+  if(window.HearthHeaderToolsController)window.HearthHeaderToolsController.closePanels(document,['insightPanel']);
+  panel.classList.toggle('show', !wasOpen);
+  if(!wasOpen){
     document.getElementById('insightInput').focus();
     // Reset to input view
     document.getElementById('insightInput').style.display = '';
@@ -3440,8 +3446,13 @@ function viewInsights(){
 function toggleToolkit(){
   var panel = document.getElementById('toolkitPanel');
   var wasOpen = panel.classList.contains('show');
-  panel.classList.toggle('show');
+  if(window.HearthHeaderToolsController)window.HearthHeaderToolsController.closePanels(document,['toolkitPanel']);
+  panel.classList.toggle('show', !wasOpen);
   if(!wasOpen) renderMetroBeats();
+}
+
+function closeUtilityPanels(){
+  if(window.HearthHeaderToolsController)window.HearthHeaderToolsController.closePanels(document);
 }
 
 // ═══ METRONOME ═══
@@ -3611,8 +3622,8 @@ function toggleLinkDeposit(){
   if(window.HearthLinkDepositController)window.HearthLinkDepositController.togglePanel({
     document:document,
     delay:setTimeout,
-    closePanels:function(){
-      if(window.HearthHeaderToolsController)window.HearthHeaderToolsController.closePanels(document);
+    closePanels:function(keepIds){
+      if(window.HearthHeaderToolsController)window.HearthHeaderToolsController.closePanels(document,keepIds);
     }
   });
 }
@@ -4094,8 +4105,8 @@ function toggleReferences(){
   if(window.HearthReferencesPanelController)window.HearthReferencesPanelController.toggleReferences({
     document:document,
     data:window,
-    closePanels:function(){
-      if(window.HearthHeaderToolsController)window.HearthHeaderToolsController.closePanels(document);
+    closePanels:function(keepIds){
+      if(window.HearthHeaderToolsController)window.HearthHeaderToolsController.closePanels(document,keepIds);
     }
   });
 }

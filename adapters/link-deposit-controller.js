@@ -92,9 +92,10 @@
     var doc = options.document || root.document;
     var panel = byId(doc, "linkDepositPanel");
     if (!panel || !panel.classList) return;
-    if (typeof options.closePanels === "function") options.closePanels();
-    panel.classList.toggle("show");
-    if (panel.classList.contains("show")) {
+    var wasOpen = panel.classList.contains("show");
+    if (typeof options.closePanels === "function") options.closePanels(["linkDepositPanel"]);
+    panel.classList.toggle("show", !wasOpen);
+    if (!wasOpen) {
       (options.delay || root.setTimeout || setTimeout)(function focusUrl() {
         var input = byId(doc, "linkDepositUrl");
         if (input && input.focus) input.focus();

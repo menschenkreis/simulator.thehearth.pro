@@ -85,11 +85,12 @@
     var doc = options.document || root.document;
     var panel = byId(doc, "refsPanel");
     if (!panel || !panel.classList) return;
-    panel.classList.toggle("show");
-    if (panel.classList.contains("show")) {
+    var wasOpen = panel.classList.contains("show");
+    if (typeof options.closePanels === "function") options.closePanels(["refsPanel"]);
+    else closeHeaderPanels(doc);
+    panel.classList.toggle("show", !wasOpen);
+    if (!wasOpen) {
       renderReferences(doc, options.data || root);
-      if (typeof options.closePanels === "function") options.closePanels();
-      else closeHeaderPanels(doc);
     }
   }
 

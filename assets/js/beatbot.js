@@ -211,7 +211,9 @@ window.BeatBot = {
 window.toggleBeatBot = function(){
   var panel = document.getElementById('beatbot-panel');
   if(!panel) return;
-  panelOpen = !panelOpen;
+  var wasOpen = panel.classList.contains('show');
+  if(window.HearthHeaderToolsController)window.HearthHeaderToolsController.closePanels(document,['beatbot-panel']);
+  panelOpen = !wasOpen;
   panel.classList.toggle('show', panelOpen);
   if(panelOpen) renderBeatBotPanel();
 };

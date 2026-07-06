@@ -474,6 +474,76 @@ var headerStorage = {{
 var headerCounts = HearthHeaderToolsController.progressCounts(headerStorage);
 assert(headerCounts.foundation.done === 2, "Header tools controller should count Foundation progress");
 assert(HearthHeaderToolsController.renderProgressHtml(headerCounts).indexOf("3 days") >= 0, "Header tools controller should render streak progress");
+function makeHeaderPanel(id) {{
+  return {{
+    id: id,
+    classList: {{
+      classes: {{}},
+      contains: function(name) {{ return !!this.classes[name]; }},
+      add: function(name) {{ this.classes[name] = true; }},
+      remove: function(name) {{ delete this.classes[name]; }},
+      toggle: function(name, force) {{
+        var shouldShow = force === undefined ? !this.contains(name) : !!force;
+        if (shouldShow) this.add(name);
+        else this.remove(name);
+        return shouldShow;
+      }}
+    }}
+  }};
+}}
+var headerPanelIds = [
+  "beatbot-panel",
+  "insightPanel",
+  "linkDepositPanel",
+  "refsPanel",
+  "searchPanel",
+  "toolkitPanel",
+  "progressPanel",
+  "settingsPanel"
+];
+var headerElements = {{
+  searchInput: {{ id: "searchInput", focused: false, focus: function() {{ this.focused = true; }} }}
+}};
+headerPanelIds.forEach(function(id) {{ headerElements[id] = makeHeaderPanel(id); }});
+var headerDoc = {{
+  getElementById: function(id) {{ return headerElements[id] || null; }}
+}};
+HearthHeaderToolsController.toggleSearch(headerDoc, function(fn) {{ fn(); }});
+assert(headerElements.searchPanel.classList.contains("show"), "Header search panel should open");
+assert(headerElements.searchInput.focused, "Header search panel should focus input when opened");
+HearthHeaderToolsController.toggleProgress(headerDoc, function() {{}});
+assert(!headerElements.searchPanel.classList.contains("show"), "Opening progress should close search");
+assert(headerElements.progressPanel.classList.contains("show"), "Header progress panel should open");
+HearthHeaderToolsController.toggleProgress(headerDoc, function() {{}});
+assert(!headerElements.progressPanel.classList.contains("show"), "Clicking an open progress panel should close it");
+headerElements.toolkitPanel.classList.add("show");
+HearthHeaderToolsController.toggleSettings(headerDoc);
+assert(!headerElements.toolkitPanel.classList.contains("show"), "Opening settings should close toolkit");
+assert(headerElements.settingsPanel.classList.contains("show"), "Header settings panel should open");
+HearthHeaderToolsController.closePanels(headerDoc, ["settingsPanel"]);
+assert(headerElements.settingsPanel.classList.contains("show"), "Header closePanels should preserve kept panel");
+var linkPanel = makeHeaderPanel("linkDepositPanel");
+var linkKeepIds = null;
+var linkDoc = {{
+  getElementById: function(id) {{
+    if (id === "linkDepositPanel") return linkPanel;
+    if (id === "linkDepositUrl") return {{ focus: function() {{}} }};
+    return null;
+  }}
+}};
+HearthLinkDepositController.togglePanel({{
+  document: linkDoc,
+  delay: function(fn) {{ fn(); }},
+  closePanels: function(keepIds) {{ linkKeepIds = keepIds; }}
+}});
+assert(linkKeepIds[0] === "linkDepositPanel", "Link deposit should ask header tools to keep its own panel open");
+assert(linkPanel.classList.contains("show"), "Link deposit panel should open after closing siblings");
+HearthLinkDepositController.togglePanel({{
+  document: linkDoc,
+  delay: function(fn) {{ fn(); }},
+  closePanels: function() {{}}
+}});
+assert(!linkPanel.classList.contains("show"), "Clicking an open link deposit panel should close it");
 var referencesHtml = HearthReferencesPanelController.renderReferencesHtml({{
   FOUNDATION: {{ sources: ["Source <A>"] }},
   DOING: {{ sources: [] }}

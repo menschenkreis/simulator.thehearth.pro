@@ -18,16 +18,28 @@
 
   function headerPanels(doc) {
     return {
+      beatbot: byId(doc, "beatbot-panel"),
+      insight: byId(doc, "insightPanel"),
+      linkDeposit: byId(doc, "linkDepositPanel"),
+      references: byId(doc, "refsPanel"),
       search: byId(doc, "searchPanel"),
+      toolkit: byId(doc, "toolkitPanel"),
       progress: byId(doc, "progressPanel"),
       settings: byId(doc, "settingsPanel")
     };
   }
 
-  function closePanels(doc) {
+  function closePanels(doc, keepIds) {
     var panels = headerPanels(doc || root.document);
+    keepIds = keepIds || [];
     Object.keys(panels).forEach(function closePanel(key) {
-      if (panels[key] && panels[key].classList) panels[key].classList.remove("show");
+      if (
+        panels[key] &&
+        panels[key].classList &&
+        keepIds.indexOf(panels[key].id) === -1
+      ) {
+        panels[key].classList.remove("show");
+      }
     });
   }
 
@@ -35,10 +47,10 @@
     doc = doc || root.document;
     var panels = headerPanels(doc);
     if (!panels.search) return;
-    if (panels.progress) panels.progress.classList.remove("show");
-    if (panels.settings) panels.settings.classList.remove("show");
-    panels.search.classList.toggle("show");
-    if (panels.search.classList.contains("show")) {
+    var wasOpen = panels.search.classList.contains("show");
+    closePanels(doc, ["searchPanel"]);
+    panels.search.classList.toggle("show", !wasOpen);
+    if (!wasOpen) {
       (delay || root.setTimeout || setTimeout)(function focusSearchInput() {
         var input = byId(doc, "searchInput");
         if (input && input.focus) input.focus();
@@ -50,10 +62,10 @@
     doc = doc || root.document;
     var panels = headerPanels(doc);
     if (!panels.progress) return;
-    if (panels.search) panels.search.classList.remove("show");
-    if (panels.settings) panels.settings.classList.remove("show");
-    panels.progress.classList.toggle("show");
-    if (panels.progress.classList.contains("show")) {
+    var wasOpen = panels.progress.classList.contains("show");
+    closePanels(doc, ["progressPanel"]);
+    panels.progress.classList.toggle("show", !wasOpen);
+    if (!wasOpen) {
       if (typeof renderProgressFn === "function") renderProgressFn();
       else renderProgress(doc);
     }
@@ -63,9 +75,9 @@
     doc = doc || root.document;
     var panels = headerPanels(doc);
     if (!panels.settings) return;
-    if (panels.search) panels.search.classList.remove("show");
-    if (panels.progress) panels.progress.classList.remove("show");
-    panels.settings.classList.toggle("show");
+    var wasOpen = panels.settings.classList.contains("show");
+    closePanels(doc, ["settingsPanel"]);
+    panels.settings.classList.toggle("show", !wasOpen);
   }
 
   function bindOutsideClick(doc) {
@@ -79,7 +91,9 @@
         !target.closest(".top") &&
         !target.closest(".search-panel") &&
         !target.closest(".progress-panel") &&
-        !target.closest(".settings-panel")
+        !target.closest(".settings-panel") &&
+        !target.closest(".toolkit-panel") &&
+        !target.closest(".insight-panel")
       ) {
         closePanels(doc);
       }
@@ -132,11 +146,11 @@
     if (!results) return [];
     var found = collectSearchResults(query, options.data, options.navigate);
     if (!query || String(query).length < 2) {
-      results.innerHTML = "";
+      results.innerHTML = '<div class="search-empty">Type at least two letters to search across Foundation, Do, Know, and Play.</div>';
       return found;
     }
     if (found.length === 0) {
-      results.innerHTML = '<div style="padding:12px;color:var(--dim);font-size:0.8rem;">No results</div>';
+      results.innerHTML = '<div class="search-empty">No matches yet. Try a node name, technique, concept, or region.</div>';
       return found;
     }
     results.innerHTML = found.map(function resultItem(result, index) {
@@ -183,9 +197,9 @@
 
   function renderProgressHtml(counts) {
     return progressRow("Foundation", counts.foundation)
-      + progressRow("Doing", counts.doing)
-      + progressRow("Knowing", counts.knowing)
-      + '<div class="progress-row"><span class="progress-label">🔥 Streak</span><span style="font-family:JetBrains Mono;font-size:0.65rem;color:var(--amber)">'
+      + progressRow("Do", counts.doing)
+      + progressRow("Know", counts.knowing)
+      + '<div class="progress-row"><span class="progress-label">Practice Streak</span><span style="font-family:JetBrains Mono;font-size:0.65rem;color:var(--amber)">'
       + counts.streak + ' days</span></div>';
   }
 
