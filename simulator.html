@@ -322,6 +322,26 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 .insight-close-btn{background:none;border:none;color:#888;cursor:pointer;font-size:1.1rem;padding:2px 6px;transition:color 0.15s;}
 .insight-close-btn:hover{color:#d4af69;}
 
+/* Notebook overlay */
+.notebook-overlay{position:fixed;inset:0;z-index:800;display:none;}
+.notebook-backdrop{position:absolute;inset:0;background:rgba(0,0,0,0.46);}
+.notebook-drawer{position:absolute;right:0;top:0;bottom:0;width:400px;max-width:92vw;background:var(--bg);border-left:1px solid var(--border);display:flex;flex-direction:column;box-shadow:-4px 0 22px rgba(0,0,0,0.36);}
+.notebook-header{padding:16px 16px 12px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
+.notebook-title{font-family:Cinzel,serif;color:var(--gold);font-size:0.95rem;font-weight:600;}
+.notebook-context{font-size:0.62rem;color:var(--dim);margin-top:2px;}
+.notebook-close{background:none;border:1px solid var(--border);color:var(--dim);width:28px;height:28px;border-radius:4px;cursor:pointer;font-size:0.8rem;display:flex;align-items:center;justify-content:center;}
+.notebook-close:hover{color:var(--gold);border-color:rgba(212,175,105,0.35);}
+.notebook-progress{padding:12px 16px;border-bottom:1px solid var(--border);}
+.notebook-body{flex:1;display:flex;flex-direction:column;padding:13px 16px;overflow:hidden;}
+.notebook-label{font-family:'JetBrains Mono',monospace;font-size:0.58rem;color:var(--dim);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:6px;}
+.notebook-purpose{border:1px solid rgba(212,175,105,0.1);border-radius:8px;background:rgba(212,175,105,0.04);padding:9px 10px;color:#8d806f;font-size:0.7rem;line-height:1.35;margin-bottom:10px;}
+.notebook-notes{flex:1;background:var(--card);border:1px solid var(--border);border-radius:8px;padding:14px;font-family:'DM Sans',sans-serif;font-size:0.82rem;color:var(--text);resize:none;line-height:1.6;outline:none;}
+.notebook-notes:focus{border-color:var(--gold);}
+.notebook-footer{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:8px;}
+.notebook-saved{font-size:0.6rem;color:var(--dim);}
+.notebook-clear{background:none;border:1px solid var(--border);color:var(--dim);padding:4px 10px;border-radius:4px;cursor:pointer;font-size:0.6rem;}
+.notebook-clear:hover{color:var(--gold);border-color:rgba(212,175,105,0.35);}
+
 /* ═══ TOOLKIT BUTTON + PANEL ═══ */
 .toolkit-btn{position:fixed;top:60px;right:70px;z-index:800;cursor:pointer;display:flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:50%;background:rgba(26,23,20,0.85);border:1px solid #3a2a1a;transition:all 0.2s;backdrop-filter:blur(6px);}
 .toolkit-btn:hover{border-color:#d4af69;transform:scale(1.08);box-shadow:0 0 16px rgba(212,175,105,0.25);}
@@ -2002,26 +2022,27 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
   </div>
 
   <!-- NOTEBOOK (slide-out overlay) -->
-  <div id="notebook-overlay" style="position:fixed;inset:0;z-index:800;display:none">
-    <div style="position:absolute;inset:0;background:rgba(0,0,0,0.4)" onclick="toggleNotebook()"></div>
-    <div style="position:absolute;right:0;top:0;bottom:0;width:380px;max-width:90vw;background:var(--bg);border-left:1px solid var(--border);display:flex;flex-direction:column;box-shadow:-4px 0 20px rgba(0,0,0,0.3)">
+  <div id="notebook-overlay" class="notebook-overlay">
+    <div class="notebook-backdrop" onclick="toggleNotebook()"></div>
+    <div class="notebook-drawer">
       <!-- Header -->
-      <div style="padding:16px 16px 12px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px">
+      <div class="notebook-header">
         <div style="flex:1">
-          <div style="font-family:Cinzel,serif;color:var(--gold);font-size:0.9rem;font-weight:600">Notebook</div>
-          <div id="nb-context" style="font-size:0.6rem;color:var(--dim);margin-top:2px">General notes</div>
+          <div class="notebook-title">Notes</div>
+          <div id="nb-context" class="notebook-context">General working space</div>
         </div>
-        <button onclick="toggleNotebook()" style="background:none;border:1px solid var(--border);color:var(--dim);width:28px;height:28px;border-radius:4px;cursor:pointer;font-size:0.8rem;display:flex;align-items:center;justify-content:center">&times;</button>
+        <button class="notebook-close" onclick="toggleNotebook()">&times;</button>
       </div>
       <!-- Progress mini -->
-      <div id="nb-progress" style="padding:12px 16px;border-bottom:1px solid var(--border)"></div>
+      <div id="nb-progress" class="notebook-progress"></div>
       <!-- Notes area -->
-      <div style="flex:1;display:flex;flex-direction:column;padding:12px 16px;overflow:hidden">
-        <div style="font-size:0.6rem;color:var(--dim);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:6px">Your Notes</div>
-        <textarea id="nb-notes" placeholder="Write your thoughts, observations, questions..." style="flex:1;background:var(--card);border:1px solid var(--border);border-radius:8px;padding:14px;font-family:'DM Sans',sans-serif;font-size:0.82rem;color:var(--text);resize:none;line-height:1.6;outline:none" oninput="saveNotebookNotes()"></textarea>
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px">
-          <span id="nb-saved" style="font-size:0.6rem;color:var(--dim)"></span>
-          <button onclick="clearNotebookNotes()" style="background:none;border:1px solid var(--border);color:var(--dim);padding:4px 10px;border-radius:4px;cursor:pointer;font-size:0.6rem">Clear</button>
+      <div class="notebook-body">
+        <div class="notebook-label">Working Notes</div>
+        <div class="notebook-purpose">Use this as your rough page: questions, observations, practice traces, and unfinished thoughts. Save clean realizations in Insights.</div>
+        <textarea id="nb-notes" class="notebook-notes" placeholder="Messy notes are welcome here..." oninput="saveNotebookNotes()"></textarea>
+        <div class="notebook-footer">
+          <span id="nb-saved" class="notebook-saved"></span>
+          <button class="notebook-clear" onclick="clearNotebookNotes()">Clear</button>
         </div>
       </div>
     </div>
