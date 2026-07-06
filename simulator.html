@@ -725,7 +725,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 }
 
 .node-info{
-  background:linear-gradient(180deg,rgba(26,23,20,0.98),rgba(13,11,8,0.98));border:1px solid rgba(212,175,105,0.26);border-radius:8px;
+  background:linear-gradient(180deg,rgba(26,23,20,0.985),rgba(13,11,8,0.985));border:1px solid rgba(212,175,105,0.28);border-radius:8px;
   padding:22px 22px 20px;display:none;position:fixed;
   top:50%;left:50%;transform:translate(-50%,-50%);
   z-index:260;max-width:390px;width:90%;
@@ -739,6 +739,8 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 .node-info .ni-thumb img{width:82px;height:82px;border-radius:50%;object-fit:cover;border:1px solid rgba(212,175,105,0.42);box-shadow:0 0 22px rgba(212,175,105,0.16);background:#0d0b08;}
 .node-info h4{font-family:'Cinzel',serif;color:var(--gold);font-size:1.08rem;margin:4px 0 8px;text-align:center;letter-spacing:0.02em;}
 .node-info .ni-tag{font-family:'JetBrains Mono',monospace;font-size:0.56rem;color:var(--amber);letter-spacing:0.14em;margin-bottom:4px;text-transform:uppercase;text-align:center;}
+.node-info .ni-path{display:inline-flex;align-items:center;justify-content:center;margin:0 auto 8px;padding:4px 9px;border:1px solid rgba(212,175,105,0.18);border-radius:999px;color:var(--dim);font-family:'JetBrains Mono',monospace;font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;}
+.node-info .ni-role{color:var(--text);font-size:0.78rem;line-height:1.45;text-align:center;margin:0 auto 10px;max-width:310px;}
 .node-info .ni-emoji{display:none;}
 .node-info p{font-size:0.82rem;color:var(--dim);line-height:1.58;text-align:center;margin:0 auto;max-width:320px;}
 .node-info .ni-enter{
@@ -2005,6 +2007,8 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
       <span class="ni-emoji" id="niEmoji"></span>
       <div class="ni-tag" id="niTag"></div>
       <h4 id="niTitle"></h4>
+      <div class="ni-path" id="niPath"></div>
+      <div class="ni-role" id="niRole"></div>
       <p id="niDesc"></p>
       <button class="ni-enter" id="niEnter" onclick="enterNode()">Enter Node →</button>
     </div>
@@ -2195,15 +2199,15 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 <script src="assets/js/references.js"></script>
 <script>
 const NODE_DATA = {
-  hearth: { emoji:'', tag:'ORIGIN', title:'The Hearth', desc:'Your progress dashboard. See how you\'re doing across all paths.', enter:true, action:'hearth', icon:'images/map-nodes-generated-v2-normalized/hearth.png' },
-  foundation: { emoji:'', tag:'HOME NODE', title:'Foundation', desc:'Before you play a note - learn how learning works, how to hold the guitar, tune it, and produce your first clean sound. 7 core topics.', enter:true, action:'foundation', icon:'images/map-nodes-generated-v2-normalized/foundation.png' },
-  mastery: { emoji:'', tag:'FINAL', title:'Mastery', desc:'Come home to yourself. What is YOUR sound? The student becomes the artist.', enter:true, action:'mastery', icon:'images/map-nodes-generated-v2-normalized/mastery.png' },
-  doing: { emoji:'', tag:'DOING PATH', title:'Do', desc:'Open-world drill library. Every technique, every style. Click a dot to dive in.', enter:true, action:'doing', icon:'images/map-nodes-generated-v2-normalized/doing.png' },
-  practise: { emoji:'', tag:'DOING PATH', title:'Practise', desc:'Session-based. "How much time have you got?" Select drills, combine variations, timer starts, practise, give feedback.', enter:true, action:'practice', icon:'images/map-nodes-generated-v2-normalized/practise.png' },
-  play: { emoji:'', tag:'DOING PATH', title:'Play', desc:'Explore guitar traditions from around the world. Click a region on the world map - Ethiopian jazz, Delta blues, flamenco, bossa nova and more. Discover YOUR sound.', enter:true, action:'play', icon:'images/map-nodes-generated-v2-normalized/play.png' },
-  knowing: { emoji:'', tag:'KNOWING PATH', title:'Know', desc:'All music theory, categorised beautifully. Always accessible like an encyclopedia. Understand the why.', enter:true, action:'knowing', icon:'images/map-nodes-generated-v2-normalized/knowing.png' },
-  study: { emoji:'', tag:'KNOWING PATH', title:'Study', desc:'Your lab. Guided study sessions with context, deepening questions, and self-assessment. Where understanding deepens.', enter:true, action:'study', icon:'images/map-nodes-generated-v2-normalized/study.png' },
-  create: { emoji:'', tag:'KNOWING PATH', title:'Create', desc:'Write your own music. Arrange songs for solo guitar. Record yourself. The student becomes the creator.', enter:true, action:'create', icon:'images/map-nodes-generated-v2-normalized/create.png' }
+  hearth: { emoji:'', tag:'ORIGIN', path:'Center', title:'The Hearth', role:'Return here to orient yourself and see the whole practice fire.', desc:'Your progress dashboard. See how you\'re doing across all paths.', enter:true, action:'hearth', icon:'images/map-nodes-generated-v2-normalized/hearth.png' },
+  foundation: { emoji:'', tag:'HOME NODE', path:'Foundation', title:'Foundation', role:'Start here when the ground needs to feel solid.', desc:'Before you play a note - learn how learning works, how to hold the guitar, tune it, and produce your first clean sound. 7 core topics.', enter:true, action:'foundation', icon:'images/map-nodes-generated-v2-normalized/foundation.png' },
+  mastery: { emoji:'', tag:'FINAL', path:'Mastery', title:'Mastery', role:'Return to the bigger question: what is becoming yours?', desc:'Come home to yourself. What is YOUR sound? The student becomes the artist.', enter:true, action:'mastery', icon:'images/map-nodes-generated-v2-normalized/mastery.png' },
+  doing: { emoji:'', tag:'DOING PATH', path:'Hands', title:'Do', role:'Use this when your hands need clear physical work.', desc:'Open-world drill library. Every technique, every style. Click a dot to dive in.', enter:true, action:'doing', icon:'images/map-nodes-generated-v2-normalized/doing.png' },
+  practise: { emoji:'', tag:'DOING PATH', path:'Hands', title:'Practise', role:'Use this when you are ready to turn drills into a session.', desc:'Session-based. "How much time have you got?" Select drills, combine variations, timer starts, practise, give feedback.', enter:true, action:'practice', icon:'images/map-nodes-generated-v2-normalized/practise.png' },
+  play: { emoji:'', tag:'DOING PATH', path:'Music', title:'Play', role:'Use this when technique needs to become musical culture and sound.', desc:'Explore guitar traditions from around the world. Click a region on the world map - Ethiopian jazz, Delta blues, flamenco, bossa nova and more. Discover YOUR sound.', enter:true, action:'play', icon:'images/map-nodes-generated-v2-normalized/play.png' },
+  knowing: { emoji:'', tag:'KNOWING PATH', path:'Mind', title:'Know', role:'Use this when a word, pattern, or why needs to become clear.', desc:'All music theory, categorised beautifully. Always accessible like an encyclopedia. Understand the why.', enter:true, action:'knowing', icon:'images/map-nodes-generated-v2-normalized/knowing.png' },
+  study: { emoji:'', tag:'KNOWING PATH', path:'Mind', title:'Study', role:'Use this when an idea needs deeper proof and self-assessment.', desc:'Your lab. Guided study sessions with context, deepening questions, and self-assessment. Where understanding deepens.', enter:true, action:'study', icon:'images/map-nodes-generated-v2-normalized/study.png' },
+  create: { emoji:'', tag:'KNOWING PATH', path:'Making', title:'Create', role:'Use this when learning wants to become your own piece of music.', desc:'Write your own music. Arrange songs for solo guitar. Record yourself. The student becomes the creator.', enter:true, action:'create', icon:'images/map-nodes-generated-v2-normalized/create.png' }
 };
 
 let _activeNode = null;
@@ -2244,6 +2248,8 @@ function presentNodeInfo(data) {
   var emoji = document.getElementById('niEmoji');
   var tag = document.getElementById('niTag');
   var title = document.getElementById('niTitle');
+  var path = document.getElementById('niPath');
+  var role = document.getElementById('niRole');
   var desc = document.getElementById('niDesc');
   var enter = document.getElementById('niEnter');
   if (!panel || !overlay) return;
@@ -2261,6 +2267,8 @@ function presentNodeInfo(data) {
   if (emoji) emoji.textContent = data.emoji || '';
   if (tag) tag.textContent = data.tag || '';
   if (title) title.textContent = data.title || '';
+  if (path) path.textContent = data.path || data.tag || '';
+  if (role) role.textContent = data.role || '';
   if (desc) desc.textContent = data.desc || '';
   if (enter) enter.textContent = 'Enter ' + (data.title || 'Node') + ' →';
   overlay.classList.add('vis');
