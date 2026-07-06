@@ -1,154 +1,187 @@
-# The Hearth Mastery — Node Specifications
+# The Hearth Mastery - Node Specifications
 
-Each node is a distinct experience with its own visual metaphor, layout, interaction pattern, and content purpose.
+This is the current plain-language source of truth for what each map node means.
+
+The goal is not to describe every detail of the current prototype. The goal is to keep the node meanings stable enough that the map, frontend, clean core, and future backend can all agree.
 
 ---
 
-## 01 — Foundation (Building Blocks)
+## 01 - Foundation
 
-**Shape:** Pyramid of stacking blocks
-**Visual:** Rainbow-colored blocks, bottom-up, progressive unlock
-**Interaction:** Tap-to-reveal. Each step asks a question, then reveals the answer. Character + speech bubble for each step.
-**Voice:** DM Sans, kid-friendly, short sentences
-**Purpose:** The absolute basics — how to learn, what is this thing, how to hold it, how to tune it. Before you play a single note.
+**What it is:** The starting point for learning guitar.
+
+**Purpose:** Teach the absolute basics before the student is expected to play much.
+
+**Current experience:** A Foundation map opens the beginner topics and launches character-led lessons through the TeachingEngine.
+
 **Content:**
-- How to Learn (imagination, focus, slow practice)
-- Parts of the Guitar (anatomy)
-- How to Hold It (posture, positioning)
-- Tuning (making it sound right)
-- Your First Sound (open strings, first notes)
-- Rhythm Basics (beat, tempo, counting)
-- Reading Tab (the simplest notation)
+- How learning works
+- How to meet and hold the guitar
+- Tuning and first clean sounds
+- Rhythm basics
+- First shapes and first musical conversations
 
-**Status:** In progress — interactive tap-to-reveal built, needs character illustrations
+**Current status:** Built and actively wired through `core/`, `adapters/`, lesson seed files, and Foundation lesson scripts.
 
 ---
 
-## 02 — Doing (Guitar Neck)
+## 02 - Do
 
-**Shape:** A guitar neck / fretboard
-**Visual:** Horizontal fretboard layout. Frets are the levels. Strings are the paths. Dots on the fretboard mark where you are.
-**Interaction:** Navigate up the neck as you progress. Each fret position is a drill or exercise. Tap a position to start playing.
-**Purpose:** The actual playing surface. This is where your fingers meet the strings. Drills, exercises, finger patterns, chord shapes — all the doing.
+**What it is:** A library of guitar technique drills.
+
+**Purpose:** Give the hands clear physical work.
+
+**Current experience:** A Doing panel opens drill views, a guitar-body/fretboard style training map, filters, progress states, and drill detail cards.
+
 **Content:**
-- Finger gym (finger independence, stretches)
-- Chord shapes (open chords, barre chords)
-- Scale patterns (pentatonic, major, minor)
-- Strumming patterns (rhythm in the right hand)
-- Fingerpicking patterns
-- Technique drills (hammer-ons, pull-offs, slides, bends)
-- Speed & accuracy exercises
-**Asset needed:** Guitar neck visual / fretboard illustration
+- Rhythm drills
+- Picking and fretting drills
+- Chord and scale work
+- Coordination, strength, control, speed, and accuracy
+
+**Current status:** Built and split into smaller Doing adapters.
 
 ---
 
-## 03 — Knowing (Bookshelf / Library)
+## 03 - Practise
 
-**Shape:** A bookshelf
-**Visual:** Books on shelves, each book is a topic. Organized by category. Pick up a book, it opens to its content.
-**Interaction:** Browse shelves, pick up a book, flip through pages. Like actually browsing a library.
-**Purpose:** Reference material. Music theory, notation, genres, history, ear training. Always accessible — an encyclopedia you can dip into anytime.
+**What it is:** A place to run a focused practice session.
+
+**Purpose:** Turn material into a time-bound practice ritual.
+
+**Current experience:** A candle timer. The student chooses a duration and focus, lights the candle, practises, then leaves an ember/reflection.
+
 **Content:**
-- Music theory fundamentals (notes, scales, keys, intervals)
-- Chord theory (how chords are built, progressions)
-- Rhythm & time signatures
-- Ear training (intervals, chord recognition)
-- Genre studies (blues, jazz, folk, rock, classical, world)
-- Notation systems (tab, standard notation, chord charts)
-- Music & discourse (the language of music)
-**Asset needed:** Bookshelf / library illustration
+- Practice duration
+- Practice focus
+- Session timer
+- Reflection notes
+- Practice log
+
+**Current status:** Built as the active scene-first Practise room.
 
 ---
 
-## 04 — Practice (Temple)
+## 04 - Play
 
-**Shape:** A temple / meditation space
-**Visual:** Minimal, dark, warm. A single candle with a flame. Quiet. No distractions.
-**Interaction:** You choose what to focus on today. Set an intention. Timer starts. Practice. Reflect after. Like a ritual.
-**Purpose:** Focused, distraction-free practice sessions. A protocol for practicing — not random noodling. Intent → Focus → Practice → Reflect.
-**Flow:**
-1. Light the candle (set your intention — what are you working on?)
-2. Choose from your current topics/drills
-3. Timer starts (you pick duration)
-4. Practice
-5. Blow out the candle (reflect — what improved? what's next?)
+**What it is:** A place to explore music through playing.
+
+**Purpose:** Connect guitar learning to musical styles, traditions, rhythm, touch, sound, and songs.
+
+**Current experience:** A world map of guitar. The student chooses a region and opens details about that musical tradition.
+
 **Content:**
-- Practice protocol (the structure of a good session)
-- Warm-up routines
-- Focus drills pulled from Doing & Study
-- Session history (what you practiced, when, for how long)
-**Asset needed:** Simple candle with flame (could be animated CSS)
+- Regions and traditions
+- Style descriptions
+- Rhythm, touch, scale colour, and story
+- Song and listening pathways
+
+**Current status:** Built as the active scene-first world map, with Play world data/viewer support.
 
 ---
 
-## 05 — Study (Brain)
+## 05 - Know
 
-**Shape:** A brain / neural network
-**Visual:** Nodes connected by lines. Topics as nodes, connections as relationships. You can see how everything links together.
-**Interaction:** Click a node to zoom into it. See what connects to what. Trace a thread from one topic to another. The connections are the content.
-**Purpose:** Understanding how topics relate. Not just learning isolated facts — seeing the web of knowledge. Cross-referencing. "How does rhythm connect to strumming?" "Why does knowing intervals help with chords?"
+**What it is:** A music theory reference library.
+
+**Purpose:** Explain the language underneath guitar and music.
+
+**Current experience:** A Knowing shelf/library opens books, topics, flipbook-style reading, progress tracking, and encyclopedia-style topic pages.
+
 **Content:**
-- Interactive concept map
-- Topic connections (which Foundation topics feed into which Doing drills)
-- Deep dives into specific areas
-- Brain science (how learning works, muscle memory, neuroplasticity)
-- Gap analysis (what haven't you studied yet?)
-**Asset needed:** Brain / neural network illustration
+- Notes, intervals, scales, and keys
+- Chords and harmony
+- Rhythm and time
+- Fretboard logic
+- Music language and concepts
+
+**Current status:** Built and split into Knowing shelf, book, topic, study, and progress adapters.
 
 ---
 
-## 06 — Create (Studio)
+## 06 - Study
 
-**Shape:** A studio / workshop
-**Visual:** Journal, scratchpad, tape on the floor. Materials spread out. Work in progress feel.
-**Interaction:** Prompts with constraints. Like Lars von Trier's "The Five Obstructions" — creative invitations with rules that unlock creativity. Write, record, experiment.
-**Purpose:** The creative space. Where the student becomes the creator. Songwriting basics, arrangement, recording yourself, improvisation prompts.
+**What it is:** A place for deeper guided learning.
+
+**Purpose:** Slow down, test understanding, and make ideas clear.
+
+**Current experience:** A rotating key chamber with doors for word, sound, shape, pattern, test, and review.
+
 **Content:**
-- Songwriting prompts (with obstructions/constraints)
-  - "Write a song using only 3 chords"
-  - "Create a melody using only the top 2 strings"
-  - "Write lyrics about your morning, then set it to music"
-- Recording yourself (basic setup, listening back)
-- Arrangement (taking a song and making it your own)
-- Improvisation games
-- Journal / scratchpad for ideas
-- "Five Obstructions" style creative challenges
-**Asset needed:** Studio / workshop illustration
+- Clearing misunderstood words
+- Listening and ear training
+- Shapes, tab, notation, and fretboard links
+- Concept relationships
+- Recall questions and review
+
+**Current status:** Built as the active scene-first Study chamber. Older brain-map study ideas are historical, not the current active meaning.
 
 ---
 
-## 07 — Hearth (Body + Learning System)
+## 07 - Create
 
-**Shape:** A body / inner learning map
-**Visual:** The body behind the instrument. Zones for brain, hands, ears, breath/body, and heart/feeling.
-**Interaction:** Choose a body or mind zone to see what role it plays in guitar learning.
-**Purpose:** Explain what is happening behind the instrument. This is where the student understands the body, mind, feelings, and habits involved in practice.
+**What it is:** A place to make your own music.
+
+**Purpose:** Turn learning into musical output.
+
+**Current experience:** A cauldron. The student chooses ingredients and heat, stirs the cauldron, receives a song seed, then shapes or mutates it.
+
+**Content:**
+- Ingredients
+- Heat levels
+- Creative constraints
+- Song seeds
+- Notes, lyric ideas, riff ideas, and rhythm ideas
+- Mutations
+
+**Current status:** Built as the active scene-first Create cauldron, with data in Create ingredient, obstruction, and combo files.
+
+---
+
+## 08 - The Hearth
+
+**What it is:** The body and mind behind guitar learning.
+
+**Purpose:** Explain what is happening behind the instrument.
+
+**Current experience:** A body / inner learning map with zones for the brain, hands, ears, breath/body, and heart/feeling.
+
 **Content:**
 - Brain and memory
 - Hands and safe movement
 - Ears and listening
 - Breath, body, and tension
-- Heart, feeling, motivation, confidence, and expression
+- Feeling, motivation, confidence, and expression
 - Habits that shape practice
-**Asset needed:** Body-behind-the-instrument visual and zone polish
+
+**Current status:** Built as the active scene-first Hearth body chamber. Older dashboard/HQ descriptions are historical.
 
 ---
 
-## 08 — Mastery (???)
+## 09 - Mastery
 
-**Shape:** TBD
-**Visual:** TBD
-**Purpose:** The endgame. What does mastery look like? How do you know you've arrived? Maybe it's not a destination — maybe it's a reflection of everything else. A mirror. A summit. A circle back to Foundation but with new eyes.
-**Status:** Needs more thought
+**What it is:** The place for bringing everything together.
+
+**Purpose:** Help the student think about confidence, expression, artistry, and personal sound.
+
+**Current experience:** A Phoenix Rising screen with seals for hearing beyond notes, finding your voice, transforming skill into art, and transmitting the fire.
+
+**Content:**
+- Going beyond basic proof
+- Voice, touch, timing, and identity
+- Turning exercises into art
+- Learning from artists and teachers
+- Returning to the map with deeper understanding
+
+**Current status:** Built as the active scene-first Mastery screen. It still needs deeper content.
 
 ---
 
-## Cross-cutting concerns
+## Cross-Cutting Rules
 
-- **Progressive unlock:** Each node unlocks topics as you complete prerequisites
-- **TTS (Read aloud):** Available in Foundation, potentially in others
-- **Character guide:** The same character appears across nodes, guiding with speech bubbles
-- **Mobile-first:** All layouts work on phone
-- **DM Sans** as the main font throughout
-- **Dark theme with node-specific accents** (Foundation = rainbow, Practice = warm amber, Knowing = deep blue, etc.)
-- **Tap-to-reveal** for Foundation, different interaction patterns per node
+- The map should use plain explanations.
+- The same node meaning should be used in the map, docs, data, and future backend.
+- `core/` should hold reusable rules and contracts.
+- `adapters/` should hold browser wiring, storage, and screen behavior.
+- `simulator.html` is still the legacy shell and should keep shrinking over time.
+- When a node meaning changes, update this file before extracting or rebuilding that node.
