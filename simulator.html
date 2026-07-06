@@ -237,15 +237,19 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 .progress-fill{height:100%;background:var(--gold);border-radius:3px;transition:width 0.4s;}
 
 /* Settings panel */
-.settings-panel{position:absolute;top:100%;right:0;background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:12px 16px;z-index:50;display:none;min-width:200px;}
+.settings-panel{position:absolute;top:100%;right:0;background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:14px 16px;z-index:50;display:none;min-width:240px;max-width:320px;}
 .settings-panel.show{display:block;}
 .settings-panel h3{font-family:'Cinzel',serif;font-size:0.85rem;color:var(--gold);margin:0 0 10px 0;}
-.settings-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;}
-.settings-label{font-size:0.8rem;color:var(--text);}
+.settings-section{border-top:1px solid rgba(212,175,105,0.08);padding-top:10px;margin-top:10px;}
+.settings-section:first-child{border-top:0;padding-top:0;margin-top:0;}
+.settings-section-title{font-family:'JetBrains Mono',monospace;font-size:0.57rem;color:var(--gold);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:7px;}
+.settings-row{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:12px;padding:7px 0;}
+.settings-label{font-size:0.8rem;color:var(--text);line-height:1.25;}
 .settings-note{display:block;color:var(--dim);font-size:0.64rem;margin-top:2px;}
 .settings-actions{display:grid;grid-template-columns:1fr;gap:6px;margin-top:6px;}
-.settings-action{width:100%;background:transparent;border:1px solid var(--border);border-radius:6px;color:var(--dim);font-family:'DM Sans',sans-serif;font-size:0.75rem;text-align:left;padding:7px 9px;cursor:pointer;text-decoration:none;}
+.settings-action{width:100%;background:transparent;border:1px solid var(--border);border-radius:6px;color:var(--dim);font-family:'DM Sans',sans-serif;font-size:0.75rem;text-align:left;padding:8px 9px;cursor:pointer;text-decoration:none;line-height:1.25;}
 .settings-action:hover{color:var(--gold);border-color:rgba(212,175,105,0.35);background:rgba(212,175,105,0.06);}
+.settings-action small{display:block;color:#6f6254;font-size:0.62rem;margin-top:2px;}
 .theme-btn{padding:4px 10px;font-size:0.65rem;font-family:'JetBrains Mono',monospace;border:1px solid var(--border);background:none;color:var(--dim);border-radius:4px;cursor:pointer;text-transform:uppercase;letter-spacing:0.06em;}
 .theme-btn.active{color:var(--gold);border-color:var(--gold);}
 
@@ -1642,25 +1646,31 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
   </div>
   <!-- Settings Panel -->
   <div class="settings-panel" id="settingsPanel">
-    <h3>Audio</h3>
-    <div class="settings-row">
-      <span class="settings-label">Hearth Crackle<span class="settings-note">Ambient fire bed</span></span>
-      <button class="theme-btn" id="soundToggle" onclick="toggleSound()">On</button>
+    <h3>Settings</h3>
+    <div class="settings-section">
+      <div class="settings-section-title">Experience</div>
+      <div class="settings-row">
+        <span class="settings-label">Hearth Crackle<span class="settings-note">Ambient fire bed</span></span>
+        <button class="theme-btn" id="soundToggle" onclick="toggleSound()">On</button>
+      </div>
+      <div class="settings-row">
+        <span class="settings-label">Ember Particles<span class="settings-note">Background atmosphere</span></span>
+        <button class="theme-btn" id="particleToggle" onclick="toggleParticles()">On</button>
+      </div>
     </div>
-    <h3 style="margin-top:12px">Visuals</h3>
-    <div class="settings-row">
-      <span class="settings-label">Ember Particles<span class="settings-note">Background atmosphere</span></span>
-      <button class="theme-btn" id="particleToggle" onclick="toggleParticles()">On</button>
+    <div class="settings-section">
+      <div class="settings-section-title">Sources</div>
+      <div class="settings-actions">
+        <button type="button" class="settings-action" onclick="toggleReferences()">References<small>Source books and learning material</small></button>
+        <button type="button" class="settings-action" onclick="closeUtilityPanels();toggleCredits()">Credits<small>Project credits and prototype info</small></button>
+      </div>
     </div>
-    <h3 style="margin-top:12px">Sources</h3>
-    <div class="settings-actions">
-      <button type="button" class="settings-action" onclick="toggleReferences()">References</button>
-      <button type="button" class="settings-action" onclick="closeUtilityPanels();toggleCredits()">Credits</button>
-    </div>
-    <h3 style="margin-top:12px">Creator</h3>
-    <div class="settings-actions">
-      <button type="button" class="settings-action" onclick="toggleLinkDeposit()">Save YouTube Link</button>
-      <a href="/admin.html" class="settings-action" target="_blank">Open Content Admin</a>
+    <div class="settings-section">
+      <div class="settings-section-title">Creator</div>
+      <div class="settings-actions">
+        <button type="button" class="settings-action" onclick="toggleLinkDeposit()">Save YouTube Link<small>Add reference material for the prototype</small></button>
+        <a href="/admin.html" class="settings-action" target="_blank">Open Content Admin<small>Edit content outside the learner flow</small></a>
+      </div>
     </div>
   </div>
   <!-- YouTube Link Deposit Panel -->
