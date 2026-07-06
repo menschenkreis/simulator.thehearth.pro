@@ -255,6 +255,22 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 .theme-btn{padding:5px 10px;font-size:0.65rem;font-family:'JetBrains Mono',monospace;border:1px solid rgba(212,175,105,0.12);background:rgba(255,255,255,0.03);color:var(--dim);border-radius:999px;cursor:pointer;text-transform:uppercase;letter-spacing:0.06em;transition:background 0.14s,border-color 0.14s,color 0.14s;}
 .theme-btn:hover{color:var(--text);border-color:rgba(212,175,105,0.24);}
 .theme-btn.active{color:#0d0b08;border-color:rgba(212,175,105,0.85);background:linear-gradient(180deg,#e6c678,var(--gold));}
+.link-deposit-panel{min-width:340px;padding:16px;}
+.link-deposit-title{color:var(--gold);margin-bottom:10px;}
+.link-deposit-copy{font-size:0.7rem;color:var(--dim);line-height:1.4;margin-bottom:12px;}
+.link-deposit-note{font-size:0.65rem;color:var(--amber);margin-bottom:8px;}
+.utility-field-label{display:block;font-family:'JetBrains Mono',monospace;font-size:0.6rem;color:var(--gold);letter-spacing:0.1em;text-transform:uppercase;margin:8px 0 4px;}
+.utility-field{width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(212,175,105,0.14);border-radius:10px;color:var(--text);padding:9px 10px;font-family:'DM Sans',sans-serif;font-size:0.8rem;outline:none;}
+.utility-field:focus{border-color:rgba(212,175,105,0.45);background:rgba(255,255,255,0.055);box-shadow:0 0 0 3px rgba(212,175,105,0.08);}
+.utility-action-row{display:flex;gap:8px;margin-top:12px;}
+.utility-primary-btn,.utility-secondary-btn{border-radius:10px;padding:9px 12px;font-family:'DM Sans',sans-serif;font-size:0.8rem;font-weight:700;cursor:pointer;transition:background 0.14s,border-color 0.14s,color 0.14s,box-shadow 0.14s;}
+.utility-primary-btn{flex:1;background:linear-gradient(180deg,#e6c678,var(--gold));color:#0d0b08;border:none;}
+.utility-primary-btn:hover{box-shadow:0 6px 18px rgba(212,175,105,0.16);}
+.utility-secondary-btn{background:rgba(255,255,255,0.035);color:var(--dim);border:1px solid rgba(212,175,105,0.12);}
+.utility-secondary-btn:hover{color:var(--gold);border-color:rgba(212,175,105,0.3);background:rgba(255,255,255,0.055);}
+.link-deposit-status{margin-top:8px;font-size:0.7rem;color:var(--dim);line-height:1.35;}
+.refs-panel{right:auto;left:auto;max-width:400px;width:90vw;}
+.refs-content{max-height:60vh;overflow-y:auto;}
 
 /* Map vignette */
 /* Ambient ember canvas */
@@ -1684,33 +1700,34 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
     </div>
   </div>
   <!-- YouTube Link Deposit Panel -->
-  <div class="settings-panel" id="linkDepositPanel" style="min-width:340px;padding:16px">
-    <h3 style="color:var(--gold);margin-bottom:10px">YouTube Link Deposit</h3>
-    <p style="font-size:.7rem;color:var(--dim);margin-bottom:12px">Paste a YouTube link and tag it. Saves to the database instantly.</p><div id="ytAuthNote" style="font-size:.65rem;color:var(--amber);margin-bottom:8px"></div>
-    <label style="display:block;font-family:JetBrains Mono;font-size:.6rem;color:var(--gold);letter-spacing:.1em;text-transform:uppercase;margin:8px 0 4px">YouTube URL</label>
-    <input id="linkDepositUrl" type="url" placeholder="https://youtube.com/watch?v=..." style="width:100%;background:#0d0b08;border:1px solid var(--border);border-radius:8px;color:var(--text);padding:8px 10px;font-size:.8rem">
-    <label style="display:block;font-family:JetBrains Mono;font-size:.6rem;color:var(--gold);letter-spacing:.1em;text-transform:uppercase;margin:8px 0 4px">Title</label>
-    <input id="linkDepositTitle" placeholder="Video title" style="width:100%;background:#0d0b08;border:1px solid var(--border);border-radius:8px;color:var(--text);padding:8px 10px;font-size:.8rem">
-    <label style="display:block;font-family:JetBrains Mono;font-size:.6rem;color:var(--gold);letter-spacing:.1em;text-transform:uppercase;margin:8px 0 4px">Category</label>
-    <select id="linkDepositCat" style="width:100%;background:#0d0b08;border:1px solid var(--border);border-radius:8px;color:var(--text);padding:8px 10px;font-size:.8rem">
+  <div class="settings-panel link-deposit-panel" id="linkDepositPanel">
+    <h3 class="link-deposit-title">Save YouTube Link</h3>
+    <p class="link-deposit-copy">Paste a useful guitar video and tag it for source cleanup later.</p>
+    <div id="ytAuthNote" class="link-deposit-note"></div>
+    <label class="utility-field-label">YouTube URL</label>
+    <input id="linkDepositUrl" class="utility-field" type="url" placeholder="https://youtube.com/watch?v=...">
+    <label class="utility-field-label">Title</label>
+    <input id="linkDepositTitle" class="utility-field" placeholder="Video title">
+    <label class="utility-field-label">Category</label>
+    <select id="linkDepositCat" class="utility-field">
       <option value="rhythm">Rhythm</option><option value="scales">Scales</option><option value="chords">Chords</option>
       <option value="technique">Technique</option><option value="theory">Theory</option><option value="jazz">Jazz</option>
       <option value="blues">Blues</option><option value="rock">Rock</option><option value="classical">Classical</option>
       <option value="songwriting">Songwriting</option><option value="ear-training">Ear Training</option><option value="play">Play</option>
     </select>
-    <label style="display:block;font-family:JetBrains Mono;font-size:.6rem;color:var(--gold);letter-spacing:.1em;text-transform:uppercase;margin:8px 0 4px">Level (1-8)</label>
-    <input id="linkDepositLevel" type="number" min="1" max="8" value="1" style="width:100%;background:#0d0b08;border:1px solid var(--border);border-radius:8px;color:var(--text);padding:8px 10px;font-size:.8rem">
-    <label style="display:block;font-family:JetBrains Mono;font-size:.6rem;color:var(--gold);letter-spacing:.1em;text-transform:uppercase;margin:8px 0 4px">Notes (optional)</label>
-    <input id="linkDepositNotes" placeholder="What is this video about?" style="width:100%;background:#0d0b08;border:1px solid var(--border);border-radius:8px;color:var(--text);padding:8px 10px;font-size:.8rem">
-    <div style="display:flex;gap:8px;margin-top:12px">
-      <button onclick="depositLink()" style="background:var(--gold);color:#0d0b08;border:none;border-radius:8px;padding:8px 12px;font-weight:700;cursor:pointer;font-size:.8rem;flex:1">Save Link</button>
-      <button onclick="toggleLinkDeposit()" style="background:transparent;color:var(--dim);border:1px solid var(--border);border-radius:8px;padding:8px 12px;cursor:pointer;font-size:.8rem">Close</button>
+    <label class="utility-field-label">Level (1-8)</label>
+    <input id="linkDepositLevel" class="utility-field" type="number" min="1" max="8" value="1">
+    <label class="utility-field-label">Notes (optional)</label>
+    <input id="linkDepositNotes" class="utility-field" placeholder="What is this video about?">
+    <div class="utility-action-row">
+      <button class="utility-primary-btn" onclick="depositLink()">Save Link</button>
+      <button class="utility-secondary-btn" onclick="toggleLinkDeposit()">Close</button>
     </div>
-    <div id="linkDepositStatus" style="margin-top:8px;font-size:.7rem;color:var(--dim)"></div>
+    <div id="linkDepositStatus" class="link-deposit-status"></div>
   </div>
   <!-- References Panel -->
-  <div class="search-panel" id="refsPanel" style="right:auto;left:auto;max-width:400px;width:90vw">
-    <div id="refsContent" style="max-height:60vh;overflow-y:auto"></div>
+  <div class="search-panel refs-panel" id="refsPanel">
+    <div id="refsContent" class="refs-content"></div>
   </div>
 </div>
 
