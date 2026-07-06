@@ -60,10 +60,9 @@
 .gold-conn.dim{stroke:#d4af69;opacity:0.12;stroke-width:1;}
 .gold-conn.hl{opacity:0.5;stroke-width:3;}
 .travel-ember{pointer-events:none;filter:drop-shadow(0 0 7px rgba(232,160,32,0.72));}
-.travel-ember-halo{fill:#e8a020;opacity:0.18;animation:ember-glow 2.4s ease-in-out infinite;transform-origin:center;}
+.travel-ember-halo{fill:#e8a020;opacity:0.18;}
 .travel-ember-outer{fill:#c45a20;}
 .travel-ember-core{fill:#ffd27a;opacity:0.9;}
-@keyframes ember-glow{0%,100%{transform:scale(0.92);opacity:0.12;}50%{transform:scale(1.18);opacity:0.28;}}
 
 /* NODE HOVER PREVIEW - dims map, icon appears over the node */
 .map-dim-overlay{position:fixed;inset:0;background:rgba(13,11,8,0.4);z-index:199;opacity:0;pointer-events:none;transition:opacity 0.25s;}
@@ -1904,7 +1903,10 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
         <!-- Travelling flame -->
         <g id="travel-flame" style="transform:translate(350px,73px)">
           <g class="travel-ember" aria-hidden="true">
-            <circle class="travel-ember-halo" cx="0" cy="0" r="12"/>
+            <circle class="travel-ember-halo" cx="0" cy="0" r="10">
+              <animate attributeName="r" values="9;13;9" dur="2.4s" repeatCount="indefinite"/>
+              <animate attributeName="opacity" values="0.12;0.28;0.12" dur="2.4s" repeatCount="indefinite"/>
+            </circle>
             <path class="travel-ember-outer" d="M0,-13 C7,-6 7,1 3,7 C1,10 -3,10 -5,7 C-10,1 -5,-6 0,-13Z"/>
             <circle class="travel-ember-core" cx="0" cy="2.5" r="2.7"/>
           </g>
