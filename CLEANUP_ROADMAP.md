@@ -61,6 +61,9 @@ Done recently:
 - Rewrote `NODE_SPEC.md` as the current plain-language node meaning source.
 - Extracted map node meaning data from `simulator.html` into `assets/js/map-node-data.js`.
 - Extracted compact map node-card behavior into `assets/js/map-node-info.js`.
+- Softened the map controls, top utilities, and utility panels toward a more Apple-comfort UI.
+- Cleaned the Save YouTube Link and References panels so their styling is reusable instead of inline.
+- Cleaned the Groove panel rendering while keeping the sound-bed behavior unchanged.
 
 Next good steps:
 
