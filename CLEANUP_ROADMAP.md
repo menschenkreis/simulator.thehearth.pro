@@ -64,6 +64,7 @@ Done recently:
 - Softened the map controls, top utilities, and utility panels toward a more Apple-comfort UI.
 - Cleaned the Save YouTube Link and References panels so their styling is reusable instead of inline.
 - Cleaned the Groove panel rendering while keeping the sound-bed behavior unchanged.
+- Extracted Hearth body chamber copy and zone meanings into `assets/js/hearth-body-data.js`.
 
 Next good steps:
 

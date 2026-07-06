@@ -85,6 +85,7 @@ REQUIRED_MARKERS = {
         "assets/js/journey.js",
         "assets/js/map-node-data.js",
         "assets/js/map-node-info.js",
+        "assets/js/hearth-body-data.js",
         "NODE LAYOUT RESCUE LAYER",
     ],
     "assets/js/map-node-data.js": [
@@ -101,10 +102,20 @@ REQUIRED_MARKERS = {
         "hideNodeInfo",
         "updateCurrentNodeMarker",
     ],
+    "assets/js/hearth-body-data.js": [
+        "var HEARTH_BODY_COPY",
+        "var HEARTH_BODY_ZONES",
+        "window.HEARTH_BODY_COPY",
+        "window.HEARTH_BODY_ZONES",
+        'id: "brain"',
+        'id: "hands"',
+        'id: "heart"',
+    ],
     "assets/js/scene-first.js": [
         "showCreate",
         "showPractice",
         "showHearth",
+        "HEARTH_BODY_COPY",
     ],
     "assets/js/teaching-engine.js": [
         "window.TeachingEngine",
