@@ -294,9 +294,9 @@ window.toggleGroove = window.toggleBeatBot;
 
 function grooveButton(mode, title, detail){
   var active = BeatBot.currentMode() === mode;
-  return '<button class="toolkit-quick-btn" onclick="BeatBot.play(\''+mode+'\');renderBeatBotPanel()" style="justify-content:flex-start;align-items:flex-start;flex-direction:column;gap:2px'+(active?';border-color:var(--gold);color:var(--gold)':'')+'">'+
-    '<span style="font-weight:700">'+title+'</span>'+
-    '<span style="font-size:0.66rem;color:var(--dim);line-height:1.35">'+detail+'</span>'+
+  return '<button class="toolkit-quick-btn groove-btn '+(active?'active':'')+'" onclick="BeatBot.play(\''+mode+'\');renderBeatBotPanel()">'+
+    '<span class="groove-btn-title">'+title+'</span>'+
+    '<span class="groove-btn-detail">'+detail+'</span>'+
   '</button>';
 }
 
@@ -310,16 +310,16 @@ function renderBeatBotPanel(){
       '<button class="toolkit-close" onclick="toggleBeatBot()">×</button>'+
     '</div>'+
     '<div class="toolkit-body">'+
-      '<div style="text-align:center;margin-bottom:16px">'+
-        '<div style="width:46px;height:46px;border:1px solid var(--border);border-radius:50%;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;color:var(--gold);box-shadow:'+(playing?'0 0 22px rgba(212,175,105,0.35)':'none')+'">'+
-          '<svg viewBox="0 0 24 24" style="width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round"><path d="M9 18V5l10-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="16" cy="16" r="3"/></svg>'+
+      '<div class="groove-status">'+
+        '<div class="groove-orb '+(playing?'active':'')+'">'+
+          '<svg viewBox="0 0 24 24"><path d="M9 18V5l10-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="16" cy="16" r="3"/></svg>'+
         '</div>'+
-        '<div style="font-family:Cinzel,serif;color:var(--gold);font-size:0.8rem;letter-spacing:1px">'+(playing?'SOUND BED ACTIVE':'QUIET')+'</div>'+
-        '<div style="font-size:0.68rem;color:var(--dim);margin-top:4px;line-height:1.4">Musical backing and atmosphere for practice. Use the metronome when you need strict time.</div>'+
+        '<div class="groove-state">'+(playing?'Sound Bed Active':'Quiet')+'</div>'+
+        '<div class="groove-help">Musical backing and atmosphere for practice. Use the metronome when you need strict time.</div>'+
       '</div>'+
       '<div class="toolkit-section">'+
         '<div class="toolkit-section-title">Sound Beds</div>'+
-        '<div class="toolkit-quick-btns" style="flex-direction:column">'+
+        '<div class="toolkit-quick-btns">'+
           grooveButton('ambient','Ember Notes','Soft wandering notes for map atmosphere.')+
           grooveButton('drone','Root Drone','A steady tonal center to tune your ear.')+
           grooveButton('chords','Chord Bed','Gentle harmony for slow practice.')+
@@ -331,7 +331,7 @@ function renderBeatBotPanel(){
         '<div class="toolkit-section-title">Volume</div>'+
         '<input type="range" class="metro-slider" min="0" max="100" value="'+Math.round(volume*100)+'" oninput="BeatBot.setVolume(this.value/100)">'+
       '</div>'+
-      (playing?'<div style="text-align:center;margin-top:8px"><button class="toolkit-quick-btn" onclick="BeatBot.stop();renderBeatBotPanel()" style="border-color:#ff654d;color:#ff654d">Stop Sound</button></div>':'')+
+      (playing?'<div class="groove-stop-wrap"><button class="toolkit-quick-btn groove-stop-btn" onclick="BeatBot.stop();renderBeatBotPanel()">Stop Sound</button></div>':'')+
     '</div>';
 }
 
