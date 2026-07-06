@@ -59,12 +59,11 @@
 .gold-conn{stroke:#d4af69;opacity:0.35;stroke-width:2.5;transition:opacity 0.5s,stroke-width 0.5s;}
 .gold-conn.dim{stroke:#d4af69;opacity:0.12;stroke-width:1;}
 .gold-conn.hl{opacity:0.5;stroke-width:3;}
-.travel-ember{pointer-events:none;filter:drop-shadow(0 0 6px rgba(232,160,32,0.7));}
-.travel-ember-halo{fill:#e8a020;opacity:0.18;animation:ember-halo 1.8s ease-in-out infinite;}
-.travel-ember-outer{fill:#c45a20;animation:ember-flicker 1.15s ease-in-out infinite;transform-origin:center;}
+.travel-ember{pointer-events:none;filter:drop-shadow(0 0 7px rgba(232,160,32,0.72));}
+.travel-ember-halo{fill:#e8a020;opacity:0.18;animation:ember-glow 2.4s ease-in-out infinite;transform-origin:center;}
+.travel-ember-outer{fill:#c45a20;}
 .travel-ember-core{fill:#ffd27a;opacity:0.9;}
-@keyframes ember-flicker{0%,100%{transform:scale(1) translateY(0);opacity:0.92;}45%{transform:scale(0.93,1.1) translateY(-0.8px);opacity:1;}70%{transform:scale(1.05,0.96) translateY(0.4px);opacity:0.86;}}
-@keyframes ember-halo{0%,100%{transform:scale(0.92);opacity:0.13;}50%{transform:scale(1.16);opacity:0.26;}}
+@keyframes ember-glow{0%,100%{transform:scale(0.92);opacity:0.12;}50%{transform:scale(1.18);opacity:0.28;}}
 
 /* NODE HOVER PREVIEW - dims map, icon appears over the node */
 .map-dim-overlay{position:fixed;inset:0;background:rgba(13,11,8,0.4);z-index:199;opacity:0;pointer-events:none;transition:opacity 0.25s;}
