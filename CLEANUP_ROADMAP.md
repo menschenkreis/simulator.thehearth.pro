@@ -65,6 +65,7 @@ Done recently:
 - Cleaned the Save YouTube Link and References panels so their styling is reusable instead of inline.
 - Cleaned the Groove panel rendering while keeping the sound-bed behavior unchanged.
 - Extracted Hearth body chamber copy and zone meanings into `assets/js/hearth-body-data.js`.
+- Softened the Hearth body chamber visuals and simplified its visible zone cards.
 
 Next good steps:
 

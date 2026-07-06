@@ -90,7 +90,7 @@
         '<div class="hb-chamber-card">'+
           '<div class="hb-kicker">'+esc(z.seal)+' \u00B7 '+esc(z.label)+'</div>'+
           '<h3>'+esc(z.label)+'</h3>'+
-          '<p style="font-size:.82rem;color:var(--text);line-height:1.6;margin:0">'+esc(z.guide)+'</p>'+
+          '<p class="hb-zone-intro">'+esc(z.guide)+'</p>'+
           '<div class="hb-chamber-cards">'+
             '<div class="hb-chamber-item"><h4>Notice</h4><p>'+esc(z.notice)+'</p></div>'+
             '<div class="hb-chamber-item"><h4>Try</h4><p>'+esc(z.tryThis)+'</p></div>'+
