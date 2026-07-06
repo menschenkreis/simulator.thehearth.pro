@@ -199,7 +199,6 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 .top-action:focus-visible{outline:2px solid rgba(212,175,105,0.6);outline-offset:2px;}
 .top-action svg{width:15px;height:15px;stroke:currentColor;stroke-width:1.8;fill:none;stroke-linecap:round;stroke-linejoin:round;}
 .top-action-label{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;}
-.top-action-symbol{font-family:'Cinzel',serif;font-size:0.82rem;line-height:1;color:currentColor;}
 .toolkit-btn,.insight-star{display:none!important;}
 
 /* Search panel */
@@ -231,6 +230,9 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 .settings-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;}
 .settings-label{font-size:0.8rem;color:var(--text);}
 .settings-note{display:block;color:var(--dim);font-size:0.64rem;margin-top:2px;}
+.settings-actions{display:grid;grid-template-columns:1fr;gap:6px;margin-top:6px;}
+.settings-action{width:100%;background:transparent;border:1px solid var(--border);border-radius:6px;color:var(--dim);font-family:'DM Sans',sans-serif;font-size:0.75rem;text-align:left;padding:7px 9px;cursor:pointer;text-decoration:none;}
+.settings-action:hover{color:var(--gold);border-color:rgba(212,175,105,0.35);background:rgba(212,175,105,0.06);}
 .theme-btn{padding:4px 10px;font-size:0.65rem;font-family:'JetBrains Mono',monospace;border:1px solid var(--border);background:none;color:var(--dim);border-radius:4px;cursor:pointer;text-transform:uppercase;letter-spacing:0.06em;}
 .theme-btn.active{color:var(--gold);border-color:var(--gold);}
 
@@ -1498,10 +1500,6 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
       <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.8 1.8 0 0 0 .3 2l.1.1-2.1 2.1-.1-.1a1.8 1.8 0 0 0-2-.3 1.8 1.8 0 0 0-1 1.6V21h-3v-.6a1.8 1.8 0 0 0-1-1.6 1.8 1.8 0 0 0-2 .3l-.1.1-2.1-2.1.1-.1a1.8 1.8 0 0 0 .3-2 1.8 1.8 0 0 0-1.6-1H5v-3h.6a1.8 1.8 0 0 0 1.6-1 1.8 1.8 0 0 0-.3-2l-.1-.1 2.1-2.1.1.1a1.8 1.8 0 0 0 2 .3 1.8 1.8 0 0 0 1-1.6V3h3v.6a1.8 1.8 0 0 0 1 1.6 1.8 1.8 0 0 0 2-.3l.1-.1 2.1 2.1-.1.1a1.8 1.8 0 0 0-.3 2 1.8 1.8 0 0 0 1.6 1h.6v3H21a1.8 1.8 0 0 0-1.6 1z"/></svg>
       <span class="top-action-label">Settings</span>
     </button>
-    <button type="button" class="top-action" onclick="toggleCredits()" aria-label="Credits" title="Credits">
-      <span class="top-action-symbol" aria-hidden="true">©</span>
-      <span class="top-action-label">Credits</span>
-    </button>
   </div>
   <!-- Toolkit Button -->
   <div class="toolkit-btn" id="toolkitBtn" onclick="toggleToolkit()" title="Toolkit">
@@ -1564,24 +1562,16 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2.7 5.5 6.1.9-4.4 4.3 1 6.1L12 16.9 6.6 19.8l1-6.1-4.4-4.3 6.1-.9L12 3z"/></svg>
             Insights
           </button>
-          <button class="toolkit-quick-btn" onclick="toggleReferences()">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h7a3 3 0 0 1 3 3v11a3 3 0 0 0-3-3H4z"/><path d="M20 5h-7a3 3 0 0 0-3 3v11a3 3 0 0 1 3-3h7z"/></svg>
-            References
-          </button>
-          <button class="toolkit-quick-btn" onclick="toggleLinkDeposit()">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.1 0l2-2a5 5 0 0 0-7.1-7.1l-1.1 1.1"/><path d="M14 11a5 5 0 0 0-7.1 0l-2 2A5 5 0 0 0 12 20.1l1.1-1.1"/></svg>
-            Save Link
-          </button>
           <button class="toolkit-quick-btn" onclick="toggleBeatBot()">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="6" width="12" height="10" rx="2"/><line x1="12" y1="6" x2="12" y2="3"/><circle cx="12" cy="2" r="1"/><circle cx="9" cy="10" r="1.5"/><circle cx="15" cy="10" r="1.5"/><line x1="9" y1="14" x2="15" y2="14"/><rect x="8" y="16" width="8" height="5" rx="1"/></svg>
-            Beat Bot
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l10-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="16" cy="16" r="3"/></svg>
+            Groove
           </button>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Beat Bot Panel -->
+  <!-- Groove Panel -->
   <div class="toolkit-panel" id="beatbot-panel">
   </div>
 
@@ -1630,8 +1620,16 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
       <span class="settings-label">Ember Particles<span class="settings-note">Background atmosphere</span></span>
       <button class="theme-btn" id="particleToggle" onclick="toggleParticles()">On</button>
     </div>
-    <h3 style="margin-top:12px">Admin</h3>
-    <a href="/admin.html" style="display:block;color:var(--gold);font-size:.8rem;text-decoration:none;padding:6px 0" target="_blank">Open Content Admin →</a>
+    <h3 style="margin-top:12px">Sources</h3>
+    <div class="settings-actions">
+      <button type="button" class="settings-action" onclick="toggleReferences()">References</button>
+      <button type="button" class="settings-action" onclick="closeUtilityPanels();toggleCredits()">Credits</button>
+    </div>
+    <h3 style="margin-top:12px">Creator</h3>
+    <div class="settings-actions">
+      <button type="button" class="settings-action" onclick="toggleLinkDeposit()">Save YouTube Link</button>
+      <a href="/admin.html" class="settings-action" target="_blank">Open Content Admin</a>
+    </div>
   </div>
   <!-- YouTube Link Deposit Panel -->
   <div class="settings-panel" id="linkDepositPanel" style="min-width:340px;padding:16px">

@@ -1,8 +1,7 @@
 // ═══════════════════════════════════════════════════════
-// BEAT BOT — Interactive Music Companion
+// GROOVE — Interactive Music Companion
 // ═══════════════════════════════════════════════════════
-// A robot friend that generates music for you.
-// Ambient backgrounds, practice loops, and lesson accompaniment.
+// Musical sound beds for practice: drones, chord beds, and motifs.
 
 (function(){
 'use strict';
@@ -12,6 +11,7 @@ var isPlaying = false;
 var currentLoop = null;
 var volume = 0.3;
 var panelOpen = false;
+var currentMode = "";
 
 function getCtx(){
   if(!ctx) ctx = new (window.AudioContext || window.webkitAudioContext)();
@@ -28,6 +28,20 @@ var SCALES = {
 };
 
 // ── Loop generators ──
+function playTone(audio, destination, freq, start, duration, level, type){
+  var osc = audio.createOscillator();
+  var noteGain = audio.createGain();
+  osc.type = type || 'sine';
+  osc.frequency.setValueAtTime(freq, start);
+  noteGain.gain.setValueAtTime(0.0001, start);
+  noteGain.gain.exponentialRampToValueAtTime(Math.max(0.0002, level), start + 0.08);
+  noteGain.gain.exponentialRampToValueAtTime(0.0001, start + duration);
+  osc.connect(noteGain);
+  noteGain.connect(destination);
+  osc.start(start);
+  osc.stop(start + duration + 0.08);
+}
+
 function createAmbientLoop(){
   var audio = getCtx();
   var now = audio.currentTime;
@@ -37,37 +51,24 @@ function createAmbientLoop(){
   gain.gain.linearRampToValueAtTime(volume * 0.4, now + 2);
   gain.connect(audio.destination);
 
-  var interval = null;
+  var timer = null;
   var noteIdx = 0;
 
   function playNote(){
     if(!isPlaying) return;
     var freq = scale[noteIdx % scale.length];
-    var osc = audio.createOscillator();
-    var noteGain = audio.createGain();
-    osc.type = 'sine';
-    osc.frequency.setValueAtTime(freq, audio.currentTime);
-    noteGain.gain.setValueAtTime(0.0001, audio.currentTime);
-    noteGain.gain.exponentialRampToValueAtTime(volume * 0.15, audio.currentTime + 0.1);
-    noteGain.gain.exponentialRampToValueAtTime(0.0001, audio.currentTime + 2.5);
-    osc.connect(noteGain);
-    noteGain.connect(gain);
-    osc.start(audio.currentTime);
-    osc.stop(audio.currentTime + 2.8);
+    playTone(audio, gain, freq, audio.currentTime, 2.5, volume * 0.15, 'sine');
     noteIdx++;
-    // Random walk through scale
     noteIdx += Math.random() > 0.5 ? 1 : -1;
     if(noteIdx < 0) noteIdx = scale.length - 1;
     if(noteIdx >= scale.length) noteIdx = 0;
   }
 
-  // Play first note immediately
   playNote();
-  // Then every 1.8-3 seconds (human timing)
   function scheduleNext(){
     if(!isPlaying) return;
     var delay = 1800 + Math.random() * 1200;
-    currentLoop = setTimeout(function(){
+    timer = setTimeout(function(){
       playNote();
       scheduleNext();
     }, delay);
@@ -77,7 +78,7 @@ function createAmbientLoop(){
   return {
     stop: function(){
       isPlaying = false;
-      clearTimeout(currentLoop);
+      clearTimeout(timer);
       gain.gain.linearRampToValueAtTime(0, audio.currentTime + 1);
       setTimeout(function(){ gain.disconnect(); }, 1200);
     },
@@ -88,42 +89,38 @@ function createAmbientLoop(){
   };
 }
 
-function createDrillLoop(bpm){
+function createDroneLoop(){
   var audio = getCtx();
-  var beatInterval = 60000 / bpm;
+  var now = audio.currentTime;
   var gain = audio.createGain();
-  gain.gain.setValueAtTime(volume * 0.5, audio.currentTime);
+  gain.gain.setValueAtTime(0, now);
+  gain.gain.linearRampToValueAtTime(volume * 0.28, now + 1.5);
   gain.connect(audio.destination);
 
-  var count = 0;
-  function tick(){
-    if(!isPlaying) return;
+  var oscillators = [110, 165, 220].map(function(freq, index){
     var osc = audio.createOscillator();
     var g = audio.createGain();
-    var isAccent = count % 4 === 0;
     osc.type = 'sine';
-    osc.frequency.setValueAtTime(isAccent ? 1000 : 800, audio.currentTime);
-    g.gain.setValueAtTime(isAccent ? 0.12 : 0.06, audio.currentTime);
-    g.gain.exponentialRampToValueAtTime(0.001, audio.currentTime + 0.06);
+    osc.frequency.setValueAtTime(freq, now);
+    g.gain.setValueAtTime(index === 0 ? 0.34 : 0.16, now);
     osc.connect(g);
     g.connect(gain);
-    osc.start(audio.currentTime);
-    osc.stop(audio.currentTime + 0.07);
-    count++;
-    currentLoop = setTimeout(tick, beatInterval);
-  }
-  tick();
+    osc.start(now);
+    return osc;
+  });
 
   return {
     stop: function(){
       isPlaying = false;
-      clearTimeout(currentLoop);
-      gain.gain.linearRampToValueAtTime(0, audio.currentTime + 0.1);
-      setTimeout(function(){ gain.disconnect(); }, 200);
+      gain.gain.linearRampToValueAtTime(0, audio.currentTime + 1);
+      setTimeout(function(){
+        oscillators.forEach(function(osc){ try { osc.stop(); } catch(e) {} });
+        gain.disconnect();
+      }, 1200);
     },
     setVolume: function(v){
       volume = v;
-      gain.gain.linearRampToValueAtTime(v * 0.5, audio.currentTime + 0.1);
+      gain.gain.linearRampToValueAtTime(v * 0.28, audio.currentTime + 0.1);
     }
   };
 }
@@ -142,32 +139,23 @@ function createChordLoop(){
     [196, 247, 294]   // G B D (G major)
   ];
   var chordIdx = 0;
+  var timer = null;
 
   function playChord(){
     if(!isPlaying) return;
     var chord = chords[chordIdx % chords.length];
     chord.forEach(function(f, i){
-      var osc = audio.createOscillator();
-      var g = audio.createGain();
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(f, audio.currentTime);
-      g.gain.setValueAtTime(0.0001, audio.currentTime);
-      g.gain.exponentialRampToValueAtTime(volume * 0.1, audio.currentTime + 0.1);
-      g.gain.exponentialRampToValueAtTime(0.0001, audio.currentTime + 3);
-      osc.connect(g);
-      g.connect(gain);
-      osc.start(audio.currentTime + i * 0.05);
-      osc.stop(audio.currentTime + 3.2);
+      playTone(audio, gain, f, audio.currentTime + i * 0.05, 3, volume * 0.1, 'sine');
     });
     chordIdx++;
-    currentLoop = setTimeout(playChord, 3000);
+    timer = setTimeout(playChord, 3000);
   }
   playChord();
 
   return {
     stop: function(){
       isPlaying = false;
-      clearTimeout(currentLoop);
+      clearTimeout(timer);
       gain.gain.linearRampToValueAtTime(0, audio.currentTime + 0.5);
       setTimeout(function(){ gain.disconnect(); }, 700);
     },
@@ -178,25 +166,108 @@ function createChordLoop(){
   };
 }
 
+function createPulseLoop(){
+  var audio = getCtx();
+  var gain = audio.createGain();
+  gain.gain.setValueAtTime(volume * 0.34, audio.currentTime);
+  gain.connect(audio.destination);
+  var scale = SCALES['E-phrygian'];
+  var step = 0;
+  var timer = null;
+
+  function pulse(){
+    if(!isPlaying) return;
+    var root = scale[0];
+    var accent = step % 4 === 0;
+    playTone(audio, gain, root, audio.currentTime, 0.22, volume * (accent ? 0.18 : 0.09), 'triangle');
+    if(step % 8 === 4) playTone(audio, gain, scale[3], audio.currentTime + 0.04, 0.28, volume * 0.08, 'sine');
+    step++;
+    timer = setTimeout(pulse, 520);
+  }
+  pulse();
+
+  return {
+    stop: function(){
+      isPlaying = false;
+      clearTimeout(timer);
+      gain.gain.linearRampToValueAtTime(0, audio.currentTime + 0.25);
+      setTimeout(function(){ gain.disconnect(); }, 400);
+    },
+    setVolume: function(v){
+      volume = v;
+      gain.gain.linearRampToValueAtTime(v * 0.34, audio.currentTime + 0.1);
+    }
+  };
+}
+
+function createMotifLoop(){
+  var audio = getCtx();
+  var gain = audio.createGain();
+  gain.gain.setValueAtTime(volume * 0.35, audio.currentTime);
+  gain.connect(audio.destination);
+  var scale = SCALES['g-minor-pent'];
+  var motifs = [
+    [0, 2, 3, 2],
+    [4, 3, 2, 0],
+    [2, 4, 5, 4],
+    [3, 2, 0, 2]
+  ];
+  var motifIdx = 0;
+  var timer = null;
+
+  function playMotif(){
+    if(!isPlaying) return;
+    var motif = motifs[motifIdx % motifs.length];
+    var start = audio.currentTime;
+    motif.forEach(function(noteIndex, i){
+      playTone(audio, gain, scale[noteIndex], start + i * 0.34, 0.32, volume * 0.12, 'triangle');
+    });
+    motifIdx++;
+    timer = setTimeout(playMotif, 2600);
+  }
+  playMotif();
+
+  return {
+    stop: function(){
+      isPlaying = false;
+      clearTimeout(timer);
+      gain.gain.linearRampToValueAtTime(0, audio.currentTime + 0.4);
+      setTimeout(function(){ gain.disconnect(); }, 550);
+    },
+    setVolume: function(v){
+      volume = v;
+      gain.gain.linearRampToValueAtTime(v * 0.35, audio.currentTime + 0.1);
+    }
+  };
+}
+
 // ── Public API ──
 window.BeatBot = {
   play: function(type, opts){
     this.stop();
     isPlaying = true;
+    currentMode = type;
     switch(type){
       case 'ambient':
         currentLoop = createAmbientLoop();
         break;
-      case 'drill':
-        currentLoop = createDrillLoop((opts && opts.bpm) || 80);
-        break;
       case 'chords':
         currentLoop = createChordLoop();
+        break;
+      case 'drone':
+        currentLoop = createDroneLoop();
+        break;
+      case 'pulse':
+        currentLoop = createPulseLoop();
+        break;
+      case 'motif':
+        currentLoop = createMotifLoop();
         break;
     }
   },
   stop: function(){
     isPlaying = false;
+    currentMode = "";
     if(currentLoop && currentLoop.stop) currentLoop.stop();
     currentLoop = null;
   },
@@ -204,10 +275,12 @@ window.BeatBot = {
     volume = v;
     if(currentLoop && currentLoop.setVolume) currentLoop.setVolume(v);
   },
-  isPlaying: function(){ return isPlaying; }
+  isPlaying: function(){ return isPlaying; },
+  currentMode: function(){ return currentMode; }
 };
+window.Groove = window.BeatBot;
 
-// ── Toggle Beat Bot Panel ──
+// ── Toggle Groove Panel ──
 window.toggleBeatBot = function(){
   var panel = document.getElementById('beatbot-panel');
   if(!panel) return;
@@ -217,6 +290,15 @@ window.toggleBeatBot = function(){
   panel.classList.toggle('show', panelOpen);
   if(panelOpen) renderBeatBotPanel();
 };
+window.toggleGroove = window.toggleBeatBot;
+
+function grooveButton(mode, title, detail){
+  var active = BeatBot.currentMode() === mode;
+  return '<button class="toolkit-quick-btn" onclick="BeatBot.play(\''+mode+'\');renderBeatBotPanel()" style="justify-content:flex-start;align-items:flex-start;flex-direction:column;gap:2px'+(active?';border-color:var(--gold);color:var(--gold)':'')+'">'+
+    '<span style="font-weight:700">'+title+'</span>'+
+    '<span style="font-size:0.66rem;color:var(--dim);line-height:1.35">'+detail+'</span>'+
+  '</button>';
+}
 
 function renderBeatBotPanel(){
   var panel = document.getElementById('beatbot-panel');
@@ -224,36 +306,32 @@ function renderBeatBotPanel(){
   var playing = BeatBot.isPlaying();
   panel.innerHTML =
     '<div class="toolkit-header">'+
-      '<h3>Beat Bot</h3>'+
+      '<h3>Groove</h3>'+
       '<button class="toolkit-close" onclick="toggleBeatBot()">×</button>'+
     '</div>'+
     '<div class="toolkit-body">'+
       '<div style="text-align:center;margin-bottom:16px">'+
-        '<div style="font-size:2rem;margin-bottom:4px">'+(playing?'<span class="candle-flame">🔊</span>':'🤖')+'</div>'+
-        '<div style="font-family:Cinzel,serif;color:var(--gold);font-size:0.8rem;letter-spacing:1px">'+(playing?'PLAYING':'IDLE')+'</div>'+
+        '<div style="width:46px;height:46px;border:1px solid var(--border);border-radius:50%;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;color:var(--gold);box-shadow:'+(playing?'0 0 22px rgba(212,175,105,0.35)':'none')+'">'+
+          '<svg viewBox="0 0 24 24" style="width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round"><path d="M9 18V5l10-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="16" cy="16" r="3"/></svg>'+
+        '</div>'+
+        '<div style="font-family:Cinzel,serif;color:var(--gold);font-size:0.8rem;letter-spacing:1px">'+(playing?'SOUND BED ACTIVE':'QUIET')+'</div>'+
+        '<div style="font-size:0.68rem;color:var(--dim);margin-top:4px;line-height:1.4">Musical backing and atmosphere for practice. Use the metronome when you need strict time.</div>'+
       '</div>'+
       '<div class="toolkit-section">'+
-        '<div class="toolkit-section-title">Modes</div>'+
+        '<div class="toolkit-section-title">Sound Beds</div>'+
         '<div class="toolkit-quick-btns" style="flex-direction:column">'+
-          '<button class="toolkit-quick-btn" onclick="BeatBot.play(\'ambient\');renderBeatBotPanel()" style="justify-content:flex-start">'+
-            '🎵 Ambient — Soft background atmosphere'+
-          '</button>'+
-          '<button class="toolkit-quick-btn" onclick="BeatBot.play(\'chords\');renderBeatBotPanel()" style="justify-content:flex-start">'+
-            '🎸 Chords — Gentle chord progression'+
-          '</button>'+
-          '<button class="toolkit-quick-btn" onclick="BeatBot.play(\'drill\',{bpm:80});renderBeatBotPanel()" style="justify-content:flex-start">'+
-            '⏱ Drill — Metronome at 80 BPM'+
-          '</button>'+
-          '<button class="toolkit-quick-btn" onclick="BeatBot.play(\'drill\',{bpm:120});renderBeatBotPanel()" style="justify-content:flex-start">'+
-            '⏱ Drill — Metronome at 120 BPM'+
-          '</button>'+
+          grooveButton('ambient','Ember Notes','Soft wandering notes for map atmosphere.')+
+          grooveButton('drone','Root Drone','A steady tonal center to tune your ear.')+
+          grooveButton('chords','Chord Bed','Gentle harmony for slow practice.')+
+          grooveButton('pulse','Body Pulse','A musical pulse, looser than the metronome.')+
+          grooveButton('motif','Call Motif','Short guitar-like phrases for call and response.')+
         '</div>'+
       '</div>'+
       '<div class="toolkit-section">'+
         '<div class="toolkit-section-title">Volume</div>'+
         '<input type="range" class="metro-slider" min="0" max="100" value="'+Math.round(volume*100)+'" oninput="BeatBot.setVolume(this.value/100)">'+
       '</div>'+
-      (playing?'<div style="text-align:center;margin-top:8px"><button class="toolkit-quick-btn" onclick="BeatBot.stop();renderBeatBotPanel()" style="border-color:#ff654d;color:#ff654d">⏹ Stop</button></div>':'')+
+      (playing?'<div style="text-align:center;margin-top:8px"><button class="toolkit-quick-btn" onclick="BeatBot.stop();renderBeatBotPanel()" style="border-color:#ff654d;color:#ff654d">Stop Sound</button></div>':'')+
     '</div>';
 }
 
