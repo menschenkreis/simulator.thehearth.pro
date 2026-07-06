@@ -59,7 +59,6 @@
 .gold-conn{stroke:#d4af69;opacity:0.35;stroke-width:2.5;transition:opacity 0.5s,stroke-width 0.5s;}
 .gold-conn.dim{stroke:#d4af69;opacity:0.12;stroke-width:1;}
 .gold-conn.hl{opacity:0.5;stroke-width:3;}
-.gold-conn.travelled{stroke:#e8a020;opacity:0.6;stroke-width:2;filter:drop-shadow(0 0 3px rgba(232,160,32,0.4));}
 
 /* NODE HOVER PREVIEW - dims map, icon appears over the node */
 .map-dim-overlay{position:fixed;inset:0;background:rgba(13,11,8,0.4);z-index:199;opacity:0;pointer-events:none;transition:opacity 0.25s;}
@@ -2116,48 +2115,7 @@ let _activeNode = null;
 let _flameNode = localStorage.getItem('flameNode') || 'foundation';
 let _flameAnimating = false;
 let _flameRunToken = 0;
-let _flameIdleTimer = null;
-let _flameIdleIndex = 0;
 let _nodeEntryToken = 0;
-
-function markPathTravelled(fromId,toId){
-  try{
-    var travelled=JSON.parse(localStorage.getItem('travelledPaths')||'[]');
-    var key=fromId+'->'+toId;
-    if(travelled.indexOf(key)===-1){travelled.push(key);localStorage.setItem('travelledPaths',JSON.stringify(travelled));}
-    // Light up the segments
-    var route=FLAME_ROUTES[key];
-    if(route){for(var i=0;i<route.length-1;i++){markSegment(route[i],route[i+1]);}}
-  }catch(e){}
-}
-function markSegment(a,b){
-  // Find the connection line matching this segment and mark it
-  var lines=document.querySelectorAll('.gold-conn');
-  lines.forEach(function(l){
-    var x1=parseFloat(l.getAttribute('x1'))||0;
-    var y1=parseFloat(l.getAttribute('y1'))||0;
-    var x2=parseFloat(l.getAttribute('x2'))||0;
-    var y2=parseFloat(l.getAttribute('y2'))||0;
-    var pa=NODE_POS[a],pb=NODE_POS[b];
-    if(!pa||!pb)return;
-    // Check if this line connects these two nodes (either direction)
-    var tolerance=75;
-    var matchA=(Math.abs(x1-pa[0])<tolerance&&Math.abs(y1-pa[1])<tolerance&&Math.abs(x2-pb[0])<tolerance&&Math.abs(y2-pb[1])<tolerance);
-    var matchB=(Math.abs(x1-pb[0])<tolerance&&Math.abs(y1-pb[1])<tolerance&&Math.abs(x2-pa[0])<tolerance&&Math.abs(y2-pa[1])<tolerance);
-    if(matchA||matchB){l.classList.add('travelled');}
-  });
-}
-function restoreTravelledPaths(){
-  try{
-    var travelled=JSON.parse(localStorage.getItem('travelledPaths')||'[]');
-    travelled.forEach(function(key){
-      var parts=key.split('->');if(parts.length===2){
-        var route=FLAME_ROUTES[key];
-        if(route){for(var i=0;i<route.length-1;i++){markSegment(route[i],route[i+1]);}}
-      }
-    });
-  }catch(e){}
-}
 
 function showNodeInfo(id) {
   const data = NODE_DATA[id];
@@ -2245,11 +2203,30 @@ window.NODE_POS = NODE_POS;
 
 const FLAME_HOP_MS = 1150;
 const FLAME_PAUSE_MS = 220;
-const FLAME_IDLE_PAUSE_MS = 1700;
-const FLAME_IDLE_ROUTE = [
-  'foundation', 'doing', 'practise', 'hearth', 'mastery',
-  'create', 'study', 'knowing', 'foundation'
-];
+
+const FLAME_SEGMENT_PATHS = {
+  'foundation->doing': 'M350,73 L324,88 L160,265 L146,283',
+  'foundation->knowing': 'M350,73 L376,88 L540,265 L554,283',
+  'foundation->practise': 'M350,73 L337,115 L248,345 L248,388',
+  'foundation->study': 'M350,73 L363,115 L452,345 L452,388',
+  'foundation->hearth': 'M350,73 L350,99 L350,189 L350,200 L350,290 L350,302 L350,369 L350,380 L350,447 L350,494',
+  'doing->knowing': 'M146,283 L194,283 L506,283 L554,283',
+  'doing->practise': 'M146,283 L180,317 L215,354 L248,388',
+  'doing->play': 'M146,283 L146,305 Q60,450 88,662 L88,682',
+  'practise->study': 'M248,388 L296,388 L404,388 L452,388',
+  'practise->hearth': 'M248,388 L281,423 L317,459 L350,494',
+  'practise->play': 'M248,388 L225,430 L111,640 L88,682',
+  'knowing->study': 'M554,283 L520,317 L485,354 L452,388',
+  'knowing->create': 'M554,283 L554,305 Q640,450 612,662 L612,682',
+  'study->hearth': 'M452,388 L419,423 L383,459 L350,494',
+  'study->create': 'M452,388 L475,430 L589,640 L612,682',
+  'play->create': 'M88,682 L136,682 L564,682 L612,682',
+  'play->hearth': 'M88,682 L110,668 L305,512 L350,494',
+  'play->mastery': 'M88,682 L105,706 L325,800 L350,813',
+  'hearth->create': 'M350,494 L395,512 L590,668 L612,682',
+  'hearth->mastery': 'M350,494 L350,535 L350,786 L350,813',
+  'create->mastery': 'M612,682 L595,706 L375,800 L350,813'
+};
 
 // ═══ NODE HOVER PREVIEW ═══
 const NODE_HOVER_DATA={
@@ -2273,70 +2250,70 @@ function hideNodePreview(){}
 const FLAME_ROUTES = {
   'foundation->doing': ['foundation', 'doing'],
   'foundation->knowing': ['foundation', 'knowing'],
-  'foundation->practise': ['foundation', 'doing', 'practise'],
-  'foundation->study': ['foundation', 'knowing', 'study'],
-  'foundation->hearth': ['foundation', 'doing', 'hearth'],
+  'foundation->practise': ['foundation', 'practise'],
+  'foundation->study': ['foundation', 'study'],
+  'foundation->hearth': ['foundation', 'hearth'],
   'foundation->play': ['foundation', 'doing', 'play'],
   'foundation->create': ['foundation', 'knowing', 'create'],
-  'foundation->mastery': ['foundation', 'doing', 'hearth', 'mastery'],
+  'foundation->mastery': ['foundation', 'hearth', 'mastery'],
   'doing->foundation': ['doing', 'foundation'],
-  'doing->knowing': ['doing', 'foundation', 'knowing'],
+  'doing->knowing': ['doing', 'knowing'],
   'doing->practise': ['doing', 'practise'],
-  'doing->study': ['doing', 'foundation', 'knowing', 'study'],
-  'doing->hearth': ['doing', 'hearth'],
+  'doing->study': ['doing', 'knowing', 'study'],
+  'doing->hearth': ['doing', 'practise', 'hearth'],
   'doing->play': ['doing', 'play'],
-  'doing->create': ['doing', 'foundation', 'knowing', 'create'],
-  'doing->mastery': ['doing', 'hearth', 'mastery'],
+  'doing->create': ['doing', 'knowing', 'create'],
+  'doing->mastery': ['doing', 'practise', 'hearth', 'mastery'],
   'knowing->foundation': ['knowing', 'foundation'],
-  'knowing->doing': ['knowing', 'foundation', 'doing'],
-  'knowing->practise': ['knowing', 'foundation', 'doing', 'practise'],
+  'knowing->doing': ['knowing', 'doing'],
+  'knowing->practise': ['knowing', 'doing', 'practise'],
   'knowing->study': ['knowing', 'study'],
-  'knowing->hearth': ['knowing', 'hearth'],
-  'knowing->play': ['knowing', 'create', 'mastery', 'play'],
+  'knowing->hearth': ['knowing', 'study', 'hearth'],
+  'knowing->play': ['knowing', 'doing', 'play'],
   'knowing->create': ['knowing', 'create'],
   'knowing->mastery': ['knowing', 'create', 'mastery'],
   'practise->foundation': ['practise', 'foundation'],
   'practise->doing': ['practise', 'doing'],
-  'practise->knowing': ['practise', 'foundation', 'knowing'],
-  'practise->study': ['practise', 'foundation', 'study'],
-  'practise->hearth': ['practise', 'doing', 'hearth'],
+  'practise->knowing': ['practise', 'study', 'knowing'],
+  'practise->study': ['practise', 'study'],
+  'practise->hearth': ['practise', 'hearth'],
   'practise->play': ['practise', 'play'],
-  'practise->create': ['practise', 'play', 'mastery', 'create'],
+  'practise->create': ['practise', 'play', 'create'],
   'practise->mastery': ['practise', 'play', 'mastery'],
   'study->foundation': ['study', 'foundation'],
-  'study->doing': ['study', 'foundation', 'doing'],
+  'study->doing': ['study', 'knowing', 'doing'],
   'study->knowing': ['study', 'knowing'],
-  'study->practise': ['study', 'create', 'mastery', 'play', 'practise'],
-  'study->hearth': ['study', 'knowing', 'hearth'],
-  'study->play': ['study', 'create', 'mastery', 'play'],
+  'study->practise': ['study', 'practise'],
+  'study->hearth': ['study', 'hearth'],
+  'study->play': ['study', 'practise', 'play'],
   'study->create': ['study', 'create'],
   'study->mastery': ['study', 'create', 'mastery'],
-  'hearth->foundation': ['hearth', 'doing', 'foundation'],
-  'hearth->doing': ['hearth', 'doing'],
-  'hearth->knowing': ['hearth', 'knowing'],
-  'hearth->practise': ['hearth', 'doing', 'practise'],
-  'hearth->study': ['hearth', 'knowing', 'study'],
-  'hearth->play': ['hearth', 'doing', 'play'],
-  'hearth->create': ['hearth', 'knowing', 'create'],
+  'hearth->foundation': ['hearth', 'foundation'],
+  'hearth->doing': ['hearth', 'practise', 'doing'],
+  'hearth->knowing': ['hearth', 'study', 'knowing'],
+  'hearth->practise': ['hearth', 'practise'],
+  'hearth->study': ['hearth', 'study'],
+  'hearth->play': ['hearth', 'play'],
+  'hearth->create': ['hearth', 'create'],
   'hearth->mastery': ['hearth', 'mastery'],
   'play->foundation': ['play', 'doing', 'foundation'],
   'play->doing': ['play', 'doing'],
-  'play->knowing': ['play', 'doing', 'foundation', 'knowing'],
+  'play->knowing': ['play', 'doing', 'knowing'],
   'play->practise': ['play', 'practise'],
-  'play->study': ['play', 'mastery', 'create', 'study'],
-  'play->hearth': ['play', 'doing', 'hearth'],
-  'play->create': ['play', 'mastery', 'create'],
+  'play->study': ['play', 'practise', 'study'],
+  'play->hearth': ['play', 'hearth'],
+  'play->create': ['play', 'create'],
   'play->mastery': ['play', 'mastery'],
   'create->foundation': ['create', 'knowing', 'foundation'],
-  'create->doing': ['create', 'knowing', 'foundation', 'doing'],
+  'create->doing': ['create', 'knowing', 'doing'],
   'create->knowing': ['create', 'knowing'],
-  'create->practise': ['create', 'mastery', 'play', 'practise'],
+  'create->practise': ['create', 'play', 'practise'],
   'create->study': ['create', 'study'],
-  'create->hearth': ['create', 'knowing', 'hearth'],
-  'create->play': ['create', 'mastery', 'play'],
+  'create->hearth': ['create', 'hearth'],
+  'create->play': ['create', 'play'],
   'create->mastery': ['create', 'mastery'],
-  'mastery->foundation': ['mastery', 'create', 'knowing', 'foundation'],
-  'mastery->doing': ['mastery', 'hearth', 'doing'],
+  'mastery->foundation': ['mastery', 'hearth', 'foundation'],
+  'mastery->doing': ['mastery', 'hearth', 'practise', 'doing'],
   'mastery->knowing': ['mastery', 'create', 'knowing'],
   'mastery->practise': ['mastery', 'play', 'practise'],
   'mastery->study': ['mastery', 'create', 'study'],
@@ -2347,12 +2324,12 @@ const FLAME_ROUTES = {
 
 // Restore flame position on load
 window.addEventListener('DOMContentLoaded',function(){
+  localStorage.removeItem('travelledPaths');
+  document.querySelectorAll('.gold-conn.travelled').forEach(function(line){line.classList.remove('travelled');});
   var fn=localStorage.getItem('flameNode');
   if(fn&&NODE_POS[fn]){_flameNode=fn;}
   var p=NODE_POS[_flameNode]||NODE_POS.foundation;
   setFlamePosition(p[0],p[1]);
-  restoreTravelledPaths();
-  scheduleFlameIdle(1800);
 });
 
 // Level completion: light up mastery ring
@@ -2377,23 +2354,6 @@ function setFlamePosition(x,y){
   flame.style.transform='translate('+x+'px,'+y+'px)';
 }
 
-function getFlamePosition(){
-  var flame=document.getElementById('travel-flame');
-  if(flame&&flame.dataset.x&&flame.dataset.y){
-    return [parseFloat(flame.dataset.x),parseFloat(flame.dataset.y)];
-  }
-  return NODE_POS[_flameNode]||NODE_POS.foundation;
-}
-
-function cancelFlameIdle(){
-  if(_flameIdleTimer){clearTimeout(_flameIdleTimer);_flameIdleTimer=null;}
-}
-
-function scheduleFlameIdle(delay){
-  cancelFlameIdle();
-  _flameIdleTimer=setTimeout(runFlameIdle,delay||FLAME_IDLE_PAUSE_MS);
-}
-
 function estimateFlameTravelMs(route){
   if(!route||route.length<2)return 0;
   return (route.length-1)*(FLAME_HOP_MS+FLAME_PAUSE_MS);
@@ -2403,19 +2363,39 @@ function easeFlame(t){
   return t<0.5 ? 4*t*t*t : 1-Math.pow(-2*t+2,3)/2;
 }
 
-function animateFlameSegment(fromPos,toPos,duration,token){
+function segmentPathForNodes(fromNode,toNode){
+  var forward=fromNode+'->'+toNode;
+  var backward=toNode+'->'+fromNode;
+  if(FLAME_SEGMENT_PATHS[forward])return {d:FLAME_SEGMENT_PATHS[forward],reverse:false};
+  if(FLAME_SEGMENT_PATHS[backward])return {d:FLAME_SEGMENT_PATHS[backward],reverse:true};
+  var fromPos=NODE_POS[fromNode],toPos=NODE_POS[toNode];
+  if(!fromPos||!toPos)return null;
+  return {d:'M'+fromPos[0]+','+fromPos[1]+' L'+toPos[0]+','+toPos[1],reverse:false};
+}
+
+function animateFlameSegment(fromNode,toNode,duration,token){
   return new Promise(function(resolve){
+    var segment=segmentPathForNodes(fromNode,toNode);
+    var svg=document.querySelector('.map-svg');
+    if(!segment||!svg){resolve(false);return;}
+    var path=document.createElementNS('http://www.w3.org/2000/svg','path');
+    path.setAttribute('d',segment.d);
+    path.setAttribute('fill','none');
+    path.setAttribute('stroke','none');
+    path.setAttribute('opacity','0');
+    svg.appendChild(path);
+    var length=path.getTotalLength();
     var start=null;
     function frame(now){
-      if(token!==_flameRunToken){resolve(false);return;}
+      if(token!==_flameRunToken){path.remove();resolve(false);return;}
       if(start===null)start=now;
       var raw=Math.min(1,(now-start)/duration);
       var eased=easeFlame(raw);
-      var x=fromPos[0]+(toPos[0]-fromPos[0])*eased;
-      var y=fromPos[1]+(toPos[1]-fromPos[1])*eased;
-      setFlamePosition(Math.round(x*10)/10,Math.round(y*10)/10);
+      var distance=segment.reverse ? length*(1-eased) : length*eased;
+      var point=path.getPointAtLength(distance);
+      setFlamePosition(Math.round(point.x*10)/10,Math.round(point.y*10)/10);
       if(raw<1)requestAnimationFrame(frame);
-      else resolve(true);
+      else{path.remove();resolve(true);}
     }
     requestAnimationFrame(frame);
   });
@@ -2430,7 +2410,6 @@ function flamePause(ms,token){
 async function animateFlameRoute(route,options){
   options=options||{};
   if(!route||route.length<2)return 0;
-  cancelFlameIdle();
   var fromNode=route[0];
   var targetId=route[route.length-1];
   var token=++_flameRunToken;
@@ -2438,24 +2417,17 @@ async function animateFlameRoute(route,options){
 
   for(var i=1;i<route.length;i++){
     var toNode=route[i];
-    var fromPos=getFlamePosition();
-    var toPos=NODE_POS[toNode];
-    if(!toPos)continue;
-    var completed=await animateFlameSegment(fromPos,toPos,FLAME_HOP_MS,token);
-    if(!completed)return 0;
+    var completed=await animateFlameSegment(route[i-1],toNode,FLAME_HOP_MS,token);
+    if(!completed){if(token===_flameRunToken)_flameAnimating=false;return 0;}
     _flameNode=toNode;
     localStorage.setItem('flameNode',toNode);
-    markSegment(route[i-1],toNode);
     if(i<route.length-1){
       var stillCurrent=await flamePause(FLAME_PAUSE_MS,token);
-      if(!stillCurrent)return 0;
+      if(!stillCurrent){if(token===_flameRunToken)_flameAnimating=false;return 0;}
     }
   }
 
-  markPathTravelled(fromNode,targetId);
   _flameAnimating=false;
-  if(options.manual)scheduleFlameIdle(4200);
-  else scheduleFlameIdle(FLAME_IDLE_PAUSE_MS);
   return estimateFlameTravelMs(route);
 }
 
@@ -2475,17 +2447,6 @@ function moveFlame(targetId,options) {
   var travelMs=estimateFlameTravelMs(route);
   animateFlameRoute(route,options);
   return travelMs;
-}
-
-function runFlameIdle(){
-  if(_flameAnimating)return scheduleFlameIdle(FLAME_IDLE_PAUSE_MS);
-  var mapPanel=document.getElementById('p-map');
-  if(mapPanel&&!mapPanel.classList.contains('on'))return scheduleFlameIdle(2600);
-  var currentIndex=FLAME_IDLE_ROUTE.indexOf(_flameNode);
-  if(currentIndex!==-1)_flameIdleIndex=currentIndex;
-  _flameIdleIndex=(_flameIdleIndex+1)%FLAME_IDLE_ROUTE.length;
-  var nextNode=FLAME_IDLE_ROUTE[_flameIdleIndex];
-  moveFlame(nextNode,{idle:true});
 }
 
 
