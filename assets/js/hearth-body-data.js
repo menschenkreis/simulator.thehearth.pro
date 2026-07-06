@@ -2,10 +2,10 @@
 // Keep this data separate from rendering so the future backend can own it cleanly.
 var HEARTH_BODY_COPY = {
   kicker: "The Hearth",
-  title: "The Body Behind the Instrument",
-  subtitle: "See what your brain, hands, ears, breath, and feeling are doing while you learn guitar.",
-  guide: "Good practice is not only fingers. It is attention, breath, listening, and care.",
-  defaultPrompt: "Choose one system of the body."
+  title: "The Inner Instrument",
+  subtitle: "Learn how your hands, brain, eyes, ears, body, and feelings develop while you learn guitar.",
+  guide: "The guitar is the outer instrument. You are also building the inner instrument.",
+  defaultPrompt: "Choose one part of the inner instrument."
 };
 
 var HEARTH_BODY_ZONES = [
@@ -16,14 +16,22 @@ var HEARTH_BODY_ZONES = [
     x: "50%",
     y: "10%",
     r: 4.0,
-    guide: "Attention, memory, habit, emotion, and learning loops.",
-    notice: "The brain learns what you repeat.",
-    tryThis: "Choose one tiny movement and repeat it slowly ten times.",
-    apply: "Play open, fret 2, open on one string. Keep the timing even.",
-    nextLabel: "Open Study",
-    nextType: "node",
-    nextTarget: "study",
-    sourceNote: "Future source notes: neuroscience of practice, myelin, deliberate practice."
+    guide: "The brain builds the maps that let sound, movement, attention, and memory work together.",
+    system: "The brain is not one single learning machine. Different areas help you listen, move, remember, predict, focus, and feel safe enough to try.",
+    parts: [
+      "Motor areas plan and refine movement.",
+      "Auditory areas make sense of pitch, rhythm, and tone.",
+      "Memory systems help patterns become familiar.",
+      "Attention systems decide what gets practiced deeply."
+    ],
+    development: "It develops through clear repetition, sleep, attention, emotional safety, and feedback. Slow correct practice gives the brain a clean pattern to strengthen.",
+    guitar: "Every chord change, rhythm, scale shape, and song memory is a brain-body map. You are not just memorizing facts; you are building pathways.",
+    practices: [
+      "Repeat one small movement slowly and cleanly.",
+      "Name what you are focusing on before you play.",
+      "Sleep on difficult material instead of forcing it endlessly."
+    ],
+    care: "Rushing, shame, panic, and noisy multitasking make learning harder. The brain needs a clear target and enough calm to update."
   },
   {
     id: "hands",
@@ -32,14 +40,22 @@ var HEARTH_BODY_ZONES = [
     x: "37%",
     y: "40%",
     r: 4.3,
-    guide: "Fingers, tendons, nerves, dexterity, and safe movement.",
-    notice: "Tension in one finger often spreads into the whole hand.",
-    tryThis: "Lift one finger slowly while the others stay relaxed.",
-    apply: "Play a 1-2-3-4 pattern slowly. Aim for quiet fingers, not speed.",
-    nextLabel: "Open Do",
-    nextType: "node",
-    nextTarget: "doing",
-    sourceNote: "Future source notes: hand anatomy, tendon care, classical technique."
+    guide: "The hands are living tissues: bones, joints, tendons, nerves, skin, and attention working together.",
+    system: "Hands do not learn by force. They learn by small, accurate movements repeated with relaxed attention.",
+    parts: [
+      "Fingers move through tendons and muscles, not willpower alone.",
+      "Nerves carry feeling and movement signals.",
+      "Skin learns pressure, string distance, and touch.",
+      "Wrists and arms support the fingers."
+    ],
+    development: "Hand skill develops through coordination, independence, timing, pressure control, and relaxed repetition.",
+    guitar: "Clean fretting, chord changes, picking, muting, vibrato, and tone all come from how the hands organize pressure and release.",
+    practices: [
+      "Use the least pressure that makes a clean note.",
+      "Move one finger while the others stay soft.",
+      "Practice slowly enough that the hand never has to panic."
+    ],
+    care: "Pain, numbness, sharp tension, or burning are stop signs. Rest, soften, and rebuild smaller."
   },
   {
     id: "ears",
@@ -48,14 +64,22 @@ var HEARTH_BODY_ZONES = [
     x: "50%",
     y: "14%",
     r: 3.1,
-    guide: "Listening, pitch, rhythm perception, and inner hearing.",
-    notice: "Your ear starts learning before your fingers know what to do.",
-    tryThis: "Sing one note, then find it on the guitar.",
-    apply: "Play two notes and decide which one feels like home.",
-    nextLabel: "Open Know",
-    nextType: "node",
-    nextTarget: "knowing",
-    sourceNote: "Future source notes: ear training, audiation, music cognition."
+    guide: "The ears collect vibration, but listening is trained by the ear and brain together.",
+    system: "The ear receives sound through vibration. The brain learns to recognize pitch, rhythm, tone color, distance, and musical meaning.",
+    parts: [
+      "Outer and middle ear gather and transmit vibration.",
+      "Inner ear turns vibration into nerve signals.",
+      "Auditory brain areas compare sounds and find patterns.",
+      "Memory helps a sound become familiar."
+    ],
+    development: "Listening develops by comparing sounds, singing, matching pitch, noticing rhythm, and hearing the same idea in many contexts.",
+    guitar: "Ear development helps you tune, hear mistakes, find notes, copy music, improvise, and know when something feels resolved.",
+    practices: [
+      "Sing a note, then find it on the guitar.",
+      "Play two notes and name which feels higher.",
+      "Listen for the root note in a chord or riff."
+    ],
+    care: "The ear needs patience. If everything sounds the same, make the contrast bigger and simpler."
   },
   {
     id: "eyes",
@@ -64,14 +88,22 @@ var HEARTH_BODY_ZONES = [
     x: "50%",
     y: "12%",
     r: 2.9,
-    guide: "Pattern recognition, notation, tab, and fretboard maps.",
-    notice: "The eye turns repeated shapes into maps.",
-    tryThis: "Trace a simple tab pattern before playing it.",
-    apply: "Read 0-2-0 on one string, then play it while watching the fretboard.",
-    nextLabel: "Open Study",
-    nextType: "node",
-    nextTarget: "study",
-    sourceNote: "Future source notes: visual learning, notation, fretboard mapping."
+    guide: "The eyes help turn the guitar into a map of shapes, distances, symbols, and movement.",
+    system: "Eyes take in light and movement, but visual learning also depends on attention, pattern recognition, and spatial memory.",
+    parts: [
+      "The eyes track position, distance, and movement.",
+      "Visual brain areas recognize shapes and patterns.",
+      "Spatial memory helps you know where notes live.",
+      "Reading systems connect symbols to action."
+    ],
+    development: "Vision for guitar develops by looking slowly, tracing shapes, reading simple patterns, and linking what you see to what you hear and feel.",
+    guitar: "Tab, notation, chord diagrams, fretboard shapes, picking targets, and hand position all depend on trained visual maps.",
+    practices: [
+      "Trace a chord diagram before placing your fingers.",
+      "Read 0-2-0 on one string, then play it.",
+      "Look away after learning a shape and try to find it again."
+    ],
+    care: "The eyes can trick you into copying shapes without understanding them. Always connect what you see to sound and touch."
   },
   {
     id: "breath",
@@ -80,14 +112,22 @@ var HEARTH_BODY_ZONES = [
     x: "52%",
     y: "32%",
     r: 4.6,
-    guide: "Posture, relaxation, body scan, and nervous system regulation.",
-    notice: "If the breath locks, the hands usually tighten too.",
-    tryThis: "Exhale before changing chords.",
-    apply: "Play Am slowly while breathing out before each change.",
-    nextLabel: "Start Practise",
-    nextType: "node",
-    nextTarget: "practise",
-    sourceNote: "Future source notes: posture, relaxation, somatic learning."
+    guide: "The body sets the conditions for learning: posture, breath, tension, energy, and recovery.",
+    system: "Breath and posture affect the nervous system. When the body feels rushed or braced, the hands often tighten and timing suffers.",
+    parts: [
+      "Breath helps regulate tension and attention.",
+      "Posture gives the arms and hands support.",
+      "Shoulders, jaw, and belly often reveal hidden tension.",
+      "The nervous system decides whether practice feels safe or threatening."
+    ],
+    development: "Body awareness develops through scanning, relaxing, balancing effort, and noticing what changes while you play.",
+    guitar: "Tone, timing, hand freedom, endurance, and confidence all improve when the body is supported and breathing.",
+    practices: [
+      "Exhale before a chord change.",
+      "Drop the shoulders before repeating a hard passage.",
+      "Pause every few minutes and scan jaw, hands, breath, and back."
+    ],
+    care: "If your whole body braces to play something, the step is too large. Make it smaller."
   },
   {
     id: "heart",
@@ -96,14 +136,22 @@ var HEARTH_BODY_ZONES = [
     x: "48%",
     y: "28%",
     r: 3.7,
-    guide: "Motivation, confidence, joy, shame, identity, and expression.",
-    notice: "Feeling changes what the body allows.",
-    tryThis: "Record one imperfect take and listen for one thing that worked.",
-    apply: "End practice with one musical conversation, even if it is messy.",
-    nextLabel: "Open Notes",
-    nextType: "tool",
-    nextTarget: "notebook",
-    sourceNote: "Future source notes: performance psychology, motivation, reflective practice."
+    guide: "Feeling is part of learning. Confidence, shame, joy, and identity change what the body will risk.",
+    system: "The emotional system affects attention, memory, motivation, and whether the learner keeps returning.",
+    parts: [
+      "Confidence helps the body try again.",
+      "Shame can make the hands freeze or rush.",
+      "Joy makes repetition easier to return to.",
+      "Expression connects technique to meaning."
+    ],
+    development: "Feeling develops through safe attempts, honest reflection, small wins, and music that actually matters to the learner.",
+    guitar: "A player does not only need technique. They need permission to sound imperfect while becoming musical.",
+    practices: [
+      "Record one imperfect take and name one thing that worked.",
+      "End practice with a tiny musical conversation.",
+      "Choose one song, tone, or rhythm that makes you want to return."
+    ],
+    care: "If practice becomes proof that you are bad, stop. The task needs gentler framing, not harsher judgment."
   }
 ];
 

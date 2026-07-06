@@ -84,7 +84,12 @@
     inject(); const el=panel(); if(!el)return;
     const z=HEARTH_BODY_ZONES.find(function(x){return x.id===zoneId;});
     if(!z){renderHearthBody();return;}
-    const nextAction = z.nextLabel ? '<button class="hb-next-btn" onclick="HearthBody.nextMove(\''+esc(z.id)+'\')">'+esc(z.nextLabel)+'</button>' : '';
+    const parts = (z.parts || []).length
+      ? '<div class="hb-chamber-item"><h4>Important Parts</h4><ul class="hb-zone-list">'+z.parts.map(function(part){return '<li>'+esc(part)+'</li>';}).join('')+'</ul></div>'
+      : '';
+    const practices = (z.practices || []).length
+      ? '<ul class="hb-zone-list">'+z.practices.map(function(practice){return '<li>'+esc(practice)+'</li>';}).join('')+'</ul>'
+      : '<p>'+esc(z.tryThis || '')+'</p>';
     el.innerHTML=
       '<div class="hb-chamber">'+
         '<button class="back-btn" onclick="HearthBody.back()">\u2190 Back to Body</button>'+
@@ -93,11 +98,13 @@
           '<h3>'+esc(z.label)+'</h3>'+
           '<p class="hb-zone-intro">'+esc(z.guide)+'</p>'+
           '<div class="hb-chamber-cards">'+
-            '<div class="hb-chamber-item"><h4>Notice</h4><p>'+esc(z.notice)+'</p></div>'+
-            '<div class="hb-chamber-item"><h4>Try</h4><p>'+esc(z.tryThis)+'</p></div>'+
-            '<div class="hb-chamber-item"><h4>Apply on Guitar</h4><p>'+esc(z.apply)+'</p></div>'+
+            '<div class="hb-chamber-item"><h4>What It Is</h4><p>'+esc(z.system || z.notice || '')+'</p></div>'+
+            parts+
+            '<div class="hb-chamber-item"><h4>How It Develops</h4><p>'+esc(z.development || '')+'</p></div>'+
+            '<div class="hb-chamber-item"><h4>Guitar Connection</h4><p>'+esc(z.guitar || z.apply || '')+'</p></div>'+
+            '<div class="hb-chamber-item"><h4>Develop It</h4>'+practices+'</div>'+
+            '<div class="hb-chamber-item"><h4>Care</h4><p>'+esc(z.care || '')+'</p></div>'+
           '</div>'+
-          nextAction+
         '</div>'+
       '</div>';
   }
@@ -127,17 +134,6 @@
     toggleDebug: function(){
       _hbDebug=!_hbDebug;
       renderHearthBody();
-    },
-    nextMove: function(id){
-      var z=HEARTH_BODY_ZONES.find(function(x){return x.id===id;});
-      if(!z)return;
-      if(z.nextType==='tool'&&z.nextTarget==='notebook'&&typeof window.toggleNotebook==='function'){
-        window.toggleNotebook();
-        return;
-      }
-      if(z.nextType==='node'&&window.NODE_DATA&&window.NODE_DATA[z.nextTarget]&&typeof window.enterNodeAction==='function'){
-        window.enterNodeAction(window.NODE_DATA[z.nextTarget]);
-      }
     }
   };
 

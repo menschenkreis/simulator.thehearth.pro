@@ -110,8 +110,9 @@ REQUIRED_MARKERS = {
         'id: "brain"',
         'id: "hands"',
         'id: "heart"',
-        "nextLabel",
-        "nextTarget",
+        "development",
+        "practices",
+        "care",
     ],
     "assets/js/scene-first.js": [
         "showCreate",

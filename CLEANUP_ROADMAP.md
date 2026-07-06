@@ -66,7 +66,7 @@ Done recently:
 - Cleaned the Groove panel rendering while keeping the sound-bed behavior unchanged.
 - Extracted Hearth body chamber copy and zone meanings into `assets/js/hearth-body-data.js`.
 - Softened the Hearth body chamber visuals and simplified its visible zone cards.
-- Added practical next-move actions to Hearth body zones.
+- Reframed Hearth body zones as inner-instrument learning chambers instead of navigation shortcuts.
 
 Next good steps:
 
