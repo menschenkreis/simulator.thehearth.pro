@@ -60,7 +60,7 @@
 .gold-conn.dim{stroke:#d4af69;opacity:0.12;stroke-width:1;}
 .gold-conn.hl{opacity:0.5;stroke-width:3;}
 .travel-ember{pointer-events:none;filter:drop-shadow(0 0 10px rgba(232,160,32,0.86)) drop-shadow(0 0 3px rgba(255,210,122,0.65));}
-.travel-ember-halo{fill:#e8a020;opacity:0.18;}
+.travel-ember-halo{fill:#e8a020;opacity:0.18;filter:url(#travelGlowBlur);}
 .travel-ember-outer{fill:url(#travelEmberGrad);}
 
 /* NODE HOVER PREVIEW - dims map, icon appears over the node */
@@ -1678,6 +1678,9 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
             <stop offset="45%" stop-color="#e8a020"/>
             <stop offset="100%" stop-color="#b94a1a"/>
           </radialGradient>
+          <filter id="travelGlowBlur" x="-80%" y="-80%" width="260%" height="260%">
+            <feGaussianBlur stdDeviation="4"/>
+          </filter>
         </defs>
 
         <!-- Background -->
