@@ -3,13 +3,14 @@
 const fs = require('fs');
 const vm = require('vm');
 const html = fs.readFileSync('simulator.html','utf8');
+const nodeDataSource = fs.readFileSync('assets/js/map-node-data.js','utf8');
 
 // Parse inline scripts with Node syntax check via vm.Script.
 const scripts = [...html.matchAll(/<script>([\s\S]*?)<\/script>/g)].map(m=>m[1]);
 scripts.forEach((code,i)=>{ new vm.Script(code, { filename:`inline-${i}.js` }); });
 
 // Extract NODE_DATA keys/actions.
-const nodeDataMatch = html.match(/const NODE_DATA = \{([\s\S]*?)\n\};/);
+const nodeDataMatch = nodeDataSource.match(/var NODE_DATA = \{([\s\S]*?)\n\};/);
 if(!nodeDataMatch) throw new Error('NODE_DATA not found');
 const body = nodeDataMatch[1];
 const actions = [...body.matchAll(/\n\s*(\w+):\s*\{[^}]*?action:'([^']+)'/g)].map(m=>({node:m[1], action:m[2]}));
@@ -27,7 +28,8 @@ if(missingEnter.length){
   throw new Error('Missing enterNode routes: '+missingEnter.map(x=>`${x.node}:${x.action}`).join(', '));
 }
 
-// Confirm required scene-first loaded.
-if(!html.includes('assets/js/scene-first.js?v=1')) throw new Error('scene-first.js not loaded');
+// Confirm required map scripts are loaded.
+if(!html.includes('assets/js/map-node-data.js')) throw new Error('map-node-data.js not loaded');
+if(!html.includes('assets/js/scene-first.js')) throw new Error('scene-first.js not loaded');
 
 console.log('smoke-nodes OK:', actions.map(x=>x.node).join(', '));

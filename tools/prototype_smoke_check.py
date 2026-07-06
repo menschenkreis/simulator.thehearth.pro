@@ -83,7 +83,15 @@ REQUIRED_MARKERS = {
         "adapters/notebook-controller.js",
         "adapters/dictionary-controller.js",
         "assets/js/journey.js",
+        "assets/js/map-node-data.js",
         "NODE LAYOUT RESCUE LAYER",
+    ],
+    "assets/js/map-node-data.js": [
+        "var NODE_DATA",
+        "window.NODE_DATA",
+        "map-nodes-generated-v2-normalized",
+        "title:'The Hearth'",
+        "action:'practice'",
     ],
     "assets/js/scene-first.js": [
         "showCreate",

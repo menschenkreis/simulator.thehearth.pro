@@ -59,8 +59,9 @@ Done recently:
 - Removed duplicate floating utility buttons.
 - Verified the Tools panel and added smoke-check guardrails for its main entries.
 - Rewrote `NODE_SPEC.md` as the current plain-language node meaning source.
+- Extracted map node meaning data from `simulator.html` into `assets/js/map-node-data.js`.
 
 Next good steps:
 
-1. Extract map/node data out of `simulator.html` when the map meaning feels stable.
+1. Continue extracting map behavior from `simulator.html` once the visual map feels stable.
 2. Continue moving reusable rules toward `core/` and browser wiring toward `adapters/`.
