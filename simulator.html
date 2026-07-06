@@ -217,6 +217,13 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 .progress-panel{position:absolute;top:100%;left:0;right:0;background:var(--panel);border-bottom:1px solid var(--border);padding:16px;z-index:50;display:none;}
 .progress-panel.show{display:block;}
 .progress-panel h3{font-family:'Cinzel',serif;font-size:0.9rem;color:var(--gold);margin:0 0 12px 0;letter-spacing:0.06em;}
+.progress-snapshot{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:10px;}
+.progress-snapshot div{border:1px solid rgba(212,175,105,0.12);border-radius:8px;background:rgba(0,0,0,0.12);padding:8px 9px;}
+.progress-snapshot span,.progress-next span{display:block;font-family:'JetBrains Mono',monospace;font-size:0.55rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--dim);margin-bottom:3px;}
+.progress-snapshot strong{display:block;color:var(--gold);font-size:0.9rem;font-weight:700;}
+.progress-next{border:1px solid rgba(212,175,105,0.12);border-radius:8px;background:rgba(212,175,105,0.045);padding:10px 12px;margin-bottom:10px;}
+.progress-next strong{display:block;color:var(--text);font-size:0.86rem;margin-bottom:2px;}
+.progress-next p{margin:0;color:var(--dim);font-size:0.72rem;line-height:1.35;}
 .progress-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid rgba(212,175,105,0.06);}
 .progress-row:last-child{border:none;}
 .progress-label{font-size:0.8rem;color:var(--text);}

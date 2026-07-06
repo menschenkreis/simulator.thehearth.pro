@@ -474,6 +474,8 @@ var headerStorage = {{
 var headerCounts = HearthHeaderToolsController.progressCounts(headerStorage);
 assert(headerCounts.foundation.done === 2, "Header tools controller should count Foundation progress");
 assert(HearthHeaderToolsController.renderProgressHtml(headerCounts).indexOf("3 days") >= 0, "Header tools controller should render streak progress");
+assert(HearthHeaderToolsController.renderProgressHtml(headerCounts).indexOf("Next best move") >= 0, "Header tools controller should render progress guidance");
+assert(HearthHeaderToolsController.progressSummary(headerCounts).next.label === "Know", "Header tools controller should suggest weakest progress area");
 function makeHeaderPanel(id) {{
   return {{
     id: id,

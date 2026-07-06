@@ -178,25 +178,69 @@
     }
   }
 
+  function readBestJsonCount(storage, keys) {
+    var best = 0;
+    keys.forEach(function readKey(key) {
+      best = Math.max(best, readJsonCount(storage, key));
+    });
+    return best;
+  }
+
   function progressCounts(storage) {
     storage = storage || root.localStorage;
     return {
-      foundation: { done: readJsonCount(storage, "fProgress"), total: 10 },
+      foundation: { done: readBestJsonCount(storage, ["fProgress", "hearth-foundation-progress"]), total: 10 },
       doing: { done: readJsonCount(storage, "dProgress"), total: 48 },
-      knowing: { done: readJsonCount(storage, "kProgress"), total: 9 },
+      knowing: { done: readBestJsonCount(storage, ["kProgress", "hearth-knowing-progress"]), total: 9 },
       streak: parseInt(storage.getItem("streak") || "0", 10) || 0
     };
   }
 
+  function percentFor(item) {
+    if (!item || !item.total) return 0;
+    return Math.max(0, Math.min(100, Math.round(item.done / item.total * 100)));
+  }
+
   function progressRow(label, item) {
-    var percent = Math.round(item.done / item.total * 100);
+    var percent = percentFor(item);
     return '<div class="progress-row"><span class="progress-label">' + label + '</span>'
       + '<div class="progress-bar"><div class="progress-fill" style="width:' + percent + '%"></div></div>'
       + '<span style="font-family:JetBrains Mono;font-size:0.65rem;color:var(--dim)">' + item.done + '/' + item.total + '</span></div>';
   }
 
+  function progressSummary(counts) {
+    var areas = [
+      { id: "foundation", label: "Foundation", action: "revisit one basic block", item: counts.foundation },
+      { id: "doing", label: "Do", action: "touch one physical drill", item: counts.doing },
+      { id: "knowing", label: "Know", action: "clear one concept or word", item: counts.knowing }
+    ];
+    var done = areas.reduce(function sumDone(total, area) { return total + area.item.done; }, 0);
+    var total = areas.reduce(function sumTotal(total, area) { return total + area.item.total; }, 0);
+    var weakest = areas.slice().sort(function sortAreas(a, b) {
+      return percentFor(a.item) - percentFor(b.item);
+    })[0];
+    var overall = total ? Math.round(done / total * 100) : 0;
+    var next = overall >= 100
+      ? { label: "Review", action: "choose a favorite path and keep it alive" }
+      : weakest;
+    return {
+      done: done,
+      next: next,
+      overall: overall,
+      total: total,
+      weakest: weakest
+    };
+  }
+
   function renderProgressHtml(counts) {
-    return progressRow("Foundation", counts.foundation)
+    var summary = progressSummary(counts);
+    return '<div class="progress-snapshot">'
+      + '<div><span>Overall</span><strong>' + summary.overall + '%</strong></div>'
+      + '<div><span>Opened</span><strong>' + summary.done + '/' + summary.total + '</strong></div>'
+      + '<div><span>Streak</span><strong>' + counts.streak + 'd</strong></div>'
+      + '</div>'
+      + '<div class="progress-next"><span>Next best move</span><strong>' + summary.next.label + '</strong><p>' + summary.next.action + '.</p></div>'
+      + progressRow("Foundation", counts.foundation)
       + progressRow("Do", counts.doing)
       + progressRow("Know", counts.knowing)
       + '<div class="progress-row"><span class="progress-label">Practice Streak</span><span style="font-family:JetBrains Mono;font-size:0.65rem;color:var(--amber)">'
@@ -262,6 +306,7 @@
     closePanels: closePanels,
     collectSearchResults: collectSearchResults,
     progressCounts: progressCounts,
+    progressSummary: progressSummary,
     renderProgress: renderProgress,
     renderProgressHtml: renderProgressHtml,
     renderSearch: renderSearch,
