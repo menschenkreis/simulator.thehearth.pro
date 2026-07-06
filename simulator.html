@@ -140,7 +140,7 @@
 
 /* === SCENE: image + SVG overlay === */
 
-.node-info{background:var(--panel) !important;border:2px solid var(--gold) !important;border-radius:12px !important;box-shadow:0 4px 16px rgba(255,140,66,0.15) !important;}
+.node-info{background:linear-gradient(180deg,rgba(26,23,20,0.98),rgba(13,11,8,0.98)) !important;border:1px solid rgba(212,175,105,0.26) !important;border-radius:8px !important;box-shadow:0 18px 60px rgba(0,0,0,0.58),0 0 28px rgba(212,175,105,0.08) !important;}
 [data-theme="sparks"] .node-info h4{color:var(--gold) !important;font-size:1.2rem !important;font-family:DM Sans,sans-serif !important;font-weight:700 !important;}
 [data-theme="sparks"] .node-info p{color:var(--text) !important;font-size:0.95rem !important;}
 [data-theme="sparks"] .ni-enter{background:var(--gold) !important;color:white !important;font-size:0.9rem !important;padding:10px 24px !important;border-radius:20px !important;font-weight:600 !important;border:none !important;box-shadow:0 3px 0 #C06020 !important;}
@@ -671,26 +671,31 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 }
 
 .node-info{
-  background:var(--card);border:1px solid var(--border);border-radius:10px;
-  padding:10px 14px;display:none;position:fixed;
+  background:linear-gradient(180deg,rgba(26,23,20,0.98),rgba(13,11,8,0.98));border:1px solid rgba(212,175,105,0.26);border-radius:8px;
+  padding:22px 22px 20px;display:none;position:fixed;
   top:50%;left:50%;transform:translate(-50%,-50%);
-  z-index:200;max-width:420px;width:90%;
-  box-shadow:0 8px 32px rgba(0,0,0,0.5);
+  z-index:260;max-width:390px;width:90%;
+  box-shadow:0 18px 60px rgba(0,0,0,0.58),0 0 28px rgba(212,175,105,0.08);
 }
 .node-info.vis{display:block;}
-.node-info .ni-close{position:absolute;top:8px;right:10px;font-size:0.8rem;color:var(--dim);cursor:pointer;}
+.node-info .ni-close{position:absolute;top:10px;right:12px;font-size:0.8rem;color:var(--dim);cursor:pointer;width:28px;height:28px;display:flex;align-items:center;justify-content:center;border-radius:50%;transition:all 0.15s;}
 .node-info .ni-close:hover{color:var(--gold);}
-.node-info h4{font-family:'Cinzel',serif;color:var(--gold);font-size:0.88rem;margin-bottom:2px;}
-.node-info .ni-tag{font-family:'JetBrains Mono',monospace;font-size:0.5rem;color:var(--amber);letter-spacing:0.12em;margin-bottom:2px;text-transform:uppercase;}
-.node-info .ni-emoji{font-size:1.2rem;margin-right:6px;}
-.node-info p{font-size:0.72rem;color:var(--dim);line-height:1.6;}
+.node-info .ni-thumb{display:flex;justify-content:center;margin-bottom:12px;}
+.node-info .ni-thumb[hidden]{display:none;}
+.node-info .ni-thumb img{width:82px;height:82px;border-radius:50%;object-fit:cover;border:1px solid rgba(212,175,105,0.42);box-shadow:0 0 22px rgba(212,175,105,0.16);background:#0d0b08;}
+.node-info h4{font-family:'Cinzel',serif;color:var(--gold);font-size:1.08rem;margin:4px 0 8px;text-align:center;letter-spacing:0.02em;}
+.node-info .ni-tag{font-family:'JetBrains Mono',monospace;font-size:0.56rem;color:var(--amber);letter-spacing:0.14em;margin-bottom:4px;text-transform:uppercase;text-align:center;}
+.node-info .ni-emoji{display:none;}
+.node-info p{font-size:0.82rem;color:var(--dim);line-height:1.58;text-align:center;margin:0 auto;max-width:320px;}
 .node-info .ni-enter{
-  display:inline-block;margin-top:8px;padding:6px 14px;
-  font-family:'Cinzel',serif;font-size:0.72rem;font-weight:600;
+  display:block;margin:16px auto 0;padding:10px 18px;min-width:150px;
+  font-family:'Cinzel',serif;font-size:0.78rem;font-weight:700;letter-spacing:0.03em;
   color:var(--bg);background:linear-gradient(180deg,var(--gold),#b8963a);
-  border:none;border-radius:4px;cursor:pointer;
+  border:none;border-radius:6px;cursor:pointer;
+  box-shadow:0 8px 22px rgba(212,175,105,0.18);
 }
-.node-info .ni-enter:active{opacity:0.8;}
+.node-info .ni-enter:hover{filter:brightness(1.05);}
+.node-info .ni-enter:active{opacity:0.84;transform:translateY(1px);}
 
 /* === LESSON === */
 .ls{padding:16px;}
@@ -1924,7 +1929,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
     <div class="node-info-overlay" id="niOverlay" onclick="hideNodeInfo()"></div>
     <div class="node-info" id="ni">
       <span class="ni-close" onclick="hideNodeInfo()">✕</span>
-      <div id="niThumb" style="display:none;margin-bottom:12px;text-align:center"><img id="niThumbImg" src="" style="width:96px;height:96px;border-radius:50%;object-fit:cover;border:3px solid var(--gold);box-shadow:0 0 20px rgba(212,175,105,0.15)"/></div>
+      <div id="niThumb" class="ni-thumb" hidden><img id="niThumbImg" src="" alt=""/></div>
       <span class="ni-emoji" id="niEmoji"></span>
       <div class="ni-tag" id="niTag"></div>
       <h4 id="niTitle"></h4>
@@ -2145,8 +2150,39 @@ function showNodeInfo(id) {
   const delay = wasSame ? 0 : travelMs + 160;
   const entryToken = ++_nodeEntryToken;
   setTimeout(function() {
-    if (entryToken === _nodeEntryToken) enterNodeAction(data);
+    if (entryToken === _nodeEntryToken) presentNodeInfo(data);
   }, delay);
+}
+
+function presentNodeInfo(data) {
+  var panel = document.getElementById('ni');
+  var overlay = document.getElementById('niOverlay');
+  var thumb = document.getElementById('niThumb');
+  var thumbImg = document.getElementById('niThumbImg');
+  var emoji = document.getElementById('niEmoji');
+  var tag = document.getElementById('niTag');
+  var title = document.getElementById('niTitle');
+  var desc = document.getElementById('niDesc');
+  var enter = document.getElementById('niEnter');
+  if (!panel || !overlay) return;
+  if (thumb && thumbImg) {
+    if (data.icon) {
+      thumb.hidden = false;
+      thumbImg.src = data.icon;
+      thumbImg.alt = data.title + ' node icon';
+    } else {
+      thumb.hidden = true;
+      thumbImg.removeAttribute('src');
+      thumbImg.alt = '';
+    }
+  }
+  if (emoji) emoji.textContent = data.emoji || '';
+  if (tag) tag.textContent = data.tag || '';
+  if (title) title.textContent = data.title || '';
+  if (desc) desc.textContent = data.desc || '';
+  if (enter) enter.textContent = 'Enter ' + (data.title || 'Node') + ' →';
+  overlay.classList.add('vis');
+  panel.classList.add('vis');
 }
 
 function enterNodeAction(data) {
