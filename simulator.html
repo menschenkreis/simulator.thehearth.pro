@@ -2172,102 +2172,12 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 <script src="assets/js/create-combos.js"></script>
 <script src="assets/js/references.js"></script>
 <script src="assets/js/map-node-data.js"></script>
+<script src="assets/js/map-node-info.js"></script>
 <script>
-let _activeNode = null;
 let _flameNode = localStorage.getItem('flameNode') || 'foundation';
+window._flameNode = _flameNode;
 let _flameAnimating = false;
 let _flameRunToken = 0;
-let _nodeEntryToken = 0;
-
-function updateCurrentNodeMarker(nodeId) {
-  document.querySelectorAll('.mn-g.current').forEach(function clearCurrent(node) {
-    node.classList.remove('current');
-  });
-  var current = document.querySelector('.mn-g[data-node="' + nodeId + '"]');
-  if (current) current.classList.add('current');
-}
-
-function showNodeInfo(id) {
-  const data = NODE_DATA[id];
-  if (!data) return;
-  if (data.locked) return;
-  playSfx('node-enter', id);
-  _activeNode = id;
-  updateCurrentNodeMarker(id);
-  const wasSame = (_flameNode === id);
-  const travelMs = moveFlame(id, { manual: true });
-  const delay = wasSame ? 0 : travelMs + 160;
-  const entryToken = ++_nodeEntryToken;
-  setTimeout(function() {
-    if (entryToken === _nodeEntryToken) presentNodeInfo(data);
-  }, delay);
-}
-
-function presentNodeInfo(data) {
-  var panel = document.getElementById('ni');
-  var overlay = document.getElementById('niOverlay');
-  var thumb = document.getElementById('niThumb');
-  var thumbImg = document.getElementById('niThumbImg');
-  var emoji = document.getElementById('niEmoji');
-  var tag = document.getElementById('niTag');
-  var title = document.getElementById('niTitle');
-  var role = document.getElementById('niRole');
-  var desc = document.getElementById('niDesc');
-  var enter = document.getElementById('niEnter');
-  if (!panel || !overlay) return;
-  if (thumb && thumbImg) {
-    if (data.icon) {
-      thumb.hidden = false;
-      thumbImg.src = data.icon;
-      thumbImg.alt = data.title + ' node icon';
-    } else {
-      thumb.hidden = true;
-      thumbImg.removeAttribute('src');
-      thumbImg.alt = '';
-    }
-  }
-  if (emoji) emoji.textContent = data.emoji || '';
-  if (tag) tag.textContent = data.tag || '';
-  if (title) title.textContent = data.title || '';
-  if (role) role.textContent = data.role || '';
-  if (desc) desc.textContent = data.desc || '';
-  if (enter) enter.textContent = 'Enter ' + (data.title || 'Node') + ' →';
-  overlay.classList.add('vis');
-  panel.classList.add('vis');
-}
-
-function enterNodeAction(data) {
-  if (data.action === 'foundation') showFoundation();
-  else if (data.action === 'hearth') showHearth();
-  else if (data.action === 'doing') showDoing();
-  else if (data.action === 'knowing') showKnowing();
-  else if (data.action === 'practice') showPractice();
-  else if (data.action === 'study') showStudy();
-  else if (data.action === 'play') showPlay();
-  else if (data.action === 'create') showCreate();
-  else if (data.action === 'mastery') showMastery();
-}
-
-function hideNodeInfo() {
-  document.getElementById('ni').classList.remove('vis');
-  document.getElementById('niOverlay').classList.remove('vis');
-  _activeNode = null;
-}
-
-function enterNode() {
-  const data = NODE_DATA[_activeNode];
-  if (!data || data.locked) return;
-  hideNodeInfo();
-  if (data.action === 'foundation') showFoundation();
-  else if (data.action === 'hearth') showHearth();
-  else if (data.action === 'doing') showDoing();
-  else if (data.action === 'knowing') showKnowing();
-  else if (data.action === 'practice') showPractice();
-  else if (data.action === 'study') showStudy();
-  else if (data.action === 'play') showPlay();
-  else if (data.action === 'create') showCreate();
-  else if (data.action === 'mastery') showMastery();
-}
 
 // ═══ THEME SYSTEM ═══
 function setTheme(mode) {
@@ -2431,7 +2341,7 @@ window.addEventListener('DOMContentLoaded',function(){
   localStorage.removeItem('travelledPaths');
   document.querySelectorAll('.gold-conn.travelled').forEach(function(line){line.classList.remove('travelled');});
   var fn=localStorage.getItem('flameNode');
-  if(fn&&NODE_POS[fn]){_flameNode=fn;}
+  if(fn&&NODE_POS[fn]){_flameNode=fn;window._flameNode=_flameNode;}
   var p=NODE_POS[_flameNode]||NODE_POS.foundation;
   setFlamePosition(p[0],p[1]);
   updateCurrentNodeMarker(_flameNode);
@@ -2525,6 +2435,7 @@ async function animateFlameRoute(route,options){
     var completed=await animateFlameSegment(route[i-1],toNode,FLAME_HOP_MS,token);
     if(!completed){if(token===_flameRunToken)_flameAnimating=false;return 0;}
     _flameNode=toNode;
+    window._flameNode=_flameNode;
     localStorage.setItem('flameNode',toNode);
     updateCurrentNodeMarker(toNode);
     if(i<route.length-1){

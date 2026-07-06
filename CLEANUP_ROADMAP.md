@@ -32,7 +32,7 @@ Plain English: every change should make the simulator easier to understand, easi
 
 ## Current Node Meaning Source
 
-Use `NODE_SPEC.md` and the `NODE_DATA` block in `simulator.html` as the current node meaning source.
+Use `NODE_SPEC.md` and `assets/js/map-node-data.js` as the current node meaning source.
 
 Older docs may still describe past versions of the app. Treat `CODEX_HANDOVER.md` as historical context, not the current product truth.
 
@@ -60,8 +60,9 @@ Done recently:
 - Verified the Tools panel and added smoke-check guardrails for its main entries.
 - Rewrote `NODE_SPEC.md` as the current plain-language node meaning source.
 - Extracted map node meaning data from `simulator.html` into `assets/js/map-node-data.js`.
+- Extracted compact map node-card behavior into `assets/js/map-node-info.js`.
 
 Next good steps:
 
-1. Continue extracting map behavior from `simulator.html` once the visual map feels stable.
-2. Continue moving reusable rules toward `core/` and browser wiring toward `adapters/`.
+1. Pause cleanup and return to building/refining the prototype experience.
+2. Continue moving reusable rules toward `core/` and browser wiring toward `adapters/` only when new work naturally touches those areas.

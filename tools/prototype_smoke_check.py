@@ -84,6 +84,7 @@ REQUIRED_MARKERS = {
         "adapters/dictionary-controller.js",
         "assets/js/journey.js",
         "assets/js/map-node-data.js",
+        "assets/js/map-node-info.js",
         "NODE LAYOUT RESCUE LAYER",
     ],
     "assets/js/map-node-data.js": [
@@ -92,6 +93,13 @@ REQUIRED_MARKERS = {
         "map-nodes-generated-v2-normalized",
         "title:'The Hearth'",
         "action:'practice'",
+    ],
+    "assets/js/map-node-info.js": [
+        "showNodeInfo",
+        "presentNodeInfo",
+        "enterNodeAction",
+        "hideNodeInfo",
+        "updateCurrentNodeMarker",
     ],
     "assets/js/scene-first.js": [
         "showCreate",
