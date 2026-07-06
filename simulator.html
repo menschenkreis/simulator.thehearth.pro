@@ -61,8 +61,7 @@
 .gold-conn.hl{opacity:0.5;stroke-width:3;}
 .travel-ember{pointer-events:none;filter:drop-shadow(0 0 10px rgba(232,160,32,0.86)) drop-shadow(0 0 3px rgba(255,210,122,0.65));}
 .travel-ember-halo{fill:#e8a020;opacity:0.18;}
-.travel-ember-outer{fill:#d66a24;}
-.travel-ember-core{fill:#ffd27a;opacity:0.95;}
+.travel-ember-outer{fill:url(#travelEmberGrad);}
 
 /* NODE HOVER PREVIEW - dims map, icon appears over the node */
 .map-dim-overlay{position:fixed;inset:0;background:rgba(13,11,8,0.4);z-index:199;opacity:0;pointer-events:none;transition:opacity 0.25s;}
@@ -1674,6 +1673,11 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
           <radialGradient id="nodeGlowOrange"><stop offset="0%" stop-color="#e8a020" stop-opacity="0.15"/><stop offset="100%" stop-color="#e8a020" stop-opacity="0"/></radialGradient>
           <radialGradient id="nodeGlowBlue"><stop offset="0%" stop-color="#5a9fd4" stop-opacity="0.15"/><stop offset="100%" stop-color="#5a9fd4" stop-opacity="0"/></radialGradient>
           <radialGradient id="nodeGlowPurple"><stop offset="0%" stop-color="#9b59b6" stop-opacity="0.15"/><stop offset="100%" stop-color="#9b59b6" stop-opacity="0"/></radialGradient>
+          <radialGradient id="travelEmberGrad" cx="42%" cy="30%" r="78%">
+            <stop offset="0%" stop-color="#ffe8a8"/>
+            <stop offset="45%" stop-color="#e8a020"/>
+            <stop offset="100%" stop-color="#b94a1a"/>
+          </radialGradient>
         </defs>
 
         <!-- Background -->
@@ -1907,8 +1911,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
               <animate attributeName="r" values="11;17;11" dur="2.4s" repeatCount="indefinite"/>
               <animate attributeName="opacity" values="0.16;0.38;0.16" dur="2.4s" repeatCount="indefinite"/>
             </circle>
-            <path class="travel-ember-outer" d="M0,-16 C8,-8 8,1 4,8 C1,12 -4,12 -7,8 C-12,1 -6,-8 0,-16Z"/>
-            <circle class="travel-ember-core" cx="0" cy="3" r="3.4"/>
+            <path class="travel-ember-outer" d="M0,-16 C6,-10 10,-3 8,4 C6,11 0,14 -6,10 C-12,6 -10,-3 -5,-9 C-2,-12 -1,-14 0,-16Z"/>
           </g>
         </g>
 
