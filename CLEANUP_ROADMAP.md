@@ -57,10 +57,10 @@ Done recently:
 - Made node cards more compact.
 - Removed unused node path metadata.
 - Removed duplicate floating utility buttons.
+- Verified the Tools panel and added smoke-check guardrails for its main entries.
 
 Next good steps:
 
-1. Audit the Tools panel: keep useful tools, remove or merge weak/redundant ones.
-2. Continue aligning active node meanings in `NODE_SPEC.md`.
-3. Extract map/node data out of `simulator.html` when the map meaning feels stable.
-4. Continue moving reusable rules toward `core/` and browser wiring toward `adapters/`.
+1. Continue aligning active node meanings in `NODE_SPEC.md`.
+2. Extract map/node data out of `simulator.html` when the map meaning feels stable.
+3. Continue moving reusable rules toward `core/` and browser wiring toward `adapters/`.

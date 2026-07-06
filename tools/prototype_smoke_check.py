@@ -624,6 +624,29 @@ LOADED_UNMAPPED_LESSONS = {
     "LESSON_FIRST_CONVERSATION": "assets/js/lessons-first-conversation.js",
 }
 
+HEADER_TOOL_ACTIONS = {
+    "Search": 'onclick="toggleSearch()"',
+    "Tools": 'onclick="toggleToolkit()"',
+    "Progress": 'onclick="toggleProgress()"',
+    "Settings": 'onclick="toggleSettings()"',
+}
+
+TOOLKIT_ENTRIES = {
+    "Fretboard": "openFretboard();closeUtilityPanels()",
+    "Dictionary": "sw('theory');closeUtilityPanels()",
+    "Notes": "toggleNotebook();closeUtilityPanels()",
+    "Insights": "toggleInsightPanel()",
+    "Groove": "toggleBeatBot()",
+}
+
+REMOVED_FLOATING_TOOL_MARKERS = [
+    'id="toolkitBtn"',
+    'class="toolkit-btn"',
+    'id="insightStar"',
+    'class="insight-star"',
+    'class="star-count"',
+]
+
 
 def read_text(relative_path: str) -> str:
     return (ROOT / relative_path).read_text(encoding="utf-8")
@@ -863,6 +886,39 @@ def main() -> int:
                 failures.append(f"{relative_path} step {index} is missing text")
 
     simulator = read_text("simulator.html")
+
+    for label, onclick in HEADER_TOOL_ACTIONS.items():
+        if f'aria-label="{label}"' not in simulator:
+            failures.append(f"Header is missing top action: {label}")
+        if onclick not in simulator:
+            failures.append(f"Header action {label} is missing handler: {onclick}")
+
+    for label, onclick in TOOLKIT_ENTRIES.items():
+        if f"<strong>{label}</strong>" not in simulator:
+            failures.append(f"Tools panel is missing entry: {label}")
+        if onclick not in simulator:
+            failures.append(f"Tools panel entry {label} is missing handler: {onclick}")
+
+    for marker in REMOVED_FLOATING_TOOL_MARKERS:
+        if marker in simulator:
+            failures.append(f"Removed floating utility marker came back: {marker}")
+
+    for handler in (
+        "function toggleToolkit()",
+        "function toggleInsightPanel()",
+        "function closeUtilityPanels()",
+        "window.toggleBeatBot = function()",
+        "window.openFretboard = function()",
+        "window.toggleNotebook = function()",
+    ):
+        source = simulator
+        if handler.startswith("window.toggleBeatBot"):
+            source = read_text("assets/js/beatbot.js")
+        elif handler.startswith("window.openFretboard"):
+            source = read_text("assets/js/fretboard.js")
+        if handler not in source:
+            failures.append(f"Tools panel handler is missing: {handler}")
+
     expected_script_order = [
         "assets/js/foundation.js",
         "core/lesson-core.js",
