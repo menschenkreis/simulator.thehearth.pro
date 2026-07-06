@@ -20,6 +20,9 @@ var HEARTH_BODY_ZONES = [
     notice: "The brain learns what you repeat.",
     tryThis: "Choose one tiny movement and repeat it slowly ten times.",
     apply: "Play open, fret 2, open on one string. Keep the timing even.",
+    nextLabel: "Open Study",
+    nextType: "node",
+    nextTarget: "study",
     sourceNote: "Future source notes: neuroscience of practice, myelin, deliberate practice."
   },
   {
@@ -33,6 +36,9 @@ var HEARTH_BODY_ZONES = [
     notice: "Tension in one finger often spreads into the whole hand.",
     tryThis: "Lift one finger slowly while the others stay relaxed.",
     apply: "Play a 1-2-3-4 pattern slowly. Aim for quiet fingers, not speed.",
+    nextLabel: "Open Do",
+    nextType: "node",
+    nextTarget: "doing",
     sourceNote: "Future source notes: hand anatomy, tendon care, classical technique."
   },
   {
@@ -46,6 +52,9 @@ var HEARTH_BODY_ZONES = [
     notice: "Your ear starts learning before your fingers know what to do.",
     tryThis: "Sing one note, then find it on the guitar.",
     apply: "Play two notes and decide which one feels like home.",
+    nextLabel: "Open Know",
+    nextType: "node",
+    nextTarget: "knowing",
     sourceNote: "Future source notes: ear training, audiation, music cognition."
   },
   {
@@ -59,6 +68,9 @@ var HEARTH_BODY_ZONES = [
     notice: "The eye turns repeated shapes into maps.",
     tryThis: "Trace a simple tab pattern before playing it.",
     apply: "Read 0-2-0 on one string, then play it while watching the fretboard.",
+    nextLabel: "Open Study",
+    nextType: "node",
+    nextTarget: "study",
     sourceNote: "Future source notes: visual learning, notation, fretboard mapping."
   },
   {
@@ -72,6 +84,9 @@ var HEARTH_BODY_ZONES = [
     notice: "If the breath locks, the hands usually tighten too.",
     tryThis: "Exhale before changing chords.",
     apply: "Play Am slowly while breathing out before each change.",
+    nextLabel: "Start Practise",
+    nextType: "node",
+    nextTarget: "practise",
     sourceNote: "Future source notes: posture, relaxation, somatic learning."
   },
   {
@@ -85,6 +100,9 @@ var HEARTH_BODY_ZONES = [
     notice: "Feeling changes what the body allows.",
     tryThis: "Record one imperfect take and listen for one thing that worked.",
     apply: "End practice with one musical conversation, even if it is messy.",
+    nextLabel: "Open Notes",
+    nextType: "tool",
+    nextTarget: "notebook",
     sourceNote: "Future source notes: performance psychology, motivation, reflective practice."
   }
 ];

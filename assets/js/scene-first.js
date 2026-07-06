@@ -84,6 +84,7 @@
     inject(); const el=panel(); if(!el)return;
     const z=HEARTH_BODY_ZONES.find(function(x){return x.id===zoneId;});
     if(!z){renderHearthBody();return;}
+    const nextAction = z.nextLabel ? '<button class="hb-next-btn" onclick="HearthBody.nextMove(\''+esc(z.id)+'\')">'+esc(z.nextLabel)+'</button>' : '';
     el.innerHTML=
       '<div class="hb-chamber">'+
         '<button class="back-btn" onclick="HearthBody.back()">\u2190 Back to Body</button>'+
@@ -96,6 +97,7 @@
             '<div class="hb-chamber-item"><h4>Try</h4><p>'+esc(z.tryThis)+'</p></div>'+
             '<div class="hb-chamber-item"><h4>Apply on Guitar</h4><p>'+esc(z.apply)+'</p></div>'+
           '</div>'+
+          nextAction+
         '</div>'+
       '</div>';
   }
@@ -125,6 +127,17 @@
     toggleDebug: function(){
       _hbDebug=!_hbDebug;
       renderHearthBody();
+    },
+    nextMove: function(id){
+      var z=HEARTH_BODY_ZONES.find(function(x){return x.id===id;});
+      if(!z)return;
+      if(z.nextType==='tool'&&z.nextTarget==='notebook'&&typeof window.toggleNotebook==='function'){
+        window.toggleNotebook();
+        return;
+      }
+      if(z.nextType==='node'&&window.NODE_DATA&&window.NODE_DATA[z.nextTarget]&&typeof window.enterNodeAction==='function'){
+        window.enterNodeAction(window.NODE_DATA[z.nextTarget]);
+      }
     }
   };
 
