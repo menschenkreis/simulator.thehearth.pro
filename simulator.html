@@ -1898,7 +1898,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
           <image href="images/map-nodes-generated-v2-normalized/create.png" x="566" y="636" width="92" height="92" clip-path="url(#clip-create)"/>
         </g>
         <!-- Travelling flame -->
-        <g id="travel-flame" style="transform:translate(350px,73px);transition:transform 1.2s cubic-bezier(0.4,0,0.2,1)">
+        <g id="travel-flame" style="transform:translate(350px,73px)">
           <text font-size="14" text-anchor="middle" dominant-baseline="central" style="filter:drop-shadow(0 0 4px #e8a020)">🔥</text>
         </g>
 
@@ -2115,6 +2115,10 @@ const NODE_DATA = {
 let _activeNode = null;
 let _flameNode = localStorage.getItem('flameNode') || 'foundation';
 let _flameAnimating = false;
+let _flameRunToken = 0;
+let _flameIdleTimer = null;
+let _flameIdleIndex = 0;
+let _nodeEntryToken = 0;
 
 function markPathTravelled(fromId,toId){
   try{
@@ -2137,8 +2141,9 @@ function markSegment(a,b){
     var pa=NODE_POS[a],pb=NODE_POS[b];
     if(!pa||!pb)return;
     // Check if this line connects these two nodes (either direction)
-    var matchA=(Math.abs(x1-pa[0])<5&&Math.abs(y1-pa[1])<5&&Math.abs(x2-pb[0])<5&&Math.abs(y2-pb[1])<5);
-    var matchB=(Math.abs(x1-pb[0])<5&&Math.abs(y1-pb[1])<5&&Math.abs(x2-pa[0])<5&&Math.abs(y2-pa[1])<5);
+    var tolerance=75;
+    var matchA=(Math.abs(x1-pa[0])<tolerance&&Math.abs(y1-pa[1])<tolerance&&Math.abs(x2-pb[0])<tolerance&&Math.abs(y2-pb[1])<tolerance);
+    var matchB=(Math.abs(x1-pb[0])<tolerance&&Math.abs(y1-pb[1])<tolerance&&Math.abs(x2-pa[0])<tolerance&&Math.abs(y2-pa[1])<tolerance);
     if(matchA||matchB){l.classList.add('travelled');}
   });
 }
@@ -2160,16 +2165,13 @@ function showNodeInfo(id) {
   if (data.locked) return;
   playSfx('node-enter');
   _activeNode = id;
-  moveFlame(id);
   const wasSame = (_flameNode === id);
-  let delay = 0;
-  if (!wasSame) {
-    const routeKey = _flameNode + '->' + id;
-    const route = FLAME_ROUTES[routeKey];
-    const hops = route ? route.length - 1 : 1;
-    delay = hops * 500 + 400;
-  }
-  setTimeout(function() { enterNodeAction(data); }, delay);
+  const travelMs = moveFlame(id, { manual: true });
+  const delay = wasSame ? 0 : travelMs + 160;
+  const entryToken = ++_nodeEntryToken;
+  setTimeout(function() {
+    if (entryToken === _nodeEntryToken) enterNodeAction(data);
+  }, delay);
 }
 
 function enterNodeAction(data) {
@@ -2239,6 +2241,15 @@ const NODE_POS = {
   practise: [248,388], study: [452,388],
   play: [88,682], create: [612,682]
 };
+window.NODE_POS = NODE_POS;
+
+const FLAME_HOP_MS = 1150;
+const FLAME_PAUSE_MS = 220;
+const FLAME_IDLE_PAUSE_MS = 1700;
+const FLAME_IDLE_ROUTE = [
+  'foundation', 'doing', 'practise', 'hearth', 'mastery',
+  'create', 'study', 'knowing', 'foundation'
+];
 
 // ═══ NODE HOVER PREVIEW ═══
 const NODE_HOVER_DATA={
@@ -2337,8 +2348,11 @@ const FLAME_ROUTES = {
 // Restore flame position on load
 window.addEventListener('DOMContentLoaded',function(){
   var fn=localStorage.getItem('flameNode');
-  if(fn&&window.NODE_POS&&NODE_POS[fn]){var p=NODE_POS[fn];var f=document.getElementById('travel-flame');if(f)f.style.transform='translate('+p[0]+'px,'+p[1]+'px)';}
+  if(fn&&NODE_POS[fn]){_flameNode=fn;}
+  var p=NODE_POS[_flameNode]||NODE_POS.foundation;
+  setFlamePosition(p[0],p[1]);
   restoreTravelledPaths();
+  scheduleFlameIdle(1800);
 });
 
 // Level completion: light up mastery ring
@@ -2355,48 +2369,123 @@ function lightUpLevel(level) {
   }
 }
 
-function moveFlame(targetId) {
-  if (_flameAnimating) return;
-  if (_flameNode === targetId) return;
-  const toPos = NODE_POS[targetId];
-  if (!toPos) return;
+function setFlamePosition(x,y){
+  var flame=document.getElementById('travel-flame');
+  if(!flame)return;
+  flame.dataset.x=String(x);
+  flame.dataset.y=String(y);
+  flame.style.transform='translate('+x+'px,'+y+'px)';
+}
 
-  // Look up route for waypoint-by-waypoint travel
-  const routeKey = _flameNode + '->' + targetId;
-  const route = FLAME_ROUTES[routeKey];
-  const flame = document.getElementById('travel-flame');
-
-  if (route && route.length > 1) {
-    // Animate through waypoints sequentially
-    _flameAnimating = true;
-    let step = 1; // start from 1, skip the first (current position)
-    function nextStep() {
-      if (step >= route.length) {
-        _flameNode = targetId; localStorage.setItem("flameNode",targetId);
-        _flameAnimating = false;
-        markPathTravelled(fromId,targetId);
-        return;
-      }
-      const pos = NODE_POS[route[step]];
-      if (pos) {
-        flame.style.transform = 'translate(' + pos[0] + 'px,' + pos[1] + 'px)';
-      }
-      step++;
-      if (step < route.length) {
-        setTimeout(nextStep, 500); // 500ms per waypoint hop
-      } else {
-        // Last waypoint done
-        setTimeout(function(){
-          _flameNode = targetId; localStorage.setItem("flameNode",targetId);
-          _flameAnimating = false;
-        }, 500);
-      }
-    }
-    nextStep();
-  } else {
-    // No route found - stay put (flame only travels on connection lines)
-    _flameAnimating = false;
+function getFlamePosition(){
+  var flame=document.getElementById('travel-flame');
+  if(flame&&flame.dataset.x&&flame.dataset.y){
+    return [parseFloat(flame.dataset.x),parseFloat(flame.dataset.y)];
   }
+  return NODE_POS[_flameNode]||NODE_POS.foundation;
+}
+
+function cancelFlameIdle(){
+  if(_flameIdleTimer){clearTimeout(_flameIdleTimer);_flameIdleTimer=null;}
+}
+
+function scheduleFlameIdle(delay){
+  cancelFlameIdle();
+  _flameIdleTimer=setTimeout(runFlameIdle,delay||FLAME_IDLE_PAUSE_MS);
+}
+
+function estimateFlameTravelMs(route){
+  if(!route||route.length<2)return 0;
+  return (route.length-1)*(FLAME_HOP_MS+FLAME_PAUSE_MS);
+}
+
+function easeFlame(t){
+  return t<0.5 ? 4*t*t*t : 1-Math.pow(-2*t+2,3)/2;
+}
+
+function animateFlameSegment(fromPos,toPos,duration,token){
+  return new Promise(function(resolve){
+    var start=null;
+    function frame(now){
+      if(token!==_flameRunToken){resolve(false);return;}
+      if(start===null)start=now;
+      var raw=Math.min(1,(now-start)/duration);
+      var eased=easeFlame(raw);
+      var x=fromPos[0]+(toPos[0]-fromPos[0])*eased;
+      var y=fromPos[1]+(toPos[1]-fromPos[1])*eased;
+      setFlamePosition(Math.round(x*10)/10,Math.round(y*10)/10);
+      if(raw<1)requestAnimationFrame(frame);
+      else resolve(true);
+    }
+    requestAnimationFrame(frame);
+  });
+}
+
+function flamePause(ms,token){
+  return new Promise(function(resolve){
+    setTimeout(function(){resolve(token===_flameRunToken);},ms);
+  });
+}
+
+async function animateFlameRoute(route,options){
+  options=options||{};
+  if(!route||route.length<2)return 0;
+  cancelFlameIdle();
+  var fromNode=route[0];
+  var targetId=route[route.length-1];
+  var token=++_flameRunToken;
+  _flameAnimating=true;
+
+  for(var i=1;i<route.length;i++){
+    var toNode=route[i];
+    var fromPos=getFlamePosition();
+    var toPos=NODE_POS[toNode];
+    if(!toPos)continue;
+    var completed=await animateFlameSegment(fromPos,toPos,FLAME_HOP_MS,token);
+    if(!completed)return 0;
+    _flameNode=toNode;
+    localStorage.setItem('flameNode',toNode);
+    markSegment(route[i-1],toNode);
+    if(i<route.length-1){
+      var stillCurrent=await flamePause(FLAME_PAUSE_MS,token);
+      if(!stillCurrent)return 0;
+    }
+  }
+
+  markPathTravelled(fromNode,targetId);
+  _flameAnimating=false;
+  if(options.manual)scheduleFlameIdle(4200);
+  else scheduleFlameIdle(FLAME_IDLE_PAUSE_MS);
+  return estimateFlameTravelMs(route);
+}
+
+function routeForFlameTarget(targetId){
+  if(_flameNode===targetId)return null;
+  var routeKey=_flameNode+'->'+targetId;
+  var route=FLAME_ROUTES[routeKey];
+  if(route&&route.length>1)return route;
+  if(NODE_POS[_flameNode]&&NODE_POS[targetId])return [_flameNode,targetId];
+  return null;
+}
+
+function moveFlame(targetId,options) {
+  options=options||{};
+  var route=routeForFlameTarget(targetId);
+  if(!route)return 0;
+  var travelMs=estimateFlameTravelMs(route);
+  animateFlameRoute(route,options);
+  return travelMs;
+}
+
+function runFlameIdle(){
+  if(_flameAnimating)return scheduleFlameIdle(FLAME_IDLE_PAUSE_MS);
+  var mapPanel=document.getElementById('p-map');
+  if(mapPanel&&!mapPanel.classList.contains('on'))return scheduleFlameIdle(2600);
+  var currentIndex=FLAME_IDLE_ROUTE.indexOf(_flameNode);
+  if(currentIndex!==-1)_flameIdleIndex=currentIndex;
+  _flameIdleIndex=(_flameIdleIndex+1)%FLAME_IDLE_ROUTE.length;
+  var nextNode=FLAME_IDLE_ROUTE[_flameIdleIndex];
+  moveFlame(nextNode,{idle:true});
 }
 
 
