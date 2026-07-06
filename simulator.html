@@ -201,8 +201,6 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 .top-action:focus-visible{outline:2px solid rgba(212,175,105,0.6);outline-offset:2px;}
 .top-action svg{width:15px;height:15px;stroke:currentColor;stroke-width:1.8;fill:none;stroke-linecap:round;stroke-linejoin:round;}
 .top-action-label{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;}
-.toolkit-btn,.insight-star{display:none!important;}
-
 /* Search panel */
 .search-panel{position:absolute;top:100%;left:0;right:0;background:var(--panel);border-bottom:1px solid var(--border);padding:12px 16px;z-index:50;display:none;}
 .search-panel.show{display:block;}
@@ -290,13 +288,6 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 .teach-cards .teach-card:hover{box-shadow:0 4px 20px rgba(0,0,0,0.3);}
 .teach-card.selected{border-color:var(--gold) !important;box-shadow:0 0 20px rgba(212,175,105,0.2);transform:scale(1.03);}
 
-/* Insight Star */
-.insight-star{position:fixed;top:60px;right:16px;z-index:800;cursor:pointer;display:flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:50%;background:rgba(26,23,20,0.85);border:1px solid #3a2a1a;transition:all 0.2s;backdrop-filter:blur(6px);}
-.insight-star:hover{border-color:#d4af69;transform:scale(1.08);box-shadow:0 0 16px rgba(212,175,105,0.25);}
-.insight-star .star-icon{font-size:1.3rem;filter:drop-shadow(0 0 3px rgba(212,175,105,0.4));}
-.insight-star .star-count{position:absolute;top:-4px;right:-4px;background:#d4af69;color:#0d0b08;font-size:0.6rem;font-weight:700;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;}
-.insight-star.pulse{animation:insightPulse 0.4s ease;}
-@keyframes insightPulse{0%{transform:scale(1)}50%{transform:scale(1.2)}100%{transform:scale(1)}}
 .insight-panel{position:fixed;top:110px;right:16px;z-index:801;width:320px;max-height:70vh;background:#0d0b08;border:1px solid #2a2218;border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,0.6);overflow:hidden;display:none;animation:fadeUp 0.2s ease;}
 .insight-panel.show{display:block;}
 .insight-panel-header{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid #2a2218;}
@@ -344,11 +335,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 .notebook-clear{background:none;border:1px solid var(--border);color:var(--dim);padding:4px 10px;border-radius:4px;cursor:pointer;font-size:0.6rem;}
 .notebook-clear:hover{color:var(--gold);border-color:rgba(212,175,105,0.35);}
 
-/* ═══ TOOLKIT BUTTON + PANEL ═══ */
-.toolkit-btn{position:fixed;top:60px;right:70px;z-index:800;cursor:pointer;display:flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:50%;background:rgba(26,23,20,0.85);border:1px solid #3a2a1a;transition:all 0.2s;backdrop-filter:blur(6px);}
-.toolkit-btn:hover{border-color:#d4af69;transform:scale(1.08);box-shadow:0 0 16px rgba(212,175,105,0.25);}
-.toolkit-btn svg{width:22px;height:22px;stroke:#d4af69;stroke-width:1;fill:none;filter:drop-shadow(0 0 3px rgba(212,175,105,0.3));}
-.toolkit-btn:hover svg{stroke:#e8c06a;}
+/* ═══ TOOLKIT PANEL ═══ */
 .toolkit-panel{position:fixed;top:110px;right:16px;z-index:801;width:320px;max-height:75vh;background:#0d0b08;border:1px solid #2a2218;border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,0.6);overflow:hidden;display:none;animation:fadeUp 0.2s ease;}
 .toolkit-panel.show{display:flex;flex-direction:column;}
 .toolkit-header{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid #2a2218;flex-shrink:0;}
@@ -885,8 +872,6 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 @media(max-width:600px){
   .play-world-sub{font-size:0.7rem;}
   .world-map-svg{font-size:5px;}
-  .toolkit-btn{top:auto;bottom:60px;right:16px;width:40px;height:40px;}
-  .toolkit-btn svg{width:18px;height:18px;}
   .toolkit-panel{width:calc(100vw - 32px);right:16px;max-height:60vh;bottom:110px;top:auto;}
   .metro-bpm{font-size:2.2rem;}
 }
@@ -1552,10 +1537,6 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
       <span class="top-action-label">Settings</span>
     </button>
   </div>
-  <!-- Toolkit Button -->
-  <div class="toolkit-btn" id="toolkitBtn" onclick="toggleToolkit()" title="Toolkit">
-    <svg viewBox="0 0 24 24" fill="none" stroke="#d4af69" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3L6 20h12L12 3z"/><line x1="12" y1="3" x2="12" y2="14"/><circle cx="12" cy="10" r="1.5"/><line x1="5" y1="20" x2="19" y2="20"/></svg>
-  </div>
   <div class="toolkit-panel" id="toolkitPanel">
     <div class="toolkit-header">
       <h3>Tool Kit</h3>
@@ -1639,11 +1620,6 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
   <div class="toolkit-panel" id="beatbot-panel">
   </div>
 
-  <!-- Insight Star -->
-  <div class="insight-star" id="insightStar" onclick="toggleInsightPanel()">
-    <span class="star-icon">★</span>
-    <span class="star-count" id="insightCount">0</span>
-  </div>
   <div class="insight-panel" id="insightPanel">
     <div class="insight-panel-header">
       <h3>★ Insights Gained</h3>
@@ -3441,10 +3417,13 @@ function getInsightCount(){
 }
 function updateInsightCount(){
   var count = getInsightCount();
-  document.getElementById('insightCount').textContent = count;
-  document.getElementById('insightCountBig').textContent = count;
-  // Hide count badge when zero
-  document.getElementById('insightCount').style.display = count > 0 ? 'flex' : 'none';
+  var badge = document.getElementById('insightCount');
+  var bigCount = document.getElementById('insightCountBig');
+  if (badge) {
+    badge.textContent = count;
+    badge.style.display = count > 0 ? 'flex' : 'none';
+  }
+  if (bigCount) bigCount.textContent = count;
 }
 function toggleInsightPanel(){
   var panel = document.getElementById('insightPanel');
@@ -3478,12 +3457,6 @@ function saveInsight(){
     id: Date.now()
   });
   saveInsights(insights);
-
-  // Pulse the star
-  var star = document.getElementById('insightStar');
-  star.classList.remove('pulse');
-  void star.offsetWidth;
-  star.classList.add('pulse');
 
   // Clear input
   input.value = '';
