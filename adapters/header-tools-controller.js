@@ -107,36 +107,90 @@
     navigate = navigate || function noop() {};
     var found = [];
 
+    function textMatches() {
+      return Array.prototype.some.call(arguments, function matchesText(value) {
+        return value && String(value).toLowerCase().indexOf(q) !== -1;
+      });
+    }
+
+    function addResult(result) {
+      found.push(result);
+    }
+
     (data.foundationTopics || []).forEach(function addFoundationTopic(topic) {
-      if (topic.title && topic.title.toLowerCase().indexOf(q) !== -1) {
-        found.push({ title: topic.title, tag: "Foundation", action: function openFoundation() { navigate("foundation"); } });
+      if (textMatches(topic.title, topic.description, (topic.tags || []).join(" "))) {
+        addResult({
+          title: topic.title,
+          tag: "Foundation",
+          kind: "Map Node",
+          detail: topic.description || "Core learning block",
+          actionText: "Open Foundation",
+          action: function openFoundation() { navigate("foundation"); }
+        });
       }
     });
 
     ((data.knowing && data.knowing.categories) || []).forEach(function addKnowingCategory(category) {
-      if (category.title && category.title.toLowerCase().indexOf(q) !== -1) {
-        found.push({ title: category.title, tag: "Know", action: function openKnowing() { navigate("theory"); } });
+      if (textMatches(category.title, category.description, category.summary)) {
+        addResult({
+          title: category.title,
+          tag: "Know",
+          kind: "Concept Shelf",
+          detail: category.description || category.summary || "Theory and meaning",
+          actionText: "Open Dictionary",
+          action: function openKnowing() { navigate("theory"); }
+        });
       }
       (category.topics || []).forEach(function addKnowingTopic(topic) {
-        if (topic.title && topic.title.toLowerCase().indexOf(q) !== -1) {
-          found.push({ title: topic.title, tag: "Know", action: function openKnowingTopic() { navigate("theory"); } });
+        if (textMatches(topic.title, topic.description, topic.body, (topic.keywords || []).join(" "))) {
+          addResult({
+            title: topic.title,
+            tag: "Know",
+            kind: category.title || "Concept",
+            detail: topic.description || "Clear this idea in the Dictionary",
+            actionText: "Open Dictionary",
+            action: function openKnowingTopic() { navigate("theory"); }
+          });
         }
       });
     });
 
     ((data.doing && data.doing.drills) || []).forEach(function addDoingDrill(drill) {
-      if (drill.title && drill.title.toLowerCase().indexOf(q) !== -1) {
-        found.push({ title: drill.title, tag: "Do", action: function openDoing() { navigate("drill"); } });
+      if (textMatches(drill.title, drill.description, drill.category, drill.style, drill.source)) {
+        addResult({
+          title: drill.title,
+          tag: "Do",
+          kind: drill.category || "Physical Drill",
+          detail: drill.description || drill.source || "Practice this with the hands",
+          actionText: "Open Do",
+          action: function openDoing() { navigate("drill"); }
+        });
       }
     });
 
     (data.playRegions || []).forEach(function addPlayRegion(region) {
-      if (region.name && region.name.toLowerCase().indexOf(q) !== -1) {
-        found.push({ title: region.name, tag: "Play", action: function openPlay() { navigate("lesson"); } });
+      if (textMatches(region.name, region.title, region.description, (region.tags || []).join(" "))) {
+        addResult({
+          title: region.name || region.title,
+          tag: "Play",
+          kind: "Journey Region",
+          detail: region.description || "Apply skills musically",
+          actionText: "Open Journey",
+          action: function openPlay() { navigate("lesson"); }
+        });
       }
     });
 
     return found.slice(0, 12);
+  }
+
+  function escapeHtml(value) {
+    return String(value == null ? "" : value)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;");
   }
 
   function renderSearch(query, options) {
@@ -150,13 +204,15 @@
       return found;
     }
     if (found.length === 0) {
-      results.innerHTML = '<div class="search-empty">No matches yet. Try a node name, technique, concept, or region.</div>';
+      results.innerHTML = '<div class="search-empty"><strong>No matches yet.</strong><span>Try a broader word like rhythm, scale, chord, fretboard, practice, or melody.</span></div>';
       return found;
     }
     results.innerHTML = found.map(function resultItem(result, index) {
       return '<div class="search-result-item" data-idx="' + index + '">'
-        + '<div class="sr-title">' + result.title + '</div>'
-        + '<div class="sr-tag">' + result.tag + '</div></div>';
+        + '<div class="sr-top"><div class="sr-title">' + escapeHtml(result.title) + '</div><div class="sr-tag">' + escapeHtml(result.tag) + '</div></div>'
+        + '<div class="sr-kind">' + escapeHtml(result.kind || "Result") + '</div>'
+        + '<div class="sr-detail">' + escapeHtml(result.detail || "") + '</div>'
+        + '<div class="sr-action">' + escapeHtml(result.actionText || "Open") + '</div></div>';
     }).join("");
     root._searchActions = found.map(function searchAction(result) { return result.action; });
     Array.prototype.forEach.call(results.querySelectorAll(".search-result-item"), function bindResultClick(element) {

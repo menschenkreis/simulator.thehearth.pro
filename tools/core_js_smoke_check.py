@@ -461,6 +461,8 @@ var headerSearchResults = HearthHeaderToolsController.collectSearchResults("scal
   playRegions: [{{ name: "Andes" }}]
 }}, function() {{}});
 assert(headerSearchResults.length === 2, "Header tools controller should collect matching search results");
+assert(headerSearchResults[0].kind === "Concept Shelf" || headerSearchResults[0].kind === "Harmony", "Header search results should include result context");
+assert(headerSearchResults[0].actionText.indexOf("Open") === 0, "Header search results should include an action cue");
 var headerStorage = {{
   values: {{
     fProgress: JSON.stringify({{ a: true, b: true }}),
