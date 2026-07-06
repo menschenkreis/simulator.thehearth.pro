@@ -303,6 +303,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 .insight-count-display{text-align:center;margin-bottom:12px;}
 .insight-count-display .count{font-family:Cinzel,serif;color:#d4af69;font-size:1.8rem;font-weight:700;line-height:1;}
 .insight-count-display .label{font-size:0.7rem;color:#888;margin-top:2px;}
+.insight-purpose{border:1px solid rgba(212,175,105,0.1);border-radius:8px;background:rgba(212,175,105,0.045);padding:9px 10px;color:#8d806f;font-size:0.7rem;line-height:1.35;margin-bottom:10px;}
 .insight-input{width:100%;background:#1a1410;border:1px solid #3a2a1a;border-radius:8px;padding:10px 12px;color:#d4c8b0;font-family:'DM Sans',sans-serif;font-size:0.8rem;resize:vertical;min-height:60px;box-sizing:border-box;}
 .insight-input:focus{outline:none;border-color:#d4af69;}
 .insight-input::placeholder{color:#555;}
@@ -316,7 +317,8 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 .insight-item-time{font-size:0.65rem;color:#666;font-family:'JetBrains Mono',monospace;}
 .insight-item-text{font-size:0.78rem;color:#d4c8b0;margin-top:3px;line-height:1.4;}
 .insight-item-context{font-size:0.65rem;color:#888;margin-top:2px;font-style:italic;}
-.insight-empty{text-align:center;color:#555;font-size:0.78rem;padding:20px 0;}
+.insight-empty{text-align:center;color:#666;font-size:0.78rem;padding:20px 8px;line-height:1.45;}
+.insight-empty strong{display:block;color:#d4c8b0;margin-bottom:4px;}
 .insight-close-btn{background:none;border:none;color:#888;cursor:pointer;font-size:1.1rem;padding:2px 6px;transition:color 0.15s;}
 .insight-close-btn:hover{color:#d4af69;}
 
@@ -1586,11 +1588,11 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
           <div class="toolkit-quick-btns">
             <button class="toolkit-quick-btn" onclick="toggleNotebook();closeUtilityPanels()">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3h12l2 2v16H5V3z"/><path d="M17 3v4h2"/><line x1="8" y1="9" x2="16" y2="9"/><line x1="8" y1="12" x2="14" y2="12"/><line x1="8" y1="15" x2="15" y2="15"/></svg>
-              <span class="toolkit-tool-copy"><strong>Notes</strong><span>Keep rough thoughts and practice traces.</span></span>
+              <span class="toolkit-tool-copy"><strong>Notes</strong><span>Messy working space for thoughts and traces.</span></span>
             </button>
             <button class="toolkit-quick-btn" onclick="toggleInsightPanel()">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2.7 5.5 6.1.9-4.4 4.3 1 6.1L12 16.9 6.6 19.8l1-6.1-4.4-4.3 6.1-.9L12 3z"/></svg>
-              <span class="toolkit-tool-copy"><strong>Insights</strong><span>Save the moments where something clicks.</span></span>
+              <span class="toolkit-tool-copy"><strong>Insights</strong><span>Keep the clean sentence worth remembering.</span></span>
             </button>
           </div>
         </div>
@@ -1626,9 +1628,10 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
         <div class="count" id="insightCountBig">0</div>
         <div class="label">insights logged</div>
       </div>
-      <textarea class="insight-input" id="insightInput" placeholder="What did you just learn? What clicked?"></textarea>
-      <button class="insight-save-btn" onclick="saveInsight()">Log Insight ★</button>
-      <button class="insight-view-btn" id="insightViewBtn" onclick="viewInsights()">View All Insights</button>
+      <div class="insight-purpose">Use this for the important click: the sentence you want to remember later. Keep rough working thoughts in Notes.</div>
+      <textarea class="insight-input" id="insightInput" placeholder="What clicked? Write one clear sentence."></textarea>
+      <button class="insight-save-btn" onclick="saveInsight()">Save Insight</button>
+      <button class="insight-view-btn" id="insightViewBtn" onclick="viewInsights()">Review Insights</button>
       <div id="insightListContainer"></div>
     </div>
   </div>
@@ -3384,6 +3387,14 @@ function getInsights(){
 function saveInsights(arr){
   localStorage.setItem('hearth-insights', JSON.stringify(arr));
 }
+function escapeInsightText(value){
+  return String(value == null ? '' : value)
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;')
+    .replace(/'/g,'&#39;');
+}
 function getInsightCount(){
   return getInsights().length;
 }
@@ -3439,9 +3450,9 @@ function saveInsight(){
 
   // Flash save button
   var btn = document.querySelector('.insight-save-btn');
-  btn.textContent = '★ Saved!';
+  btn.textContent = 'Saved';
   btn.style.background = '#2ecc71';
-  setTimeout(function(){ btn.textContent = 'Log Insight ★'; btn.style.background = ''; }, 1500);
+  setTimeout(function(){ btn.textContent = 'Save Insight'; btn.style.background = ''; }, 1500);
 }
 function viewInsights(){
   var insights = getInsights();
@@ -3455,16 +3466,16 @@ function viewInsights(){
     container.innerHTML = '';
     input.style.display = '';
     saveBtn.style.display = '';
-    viewBtn.textContent = 'View All Insights';
+    viewBtn.textContent = 'Review Insights';
     return;
   }
 
   input.style.display = 'none';
   saveBtn.style.display = 'none';
-  viewBtn.textContent = '← Back to Input';
+  viewBtn.textContent = 'Back to Capture';
 
   if(insights.length === 0){
-    container.innerHTML = '<div class="insight-empty">No insights yet. Click the star or use the button above to log your first insight.</div>';
+    container.innerHTML = '<div class="insight-empty"><strong>No insights saved yet.</strong>When something clicks, write the clean sentence here. Use Notes for messier thinking.</div>';
     return;
   }
 
@@ -3474,8 +3485,8 @@ function viewInsights(){
     var timeStr = d.toLocaleDateString('en-GB', {day:'numeric',month:'short'}) + ' ' + d.toLocaleTimeString('en-GB', {hour:'2-digit',minute:'2-digit'});
     html += '<div class="insight-item">';
     html += '<div class="insight-item-time">' + timeStr + '</div>';
-    html += '<div class="insight-item-text">' + ins.text.replace(/</g,'&lt;') + '</div>';
-    if(ins.context) html += '<div class="insight-item-context">' + ins.context + '</div>';
+    html += '<div class="insight-item-text">' + escapeInsightText(ins.text) + '</div>';
+    if(ins.context) html += '<div class="insight-item-context">' + escapeInsightText(ins.context) + '</div>';
     html += '</div>';
   });
   html += '</div>';
