@@ -55,10 +55,12 @@
 #web line{stroke:#6a5e4e;opacity:0.1;stroke-width:0.5;transition:opacity 0.3s;}
 #web line:hover{opacity:0.6;}
 
-.conn-spine{stroke:#d4af69;opacity:0.2;stroke-width:3;}
-.gold-conn{stroke:#d4af69;opacity:0.35;stroke-width:2.5;transition:opacity 0.5s,stroke-width 0.5s;}
-.gold-conn.dim{stroke:#d4af69;opacity:0.12;stroke-width:1;}
-.gold-conn.hl{opacity:0.5;stroke-width:3;}
+@keyframes map-path-breathe{0%,100%{opacity:0.25;}50%{opacity:0.42;}}
+@keyframes map-path-whisper{0%,100%{opacity:0.1;}50%{opacity:0.18;}}
+.conn-spine{stroke:#d4af69;opacity:0.24;stroke-width:3;stroke-linecap:round;animation:map-path-breathe 6.5s ease-in-out infinite;}
+.gold-conn{stroke:#d4af69;opacity:0.34;stroke-width:2.5;stroke-linecap:round;transition:opacity 0.5s,stroke-width 0.5s,filter 0.5s;animation:map-path-breathe 7s ease-in-out infinite;}
+.gold-conn.dim{stroke:#d4af69;opacity:0.12;stroke-width:1;animation:map-path-whisper 8s ease-in-out infinite;}
+.gold-conn.hl{opacity:0.5;stroke-width:3;filter:drop-shadow(0 0 8px rgba(212,175,105,0.28));}
 .travel-ember{pointer-events:none;filter:drop-shadow(0 0 10px rgba(232,160,32,0.86)) drop-shadow(0 0 3px rgba(255,210,122,0.65));}
 .travel-ember-halo{fill:#e8a020;opacity:0.18;filter:url(#travelGlowBlur);}
 .travel-ember-outer{fill:url(#travelEmberGrad);}
@@ -468,12 +470,12 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 .map-svg{width:100%;height:auto;display:block;max-height:calc(100vh - 60px);transform-origin:center center;transition:transform 0.2s;}
 
 /* Node styling */
-.mn-g{cursor:pointer;-webkit-tap-highlight-color:transparent;}
-.mn-g .mn-ring{transition:stroke 0.25s, stroke-width 0.25s, filter 0.25s;}
+.mn-g{cursor:pointer;-webkit-tap-highlight-color:transparent;transform-box:fill-box;transform-origin:center;transition:filter 0.25s,transform 0.25s;}
+.mn-g .mn-ring{transition:stroke 0.25s, stroke-width 0.25s, filter 0.25s, opacity 0.25s;}
 .mn-g:hover .mn-ring{stroke:var(--gold);stroke-width:2.5;filter:drop-shadow(0 0 12px rgba(212,175,105,0.5));}
-.mn-g image{transition:filter 0.25s;}
+.mn-g image{transition:filter 0.25s,opacity 0.25s;}
 .mn-g:hover image{filter:drop-shadow(0 0 8px rgba(212,175,105,0.6));}
-.mn-g:hover{filter:brightness(1.4) drop-shadow(0 0 12px rgba(212,175,105,0.5));}
+.mn-g:hover{filter:brightness(1.25) drop-shadow(0 0 12px rgba(212,175,105,0.42));transform:scale(1.025);}
 .mn-g:active{filter:brightness(1.2);}
 .mn-ring{fill:#0d0b08;stroke:var(--gold);stroke-width:1.5;transition:stroke 0.3s, stroke-width 0.3s;}
 .mn-g:hover .mn-ring{stroke:var(--gold);stroke-width:2.5;}
@@ -491,6 +493,9 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 .mn-g.locked .mn-label{fill:#3a3530;}
 .mn-g.locked .mn-icon{opacity:0.3;}
 .mn-g.active .mn-ring{fill:#0d0b08;}
+.mn-g.current .mn-ring{stroke:#f5d58f;stroke-width:2.7;filter:drop-shadow(0 0 15px rgba(212,175,105,0.55));}
+.mn-g.current image{filter:drop-shadow(0 0 10px rgba(245,213,143,0.58));}
+.mn-g.current .mn-label{fill:var(--gold);}
 .foundation-glow{transition:stroke 0.4s, stroke-width 0.4s, filter 0.4s;}
 .foundation-glow.complete{stroke:#fff !important;stroke-width:2 !important;filter:drop-shadow(0 0 8px rgba(255,255,255,0.6));opacity:1 !important;}
 
@@ -1907,7 +1912,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
         </g>
 
         <!-- ═══ THE HEARTH (center) ═══ -->
-        <g class="mn-g" onmouseenter="showNodePreview('hearth',event)" onmouseleave="hideNodePreview()" onclick="showNodeInfo('hearth')">
+        <g class="mn-g" onmouseenter="showNodePreview('hearth',event)" onmouseleave="hideNodePreview()" onclick="showNodeInfo('hearth')" data-node="hearth">
           <circle class="mn-ring" cx="350" cy="494" r="48"/>
           <circle class="touch-area" cx="350" cy="494" r="65" fill="transparent" opacity="0" pointer-events="all"/>
           <clipPath id="clip-hearth"><circle cx="350" cy="494" r="48"/></clipPath>
@@ -2207,12 +2212,21 @@ let _flameAnimating = false;
 let _flameRunToken = 0;
 let _nodeEntryToken = 0;
 
+function updateCurrentNodeMarker(nodeId) {
+  document.querySelectorAll('.mn-g.current').forEach(function clearCurrent(node) {
+    node.classList.remove('current');
+  });
+  var current = document.querySelector('.mn-g[data-node="' + nodeId + '"]');
+  if (current) current.classList.add('current');
+}
+
 function showNodeInfo(id) {
   const data = NODE_DATA[id];
   if (!data) return;
   if (data.locked) return;
   playSfx('node-enter', id);
   _activeNode = id;
+  updateCurrentNodeMarker(id);
   const wasSame = (_flameNode === id);
   const travelMs = moveFlame(id, { manual: true });
   const delay = wasSame ? 0 : travelMs + 160;
@@ -2451,6 +2465,7 @@ window.addEventListener('DOMContentLoaded',function(){
   if(fn&&NODE_POS[fn]){_flameNode=fn;}
   var p=NODE_POS[_flameNode]||NODE_POS.foundation;
   setFlamePosition(p[0],p[1]);
+  updateCurrentNodeMarker(_flameNode);
 });
 
 // Level completion: light up mastery ring
@@ -2542,6 +2557,7 @@ async function animateFlameRoute(route,options){
     if(!completed){if(token===_flameRunToken)_flameAnimating=false;return 0;}
     _flameNode=toNode;
     localStorage.setItem('flameNode',toNode);
+    updateCurrentNodeMarker(toNode);
     if(i<route.length-1){
       var stillCurrent=await flamePause(FLAME_PAUSE_MS,token);
       if(!stillCurrent){if(token===_flameRunToken)_flameAnimating=false;return 0;}
