@@ -78,6 +78,7 @@ Done recently:
 - Pushed Journey closer to the saved neck-scene reference: central instrument stage, headstock/body hints, glowing star markers, and guide placed inside the scene.
 - Built the first generated guide-character variation set, logged it in `GUIDE_ASSET_CATALOG.md`, and added `assets/js/guide-character-data.js` so screens can choose guide moods from one catalogue.
 - Expanded the guide-character catalogue to 11 entries with seated poses and close-up head/bust expressions.
+- Generated three clean Journey background options for an image-backed scene with exactly 8 app-controlled clickable markers overlaid later.
 
 Next good steps:
 
