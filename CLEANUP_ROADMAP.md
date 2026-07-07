@@ -77,6 +77,7 @@ Done recently:
 - Replaced Journey's block-like level markers with circular glowing inlays and wired in the new talking-guide asset.
 - Pushed Journey closer to the saved neck-scene reference: central instrument stage, headstock/body hints, glowing star markers, and guide placed inside the scene.
 - Built the first generated guide-character variation set, logged it in `GUIDE_ASSET_CATALOG.md`, and added `assets/js/guide-character-data.js` so screens can choose guide moods from one catalogue.
+- Expanded the guide-character catalogue to 11 entries with seated poses and close-up head/bust expressions.
 
 Next good steps:
 

@@ -2,9 +2,9 @@
 // This keeps generated character variations in one place so nodes can choose by mood.
 
 window.GUIDE_CHARACTER_ASSETS = {
-  version: 1,
+  version: 2,
   family: 'generated-talking-guide',
-  contactSheet: 'images/character-generated/guide-variations-v1-contact-sheet.png',
+  contactSheet: 'images/character-generated/guide-variations-v2-contact-sheet.png',
   moods: {
     neutral: {
       label: 'Neutral',
@@ -35,6 +35,42 @@ window.GUIDE_CHARACTER_ASSETS = {
       src: 'images/character-generated/talking-guide-v1.png',
       source: 'images/character-generated/talking-guide-v1-source.png',
       use: 'Default speaking pose'
+    },
+    seatedNeutral: {
+      label: 'Seated Neutral',
+      src: 'images/character-generated/guide-seated-neutral-v1.png',
+      source: 'images/character-generated/guide-seated-neutral-v1-source.png',
+      use: 'Calm grounded teaching, longer lesson companion moments'
+    },
+    seatedTeaching: {
+      label: 'Seated Teaching',
+      src: 'images/character-generated/guide-seated-teaching-v1.png',
+      source: 'images/character-generated/guide-seated-teaching-v1-source.png',
+      use: 'Demonstrating guitar technique or pointing to the instrument'
+    },
+    seatedListening: {
+      label: 'Seated Listening',
+      src: 'images/character-generated/guide-seated-listening-v1.png',
+      source: 'images/character-generated/guide-seated-listening-v1-source.png',
+      use: 'Reflection, student answers, end-of-lesson check-ins'
+    },
+    headNeutral: {
+      label: 'Head Neutral',
+      src: 'images/character-generated/guide-head-neutral-v1.png',
+      source: 'images/character-generated/guide-head-neutral-v1-source.png',
+      use: 'Small speech bubbles, compact UI, calm prompts'
+    },
+    headQuestion: {
+      label: 'Head Question',
+      src: 'images/character-generated/guide-head-question-v1.png',
+      source: 'images/character-generated/guide-head-question-v1-source.png',
+      use: 'Questions, checks for understanding, choice prompts'
+    },
+    headLightbulb: {
+      label: 'Head Lightbulb',
+      src: 'images/character-generated/guide-head-lightbulb-v1.png',
+      source: 'images/character-generated/guide-head-lightbulb-v1-source.png',
+      use: 'Insights, aha moments, concept reveals'
     }
   }
 };
