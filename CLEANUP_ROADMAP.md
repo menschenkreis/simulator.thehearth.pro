@@ -83,6 +83,7 @@ Done recently:
 - Updated Jen's Journey companion for A minor pentatonic consolidation and captured the Fretboard Conveyor idea as a future Practice/Journey feature seed.
 - Saved the Fretboard Conveyor Belt PDF into `knowledge-base/resources/guitar/fretboard-conveyor-belt/` with an index note.
 - Simplified the Journey entrance into a clean guitar-neck map: student selector plus 8 level markers only, with guide/companion material reserved for the level and lesson rooms.
+- Replaced the cropped Journey scene with a generated guitar/neck cutout made from a green-screen source and keyed to transparency, so the map is an object instead of a background image.
 
 Next good steps:
 
