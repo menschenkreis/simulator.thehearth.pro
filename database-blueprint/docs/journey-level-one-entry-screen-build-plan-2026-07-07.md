@@ -12,21 +12,21 @@ It should answer:
 - What will I learn here?
 - Why should I not rush ahead?
 - What is the first lesson?
-- How do the other nodes help me along the way?
+- Where do I begin?
 
 This is especially important for Ayla and Jen because Level 1 is not Foundation. Foundation is the threshold. Level 1 is the first real Journey level.
 
 ## Feeling
 
-The screen should feel like a path, not a dashboard.
+The screen should feel like a clear curriculum roadmap that belongs to the same visual world as the Journey guitar.
 
 Better:
 
-- a hand-drawn curriculum map
-- a quiet game path
-- a quest route through musical territories
-- a guitar-learning road with stops
-- the guide beside the path, giving calm direction
+- the existing Journey guitar visual style
+- grouped QJam learning categories
+- one calm object with lesson buttons
+- the guide beside the roadmap, giving practical direction
+- enough beauty to feel like the simulator, but not so much symbolism that the curriculum gets unclear
 
 Avoid:
 
@@ -34,6 +34,7 @@ Avoid:
 - a spreadsheet feeling
 - too many simultaneous choices
 - long explanatory text
+- "Hearth magic" language on this screen
 - anything that makes the learner feel behind before beginning
 
 ## Guide Voice
@@ -42,7 +43,7 @@ The guide should be practical and calming.
 
 Working line:
 
-> Stay with the first path. Small steps, clean sound, steady rhythm, and a little fun each time.
+> Follow the lessons in order. Do not rush ahead: steady rhythm, clean chords, clear scale map, then music.
 
 Alternate lines:
 
@@ -56,13 +57,13 @@ Use code-native HTML/CSS first. Do not generate a final image yet.
 
 Credit-efficient reason: the structure will change while Ayla reacts to it. A generated image would cost more and be harder to edit.
 
-First prototype:
+Current prototype:
 
 1. Top: small student selector remains available, but not loud.
-2. Main stage: one illustrated path shape made in HTML/CSS/SVG.
+2. Main stage: one clear curriculum roadmap using the Journey guitar as a subtle visual watermark.
 3. Left or side: guide character with one speech bubble.
-4. Path stops: the 8 Level 1 lessons as clear milestones.
-5. Bottom or natural path endpoint: "Let's begin" button.
+4. Roadmap sections: the Level 1 lessons grouped by QJam-style categories.
+5. Bottom: "Let's begin" / "Continue Level 1" button.
 
 The stops should be readable but compact. Each stop can show:
 
@@ -87,32 +88,29 @@ These are already represented in `assets/js/journey-data.js`.
 
 ## Skill Families
 
-The Level 1 map should make the curriculum understandable by grouping the stops into simple skill families:
+The Level 1 map should make the curriculum understandable by grouping the stops into simple QJam skill families:
 
 - Rhythm: time feel and pulse
-- Chords: open chords and chord changes
+- Chords & Harmony: open chords and chord changes
 - Scales: pentatonic shape 1
-- Playing: phrasing and first blues solo
+- Technique & Improvisation: phrasing and first blues solo
 - Integration: chords and pentatonics together
 
 This helps Ayla understand the path without making the UI academic.
 
 ## How This Connects To Nodes
 
-Journey is the itinerary. The nodes are the places.
+The entry screen should not explain node philosophy heavily. It should simply show what Level 1 teaches.
 
 For Level 1:
 
-- Tune In draws from Practice and Hearth.
-- Warm Up draws from Practice and Doing.
-- Concept draws from Knowing and Study.
-- Drill draws from Doing and Practice.
-- Play/Groove draws from Play.
-- Create and Experiment draws from Create.
-- Watch a Master draws from Mastery.
-- Reflect draws from Hearth.
+- Rhythm work can later draw from Practice and Play.
+- Chord work can later draw from Doing and Knowing.
+- Scale work can later draw from Study and Practice.
+- Improvisation can later draw from Play and Create.
+- Integration can later draw from Mastery and Reflect/Hearth.
 
-The entry screen should hint at this, but not explain it heavily. The deeper linking happens inside each lesson.
+The deeper linking happens inside each lesson, not on the first roadmap screen.
 
 ## One-Hour Lesson Shape
 
@@ -151,7 +149,7 @@ The app should help Ayla prepare and teach this without pretending Jen needs a g
 
 1. Add a Level 1 entry renderer in Journey.
 2. Route `Journey.openLevel(1)` to the entry screen, not directly to Lesson 1.
-3. Show the 8 lesson stops as a visual path.
+3. Show the 8 lesson stops grouped under QJam-style curriculum categories.
 4. Add guide speech with short practical wording.
 5. Add one clear "Let's begin" action that opens Lesson 1.
 6. Keep the existing lesson data in `journey-data.js`; do not mix screen layout with lesson content.
@@ -199,6 +197,7 @@ The screen is successful if Ayla can say:
 - I know where to begin.
 - It feels like the simulator, not a dashboard.
 - It does not overload me before Lesson 1 starts.
+- It uses QJam language clearly enough that Ayla can explain it to Jen.
 
 ## Do Not Do Yet
 
@@ -207,14 +206,14 @@ The screen is successful if Ayla can say:
 - Do not add complex unlock logic yet.
 - Do not add more top-level buttons.
 - Do not make this feel like an admin curriculum planner.
+- Do not show all 10 broader Hearth/QJam strands on the Level 1 entry screen.
 
 ## Next Best Build Move
 
-Build the Level 1 entry screen as an editable prototype using existing assets and CSS.
+Keep refining the editable Level 1 entry screen using existing assets and CSS.
 
 After Ayla reacts to the shape, decide whether the path should become:
 
-- a hand-drawn map image,
-- a code-native SVG route,
-- a guitar-neck-derived route,
-- or a hybrid with a light illustration underneath.
+- a cleaner code-native roadmap,
+- a generated background image with buttons over it,
+- or the current hybrid guitar-watermark direction.

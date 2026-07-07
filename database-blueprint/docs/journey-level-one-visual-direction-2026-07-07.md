@@ -1,16 +1,16 @@
 # Journey Level One Visual Direction - 2026-07-07
 
-Plain English: the first Level 1 click needs a clear visual metaphor before we rebuild it. The rough path prototype was useful structurally, but visually too busy and tangled.
+Plain English: the first Level 1 click should show a clear curriculum roadmap. It should use the Journey guitar image as the visual style anchor, but it should not become a messy fantasy map or dashboard.
 
 ## Decision
 
-Do not use the current winding path/card prototype as the final direction.
+Do not use the old winding path/card prototype as the final direction.
 
-Use it only as a hidden structural test.
+It was useful as a structural test, but the screen now needs to be simpler and clearer.
 
 The better direction is:
 
-`a clean curriculum road drawn as one calm object`
+`a clear QJam Level 1 roadmap in the Journey guitar visual style`
 
 Not:
 
@@ -20,9 +20,13 @@ Not:
 
 `floating cards scattered over a squiggly route`
 
+Not:
+
+`Hearth magic language on the first curriculum screen`
+
 ## What The Screen Should Feel Like
 
-Level 1 should feel like opening a learning map in a quiet adventure game.
+Level 1 should feel like opening a beautiful but practical guitar curriculum overview.
 
 It should be:
 
@@ -37,20 +41,20 @@ It should be:
 
 ## Best Visual Metaphor
 
-Use a single hand-drawn style map object.
+Use the Journey guitar image as the shared visual style. The roadmap can sit over a dark/gold/wood-toned panel with the guitar as a subtle background image or watermark.
 
 Possible form:
 
-- a parchment-like music path
-- a simple road across a guitar-shaped landscape
-- a vertical curriculum trail with eight waypoints
-- a fretboard-road hybrid, but less literal than the main Journey guitar
+- a clean grouped curriculum board
+- a subtle guitar/fretboard background
+- lesson buttons grouped by learning category
+- one clear begin/continue button
 
-The point is not realism.
+The point is not symbolism.
 
 The point is:
 
-`Here is the whole level. Start here. Follow the path. Do not rush.`
+`Here is what Level 1 teaches. Start here. Follow the lessons in order.`
 
 ## Proposed Composition
 
@@ -59,15 +63,14 @@ Desktop:
 ```text
           Whose Journey?
 
-  Guide character       Level 1 Map Object
+  Guide character       Level 1 Roadmap Object
   + speech bubble       --------------------------------
-                        First Guided Steps
-                        [Rhythm] ---- [Chords] ---- [Scales]
-                            \              \             \
-                           L1             L2-L3          L4-L5
-                              \              \             \
-                               [Play] ---- [Integration]
-                                  L6           L7-L8
+                        QJam Level 1 Roadmap
+                        Rhythm                  L1
+                        Chords & Harmony        L2-L3
+                        Scales                  L4
+                        Technique & Improv      L5-L6
+                        Integration             L7-L8
 
                         Let's begin
 ```
@@ -79,7 +82,7 @@ Whose Journey?
 
 Guide + short bubble
 
-Level 1: First Guided Steps
+Level 1 Roadmap
 
 1. Time Feel
 2. The 8 Open Chords
@@ -95,8 +98,8 @@ Let's begin
 
 ## Visual Rules
 
-- The eight lessons should be on one coherent object.
-- The line should be simple and intentional, not a random snake.
+- The eight lessons should be grouped on one coherent object.
+- The guitar visual style should unify this screen with the main Journey map.
 - Lesson labels should not fight the art.
 - The guide should sit beside the map, not on top of it.
 - The student selector should stay above the map.
@@ -104,25 +107,26 @@ Let's begin
 - Avoid many floating cards.
 - Avoid nested panels.
 - Avoid heavy animation.
+- Avoid showing the full 10-strand long-term system on this first Level 1 screen.
 
 ## Skill Grouping
 
-The map should group Level 1 into five simple territories:
+The map should group Level 1 into five simple QJam-style sections:
 
 1. Rhythm
-2. Chords
+2. Chords & Harmony
 3. Scales
-4. Play
+4. Technique & Improvisation
 5. Integration
 
 Lesson mapping:
 
 - L1 Time Feel = Rhythm
-- L2 The 8 Open Chords = Chords
-- L3 Common-Finger Chord Changes = Chords
+- L2 The 8 Open Chords = Chords & Harmony
+- L3 Common-Finger Chord Changes = Chords & Harmony
 - L4 Pentatonic Shape 1 = Scales
-- L5 Pentatonic Phrasing = Play
-- L6 First Blues Solo Entry = Play
+- L5 Pentatonic Phrasing = Technique & Improvisation
+- L6 First Blues Solo Entry = Technique & Improvisation
 - L7 Chords Meet Pentatonics = Integration
 - L8 QJam Level 1 Integration = Integration
 
@@ -132,7 +136,7 @@ Use one short line.
 
 Preferred:
 
-`Stay with the first path. Small steps, clean sound, steady rhythm, and a little fun each time.`
+`Follow the lessons in order. Do not rush ahead: steady rhythm, clean chords, clear scale map, then music.`
 
 Possible alternate:
 
@@ -140,64 +144,25 @@ Possible alternate:
 
 ## Build Recommendation
 
-Next iteration should be one of these:
+Use the current hybrid:
 
-### Option A: Code-Native Clean Map
+- existing Journey guitar image as visual style reference
+- editable HTML lesson buttons
+- QJam section labels
+- no generated image until the structure is approved
 
-Build a simple SVG map in code.
+Credit-efficient reason:
 
-Pros:
-
-- cheap
-- editable
-- fast to adjust
-- easy to make responsive
-
-Cons:
-
-- may still feel too digital unless styled carefully
-
-### Option B: Draw/Generate A Background Map, Then Overlay Buttons
-
-Create one clean map image and place invisible or subtle lesson buttons over it.
-
-Pros:
-
-- more unified visual experience
-- closer to the node interiors
-- easier to make beautiful
-
-Cons:
-
-- more expensive to iterate
-- labels must still be handled carefully
-
-### Option C: Hybrid
-
-Use a lightly illustrated background object, but keep lesson buttons as HTML.
-
-Recommended next choice:
-
-`Option C`
-
-This gives the visual unity Ayla wants while keeping the lesson labels and buttons editable.
+The structure is still changing, so generated backgrounds would waste credits and be harder to edit. Use generation later only when the composition is stable.
 
 ## Current Technical Note
 
-The rough Level 1 entry prototype exists in `assets/js/journey.js` as `renderLevelEntry(1)`.
+The Level 1 entry screen exists in `assets/js/journey.js` as `renderLevelEntry(1)`.
 
-It is hidden by default.
+Normal Level 1 clicks now open this roadmap by default.
 
-To view it locally:
+Main implementation helpers:
 
-```js
-localStorage.setItem('hearthJourneyL1EntryPreview', 'on')
-```
-
-To hide it again:
-
-```js
-localStorage.removeItem('hearthJourneyL1EntryPreview')
-```
-
-Normal Level 1 clicks should use the cleaner existing screen until the redesigned map is ready.
+- `levelOneRoadmapSections()`
+- `renderLevelEntry(1)`
+- `Journey.openLevel(1)`
