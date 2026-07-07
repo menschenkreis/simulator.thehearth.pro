@@ -79,19 +79,24 @@ Foundation teaches:
 - how to notice confusion
 - how to use the guide
 - how to make first contact with the guitar
+- how to hold, touch, listen, and begin without overwhelm
 
 Level 1 begins after that threshold.
 
+Level 1 should not assume the learner is a total beginner.
+
+Level 1 starts from QJam's Level 1 roadmap, adapted into The Hearth.
+
 Level 1 teaches:
 
-- clean sound
-- picking pulse
-- fretting one clear note
-- basic finger independence
-- first chord changes
-- naming gaps honestly
-- first pentatonic map
-- first song seed
+- rhythm and time feel
+- the open-chord vocabulary
+- common-finger chord changes
+- pentatonic shape 1
+- pentatonic phrasing
+- first blues solo vocabulary
+- chord-scale connection
+- a clear Level 1 readiness check
 
 ## Level 1 Pilot
 
@@ -99,14 +104,21 @@ Level 1 should be polished before we try to polish all 8 levels.
 
 The current Level 1 plan has 8 authored lessons:
 
-1. First Clean Sound
-2. Pick The Pulse
-3. Fret One Clear Note
-4. The 1-2-3-4 Walk
-5. First Chord Pair
-6. Add D And Name The Gap
-7. First Pentatonic Map
-8. First Song Seed
+1. Time Feel, Part 1
+2. The 8 Open Chords
+3. Common-Finger Chord Changes
+4. Pentatonic Shape 1
+5. Pentatonic Phrasing
+6. First Blues Solo Entry
+7. Chords Meet Pentatonics
+8. QJam Level 1 Integration
+
+QJam Level 1 source pillars:
+
+- Rhythm: time feel
+- Chords and harmony: 8 open chords
+- Scales: pentatonics
+- Technique and improvisation: getting started with blues solo
 
 Each lesson uses the same learning rhythm:
 

@@ -69,7 +69,7 @@ Done recently:
 - Reframed Hearth body zones as inner-instrument learning chambers instead of navigation shortcuts.
 - Started Journey cleanup by extracting the level, concept, and task banks into `assets/js/journey-data.js`.
 - Added `database-blueprint/docs/journey-strategy-v1.md` to keep Journey focused on "what should I do next?"
-- Polished Journey Level 1 into an authored 8-lesson beginner path instead of relying on rotating lesson banks.
+- Polished Journey Level 1 into an authored 8-lesson QJam Level 1 path instead of relying on rotating lesson banks.
 - Made Journey use authored lesson data when present, while keeping the fallback lesson generator for later levels.
 
 Next good steps:

@@ -144,8 +144,8 @@ REQUIRED_MARKERS = {
         "var JOURNEY_TASK_BANK",
         "var JOURNEY_AUTHORED_LESSONS",
         "window.JOURNEY_LEVELS",
-        "First Clean Sound",
-        "First Song Seed",
+        "Time Feel, Part 1",
+        "QJam Level 1 Integration",
     ],
     "assets/js/lesson-1-foundation.js": [
         "LESSON_1_FOUNDATION",
