@@ -11,6 +11,7 @@
   const AUTHORED_LESSONS = window.JOURNEY_AUTHORED_LESSONS || {};
   const STUDENT_COMPANIONS = window.JOURNEY_STUDENT_COMPANIONS || {};
   const GUIDE_ASSETS = window.GUIDE_CHARACTER_ASSETS || {};
+  let studentPickerBound = false;
 
   function esc(v){
     return String(v == null ? '' : v).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
@@ -461,6 +462,59 @@
     '</div>';
   }
 
+  function renderStudentPicker(state, student){
+    let html = '<div class="journey-top-row">' +
+      '<div class="journey-student-picker">' +
+        '<button type="button" class="journey-student-trigger" onclick="Journey.toggleStudentMenu(event)" aria-haspopup="menu">' +
+          '<span>Whose journey</span>' +
+          '<strong>'+esc(student.name)+'</strong>' +
+          '<b>v</b>' +
+        '</button>' +
+        '<div class="journey-student-menu" role="menu">';
+
+    state.students.forEach(s => {
+      const active = s.id === student.id;
+      html += '<div class="journey-student-option '+(active ? 'active' : '')+'">' +
+        '<button type="button" onclick="Journey.switchStudent(\''+s.id+'\')">' +
+          '<span>'+esc(s.name)+'</span>' +
+          '<small>'+(active ? 'Current path' : 'Open path')+'</small>' +
+        '</button>';
+      if(state.students.length > 1){
+        html += '<button type="button" class="journey-student-remove" onclick="Journey.removeStudent(\''+s.id+'\')" title="Remove '+esc(s.name)+'">x</button>';
+      }
+      html += '</div>';
+    });
+
+    html += '<button type="button" class="journey-student-add" onclick="Journey.addStudent()">+ Add journey</button>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+    return html;
+  }
+
+  function renderJourneyMapGuide(student){
+    const guideImage = guideAsset('seatedTeaching');
+    const name = student && student.name ? student.name : 'this student';
+    return '<aside class="journey-map-guide" aria-label="Journey guide">' +
+      '<img src="'+guideImage+'" alt="Journey guide"/>' +
+      '<div class="journey-map-bubble">' +
+        '<div class="journey-kicker">Journey Map</div>' +
+        '<p>This guitar is '+esc(name)+'\'s path. Each glowing mark is a level.</p>' +
+        '<p>Choose whose journey above, then click a level to enter its lesson room.</p>' +
+      '</div>' +
+    '</aside>';
+  }
+
+  function bindStudentPickerClose(){
+    if(studentPickerBound) return;
+    studentPickerBound = true;
+    document.addEventListener('click', function(event){
+      document.querySelectorAll('.journey-student-picker.open').forEach(picker => {
+        if(!picker.contains(event.target)) picker.classList.remove('open');
+      });
+    });
+  }
+
   function renderJourneyNeckStage(state, student, level, lvlState, levelPositions){
     const roman = ['I','II','III','IV','V','VI','VII','VIII'];
     const markerTops = [17.5, 26, 34.5, 43, 51.5, 60, 68.5, 77];
@@ -494,7 +548,7 @@
     style.textContent = `
       .journey-shell{padding:20px;max-width:980px;margin:0 auto;color:var(--text)}
       .journey-home{display:flex;flex-direction:column;align-items:center}
-      .journey-map-home{gap:10px}
+      .journey-map-home{gap:14px}
       .journey-hero{position:relative;overflow:hidden;background:linear-gradient(135deg,rgba(212,175,105,.14),rgba(13,11,8,.95));border:1px solid var(--border);border-radius:18px;padding:18px;margin-bottom:14px;box-shadow:0 14px 40px rgba(0,0,0,.25)}
       .journey-hero:after{content:"";position:absolute;inset:-30%;background:radial-gradient(circle at 70% 20%,rgba(232,160,32,.16),transparent 35%);pointer-events:none}
       .journey-kicker{font-family:JetBrains Mono,monospace;font-size:.58rem;color:var(--gold);letter-spacing:.16em;text-transform:uppercase}
@@ -505,7 +559,28 @@
       .journey-chip.on{border-color:var(--gold);color:var(--gold);box-shadow:0 0 16px rgba(212,175,105,.12)}
       .journey-student-bar{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;align-items:center;margin-bottom:8px;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.07);border-radius:999px;padding:5px;max-width:720px;width:fit-content}
       .journey-home-title{font-family:Cinzel,serif;font-size:1.36rem;color:var(--gold);font-weight:800;letter-spacing:.03em;text-align:center;margin:0 0 10px}
-      .journey-neck-stage{position:relative;width:min(380px,92vw);aspect-ratio:872/1804;margin:0 0 16px;overflow:visible;background:transparent url("images/journey-backgrounds/journey-guitar-map-transparent-v1.png") center/contain no-repeat;filter:drop-shadow(0 22px 34px rgba(0,0,0,.28))}
+      .journey-top-row{position:relative;z-index:20;display:flex;justify-content:center;width:100%}
+      .journey-student-picker{position:relative}
+      .journey-student-trigger{display:grid;grid-template-columns:1fr auto;grid-template-areas:"label icon" "name icon";align-items:center;column-gap:12px;min-width:210px;text-align:left;border:1px solid rgba(255,255,255,.12);background:rgba(24,22,19,.72);color:var(--text);border-radius:14px;padding:9px 12px;box-shadow:0 10px 24px rgba(0,0,0,.16);cursor:pointer;backdrop-filter:blur(14px)}
+      .journey-student-trigger span{grid-area:label;font-family:JetBrains Mono,monospace;font-size:.53rem;letter-spacing:.13em;text-transform:uppercase;color:var(--dim)}
+      .journey-student-trigger strong{grid-area:name;font-family:Cinzel,serif;font-size:.92rem;color:var(--gold);line-height:1.2;margin-top:2px}
+      .journey-student-trigger b{grid-area:icon;color:var(--gold);font-size:.72rem;font-weight:800}
+      .journey-student-menu{position:absolute;left:50%;top:calc(100% + 8px);transform:translateX(-50%) translateY(-4px);width:260px;display:none;padding:7px;background:rgba(18,16,14,.94);border:1px solid rgba(212,175,105,.18);border-radius:14px;box-shadow:0 18px 38px rgba(0,0,0,.34);backdrop-filter:blur(18px)}
+      .journey-student-picker.open .journey-student-menu{display:block;transform:translateX(-50%) translateY(0)}
+      .journey-student-option{display:grid;grid-template-columns:1fr auto;align-items:center;gap:6px;border-radius:10px}
+      .journey-student-option.active{background:rgba(212,175,105,.08)}
+      .journey-student-option > button:first-child{display:flex;flex-direction:column;align-items:flex-start;gap:2px;width:100%;border:0;background:transparent;color:var(--text);text-align:left;border-radius:10px;padding:9px 10px;cursor:pointer}
+      .journey-student-option > button:first-child span{font-weight:800;font-size:.76rem}
+      .journey-student-option > button:first-child small{font-size:.58rem;color:var(--dim)}
+      .journey-student-remove{border:0;background:transparent;color:rgba(212,175,105,.44);font-size:.68rem;padding:8px 9px;cursor:pointer}
+      .journey-student-add{width:100%;margin-top:6px;border:1px solid rgba(212,175,105,.18);background:rgba(212,175,105,.07);color:var(--gold);border-radius:10px;padding:9px 10px;font-weight:800;cursor:pointer}
+      .journey-entry-stage{display:grid;grid-template-columns:minmax(220px,270px) minmax(300px,380px);align-items:center;justify-content:center;gap:26px;width:100%}
+      .journey-map-guide{display:flex;flex-direction:column;align-items:center;gap:0}
+      .journey-map-guide img{width:150px;height:180px;object-fit:contain;object-position:center bottom;filter:drop-shadow(0 12px 22px rgba(0,0,0,.4));animation:char-float 3.4s ease-in-out infinite}
+      .journey-map-bubble{position:relative;width:min(250px,76vw);background:rgba(13,11,8,.62);border:1px solid rgba(212,175,105,.28);border-radius:16px;padding:12px 13px;box-shadow:0 14px 32px rgba(0,0,0,.2);backdrop-filter:blur(14px)}
+      .journey-map-bubble:before{content:"";position:absolute;left:50%;top:-7px;transform:translateX(-50%) rotate(45deg);width:12px;height:12px;background:rgba(13,11,8,.82);border-left:1px solid rgba(212,175,105,.28);border-top:1px solid rgba(212,175,105,.28)}
+      .journey-map-bubble p{font-size:.72rem;color:var(--text);line-height:1.45;margin:7px 0 0}
+      .journey-neck-stage{position:relative;width:min(380px,92vw);aspect-ratio:872/1804;margin:0;overflow:visible;background:transparent url("images/journey-backgrounds/journey-guitar-map-transparent-v1.png") center/contain no-repeat;filter:drop-shadow(0 22px 34px rgba(0,0,0,.28))}
       .journey-neck-stage:before,.journey-neck-stage:after{display:none}
       .journey-guide-scene{position:absolute;left:34px;bottom:88px;z-index:8;display:flex;flex-direction:column;align-items:center;width:226px}
       .journey-guide-character{width:172px;height:236px;object-fit:contain;object-position:center bottom;filter:drop-shadow(0 12px 22px rgba(0,0,0,.46));animation:char-float 3.4s ease-in-out infinite}
@@ -575,7 +650,7 @@
       .journey-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.journey-btn{background:var(--gold);color:#0d0b08;border:none;border-radius:10px;padding:10px 14px;font-weight:800;cursor:pointer}.journey-btn.secondary{background:transparent;color:var(--gold);border:1px solid var(--border)}.journey-btn.danger{background:#cc3344;color:white}
       .journey-rating-list{display:flex;flex-direction:column;gap:8px}.journey-rating-row{display:flex;justify-content:space-between;gap:8px;align-items:center;font-size:.72rem;color:var(--text);border-bottom:1px solid rgba(255,255,255,.06);padding-bottom:7px}.journey-rating{background:transparent;border:1px solid var(--border);color:var(--dim);border-radius:999px;width:26px;height:26px;cursor:pointer;font-size:.65rem}.journey-rating.on{background:var(--gold);color:#0d0b08;border-color:var(--gold)}
       .journey-note{border-left:2px solid var(--gold);padding:8px 10px;background:rgba(212,175,105,.06);font-size:.72rem;color:var(--dim);line-height:1.45;margin-top:8px;border-radius:0 8px 8px 0}
-      @media(max-width:720px){.journey-shell{padding:14px}.journey-grid,.journey-companion-grid{grid-template-columns:1fr}.journey-neck-stage{width:min(330px,92vw);background-size:contain}.journey-neck-wrap{padding-top:14px}.journey-headstock{width:140px;height:64px}.journey-neck{width:min(250px,74vw);height:520px;min-height:460px}.journey-body-arc{width:min(360px,92vw);height:95px}.journey-guide-scene{left:50%;bottom:38px;transform:translateX(-50%);width:min(300px,78vw)}.journey-guide-character{width:126px;height:174px}.journey-guide-bubble.game{max-width:250px}.journey-title{font-size:1.25rem}.journey-guide img{width:64px;height:64px}.journey-companion-head,.journey-companion-preview,.journey-companion-summary{align-items:flex-start;flex-direction:column}.journey-student-bar{border-radius:16px;width:100%;box-sizing:border-box}}
+      @media(max-width:720px){.journey-shell{padding:14px}.journey-grid,.journey-companion-grid{grid-template-columns:1fr}.journey-entry-stage{grid-template-columns:1fr;gap:12px}.journey-map-guide{order:2}.journey-neck-stage{order:1;width:min(330px,92vw);background-size:contain}.journey-neck-wrap{padding-top:14px}.journey-headstock{width:140px;height:64px}.journey-neck{width:min(250px,74vw);height:520px;min-height:460px}.journey-body-arc{width:min(360px,92vw);height:95px}.journey-guide-scene{left:50%;bottom:38px;transform:translateX(-50%);width:min(300px,78vw)}.journey-guide-character{width:126px;height:174px}.journey-guide-bubble.game{max-width:250px}.journey-title{font-size:1.25rem}.journey-guide img{width:64px;height:64px}.journey-companion-head,.journey-companion-preview,.journey-companion-summary{align-items:flex-start;flex-direction:column}.journey-student-bar{border-radius:16px;width:100%;box-sizing:border-box}.journey-student-menu{width:min(280px,88vw)}}
     `;
     document.head.appendChild(style);
   }
@@ -599,21 +674,15 @@
 
     let html = '<div class="journey-shell journey-home journey-map-home">';
 
-    // Student chips
-    html += '<div class="journey-student-bar">';
-    state.students.forEach(s => {
-      html += '<div style="display:flex;align-items:center;gap:2px">';
-      html += '<button class="journey-chip '+(s.id===student.id?'on':'')+'" onclick="Journey.switchStudent(\''+s.id+'\')">'+esc(s.name)+'</button>';
-      if(state.students.length > 1) html += '<button onclick="Journey.removeStudent(\''+s.id+'\')" style="background:none;border:none;color:rgba(212,175,105,0.3);cursor:pointer;font-size:0.65rem;padding:2px 4px" title="Remove">✕</button>';
-      html += '</div>';
-    });
-    html += '<button class="journey-chip" onclick="Journey.addStudent()" style="font-size:0.6rem;padding:6px 9px">+ Add</button>';
-    html += '</div>';
-
+    html += renderStudentPicker(state, student);
+    html += '<div class="journey-entry-stage">';
+    html += renderJourneyMapGuide(student);
     html += renderJourneyNeckStage(state, student, level, lvlState, levelPositions);
+    html += '</div>';
 
     html += '</div>';
     root.innerHTML = html;
+    bindStudentPickerClose();
     lightMapSpine(student);
   }
   function renderLevel(num){
@@ -935,6 +1004,16 @@
     saveAndBack(levelNum, lessonNum, blockIdx){
       // Save notes from teach-container if any
       renderLevelLesson(levelNum, lessonNum, blockIdx);
+    },
+    toggleStudentMenu(event){
+      if(event) event.stopPropagation();
+      const picker = event && event.currentTarget ? event.currentTarget.closest('.journey-student-picker') : null;
+      if(!picker) return;
+      const willOpen = !picker.classList.contains('open');
+      document.querySelectorAll('.journey-student-picker.open').forEach(openPicker => {
+        if(openPicker !== picker) openPicker.classList.remove('open');
+      });
+      picker.classList.toggle('open', willOpen);
     },
     switchStudent(id){ const state=loadState(); state.activeStudentId=id; saveState(state); render(); },
     addStudent(){ const name = prompt('Student name?'); if(!name) return; const state=loadState(); const s=blankStudent(name.trim()); state.students.push(s); state.activeStudentId=s.id; saveState(state); render(); },

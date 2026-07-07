@@ -84,9 +84,10 @@ Done recently:
 - Saved the Fretboard Conveyor Belt PDF into `knowledge-base/resources/guitar/fretboard-conveyor-belt/` with an index note.
 - Simplified the Journey entrance into a clean guitar-neck map: student selector plus 8 level markers only, with guide/companion material reserved for the level and lesson rooms.
 - Replaced the cropped Journey scene with a generated guitar/neck cutout made from a green-screen source and keyed to transparency, so the map is an object instead of a background image.
+- Reworked Journey's first-read UI: the active student's journey is chosen from one dropdown control, and the guide character explains what the guitar map is before the learner enters a level.
 
 Next good steps:
 
-1. Refresh Journey in the browser and tune the neck marker alignment against the real visual.
+1. Refresh Journey in the browser and tune the guide/guitar balance plus neck marker alignment against the real visual.
 2. Rework the Level 1 room so it feels like entering a lesson space rather than a dashboard.
 3. Continue moving reusable rules toward `core/` and browser wiring toward `adapters/` only when new work naturally touches those areas.
