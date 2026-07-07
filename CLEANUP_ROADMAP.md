@@ -68,8 +68,12 @@ Done recently:
 - Softened the Hearth body chamber visuals and simplified its visible zone cards.
 - Reframed Hearth body zones as inner-instrument learning chambers instead of navigation shortcuts.
 - Started Journey cleanup by extracting the level, concept, and task banks into `assets/js/journey-data.js`.
+- Added `database-blueprint/docs/journey-strategy-v1.md` to keep Journey focused on "what should I do next?"
+- Polished Journey Level 1 into an authored 8-lesson beginner path instead of relying on rotating lesson banks.
+- Made Journey use authored lesson data when present, while keeping the fallback lesson generator for later levels.
 
 Next good steps:
 
-1. Pause cleanup and return to building/refining the prototype experience.
-2. Continue moving reusable rules toward `core/` and browser wiring toward `adapters/` only when new work naturally touches those areas.
+1. Use Level 1 in the browser and tune the lesson wording against real teaching needs.
+2. Add simple accomplishment/pass-condition language for Level 1 before making unlock rules more complex.
+3. Continue moving reusable rules toward `core/` and browser wiring toward `adapters/` only when new work naturally touches those areas.

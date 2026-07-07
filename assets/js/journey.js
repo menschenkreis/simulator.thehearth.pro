@@ -8,6 +8,7 @@
   const LEVELS = window.JOURNEY_LEVELS || [];
   const CONCEPT_BANK = window.JOURNEY_CONCEPT_BANK || {};
   const TASK_BANK = window.JOURNEY_TASK_BANK || {};
+  const AUTHORED_LESSONS = window.JOURNEY_AUTHORED_LESSONS || {};
 
   function esc(v){
     return String(v == null ? '' : v).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
@@ -124,6 +125,22 @@
 
   function buildLesson(student, levelNum, lessonNum){
     const level = getLevel(levelNum);
+    const authored = AUTHORED_LESSONS[level.id] && AUTHORED_LESSONS[level.id][lessonNum - 1];
+    if(authored){
+      return {
+        id: level.id + '-' + lessonNum,
+        levelId: level.id,
+        levelNum,
+        lessonNum,
+        title: authored.title || ('Lesson ' + lessonNum),
+        minutes: authored.minutes || 60,
+        summary: authored.summary || '',
+        conceptNames: authored.conceptNames || [],
+        taskNames: authored.taskNames || [],
+        blocks: authored.blocks || []
+      };
+    }
+
     const concepts = CONCEPT_BANK[level.id] || CONCEPT_BANK.L1;
     const primaryConcept = concepts[(lessonNum-1) % concepts.length];
     const secondaryConcept = concepts[lessonNum % concepts.length];
@@ -599,6 +616,7 @@
       html += '<div style="font-family:Cinzel,serif;font-size:0.95rem;font-weight:800;color:'+statusColor+';min-width:28px">'+i+'</div>';
       html += '<div style="flex:1">';
       html += '<div style="font-family:Cinzel,serif;font-size:0.82rem;color:'+(locked?'rgba(212,175,105,0.25)':'var(--text)')+';font-weight:700">'+esc(lessonPreview.title)+'</div>';
+      if(!locked && lessonPreview.summary) html += '<div style="font-size:0.64rem;color:var(--dim);line-height:1.35;margin-top:3px">'+esc(lessonPreview.summary)+'</div>';
       if(locked) html += '<div style="font-size:0.62rem;color:rgba(212,175,105,0.2);margin-top:2px">Complete lesson '+(i-1)+' to unlock</div>';
       html += '</div>';
       html += '<div style="font-size:0.85rem;color:'+statusColor+'">'+statusIcon+'</div>';
@@ -719,11 +737,11 @@
     const n = lessonsDone + 1;
     const primary = lesson.conceptNames[0] || 'the core concept';
     const blocks = lesson.blocks.map(b => b.title);
-    if(lessonsDone === 0) return 'Welcome to ' + level.id + '. Lesson ' + n + ' focuses on ' + primary + '. You will review, warm up, learn the concept, drill it, apply it to music, and reflect. Every lesson follows this shape - one hour, beginning to end.';
+    if(lessonsDone === 0) return 'Welcome to ' + level.id + '. Lesson ' + n + ' focuses on ' + primary + '. You will review, warm up, learn the concept, drill it, apply it to music, and reflect. This lesson is planned for about ' + (lesson.minutes || 60) + ' minutes.';
     if(n > total) return 'You have completed all ' + total + ' lessons in ' + level.id + '. The next level is unlocked - keep the momentum going.';
     if(n === total) return 'This is your final lesson in ' + level.id + '. Lesson ' + n + ' brings together everything you have learned. Focus on ' + primary + ' and lock it in before moving forward.';
     const prev = lesson.conceptNames[1] || 'last time';
-    return 'Lesson ' + n + ' of ' + total + '. Today you are working on ' + primary + '. You will drill it slowly, apply it to a real musical moment, and leave with clear notes for next time. One honest hour.';
+    return 'Lesson ' + n + ' of ' + total + '. Today you are working on ' + primary + '. You will drill it slowly, apply it to a real musical moment, and leave with clear notes for next time. One honest contact.';
   }
 
   function guideText(student, level, lvlState, notes){

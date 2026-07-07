@@ -136,14 +136,16 @@ REQUIRED_MARKERS = {
         "function buildLesson",
         "function loadState",
         "window.JOURNEY_LEVELS",
+        "JOURNEY_AUTHORED_LESSONS",
     ],
     "assets/js/journey-data.js": [
         "var JOURNEY_LEVELS",
         "var JOURNEY_CONCEPT_BANK",
         "var JOURNEY_TASK_BANK",
+        "var JOURNEY_AUTHORED_LESSONS",
         "window.JOURNEY_LEVELS",
-        "Origin",
-        "Mastery reflection",
+        "First Clean Sound",
+        "First Song Seed",
     ],
     "assets/js/lesson-1-foundation.js": [
         "LESSON_1_FOUNDATION",
