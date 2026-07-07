@@ -80,6 +80,7 @@ Done recently:
 - Expanded the guide-character catalogue to 11 entries with seated poses and close-up head/bust expressions.
 - Generated three clean Journey background options for an image-backed scene with exactly 8 app-controlled clickable markers overlaid later.
 - Selected Journey background Option B and wired it into the Journey opening with 8 overlay level hot-spots.
+- Updated Jen's Journey companion for A minor pentatonic consolidation and captured the Fretboard Conveyor idea as a future Practice/Journey feature seed.
 
 Next good steps:
 

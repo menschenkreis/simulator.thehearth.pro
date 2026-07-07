@@ -183,10 +183,10 @@ var JOURNEY_AUTHORED_LESSONS = {
 var JOURNEY_STUDENT_COMPANIONS = {
   jen: {
     label: "Jen Lesson Companion",
-    title: "Right hand into pentatonic riff",
-    focus: "Consolidate what is already alive: right-hand pattern, E/A landmarks, A minor pentatonic, and one repeatable riff.",
-    guideNote: "Jen does not need more information first. Use her interest in right-hand patterns as the doorway, then bring every drill back to music.",
-    nextAction: "Start with tune-in, choose one right-hand pattern, review E/A and A/E/C/D landmarks, shape one tiny pentatonic riff, then close with musical conversation.",
+    title: "A minor pentatonic consolidation",
+    focus: "No new challenge tomorrow. Make A minor pentatonic musical by treating root notes as safety points, then adding nearby notes into tiny phrases.",
+    guideNote: "Jen asked for consolidation. Keep the gradient gentle: roots first, rhythm second, then one or two extra pentatonic notes. The teaching point is pattern recognition, not more information.",
+    nextAction: "Use a metronome at 60, 76, and only if calm 100 BPM. Make the A roots musical, divide the pentatonic into three small boxes, and end with an A minor musical conversation.",
     doorway: [
       "Right-hand patterns",
       "Flamenco feel for energy",
@@ -197,29 +197,32 @@ var JOURNEY_STUDENT_COMPANIONS = {
       "E and A string landmarks need repetition",
       "A/E/C/D on the top two strings are not automatic yet",
       "A minor pentatonic is usable but messy",
+      "A roots can become safety notes inside the scale",
       "Clean tone needs patience: no buzz, no rushing, even sound"
     ],
     gaps: [
       "C chord showed up as a gap",
       "Pentatonic meaning needs a simpler explanation",
       "Finger-independence drills must be tiny",
-      "Scale-to-fretboard relationship needs repetition"
+      "Scale-to-fretboard relationship needs repetition",
+      "Do not move into extra challenges until the current map feels safer"
     ],
     lessonFlow: [
       "Tune in: body scan, stretch, tune, open-string sound",
-      "Review: riff, note landmarks, last musical idea",
-      "Doorway: one right-hand pattern",
-      "Map: E/A highways plus A/E/C/D landmarks",
-      "Apply: three-note pentatonic riff",
-      "Return to music: A minor conversation, then swap",
+      "Review: A minor pentatonic shape and the A root notes",
+      "Doorway: play the root notes musically with a metronome",
+      "Map: split the scale into three small boxes, each with a root as safety",
+      "Apply: add one or two nearby pentatonic notes to make tiny phrases",
+      "Tempo ladder: 60 BPM, then 76 BPM, then 100 BPM only if relaxed",
+      "Return to music: A minor conversation, then swap roles",
       "Reflect: what worked, what was hard, what to practise"
     ],
     practice: [
-      "Practise E and A notes slowly",
-      "Review A/E/C/D on the top two strings",
-      "Marcello warm-up for clean sound, not speed",
-      "One right-hand pattern over A minor",
-      "One tiny A minor pentatonic riff"
+      "Make A root notes musical at 60 BPM",
+      "Repeat at 76 BPM only if the pulse stays calm",
+      "Try 100 BPM as a light test, not a pass/fail challenge",
+      "Practise three small pentatonic boxes with a root safety note",
+      "Create one tiny A minor pentatonic phrase"
     ]
   }
 };

@@ -177,7 +177,8 @@ REQUIRED_MARKERS = {
         "window.JOURNEY_LEVELS",
         "Time Feel, Part 1",
         "QJam Level 1 Integration",
-        "Right hand into pentatonic riff",
+        "A minor pentatonic consolidation",
+        "root notes as safety points",
     ],
     "assets/js/lesson-1-foundation.js": [
         "LESSON_1_FOUNDATION",
