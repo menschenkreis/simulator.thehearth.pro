@@ -6,7 +6,7 @@ Plain English: these are visual backgrounds only. The app should place guide cha
 
 ## Neck Background Options V1
 
-Active choice: **Transparent guitar map V1**
+Active choice: **Transparent guitar map V2**
 
 Contact sheet:
 
@@ -18,11 +18,14 @@ Contact sheet:
 | B | `images/journey-backgrounds/journey-neck-bg-option-b-v1.png` | Active. Brighter and clearer. More visible room details and side space. |
 | B neck crop | `images/journey-backgrounds/journey-neck-bg-option-b-neck-crop-v1.png` | Superseded. Cropped scene still included too much background. |
 | C | `images/journey-backgrounds/journey-neck-bg-option-c-v1.png` | Balanced warm scene with clear neck and strong circular floor feeling. |
-| Transparent guitar map V1 | `images/journey-backgrounds/journey-guitar-map-transparent-v1.png` | Active in the app. Generated on green, then keyed to transparent so the map is just the guitar/neck. |
+| Transparent guitar map V1 | `images/journey-backgrounds/journey-guitar-map-transparent-v1.png` | Superseded. Good neck composition, but the body was cropped and the headstock could read wrong. |
+| Transparent guitar map V2 | `images/journey-backgrounds/journey-guitar-map-transparent-v2.png` | Active in the app. Full headstock, six tuning pegs, six strings, full sound hole, and full guitar body for the Journey map metaphor. |
 
 Source file:
 
 `images/journey-backgrounds/journey-guitar-map-green-v1.png`
+
+`images/journey-backgrounds/journey-guitar-map-green-v2.png`
 
 ## Build Rule
 

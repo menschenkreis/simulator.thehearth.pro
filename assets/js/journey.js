@@ -499,8 +499,8 @@
       '<img src="'+guideImage+'" alt="Journey guide"/>' +
       '<div class="journey-map-bubble">' +
         '<div class="journey-kicker">Journey</div>' +
-        '<p>This is '+esc(name)+'\'s path through the work.</p>' +
-        '<p>Each light opens a level. Choose the journey above, then step in.</p>' +
+        '<p>This is '+esc(name)+'\'s path.</p>' +
+        '<p>Follow the levels toward mastery.</p>' +
       '</div>' +
     '</aside>';
   }
@@ -516,8 +516,7 @@
   }
 
   function renderJourneyNeckStage(state, student, level, lvlState, levelPositions){
-    const roman = ['I','II','III','IV','V','VI','VII','VIII'];
-    const markerTops = [17.5, 26, 34.5, 43, 51.5, 60, 68.5, 77];
+    const markerTops = [22, 29.5, 37, 44.5, 52, 59.5, 67, 75.5];
     let html = '<section class="journey-neck-stage" aria-label="Journey level map">' +
       '<div class="journey-hotspot-layer" aria-label="Journey level guitar neck">';
 
@@ -527,12 +526,15 @@
       const lit = lp.unlocked;
       const top = markerTops[i] || (18 + i * 8.5);
       const classes = ['journey-neck-level'];
+      if(i === LEVELS.length - 1) classes.push('mastery');
       if(active) classes.push('active');
       if(complete) classes.push('complete');
       if(!lit) classes.push('locked');
       const action = lit ? ' onclick="Journey.openLevel('+lp.num+')"' : ' disabled';
+      const markerLabel = i === LEVELS.length - 1 ? 'Mastery' : 'L'+lp.num;
+      const markerSub = i === LEVELS.length - 1 ? '' : 'Level '+lp.num;
       html += '<button type="button" class="'+classes.join(' ')+'" aria-label="Level '+lp.num+'" title="Level '+lp.num+'" style="--lvl:'+esc(lp.color)+';top:'+top+'%"'+action+'>' +
-        '<span>★</span><small>'+roman[i]+'</small>' +
+        '<span>'+markerLabel+'</span><small>'+markerSub+'</small>' +
       '</button>';
     });
 
@@ -574,13 +576,13 @@
       .journey-student-option > button:first-child small{font-size:.58rem;color:var(--dim)}
       .journey-student-remove{border:0;background:transparent;color:rgba(212,175,105,.44);font-size:.68rem;padding:8px 9px;cursor:pointer}
       .journey-student-add{width:100%;margin-top:6px;border:1px solid rgba(212,175,105,.18);background:rgba(212,175,105,.07);color:var(--gold);border-radius:10px;padding:9px 10px;font-weight:800;cursor:pointer}
-      .journey-entry-stage{position:relative;display:flex;justify-content:center;align-items:flex-start;width:100%;min-height:min(780px,calc(100vh - 150px));padding-top:4px}
-      .journey-map-guide{position:absolute;left:max(12px,calc(50% - 470px));top:92px;z-index:8;display:flex;flex-direction:column;align-items:center;gap:0;width:230px}
+      .journey-entry-stage{position:relative;display:flex;justify-content:center;align-items:flex-start;width:100%;min-height:min(860px,calc(100vh - 130px));padding-top:4px}
+      .journey-map-guide{position:absolute;right:calc(50% + 220px);top:118px;z-index:8;display:flex;flex-direction:column;align-items:center;gap:0;width:230px}
       .journey-map-guide img{width:132px;height:158px;object-fit:contain;object-position:center bottom;filter:drop-shadow(0 12px 22px rgba(0,0,0,.4));animation:char-float 3.4s ease-in-out infinite}
       .journey-map-bubble{position:relative;width:220px;background:rgba(13,11,8,.62);border:1px solid rgba(212,175,105,.28);border-radius:16px;padding:12px 13px;box-shadow:0 14px 32px rgba(0,0,0,.2);backdrop-filter:blur(14px)}
       .journey-map-bubble:before{content:"";position:absolute;left:50%;top:-7px;transform:translateX(-50%) rotate(45deg);width:12px;height:12px;background:rgba(13,11,8,.82);border-left:1px solid rgba(212,175,105,.28);border-top:1px solid rgba(212,175,105,.28)}
       .journey-map-bubble p{font-size:.72rem;color:var(--text);line-height:1.45;margin:7px 0 0}
-      .journey-neck-stage{position:relative;width:min(380px,72vw);aspect-ratio:872/1804;margin:0 auto;overflow:visible;background:transparent url("images/journey-backgrounds/journey-guitar-map-transparent-v1.png") center/contain no-repeat;filter:drop-shadow(0 22px 34px rgba(0,0,0,.28))}
+      .journey-neck-stage{position:relative;width:min(400px,72vw);aspect-ratio:864/1821;margin:0 auto;overflow:visible;background:transparent url("images/journey-backgrounds/journey-guitar-map-transparent-v2.png") center/contain no-repeat;filter:drop-shadow(0 22px 34px rgba(0,0,0,.28))}
       .journey-neck-stage:before,.journey-neck-stage:after{display:none}
       .journey-guide-scene{position:absolute;left:34px;bottom:88px;z-index:8;display:flex;flex-direction:column;align-items:center;width:226px}
       .journey-guide-character{width:172px;height:236px;object-fit:contain;object-position:center bottom;filter:drop-shadow(0 12px 22px rgba(0,0,0,.46));animation:char-float 3.4s ease-in-out infinite}
@@ -605,10 +607,14 @@
       .journey-inlay{position:absolute;left:50%;transform:translate(-50%,-50%);width:10px;height:10px;border-radius:999px;background:radial-gradient(circle,rgba(255,235,180,.56),rgba(212,175,105,.08) 68%,transparent 70%);box-shadow:0 0 12px rgba(212,175,105,.14);z-index:1}
       .journey-neck-level{position:absolute;left:50%;transform:translate(-50%,-50%);z-index:6;width:48px;height:48px;border-radius:999px;border:1px solid rgba(255,224,157,.74);background:radial-gradient(circle at 50% 48%,rgba(255,255,240,.95) 0 12%,rgba(255,210,100,.54) 13% 35%,rgba(76,42,20,.88) 62%,rgba(13,11,8,.9) 100%);color:var(--text);cursor:pointer;display:grid;place-items:center;padding:0;box-shadow:inset 0 0 14px rgba(255,235,180,.16),0 8px 20px rgba(0,0,0,.28),0 0 22px color-mix(in srgb,var(--lvl),transparent 74%),0 0 18px rgba(212,175,105,.16);transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease}
       .journey-neck-level:before{content:"";position:absolute;inset:5px;border-radius:inherit;border:1px solid rgba(255,235,180,.14);pointer-events:none}
-      .journey-neck-level span{font-family:Cinzel,serif;color:#fff9dc;font-size:.78rem;font-weight:800;line-height:1;text-shadow:0 0 12px rgba(255,225,139,.95)}
+      .journey-neck-level span{font-family:Cinzel,serif;color:#fff9dc;font-size:.72rem;font-weight:800;line-height:1;text-shadow:0 0 12px rgba(255,225,139,.95)}
       .journey-neck-level small{position:absolute;bottom:-15px;font-family:JetBrains Mono,monospace;font-size:.48rem;color:rgba(255,226,166,.62);letter-spacing:.06em}
       .journey-neck-level:hover:not(:disabled){transform:translate(-50%,-50%) scale(1.08);box-shadow:inset 0 0 14px rgba(255,235,180,.12),0 10px 26px rgba(0,0,0,.34),0 0 26px color-mix(in srgb,var(--lvl),transparent 68%)}
       .journey-neck-level.active{width:58px;height:58px;border-color:#ffe5a8;box-shadow:0 0 0 5px rgba(212,175,105,.08),0 0 38px rgba(255,202,97,.46),0 12px 30px rgba(0,0,0,.3)}
+      .journey-neck-level.mastery{width:78px;height:78px;border-color:rgba(255,245,204,.9);background:radial-gradient(circle at 50% 50%,rgba(255,248,215,.18) 0 20%,rgba(36,22,12,.82) 48%,rgba(8,7,6,.95) 100%);box-shadow:0 0 0 7px rgba(255,255,255,.03),0 0 28px rgba(255,210,106,.34),0 0 38px color-mix(in srgb,var(--lvl),transparent 62%),0 14px 28px rgba(0,0,0,.36)}
+      .journey-neck-level.mastery:before{inset:-10px;border:2px solid transparent;background:conic-gradient(from 18deg,rgba(255,96,96,.72),rgba(255,193,84,.72),rgba(244,230,111,.72),rgba(103,214,131,.72),rgba(83,177,255,.72),rgba(170,128,255,.72),rgba(255,96,96,.72));mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);mask-composite:exclude;-webkit-mask-composite:xor;padding:2px;opacity:.78}
+      .journey-neck-level.mastery span{font-size:.58rem;letter-spacing:.03em;text-transform:uppercase}
+      .journey-neck-level.mastery small{display:none}
       .journey-neck-level.complete{background:radial-gradient(circle at 42% 35%,rgba(235,255,227,.42),rgba(63,170,94,.18) 42%,rgba(13,32,22,.86) 74%)}
       .journey-neck-level.locked{opacity:.32;cursor:not-allowed;filter:saturate(.4)}
       .journey-body-arc{width:min(480px,92vw);height:120px;margin-top:-42px;border-radius:50% 50% 0 0;background:linear-gradient(180deg,rgba(92,50,27,.92),rgba(37,19,10,.92));border:1px solid rgba(212,175,105,.28);border-bottom:0;box-shadow:inset 0 18px 34px rgba(0,0,0,.34),0 -8px 28px rgba(212,175,105,.08)}
