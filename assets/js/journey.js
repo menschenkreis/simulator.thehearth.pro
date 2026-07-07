@@ -525,7 +525,7 @@
   }
 
   function renderJourneyNeckStage(state, student, level, lvlState, levelPositions){
-    const markerTops = [16.7, 24.3, 31.9, 39.5, 47.1, 54.7, 62.3, 69.7];
+    const markerTops = [16.7, 23.5, 30.3, 37.1, 43.9, 50.7, 57.5, 69.7];
     let html = '<section class="journey-neck-stage" aria-label="Journey level map">' +
       '<div class="journey-hotspot-layer" aria-label="Journey level guitar neck">';
 
@@ -541,7 +541,6 @@
       if(!lit) classes.push('locked');
       const action = lit ? ' onclick="Journey.openLevel('+lp.num+')"' : ' disabled';
       const markerLabel = i === LEVELS.length - 1 ? 'Mastery' : 'L'+lp.num;
-      const markerSub = i === LEVELS.length - 1 ? '' : 'Level '+lp.num;
       const markerContent = i === LEVELS.length - 1
         ? '<span class="journey-mastery-icon"><img src="images/map-nodes-generated-v2-normalized/mastery.png" alt="" /></span>'
         : '<span>'+markerLabel+'</span>';
@@ -549,7 +548,7 @@
         ? '<i class="journey-mastery-orbit orbit-one"></i><i class="journey-mastery-orbit orbit-two"></i><i class="journey-mastery-orbit orbit-three"></i><b class="journey-mastery-particle particle-one"></b><b class="journey-mastery-particle particle-two"></b><b class="journey-mastery-particle particle-three"></b><b class="journey-mastery-particle particle-four"></b>'
         : '';
       html += '<button type="button" class="'+classes.join(' ')+'" aria-label="Level '+lp.num+'" title="Level '+lp.num+'" style="--lvl:'+esc(lp.color)+';--lvl-rgb:'+hexToRgb(lp.color)+';--pulse-delay:'+(i * .28).toFixed(2)+'s;top:'+top+'%"'+action+'>' +
-        masteryMotion + markerContent + '<small>'+markerSub+'</small>' +
+        masteryMotion + markerContent +
       '</button>';
     });
 
