@@ -498,9 +498,9 @@
     return '<aside class="journey-map-guide" aria-label="Journey guide">' +
       '<img src="'+guideImage+'" alt="Journey guide"/>' +
       '<div class="journey-map-bubble">' +
-        '<div class="journey-kicker">Journey Map</div>' +
-        '<p>This guitar is '+esc(name)+'\'s path. Each glowing mark is a level.</p>' +
-        '<p>Choose whose journey above, then click a level to enter its lesson room.</p>' +
+        '<div class="journey-kicker">Journey</div>' +
+        '<p>This is '+esc(name)+'\'s path through the work.</p>' +
+        '<p>Each light opens a level. Choose the journey above, then step in.</p>' +
       '</div>' +
     '</aside>';
   }
