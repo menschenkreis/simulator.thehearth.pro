@@ -157,6 +157,39 @@ The app should help Ayla prepare and teach this without pretending Jen needs a g
 6. Keep the existing lesson data in `journey-data.js`; do not mix screen layout with lesson content.
 7. Later, add click behavior on each lesson stop for preview/resume.
 
+## Code Touchpoints
+
+Main files:
+
+- `assets/js/journey.js`
+- `assets/js/journey-data.js`
+
+Current behavior:
+
+- `render()` shows the main Journey guitar map.
+- `renderJourneyNeckStage()` draws the L1-L8 markers on the guitar.
+- Each unlocked level marker calls `Journey.openLevel(levelNumber)`.
+- `Journey.openLevel(num)` currently saves the selected level and calls `renderLevel(num)`.
+- `renderLevel(num)` currently shows the level header, guide, progress bar, and lesson list.
+- `renderLevelLesson(levelNum, lessonNum, blockIdx)` opens the actual lesson flow.
+
+Recommended implementation shape:
+
+- Add `renderLevelEntry(num)` for the new curriculum/path screen.
+- Make `Journey.openLevel(1)` call `renderLevelEntry(1)`.
+- Keep `Journey.openLevel(2+)` on `renderLevel(num)` until those levels have their own entry screens.
+- Add `Journey.beginLevel(levelNum)` or `Journey.openNextLesson(levelNum)` for the "Let's begin" button.
+- Keep all Level 1 lesson titles, blocks, and summaries in `journey-data.js`.
+- Keep all entry-screen layout/styling in `journey.js`.
+
+Plain English:
+
+The data should say what the lessons are.
+
+The screen should decide how to show the path.
+
+Do not bury curriculum data inside visual HTML.
+
 ## First Version Acceptance Test
 
 The screen is successful if Ayla can say:
