@@ -82,9 +82,10 @@ Done recently:
 - Selected Journey background Option B and wired it into the Journey opening with 8 overlay level hot-spots.
 - Updated Jen's Journey companion for A minor pentatonic consolidation and captured the Fretboard Conveyor idea as a future Practice/Journey feature seed.
 - Saved the Fretboard Conveyor Belt PDF into `knowledge-base/resources/guitar/fretboard-conveyor-belt/` with an index note.
+- Simplified the Journey entrance into a clean guitar-neck map: student selector plus 8 level markers only, with guide/companion material reserved for the level and lesson rooms.
 
 Next good steps:
 
-1. Refresh Journey in the browser, select Jen, and tune the guitar-neck scene against the real lesson flow.
-2. Use Level 1 in the browser and tune the lesson wording against real teaching needs.
+1. Refresh Journey in the browser and tune the neck marker alignment against the real visual.
+2. Rework the Level 1 room so it feels like entering a lesson space rather than a dashboard.
 3. Continue moving reusable rules toward `core/` and browser wiring toward `adapters/` only when new work naturally touches those areas.

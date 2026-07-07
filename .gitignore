@@ -23,6 +23,11 @@ Thumbs.db
 
 # Logs
 *.log
+
+# Local test/runtime caches
+__pycache__/
+*.pyc
+
 knowledge-base/pdfs/
 knowledge-base/guitar-tricks/PDF/
 play-node-review.tar.gz

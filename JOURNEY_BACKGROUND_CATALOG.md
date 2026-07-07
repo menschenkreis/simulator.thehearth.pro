@@ -6,7 +6,7 @@ Plain English: these are visual backgrounds only. The app should place guide cha
 
 ## Neck Background Options V1
 
-Active choice: **Option B**
+Active choice: **Option B neck crop**
 
 Contact sheet:
 
@@ -16,11 +16,12 @@ Contact sheet:
 |---|---|---|
 | A | `images/journey-backgrounds/journey-neck-bg-option-a-v1.png` | Darkest and closest to the first reference feeling. Strong hearth-room mood. |
 | B | `images/journey-backgrounds/journey-neck-bg-option-b-v1.png` | Active. Brighter and clearer. More visible room details and side space. |
+| B neck crop | `images/journey-backgrounds/journey-neck-bg-option-b-neck-crop-v1.png` | Active in the app. Cropped tightly so Journey opens as a clean guitar-neck level map. |
 | C | `images/journey-backgrounds/journey-neck-bg-option-c-v1.png` | Balanced warm scene with clear neck and strong circular floor feeling. |
 
 ## Build Rule
 
 - Do not bake final level markers into these images.
 - Overlay exactly 8 app-controlled level buttons/hot-spots.
-- Overlay the guide character from `assets/js/guide-character-data.js`.
-- Keep any text, lesson status, and companion prep outside the background image.
+- Keep the Journey entrance clean: guitar neck plus level markers only.
+- Use the guide character, lesson status, and companion prep inside level or lesson rooms, not on top of the entrance map.
