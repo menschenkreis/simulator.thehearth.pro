@@ -82,6 +82,7 @@ REQUIRED_MARKERS = {
         "adapters/recorder-controller.js",
         "adapters/notebook-controller.js",
         "adapters/dictionary-controller.js",
+        "assets/js/journey-data.js",
         "assets/js/journey.js",
         "assets/js/map-node-data.js",
         "assets/js/map-node-info.js",
@@ -134,6 +135,15 @@ REQUIRED_MARKERS = {
         "hearth-journey-v2",
         "function buildLesson",
         "function loadState",
+        "window.JOURNEY_LEVELS",
+    ],
+    "assets/js/journey-data.js": [
+        "var JOURNEY_LEVELS",
+        "var JOURNEY_CONCEPT_BANK",
+        "var JOURNEY_TASK_BANK",
+        "window.JOURNEY_LEVELS",
+        "Origin",
+        "Mastery reflection",
     ],
     "assets/js/lesson-1-foundation.js": [
         "LESSON_1_FOUNDATION",

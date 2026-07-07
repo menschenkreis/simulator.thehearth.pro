@@ -67,6 +67,7 @@ Done recently:
 - Extracted Hearth body chamber copy and zone meanings into `assets/js/hearth-body-data.js`.
 - Softened the Hearth body chamber visuals and simplified its visible zone cards.
 - Reframed Hearth body zones as inner-instrument learning chambers instead of navigation shortcuts.
+- Started Journey cleanup by extracting the level, concept, and task banks into `assets/js/journey-data.js`.
 
 Next good steps:
 
