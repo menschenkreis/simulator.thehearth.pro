@@ -24,6 +24,14 @@ Not:
 
 `Hearth magic language on the first curriculum screen`
 
+Update after visual concept review:
+
+Use the third concept direction: a calm, Apple-like dark/glass curriculum progress map with rows and dots. The screen should still be built with editable HTML/CSS, not as one flat image, so progress, labels, and student-specific states can change.
+
+Level 1 should use one Level 1 color family. Do not rainbow-code the five rows. The categories can have tiny tonal variation if needed for readability, but the whole screen should feel like one coherent Level 1 chapter.
+
+Future category icons should be generated in the same clean engraved/handmade spirit as the map nodes. Do not introduce a new icon style for Journey.
+
 ## What The Screen Should Feel Like
 
 Level 1 should feel like opening a beautiful but practical guitar curriculum overview.
@@ -100,6 +108,8 @@ Let's begin
 
 - The eight lessons should be grouped on one coherent object.
 - The guitar visual style should unify this screen with the main Journey map.
+- Level 1 uses the Level 1 warm red/orange chapter color.
+- Row dots show what is done, what is current, and what is still ahead.
 - Lesson labels should not fight the art.
 - The guide should sit beside the map, not on top of it.
 - The student selector should stay above the map.
@@ -149,11 +159,12 @@ Use the current hybrid:
 - existing Journey guitar image as visual style reference
 - editable HTML lesson buttons
 - QJam section labels
+- code-native rows and progress dots
 - no generated image until the structure is approved
 
 Credit-efficient reason:
 
-The structure is still changing, so generated backgrounds would waste credits and be harder to edit. Use generation later only when the composition is stable.
+The structure is still changing, so generated backgrounds and icons would waste credits and be harder to edit. Use generation later only when the composition is stable and the exact icon list is known.
 
 ## Current Technical Note
 

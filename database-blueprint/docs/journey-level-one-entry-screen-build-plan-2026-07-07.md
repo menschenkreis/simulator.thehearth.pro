@@ -62,7 +62,7 @@ Current prototype:
 1. Top: small student selector remains available, but not loud.
 2. Main stage: one clear curriculum roadmap using the Journey guitar as a subtle visual watermark.
 3. Left or side: guide character with one speech bubble.
-4. Roadmap sections: the Level 1 lessons grouped by QJam-style categories.
+4. Roadmap sections: the Level 1 lessons grouped by QJam-style categories as progress rows.
 5. Bottom: "Let's begin" / "Continue Level 1" button.
 
 The stops should be readable but compact. Each stop can show:
@@ -70,6 +70,15 @@ The stops should be readable but compact. Each stop can show:
 - lesson number
 - short title
 - one small symbol/category
+
+Each row should show:
+
+- what has already been done
+- the current lesson/checkpoint
+- what is still ahead
+- one finish dot at the end of the row
+
+The first version uses simple letter symbols for the row icons. Later, generate proper icons only after the categories are stable, and keep them in the same visual family as the map node images.
 
 No large paragraph cards on the first version.
 
@@ -201,7 +210,7 @@ The screen is successful if Ayla can say:
 
 ## Do Not Do Yet
 
-- Do not generate a final map image yet.
+- Do not generate a final map image or icon set yet.
 - Do not write all eight lessons again from scratch.
 - Do not add complex unlock logic yet.
 - Do not add more top-level buttons.
