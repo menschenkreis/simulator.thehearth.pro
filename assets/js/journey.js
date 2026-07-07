@@ -10,6 +10,7 @@
   const TASK_BANK = window.JOURNEY_TASK_BANK || {};
   const AUTHORED_LESSONS = window.JOURNEY_AUTHORED_LESSONS || {};
   const STUDENT_COMPANIONS = window.JOURNEY_STUDENT_COMPANIONS || {};
+  const GUIDE_ASSETS = window.GUIDE_CHARACTER_ASSETS || {};
 
   function esc(v){
     return String(v == null ? '' : v).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
@@ -38,6 +39,20 @@
 
   function safePlaySfx(name){
     if(typeof window.playSfx === 'function') window.playSfx(name);
+  }
+
+  function guideAsset(mood){
+    const moods = GUIDE_ASSETS.moods || {};
+    return (moods[mood] && moods[mood].src) ||
+      (moods.talking && moods.talking.src) ||
+      'images/character-generated/talking-guide-v1.png';
+  }
+
+  function journeyGuideMood(student, lvlState){
+    if(lvlState && lvlState.complete) return 'celebratory';
+    if(getCompanion(student)) return 'encouraging';
+    if(lvlState && (lvlState.lessonsDone || 0) > 0) return 'thinking';
+    return 'neutral';
   }
 
   function blankStudent(name){
@@ -456,7 +471,7 @@
     const actionLabel = isComplete ? 'Review level' : 'Open next lesson';
     const progressLabel = isComplete ? 'Level complete' : 'Next: Lesson ' + nextLessonNum + ' of ' + level.totalLessons;
     const roman = ['I','II','III','IV','V','VI','VII','VIII'];
-    const guideImage = 'images/character-generated/talking-guide-v1.png';
+    const guideImage = guideAsset(journeyGuideMood(student, lvlState));
     let html = '<section class="journey-neck-stage">' +
       '<div class="journey-guide-scene">' +
         '<img class="journey-guide-character" src="'+guideImage+'" alt="Journey guide"/>' +

@@ -76,6 +76,7 @@ Done recently:
 - Reworked the Journey opening screen into a cleaner vertical guitar-neck scene with exactly one fret per level, guide-character speech, and companion prep tucked into a drawer.
 - Replaced Journey's block-like level markers with circular glowing inlays and wired in the new talking-guide asset.
 - Pushed Journey closer to the saved neck-scene reference: central instrument stage, headstock/body hints, glowing star markers, and guide placed inside the scene.
+- Built the first generated guide-character variation set, logged it in `GUIDE_ASSET_CATALOG.md`, and added `assets/js/guide-character-data.js` so screens can choose guide moods from one catalogue.
 
 Next good steps:
 
