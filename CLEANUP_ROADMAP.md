@@ -81,6 +81,7 @@ Done recently:
 - Generated three clean Journey background options for an image-backed scene with exactly 8 app-controlled clickable markers overlaid later.
 - Selected Journey background Option B and wired it into the Journey opening with 8 overlay level hot-spots.
 - Updated Jen's Journey companion for A minor pentatonic consolidation and captured the Fretboard Conveyor idea as a future Practice/Journey feature seed.
+- Saved the Fretboard Conveyor Belt PDF into `knowledge-base/resources/guitar/fretboard-conveyor-belt/` with an index note.
 
 Next good steps:
 

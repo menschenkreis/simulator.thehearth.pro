@@ -47,6 +47,14 @@ Theme: A minor pentatonic into music.
 
 The PDF is useful as a concept reference, not something to copy directly.
 
+Saved knowledge-base copy:
+
+`knowledge-base/resources/guitar/fretboard-conveyor-belt/the-fretboard-conveyor-belt-guitar-mastery-method.pdf`
+
+Resource note:
+
+`knowledge-base/resources/guitar/fretboard-conveyor-belt/index.md`
+
 What it shows:
 
 - Reduce the fretboard into small two-string blocks.
