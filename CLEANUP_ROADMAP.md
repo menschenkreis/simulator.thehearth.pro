@@ -73,10 +73,10 @@ Done recently:
 - Made Journey use authored lesson data when present, while keeping the fallback lesson generator for later levels.
 - Captured Jen's current learning state and updated the next-lesson prep around consolidation, right-hand patterns, note landmarks, and drills returning to music.
 - Added a Journey Lesson Companion surface so Jen's next lesson prep appears directly in the Journey UI.
-- Reworked the Journey opening screen into a vertical guitar-neck metaphor with level markers on the frets, while keeping current-student status and companion prep nearby.
+- Reworked the Journey opening screen into a cleaner vertical guitar-neck scene with exactly one fret per level, guide-character speech, and companion prep tucked into a drawer.
 
 Next good steps:
 
-1. Refresh Journey in the browser, select Jen, and tune the guitar-neck opening against the real lesson flow.
+1. Refresh Journey in the browser, select Jen, and tune the guitar-neck scene against the real lesson flow.
 2. Use Level 1 in the browser and tune the lesson wording against real teaching needs.
 3. Continue moving reusable rules toward `core/` and browser wiring toward `adapters/` only when new work naturally touches those areas.
