@@ -441,6 +441,33 @@
     '</div>';
   }
 
+  function renderOpeningDashboard(state, student, level, lvlState){
+    const lessonsDone = lvlState.lessonsDone || 0;
+    const nextLessonNum = Math.min(level.totalLessons, lessonsDone + 1);
+    const nextLesson = buildLesson(student, level.num, nextLessonNum);
+    const companion = getCompanion(student);
+    const isComplete = lessonsDone >= level.totalLessons;
+    const primary = companion ? companion.nextAction : (nextLesson.summary || level.focus);
+    const actionLabel = isComplete ? 'Review level' : 'Open next lesson';
+    const progressLabel = isComplete ? 'Level complete' : 'Next: Lesson ' + nextLessonNum + ' of ' + level.totalLessons;
+    return '<section class="journey-opening">' +
+      '<div class="journey-opening-main">' +
+        '<div class="journey-kicker">Journey</div>' +
+        '<h2 class="journey-opening-title">'+esc(student.name)+'</h2>' +
+        '<p class="journey-opening-copy">'+esc(primary)+'</p>' +
+        '<div class="journey-opening-actions">' +
+          '<button class="journey-btn" onclick="Journey.openLesson('+(student.currentLevel || 1)+','+nextLessonNum+')">'+esc(actionLabel)+'</button>' +
+          '<button class="journey-btn secondary" onclick="Journey.openJournal()">Add Note</button>' +
+        '</div>' +
+      '</div>' +
+      '<div class="journey-opening-side">' +
+        '<div class="journey-status-row"><span>Current level</span><strong>'+esc(level.name || ('Level '+level.num))+'</strong></div>' +
+        '<div class="journey-status-row"><span>Status</span><strong>'+esc(progressLabel)+'</strong></div>' +
+        '<div class="journey-status-row"><span>Focus</span><strong>'+esc(level.tag || level.id)+'</strong></div>' +
+      '</div>' +
+    '</section>';
+  }
+
   function injectStyles(){
     if(document.getElementById('journey-style-v2')) return;
     const style = document.createElement('style');
@@ -455,6 +482,18 @@
       .journey-students{display:flex;gap:7px;flex-wrap:wrap;margin-top:13px;position:relative;z-index:1}
       .journey-chip{border:1px solid var(--border);background:rgba(26,23,20,.72);color:var(--dim);border-radius:999px;padding:8px 11px;font-size:.72rem;cursor:pointer}
       .journey-chip.on{border-color:var(--gold);color:var(--gold);box-shadow:0 0 16px rgba(212,175,105,.12)}
+      .journey-student-bar{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;align-items:center;margin-bottom:14px;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.07);border-radius:999px;padding:5px;max-width:720px;width:fit-content}
+      .journey-home-title{font-family:Cinzel,serif;font-size:1.45rem;color:var(--gold);font-weight:800;letter-spacing:.03em;text-align:center;margin:0 0 13px}
+      .journey-opening{width:100%;max-width:720px;display:grid;grid-template-columns:minmax(0,1.35fr) minmax(190px,.65fr);gap:12px;background:linear-gradient(180deg,rgba(255,255,255,.045),rgba(0,0,0,.08));border:1px solid rgba(212,175,105,.22);border-radius:18px;padding:15px;margin-bottom:14px;box-shadow:0 18px 42px rgba(0,0,0,.2)}
+      .journey-opening-title{font-family:Cinzel,serif;color:var(--gold);font-size:1.18rem;line-height:1.15;margin:4px 0 6px}
+      .journey-opening-copy{font-size:.76rem;color:var(--text);line-height:1.48;margin:0;max-width:520px}
+      .journey-opening-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:13px}
+      .journey-opening-side{display:flex;flex-direction:column;gap:8px}
+      .journey-status-row{background:rgba(13,11,8,.5);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:9px}
+      .journey-status-row span{display:block;font-family:JetBrains Mono,monospace;color:var(--dim);font-size:.53rem;letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px}
+      .journey-status-row strong{display:block;color:var(--text);font-size:.72rem;line-height:1.25}
+      .journey-spine-panel{width:100%;max-width:380px;border:1px solid rgba(255,255,255,.07);background:rgba(255,255,255,.025);border-radius:18px;padding:13px;margin-top:2px}
+      .journey-spine-title{font-family:JetBrains Mono,monospace;font-size:.56rem;color:var(--gold);letter-spacing:.14em;text-transform:uppercase;text-align:center;margin-bottom:8px}
       .journey-grid{display:grid;grid-template-columns:minmax(220px,.75fr) 1.5fr;gap:14px}
       .journey-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px;box-shadow:0 8px 26px rgba(0,0,0,.16)}
       .journey-companion-card{width:100%;max-width:720px;background:rgba(20,18,15,.86);border:1px solid rgba(212,175,105,.24);border-radius:16px;padding:14px 14px 16px;margin:0 0 16px;box-shadow:0 14px 34px rgba(0,0,0,.22)}
@@ -487,7 +526,7 @@
       .journey-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.journey-btn{background:var(--gold);color:#0d0b08;border:none;border-radius:10px;padding:10px 14px;font-weight:800;cursor:pointer}.journey-btn.secondary{background:transparent;color:var(--gold);border:1px solid var(--border)}.journey-btn.danger{background:#cc3344;color:white}
       .journey-rating-list{display:flex;flex-direction:column;gap:8px}.journey-rating-row{display:flex;justify-content:space-between;gap:8px;align-items:center;font-size:.72rem;color:var(--text);border-bottom:1px solid rgba(255,255,255,.06);padding-bottom:7px}.journey-rating{background:transparent;border:1px solid var(--border);color:var(--dim);border-radius:999px;width:26px;height:26px;cursor:pointer;font-size:.65rem}.journey-rating.on{background:var(--gold);color:#0d0b08;border-color:var(--gold)}
       .journey-note{border-left:2px solid var(--gold);padding:8px 10px;background:rgba(212,175,105,.06);font-size:.72rem;color:var(--dim);line-height:1.45;margin-top:8px;border-radius:0 8px 8px 0}
-      @media(max-width:720px){.journey-shell{padding:14px}.journey-grid,.journey-companion-grid{grid-template-columns:1fr}.journey-title{font-size:1.25rem}.journey-guide img{width:64px;height:64px}.journey-companion-head,.journey-companion-preview{align-items:flex-start;flex-direction:column}}
+      @media(max-width:720px){.journey-shell{padding:14px}.journey-grid,.journey-companion-grid,.journey-opening{grid-template-columns:1fr}.journey-title{font-size:1.25rem}.journey-guide img{width:64px;height:64px}.journey-companion-head,.journey-companion-preview{align-items:flex-start;flex-direction:column}.journey-student-bar{border-radius:16px;width:100%;box-sizing:border-box}}
     `;
     document.head.appendChild(style);
   }
@@ -520,10 +559,10 @@
       unlocked: i === 0 || !!(student.levels[l.id]?.unlocked) || !!student.levels[LEVELS[i-1]?.id]?.complete
     }));
 
-    let html = '<div class="journey-shell" style="display:flex;flex-direction:column;align-items:center;padding:20px">';
+    let html = '<div class="journey-shell journey-home">';
 
     // Student chips
-    html += '<div style="display:flex;gap:5px;flex-wrap:wrap;justify-content:center;align-items:center;margin-bottom:16px">';
+    html += '<div class="journey-student-bar">';
     state.students.forEach(s => {
       html += '<div style="display:flex;align-items:center;gap:2px">';
       html += '<button class="journey-chip '+(s.id===student.id?'on':'')+'" onclick="Journey.switchStudent(\''+s.id+'\')">'+esc(s.name)+'</button>';
@@ -534,21 +573,16 @@
     html += '</div>';
 
     // Title
-    html += '<div style="text-align:center;margin-bottom:16px">';
-    html += '<div style="font-family:Cinzel,serif;font-size:1.6rem;color:var(--gold);font-weight:800;letter-spacing:0.04em">Your Journey</div>';
-    html += '</div>';
+    html += '<h1 class="journey-home-title">Your Journey</h1>';
+
+    html += renderOpeningDashboard(state, student, level, lvlState);
 
     html += renderCompanionCard(state, student);
     html += renderCompanionPreview(state, student);
 
     // Guitar guide
-    html += '<div style="display:flex;flex-direction:column;align-items:center;margin-bottom:16px">';
-    html += '<img src="images/character-full/Encouraging.png" style="width:90px;height:90px;object-fit:contain;filter:drop-shadow(0 4px 12px rgba(0,0,0,0.4));animation:char-float 3s ease-in-out infinite"/>';
-    html += '<div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:10px 14px;margin-top:8px;max-width:260px;text-align:center;position:relative">';
-    html += '<div style="position:absolute;left:50%;top:-6px;transform:translateX(-50%);width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-bottom:6px solid var(--border)"></div>';
-    html += '<div style="font-size:0.68rem;color:var(--text);line-height:1.5">This is your learning spine - from <strong style="color:#d4af69">Foundation</strong> to <strong style="color:#d4af69">Mastery</strong>. Click a level to see your lessons.</div>';
-    html += '</div>';
-    html += '</div>';
+    html += '<div class="journey-spine-panel">';
+    html += '<div class="journey-spine-title">Path Spine</div>';
 
     // The spine SVG
     html += '<svg viewBox="0 0 '+svgW+' '+svgH+'" style="width:100%;max-width:320px;height:auto" xmlns="http://www.w3.org/2000/svg">';
@@ -623,6 +657,7 @@
     html += '<image href="images/mastery-icon.png" x="'+(cx-26)+'" y="'+(botY-26)+'" width="52" height="52"/>';
 
     html += '</svg>';
+    html += '</div>';
 
     // Guide text below spine
     const notes = lvlState.notes || [];
