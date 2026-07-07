@@ -353,7 +353,12 @@
       var audio = byId(doc, "hearthAudio");
       if (audio) audio.pause();
     }
-    storage.setItem("hearthParticles", "on");
+    var particleState = storage.getItem("hearthParticles") === "off" ? "off" : "on";
+    storage.setItem("hearthParticles", particleState);
+    var particleBtn = byId(doc, "particleToggle");
+    if (particleBtn) particleBtn.textContent = particleState === "on" ? "On" : "Off";
+    var canvas = byId(doc, "emberCanvas");
+    if (canvas && canvas.style) canvas.style.display = particleState === "on" ? "" : "none";
   }
 
   return {

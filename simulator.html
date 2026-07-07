@@ -1539,6 +1539,17 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
   }
 }
 
+@media(prefers-reduced-motion:reduce){
+  *,
+  *::before,
+  *::after{
+    animation-duration:0.001ms !important;
+    animation-iteration-count:1 !important;
+    scroll-behavior:auto !important;
+  }
+  #emberCanvas{display:none !important;}
+}
+
 </style>
 </head>
 <body>
@@ -3968,11 +3979,17 @@ window.playSfx=function(type,detail){
   if(!canvas)return;
   var ctx=canvas.getContext('2d');
   var W,H,particles=[],sparks=[];
-  var MAX=30,SPARK_MAX=12;
+  var MAX=18,SPARK_MAX=5;
   var isMobile=(window.innerWidth<600);
-  if(isMobile){MAX=15;SPARK_MAX=6;}
+  if(isMobile){MAX=8;SPARK_MAX=2;}
   var colors=['#c45a20','#ff6b1a','#e8a020','#ff4500','#ff8c42','#ffd700'];
+  var reduceMotion=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)');
   var paused=false;
+
+  function syncPaused(clear){
+    paused=document.hidden||!!(reduceMotion&&reduceMotion.matches)||(canvas.style&&canvas.style.display==='none');
+    if(clear&&paused)ctx.clearRect(0,0,W,H);
+  }
 
   // Pre-render particle textures (one gradient per color, cached)
   var texCache={};
@@ -4005,7 +4022,11 @@ window.playSfx=function(type,detail){
   function resize(){W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight;}
   resize();
   window.addEventListener('resize',resize);
-  document.addEventListener('visibilitychange',function(){paused=document.hidden;});
+  syncPaused(true);
+  document.addEventListener('visibilitychange',function(){syncPaused(true);});
+  if(reduceMotion&&reduceMotion.addEventListener){
+    reduceMotion.addEventListener('change',function(){syncPaused(true);});
+  }
 
   function spawn(){
     return{
@@ -4045,9 +4066,10 @@ window.playSfx=function(type,detail){
 
   var _fCount=0;
   function tick(){
+    syncPaused(false);
     if(paused){requestAnimationFrame(tick);return;}
     _fCount++;
-    if(isMobile&&_fCount%3===0){requestAnimationFrame(tick);return;}
+    if((isMobile&&_fCount%3!==0)||(!isMobile&&_fCount%2!==0)){requestAnimationFrame(tick);return;}
     ctx.clearRect(0,0,W,H);
     ctx.shadowBlur=0;
     ctx.globalAlpha=1;
@@ -4073,7 +4095,7 @@ window.playSfx=function(type,detail){
       ctx.drawImage(tex,p.x-tex.width/2,p.y-tex.height/2);
 
       // Spark burst
-      if(Math.random()<0.004&&sparks.length<SPARK_MAX){
+      if(Math.random()<0.0015&&sparks.length<SPARK_MAX){
         sparks.push(spawnSpark(p.x,p.y,p.color));
       }
 
