@@ -143,9 +143,11 @@ REQUIRED_MARKERS = {
         "var JOURNEY_CONCEPT_BANK",
         "var JOURNEY_TASK_BANK",
         "var JOURNEY_AUTHORED_LESSONS",
+        "var JOURNEY_STUDENT_COMPANIONS",
         "window.JOURNEY_LEVELS",
         "Time Feel, Part 1",
         "QJam Level 1 Integration",
+        "Right hand into pentatonic riff",
     ],
     "assets/js/lesson-1-foundation.js": [
         "LESSON_1_FOUNDATION",

@@ -72,9 +72,10 @@ Done recently:
 - Polished Journey Level 1 into an authored 8-lesson QJam Level 1 path instead of relying on rotating lesson banks.
 - Made Journey use authored lesson data when present, while keeping the fallback lesson generator for later levels.
 - Captured Jen's current learning state and updated the next-lesson prep around consolidation, right-hand patterns, note landmarks, and drills returning to music.
+- Added a Journey Lesson Companion surface so Jen's next lesson prep appears directly in the Journey UI.
 
 Next good steps:
 
-1. Build a small Journey Lesson Companion view from Jen's current-state and next-lesson prep.
+1. Refresh Journey in the browser, select Jen, and tune the companion card against the real lesson flow.
 2. Use Level 1 in the browser and tune the lesson wording against real teaching needs.
 3. Continue moving reusable rules toward `core/` and browser wiring toward `adapters/` only when new work naturally touches those areas.

@@ -180,9 +180,54 @@ var JOURNEY_AUTHORED_LESSONS = {
   ]
 };
 
+var JOURNEY_STUDENT_COMPANIONS = {
+  jen: {
+    label: "Jen Lesson Companion",
+    title: "Right hand into pentatonic riff",
+    focus: "Consolidate what is already alive: right-hand pattern, E/A landmarks, A minor pentatonic, and one repeatable riff.",
+    guideNote: "Jen does not need more information first. Use her interest in right-hand patterns as the doorway, then bring every drill back to music.",
+    nextAction: "Start with tune-in, choose one right-hand pattern, review E/A and A/E/C/D landmarks, shape one tiny pentatonic riff, then close with musical conversation.",
+    doorway: [
+      "Right-hand patterns",
+      "Flamenco feel for energy",
+      "Call and response",
+      "Songwriting interest"
+    ],
+    anchors: [
+      "E and A string landmarks need repetition",
+      "A/E/C/D on the top two strings are not automatic yet",
+      "A minor pentatonic is usable but messy",
+      "Clean tone needs patience: no buzz, no rushing, even sound"
+    ],
+    gaps: [
+      "C chord showed up as a gap",
+      "Pentatonic meaning needs a simpler explanation",
+      "Finger-independence drills must be tiny",
+      "Scale-to-fretboard relationship needs repetition"
+    ],
+    lessonFlow: [
+      "Tune in: body scan, stretch, tune, open-string sound",
+      "Review: riff, note landmarks, last musical idea",
+      "Doorway: one right-hand pattern",
+      "Map: E/A highways plus A/E/C/D landmarks",
+      "Apply: three-note pentatonic riff",
+      "Return to music: A minor conversation, then swap",
+      "Reflect: what worked, what was hard, what to practise"
+    ],
+    practice: [
+      "Practise E and A notes slowly",
+      "Review A/E/C/D on the top two strings",
+      "Marcello warm-up for clean sound, not speed",
+      "One right-hand pattern over A minor",
+      "One tiny A minor pentatonic riff"
+    ]
+  }
+};
+
 if (typeof window !== "undefined") {
   window.JOURNEY_LEVELS = JOURNEY_LEVELS;
   window.JOURNEY_CONCEPT_BANK = JOURNEY_CONCEPT_BANK;
   window.JOURNEY_TASK_BANK = JOURNEY_TASK_BANK;
   window.JOURNEY_AUTHORED_LESSONS = JOURNEY_AUTHORED_LESSONS;
+  window.JOURNEY_STUDENT_COMPANIONS = JOURNEY_STUDENT_COMPANIONS;
 }
