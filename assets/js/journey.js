@@ -441,7 +441,7 @@
     '</div>';
   }
 
-  function renderOpeningDashboard(state, student, level, lvlState){
+  function renderJourneyNeckStage(state, student, level, lvlState, levelPositions){
     const lessonsDone = lvlState.lessonsDone || 0;
     const nextLessonNum = Math.min(level.totalLessons, lessonsDone + 1);
     const nextLesson = buildLesson(student, level.num, nextLessonNum);
@@ -450,22 +450,55 @@
     const primary = companion ? companion.nextAction : (nextLesson.summary || level.focus);
     const actionLabel = isComplete ? 'Review level' : 'Open next lesson';
     const progressLabel = isComplete ? 'Level complete' : 'Next: Lesson ' + nextLessonNum + ' of ' + level.totalLessons;
-    return '<section class="journey-opening">' +
-      '<div class="journey-opening-main">' +
+    const roman = ['I','II','III','IV','V','VI','VII','VIII'];
+    let html = '<section class="journey-neck-stage">' +
+      '<div class="journey-neck-copy">' +
         '<div class="journey-kicker">Journey</div>' +
-        '<h2 class="journey-opening-title">'+esc(student.name)+'</h2>' +
-        '<p class="journey-opening-copy">'+esc(primary)+'</p>' +
-        '<div class="journey-opening-actions">' +
+        '<h2 class="journey-neck-title">'+esc(student.name)+'</h2>' +
+        '<p class="journey-neck-text">'+esc(primary)+'</p>' +
+        '<div class="journey-neck-actions">' +
           '<button class="journey-btn" onclick="Journey.openLesson('+(student.currentLevel || 1)+','+nextLessonNum+')">'+esc(actionLabel)+'</button>' +
           '<button class="journey-btn secondary" onclick="Journey.openJournal()">Add Note</button>' +
         '</div>' +
+        '<div class="journey-neck-status">' +
+          '<div><span>Current</span><strong>'+esc(level.name || ('Level '+level.num))+'</strong></div>' +
+          '<div><span>Status</span><strong>'+esc(progressLabel)+'</strong></div>' +
+        '</div>' +
       '</div>' +
-      '<div class="journey-opening-side">' +
-        '<div class="journey-status-row"><span>Current level</span><strong>'+esc(level.name || ('Level '+level.num))+'</strong></div>' +
-        '<div class="journey-status-row"><span>Status</span><strong>'+esc(progressLabel)+'</strong></div>' +
-        '<div class="journey-status-row"><span>Focus</span><strong>'+esc(level.tag || level.id)+'</strong></div>' +
+      '<div class="journey-neck-wrap">' +
+        '<div class="journey-neck-label">Foundation Gate</div>' +
+        '<div class="journey-neck" aria-label="Journey level guitar neck">';
+
+    [0,1,2,3,4,5].forEach(i => {
+      html += '<span class="journey-string string-'+i+'"></span>';
+    });
+    [0,1,2,3,4,5,6,7,8,9].forEach(i => {
+      html += '<span class="journey-fret fret-'+i+'"></span>';
+    });
+    [19,38,57,76].forEach(pos => {
+      html += '<span class="journey-inlay" style="top:'+pos+'%"></span>';
+    });
+
+    levelPositions.forEach((lp, i) => {
+      const active = lp.num === (student.currentLevel || 1);
+      const complete = !!lp.ls.complete;
+      const lit = lp.unlocked;
+      const top = 13 + i * 10.4;
+      const classes = ['journey-neck-level'];
+      if(active) classes.push('active');
+      if(complete) classes.push('complete');
+      if(!lit) classes.push('locked');
+      const action = lit ? ' onclick="Journey.openLevel('+lp.num+')"' : ' disabled';
+      html += '<button type="button" class="'+classes.join(' ')+'" style="--lvl:'+esc(lp.color)+';top:'+top+'%"'+action+'>' +
+        '<span>'+roman[i]+'</span><small>L'+lp.num+'</small>' +
+      '</button>';
+    });
+
+    html += '</div>' +
+        '<div class="journey-neck-label bottom">Mastery</div>' +
       '</div>' +
     '</section>';
+    return html;
   }
 
   function injectStyles(){
@@ -484,16 +517,32 @@
       .journey-chip.on{border-color:var(--gold);color:var(--gold);box-shadow:0 0 16px rgba(212,175,105,.12)}
       .journey-student-bar{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;align-items:center;margin-bottom:14px;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.07);border-radius:999px;padding:5px;max-width:720px;width:fit-content}
       .journey-home-title{font-family:Cinzel,serif;font-size:1.45rem;color:var(--gold);font-weight:800;letter-spacing:.03em;text-align:center;margin:0 0 13px}
-      .journey-opening{width:100%;max-width:720px;display:grid;grid-template-columns:minmax(0,1.35fr) minmax(190px,.65fr);gap:12px;background:linear-gradient(180deg,rgba(255,255,255,.045),rgba(0,0,0,.08));border:1px solid rgba(212,175,105,.22);border-radius:18px;padding:15px;margin-bottom:14px;box-shadow:0 18px 42px rgba(0,0,0,.2)}
-      .journey-opening-title{font-family:Cinzel,serif;color:var(--gold);font-size:1.18rem;line-height:1.15;margin:4px 0 6px}
-      .journey-opening-copy{font-size:.76rem;color:var(--text);line-height:1.48;margin:0;max-width:520px}
-      .journey-opening-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:13px}
-      .journey-opening-side{display:flex;flex-direction:column;gap:8px}
-      .journey-status-row{background:rgba(13,11,8,.5);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:9px}
-      .journey-status-row span{display:block;font-family:JetBrains Mono,monospace;color:var(--dim);font-size:.53rem;letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px}
-      .journey-status-row strong{display:block;color:var(--text);font-size:.72rem;line-height:1.25}
-      .journey-spine-panel{width:100%;max-width:380px;border:1px solid rgba(255,255,255,.07);background:rgba(255,255,255,.025);border-radius:18px;padding:13px;margin-top:2px}
-      .journey-spine-title{font-family:JetBrains Mono,monospace;font-size:.56rem;color:var(--gold);letter-spacing:.14em;text-transform:uppercase;text-align:center;margin-bottom:8px}
+      .journey-neck-stage{width:100%;max-width:820px;display:grid;grid-template-columns:minmax(230px,.82fr) minmax(260px,1fr);gap:18px;align-items:center;margin:0 0 16px}
+      .journey-neck-copy{align-self:stretch;display:flex;flex-direction:column;justify-content:center;background:rgba(255,255,255,.032);border:1px solid rgba(255,255,255,.075);border-radius:18px;padding:18px;box-shadow:0 18px 42px rgba(0,0,0,.18)}
+      .journey-neck-title{font-family:Cinzel,serif;color:var(--gold);font-size:1.24rem;line-height:1.16;margin:5px 0 8px;font-weight:800}
+      .journey-neck-text{font-size:.76rem;color:var(--text);line-height:1.5;margin:0;max-width:470px}
+      .journey-neck-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+      .journey-neck-status{display:grid;grid-template-columns:1fr;gap:8px;margin-top:14px}
+      .journey-neck-status div{background:rgba(13,11,8,.45);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:9px 10px}
+      .journey-neck-status span{display:block;font-family:JetBrains Mono,monospace;color:var(--dim);font-size:.53rem;letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px}
+      .journey-neck-status strong{display:block;color:var(--text);font-size:.72rem;line-height:1.25}
+      .journey-neck-wrap{display:flex;flex-direction:column;align-items:center;gap:8px;min-width:0}
+      .journey-neck-label{font-family:JetBrains Mono,monospace;font-size:.58rem;color:var(--gold);letter-spacing:.14em;text-transform:uppercase;text-align:center}
+      .journey-neck-label.bottom{color:var(--dim)}
+      .journey-neck{position:relative;width:min(320px,78vw);height:620px;max-height:68vh;min-height:500px;border-radius:28px;background:linear-gradient(90deg,#24140d 0%,#5b3320 16%,#8b5a35 48%,#5b3320 82%,#21120c 100%);border:1px solid rgba(212,175,105,.24);box-shadow:inset 0 0 26px rgba(0,0,0,.5),0 18px 44px rgba(0,0,0,.28);overflow:hidden}
+      .journey-neck:before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,.1),transparent 12%,transparent 86%,rgba(0,0,0,.22)),repeating-linear-gradient(90deg,rgba(255,255,255,.025) 0 1px,transparent 1px 17px);pointer-events:none}
+      .journey-string{position:absolute;top:0;bottom:0;width:1px;background:linear-gradient(180deg,rgba(255,243,205,.42),rgba(255,243,205,.72),rgba(255,243,205,.36));box-shadow:0 0 8px rgba(255,228,174,.18);z-index:2}
+      .journey-string.string-0{left:18%}.journey-string.string-1{left:31%}.journey-string.string-2{left:44%}.journey-string.string-3{left:56%}.journey-string.string-4{left:69%}.journey-string.string-5{left:82%}
+      .journey-fret{position:absolute;left:7%;right:7%;height:2px;background:linear-gradient(90deg,rgba(255,243,205,.28),rgba(255,243,205,.72),rgba(255,243,205,.28));border-radius:99px;box-shadow:0 1px 0 rgba(0,0,0,.36);z-index:3}
+      .journey-fret.fret-0{top:6%}.journey-fret.fret-1{top:16%}.journey-fret.fret-2{top:26%}.journey-fret.fret-3{top:36%}.journey-fret.fret-4{top:46%}.journey-fret.fret-5{top:56%}.journey-fret.fret-6{top:66%}.journey-fret.fret-7{top:76%}.journey-fret.fret-8{top:86%}.journey-fret.fret-9{top:96%}
+      .journey-inlay{position:absolute;left:50%;transform:translate(-50%,-50%);width:14px;height:14px;border-radius:999px;background:radial-gradient(circle,rgba(255,235,180,.78),rgba(212,175,105,.12) 68%,transparent 70%);box-shadow:0 0 16px rgba(212,175,105,.22);z-index:1}
+      .journey-neck-level{position:absolute;left:50%;transform:translate(-50%,-50%);z-index:6;width:78px;height:36px;border-radius:999px;border:1px solid color-mix(in srgb,var(--lvl),transparent 22%);background:rgba(13,11,8,.84);color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px;box-shadow:0 8px 22px rgba(0,0,0,.28);transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease}
+      .journey-neck-level span{font-family:Cinzel,serif;color:var(--lvl);font-size:.9rem;font-weight:800;line-height:1}
+      .journey-neck-level small{font-family:JetBrains Mono,monospace;color:var(--dim);font-size:.53rem;letter-spacing:.06em}
+      .journey-neck-level:hover:not(:disabled){transform:translate(-50%,-50%) scale(1.04);box-shadow:0 10px 28px rgba(0,0,0,.36),0 0 22px color-mix(in srgb,var(--lvl),transparent 76%)}
+      .journey-neck-level.active{background:rgba(212,175,105,.13);border-color:var(--gold);box-shadow:0 0 0 4px rgba(212,175,105,.08),0 0 28px rgba(212,175,105,.22),0 12px 30px rgba(0,0,0,.3)}
+      .journey-neck-level.complete{background:rgba(18,42,29,.78)}
+      .journey-neck-level.locked{opacity:.34;cursor:not-allowed;filter:saturate(.45)}
       .journey-grid{display:grid;grid-template-columns:minmax(220px,.75fr) 1.5fr;gap:14px}
       .journey-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px;box-shadow:0 8px 26px rgba(0,0,0,.16)}
       .journey-companion-card{width:100%;max-width:720px;background:rgba(20,18,15,.86);border:1px solid rgba(212,175,105,.24);border-radius:16px;padding:14px 14px 16px;margin:0 0 16px;box-shadow:0 14px 34px rgba(0,0,0,.22)}
@@ -526,7 +575,7 @@
       .journey-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.journey-btn{background:var(--gold);color:#0d0b08;border:none;border-radius:10px;padding:10px 14px;font-weight:800;cursor:pointer}.journey-btn.secondary{background:transparent;color:var(--gold);border:1px solid var(--border)}.journey-btn.danger{background:#cc3344;color:white}
       .journey-rating-list{display:flex;flex-direction:column;gap:8px}.journey-rating-row{display:flex;justify-content:space-between;gap:8px;align-items:center;font-size:.72rem;color:var(--text);border-bottom:1px solid rgba(255,255,255,.06);padding-bottom:7px}.journey-rating{background:transparent;border:1px solid var(--border);color:var(--dim);border-radius:999px;width:26px;height:26px;cursor:pointer;font-size:.65rem}.journey-rating.on{background:var(--gold);color:#0d0b08;border-color:var(--gold)}
       .journey-note{border-left:2px solid var(--gold);padding:8px 10px;background:rgba(212,175,105,.06);font-size:.72rem;color:var(--dim);line-height:1.45;margin-top:8px;border-radius:0 8px 8px 0}
-      @media(max-width:720px){.journey-shell{padding:14px}.journey-grid,.journey-companion-grid,.journey-opening{grid-template-columns:1fr}.journey-title{font-size:1.25rem}.journey-guide img{width:64px;height:64px}.journey-companion-head,.journey-companion-preview{align-items:flex-start;flex-direction:column}.journey-student-bar{border-radius:16px;width:100%;box-sizing:border-box}}
+      @media(max-width:720px){.journey-shell{padding:14px}.journey-grid,.journey-companion-grid,.journey-neck-stage{grid-template-columns:1fr}.journey-neck-copy{order:2}.journey-neck-wrap{order:1}.journey-neck{height:540px;min-height:460px}.journey-title{font-size:1.25rem}.journey-guide img{width:64px;height:64px}.journey-companion-head,.journey-companion-preview{align-items:flex-start;flex-direction:column}.journey-student-bar{border-radius:16px;width:100%;box-sizing:border-box}}
     `;
     document.head.appendChild(style);
   }
@@ -540,21 +589,10 @@
     const student = activeStudent(state);
     const level = getLevel(student.currentLevel || 1);
     const lvlState = student.levels[level.id];
-    const nextLesson = (lvlState.lessonsDone || 0) + 1;
-
-    // Spine SVG dimensions
-    const svgW = 320, svgH = 700;
-    const cx = 160;
-    const topY = 55;       // Foundation circle center
-    const botY = 645;      // Mastery circle center
-    const firstLevelY = 130;
-    const lastLevelY = 575;
-    const levelSpacing = (lastLevelY - firstLevelY) / 7;
 
     // Build level positions
     const levelPositions = LEVELS.map((l, i) => ({
       ...l,
-      y: firstLevelY + i * levelSpacing,
       ls: student.levels[l.id] || {},
       unlocked: i === 0 || !!(student.levels[l.id]?.unlocked) || !!student.levels[LEVELS[i-1]?.id]?.complete
     }));
@@ -575,93 +613,13 @@
     // Title
     html += '<h1 class="journey-home-title">Your Journey</h1>';
 
-    html += renderOpeningDashboard(state, student, level, lvlState);
+    html += renderJourneyNeckStage(state, student, level, lvlState, levelPositions);
 
     html += renderCompanionCard(state, student);
     html += renderCompanionPreview(state, student);
 
-    // Guitar guide
-    html += '<div class="journey-spine-panel">';
-    html += '<div class="journey-spine-title">Path Spine</div>';
-
-    // The spine SVG
-    html += '<svg viewBox="0 0 '+svgW+' '+svgH+'" style="width:100%;max-width:320px;height:auto" xmlns="http://www.w3.org/2000/svg">';
-
-    // Defs
-    html += '<defs>';
-    html += '<filter id="glow-gold"><feGaussianBlur stdDeviation="4" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>';
-    html += '<filter id="glow-soft"><feGaussianBlur stdDeviation="2" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>';
-    html += '</defs>';
-
-    // Foundation circle (top)
-    html += '<circle cx="'+cx+'" cy="'+topY+'" r="42" fill="none" stroke="#d4af69" stroke-width="2" filter="url(#glow-gold)" style="cursor:pointer" onclick="showFoundation()"/>';
-    html += '<circle cx="'+cx+'" cy="'+topY+'" r="36" fill="rgba(13,11,8,0.85)" stroke="#d4af69" stroke-width="1.5" style="cursor:pointer" onclick="showFoundation()"/>';
-    html += '<image href="images/foundation-icon.png" x="'+(cx-26)+'" y="'+(topY-26)+'" width="52" height="52" style="cursor:pointer" onclick="showFoundation()"/>';
-
-    // Dashed spine segments between levels
-    for(let i = 0; i < levelPositions.length; i++){
-      const lp = levelPositions[i];
-      const prevY = i === 0 ? topY + 42 : levelPositions[i-1].y;
-      const curY = lp.y;
-      const lit = i === 0; // Only first segment (to L1) is lit
-      if(lit){
-        // Lit segment: solid gold glow
-        html += '<line x1="'+cx+'" y1="'+prevY+'" x2="'+cx+'" y2="'+curY+'" stroke="#d4af69" stroke-width="2.5" filter="url(#glow-gold)"/>';
-      } else {
-        // Dim dashed
-        html += '<line x1="'+cx+'" y1="'+prevY+'" x2="'+cx+'" y2="'+curY+'" stroke="rgba(212,175,105,0.15)" stroke-width="1.5" stroke-dasharray="4 6"/>';
-      }
-    }
-    // Spine from L8 to mastery
-    const lastLP = levelPositions[levelPositions.length - 1];
-    html += '<line x1="'+cx+'" y1="'+lastLP.y+'" x2="'+cx+'" y2="'+(botY-50)+'" stroke="rgba(212,175,105,0.15)" stroke-width="1.5" stroke-dasharray="4 6"/>';
-
-    // Level nodes along the spine
-    levelPositions.forEach((lp, i) => {
-      const active = lp.num === (student.currentLevel || 1);
-      const complete = !!lp.ls.complete;
-      const lit = lp.unlocked;
-      const r = active ? 22 : 16;
-      const color = complete ? lp.color : (lit ? lp.color : 'rgba(212,175,105,0.15)');
-      const fillC = active ? 'rgba(212,175,105,0.1)' : 'rgba(13,11,8,0.85)';
-      const roman = ['I','II','III','IV','V','VI','VII','VIII'][i];
-
-      // Outer glow ring for active
-      if(active) html += '<circle cx="'+cx+'" cy="'+lp.y+'" r="'+(r+4)+'" fill="none" stroke="#d4af69" stroke-width="1" opacity="0.3" filter="url(#glow-gold)"/>';
-
-      // Level circle
-      html += '<circle cx="'+cx+'" cy="'+lp.y+'" r="'+r+'" fill="'+fillC+'" stroke="'+color+'" stroke-width="'+(active?2.5:(lit?1.5:1))+'" style="cursor:'+(lit?'pointer':'default')+'" '+(active?'filter="url(#glow-gold)"':'')+' '+(lit?'onclick="Journey.openLevel('+lp.num+')"':'')+'/>';
-
-      // Roman numeral
-      html += '<text x="'+cx+'" y="'+(lp.y+4)+'" text-anchor="middle" fill="'+(active?'#d4af69':(lit?color:'rgba(212,175,105,0.2)'))+'" font-family="Cinzel,serif" font-size="'+(active?13:10)+'" font-weight="'+(active?'800':'400')+'">'+roman+'</text>';
-
-
-    });
-
-    // Mastery circle (bottom) with rainbow rings
-    const mRings = [
-      { r:48, color:'#ff0000' },
-      { r:41, color:'#ff8800' },
-      { r:34, color:'#ffdd00' },
-      { r:28, color:'#00cc44' },
-      { r:22, color:'#00cccc' },
-      { r:17, color:'#3366ff' },
-      { r:13, color:'#6633cc' },
-      { r:10, color:'#cc33ff' }
-    ];
-    html += '<circle cx="'+cx+'" cy="'+botY+'" r="55" fill="none" stroke="rgba(212,175,105,0.12)" stroke-width="1" stroke-dasharray="3 4"/>';
-    mRings.forEach(mr => {
-      html += '<circle cx="'+cx+'" cy="'+botY+'" r="'+mr.r+'" fill="none" stroke="'+mr.color+'" stroke-width="1" opacity="0.18"/>';
-    });
-    html += '<circle cx="'+cx+'" cy="'+botY+'" r="36" fill="rgba(13,11,8,0.85)" stroke="rgba(212,175,105,0.2)" stroke-width="1.5"/>';
-    html += '<image href="images/mastery-icon.png" x="'+(cx-26)+'" y="'+(botY-26)+'" width="52" height="52"/>';
-
-    html += '</svg>';
-    html += '</div>';
-
-    // Guide text below spine
     const notes = lvlState.notes || [];
-    html += '<div style="margin-top:16px;text-align:center;max-width:340px;width:100%;font-size:0.68rem;color:var(--dim);line-height:1.55;font-style:italic">'+esc(guideText(student, level, lvlState, notes))+'</div>';
+    html += '<div style="margin-top:4px;text-align:center;max-width:620px;width:100%;font-size:0.68rem;color:var(--dim);line-height:1.55;font-style:italic">'+esc(guideText(student, level, lvlState, notes))+'</div>';
 
     html += '</div>';
     root.innerHTML = html;
