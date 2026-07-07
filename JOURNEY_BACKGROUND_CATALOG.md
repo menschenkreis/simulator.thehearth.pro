@@ -6,6 +6,8 @@ Plain English: these are visual backgrounds only. The app should place guide cha
 
 ## Neck Background Options V1
 
+Active choice: **Option B**
+
 Contact sheet:
 
 `images/journey-backgrounds/journey-neck-bg-options-v1-contact-sheet.png`
@@ -13,7 +15,7 @@ Contact sheet:
 | Option | Asset | Notes |
 |---|---|---|
 | A | `images/journey-backgrounds/journey-neck-bg-option-a-v1.png` | Darkest and closest to the first reference feeling. Strong hearth-room mood. |
-| B | `images/journey-backgrounds/journey-neck-bg-option-b-v1.png` | Brighter and clearer. More visible room details and side space. |
+| B | `images/journey-backgrounds/journey-neck-bg-option-b-v1.png` | Active. Brighter and clearer. More visible room details and side space. |
 | C | `images/journey-backgrounds/journey-neck-bg-option-c-v1.png` | Balanced warm scene with clear neck and strong circular floor feeling. |
 
 ## Build Rule
