@@ -577,7 +577,7 @@
       .journey-home-title{font-family:Cinzel,serif;font-size:1.36rem;color:var(--gold);font-weight:800;letter-spacing:.03em;text-align:center;margin:0 0 10px}
       .journey-top-row{position:relative;z-index:20;display:flex;justify-content:center;width:100%}
       .journey-student-picker{position:relative}
-      .journey-student-trigger{display:grid;grid-template-columns:1fr auto;grid-template-areas:"label icon" "name icon";align-items:center;column-gap:12px;min-width:210px;text-align:left;border:1px solid rgba(255,255,255,.12);background:rgba(24,22,19,.72);color:var(--text);border-radius:14px;padding:9px 12px;box-shadow:0 10px 24px rgba(0,0,0,.16);cursor:pointer;backdrop-filter:blur(14px)}
+      .journey-student-trigger{display:grid;grid-template-columns:1fr auto;grid-template-areas:"label icon" "name icon";align-items:center;column-gap:12px;min-width:210px;text-align:center;border:1px solid rgba(255,255,255,.12);background:rgba(24,22,19,.72);color:var(--text);border-radius:14px;padding:9px 12px;box-shadow:0 10px 24px rgba(0,0,0,.16);cursor:pointer;backdrop-filter:blur(14px)}
       .journey-student-trigger span{grid-area:label;font-family:JetBrains Mono,monospace;font-size:.53rem;letter-spacing:.13em;text-transform:uppercase;color:var(--dim)}
       .journey-student-trigger strong{grid-area:name;font-family:Cinzel,serif;font-size:.92rem;color:var(--gold);line-height:1.2;margin-top:2px}
       .journey-student-trigger b{grid-area:icon;color:var(--gold);font-size:.72rem;font-weight:800}
