@@ -542,8 +542,11 @@
       const action = lit ? ' onclick="Journey.openLevel('+lp.num+')"' : ' disabled';
       const markerLabel = i === LEVELS.length - 1 ? 'Mastery' : 'L'+lp.num;
       const markerSub = i === LEVELS.length - 1 ? '' : 'Level '+lp.num;
+      const masteryMotion = i === LEVELS.length - 1
+        ? '<i class="journey-mastery-orbit orbit-one"></i><i class="journey-mastery-orbit orbit-two"></i><i class="journey-mastery-orbit orbit-three"></i><b class="journey-mastery-particle particle-one"></b><b class="journey-mastery-particle particle-two"></b><b class="journey-mastery-particle particle-three"></b><b class="journey-mastery-particle particle-four"></b>'
+        : '';
       html += '<button type="button" class="'+classes.join(' ')+'" aria-label="Level '+lp.num+'" title="Level '+lp.num+'" style="--lvl:'+esc(lp.color)+';--lvl-rgb:'+hexToRgb(lp.color)+';--pulse-delay:'+(i * .28).toFixed(2)+'s;top:'+top+'%"'+action+'>' +
-        '<span>'+markerLabel+'</span><small>'+markerSub+'</small>' +
+        masteryMotion + '<span>'+markerLabel+'</span><small>'+markerSub+'</small>' +
       '</button>';
     });
 
@@ -617,14 +620,23 @@
       .journey-neck-level{position:absolute;left:50%;transform:translate(-50%,-50%);z-index:6;width:48px;height:48px;border-radius:999px;border:1px solid rgba(255,245,204,.72);background:radial-gradient(circle at 50% 45%,rgba(255,255,245,.74) 0 5%,rgba(var(--lvl-rgb),.82) 11% 40%,rgba(var(--lvl-rgb),.34) 52%,rgba(13,11,8,.88) 82%);color:var(--text);cursor:pointer;display:grid;place-items:center;padding:0;box-shadow:inset 0 0 14px rgba(255,235,180,.18),0 8px 20px rgba(0,0,0,.28),0 0 28px rgba(var(--lvl-rgb),.42),0 0 18px rgba(212,175,105,.18);transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease;isolation:isolate}
       .journey-neck-level:before{content:"";position:absolute;inset:5px;border-radius:inherit;border:1px solid rgba(255,235,180,.14);pointer-events:none}
       .journey-neck-level:after{content:"";position:absolute;inset:-12px;border-radius:inherit;background:radial-gradient(circle,rgba(var(--lvl-rgb),.62) 0 22%,rgba(var(--lvl-rgb),.26) 44%,transparent 74%);opacity:.24;z-index:-1;pointer-events:none;animation:journey-level-pulse 4.2s ease-in-out infinite;animation-delay:var(--pulse-delay)}
-      .journey-neck-level span{position:relative;z-index:1;display:grid;place-items:center;min-width:24px;height:18px;border-radius:999px;border:1px solid rgba(255,245,204,.28);background:rgba(8,7,6,.64);font-family:Cinzel,serif;color:#fff9dc;font-size:.7rem;font-weight:800;line-height:1;text-shadow:0 1px 4px rgba(0,0,0,.9)}
+      .journey-neck-level span{position:relative;z-index:2;display:grid;place-items:center;width:25px;height:25px;border-radius:999px;border:1px solid rgba(255,245,204,.28);background:rgba(8,7,6,.68);font-family:Cinzel,serif;color:#fff9dc;font-size:.7rem;font-weight:800;line-height:1;text-shadow:0 1px 4px rgba(0,0,0,.9)}
       .journey-neck-level small{position:absolute;z-index:1;bottom:-15px;font-family:JetBrains Mono,monospace;font-size:.48rem;color:rgba(255,226,166,.62);letter-spacing:.06em}
       .journey-neck-level:hover:not(:disabled){transform:translate(-50%,-50%) scale(1.08);box-shadow:inset 0 0 14px rgba(255,235,180,.16),0 10px 26px rgba(0,0,0,.34),0 0 34px rgba(var(--lvl-rgb),.56)}
       .journey-neck-level.active{width:58px;height:58px;border-color:#ffe5a8;box-shadow:0 0 0 5px rgba(212,175,105,.08),0 0 38px rgba(255,202,97,.46),0 12px 30px rgba(0,0,0,.3)}
       .journey-neck-level.mastery{width:82px;height:82px;border-color:rgba(255,245,204,.95);background:radial-gradient(circle at 50% 50%,rgba(255,244,188,.38) 0 14%,rgba(77,42,22,.78) 38%,rgba(10,8,7,.95) 72%),conic-gradient(from 0deg,rgba(255,83,83,.42),rgba(255,190,72,.42),rgba(255,236,96,.42),rgba(76,218,122,.42),rgba(69,177,255,.42),rgba(160,111,255,.42),rgba(255,83,83,.42));box-shadow:0 0 0 7px rgba(255,255,255,.04),0 0 32px rgba(255,210,106,.46),0 0 52px rgba(204,51,255,.56),0 0 64px rgba(83,177,255,.24),0 14px 28px rgba(0,0,0,.36)}
       .journey-neck-level.mastery:before{inset:-12px;border:2px solid transparent;background:conic-gradient(from 18deg,rgba(255,96,96,.92),rgba(255,193,84,.9),rgba(244,230,111,.9),rgba(103,214,131,.9),rgba(83,177,255,.9),rgba(170,128,255,.9),rgba(255,96,96,.92));mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);mask-composite:exclude;-webkit-mask-composite:xor;padding:2px;opacity:.9;animation:journey-mastery-ring 7.5s linear infinite}
       .journey-neck-level.mastery:after{inset:-24px;background:radial-gradient(circle,rgba(255,231,134,.45) 0 18%,rgba(255,106,83,.26) 30%,rgba(90,190,255,.22) 46%,rgba(170,112,255,.2) 60%,transparent 76%);filter:blur(8px);opacity:.42;animation:journey-mastery-pulse 4.8s ease-in-out infinite}
-      .journey-neck-level.mastery span{min-width:54px;height:21px;font-size:.58rem;letter-spacing:.03em;text-transform:uppercase}
+      .journey-neck-level.mastery span{width:58px;height:58px;border-radius:999px;background:radial-gradient(circle,rgba(8,7,6,.5),rgba(8,7,6,.78));font-size:.52rem;letter-spacing:.02em;text-transform:uppercase}
+      .journey-neck-level.mastery .journey-mastery-orbit{position:absolute;left:50%;top:50%;border-radius:999px;border:2px dotted rgba(255,255,255,.55);pointer-events:none;z-index:1;transform:translate(-50%,-50%);mix-blend-mode:screen}
+      .journey-neck-level.mastery .orbit-one{width:104px;height:104px;border-color:rgba(255,96,96,.78);animation:journey-mastery-orbit 8.5s linear infinite}
+      .journey-neck-level.mastery .orbit-two{width:122px;height:122px;border-color:rgba(255,226,96,.68);animation:journey-mastery-orbit-reverse 11s linear infinite}
+      .journey-neck-level.mastery .orbit-three{width:140px;height:140px;border-color:rgba(92,190,255,.64);animation:journey-mastery-orbit 14s linear infinite}
+      .journey-neck-level.mastery .journey-mastery-particle{position:absolute;left:50%;top:50%;z-index:2;width:7px;height:7px;border-radius:999px;background:#fff0a8;box-shadow:0 0 10px currentColor,0 0 18px currentColor;pointer-events:none;transform-origin:0 0}
+      .journey-neck-level.mastery .particle-one{color:#ff665f;animation:journey-mastery-particle 4.8s linear infinite}
+      .journey-neck-level.mastery .particle-two{color:#ffe260;animation:journey-mastery-particle 6.2s linear infinite reverse;animation-delay:-1.4s}
+      .journey-neck-level.mastery .particle-three{color:#5bd67d;animation:journey-mastery-particle-wide 7.4s linear infinite;animation-delay:-2.1s}
+      .journey-neck-level.mastery .particle-four{color:#67b8ff;animation:journey-mastery-particle-wide 8.8s linear infinite reverse;animation-delay:-3.2s}
       .journey-neck-level.mastery small{display:none}
       .journey-neck-level.complete{background:radial-gradient(circle at 42% 35%,rgba(235,255,227,.42),rgba(63,170,94,.18) 42%,rgba(13,32,22,.86) 74%)}
       .journey-neck-level.locked{opacity:.74;cursor:not-allowed;filter:saturate(.95) brightness(.9)}
@@ -670,6 +682,10 @@
       @keyframes journey-level-pulse{0%,100%{opacity:.2;transform:scale(.92)}50%{opacity:.52;transform:scale(1.18)}}
       @keyframes journey-mastery-pulse{0%,100%{opacity:.34;transform:scale(.94)}50%{opacity:.68;transform:scale(1.12)}}
       @keyframes journey-mastery-ring{to{transform:rotate(360deg)}}
+      @keyframes journey-mastery-orbit{to{transform:translate(-50%,-50%) rotate(360deg)}}
+      @keyframes journey-mastery-orbit-reverse{to{transform:translate(-50%,-50%) rotate(-360deg)}}
+      @keyframes journey-mastery-particle{from{transform:rotate(0deg) translateX(58px) translate(-50%,-50%)}to{transform:rotate(360deg) translateX(58px) translate(-50%,-50%)}}
+      @keyframes journey-mastery-particle-wide{from{transform:rotate(0deg) translateX(70px) translate(-50%,-50%)}to{transform:rotate(360deg) translateX(70px) translate(-50%,-50%)}}
       @media(max-width:860px){.journey-entry-stage{min-height:auto;display:flex;flex-direction:column;align-items:center;gap:12px}.journey-map-guide{position:static;order:2;width:min(280px,88vw)}.journey-neck-stage{order:1;width:min(340px,88vw)}.journey-map-bubble{width:min(250px,78vw)}}
       @media(max-width:720px){.journey-shell{padding:14px}.journey-grid,.journey-companion-grid{grid-template-columns:1fr}.journey-neck-stage{width:min(330px,92vw);background-size:contain}.journey-neck-wrap{padding-top:14px}.journey-headstock{width:140px;height:64px}.journey-neck{width:min(250px,74vw);height:520px;min-height:460px}.journey-body-arc{width:min(360px,92vw);height:95px}.journey-guide-scene{left:50%;bottom:38px;transform:translateX(-50%);width:min(300px,78vw)}.journey-guide-character{width:126px;height:174px}.journey-guide-bubble.game{max-width:250px}.journey-title{font-size:1.25rem}.journey-guide img{width:64px;height:64px}.journey-companion-head,.journey-companion-preview,.journey-companion-summary{align-items:flex-start;flex-direction:column}.journey-student-bar{border-radius:16px;width:100%;box-sizing:border-box}.journey-student-menu{width:min(280px,88vw)}}
     `;
