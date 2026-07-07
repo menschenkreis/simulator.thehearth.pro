@@ -112,12 +112,16 @@
     const idx = state.students.findIndex(s=>s.id===student.id);
     if(idx >= 0) state.students[idx] = student;
     saveState(state);
-    // Sync to API
     syncStudentToAPI(student);
   }
 
+  function journeyApiSyncEnabled(){
+    return window.HEARTH_ENABLE_JOURNEY_API_SYNC === true ||
+      localStorage.getItem('hearthJourneyApiSync') === 'on';
+  }
+
   function syncStudentToAPI(student){
-    if(!window.HearthAPI) return;
+    if(!window.HearthAPI || !journeyApiSyncEnabled()) return;
     // Upsert student
     fetch('https://thehearth.pro/api/?a=journey-students', {
       method:'POST', headers:{'Content-Type':'application/json'},
@@ -722,7 +726,7 @@
       .journey-neck-level.mastery:after{inset:-22px;background:radial-gradient(circle,rgba(255,231,134,.4) 0 18%,rgba(255,106,83,.22) 30%,rgba(90,190,255,.18) 46%,rgba(170,112,255,.16) 60%,transparent 76%);filter:blur(4px);opacity:.36;animation:journey-mastery-pulse 7s ease-in-out infinite}
       .journey-neck-level.mastery span{width:48px;height:48px;border-radius:999px;background:radial-gradient(circle,rgba(255,226,166,.3),rgba(8,7,6,.5) 62%,rgba(8,7,6,.72));font-size:.52rem;letter-spacing:.02em;text-transform:uppercase}
       .journey-neck-level.mastery .journey-mastery-icon{z-index:5;border-color:rgba(255,245,204,.24);box-shadow:0 0 18px rgba(255,210,106,.28)}
-      .journey-neck-level.mastery .journey-mastery-icon img{position:relative;left:-10px;top:2px;z-index:6;width:74px;height:74px;object-fit:contain;filter:brightness(1.55) contrast(1.2) drop-shadow(0 0 5px rgba(255,255,232,.95)) drop-shadow(0 0 16px rgba(255,170,64,.78));pointer-events:none}
+      .journey-neck-level.mastery .journey-mastery-icon img{position:relative;left:-14px;top:-3px;z-index:6;width:74px;height:74px;object-fit:contain;filter:brightness(1.55) contrast(1.2) drop-shadow(0 0 5px rgba(255,255,232,.95)) drop-shadow(0 0 16px rgba(255,170,64,.78));pointer-events:none}
       .journey-neck-level.mastery .journey-mastery-orbit{position:absolute;left:50%;top:50%;border-radius:999px;border:2px dotted rgba(255,255,255,.55);pointer-events:none;z-index:1;transform:translate(-50%,-50%);mix-blend-mode:screen}
       .journey-neck-level.mastery .orbit-one{width:104px;height:104px;border-color:rgba(255,96,96,.78);animation:journey-mastery-orbit 18s linear infinite}
       .journey-neck-level.mastery .orbit-two{width:122px;height:122px;border-color:rgba(255,226,96,.68);animation:journey-mastery-orbit-reverse 24s linear infinite}
@@ -1140,7 +1144,7 @@
       const unlocked = num === 1 || s.levels[l.id].unlocked || s.levels['L'+(num-1)]?.complete;
       if(!unlocked) return;
       s.currentLevel = num; s.activeLesson = null; saveStudent(s);
-      if(Number(num) === 1) renderLevelEntry(num);
+      if(Number(num) === 1 && localStorage.getItem('hearthJourneyL1EntryPreview') === 'on') renderLevelEntry(num);
       else renderLevel(num);
     },
     openLesson(levelNum, lessonNum){
