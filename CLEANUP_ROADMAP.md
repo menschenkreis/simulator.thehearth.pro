@@ -74,6 +74,7 @@ Done recently:
 - Captured Jen's current learning state and updated the next-lesson prep around consolidation, right-hand patterns, note landmarks, and drills returning to music.
 - Added a Journey Lesson Companion surface so Jen's next lesson prep appears directly in the Journey UI.
 - Reworked the Journey opening screen into a cleaner vertical guitar-neck scene with exactly one fret per level, guide-character speech, and companion prep tucked into a drawer.
+- Replaced Journey's block-like level markers with circular glowing inlays and wired in the new talking-guide asset.
 
 Next good steps:
 
