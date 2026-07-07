@@ -542,11 +542,14 @@
       const action = lit ? ' onclick="Journey.openLevel('+lp.num+')"' : ' disabled';
       const markerLabel = i === LEVELS.length - 1 ? 'Mastery' : 'L'+lp.num;
       const markerSub = i === LEVELS.length - 1 ? '' : 'Level '+lp.num;
+      const markerContent = i === LEVELS.length - 1
+        ? '<span class="journey-mastery-icon"><img src="images/map-nodes-generated-v2-normalized/mastery.png" alt="" /></span>'
+        : '<span>'+markerLabel+'</span>';
       const masteryMotion = i === LEVELS.length - 1
         ? '<i class="journey-mastery-orbit orbit-one"></i><i class="journey-mastery-orbit orbit-two"></i><i class="journey-mastery-orbit orbit-three"></i><b class="journey-mastery-particle particle-one"></b><b class="journey-mastery-particle particle-two"></b><b class="journey-mastery-particle particle-three"></b><b class="journey-mastery-particle particle-four"></b>'
         : '';
       html += '<button type="button" class="'+classes.join(' ')+'" aria-label="Level '+lp.num+'" title="Level '+lp.num+'" style="--lvl:'+esc(lp.color)+';--lvl-rgb:'+hexToRgb(lp.color)+';--pulse-delay:'+(i * .28).toFixed(2)+'s;top:'+top+'%"'+action+'>' +
-        masteryMotion + '<span>'+markerLabel+'</span><small>'+markerSub+'</small>' +
+        masteryMotion + markerContent + '<small>'+markerSub+'</small>' +
       '</button>';
     });
 
@@ -628,6 +631,8 @@
       .journey-neck-level.mastery:before{inset:-12px;border:2px solid transparent;background:conic-gradient(from 18deg,rgba(255,96,96,.92),rgba(255,193,84,.9),rgba(244,230,111,.9),rgba(103,214,131,.9),rgba(83,177,255,.9),rgba(170,128,255,.9),rgba(255,96,96,.92));mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);mask-composite:exclude;-webkit-mask-composite:xor;padding:2px;opacity:.9;animation:journey-mastery-ring 7.5s linear infinite}
       .journey-neck-level.mastery:after{inset:-24px;background:radial-gradient(circle,rgba(255,231,134,.45) 0 18%,rgba(255,106,83,.26) 30%,rgba(90,190,255,.22) 46%,rgba(170,112,255,.2) 60%,transparent 76%);filter:blur(8px);opacity:.42;animation:journey-mastery-pulse 4.8s ease-in-out infinite}
       .journey-neck-level.mastery span{width:58px;height:58px;border-radius:999px;background:radial-gradient(circle,rgba(8,7,6,.5),rgba(8,7,6,.78));font-size:.52rem;letter-spacing:.02em;text-transform:uppercase}
+      .journey-neck-level.mastery .journey-mastery-icon{background:radial-gradient(circle,rgba(8,7,6,.25),rgba(8,7,6,.58));border-color:rgba(255,245,204,.18)}
+      .journey-neck-level.mastery .journey-mastery-icon img{width:52px;height:52px;object-fit:contain;filter:drop-shadow(0 0 6px rgba(255,226,166,.72)) drop-shadow(0 0 14px rgba(255,130,64,.4));pointer-events:none}
       .journey-neck-level.mastery .journey-mastery-orbit{position:absolute;left:50%;top:50%;border-radius:999px;border:2px dotted rgba(255,255,255,.55);pointer-events:none;z-index:1;transform:translate(-50%,-50%);mix-blend-mode:screen}
       .journey-neck-level.mastery .orbit-one{width:104px;height:104px;border-color:rgba(255,96,96,.78);animation:journey-mastery-orbit 8.5s linear infinite}
       .journey-neck-level.mastery .orbit-two{width:122px;height:122px;border-color:rgba(255,226,96,.68);animation:journey-mastery-orbit-reverse 11s linear infinite}
