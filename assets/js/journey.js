@@ -557,6 +557,95 @@
     return html;
   }
 
+  function levelOneSkillFamily(index){
+    const families = [
+      { label:'Rhythm', tone:'#ff6b5f', icon:'I', note:'steady pulse' },
+      { label:'Chords', tone:'#f0a13a', icon:'II', note:'open shapes' },
+      { label:'Chords', tone:'#f0a13a', icon:'III', note:'smooth changes' },
+      { label:'Scales', tone:'#e8d05b', icon:'IV', note:'pentatonic map' },
+      { label:'Play', tone:'#65c96f', icon:'V', note:'phrasing' },
+      { label:'Play', tone:'#4fb6d9', icon:'VI', note:'first solo' },
+      { label:'Integration', tone:'#6f8cff', icon:'VII', note:'chords + lead' },
+      { label:'Integration', tone:'#b274f0', icon:'VIII', note:'ready check' }
+    ];
+    return families[index] || families[families.length - 1];
+  }
+
+  function renderLevelEntry(num){
+    if(num !== 1) return renderLevel(num);
+    injectStyles();
+    showPanel('p-lesson');
+    const root = getJourneyRoot();
+    if(!root) return;
+    const state = loadState();
+    const student = activeStudent(state);
+    const level = getLevel(num);
+    const lvlState = student.levels[level.id] || {};
+    const lessons = AUTHORED_LESSONS[level.id] || [];
+    const lessonsDone = lvlState.lessonsDone || 0;
+    const nextLesson = Math.min(level.totalLessons, lessonsDone + 1);
+    const pct = Math.min(100, Math.round(lessonsDone / level.totalLessons * 100));
+    const guideLine = lessonsDone >= level.totalLessons
+      ? 'Level 1 is complete enough to review. Keep it musical: rhythm, chords, pentatonics, and one honest reflection.'
+      : 'Stay with the first path. Small steps, clean sound, steady rhythm, and a little fun each time.';
+    const actionLabel = lessonsDone > 0 ? 'Continue Level 1' : "Let's begin";
+
+    let html = '<div class="journey-shell journey-level-entry">';
+    html += '<button class="back-btn" onclick="Journey.render()">← Back</button>';
+    html += renderStudentPicker(state, student);
+
+    html += '<section class="journey-level-entry-stage" aria-label="Level 1 curriculum path">';
+    html += '<aside class="journey-entry-guide">';
+    html += '<img src="'+attr(guideAsset(journeyGuideMood(student, lvlState)))+'" alt="" />';
+    html += '<div class="journey-entry-bubble"><div class="journey-kicker">Guide</div><p>'+esc(guideLine)+'</p></div>';
+    html += '</aside>';
+
+    html += '<div class="journey-level-map">';
+    html += '<div class="journey-level-map-head">';
+    html += '<div><div class="journey-kicker">'+esc(student.name)+' · Level 1</div><h2>First Guided Steps</h2><p>Level 1 begins after Foundation. It turns the first map into playable rhythm, open chords, pentatonic vocabulary, and a tiny musical voice.</p></div>';
+    html += '<div class="journey-level-progress"><strong>'+lessonsDone+'/'+level.totalLessons+'</strong><span>lessons</span><i><b style="width:'+pct+'%"></b></i></div>';
+    html += '</div>';
+
+    html += '<div class="journey-skill-ribbon" aria-label="Level 1 skill families">';
+    ['Rhythm','Chords','Scales','Play','Integration'].forEach(name => {
+      html += '<span>'+esc(name)+'</span>';
+    });
+    html += '</div>';
+
+    html += '<div class="journey-path-scroll">';
+    html += '<svg class="journey-path-line" viewBox="0 0 920 520" preserveAspectRatio="none" aria-hidden="true"><path d="M80 80 C210 20 310 145 420 100 S640 40 770 95 C890 170 785 255 660 245 S430 235 340 315 S200 455 90 410 C38 388 42 330 104 305" /></svg>';
+    html += '<div class="journey-path-stops">';
+    for(let i = 0; i < level.totalLessons; i++){
+      const lesson = lessons[i] || buildLesson(student, level.num, i + 1);
+      const family = levelOneSkillFamily(i);
+      const done = i < lessonsDone;
+      const current = i === nextLesson - 1 && lessonsDone < level.totalLessons;
+      const locked = i > lessonsDone;
+      const classes = ['journey-path-stop'];
+      if(done) classes.push('done');
+      if(current) classes.push('current');
+      if(locked) classes.push('locked');
+      const click = locked ? '' : ' onclick="Journey.openLesson(1,'+(i+1)+')"';
+      const label = lesson.title.replace(/^Lesson\s+\d+:\s*/i, '');
+      html += '<button type="button" class="'+classes.join(' ')+'" style="--stop-color:'+family.tone+'"'+click+' aria-label="Lesson '+(i+1)+': '+attr(label)+'">';
+      html += '<span class="journey-stop-seal">'+esc(family.icon)+'</span>';
+      html += '<span class="journey-stop-copy"><b>L'+(i+1)+'</b><strong>'+esc(label)+'</strong><em>'+esc(family.label)+' · '+esc(family.note)+'</em></span>';
+      html += '</button>';
+    }
+    html += '</div></div>';
+
+    html += '<div class="journey-level-entry-foot">';
+    html += '<p>Journey is the path. The nodes are the places it draws from: Practice, Doing, Knowing, Study, Play, Create, Hearth, and Mastery.</p>';
+    html += '<button class="journey-btn journey-begin-btn" onclick="Journey.beginLevel(1)">'+esc(actionLabel)+'</button>';
+    html += '</div>';
+    html += '</div>';
+    html += '</section>';
+    html += '</div>';
+
+    root.innerHTML = html;
+    bindStudentPickerClose();
+  }
+
   function injectStyles(){
     if(document.getElementById('journey-style-v2')) return;
     const style = document.createElement('style');
@@ -673,6 +762,43 @@
       .journey-guide{display:flex;gap:12px;align-items:flex-start}
       .journey-guide img{width:82px;height:82px;object-fit:contain;filter:drop-shadow(0 5px 10px rgba(0,0,0,.38));animation:char-float 5.5s ease-in-out infinite}
       .journey-bubble{position:relative;background:rgba(13,11,8,.7);border:1px solid var(--border);border-radius:12px;padding:10px 12px;font-size:.72rem;line-height:1.45;color:var(--text)}
+      .journey-level-entry{max-width:1180px;min-height:calc(100vh - 72px);display:flex;flex-direction:column;align-items:center;gap:12px}
+      .journey-level-entry-stage{position:relative;width:100%;display:grid;grid-template-columns:230px minmax(0,1fr);gap:18px;align-items:start}
+      .journey-entry-guide{position:sticky;top:76px;display:flex;flex-direction:column;align-items:center;gap:0;padding-top:24px}
+      .journey-entry-guide img{width:136px;height:164px;object-fit:contain;object-position:center bottom;filter:drop-shadow(0 8px 14px rgba(0,0,0,.38));animation:char-float 5.5s ease-in-out infinite}
+      .journey-entry-bubble{position:relative;width:218px;background:rgba(13,11,8,.68);border:1px solid rgba(212,175,105,.25);border-radius:16px;padding:12px 13px;box-shadow:0 14px 32px rgba(0,0,0,.22);backdrop-filter:blur(12px)}
+      .journey-entry-bubble:before{content:"";position:absolute;left:50%;top:-7px;transform:translateX(-50%) rotate(45deg);width:12px;height:12px;background:rgba(13,11,8,.86);border-left:1px solid rgba(212,175,105,.25);border-top:1px solid rgba(212,175,105,.25)}
+      .journey-entry-bubble p{font-size:.74rem;color:var(--text);line-height:1.48;margin:7px 0 0}
+      .journey-level-map{position:relative;overflow:hidden;width:100%;min-height:640px;border:1px solid rgba(212,175,105,.13);border-radius:18px;background:radial-gradient(circle at 52% 34%,rgba(212,175,105,.1),transparent 34%),linear-gradient(180deg,rgba(20,18,15,.72),rgba(9,8,7,.92));box-shadow:0 18px 42px rgba(0,0,0,.24);padding:18px}
+      .journey-level-map:before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px),linear-gradient(180deg,rgba(255,255,255,.018) 1px,transparent 1px);background-size:44px 44px;opacity:.18;pointer-events:none}
+      .journey-level-map-head{position:relative;z-index:2;display:flex;justify-content:space-between;gap:18px;align-items:flex-start;max-width:830px;margin:0 auto 12px}
+      .journey-level-map-head h2{font-family:Cinzel,serif;color:#f3cf88;font-size:1.58rem;line-height:1.05;margin:4px 0 6px}
+      .journey-level-map-head p{max-width:560px;color:var(--dim);font-size:.76rem;line-height:1.55;margin:0}
+      .journey-level-progress{min-width:92px;border:1px solid rgba(212,175,105,.16);background:rgba(13,11,8,.54);border-radius:14px;padding:10px 11px;text-align:center;box-shadow:0 10px 24px rgba(0,0,0,.18)}
+      .journey-level-progress strong{display:block;font-family:Cinzel,serif;color:var(--gold);font-size:1.2rem;line-height:1}
+      .journey-level-progress span{display:block;color:var(--dim);font-size:.56rem;letter-spacing:.08em;text-transform:uppercase;margin:4px 0 8px}
+      .journey-level-progress i{display:block;height:4px;background:rgba(255,255,255,.08);border-radius:99px;overflow:hidden}
+      .journey-level-progress b{display:block;height:100%;background:linear-gradient(90deg,#ff6b5f,#f0a13a,#e8d05b,#65c96f,#4fb6d9,#b274f0)}
+      .journey-skill-ribbon{position:relative;z-index:2;display:flex;gap:7px;flex-wrap:wrap;justify-content:center;margin:0 auto 10px;max-width:720px}
+      .journey-skill-ribbon span{border:1px solid rgba(212,175,105,.16);background:rgba(212,175,105,.07);color:#f3d79a;border-radius:999px;padding:5px 9px;font-size:.6rem;font-weight:800;letter-spacing:.04em}
+      .journey-path-scroll{position:relative;z-index:1;max-width:920px;height:520px;margin:0 auto}
+      .journey-path-line{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+      .journey-path-line path{fill:none;stroke:rgba(212,175,105,.34);stroke-width:5;stroke-linecap:round;stroke-dasharray:10 14;filter:drop-shadow(0 0 8px rgba(212,175,105,.18))}
+      .journey-path-stops{position:absolute;inset:0}
+      .journey-path-stop{position:absolute;width:174px;min-height:74px;border:1px solid rgba(255,245,204,.22);border-radius:15px;background:rgba(13,11,8,.72);color:var(--text);display:flex;align-items:center;gap:10px;padding:10px;box-shadow:0 12px 28px rgba(0,0,0,.26),0 0 24px color-mix(in srgb,var(--stop-color),transparent 82%);cursor:pointer;text-align:left;transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease}
+      .journey-path-stop:hover:not(.locked){transform:translateY(-2px);border-color:color-mix(in srgb,var(--stop-color),white 24%);box-shadow:0 14px 32px rgba(0,0,0,.3),0 0 30px color-mix(in srgb,var(--stop-color),transparent 72%)}
+      .journey-path-stop:nth-child(1){left:3%;top:8%}.journey-path-stop:nth-child(2){left:26%;top:3%}.journey-path-stop:nth-child(3){left:50%;top:9%}.journey-path-stop:nth-child(4){left:72%;top:20%}.journey-path-stop:nth-child(5){left:57%;top:43%}.journey-path-stop:nth-child(6){left:31%;top:45%}.journey-path-stop:nth-child(7){left:15%;top:67%}.journey-path-stop:nth-child(8){left:43%;top:77%;width:204px}
+      .journey-stop-seal{flex:0 0 42px;width:42px;height:42px;border-radius:999px;display:grid;place-items:center;border:1px solid rgba(255,245,204,.32);background:radial-gradient(circle at 50% 42%,rgba(255,255,245,.82) 0 7%,color-mix(in srgb,var(--stop-color),transparent 16%) 14% 48%,rgba(13,11,8,.9) 80%);font-family:Cinzel,serif;font-size:.68rem;font-weight:900;color:#fff7d9;text-shadow:0 1px 5px rgba(0,0,0,.9)}
+      .journey-stop-copy{display:flex;flex-direction:column;min-width:0}
+      .journey-stop-copy b{font-family:JetBrains Mono,monospace;color:var(--gold);font-size:.54rem;letter-spacing:.1em}
+      .journey-stop-copy strong{font-family:Cinzel,serif;color:var(--text);font-size:.76rem;line-height:1.15}
+      .journey-stop-copy em{font-style:normal;color:var(--dim);font-size:.58rem;line-height:1.25;margin-top:3px}
+      .journey-path-stop.current{border-color:rgba(255,245,204,.5);box-shadow:0 0 0 4px color-mix(in srgb,var(--stop-color),transparent 86%),0 0 36px color-mix(in srgb,var(--stop-color),transparent 66%),0 14px 32px rgba(0,0,0,.3)}
+      .journey-path-stop.done{background:rgba(13,34,21,.74);border-color:rgba(118,221,136,.24)}
+      .journey-path-stop.locked{opacity:.5;cursor:not-allowed;filter:saturate(.8)}
+      .journey-level-entry-foot{position:relative;z-index:2;display:flex;align-items:center;justify-content:space-between;gap:16px;max-width:830px;margin:8px auto 0;border-top:1px solid rgba(212,175,105,.1);padding-top:14px}
+      .journey-level-entry-foot p{color:var(--dim);font-size:.7rem;line-height:1.45;margin:0;max-width:560px}
+      .journey-begin-btn{min-width:138px;box-shadow:0 10px 26px rgba(212,175,105,.18)}
       .journey-spine{display:flex;flex-direction:column;gap:7px}
       .journey-level{border:1px solid var(--border);background:rgba(13,11,8,.45);border-radius:12px;padding:10px;cursor:pointer;opacity:.45;transition:.2s}
       .journey-level.unlocked{opacity:1}.journey-level.active{box-shadow:0 0 0 1px var(--lvl),0 0 20px color-mix(in srgb,var(--lvl),transparent 82%)}
@@ -693,11 +819,12 @@
       @keyframes journey-mastery-particle{from{transform:rotate(0deg) translateX(58px) translate(-50%,-50%)}to{transform:rotate(360deg) translateX(58px) translate(-50%,-50%)}}
       @keyframes journey-mastery-particle-wide{from{transform:rotate(0deg) translateX(70px) translate(-50%,-50%)}to{transform:rotate(360deg) translateX(70px) translate(-50%,-50%)}}
       @media(prefers-reduced-motion:reduce){
-        .journey-map-guide img,.journey-guide-character,.journey-guide img,.journey-neck-level:after,.journey-neck-level.mastery:before,.journey-neck-level.mastery:after,.journey-neck-level.mastery .journey-mastery-orbit,.journey-neck-level.mastery .journey-mastery-particle{animation:none!important}
+        .journey-map-guide img,.journey-guide-character,.journey-guide img,.journey-entry-guide img,.journey-neck-level:after,.journey-neck-level.mastery:before,.journey-neck-level.mastery:after,.journey-neck-level.mastery .journey-mastery-orbit,.journey-neck-level.mastery .journey-mastery-particle{animation:none!important}
         .journey-neck-level.mastery .journey-mastery-particle{display:none}
       }
       @media(max-width:860px){.journey-entry-stage{min-height:auto;display:flex;flex-direction:column;align-items:center;gap:12px}.journey-map-guide{position:static;order:2;width:min(280px,88vw)}.journey-neck-stage{order:1;width:min(340px,88vw)}.journey-map-bubble{width:min(250px,78vw)}}
-      @media(max-width:720px){.journey-shell{padding:14px}.journey-grid,.journey-companion-grid{grid-template-columns:1fr}.journey-neck-stage{width:min(330px,92vw);background-size:contain}.journey-neck-wrap{padding-top:14px}.journey-headstock{width:140px;height:64px}.journey-neck{width:min(250px,74vw);height:520px;min-height:460px}.journey-body-arc{width:min(360px,92vw);height:95px}.journey-guide-scene{left:50%;bottom:38px;transform:translateX(-50%);width:min(300px,78vw)}.journey-guide-character{width:126px;height:174px}.journey-guide-bubble.game{max-width:250px}.journey-title{font-size:1.25rem}.journey-guide img{width:64px;height:64px}.journey-companion-head,.journey-companion-preview,.journey-companion-summary{align-items:flex-start;flex-direction:column}.journey-student-bar{border-radius:16px;width:100%;box-sizing:border-box}.journey-student-menu{width:min(280px,88vw)}}
+      @media(max-width:980px){.journey-level-entry-stage{grid-template-columns:1fr}.journey-entry-guide{position:relative;top:auto;flex-direction:row;justify-content:center;align-items:flex-end;padding-top:0}.journey-entry-guide img{width:104px;height:126px}.journey-entry-bubble{width:min(330px,70vw)}.journey-entry-bubble:before{left:30px}.journey-level-map{min-height:auto}.journey-path-scroll{height:auto}.journey-path-line{display:none}.journey-path-stops{position:relative;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.journey-path-stop,.journey-path-stop:nth-child(n){position:relative;left:auto;top:auto;width:100%;min-height:76px}.journey-level-entry-foot{flex-direction:column;align-items:stretch;text-align:center}.journey-begin-btn{width:100%}}
+      @media(max-width:720px){.journey-shell{padding:14px}.journey-grid,.journey-companion-grid{grid-template-columns:1fr}.journey-neck-stage{width:min(330px,92vw);background-size:contain}.journey-neck-wrap{padding-top:14px}.journey-headstock{width:140px;height:64px}.journey-neck{width:min(250px,74vw);height:520px;min-height:460px}.journey-body-arc{width:min(360px,92vw);height:95px}.journey-guide-scene{left:50%;bottom:38px;transform:translateX(-50%);width:min(300px,78vw)}.journey-guide-character{width:126px;height:174px}.journey-guide-bubble.game{max-width:250px}.journey-title{font-size:1.25rem}.journey-guide img{width:64px;height:64px}.journey-companion-head,.journey-companion-preview,.journey-companion-summary{align-items:flex-start;flex-direction:column}.journey-student-bar{border-radius:16px;width:100%;box-sizing:border-box}.journey-student-menu{width:min(280px,88vw)}.journey-level-map-head{flex-direction:column;align-items:stretch}.journey-level-progress{width:100%}.journey-path-stops{grid-template-columns:1fr}.journey-entry-guide{flex-direction:column;align-items:center}.journey-entry-bubble{width:min(270px,82vw)}.journey-entry-bubble:before{left:50%}}
     `;
     document.head.appendChild(style);
   }
@@ -996,12 +1123,25 @@
   const Journey = {
     render,
     startLesson(){ const state=loadState(); const s=activeStudent(state); const l=getLevel(s.currentLevel||1); const ls=s.levels[l.id]; const num=(ls.lessonsDone||0)+1; renderLevelLesson(l.num, num); },
+    beginLevel(levelNum){
+      const state = loadState();
+      const s = activeStudent(state);
+      const l = getLevel(levelNum || s.currentLevel || 1);
+      const ls = s.levels[l.id] || {};
+      const next = Math.min(l.totalLessons || 1, (ls.lessonsDone || 0) + 1);
+      s.currentLevel = l.num;
+      s.activeLesson = null;
+      saveStudent(s);
+      renderLevelLesson(l.num, next);
+    },
     saveAndNext(levelNum, lessonNum, nextIdx){ const s=collectDraft(); saveStudent(s); renderLevelLesson(levelNum, lessonNum, nextIdx); },
     openLevel(num){
       const state = loadState(); const s = activeStudent(state); const l = getLevel(num);
       const unlocked = num === 1 || s.levels[l.id].unlocked || s.levels['L'+(num-1)]?.complete;
       if(!unlocked) return;
-      s.currentLevel = num; s.activeLesson = null; saveStudent(s); renderLevel(num);
+      s.currentLevel = num; s.activeLesson = null; saveStudent(s);
+      if(Number(num) === 1) renderLevelEntry(num);
+      else renderLevel(num);
     },
     openLesson(levelNum, lessonNum){
       const state = loadState(); const s = activeStudent(state); const l = getLevel(levelNum);
