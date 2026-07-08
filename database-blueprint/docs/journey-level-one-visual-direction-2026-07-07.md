@@ -34,6 +34,16 @@ Future category icons should be generated in the same clean engraved/handmade sp
 
 Best build method: hybrid UI. Use HTML/CSS for the real interactive layout, buttons, labels, progress, and responsive behavior. Use SVG only for decorative rails or precise linework if CSS becomes too clumsy. Do not make the whole roadmap a flat generated image, because it would be hard to update when lessons, students, or progress change.
 
+Reusable map rule:
+
+- The same category map opens for every Journey level.
+- Categories run down the left.
+- Levels run across each category row as L1-L8 dots.
+- Colour belongs to the level, not the category.
+- The selected level colour becomes the dominant page colour.
+- Hovering/focusing a level dot explains what that category means inside that level.
+- Category icons should stay stylistically related to the map nodes if they are later generated.
+
 ## What The Screen Should Feel Like
 
 Level 1 should feel like opening a beautiful but practical guitar curriculum overview.

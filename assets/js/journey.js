@@ -11,7 +11,6 @@
   const AUTHORED_LESSONS = window.JOURNEY_AUTHORED_LESSONS || {};
   const STUDENT_COMPANIONS = window.JOURNEY_STUDENT_COMPANIONS || {};
   const GUIDE_ASSETS = window.GUIDE_CHARACTER_ASSETS || {};
-  const LEVEL_ONE_TONE = '#e76f51';
   let studentPickerBound = false;
 
   function esc(v){
@@ -562,18 +561,51 @@
     return html;
   }
 
-  function levelOneRoadmapSections(){
+  function journeyRoadmapCategories(){
     return [
-      { label:'Rhythm', icon:'R', note:'Time feel and steady pulse', lessons:[1] },
-      { label:'Chords & Harmony', icon:'C', note:'Open chords and smoother changes', lessons:[2,3] },
-      { label:'Scales', icon:'S', note:'Pentatonic shape 1 as a clear map', lessons:[4] },
-      { label:'Technique & Improvisation', icon:'T', note:'Phrase, listen, and start a simple solo', lessons:[5,6] },
-      { label:'Integration', icon:'I', note:'Put rhythm, chords, and pentatonics together', lessons:[7,8] }
+      { label:'Rhythm', icon:'R', note:'Time feel, groove, pulse, strumming, subdivision, and rhythmic confidence.' },
+      { label:'Chords & Harmony', icon:'C', note:'Open chords, chord changes, harmony, progressions, keys, and chord colour.' },
+      { label:'Scales', icon:'S', note:'Pentatonic and scale maps, root notes, boxes, positions, and fretboard orientation.' },
+      { label:'Technique', icon:'T', note:'Hands, clean tone, picking, fretting, strength, relaxation, and control.' },
+      { label:'Improvisation', icon:'I', note:'Phrases, call and response, solo vocabulary, musical choices, and listening.' },
+      { label:'Picking', icon:'P', note:'Right-hand patterns, pick direction, articulation, accents, and pulse control.' },
+      { label:'Fingerstyle', icon:'F', note:'Finger independence, rest/free stroke, plucking patterns, and hand balance.' },
+      { label:'Theory', icon:'Y', note:'Names, intervals, chord-scale relationships, keys, forms, and useful music language.' },
+      { label:'Reading', icon:'N', note:'Tab, notation, fretboard symbols, rhythm reading, and written music literacy.' },
+      { label:'Integration', icon:'G', note:'Songs, practice sets, performance, creation, reflection, and making the skills work together.' }
     ];
   }
 
+  function roadmapLevelText(category, level){
+    const key = String(category.label || '').toLowerCase();
+    const n = level.num || 1;
+    const levelNames = {
+      1: 'Level 1 builds the first usable version of this skill.',
+      2: 'Level 2 strengthens coordination and closes early gaps.',
+      3: 'Level 3 turns the skill into expression and simple music.',
+      4: 'Level 4 adds structure, names, and clearer musical maps.',
+      5: 'Level 5 expands movement, colour, and variation.',
+      6: 'Level 6 integrates the skill into arrangements and repertoire.',
+      7: 'Level 7 turns the skill into judgement and instinct.',
+      8: 'Level 8 folds the skill into personal sound and mastery.'
+    };
+    const l1 = {
+      rhythm: 'Steady pulse, quarter/eighth-note feel, and one-chord rhythm grids.',
+      'chords & harmony': 'The open-chord set, clean sound, and common-finger changes.',
+      scales: 'A minor pentatonic shape 1, root safety notes, and a clear first box.',
+      technique: 'Relaxed hands, clean tone, slow repetitions, and small successful drills.',
+      improvisation: 'Two-note phrases, call and response, and first blues solo vocabulary.',
+      picking: 'Simple strumming and right-hand pulse without rushing.',
+      fingerstyle: 'Basic touch awareness; deeper fingerstyle waits until later levels.',
+      theory: 'Plain words for time feel, chords, pentatonic, roots, and musical context.',
+      reading: 'Simple tab/fret references and rhythm symbols only when they help.',
+      integration: 'A one-minute Level 1 demonstration: rhythm, chords, pentatonic phrase, reflect.'
+    };
+    if(n === 1 && l1[key]) return l1[key];
+    return levelNames[n] || 'This level has not been fully authored yet, but this category will keep tracking progress.';
+  }
+
   function renderLevelEntry(num){
-    if(num !== 1) return renderLevel(num);
     injectStyles();
     showPanel('p-lesson');
     const root = getJourneyRoot();
@@ -587,16 +619,16 @@
     const nextLesson = Math.min(level.totalLessons, lessonsDone + 1);
     const pct = Math.min(100, Math.round(lessonsDone / level.totalLessons * 100));
     const guideLine = lessonsDone >= level.totalLessons
-      ? 'Level 1 is complete. Review the roadmap, then decide what needs strengthening before Level 2.'
-      : 'Follow the lessons in order. Do not rush ahead: steady rhythm, clean chords, clear scale map, then music.';
-    const actionLabel = lessonsDone > 0 ? 'Continue Level 1' : "Let's begin";
-    const sections = levelOneRoadmapSections();
+      ? level.name+' is complete. Review the category map, then decide what needs strengthening before the next level.'
+      : 'Stay with '+level.name+'. Each dot shows what this level asks from that category.';
+    const actionLabel = lessonsDone > 0 ? 'Continue '+level.name : "Let's begin";
+    const categories = journeyRoadmapCategories();
 
-    let html = '<div class="journey-shell journey-level-entry">';
+    let html = '<div class="journey-shell journey-level-entry" style="--journey-level-color:'+attr(level.color)+';--journey-level-rgb:'+hexToRgb(level.color)+'">';
     html += '<button class="back-btn" onclick="Journey.render()">← Back</button>';
     html += renderStudentPicker(state, student);
 
-    html += '<section class="journey-level-entry-stage" aria-label="Level 1 curriculum path">';
+    html += '<section class="journey-level-entry-stage" aria-label="'+attr(level.name)+' curriculum path">';
     html += '<aside class="journey-entry-guide">';
     html += '<img src="'+attr(guideAsset(journeyGuideMood(student, lvlState)))+'" alt="" />';
     html += '<div class="journey-entry-bubble"><div class="journey-kicker">Guide</div><p>'+esc(guideLine)+'</p></div>';
@@ -604,50 +636,45 @@
 
     html += '<div class="journey-level-map">';
     html += '<div class="journey-level-map-head">';
-    html += '<div><div class="journey-kicker">'+esc(student.name)+' · QJam Level 1</div><h2>Level 1 Roadmap</h2><p>A clear overview of what this level teaches before Lesson 1 begins.</p></div>';
+    html += '<div><div class="journey-kicker">'+esc(student.name)+' · '+esc(level.tag || level.name)+'</div><h2>'+esc(level.name)+' Roadmap</h2><p>'+esc(level.focus || 'A clear overview of what this level teaches before the lesson begins.')+'</p></div>';
     html += '<div class="journey-level-progress"><strong>'+lessonsDone+'/'+level.totalLessons+'</strong><span>lessons</span><i><b style="width:'+pct+'%"></b></i></div>';
     html += '</div>';
 
-    html += '<div class="journey-roadmap-board" aria-label="QJam Level 1 roadmap">';
-    sections.forEach((section, sectionIndex) => {
-      const doneInSection = section.lessons.filter(n => n <= lessonsDone).length;
-      const sectionComplete = doneInSection >= section.lessons.length;
-      const sectionCurrent = section.lessons.some(n => n === nextLesson && lessonsDone < level.totalLessons);
-      const sectionClasses = ['journey-roadmap-section'];
-      if(sectionComplete) sectionClasses.push('done');
-      if(sectionCurrent) sectionClasses.push('current');
-      html += '<section class="'+sectionClasses.join(' ')+'" style="--section-color:'+LEVEL_ONE_TONE+';--row-index:'+sectionIndex+'">';
+    html += '<div class="journey-roadmap-board" aria-label="Journey category roadmap">';
+    categories.forEach((section, sectionIndex) => {
+      html += '<section class="journey-roadmap-section" style="--row-index:'+sectionIndex+'">';
       html += '<div class="journey-roadmap-section-head">';
       html += '<span>'+esc(section.icon || (sectionIndex + 1))+'</span>';
       html += '<div><h3>'+esc(section.label)+'</h3><p>'+esc(section.note)+'</p></div>';
-      html += '<small>'+doneInSection+'/'+section.lessons.length+'</small>';
+      html += '<small>'+level.id+'</small>';
       html += '</div>';
-      html += '<div class="journey-roadmap-lessons">';
-      section.lessons.forEach(lessonNum => {
-        const lesson = lessons[lessonNum - 1] || buildLesson(student, level.num, lessonNum);
-        const done = lessonNum <= lessonsDone;
-        const current = lessonNum === nextLesson && lessonsDone < level.totalLessons;
-        const locked = lessonNum > lessonsDone + 1;
-        const classes = ['journey-roadmap-lesson'];
+      html += '<div class="journey-roadmap-levels">';
+      LEVELS.forEach(lp => {
+        const lpState = student.levels[lp.id] || {};
+        const isSelected = lp.num === level.num;
+        const done = lpState.complete || (lp.num === level.num && lessonsDone >= level.totalLessons);
+        const current = isSelected && lessonsDone < level.totalLessons;
+        const unlocked = lp.num === 1 || lpState.unlocked || student.levels['L'+(lp.num-1)]?.complete;
+        const classes = ['journey-roadmap-level-dot'];
         if(done) classes.push('done');
         if(current) classes.push('current');
-        if(locked) classes.push('locked');
-        const click = locked ? ' disabled' : ' onclick="Journey.openLesson(1,'+lessonNum+')"';
-        const label = lesson.title.replace(/^Lesson\s+\d+:\s*/i, '');
-        html += '<button type="button" class="'+classes.join(' ')+'"'+click+' aria-label="Lesson '+lessonNum+': '+attr(label)+'">';
-        html += '<b>L'+lessonNum+'</b>';
-        html += '<span>'+esc(label)+'</span>';
+        if(isSelected) classes.push('selected');
+        if(!unlocked) classes.push('locked');
+        const title = lp.name+' · '+section.label+': '+roadmapLevelText(section, lp);
+        const click = unlocked ? ' onclick="Journey.openLevel('+lp.num+')"': ' disabled';
+        html += '<button type="button" class="'+classes.join(' ')+'" style="--dot-color:'+attr(lp.color)+';--dot-rgb:'+hexToRgb(lp.color)+'"'+click+' title="'+attr(title)+'" aria-label="'+attr(title)+'">';
+        html += '<b>L'+lp.num+'</b>';
+        html += '<span>'+esc(roadmapLevelText(section, lp))+'</span>';
         html += '</button>';
       });
-      html += '<span class="journey-roadmap-complete-dot '+(sectionComplete ? 'done' : sectionCurrent ? 'current' : 'future')+'" aria-hidden="true"></span>';
       html += '</div>';
       html += '</section>';
     });
     html += '</div>';
 
     html += '<div class="journey-level-entry-foot">';
-    html += '<p>Level 1 uses QJam\'s Rhythm, Chords & Harmony, Scales, and Technique & Improvisation work. Integration checks that the skills can work together.</p>';
-    html += '<button class="journey-btn journey-begin-btn" onclick="Journey.beginLevel(1)">'+esc(actionLabel)+'</button>';
+    html += '<p>Each row is a skill category. Each dot is that category inside one Journey level. The selected level uses the same colour as the guitar map.</p>';
+    html += '<button class="journey-btn journey-begin-btn" onclick="Journey.beginLevel('+level.num+')">'+esc(actionLabel)+'</button>';
     html += '</div>';
     html += '</div>';
     html += '</section>';
@@ -773,50 +800,48 @@
       .journey-guide{display:flex;gap:12px;align-items:flex-start}
       .journey-guide img{width:82px;height:82px;object-fit:contain;filter:drop-shadow(0 5px 10px rgba(0,0,0,.38));animation:char-float 5.5s ease-in-out infinite}
       .journey-bubble{position:relative;background:rgba(13,11,8,.7);border:1px solid var(--border);border-radius:12px;padding:10px 12px;font-size:.72rem;line-height:1.45;color:var(--text)}
-      .journey-level-entry.journey-shell{max-width:min(1520px,calc(100vw - 42px));min-height:calc(100vh - 72px);display:flex;flex-direction:column;align-items:center;gap:14px}
-      .journey-level-entry-stage{position:relative;width:100%;display:grid;grid-template-columns:minmax(270px,360px) minmax(720px,1fr);gap:22px;align-items:center}
+      .journey-level-entry.journey-shell{max-width:min(1540px,calc(100vw - 42px));min-height:calc(100vh - 72px);display:flex;flex-direction:column;align-items:center;gap:14px}
+      .journey-level-entry-stage{position:relative;width:100%;display:grid;grid-template-columns:minmax(260px,340px) minmax(720px,1040px);gap:24px;align-items:center;justify-content:center}
       .journey-entry-guide{position:sticky;top:76px;min-height:640px;display:grid;grid-template-rows:auto 1fr;align-items:end;justify-items:center;gap:14px;padding-top:18px}
       .journey-entry-guide img{width:min(280px,78%);height:auto;max-height:430px;object-fit:contain;object-position:center bottom;filter:drop-shadow(0 12px 24px rgba(0,0,0,.48));animation:char-float 5.5s ease-in-out infinite;align-self:end}
-      .journey-entry-bubble{position:relative;order:-1;width:min(300px,86%);min-height:88px;background:rgba(13,11,8,.56);border:1px solid rgba(231,111,81,.5);border-radius:26px;padding:18px 20px;box-shadow:0 18px 38px rgba(0,0,0,.26),inset 0 1px 0 rgba(255,255,255,.08);backdrop-filter:blur(16px)}
-      .journey-entry-bubble:before{content:"";position:absolute;left:62%;bottom:-13px;top:auto;transform:rotate(45deg);width:24px;height:24px;background:rgba(13,11,8,.78);border-right:1px solid rgba(231,111,81,.45);border-bottom:1px solid rgba(231,111,81,.45)}
+      .journey-entry-bubble{position:relative;order:-1;width:min(300px,86%);min-height:88px;background:rgba(13,11,8,.56);border:1px solid rgba(var(--journey-level-rgb),.5);border-radius:26px;padding:18px 20px;box-shadow:0 18px 38px rgba(0,0,0,.26),inset 0 1px 0 rgba(255,255,255,.08);backdrop-filter:blur(16px)}
+      .journey-entry-bubble:before{content:"";position:absolute;left:62%;bottom:-13px;top:auto;transform:rotate(45deg);width:24px;height:24px;background:rgba(13,11,8,.78);border-right:1px solid rgba(var(--journey-level-rgb),.45);border-bottom:1px solid rgba(var(--journey-level-rgb),.45)}
       .journey-entry-bubble p{font-size:.78rem;color:var(--text);line-height:1.48;margin:8px 0 0}
-      .journey-level-map{position:relative;overflow:hidden;width:100%;min-height:640px;border:1px solid rgba(231,111,81,.46);border-radius:28px;background:radial-gradient(circle at 28% 18%,rgba(231,111,81,.12),transparent 26%),linear-gradient(180deg,rgba(35,29,23,.76),rgba(12,10,8,.86));box-shadow:0 24px 56px rgba(0,0,0,.32),inset 0 1px 0 rgba(255,255,255,.07),0 0 42px rgba(231,111,81,.09);padding:26px 34px}
+      .journey-level-map{position:relative;overflow:hidden;width:100%;min-height:640px;border:1px solid rgba(var(--journey-level-rgb),.46);border-radius:28px;background:radial-gradient(circle at 28% 18%,rgba(var(--journey-level-rgb),.12),transparent 26%),linear-gradient(180deg,rgba(35,29,23,.76),rgba(12,10,8,.86));box-shadow:0 24px 56px rgba(0,0,0,.32),inset 0 1px 0 rgba(255,255,255,.07),0 0 42px rgba(var(--journey-level-rgb),.09);padding:26px 34px}
       .journey-level-map:before{content:"";position:absolute;right:-8%;top:-12%;bottom:-18%;width:48%;background:transparent url("images/journey-backgrounds/journey-guitar-map-transparent-v2.png") center/contain no-repeat;opacity:.18;filter:drop-shadow(0 18px 30px rgba(0,0,0,.34));pointer-events:none}
       .journey-level-map:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px),linear-gradient(180deg,rgba(255,255,255,.02) 1px,transparent 1px);background-size:88px 88px;opacity:.13;pointer-events:none}
       .journey-level-map-head{position:relative;z-index:2;display:flex;justify-content:space-between;gap:18px;align-items:flex-start;max-width:none;margin:0 0 24px}
-      .journey-level-map-head h2{font-family:Cinzel,serif;color:#f3cf88;font-size:1.78rem;line-height:1.02;margin:4px 0 6px}
+      .journey-level-map-head h2{font-family:Cinzel,serif;color:var(--journey-level-color);font-size:1.78rem;line-height:1.02;margin:4px 0 6px;text-shadow:0 0 18px rgba(var(--journey-level-rgb),.18)}
       .journey-level-map-head p{max-width:460px;color:var(--dim);font-size:.72rem;line-height:1.5;margin:0}
-      .journey-level-progress{min-width:106px;border:1px solid rgba(231,111,81,.3);background:rgba(13,11,8,.5);border-radius:18px;padding:12px 13px;text-align:center;box-shadow:0 12px 28px rgba(0,0,0,.22),inset 0 1px 0 rgba(255,255,255,.05)}
+      .journey-level-progress{min-width:106px;border:1px solid rgba(var(--journey-level-rgb),.3);background:rgba(13,11,8,.5);border-radius:18px;padding:12px 13px;text-align:center;box-shadow:0 12px 28px rgba(0,0,0,.22),inset 0 1px 0 rgba(255,255,255,.05)}
       .journey-level-progress strong{display:block;font-family:Cinzel,serif;color:var(--gold);font-size:1.2rem;line-height:1}
       .journey-level-progress span{display:block;color:var(--dim);font-size:.56rem;letter-spacing:.08em;text-transform:uppercase;margin:4px 0 8px}
       .journey-level-progress i{display:block;height:4px;background:rgba(255,255,255,.08);border-radius:99px;overflow:hidden}
-      .journey-level-progress b{display:block;height:100%;background:linear-gradient(90deg,#e76f51,#f3b15d)}
+      .journey-level-progress b{display:block;height:100%;background:linear-gradient(90deg,var(--journey-level-color),#f3d08a)}
       .journey-skill-ribbon{position:relative;z-index:2;display:flex;gap:7px;flex-wrap:wrap;justify-content:center;margin:0 auto 10px;max-width:720px}
       .journey-skill-ribbon span{border:1px solid rgba(212,175,105,.16);background:rgba(212,175,105,.07);color:#f3d79a;border-radius:999px;padding:5px 9px;font-size:.6rem;font-weight:800;letter-spacing:.04em}
       .journey-roadmap-board{position:relative;z-index:2;display:grid;gap:18px;max-width:none;margin:0;padding:10px 0 0;background:transparent}
-      .journey-roadmap-section{position:relative;display:grid;grid-template-columns:minmax(240px,.34fr) minmax(0,1fr);gap:24px;align-items:center;min-height:86px;border:1px solid rgba(255,245,204,.08);border-radius:999px;background:linear-gradient(90deg,rgba(255,255,255,.045),rgba(255,255,255,.012));box-shadow:inset 0 1px 0 rgba(255,255,255,.04);padding:12px 26px 12px 14px;overflow:visible}
-      .journey-roadmap-section:before{content:"";position:absolute;left:82px;right:22px;top:50%;height:1px;background:linear-gradient(90deg,rgba(231,111,81,.2),rgba(255,226,179,.18));opacity:.7;pointer-events:none}
-      .journey-roadmap-section.current{border-color:rgba(255,226,179,.22);box-shadow:inset 0 1px 0 rgba(255,255,255,.05),0 0 26px color-mix(in srgb,var(--section-color),transparent 78%)}
+      .journey-roadmap-section{position:relative;display:grid;grid-template-columns:minmax(255px,.36fr) minmax(0,1fr);gap:20px;align-items:center;min-height:76px;border:1px solid rgba(255,245,204,.08);border-radius:999px;background:linear-gradient(90deg,rgba(255,255,255,.045),rgba(255,255,255,.012));box-shadow:inset 0 1px 0 rgba(255,255,255,.04);padding:9px 24px 9px 12px;overflow:visible}
+      .journey-roadmap-section:before{content:"";position:absolute;left:78px;right:22px;top:50%;height:1px;background:linear-gradient(90deg,rgba(var(--journey-level-rgb),.2),rgba(255,226,179,.18));opacity:.7;pointer-events:none}
+      .journey-roadmap-section.current{border-color:rgba(255,226,179,.22);box-shadow:inset 0 1px 0 rgba(255,255,255,.05),0 0 26px rgba(var(--journey-level-rgb),.22)}
       .journey-roadmap-section.done{border-color:rgba(255,226,179,.14)}
-      .journey-roadmap-section-head{position:relative;z-index:2;display:grid;grid-template-columns:62px 1fr auto;gap:14px;align-items:center}
-      .journey-roadmap-section-head > span{width:62px;height:62px;border-radius:999px;display:grid;place-items:center;background:radial-gradient(circle at 35% 30%,rgba(255,244,214,.98),var(--section-color) 42%,rgba(13,11,8,.92) 78%);border:1px solid rgba(255,236,198,.44);font-family:Cinzel,serif;color:#fff8dc;font-weight:900;font-size:1rem;text-shadow:0 1px 4px rgba(0,0,0,.86);box-shadow:0 0 26px color-mix(in srgb,var(--section-color),transparent 52%)}
-      .journey-roadmap-section-head h3{margin:0;font-family:Cinzel,serif;color:var(--text);font-size:.95rem;line-height:1.12}
-      .journey-roadmap-section-head p{margin:4px 0 0;color:var(--dim);font-size:.64rem;line-height:1.28}
+      .journey-roadmap-section-head{position:relative;z-index:2;display:grid;grid-template-columns:54px 1fr auto;gap:12px;align-items:center}
+      .journey-roadmap-section-head > span{width:54px;height:54px;border-radius:999px;display:grid;place-items:center;background:radial-gradient(circle at 35% 30%,rgba(255,244,214,.98),var(--journey-level-color) 42%,rgba(13,11,8,.92) 78%);border:1px solid rgba(255,236,198,.44);font-family:Cinzel,serif;color:#fff8dc;font-weight:900;font-size:.92rem;text-shadow:0 1px 4px rgba(0,0,0,.86);box-shadow:0 0 24px rgba(var(--journey-level-rgb),.42)}
+      .journey-roadmap-section-head h3{margin:0;font-family:Cinzel,serif;color:var(--text);font-size:.88rem;line-height:1.12}
+      .journey-roadmap-section-head p{margin:3px 0 0;color:var(--dim);font-size:.59rem;line-height:1.22}
       .journey-roadmap-section-head small{font-family:JetBrains Mono,monospace;color:rgba(255,226,179,.66);font-size:.58rem;align-self:start}
-      .journey-roadmap-lessons{position:relative;z-index:2;display:flex;align-items:center;justify-content:space-between;gap:18px;min-width:0;padding:0 8px 0 0}
-      .journey-roadmap-lessons:before{content:"";position:absolute;left:24px;right:52px;top:50%;height:2px;background:linear-gradient(90deg,rgba(255,226,179,.2),rgba(231,111,81,.4),rgba(255,226,179,.12));pointer-events:none;transform:translateY(-50%)}
-      .journey-roadmap-lesson{position:relative;z-index:2;width:46px;height:46px;min-width:46px;border:1px solid rgba(255,245,204,.2);border-radius:999px;background:radial-gradient(circle at 35% 30%,rgba(255,245,204,.34),rgba(8,7,6,.9) 68%);color:var(--text);display:grid;place-items:center;padding:0;text-align:center;cursor:pointer;box-shadow:0 0 18px color-mix(in srgb,var(--section-color),transparent 78%);transition:transform .16s ease,border-color .16s ease,box-shadow .16s ease,background .16s ease}
-      .journey-roadmap-lesson b{width:28px;height:28px;border-radius:999px;display:grid;place-items:center;background:rgba(8,7,6,.72);border:1px solid rgba(255,226,179,.26);font-family:Cinzel,serif;color:#fff5d4;font-size:.66rem;line-height:1}
-      .journey-roadmap-lesson span{position:absolute;left:50%;top:calc(100% + 7px);transform:translateX(-50%);width:96px;font-family:DM Sans,sans-serif;font-size:.58rem;font-weight:800;line-height:1.12;color:rgba(255,245,220,.7);overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;text-align:center}
-      .journey-roadmap-lesson:hover:not(:disabled){transform:translateY(-1px);border-color:rgba(255,245,204,.34);box-shadow:0 10px 22px rgba(0,0,0,.22),0 0 22px color-mix(in srgb,var(--section-color),transparent 74%)}
-      .journey-roadmap-lesson.current{border-color:rgba(255,244,214,.58);background:linear-gradient(90deg,color-mix(in srgb,var(--section-color),transparent 70%),rgba(9,8,7,.76));box-shadow:0 0 0 3px color-mix(in srgb,var(--section-color),transparent 85%),0 0 30px color-mix(in srgb,var(--section-color),transparent 62%)}
-      .journey-roadmap-lesson.current b{background:radial-gradient(circle at 35% 30%,#fff8dc,var(--section-color) 52%,#20100c 80%);box-shadow:0 0 22px color-mix(in srgb,var(--section-color),transparent 42%)}
-      .journey-roadmap-lesson.done{background:radial-gradient(circle at 35% 30%,#fff1bd,var(--section-color) 42%,rgba(8,7,6,.9) 76%);border-color:rgba(255,226,179,.36)}
-      .journey-roadmap-lesson.locked{opacity:.5;cursor:not-allowed;filter:saturate(.72)}
-      .journey-roadmap-complete-dot{position:relative;z-index:2;align-self:center;flex:0 0 58px;width:58px;height:58px;border-radius:999px;background:rgba(8,7,6,.76);border:1px solid rgba(255,226,179,.22);box-shadow:inset 0 0 16px rgba(0,0,0,.26)}
-      .journey-roadmap-complete-dot.done{background:radial-gradient(circle,#fff3c2 0 13%,#f3b15d 14% 38%,rgba(231,111,81,.82) 39% 58%,rgba(8,7,6,.9) 59%);box-shadow:0 0 28px color-mix(in srgb,var(--section-color),transparent 48%)}
-      .journey-roadmap-complete-dot.current{background:radial-gradient(circle,#fff8dc 0 12%,#f3b15d 13% 42%,rgba(8,7,6,.92) 43%);box-shadow:0 0 34px color-mix(in srgb,var(--section-color),transparent 42%);animation:journey-level-pulse 2.8s ease-in-out infinite}
-      .journey-roadmap-complete-dot.future{opacity:.42}
+      .journey-roadmap-levels{position:relative;z-index:2;display:flex;align-items:center;justify-content:space-between;gap:14px;min-width:0;padding:0 2px}
+      .journey-roadmap-levels:before{content:"";position:absolute;left:24px;right:24px;top:50%;height:2px;background:linear-gradient(90deg,rgba(255,226,179,.16),rgba(var(--journey-level-rgb),.28),rgba(255,226,179,.1));pointer-events:none;transform:translateY(-50%)}
+      .journey-roadmap-level-dot{position:relative;z-index:2;width:42px;height:42px;min-width:42px;border:1px solid rgba(255,245,204,.16);border-radius:999px;background:radial-gradient(circle at 35% 30%,rgba(255,245,204,.22),rgba(8,7,6,.9) 68%);color:var(--text);display:grid;place-items:center;padding:0;text-align:center;cursor:pointer;box-shadow:0 0 14px rgba(var(--dot-rgb),.16);transition:transform .16s ease,border-color .16s ease,box-shadow .16s ease,background .16s ease}
+      .journey-roadmap-level-dot b{width:24px;height:24px;border-radius:999px;display:grid;place-items:center;background:rgba(8,7,6,.72);border:1px solid rgba(255,226,179,.2);font-family:Cinzel,serif;color:#fff5d4;font-size:.6rem;line-height:1}
+      .journey-roadmap-level-dot span{position:absolute;left:50%;bottom:calc(100% + 9px);transform:translateX(-50%);width:220px;max-width:42vw;background:rgba(13,11,8,.94);border:1px solid rgba(var(--dot-rgb),.42);border-radius:12px;padding:9px 10px;font-family:DM Sans,sans-serif;font-size:.68rem;font-weight:700;line-height:1.32;color:var(--text);box-shadow:0 12px 24px rgba(0,0,0,.34);opacity:0;pointer-events:none;transition:opacity .14s ease,transform .14s ease;z-index:10}
+      .journey-roadmap-level-dot:hover:not(:disabled),.journey-roadmap-level-dot:focus-visible{transform:translateY(-1px);border-color:rgba(255,245,204,.42);box-shadow:0 10px 22px rgba(0,0,0,.22),0 0 24px rgba(var(--dot-rgb),.38);outline:none}
+      .journey-roadmap-level-dot:hover span,.journey-roadmap-level-dot:focus-visible span{opacity:1;transform:translateX(-50%) translateY(-2px)}
+      .journey-roadmap-level-dot.selected{width:52px;height:52px;min-width:52px;background:radial-gradient(circle at 35% 30%,#fff8dc,var(--dot-color) 48%,#20100c 82%);border-color:rgba(255,244,214,.72);box-shadow:0 0 0 4px rgba(var(--dot-rgb),.13),0 0 32px rgba(var(--dot-rgb),.58)}
+      .journey-roadmap-level-dot.selected b{background:rgba(8,7,6,.78);border-color:rgba(255,245,204,.46);font-size:.7rem}
+      .journey-roadmap-level-dot.done{background:radial-gradient(circle at 35% 30%,#fff1bd,var(--dot-color) 42%,rgba(8,7,6,.9) 76%);border-color:rgba(255,226,179,.36)}
+      .journey-roadmap-level-dot.current{box-shadow:0 0 0 4px rgba(var(--dot-rgb),.13),0 0 32px rgba(var(--dot-rgb),.62),0 0 54px rgba(var(--dot-rgb),.24)}
+      .journey-roadmap-level-dot.locked{opacity:.36;cursor:not-allowed;filter:saturate(.62)}
       .journey-level-entry-foot{position:relative;z-index:2;display:flex;align-items:center;justify-content:space-between;gap:16px;max-width:none;margin:26px 0 0;border-top:1px solid rgba(212,175,105,.1);padding-top:14px}
       .journey-level-entry-foot p{color:var(--dim);font-size:.7rem;line-height:1.45;margin:0;max-width:560px}
       .journey-begin-btn{min-width:138px;box-shadow:0 10px 26px rgba(212,175,105,.18)}
@@ -844,8 +869,8 @@
         .journey-neck-level.mastery .journey-mastery-particle{display:none}
       }
       @media(max-width:860px){.journey-entry-stage{min-height:auto;display:flex;flex-direction:column;align-items:center;gap:12px}.journey-map-guide{position:static;order:2;width:min(280px,88vw)}.journey-neck-stage{order:1;width:min(340px,88vw)}.journey-map-bubble{width:min(250px,78vw)}}
-      @media(max-width:980px){.journey-level-entry-stage{grid-template-columns:1fr}.journey-entry-guide{position:relative;top:auto;flex-direction:row;justify-content:center;align-items:flex-end;padding-top:0}.journey-entry-guide img{width:104px;height:126px}.journey-entry-bubble{width:min(330px,70vw)}.journey-entry-bubble:before{left:30px}.journey-level-map{min-height:auto}.journey-level-map:before{right:-2%;width:52%;opacity:.1}.journey-roadmap-section{grid-template-columns:1fr}.journey-roadmap-lessons{flex-wrap:wrap}.journey-roadmap-lesson{flex-basis:calc(50% - 6px)}.journey-level-entry-foot{flex-direction:column;align-items:stretch;text-align:center}.journey-begin-btn{width:100%}}
-      @media(max-width:720px){.journey-shell{padding:14px}.journey-grid,.journey-companion-grid{grid-template-columns:1fr}.journey-neck-stage{width:min(330px,92vw);background-size:contain}.journey-neck-wrap{padding-top:14px}.journey-headstock{width:140px;height:64px}.journey-neck{width:min(250px,74vw);height:520px;min-height:460px}.journey-body-arc{width:min(360px,92vw);height:95px}.journey-guide-scene{left:50%;bottom:38px;transform:translateX(-50%);width:min(300px,78vw)}.journey-guide-character{width:126px;height:174px}.journey-guide-bubble.game{max-width:250px}.journey-title{font-size:1.25rem}.journey-guide img{width:64px;height:64px}.journey-companion-head,.journey-companion-preview,.journey-companion-summary{align-items:flex-start;flex-direction:column}.journey-student-bar{border-radius:16px;width:100%;box-sizing:border-box}.journey-student-menu{width:min(280px,88vw)}.journey-level-map-head{flex-direction:column;align-items:stretch}.journey-level-progress{width:100%}.journey-roadmap-board{padding:8px}.journey-roadmap-section{padding:10px}.journey-roadmap-lessons{display:grid;grid-template-columns:1fr}.journey-roadmap-lesson{flex-basis:auto}.journey-roadmap-complete-dot{justify-self:center}.journey-entry-guide{flex-direction:column;align-items:center}.journey-entry-bubble{width:min(270px,82vw)}.journey-entry-bubble:before{left:50%}}
+      @media(max-width:980px){.journey-level-entry-stage{grid-template-columns:1fr}.journey-entry-guide{position:relative;top:auto;min-height:auto;grid-template-rows:auto;display:flex;flex-direction:row;justify-content:center;align-items:flex-end;padding-top:0}.journey-entry-guide img{width:104px;height:126px}.journey-entry-bubble{width:min(330px,70vw);order:0}.journey-entry-bubble:before{left:30px}.journey-level-map{min-height:auto}.journey-level-map:before{right:-2%;width:52%;opacity:.1}.journey-roadmap-section{grid-template-columns:1fr;border-radius:22px}.journey-roadmap-section:before{left:22px}.journey-roadmap-levels{flex-wrap:wrap;justify-content:flex-start}.journey-roadmap-level-dot span{bottom:auto;top:calc(100% + 8px)}.journey-level-entry-foot{flex-direction:column;align-items:stretch;text-align:center}.journey-begin-btn{width:100%}}
+      @media(max-width:720px){.journey-shell{padding:14px}.journey-grid,.journey-companion-grid{grid-template-columns:1fr}.journey-neck-stage{width:min(330px,92vw);background-size:contain}.journey-neck-wrap{padding-top:14px}.journey-headstock{width:140px;height:64px}.journey-neck{width:min(250px,74vw);height:520px;min-height:460px}.journey-body-arc{width:min(360px,92vw);height:95px}.journey-guide-scene{left:50%;bottom:38px;transform:translateX(-50%);width:min(300px,78vw)}.journey-guide-character{width:126px;height:174px}.journey-guide-bubble.game{max-width:250px}.journey-title{font-size:1.25rem}.journey-guide img{width:64px;height:64px}.journey-companion-head,.journey-companion-preview,.journey-companion-summary{align-items:flex-start;flex-direction:column}.journey-student-bar{border-radius:16px;width:100%;box-sizing:border-box}.journey-student-menu{width:min(280px,88vw)}.journey-level-map{padding:18px}.journey-level-map-head{flex-direction:column;align-items:stretch}.journey-level-progress{width:100%}.journey-roadmap-board{padding:8px}.journey-roadmap-section{padding:10px}.journey-roadmap-level-dot{width:38px;height:38px;min-width:38px}.journey-roadmap-level-dot.selected{width:46px;height:46px;min-width:46px}.journey-entry-guide{flex-direction:column;align-items:center}.journey-entry-bubble{width:min(270px,82vw)}.journey-entry-bubble:before{left:50%}}
     `;
     document.head.appendChild(style);
   }
@@ -1161,8 +1186,7 @@
       const unlocked = num === 1 || s.levels[l.id].unlocked || s.levels['L'+(num-1)]?.complete;
       if(!unlocked) return;
       s.currentLevel = num; s.activeLesson = null; saveStudent(s);
-      if(Number(num) === 1) renderLevelEntry(num);
-      else renderLevel(num);
+      renderLevelEntry(num);
     },
     openLesson(levelNum, lessonNum){
       const state = loadState(); const s = activeStudent(state); const l = getLevel(levelNum);
