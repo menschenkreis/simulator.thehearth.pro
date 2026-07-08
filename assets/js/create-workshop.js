@@ -27,7 +27,18 @@
   }
   function updateTitle(v){const c=current(); c.title=(v||'Untitled Song Seed').trim(); saveCurrent(c)}
   function updateNotes(v){const c=current(); c.notes=v||''; saveCurrent(c)}
-  function saveProject(){const c=current(); const ps=projects(); ps.push({...c,savedAt:new Date().toISOString()}); write('hearth-create-projects',ps); render();}
+  function saveProject(){
+    const c=current(); const ps=projects(); const saved={...c,savedAt:new Date().toISOString()}; ps.push(saved); write('hearth-create-projects',ps);
+    if(window.HearthProgressEvents){
+      window.HearthProgressEvents.append({
+        event_type:'creation_saved',
+        node_id:'create',
+        note:saved.notes||'',
+        data:{ title:saved.title, ingredients:saved.ingredients||[], prompt:saved.prompt||'' }
+      });
+    }
+    render();
+  }
   function newSeed(){saveCurrent({title:'Untitled Song Seed',ingredients:[],prompt:'Add an ingredient to wake the cauldron.',notes:''}); render();}
   function loadProject(reverseIndex){const ps=projects(); const p=ps.slice(-5).reverse()[reverseIndex]; if(p){saveCurrent({...p}); render();}}
   function inject(){

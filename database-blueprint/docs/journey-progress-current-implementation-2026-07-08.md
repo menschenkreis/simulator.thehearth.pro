@@ -91,6 +91,26 @@ The current UI presents this as a compact whole-simulator progress panel with:
 
 This is useful, but it is still a prototype. It should not be treated as the final data model.
 
+## Local Progress Events
+
+The prototype now also writes a simple local event timeline:
+
+`hearth-progress-events`
+
+This is not a replacement for the existing local lists yet. It is a bridge toward backend-style progress events.
+
+Current event writers:
+
+- Practice drill completion writes `practice_session_completed`
+- Practice candle completion writes `practice_session_completed`
+- Create saved seed/project writes `creation_saved`
+
+The event store lives in:
+
+- `adapters/progress-event-store.js`
+
+This gives the prototype a cleaner migration path because Martin can see the kind of event data the frontend wants to produce.
+
 ## Progress That Is Inferred Or Tagged
 
 Journey category progress can now use explicit lesson category tags.
@@ -179,10 +199,11 @@ Done in the current prototype:
 
 - Level 1 Journey lessons have explicit category tags.
 - The Progress button has a stronger whole-simulator snapshot panel.
+- Practice and Create now write simple local progress events.
 
 Next:
 
-1. Make Practice and Create write cleaner progress events.
-2. Decide how Ayla-as-teacher and Jen-as-learner should appear in the UI.
-3. Add explicit category tags as future Journey levels are authored.
+1. Decide how Ayla-as-teacher and Jen-as-learner should appear in the UI.
+2. Add explicit category tags as future Journey levels are authored.
+3. Add event writers for Journey lesson completion, Knowing topic study, and Doing drill completion.
 4. Keep local prototype state simple until the backend shape is ready.

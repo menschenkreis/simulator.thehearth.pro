@@ -90,6 +90,16 @@
     if(feeling==='nailed'){ s.completed[drillId]=true; next=P.drills[idx+1]||drill; nextAction='Good. Save what made it clean, then either repeat calmly or move to the next small thing.'; }
     else if(feeling==='getting'){ next=drill; nextAction='Stay here. You are close enough that repetition will teach the hands.'; }
     else { next=P.drills[Math.max(0,idx-1)]||drill; nextAction='Gradient too steep. Step back, lower BPM, or reduce the movement.'; }
+    if(window.HearthProgressEvents){
+      window.HearthProgressEvents.append({
+        event_type:'practice_session_completed',
+        node_id:'practise',
+        drill_id:drillId,
+        duration_minutes:minutes,
+        rating:feeling==='nailed'?5:feeling==='getting'?3:1,
+        data:{ drill_title:drill.title, bpm:bpm, feeling:feeling, marked_complete:feeling==='nailed' }
+      });
+    }
     s.currentDrill=next.id; saveState(s);
     const emoji=feeling==='nailed'?'🔥':feeling==='getting'?'💪':'🤔';
     const msg=feeling==='nailed'?'Nailed it':feeling==='getting'?'Getting there':'Need more work';

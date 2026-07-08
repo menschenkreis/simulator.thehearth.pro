@@ -581,6 +581,19 @@
       nextStep: nextStep
     });
     localStorage.setItem(key, JSON.stringify(existing));
+    if (window.HearthProgressEvents) {
+      window.HearthProgressEvents.append({
+        event_type: "practice_session_completed",
+        node_id: "practise",
+        duration_minutes: PRACTICE_CANDLE.durationMinutes,
+        note: nextStep,
+        data: {
+          focus: PRACTICE_CANDLE.focus,
+          feeling: feeling,
+          blockers: blockers.split(",").map(function(x){ return x.trim(); }).filter(Boolean)
+        }
+      });
+    }
     renderPracticeCandle();
   }
 
