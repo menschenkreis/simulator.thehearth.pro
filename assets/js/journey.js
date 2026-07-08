@@ -55,7 +55,7 @@
     const moods = GUIDE_ASSETS.moods || {};
     return (moods[mood] && moods[mood].src) ||
       (moods.talking && moods.talking.src) ||
-      'images/character-generated/talking-guide-v1.png';
+      'images/character-generated/talking-guide-v1-ui.webp';
   }
 
   function journeyGuideMood(student, lvlState){
@@ -1059,7 +1059,7 @@
     const nextLesson = buildLesson(student, level.num, nextLessonNum);
     const guideMsg = levelGuideText(level, lessonsDone, nextLesson);
     html += '<div style="display:flex;flex-direction:column;align-items:center;margin-bottom:18px">';
-    html += '<img src="images/character-full/Encouraging.png" style="width:80px;height:80px;object-fit:contain;filter:drop-shadow(0 4px 12px rgba(0,0,0,0.4));animation:char-float 3s ease-in-out infinite"/>';
+    html += '<img src="'+attr(guideAsset('encouraging'))+'" style="width:80px;height:80px;object-fit:contain;filter:drop-shadow(0 4px 12px rgba(0,0,0,0.4));animation:char-float 3s ease-in-out infinite"/>';
     html += '<div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:10px 14px;margin-top:8px;max-width:280px;text-align:center;position:relative">';
     html += '<div style="position:absolute;left:50%;top:-6px;transform:translateX(-50%);width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-bottom:6px solid var(--border)"></div>';
     html += '<div style="font-size:0.68rem;color:var(--text);line-height:1.5">'+esc(guideMsg)+'</div>';
@@ -1152,7 +1152,7 @@
       // Guitar guide for this block
       const guideMsg = blockGuides[b.id] || b.body;
       html += '<div style="display:flex;flex-direction:column;align-items:center;margin-bottom:14px">';
-      html += '<img src="images/character-full/Encouraging.png" style="width:72px;height:72px;object-fit:contain;filter:drop-shadow(0 4px 12px rgba(0,0,0,0.4));animation:char-float 3s ease-in-out infinite"/>';
+      html += '<img src="'+attr(guideAsset('encouraging'))+'" style="width:72px;height:72px;object-fit:contain;filter:drop-shadow(0 4px 12px rgba(0,0,0,0.4));animation:char-float 3s ease-in-out infinite"/>';
       html += '<div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:10px 14px;margin-top:8px;max-width:280px;text-align:center;position:relative">';
       html += '<div style="position:absolute;left:50%;top:-6px;transform:translateX(-50%);width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-bottom:6px solid var(--border)"></div>';
       html += '<div style="font-size:0.68rem;color:var(--text);line-height:1.5">'+esc(guideMsg)+'</div>';
@@ -1172,7 +1172,7 @@
     } else if(isReview) {
       // Review/complete step
       html += '<div style="display:flex;flex-direction:column;align-items:center;margin-bottom:14px">';
-      html += '<img src="images/character-full/Encouraging.png" style="width:72px;height:72px;object-fit:contain;filter:drop-shadow(0 4px 12px rgba(0,0,0,0.4));animation:char-float 3s ease-in-out infinite"/>';
+      html += '<img src="'+attr(guideAsset('encouraging'))+'" style="width:72px;height:72px;object-fit:contain;filter:drop-shadow(0 4px 12px rgba(0,0,0,0.4));animation:char-float 3s ease-in-out infinite"/>';
       html += '<div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:10px 14px;margin-top:8px;max-width:280px;text-align:center;position:relative">';
       html += '<div style="position:absolute;left:50%;top:-6px;transform:translateX(-50%);width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-bottom:6px solid var(--border)"></div>';
       html += '<div style="font-size:0.68rem;color:var(--text);line-height:1.5">Good work. Now take a moment to rate what you learned and leave a note for next time. Honest reflection is part of the practice.</div>';
