@@ -569,16 +569,16 @@
 
   function journeyRoadmapCategories(){
     return [
-      { label:'Rhythm', icon:'R', note:'Time feel, groove, pulse, strumming, subdivision, and rhythmic confidence.', levelLessons:{1:[1]} },
-      { label:'Chords & Harmony', icon:'C', note:'Open chords, chord changes, harmony, progressions, keys, and chord colour.', levelLessons:{1:[2,3]} },
-      { label:'Scales', icon:'S', note:'Pentatonic and scale maps, root notes, boxes, positions, and fretboard orientation.', levelLessons:{1:[4]} },
-      { label:'Technique', icon:'T', note:'Hands, clean tone, picking, fretting, strength, relaxation, and control.', levelLessons:{1:[5]} },
-      { label:'Improvisation', icon:'I', note:'Phrases, call and response, solo vocabulary, musical choices, and listening.', levelLessons:{1:[6]} },
-      { label:'Picking', icon:'P', note:'Right-hand patterns, pick direction, articulation, accents, and pulse control.', levelLessons:{1:[1]} },
-      { label:'Fingerstyle', icon:'F', note:'Finger independence, rest/free stroke, plucking patterns, and hand balance.', levelLessons:{} },
-      { label:'Theory', icon:'Y', note:'Names, intervals, chord-scale relationships, keys, forms, and useful music language.', levelLessons:{1:[1,2,4]} },
-      { label:'Reading', icon:'N', note:'Tab, notation, fretboard symbols, rhythm reading, and written music literacy.', levelLessons:{} },
-      { label:'Integration', icon:'G', note:'Songs, practice sets, performance, creation, reflection, and making the skills work together.', levelLessons:{1:[7,8]} }
+      { label:'Rhythm', icon:'R', iconImage:'images/journey-category-icons/rhythm.png', note:'Time feel, groove, pulse, strumming, subdivision, and rhythmic confidence.', levelLessons:{1:[1]} },
+      { label:'Chords & Harmony', icon:'C', iconImage:'images/journey-category-icons/chords-harmony.png', note:'Open chords, chord changes, harmony, progressions, keys, and chord colour.', levelLessons:{1:[2,3]} },
+      { label:'Scales', icon:'S', iconImage:'images/journey-category-icons/scales.png', note:'Pentatonic and scale maps, root notes, boxes, positions, and fretboard orientation.', levelLessons:{1:[4]} },
+      { label:'Technique', icon:'T', iconImage:'images/journey-category-icons/technique.png', note:'Hands, clean tone, picking, fretting, strength, relaxation, and control.', levelLessons:{1:[5]} },
+      { label:'Improvisation', icon:'I', iconImage:'images/journey-category-icons/improvisation.png', note:'Phrases, call and response, solo vocabulary, musical choices, and listening.', levelLessons:{1:[6]} },
+      { label:'Picking', icon:'P', iconImage:'images/journey-category-icons/picking.png', note:'Right-hand patterns, pick direction, articulation, accents, and pulse control.', levelLessons:{1:[1]} },
+      { label:'Fingerstyle', icon:'F', iconImage:'images/journey-category-icons/fingerstyle.png', note:'Finger independence, rest/free stroke, plucking patterns, and hand balance.', levelLessons:{} },
+      { label:'Theory', icon:'Y', iconImage:'images/journey-category-icons/theory.png', note:'Names, intervals, chord-scale relationships, keys, forms, and useful music language.', levelLessons:{1:[1,2,4]} },
+      { label:'Reading', icon:'N', iconImage:'images/journey-category-icons/reading.png', note:'Tab, notation, fretboard symbols, rhythm reading, and written music literacy.', levelLessons:{} },
+      { label:'Integration', icon:'G', iconImage:'images/journey-category-icons/integration.png', note:'Songs, practice sets, performance, creation, reflection, and making the skills work together.', levelLessons:{1:[7,8]} }
     ];
   }
 
@@ -736,7 +736,7 @@
       if(completeCategory) sectionClasses.push('complete-category');
       html += '<section class="'+sectionClasses.join(' ')+'" style="--row-index:'+sectionIndex+';--section-progress:'+sectionPct+'%">';
       html += '<div class="journey-roadmap-section-head">';
-      html += '<span>'+esc(section.icon || (sectionIndex + 1))+'</span>';
+      html += '<span class="journey-category-icon">'+(section.iconImage ? '<img src="'+attr(section.iconImage)+'" alt="" />' : esc(section.icon || (sectionIndex + 1)))+'</span>';
       html += '<div><h3>'+esc(section.label)+'</h3><p>'+esc(section.note)+'</p></div>';
       html += '<small class="'+(activeCategory ? 'is-next' : completeCategory ? 'is-done' : sectionTotal ? '' : 'is-later')+'">'+sectionStatus+'</small>';
       html += '</div>';
@@ -925,7 +925,9 @@
       .journey-roadmap-section.active-category{border-color:rgba(var(--journey-level-rgb),.44);background:linear-gradient(90deg,rgba(var(--journey-level-rgb),.13),rgba(255,255,255,.018));box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 0 34px rgba(var(--journey-level-rgb),.24)}
       .journey-roadmap-section.complete-category{border-color:rgba(255,226,179,.18)}
       .journey-roadmap-section-head{position:relative;z-index:2;display:grid;grid-template-columns:46px 1fr auto;gap:10px;align-items:center}
-      .journey-roadmap-section-head > span{width:46px;height:46px;border-radius:999px;display:grid;place-items:center;background:radial-gradient(circle at 35% 30%,rgba(255,244,214,.98),var(--journey-level-color) 42%,rgba(13,11,8,.92) 78%);border:1px solid rgba(255,236,198,.44);font-family:Cinzel,serif;color:#fff8dc;font-weight:900;font-size:.82rem;text-shadow:0 1px 4px rgba(0,0,0,.86);box-shadow:0 0 22px rgba(var(--journey-level-rgb),.38)}
+      .journey-roadmap-section-head > span{width:46px;height:46px;border-radius:999px;display:grid;place-items:center;background:radial-gradient(circle at 35% 30%,rgba(255,244,214,.98),var(--journey-level-color) 42%,rgba(13,11,8,.92) 78%);border:1px solid rgba(255,236,198,.44);font-family:Cinzel,serif;color:#fff8dc;font-weight:900;font-size:.82rem;text-shadow:0 1px 4px rgba(0,0,0,.86);box-shadow:0 0 22px rgba(var(--journey-level-rgb),.38);overflow:hidden}
+      .journey-roadmap-section-head > span.journey-category-icon{background:rgba(8,7,6,.72);border-color:rgba(255,226,179,.25);box-shadow:0 0 18px rgba(var(--journey-level-rgb),.24),inset 0 1px 0 rgba(255,255,255,.08)}
+      .journey-category-icon img{width:100%;height:100%;display:block;object-fit:cover;border-radius:inherit;filter:saturate(.96) contrast(1.04)}
       .journey-roadmap-section-head h3{margin:0;font-family:Cinzel,serif;color:var(--text);font-size:.8rem;line-height:1.12}
       .journey-roadmap-section-head p{margin:2px 0 0;color:var(--dim);font-size:.55rem;line-height:1.18}
       .journey-roadmap-section-head small{justify-self:end;align-self:center;min-width:46px;border:1px solid rgba(255,226,179,.16);border-radius:999px;background:rgba(13,11,8,.5);padding:4px 7px;text-align:center;font-family:JetBrains Mono,monospace;color:rgba(255,226,179,.66);font-size:.56rem;line-height:1}
