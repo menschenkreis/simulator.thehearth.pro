@@ -242,12 +242,103 @@
     return best;
   }
 
+  function readJsonValue(storage, key, fallback) {
+    try {
+      var raw = storage.getItem(key);
+      return raw ? JSON.parse(raw) : fallback;
+    } catch (error) {
+      return fallback;
+    }
+  }
+
+  function countKnownTopics() {
+    var knowing = root.KNOWING;
+    if (!knowing || !Array.isArray(knowing.categories)) return 9;
+    return knowing.categories.reduce(function countTopics(total, category) {
+      return total + ((category.topics && category.topics.length) || 0);
+    }, 0) || 9;
+  }
+
+  function countDoingDrills() {
+    var doing = root.DOING;
+    if (!doing) return 48;
+    if (Array.isArray(doing.drills)) return doing.drills.length || 48;
+    if (Array.isArray(doing.categories)) {
+      return doing.categories.reduce(function countDrills(total, category) {
+        return total + ((category.drills && category.drills.length) || 0);
+      }, 0) || 48;
+    }
+    return 48;
+  }
+
+  function countPracticeDrills() {
+    var practice = root.PRACTICE;
+    if (practice && Array.isArray(practice.drills)) return practice.drills.length;
+    return 0;
+  }
+
+  function activeJourneyCounts(storage) {
+    var state = readJsonValue(storage, "hearth-journey-v2", null);
+    if (!state || !Array.isArray(state.students) || !state.students.length) {
+      return { done: 0, total: 0, label: "Journey", current: "No profile yet" };
+    }
+    var active = state.students.find(function findActive(student) {
+      return student.id === state.activeStudentId;
+    }) || state.students[0];
+    var levels = active.levels || {};
+    var done = 0;
+    var total = 0;
+    Object.keys(levels).forEach(function countLevel(levelId) {
+      var level = levels[levelId] || {};
+      var levelNum = parseInt(String(levelId).replace(/[^0-9]/g, ""), 10);
+      var authored = root.JOURNEY_LEVELS && root.JOURNEY_LEVELS[levelNum - 1];
+      var levelTotal = (authored && authored.totalLessons) || 0;
+      if (!levelTotal && Number.isFinite(level.lessonsTotal)) levelTotal = level.lessonsTotal;
+      done += level.lessonsDone || 0;
+      total += levelTotal;
+    });
+    return {
+      done: done,
+      total: total,
+      label: active.name || "Journey",
+      current: "Level " + (active.currentLevel || 1)
+    };
+  }
+
+  function practiceCounts(storage) {
+    var state = readJsonValue(storage, "hearth-practice-state", {});
+    var log = readJsonValue(storage, "hearth-practice-log", []);
+    var completed = state && state.completed ? Object.keys(state.completed).length : 0;
+    var minutes = Array.isArray(log) ? log.reduce(function sumMinutes(total, entry) {
+      return total + (Number(entry.minutes) || Number(entry.duration) || 0);
+    }, 0) : 0;
+    return {
+      done: completed,
+      total: countPracticeDrills(),
+      sessions: Array.isArray(log) ? log.length : 0,
+      minutes: minutes
+    };
+  }
+
+  function createCounts(storage) {
+    var projects = readJsonValue(storage, "hearth-create-projects", []);
+    var current = readJsonValue(storage, "hearth-create-current", {});
+    var hasDraft = Boolean(current && (current.notes || (current.ingredients && current.ingredients.length)));
+    return {
+      projects: Array.isArray(projects) ? projects.length : 0,
+      hasDraft: hasDraft
+    };
+  }
+
   function progressCounts(storage) {
     storage = storage || root.localStorage;
     return {
       foundation: { done: readBestJsonCount(storage, ["fProgress", "hearth-foundation-progress"]), total: 10 },
-      doing: { done: readJsonCount(storage, "dProgress"), total: 48 },
-      knowing: { done: readBestJsonCount(storage, ["kProgress", "hearth-knowing-progress"]), total: 9 },
+      journey: activeJourneyCounts(storage),
+      doing: { done: readJsonCount(storage, "dProgress"), total: countDoingDrills() },
+      knowing: { done: readBestJsonCount(storage, ["kProgress", "hearth-knowing-progress"]), total: countKnownTopics() },
+      practice: practiceCounts(storage),
+      create: createCounts(storage),
       streak: parseInt(storage.getItem("streak") || "0", 10) || 0
     };
   }
@@ -267,9 +358,11 @@
   function progressSummary(counts) {
     var areas = [
       { id: "foundation", label: "Foundation", action: "revisit one basic block", item: counts.foundation },
+      { id: "journey", label: "Journey", action: "continue the next lesson step", item: counts.journey },
       { id: "doing", label: "Do", action: "touch one physical drill", item: counts.doing },
-      { id: "knowing", label: "Know", action: "clear one concept or word", item: counts.knowing }
-    ];
+      { id: "knowing", label: "Know", action: "clear one concept or word", item: counts.knowing },
+      { id: "practice", label: "Practice", action: "complete one focused candle session", item: counts.practice }
+    ].filter(function hasTrackableTotal(area) { return area.item && area.item.total > 0; });
     var done = areas.reduce(function sumDone(total, area) { return total + area.item.done; }, 0);
     var total = areas.reduce(function sumTotal(total, area) { return total + area.item.total; }, 0);
     var weakest = areas.slice().sort(function sortAreas(a, b) {
@@ -297,10 +390,16 @@
       + '</div>'
       + '<div class="progress-next"><span>Next best move</span><strong>' + summary.next.label + '</strong><p>' + summary.next.action + '.</p></div>'
       + progressRow("Foundation", counts.foundation)
+      + (counts.journey.total ? progressRow("Journey Lessons", counts.journey) : "")
       + progressRow("Do", counts.doing)
       + progressRow("Know", counts.knowing)
+      + (counts.practice.total ? progressRow("Practice Drills", counts.practice) : "")
       + '<div class="progress-row"><span class="progress-label">Practice Streak</span><span style="font-family:JetBrains Mono;font-size:0.65rem;color:var(--amber)">'
-      + counts.streak + ' days</span></div>';
+      + counts.streak + ' days</span></div>'
+      + '<div class="progress-row"><span class="progress-label">Practice Sessions</span><span style="font-family:JetBrains Mono;font-size:0.65rem;color:var(--amber)">'
+      + (counts.practice.sessions || 0) + ' sessions · ' + (counts.practice.minutes || 0) + ' min</span></div>'
+      + '<div class="progress-row"><span class="progress-label">Create Seeds</span><span style="font-family:JetBrains Mono;font-size:0.65rem;color:var(--amber)">'
+      + counts.create.projects + ' saved' + (counts.create.hasDraft ? ' · draft open' : '') + '</span></div>';
   }
 
   function renderProgress(doc, storage) {
