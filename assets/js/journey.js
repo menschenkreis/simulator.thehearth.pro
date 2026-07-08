@@ -454,7 +454,10 @@
           '<div class="journey-kicker">'+esc(companion.label || 'Lesson Companion')+'</div>' +
           '<div class="journey-companion-title">'+esc(companion.title || 'Next lesson focus')+'</div>' +
         '</div>' +
-        '<button class="journey-btn secondary" onclick="Journey.openLevel('+(student.currentLevel || 1)+')">Open Path</button>' +
+        '<div class="journey-actions compact">' +
+          '<button class="journey-btn" onclick="Journey.openCompanionLesson(\''+student.id+'\')">Live Lesson</button>' +
+          '<button class="journey-btn secondary" onclick="Journey.openLevel('+(student.currentLevel || 1)+')">Open Path</button>' +
+        '</div>' +
       '</div>' +
       '<p class="journey-companion-focus">'+esc(companion.focus || '')+'</p>' +
       '<div class="journey-guide-note">'+esc(companion.guideNote || '')+'</div>' +
@@ -477,7 +480,10 @@
       '<div><div class="journey-kicker">Teacher Prep</div>' +
       '<div class="journey-preview-title">'+esc(companion.label || companionStudent.name)+'</div>' +
       '<div class="journey-preview-copy">'+esc(companion.nextAction || '')+'</div></div>' +
-      '<button class="journey-btn secondary" onclick="Journey.switchStudent(\''+companionStudent.id+'\')">Show Jen</button>' +
+      '<div class="journey-actions compact">' +
+        '<button class="journey-btn" onclick="Journey.openCompanionLesson(\''+companionStudent.id+'\')">Live Lesson</button>' +
+        '<button class="journey-btn secondary" onclick="Journey.switchStudent(\''+companionStudent.id+'\')">Show Jen</button>' +
+      '</div>' +
     '</div>';
   }
 
@@ -779,6 +785,64 @@
     bindStudentPickerClose();
   }
 
+  function companionStepMinutes(index){
+    return [5, 8, 7, 10, 10, 8, 10, 2][index] || 5;
+  }
+
+  function renderCompanionLesson(studentId, saved){
+    injectStyles();
+    showPanel('p-lesson');
+    const root = getJourneyRoot();
+    if(!root) return;
+    const state = loadState();
+    let student = state.students.find(s => s.id === studentId) || activeStudent(state);
+    if(!getCompanion(student)){
+      student = findCompanionStudent(state) || student;
+    }
+    const companion = getCompanion(student);
+    if(!companion){
+      render();
+      return;
+    }
+    state.activeStudentId = student.id;
+    saveState(state);
+    const level = getLevel(student.currentLevel || 2);
+    const guideImage = guideAsset('encouraging');
+    const totalMinutes = (companion.lessonFlow || []).reduce((sum, _, index) => sum + companionStepMinutes(index), 0);
+
+    let html = '<div class="journey-shell journey-live-companion">';
+    html += '<div class="journey-level-command-row"><button class="back-btn" onclick="Journey.render()">← Back</button>'+renderStudentPicker(state, student)+'</div>';
+    html += '<section class="journey-live-stage">';
+    html += '<aside class="journey-live-guide"><img src="'+attr(guideImage)+'" alt="" /><div class="journey-entry-bubble"><div class="journey-kicker">Guide</div><p>Keep this lesson calm and useful. Consolidate first, then make it musical.</p></div></aside>';
+    html += '<div class="journey-live-panel">';
+    html += '<div class="journey-live-head"><div><div class="journey-kicker">'+esc(student.name)+' · '+esc(level.id || 'Journey')+'</div><h2>'+esc(companion.title || 'Live lesson companion')+'</h2><p>'+esc(companion.focus || '')+'</p></div><div class="journey-level-progress"><strong>'+totalMinutes+'</strong><span>minutes</span><i><b style="width:100%"></b></i></div></div>';
+    html += '<div class="journey-live-rule"><strong>Main rule:</strong> no new challenge unless Jen is relaxed, clear, and asking for it. The win is pattern recognition and musical confidence.</div>';
+    if(saved) html += '<div class="journey-save-confirm">Saved. This lesson note is now part of Jen\'s Journey memory.</div>';
+    html += '<div class="journey-live-flow">';
+    (companion.lessonFlow || []).forEach((step, index) => {
+      html += '<section class="journey-live-step">' +
+        '<span>'+String(index + 1).padStart(2, '0')+'</span>' +
+        '<div><h3>'+esc(step.split(':')[0] || ('Step '+(index + 1)))+'</h3><p>'+esc(step.indexOf(':') >= 0 ? step.slice(step.indexOf(':') + 1).trim() : step)+'</p></div>' +
+        '<small>'+companionStepMinutes(index)+' min</small>' +
+      '</section>';
+    });
+    html += '</div>';
+    html += '<div class="journey-companion-grid live">' +
+      '<div><div class="journey-mini-label">Doorways</div><div class="journey-pill-row">'+renderPillList(companion.doorway)+'</div></div>' +
+      '<div><div class="journey-mini-label">Anchors To Repeat</div>'+renderSmallList(companion.anchors)+'</div>' +
+      '<div><div class="journey-mini-label">Gaps To Watch</div>'+renderSmallList(companion.gaps)+'</div>' +
+      '<div><div class="journey-mini-label">Practice Thread</div>'+renderSmallList(companion.practice)+'</div>' +
+    '</div>';
+    html += '<div class="journey-card journey-live-notes"><div class="journey-kicker">After The Lesson</div>' +
+      '<textarea class="journey-input" id="journey-companion-note" placeholder="What happened? What worked? What felt messy?"></textarea>' +
+      '<textarea class="journey-input" id="journey-companion-next" placeholder="Next safe step for Jen..." style="margin-top:8px"></textarea>' +
+      '<div class="journey-actions"><button class="journey-btn secondary" onclick="Journey.openLevel('+(student.currentLevel || 2)+')">Open '+esc(level.id || 'Level')+' Roadmap</button><button class="journey-btn" onclick="Journey.saveCompanionLessonNote(\''+student.id+'\')">Save Jen Note</button></div>' +
+    '</div>';
+    html += '</div></section></div>';
+    root.innerHTML = html;
+    bindStudentPickerClose();
+  }
+
   function injectStyles(){
     if(document.getElementById('journey-style-v2')) return;
     const style = document.createElement('style');
@@ -974,6 +1038,25 @@
       .journey-block-head{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:7px}.journey-phase{font-family:JetBrains Mono,monospace;font-size:.55rem;color:var(--gold);letter-spacing:.12em}.journey-min{font-family:JetBrains Mono,monospace;font-size:.58rem;color:var(--dim)}
       .journey-input{width:100%;background:#0d0b08;border:1px solid var(--border);border-radius:10px;color:var(--text);padding:10px;font-family:DM Sans,sans-serif;font-size:.78rem;min-height:72px;box-sizing:border-box}
       .journey-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.journey-btn{background:var(--gold);color:#0d0b08;border:none;border-radius:10px;padding:10px 14px;font-weight:800;cursor:pointer}.journey-btn.secondary{background:transparent;color:var(--gold);border:1px solid var(--border)}.journey-btn.danger{background:#cc3344;color:white}
+      .journey-actions.compact{margin-top:0;justify-content:flex-end}
+      .journey-live-companion{max-width:1180px}
+      .journey-live-stage{display:grid;grid-template-columns:240px minmax(0,1fr);gap:24px;align-items:start;margin-top:18px}
+      .journey-live-guide{position:sticky;top:20px;display:flex;flex-direction:column;align-items:center}
+      .journey-live-guide img{width:156px;height:190px;object-fit:contain;object-position:center bottom;filter:drop-shadow(0 10px 18px rgba(0,0,0,.42));animation:char-float 5.5s ease-in-out infinite}
+      .journey-live-panel{position:relative;border:1px solid rgba(212,175,105,.2);border-radius:24px;background:radial-gradient(circle at 20% 8%,rgba(212,175,105,.11),transparent 28%),linear-gradient(180deg,rgba(35,29,23,.78),rgba(12,10,8,.88));box-shadow:0 24px 56px rgba(0,0,0,.32),inset 0 1px 0 rgba(255,255,255,.06);padding:24px}
+      .journey-live-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:16px}
+      .journey-live-head h2{font-family:Cinzel,serif;color:var(--gold);font-size:1.5rem;line-height:1.05;margin:5px 0 6px}
+      .journey-live-head p{max-width:640px;color:var(--dim);font-size:.76rem;line-height:1.5;margin:0}
+      .journey-live-rule,.journey-save-confirm{border:1px solid rgba(212,175,105,.2);background:rgba(212,175,105,.07);border-radius:14px;padding:10px 12px;color:var(--text);font-size:.74rem;line-height:1.45;margin-bottom:12px}
+      .journey-save-confirm{border-color:rgba(104,214,131,.32);background:rgba(104,214,131,.08);color:#eaffdd}
+      .journey-live-flow{display:grid;gap:9px;margin:14px 0}
+      .journey-live-step{display:grid;grid-template-columns:38px 1fr 48px;align-items:center;gap:12px;border:1px solid rgba(255,245,204,.08);border-radius:16px;background:linear-gradient(90deg,rgba(255,255,255,.045),rgba(255,255,255,.012));padding:10px 12px}
+      .journey-live-step > span{width:34px;height:34px;border-radius:999px;display:grid;place-items:center;background:radial-gradient(circle at 35% 30%,rgba(255,244,214,.95),var(--gold) 44%,rgba(13,11,8,.9) 80%);font-family:Cinzel,serif;color:#fff8dc;font-size:.62rem;font-weight:900;text-shadow:0 1px 4px rgba(0,0,0,.8)}
+      .journey-live-step h3{margin:0;font-family:Cinzel,serif;color:var(--text);font-size:.84rem;line-height:1.1}
+      .journey-live-step p{margin:3px 0 0;color:var(--dim);font-size:.68rem;line-height:1.35}
+      .journey-live-step small{justify-self:end;font-family:JetBrains Mono,monospace;color:var(--gold);font-size:.58rem}
+      .journey-companion-grid.live{margin-top:16px}
+      .journey-live-notes{margin-top:16px}
       .journey-rating-list{display:flex;flex-direction:column;gap:8px}.journey-rating-row{display:flex;justify-content:space-between;gap:8px;align-items:center;font-size:.72rem;color:var(--text);border-bottom:1px solid rgba(255,255,255,.06);padding-bottom:7px}.journey-rating{background:transparent;border:1px solid var(--border);color:var(--dim);border-radius:999px;width:26px;height:26px;cursor:pointer;font-size:.65rem}.journey-rating.on{background:var(--gold);color:#0d0b08;border-color:var(--gold)}
       .journey-note{border-left:2px solid var(--gold);padding:8px 10px;background:rgba(212,175,105,.06);font-size:.72rem;color:var(--dim);line-height:1.45;margin-top:8px;border-radius:0 8px 8px 0}
       @keyframes journey-level-pulse{0%,100%{opacity:.2;transform:scale(.92)}50%{opacity:.52;transform:scale(1.18)}}
@@ -991,7 +1074,7 @@
       @media(max-width:1700px){.journey-entry-guide{left:calc(50% + 500px);width:220px}.journey-entry-guide img{width:min(200px,78%)}.journey-entry-bubble{width:min(230px,90%)}}
       @media(max-width:1440px){.journey-level-entry-stage{display:flex;flex-direction:column;align-items:center;gap:18px;min-height:auto}.journey-entry-guide{position:relative;left:auto;right:auto;top:auto;order:2;width:min(620px,100%);min-height:auto;display:flex;flex-direction:row;justify-content:center;align-items:flex-end;padding-top:0}.journey-entry-guide img{width:104px;height:126px}.journey-entry-bubble{width:min(390px,70vw);order:0}.journey-entry-bubble:before{left:30px}.journey-level-map{order:1;min-height:auto}.journey-level-map:before{right:-2%;width:52%;opacity:.1}}
       @media(max-width:980px){.journey-level-command-row{width:100%}.journey-roadmap-section{grid-template-columns:1fr;border-radius:22px}.journey-roadmap-section:before{left:22px}.journey-roadmap-levels{flex-wrap:wrap;justify-content:flex-start}.journey-roadmap-level-dot span{bottom:auto;top:calc(100% + 8px)}.journey-level-entry-foot{flex-direction:column;align-items:stretch;text-align:center}.journey-next-step-card{max-width:none}.journey-begin-btn{width:100%}}
-      @media(max-width:720px){.journey-shell{padding:14px}.journey-level-command-row{flex-direction:column;align-items:stretch}.journey-level-command-row .journey-top-row{justify-content:center}.journey-grid,.journey-companion-grid{grid-template-columns:1fr}.journey-neck-stage{width:min(330px,92vw);background-size:contain}.journey-neck-wrap{padding-top:14px}.journey-headstock{width:140px;height:64px}.journey-neck{width:min(250px,74vw);height:520px;min-height:460px}.journey-body-arc{width:min(360px,92vw);height:95px}.journey-guide-scene{left:50%;bottom:38px;transform:translateX(-50%);width:min(300px,78vw)}.journey-guide-character{width:126px;height:174px}.journey-guide-bubble.game{max-width:250px}.journey-title{font-size:1.25rem}.journey-guide img{width:64px;height:64px}.journey-companion-head,.journey-companion-preview,.journey-companion-summary{align-items:flex-start;flex-direction:column}.journey-student-bar{border-radius:16px;width:100%;box-sizing:border-box}.journey-student-menu{width:min(280px,88vw)}.journey-level-map{padding:18px}.journey-level-map-head{flex-direction:column;align-items:stretch}.journey-level-progress{width:100%}.journey-roadmap-board{padding:8px}.journey-roadmap-section{padding:10px}.journey-roadmap-level-dot{width:38px;height:38px;min-width:38px}.journey-roadmap-level-dot.selected{width:46px;height:46px;min-width:46px}.journey-entry-guide{flex-direction:column;align-items:center}.journey-entry-bubble{width:min(270px,82vw)}.journey-entry-bubble:before{left:50%}}
+      @media(max-width:720px){.journey-shell{padding:14px}.journey-level-command-row{flex-direction:column;align-items:stretch}.journey-level-command-row .journey-top-row{justify-content:center}.journey-grid,.journey-companion-grid{grid-template-columns:1fr}.journey-neck-stage{width:min(330px,92vw);background-size:contain}.journey-neck-wrap{padding-top:14px}.journey-headstock{width:140px;height:64px}.journey-neck{width:min(250px,74vw);height:520px;min-height:460px}.journey-body-arc{width:min(360px,92vw);height:95px}.journey-guide-scene{left:50%;bottom:38px;transform:translateX(-50%);width:min(300px,78vw)}.journey-guide-character{width:126px;height:174px}.journey-guide-bubble.game{max-width:250px}.journey-title{font-size:1.25rem}.journey-guide img{width:64px;height:64px}.journey-companion-head,.journey-companion-preview,.journey-companion-summary{align-items:flex-start;flex-direction:column}.journey-student-bar{border-radius:16px;width:100%;box-sizing:border-box}.journey-student-menu{width:min(280px,88vw)}.journey-level-map{padding:18px}.journey-level-map-head,.journey-live-head{flex-direction:column;align-items:stretch}.journey-level-progress{width:100%}.journey-roadmap-board{padding:8px}.journey-roadmap-section{padding:10px}.journey-roadmap-level-dot{width:38px;height:38px;min-width:38px}.journey-roadmap-level-dot.selected{width:46px;height:46px;min-width:46px}.journey-entry-guide{flex-direction:column;align-items:center}.journey-entry-bubble{width:min(270px,82vw)}.journey-entry-bubble:before{left:50%}.journey-live-stage{grid-template-columns:1fr}.journey-live-guide{position:static}.journey-live-panel{padding:16px}.journey-live-step{grid-template-columns:34px 1fr}.journey-live-step small{justify-self:start;grid-column:2}}
     `;
     document.head.appendChild(style);
   }
@@ -1020,6 +1103,7 @@
     html += renderJourneyMapGuide(student);
     html += renderJourneyNeckStage(state, student, level, lvlState, levelPositions);
     html += '</div>';
+    html += getCompanion(student) ? renderCompanionCard(state, student) : renderCompanionPreview(state, student);
 
     html += '</div>';
     root.innerHTML = html;
@@ -1312,6 +1396,39 @@
     openLesson(levelNum, lessonNum){
       const state = loadState(); const s = activeStudent(state); const l = getLevel(levelNum);
       s.currentLevel = levelNum; s.activeLesson = null; saveStudent(s); renderLevelLesson(levelNum, lessonNum);
+    },
+    openCompanionLesson(studentId){
+      renderCompanionLesson(studentId);
+    },
+    saveCompanionLessonNote(studentId){
+      const state = loadState();
+      const s = state.students.find(student => student.id === studentId) || activeStudent(state);
+      const level = getLevel(s.currentLevel || 2);
+      const ls = s.levels[level.id] || s.levels.L2 || s.levels.L1;
+      const noteEl = document.getElementById('journey-companion-note');
+      const nextEl = document.getElementById('journey-companion-next');
+      const happened = noteEl && noteEl.value.trim() ? noteEl.value.trim() : 'Used the live Jen consolidation companion.';
+      const next = nextEl && nextEl.value.trim() ? nextEl.value.trim() : 'Repeat A roots, three small pentatonic boxes, and musical conversation.';
+      ls.notes.push({
+        date: today(),
+        text: 'Live lesson companion: '+happened+' NEXT: '+next
+      });
+      if(window.HearthProgressEvents){
+        window.HearthProgressEvents.append({
+          event_type:'teacher_lesson_note',
+          node_id:'journey',
+          learner_id:s.id,
+          journey_level_id:level.id,
+          note:next,
+          data:{
+            companion:'jen',
+            lesson_focus:'A minor pentatonic consolidation',
+            happened:happened
+          }
+        });
+      }
+      saveStudent(s);
+      renderCompanionLesson(s.id, true);
     },
     openBlock(levelNum, lessonNum, blockIdx){
       const state = loadState(); const s = activeStudent(state);

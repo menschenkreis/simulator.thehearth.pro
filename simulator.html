@@ -2336,7 +2336,7 @@ const NODE_HOVER_DATA={
 
 // Hover handled by CSS - grow + glow on the node itself
 function showNodePreview(){
-  playSfx('map-click');}
+  if(typeof playSfx === 'function') playSfx('map-click');}
 function hideNodePreview(){}
 
 // Routes: from -> to = array of waypoint node ids
@@ -2661,7 +2661,7 @@ if(window.HearthKnowingPanelController){
   window.HearthKnowingPanelController.bindKnowingGlobals({
     documentRef:document,
     storage:localStorage,
-    playSfx:playSfx
+    playSfx:typeof playSfx === 'function' ? playSfx : function(){}
   });
 }
 
