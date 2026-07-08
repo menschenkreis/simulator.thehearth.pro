@@ -96,7 +96,13 @@
     localStorage.setItem(ACTIVE, state.activeStudentId);
     return state;
   }
-  function saveState(state){ localStorage.setItem(STORE, JSON.stringify(state)); }
+  function saveState(state){
+    localStorage.setItem(STORE, JSON.stringify(state));
+    if(state && state.activeStudentId) localStorage.setItem(ACTIVE, state.activeStudentId);
+    if(typeof window !== 'undefined' && window.dispatchEvent){
+      window.dispatchEvent(new CustomEvent('hearth:journey-state', { detail:{ activeStudentId:state && state.activeStudentId } }));
+    }
+  }
   function activeStudent(state){ return state.students.find(s=>s.id===state.activeStudentId) || state.students[0]; }
   function companionKey(student){
     return String(student && student.name ? student.name : '').trim().toLowerCase().replace(/[^a-z0-9]+/g, '-');
