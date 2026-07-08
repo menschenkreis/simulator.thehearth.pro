@@ -44,6 +44,15 @@ Reusable map rule:
 - Hovering/focusing a level dot explains what that category means inside that level.
 - Category icons should stay stylistically related to the map nodes if they are later generated.
 
+"You are here" rule:
+
+- The map should be centered as the main object.
+- The guide character can sit to the right as a companion, not block the map.
+- The active level colour frames the whole map.
+- The selected level dot in each row gets a progress ring.
+- The current category row gets the strongest glow.
+- The small progress card remains a simple numerical anchor.
+
 ## What The Screen Should Feel Like
 
 Level 1 should feel like opening a beautiful but practical guitar curriculum overview.
