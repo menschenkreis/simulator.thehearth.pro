@@ -479,7 +479,7 @@
     let html = '<div class="journey-top-row">' +
       '<div class="journey-student-picker">' +
         '<button type="button" class="journey-student-trigger" onclick="Journey.toggleStudentMenu(event)" aria-haspopup="menu">' +
-          '<span>Whose journey</span>' +
+          '<span>Learner profile</span>' +
           '<strong>'+esc(student.name)+'</strong>' +
           '<b>v</b>' +
         '</button>' +
@@ -490,7 +490,7 @@
       html += '<div class="journey-student-option '+(active ? 'active' : '')+'">' +
         '<button type="button" onclick="Journey.switchStudent(\''+s.id+'\')">' +
           '<span>'+esc(s.name)+'</span>' +
-          '<small>'+(active ? 'Current path' : 'Open path')+'</small>' +
+          '<small>'+(active ? 'Active profile' : 'Switch profile')+'</small>' +
         '</button>';
       if(state.students.length > 1){
         html += '<button type="button" class="journey-student-remove" onclick="Journey.removeStudent(\''+s.id+'\')" title="Remove '+esc(s.name)+'">x</button>';
@@ -498,7 +498,7 @@
       html += '</div>';
     });
 
-    html += '<button type="button" class="journey-student-add" onclick="Journey.addStudent()">+ Add journey</button>' +
+    html += '<button type="button" class="journey-student-add" onclick="Journey.addStudent()">+ Add profile</button>' +
         '</div>' +
       '</div>' +
     '</div>';
@@ -669,6 +669,7 @@
         if(current) classes.push('current');
         if(isSelected) classes.push('selected');
         if(!unlocked) classes.push('locked');
+        if(!unlocked && lp.num === Math.min(LEVELS.length, level.num + 1)) classes.push('preparing');
         const dotPct = isSelected ? sectionPct : done ? 100 : 0;
         const title = lp.name+' · '+section.label+': '+roadmapLevelText(section, lp);
         const click = unlocked ? ' onclick="Journey.openLevel('+lp.num+')"': ' disabled';
@@ -856,7 +857,12 @@
       .journey-roadmap-level-dot.selected b{background:rgba(8,7,6,.78);border-color:rgba(255,245,204,.46);font-size:.7rem}
       .journey-roadmap-level-dot.done{background:radial-gradient(circle at 35% 30%,#fff1bd,var(--dot-color) 42%,rgba(8,7,6,.9) 76%);border-color:rgba(255,226,179,.36)}
       .journey-roadmap-level-dot.current{box-shadow:0 0 0 4px rgba(var(--dot-rgb),.13),0 0 32px rgba(var(--dot-rgb),.62),0 0 54px rgba(var(--dot-rgb),.24)}
-      .journey-roadmap-level-dot.locked{opacity:.36;cursor:not-allowed;filter:saturate(.62)}
+      .journey-roadmap-level-dot.locked{opacity:.68;cursor:not-allowed;filter:saturate(.86) brightness(.78)}
+      .journey-roadmap-level-dot.locked:before{background:conic-gradient(rgba(var(--dot-rgb),.46) 0 100%);opacity:.4;box-shadow:0 0 18px rgba(var(--dot-rgb),.18)}
+      .journey-roadmap-level-dot.locked b{color:rgba(255,245,220,.54);border-color:rgba(var(--dot-rgb),.28);box-shadow:inset 0 0 10px rgba(var(--dot-rgb),.08)}
+      .journey-roadmap-level-dot.locked.preparing{opacity:.88;filter:saturate(1) brightness(.92)}
+      .journey-roadmap-level-dot.locked.preparing:before{opacity:.66;box-shadow:0 0 24px rgba(var(--dot-rgb),.32)}
+      .journey-roadmap-level-dot.locked.preparing b{color:rgba(255,245,220,.72);border-color:rgba(var(--dot-rgb),.44)}
       .journey-level-entry-foot{position:relative;z-index:2;display:flex;align-items:center;justify-content:space-between;gap:16px;max-width:none;margin:26px 0 0;border-top:1px solid rgba(212,175,105,.1);padding-top:14px}
       .journey-level-entry-foot p{color:var(--dim);font-size:.7rem;line-height:1.45;margin:0;max-width:560px}
       .journey-begin-btn{min-width:138px;box-shadow:0 10px 26px rgba(212,175,105,.18)}
