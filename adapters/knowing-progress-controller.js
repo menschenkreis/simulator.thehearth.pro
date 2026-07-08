@@ -34,6 +34,17 @@
     var progress = readProgress(storage);
     progress[topicId] = true;
     writeProgress(storage, progress);
+    if (root.HearthProgressEvents) {
+      root.HearthProgressEvents.append({
+        event_type: "concept_read",
+        node_id: "knowing",
+        category_id: options.catId || null,
+        source_id: topicId,
+        data: {
+          topic_id: topicId
+        }
+      }, storage);
+    }
     return progress;
   }
 
@@ -43,7 +54,7 @@
     var playSfx = options.playSfx || root.playSfx;
     var showTopic = options.showTopic || root.showKnowingTopic;
     root.markKnowingTopic = function markKnowingTopic(catId, topicId) {
-      markTopic({ topicId: topicId, storage: storage });
+      markTopic({ catId: catId, topicId: topicId, storage: storage });
       if (typeof playSfx === "function") playSfx("success");
       if (typeof showTopic === "function") showTopic(catId, topicId);
     };
