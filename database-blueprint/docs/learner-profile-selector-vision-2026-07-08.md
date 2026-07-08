@@ -39,11 +39,13 @@ Short-term prototype:
 
 - rename the Journey selector from "Whose journey" to "Learner profile"
 - keep it inside Journey for now
+- place it in a clear screen-control row, not floating randomly in the page
 - do not overbuild account permissions yet
 
 Long-term app:
 
 - place the active learner profile in a global app-level area
+- make it feel like the current Mac user/profile context for the whole simulator
 - Journey reads the active profile
 - Practice reads the active profile
 - Study reads the active profile
