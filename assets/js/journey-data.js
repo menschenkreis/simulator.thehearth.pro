@@ -61,6 +61,7 @@ var JOURNEY_AUTHORED_LESSONS = {
       title: "Lesson 1: Time Feel, Part 1",
       minutes: 55,
       summary: "Start QJam Level 1 with rhythm: steady pulse, quarter notes, eighth notes, and a simple strum grid.",
+      categoryTags: ["Rhythm", "Picking", "Theory", "Integration"],
       conceptNames: ["Time feel", "Quarter and eighth notes"],
       taskNames: ["Foundation readiness check", "Pulse tap", "Muted strum grid", "Chord rhythm loop", "Rhythm reflection"],
       blocks: [
@@ -76,6 +77,7 @@ var JOURNEY_AUTHORED_LESSONS = {
       title: "Lesson 2: The 8 Open Chords",
       minutes: 60,
       summary: "Audit the QJam Level 1 open-chord set and identify which shapes are usable, shaky, or missing.",
+      categoryTags: ["Chords & Harmony", "Technique", "Theory", "Integration"],
       conceptNames: ["8 open chords", "Chord audit"],
       taskNames: ["Rhythm review", "Open chord set", "Clean chord test", "Chord gap list", "Next gradient"],
       blocks: [
@@ -91,6 +93,7 @@ var JOURNEY_AUTHORED_LESSONS = {
       title: "Lesson 3: Common-Finger Chord Changes",
       minutes: 60,
       summary: "Use the open-chord set musically by finding easier changes and keeping time through the movement.",
+      categoryTags: ["Chords & Harmony", "Rhythm", "Technique", "Integration"],
       conceptNames: ["Common-finger changes", "Chord transition"],
       taskNames: ["Open chord audit review", "Anchor finger search", "Slow chord loop", "Rhythm chord change", "Gap note"],
       blocks: [
@@ -106,6 +109,7 @@ var JOURNEY_AUTHORED_LESSONS = {
       title: "Lesson 4: Pentatonic Shape 1",
       minutes: 60,
       summary: "Begin the QJam Level 1 pentatonic work by learning shape 1 as a usable fretboard map.",
+      categoryTags: ["Scales", "Technique", "Theory", "Reading", "Improvisation"],
       conceptNames: ["Minor pentatonic shape 1", "Fretboard map"],
       taskNames: ["Chord review", "Fifth fret map", "Shape 1 slow reps", "Two-note phrase", "Scale map note"],
       blocks: [
@@ -121,6 +125,7 @@ var JOURNEY_AUTHORED_LESSONS = {
       title: "Lesson 5: Pentatonic Phrasing",
       minutes: 60,
       summary: "Turn the pentatonic box from a finger pattern into small musical phrases.",
+      categoryTags: ["Scales", "Improvisation", "Rhythm", "Technique", "Integration"],
       conceptNames: ["Pentatonic phrasing", "Call and response"],
       taskNames: ["Shape 1 review", "Two-note phrase", "Three-note phrase", "Rhythm variation", "Phrase reflection"],
       blocks: [
@@ -136,6 +141,7 @@ var JOURNEY_AUTHORED_LESSONS = {
       title: "Lesson 6: First Blues Solo Entry",
       minutes: 60,
       summary: "Use QJam Level 1 improvisation as a doorway into simple blues solo vocabulary.",
+      categoryTags: ["Improvisation", "Scales", "Rhythm", "Technique", "Integration"],
       conceptNames: ["Blues solo entry", "Improvisation constraint"],
       taskNames: ["Pentatonic review", "Blues feel", "Two-note solo", "Question-answer lick", "Improvisation note"],
       blocks: [
@@ -151,6 +157,7 @@ var JOURNEY_AUTHORED_LESSONS = {
       title: "Lesson 7: Chords Meet Pentatonics",
       minutes: 60,
       summary: "Connect the Level 1 chord world to the Level 1 pentatonic/improvisation world.",
+      categoryTags: ["Chords & Harmony", "Scales", "Improvisation", "Theory", "Integration"],
       conceptNames: ["Chord-scale connection", "Musical context"],
       taskNames: ["Chord review", "Pentatonic review", "Chord-plus-phrase", "Mini arrangement", "Connection note"],
       blocks: [
@@ -166,6 +173,7 @@ var JOURNEY_AUTHORED_LESSONS = {
       title: "Lesson 8: QJam Level 1 Integration",
       minutes: 60,
       summary: "Review the QJam Level 1 pillars and decide what is ready, what needs review, and what can move toward Level 2.",
+      categoryTags: ["Rhythm", "Chords & Harmony", "Scales", "Technique", "Improvisation", "Picking", "Theory", "Reading", "Integration"],
       conceptNames: ["Level 1 integration", "Next gradient"],
       taskNames: ["Rhythm check", "Chord check", "Pentatonic check", "Blues solo check", "Level 2 readiness note"],
       blocks: [
