@@ -101,6 +101,7 @@ This is not a replacement for the existing local lists yet. It is a bridge towar
 
 Current event writers:
 
+- Journey lesson completion writes `lesson_completed`
 - Practice drill completion writes `practice_session_completed`
 - Practice candle completion writes `practice_session_completed`
 - Create saved seed/project writes `creation_saved`
@@ -200,10 +201,11 @@ Done in the current prototype:
 - Level 1 Journey lessons have explicit category tags.
 - The Progress button has a stronger whole-simulator snapshot panel.
 - Practice and Create now write simple local progress events.
+- Journey lesson completion now writes simple local progress events.
 
 Next:
 
 1. Decide how Ayla-as-teacher and Jen-as-learner should appear in the UI.
 2. Add explicit category tags as future Journey levels are authored.
-3. Add event writers for Journey lesson completion, Knowing topic study, and Doing drill completion.
+3. Add event writers for Knowing topic study and Doing drill completion.
 4. Keep local prototype state simple until the backend shape is ready.

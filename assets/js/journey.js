@@ -1396,6 +1396,24 @@
       if(lesson.teacherNotes) noteBits.push('TEACHER: '+lesson.teacherNotes.trim());
       if(lesson.feedback) noteBits.push('NEXT: '+lesson.feedback.trim());
       if(noteBits.length) ls.notes.push({ date:today(), text:noteBits.join(' | ') });
+      if(window.HearthProgressEvents){
+        const authoredLesson = buildLesson(s, level.num, lesson.lessonNum);
+        window.HearthProgressEvents.append({
+          event_type:'lesson_completed',
+          node_id:'journey',
+          learner_id:s.id,
+          journey_level_id:level.id,
+          lesson_id:level.id+'-lesson-'+lesson.lessonNum,
+          duration_minutes:authoredLesson.minutes || null,
+          note:lesson.feedback || lesson.teacherNotes || '',
+          data:{
+            lesson_title:authoredLesson.title,
+            category_tags:authoredLesson.categoryTags || [],
+            concept_ratings:lesson.conceptRatings || {},
+            task_ratings:lesson.taskRatings || {}
+          }
+        });
+      }
       if(ls.lessonsDone >= level.totalLessons){ ls.complete = true; const next = s.levels['L'+(level.num+1)]; if(next){ next.unlocked = true; s.currentLevel = level.num+1; } }
       s.activeLesson = null; saveStudent(s); render();
     },
