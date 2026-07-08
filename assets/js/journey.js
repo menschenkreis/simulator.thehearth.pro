@@ -1368,6 +1368,14 @@
       });
       picker.classList.toggle('open', willOpen);
     },
+    openStudentMenu(){
+      const picker = document.querySelector('.journey-student-picker');
+      if(!picker) return;
+      document.querySelectorAll('.journey-student-picker.open').forEach(openPicker => {
+        if(openPicker !== picker) openPicker.classList.remove('open');
+      });
+      picker.classList.add('open');
+    },
     switchStudent(id){ const state=loadState(); state.activeStudentId=id; saveState(state); render(); },
     addStudent(){ const name = prompt('Student name?'); if(!name) return; const state=loadState(); const s=blankStudent(name.trim()); state.students.push(s); state.activeStudentId=s.id; saveState(state); render(); },
     renameStudent(){ const state=loadState(); const s=activeStudent(state); const name=prompt('Rename journey/student:', s.name); if(!name) return; s.name=name.trim(); saveStudent(s); render(); },

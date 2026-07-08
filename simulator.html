@@ -3149,7 +3149,12 @@ function updateTopLearnerChip(){
 }
 function openActiveLearner(){
   sw('lesson');
-  setTimeout(updateTopLearnerChip, 0);
+  setTimeout(function(){
+    updateTopLearnerChip();
+    if(window.Journey && typeof window.Journey.openStudentMenu === 'function'){
+      window.Journey.openStudentMenu();
+    }
+  }, 0);
 }
 window.addEventListener('hearth:journey-state', updateTopLearnerChip);
 setTimeout(updateTopLearnerChip, 0);
