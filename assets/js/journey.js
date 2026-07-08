@@ -681,7 +681,7 @@
     return {
       kicker:'Next action',
       title:'Lesson '+nextLesson+': '+cleanTitle,
-      body:(activeCategory ? activeCategory.label+' is the active category. ' : '')+(lesson.summary || 'Open the next lesson and keep the step small enough to succeed.')
+      body:lesson.summary || 'Open the next lesson and keep the step small enough to succeed.'
     };
   }
 
@@ -1057,6 +1057,9 @@
       .journey-companion-grid.live{margin-top:16px}
       .journey-live-notes{margin-top:16px}
       .journey-rating-list{display:flex;flex-direction:column;gap:8px}.journey-rating-row{display:flex;justify-content:space-between;gap:8px;align-items:center;font-size:.72rem;color:var(--text);border-bottom:1px solid rgba(255,255,255,.06);padding-bottom:7px}.journey-rating{background:transparent;border:1px solid var(--border);color:var(--dim);border-radius:999px;width:26px;height:26px;cursor:pointer;font-size:.65rem}.journey-rating.on{background:var(--gold);color:#0d0b08;border-color:var(--gold)}
+      .journey-review-prompts{display:grid;gap:7px;margin-top:9px}
+      .journey-review-prompts div{border:1px solid rgba(212,175,105,.12);background:rgba(212,175,105,.055);border-radius:10px;padding:8px 10px;color:var(--text);font-size:.68rem;line-height:1.35}
+      .journey-review-tips{margin-top:10px;border:1px solid rgba(212,175,105,.12);border-radius:10px;background:rgba(255,255,255,.025);padding:10px}
       .journey-note{border-left:2px solid var(--gold);padding:8px 10px;background:rgba(212,175,105,.06);font-size:.72rem;color:var(--dim);line-height:1.45;margin-top:8px;border-radius:0 8px 8px 0}
       @keyframes journey-level-pulse{0%,100%{opacity:.2;transform:scale(.92)}50%{opacity:.52;transform:scale(1.18)}}
       @keyframes journey-mastery-pulse{0%,100%{opacity:.34;transform:scale(.94)}50%{opacity:.68;transform:scale(1.12)}}
@@ -1179,6 +1182,20 @@
     html += '</div>';
     root.innerHTML = html;
   }
+
+  function lessonReviewTips(lesson, student){
+    const tags = (lesson.categoryTags || []).map(categoryKey);
+    const tips = [];
+    if(tags.includes('rhythm')) tips.push('If the pulse drifted, make the next practice slower and shorter before adding more notes.');
+    if(tags.includes('chords and harmony')) tips.push('If chords buzzed or felt slow, choose one chord pair and make the hand calm before adding rhythm.');
+    if(tags.includes('scales')) tips.push('If the scale felt blurry, reduce it to two strings or one root-note safety area.');
+    if(tags.includes('technique')) tips.push('If tension appeared, treat relaxation as the assignment, not a side detail.');
+    if(tags.includes('improvisation')) tips.push('If musical play worked, end next time with call and response again.');
+    if(student && /jen/i.test(student.name)) tips.push('For Jen: consolidate before adding challenge. Use call and response as the doorway if she feels stuck.');
+    if(!tips.length) tips.push('Keep the next step small enough that the learner can feel success and still notice the gap.');
+    return tips.slice(0, 4);
+  }
+
   function renderLevelLesson(levelNum, lessonNum, blockIdx){
     injectStyles();
     showPanel('p-lesson');
@@ -1258,7 +1275,20 @@
       html += '<img src="'+attr(guideAsset('encouraging'))+'" style="width:72px;height:72px;object-fit:contain;filter:drop-shadow(0 4px 12px rgba(0,0,0,0.4));animation:char-float 3s ease-in-out infinite"/>';
       html += '<div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:10px 14px;margin-top:8px;max-width:280px;text-align:center;position:relative">';
       html += '<div style="position:absolute;left:50%;top:-6px;transform:translateX(-50%);width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-bottom:6px solid var(--border)"></div>';
-      html += '<div style="font-size:0.68rem;color:var(--text);line-height:1.5">Good work. Now take a moment to rate what you learned and leave a note for next time. Honest reflection is part of the practice.</div>';
+      html += '<div style="font-size:0.68rem;color:var(--text);line-height:1.5">Do the review before moving on. The useful lesson is the one that tells us what should happen next.</div>';
+      html += '</div></div>';
+
+      html += '<div class="journey-card journey-review-guide" style="max-width:360px;width:100%;margin-bottom:10px">';
+      html += '<div class="journey-kicker">End-of-lesson review</div>';
+      html += '<div class="journey-review-prompts">';
+      [
+        'What worked well enough to repeat?',
+        'What felt confusing, tense, rushed, or messy?',
+        'What did the learner enjoy or lean toward?',
+        'What is the next smallest useful step?'
+      ].forEach(prompt => {
+        html += '<div><span>'+esc(prompt)+'</span></div>';
+      });
       html += '</div></div>';
 
       // Concept status
@@ -1270,8 +1300,9 @@
       // Feedback
       html += '<div class="journey-card" style="max-width:360px;width:100%;margin-bottom:10px">';
       html += '<div class="journey-kicker">Feedback / Next Gradient</div>';
-      html += '<textarea class="journey-input" id="journey-feedback" placeholder="How did this contact go?">'+esc(student.activeLesson.feedback || '')+'</textarea>';
-      html += '<textarea class="journey-input" id="journey-teacher-notes" style="margin-top:8px" placeholder="Teacher notes: gaps, interests, attitude, breakthroughs...">'+esc(student.activeLesson.teacherNotes || '')+'</textarea>';
+      html += '<textarea class="journey-input" id="journey-feedback" placeholder="Student review: what worked, what was hard, what felt musical, what should repeat?">'+esc(student.activeLesson.feedback || '')+'</textarea>';
+      html += '<textarea class="journey-input" id="journey-teacher-notes" style="margin-top:8px" placeholder="Teacher notes: exact gap, useful reminder, next safe step, and anything to prepare before teaching again...">'+esc(student.activeLesson.teacherNotes || '')+'</textarea>';
+      html += '<div class="journey-review-tips"><div class="journey-mini-label">Tips and reminders</div>'+renderSmallList(lessonReviewTips(lesson, student))+'</div>';
       html += '</div>';
 
       html += '<div style="max-width:360px;width:100%;display:flex;gap:8px;margin-top:4px">';

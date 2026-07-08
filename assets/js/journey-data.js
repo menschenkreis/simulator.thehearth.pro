@@ -58,19 +58,19 @@ var JOURNEY_TASK_BANK = {
 var JOURNEY_AUTHORED_LESSONS = {
   L1: [
     {
-      title: "Lesson 1: Time Feel, Part 1",
-      minutes: 55,
-      summary: "Start QJam Level 1 with rhythm: steady pulse, quarter notes, eighth notes, and a simple strum grid.",
-      categoryTags: ["Rhythm", "Picking", "Theory", "Integration"],
-      conceptNames: ["Time feel", "Quarter and eighth notes"],
-      taskNames: ["Foundation readiness check", "Pulse tap", "Muted strum grid", "Chord rhythm loop", "Rhythm reflection"],
+      title: "Lesson 1: Level 1 Entry Check",
+      minutes: 60,
+      summary: "Begin Level 1 by finding the learner's real starting point: body, pulse, clean sound, one usable chord, and one tiny musical loop.",
+      categoryTags: ["Rhythm", "Chords & Harmony", "Technique", "Integration"],
+      conceptNames: ["Level 1 readiness", "Steady pulse", "Clean sound"],
+      taskNames: ["Tune-in", "Pulse check", "Clean sound check", "Known chord check", "Tiny music loop", "Next gradient"],
       blocks: [
-        { id:"review", min:6, phase:"REVIEW", source:"Foundation/Journey", title:"Confirm the threshold", body:"Foundation is assumed complete enough to begin: the learner can hold the guitar, make a sound, follow simple instructions, and notice confusion. Do not reteach first contact here unless it blocks the lesson.", prompt:"Is the learner ready for QJam Level 1, or does something belong back in Foundation?" },
-        { id:"warmup", min:8, phase:"WARM-UP", source:"Practice", title:"Tap and count the pulse", body:"Without guitar first: tap a steady pulse and count 1 2 3 4. Then add eighth-note counting: 1-and-2-and-3-and-4-and.", prompt:"Was the pulse steady without rushing?" },
-        { id:"concept", min:10, phase:"CONCEPT", source:"Study/Knowing", title:"Time feel is the grid", body:"Time feel means knowing where the beat lives and placing sound inside it. This is QJam Level 1 rhythm work: before fancy strumming, the learner must feel the grid.", prompt:"Explain time feel in plain words." },
-        { id:"drill", min:16, phase:"DRILL", source:"Doing/Practice", title:"Muted quarter/eighth strum grid", body:"Mute the strings with the fretting hand. Strum quarter notes for four bars, then eighth notes for four bars. Use a metronome around 60-72 BPM.", prompt:"BPM, pattern, and where the rhythm drifted." },
-        { id:"music", min:10, phase:"MUSIC APPLICATION", source:"Play", title:"Put the grid under one chord", body:"Choose one known open chord and place it inside the same rhythm grid. The goal is steady time, not many chords.", prompt:"Which chord did you use, and could it stay in time?" },
-        { id:"reflect", min:5, phase:"REFLECT", source:"Hearth", title:"Rhythm honesty note", body:"Write whether the learner loses the beat, rushes, freezes, or stays steady. That note shapes the next practice step.", prompt:"What does the rhythm need next?" }
+        { id:"review", min:8, phase:"REVIEW", source:"Journey Notes", title:"Find the real starting point", body:"This is not a total-beginner lesson. Check what is already usable: posture, tuning, open strings, one known chord, pulse, and willingness to try. Do not assume; observe.", prompt:"What is already usable, shaky, or missing today?" },
+        { id:"warmup", min:8, phase:"WARM-UP", source:"Practice/Hearth", title:"Tune in before playing", body:"Tune the guitar, then do a short body check: shoulders, jaw, breath, fretting hand, picking hand. Play open strings slowly and listen for clean sound.", prompt:"Where did the body or sound need attention?" },
+        { id:"concept", min:10, phase:"CONCEPT", source:"Study/Knowing", title:"Level 1 means usable, not perfect", body:"Level 1 begins when the learner can make a small musical action repeatable. Today finds the safest doorway: pulse, chord, tone, or a small phrase.", prompt:"What does usable mean for this learner today?" },
+        { id:"drill", min:16, phase:"DRILL", source:"Doing/Practice", title:"Pulse and clean sound check", body:"Use a slow pulse. Tap four counts, play open strings, then try one known chord. If the chord is messy, reduce the task. If the pulse rushes, return to tapping.", prompt:"What broke first: pulse, clean tone, chord memory, or tension?" },
+        { id:"music", min:13, phase:"MUSIC APPLICATION", source:"Play", title:"One tiny musical loop", body:"Turn the strongest small action into music: one chord in time, two open strings, a tiny riff, or call and response. Keep it small enough to succeed.", prompt:"What tiny loop felt musical?" },
+        { id:"reflect", min:5, phase:"REFLECT", source:"Hearth/Journey", title:"Choose the next safe step", body:"End by naming what should repeat next lesson. The goal is a useful map, not a fake pass. Capture the doorway, the gap, and one reminder.", prompt:"What should the next lesson repeat, simplify, or build?" }
       ]
     },
     {
