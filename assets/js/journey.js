@@ -479,7 +479,7 @@
     let html = '<div class="journey-top-row">' +
       '<div class="journey-student-picker">' +
         '<button type="button" class="journey-student-trigger" onclick="Journey.toggleStudentMenu(event)" aria-haspopup="menu">' +
-          '<span>Learner profile</span>' +
+          '<span>Active learner</span>' +
           '<strong>'+esc(student.name)+'</strong>' +
           '<b>v</b>' +
         '</button>' +
@@ -490,7 +490,7 @@
       html += '<div class="journey-student-option '+(active ? 'active' : '')+'">' +
         '<button type="button" onclick="Journey.switchStudent(\''+s.id+'\')">' +
           '<span>'+esc(s.name)+'</span>' +
-          '<small>'+(active ? 'Active profile' : 'Switch profile')+'</small>' +
+          '<small>'+(active ? 'Simulator profile' : 'Switch learner')+'</small>' +
         '</button>';
       if(state.students.length > 1){
         html += '<button type="button" class="journey-student-remove" onclick="Journey.removeStudent(\''+s.id+'\')" title="Remove '+esc(s.name)+'">x</button>';
@@ -669,6 +669,7 @@
       const sectionPct = sectionTotal ? Math.min(100, Math.round(sectionDone / sectionTotal * 100)) : pct;
       const activeCategory = sectionLessons.includes(nextLesson) && lessonsDone < level.totalLessons;
       const completeCategory = sectionTotal > 0 && sectionDone >= sectionTotal;
+      const sectionStatus = activeCategory ? 'Next' : completeCategory ? 'Done' : sectionTotal ? sectionDone+'/'+sectionTotal : 'Later';
       const sectionClasses = ['journey-roadmap-section'];
       if(activeCategory) sectionClasses.push('active-category');
       if(completeCategory) sectionClasses.push('complete-category');
@@ -676,7 +677,7 @@
       html += '<div class="journey-roadmap-section-head">';
       html += '<span>'+esc(section.icon || (sectionIndex + 1))+'</span>';
       html += '<div><h3>'+esc(section.label)+'</h3><p>'+esc(section.note)+'</p></div>';
-      html += '<small>'+(sectionTotal ? sectionDone+'/'+sectionTotal : level.id)+'</small>';
+      html += '<small class="'+(activeCategory ? 'is-next' : completeCategory ? 'is-done' : sectionTotal ? '' : 'is-later')+'">'+sectionStatus+'</small>';
       html += '</div>';
       html += '<div class="journey-roadmap-levels">';
       LEVELS.forEach(lp => {
@@ -690,6 +691,7 @@
         if(current) classes.push('current');
         if(isSelected) classes.push('selected');
         if(!unlocked) classes.push('locked');
+        if(!unlocked && lp.num > level.num) classes.push('future');
         if(!unlocked && lp.num === Math.min(LEVELS.length, level.num + 1)) classes.push('preparing');
         const dotPct = isSelected ? sectionPct : done ? 100 : 0;
         const title = lp.name+' · '+section.label+': '+roadmapLevelText(section, lp);
@@ -865,7 +867,10 @@
       .journey-roadmap-section-head > span{width:46px;height:46px;border-radius:999px;display:grid;place-items:center;background:radial-gradient(circle at 35% 30%,rgba(255,244,214,.98),var(--journey-level-color) 42%,rgba(13,11,8,.92) 78%);border:1px solid rgba(255,236,198,.44);font-family:Cinzel,serif;color:#fff8dc;font-weight:900;font-size:.82rem;text-shadow:0 1px 4px rgba(0,0,0,.86);box-shadow:0 0 22px rgba(var(--journey-level-rgb),.38)}
       .journey-roadmap-section-head h3{margin:0;font-family:Cinzel,serif;color:var(--text);font-size:.8rem;line-height:1.12}
       .journey-roadmap-section-head p{margin:2px 0 0;color:var(--dim);font-size:.55rem;line-height:1.18}
-      .journey-roadmap-section-head small{font-family:JetBrains Mono,monospace;color:rgba(255,226,179,.66);font-size:.58rem;align-self:start}
+      .journey-roadmap-section-head small{justify-self:end;align-self:center;min-width:46px;border:1px solid rgba(255,226,179,.16);border-radius:999px;background:rgba(13,11,8,.5);padding:4px 7px;text-align:center;font-family:JetBrains Mono,monospace;color:rgba(255,226,179,.66);font-size:.56rem;line-height:1}
+      .journey-roadmap-section-head small.is-next{border-color:rgba(var(--journey-level-rgb),.5);background:rgba(var(--journey-level-rgb),.16);color:#fff5d4;box-shadow:0 0 18px rgba(var(--journey-level-rgb),.24)}
+      .journey-roadmap-section-head small.is-done{color:#f7df9e;border-color:rgba(247,223,158,.28)}
+      .journey-roadmap-section-head small.is-later{color:rgba(255,245,220,.42);border-color:rgba(255,245,220,.08)}
       .journey-roadmap-levels{position:relative;z-index:2;display:flex;align-items:center;justify-content:space-between;gap:14px;min-width:0;padding:0 2px}
       .journey-roadmap-levels:before{content:"";position:absolute;left:24px;right:24px;top:50%;height:2px;background:linear-gradient(90deg,rgba(255,226,179,.16),rgba(var(--journey-level-rgb),.28),rgba(255,226,179,.1));pointer-events:none;transform:translateY(-50%)}
       .journey-roadmap-level-dot{position:relative;z-index:2;width:36px;height:36px;min-width:36px;border:1px solid rgba(255,245,204,.16);border-radius:999px;background:radial-gradient(circle at 35% 30%,rgba(255,245,204,.22),rgba(8,7,6,.9) 68%);color:var(--text);display:grid;place-items:center;padding:0;text-align:center;cursor:pointer;box-shadow:0 0 14px rgba(var(--dot-rgb),.16);transition:transform .16s ease,border-color .16s ease,box-shadow .16s ease,background .16s ease;isolation:isolate}
@@ -883,6 +888,9 @@
       .journey-roadmap-level-dot.locked{opacity:.68;cursor:not-allowed;filter:saturate(.86) brightness(.78)}
       .journey-roadmap-level-dot.locked:before{background:conic-gradient(rgba(var(--dot-rgb),.46) 0 100%);opacity:.4;box-shadow:0 0 18px rgba(var(--dot-rgb),.18)}
       .journey-roadmap-level-dot.locked b{color:rgba(255,245,220,.54);border-color:rgba(var(--dot-rgb),.28);box-shadow:inset 0 0 10px rgba(var(--dot-rgb),.08)}
+      .journey-roadmap-level-dot.locked.future{opacity:.76;filter:saturate(1) brightness(.84)}
+      .journey-roadmap-level-dot.locked.future:after{background:radial-gradient(circle at 35% 30%,rgba(var(--dot-rgb),.22),rgba(8,7,6,.76) 68%)}
+      .journey-roadmap-level-dot.locked.future b{background:radial-gradient(circle at 35% 30%,rgba(var(--dot-rgb),.24),rgba(8,7,6,.74) 72%);color:rgba(255,245,220,.62)}
       .journey-roadmap-level-dot.locked.preparing{opacity:.88;filter:saturate(1) brightness(.92)}
       .journey-roadmap-level-dot.locked.preparing:before{opacity:.66;box-shadow:0 0 24px rgba(var(--dot-rgb),.32)}
       .journey-roadmap-level-dot.locked.preparing b{color:rgba(255,245,220,.72);border-color:rgba(var(--dot-rgb),.44)}
