@@ -32,6 +32,8 @@ Level 1 should use one Level 1 color family. Do not rainbow-code the five rows. 
 
 Future category icons should be generated in the same clean engraved/handmade spirit as the map nodes. Do not introduce a new icon style for Journey.
 
+Best build method: hybrid UI. Use HTML/CSS for the real interactive layout, buttons, labels, progress, and responsive behavior. Use SVG only for decorative rails or precise linework if CSS becomes too clumsy. Do not make the whole roadmap a flat generated image, because it would be hard to update when lessons, students, or progress change.
+
 ## What The Screen Should Feel Like
 
 Level 1 should feel like opening a beautiful but practical guitar curriculum overview.
