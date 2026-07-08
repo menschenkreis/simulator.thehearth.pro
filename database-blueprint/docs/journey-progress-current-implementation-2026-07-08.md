@@ -80,17 +80,26 @@ The Progress button currently reads from local browser storage and shows:
 - Create saved seeds/projects
 - practice streak
 
+The current UI presents this as a compact whole-simulator progress panel with:
+
+- active learner context
+- current Journey level
+- overall tracked progress
+- next best move
+- progress bars for trackable learning areas
+- evidence counts for practice, creation, and Journey lessons
+
 This is useful, but it is still a prototype. It should not be treated as the final data model.
 
-## Progress That Is Inferred
+## Progress That Is Inferred Or Tagged
 
-Journey category progress is inferred from lesson content.
+Journey category progress can now use explicit lesson category tags.
 
-That means the code scans lesson titles, summaries, blocks, concepts, tasks, and tags to decide which lessons touch each category.
+If a lesson has `categoryTags`, those tags count directly toward the Journey roadmap category rows.
 
-This is better than hardcoding everything by hand, but it is not final.
+The code still has a text-based fallback. It scans lesson titles, summaries, blocks, concepts, tasks, and tags to decide which lessons touch each category when explicit tags are missing.
 
-Future lesson data should include explicit category tags such as:
+Future lesson data should keep using explicit category tags such as:
 
 - rhythm
 - chords-harmony
@@ -166,8 +175,14 @@ Useful event types:
 
 ## Next Best Build Steps
 
-1. Give Journey lessons explicit category tags so category progress is exact.
-2. Make the whole-simulator Progress button visually match the Journey roadmap quality.
-3. Make Practice and Create write cleaner progress events.
-4. Decide how Ayla-as-teacher and Jen-as-learner should appear in the UI.
-5. Keep local prototype state simple until the backend shape is ready.
+Done in the current prototype:
+
+- Level 1 Journey lessons have explicit category tags.
+- The Progress button has a stronger whole-simulator snapshot panel.
+
+Next:
+
+1. Make Practice and Create write cleaner progress events.
+2. Decide how Ayla-as-teacher and Jen-as-learner should appear in the UI.
+3. Add explicit category tags as future Journey levels are authored.
+4. Keep local prototype state simple until the backend shape is ready.
