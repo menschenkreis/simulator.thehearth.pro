@@ -611,6 +611,57 @@
     return levelNames[n] || 'This level has not been fully authored yet, but this category will keep tracking progress.';
   }
 
+  function categoryKey(label){
+    return String(label || '').toLowerCase().replace(/&/g, 'and').replace(/[^a-z0-9]+/g, ' ').trim();
+  }
+
+  function categorySignals(label){
+    const signals = {
+      rhythm:['rhythm','time feel','pulse','metronome','bpm','strum','strumming','quarter','eighth','count','groove','grid'],
+      'chords and harmony':['chord','chords','harmony','progression','open chord','common finger','transition','changes','major','minor'],
+      scales:['scale','scales','pentatonic','root','box','shape','fretboard map','position'],
+      technique:['technique','clean','tone','buzz','buzzing','tension','fretting','finger','fingers','hand','chromatic','relax','strength'],
+      improvisation:['improvise','improvisation','solo','blues','phrase','phrasing','call and response','call','answer','lick'],
+      picking:['picking','pick','right hand','right-hand','down-up','alternate picking','down stroke','up stroke','articulation','accents'],
+      fingerstyle:['fingerstyle','finger style','rest stroke','free stroke','plucking','pluck','thumb','independence'],
+      theory:['theory','concept','explain','plain words','relationship','key','interval','names','means','context','why','chord-scale'],
+      reading:['reading','tab','notation','symbol','written','chart','diagram'],
+      integration:['song','application','apply','create','creation','routine','practice set','performance','demonstration','combine','together','reflect']
+    };
+    return signals[categoryKey(label)] || [];
+  }
+
+  function lessonSearchText(lesson){
+    const parts = [lesson.title, lesson.summary].concat(lesson.conceptNames || [], lesson.taskNames || []);
+    (lesson.blocks || []).forEach(block => {
+      parts.push(block.phase, block.source, block.title, block.body, block.prompt);
+    });
+    return parts.filter(Boolean).join(' ').toLowerCase();
+  }
+
+  function lessonTouchesCategory(lesson, category){
+    const explicit = (lesson.categoryTags || lesson.categories || []).map(categoryKey);
+    if(explicit.includes(categoryKey(category.label))) return true;
+    const text = lessonSearchText(lesson);
+    return categorySignals(category.label).some(signal => text.indexOf(signal) >= 0);
+  }
+
+  function fallbackCategoryLessonNumbers(level, category){
+    const raw = (category.levelLessons && category.levelLessons[level.num]) || [];
+    return raw.slice();
+  }
+
+  function journeyCategoryLessonNumbers(level, category){
+    const found = [];
+    for(let i = 1; i <= level.totalLessons; i++){
+      const lesson = buildLesson(null, level.num, i);
+      if(lessonTouchesCategory(lesson, category)) found.push(i);
+    }
+    const fallback = fallbackCategoryLessonNumbers(level, category);
+    const combined = found.length ? found.concat(fallback) : fallback;
+    return [...new Set(combined)].filter(n => n >= 1 && n <= level.totalLessons).sort((a,b) => a-b);
+  }
+
   function journeyNextActionText(student, level, lessons, lessonsDone, nextLesson, activeCategory){
     if(lessonsDone >= level.totalLessons){
       return {
@@ -646,8 +697,12 @@
       : 'Stay with '+level.name+'. Each dot shows what this level asks from that category.';
     const actionLabel = lessonsDone > 0 ? 'Continue '+level.name : "Let's begin";
     const categories = journeyRoadmapCategories();
+    const categoryLessons = {};
+    categories.forEach(section => {
+      categoryLessons[section.label] = journeyCategoryLessonNumbers(level, section);
+    });
     const activeCategory = categories.find(section => {
-      const sectionLessons = (section.levelLessons && section.levelLessons[level.num]) || [];
+      const sectionLessons = categoryLessons[section.label] || [];
       return sectionLessons.includes(nextLesson) && lessonsDone < level.totalLessons;
     });
     const nextAction = journeyNextActionText(student, level, lessons, lessonsDone, nextLesson, activeCategory);
@@ -669,7 +724,7 @@
 
     html += '<div class="journey-roadmap-board" aria-label="Journey category roadmap">';
     categories.forEach((section, sectionIndex) => {
-      const sectionLessons = (section.levelLessons && section.levelLessons[level.num]) || [];
+      const sectionLessons = categoryLessons[section.label] || [];
       const sectionTotal = sectionLessons.length;
       const sectionDone = sectionLessons.filter(n => n <= lessonsDone).length;
       const sectionPct = sectionTotal ? Math.min(100, Math.round(sectionDone / sectionTotal * 100)) : pct;
