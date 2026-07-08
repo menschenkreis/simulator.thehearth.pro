@@ -350,9 +350,9 @@
 
   function progressRow(label, item) {
     var percent = percentFor(item);
-    return '<div class="progress-row"><span class="progress-label">' + label + '</span>'
+    return '<div class="progress-row"><span class="progress-label">' + escapeHtml(label) + '</span>'
       + '<div class="progress-bar"><div class="progress-fill" style="width:' + percent + '%"></div></div>'
-      + '<span style="font-family:JetBrains Mono;font-size:0.65rem;color:var(--dim)">' + item.done + '/' + item.total + '</span></div>';
+      + '<span class="progress-ratio">' + item.done + '/' + item.total + '</span></div>';
   }
 
   function progressSummary(counts) {
@@ -383,23 +383,36 @@
 
   function renderProgressHtml(counts) {
     var summary = progressSummary(counts);
-    return '<div class="progress-snapshot">'
-      + '<div><span>Overall</span><strong>' + summary.overall + '%</strong></div>'
-      + '<div><span>Opened</span><strong>' + summary.done + '/' + summary.total + '</strong></div>'
+    var next = summary.next || { label: "Review", action: "choose one small step and keep the path alive" };
+    var learner = counts.journey && counts.journey.label ? counts.journey.label : "Active learner";
+    var current = counts.journey && counts.journey.current ? counts.journey.current : "Journey";
+    return '<div class="progress-shell">'
+      + '<section class="progress-hero" aria-label="Whole simulator progress summary">'
+      + '<div class="progress-hero-top"><div class="progress-learner"><span>Active learner</span><strong>' + escapeHtml(learner) + '</strong></div><div class="progress-level-pill">' + escapeHtml(current) + '</div></div>'
+      + '<div class="progress-main-number">' + summary.overall + '<small>%</small></div>'
+      + '<p class="progress-main-caption">Whole-simulator progress from the real things currently tracked in this browser.</p>'
+      + '<div class="progress-snapshot">'
+      + '<div><span>Tracked</span><strong>' + summary.done + '/' + summary.total + '</strong></div>'
       + '<div><span>Streak</span><strong>' + counts.streak + 'd</strong></div>'
+      + '<div><span>Seeds</span><strong>' + counts.create.projects + '</strong></div>'
       + '</div>'
-      + '<div class="progress-next"><span>Next best move</span><strong>' + summary.next.label + '</strong><p>' + summary.next.action + '.</p></div>'
+      + '</section>'
+      + '<section class="progress-board" aria-label="Progress tracks">'
+      + '<div class="progress-next"><span>Next best move</span><strong>' + escapeHtml(next.label) + '</strong><p>' + escapeHtml(next.action) + '.</p></div>'
+      + '<div class="progress-track-list">'
       + progressRow("Foundation", counts.foundation)
       + (counts.journey.total ? progressRow("Journey Lessons", counts.journey) : "")
       + progressRow("Do", counts.doing)
       + progressRow("Know", counts.knowing)
       + (counts.practice.total ? progressRow("Practice Drills", counts.practice) : "")
-      + '<div class="progress-row"><span class="progress-label">Practice Streak</span><span style="font-family:JetBrains Mono;font-size:0.65rem;color:var(--amber)">'
-      + counts.streak + ' days</span></div>'
-      + '<div class="progress-row"><span class="progress-label">Practice Sessions</span><span style="font-family:JetBrains Mono;font-size:0.65rem;color:var(--amber)">'
-      + (counts.practice.sessions || 0) + ' sessions · ' + (counts.practice.minutes || 0) + ' min</span></div>'
-      + '<div class="progress-row"><span class="progress-label">Create Seeds</span><span style="font-family:JetBrains Mono;font-size:0.65rem;color:var(--amber)">'
-      + counts.create.projects + ' saved' + (counts.create.hasDraft ? ' · draft open' : '') + '</span></div>';
+      + '</div>'
+      + '<div class="progress-evidence-grid">'
+      + '<div class="progress-evidence-card"><span>Practice</span><strong>' + (counts.practice.sessions || 0) + '</strong><small>sessions · ' + (counts.practice.minutes || 0) + ' min · ' + counts.streak + ' days</small></div>'
+      + '<div class="progress-evidence-card"><span>Create</span><strong>' + counts.create.projects + '</strong><small>saved seeds' + (counts.create.hasDraft ? ' · draft open' : '') + '</small></div>'
+      + '<div class="progress-evidence-card"><span>Journey</span><strong>' + (counts.journey.done || 0) + '</strong><small>lessons logged for ' + escapeHtml(learner) + '</small></div>'
+      + '</div>'
+      + '</section>'
+      + '</div>';
   }
 
   function renderProgress(doc, storage) {

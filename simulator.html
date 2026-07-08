@@ -226,21 +226,36 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 .search-empty span{display:block;}
 
 /* Progress panel */
-.progress-panel{position:absolute;top:100%;left:0;right:0;background:rgba(20,18,16,0.94);border-bottom:1px solid rgba(212,175,105,0.12);padding:16px;z-index:50;display:none;box-shadow:0 16px 38px rgba(0,0,0,0.28);backdrop-filter:blur(18px) saturate(1.08);-webkit-backdrop-filter:blur(18px) saturate(1.08);}
+.progress-panel{position:absolute;top:100%;left:0;right:0;max-height:calc(100vh - 78px);overflow:auto;background:rgba(20,18,16,0.94);border-bottom:1px solid rgba(212,175,105,0.12);padding:18px;z-index:50;display:none;box-shadow:0 16px 38px rgba(0,0,0,0.28);backdrop-filter:blur(18px) saturate(1.08);-webkit-backdrop-filter:blur(18px) saturate(1.08);}
 .progress-panel.show{display:block;}
 .progress-panel h3{font-family:'Cinzel',serif;font-size:0.9rem;color:var(--gold);margin:0 0 12px 0;letter-spacing:0.06em;}
-.progress-snapshot{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:10px;}
-.progress-snapshot div{border:1px solid rgba(212,175,105,0.1);border-radius:10px;background:rgba(255,255,255,0.035);padding:9px 10px;}
-.progress-snapshot span,.progress-next span{display:block;font-family:'JetBrains Mono',monospace;font-size:0.55rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--dim);margin-bottom:3px;}
-.progress-snapshot strong{display:block;color:var(--gold);font-size:0.9rem;font-weight:700;}
-.progress-next{border:1px solid rgba(212,175,105,0.12);border-radius:11px;background:rgba(212,175,105,0.045);padding:11px 12px;margin-bottom:10px;}
-.progress-next strong{display:block;color:var(--text);font-size:0.86rem;margin-bottom:2px;}
+.progress-shell{width:min(1120px,100%);margin:0 auto;display:grid;grid-template-columns:minmax(250px,0.78fr) minmax(420px,1.22fr);gap:14px;align-items:stretch;}
+.progress-hero{border:1px solid rgba(212,175,105,0.14);border-radius:18px;background:linear-gradient(180deg,rgba(255,255,255,0.052),rgba(255,255,255,0.018));padding:16px;box-shadow:inset 0 1px 0 rgba(255,255,255,0.05);}
+.progress-hero-top{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:14px;}
+.progress-learner span,.progress-next span,.progress-evidence-card span{display:block;font-family:'JetBrains Mono',monospace;font-size:0.54rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--dim);margin-bottom:3px;}
+.progress-learner strong{display:block;font-family:'Cinzel',serif;color:var(--gold);font-size:1rem;line-height:1.08;}
+.progress-level-pill{border:1px solid rgba(212,175,105,0.18);background:rgba(13,11,8,0.5);border-radius:999px;color:var(--gold);padding:6px 9px;font-family:'JetBrains Mono',monospace;font-size:0.58rem;letter-spacing:0.06em;white-space:nowrap;}
+.progress-main-number{font-family:'Cinzel',serif;color:var(--bright);font-size:3.1rem;line-height:0.95;text-shadow:0 0 26px rgba(212,175,105,0.18);}
+.progress-main-number small{font-size:1.05rem;color:var(--gold);}
+.progress-main-caption{color:var(--dim);font-size:0.72rem;line-height:1.4;margin:8px 0 14px;}
+.progress-snapshot{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:0;}
+.progress-snapshot div,.progress-evidence-card{border:1px solid rgba(212,175,105,0.1);border-radius:12px;background:rgba(13,11,8,0.36);padding:10px;}
+.progress-snapshot span{display:block;font-family:'JetBrains Mono',monospace;font-size:0.52rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--dim);margin-bottom:3px;}
+.progress-snapshot strong,.progress-evidence-card strong{display:block;color:var(--gold);font-size:0.95rem;font-weight:800;}
+.progress-board{border:1px solid rgba(212,175,105,0.12);border-radius:18px;background:rgba(13,11,8,0.36);padding:14px;}
+.progress-next{border:1px solid rgba(212,175,105,0.16);border-radius:14px;background:linear-gradient(90deg,rgba(212,175,105,0.09),rgba(255,255,255,0.025));padding:12px 13px;margin-bottom:10px;}
+.progress-next strong{display:block;color:var(--text);font-size:0.9rem;margin-bottom:2px;}
 .progress-next p{margin:0;color:var(--dim);font-size:0.72rem;line-height:1.35;}
-.progress-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid rgba(212,175,105,0.06);}
-.progress-row:last-child{border:none;}
-.progress-label{font-size:0.8rem;color:var(--text);}
-.progress-bar{flex:1;max-width:140px;height:6px;background:rgba(212,175,105,0.08);border-radius:3px;margin-left:12px;overflow:hidden;}
-.progress-fill{height:100%;background:var(--gold);border-radius:3px;transition:width 0.4s;}
+.progress-track-list{display:grid;gap:7px;margin-top:10px;}
+.progress-row{display:grid;grid-template-columns:minmax(132px,0.8fr) minmax(140px,1fr) 62px;gap:10px;align-items:center;padding:9px 10px;border:1px solid rgba(212,175,105,0.07);border-radius:12px;background:rgba(255,255,255,0.026);}
+.progress-row:last-child{border:1px solid rgba(212,175,105,0.07);}
+.progress-label{font-size:0.76rem;color:var(--text);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.progress-bar{height:7px;background:rgba(212,175,105,0.08);border-radius:99px;overflow:hidden;}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--amber));border-radius:99px;transition:width 0.4s;}
+.progress-ratio{font-family:'JetBrains Mono',monospace;font-size:0.62rem;color:var(--dim);text-align:right;white-space:nowrap;}
+.progress-evidence-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:10px;}
+.progress-evidence-card small{display:block;color:var(--dim);font-size:0.63rem;line-height:1.25;margin-top:3px;}
+@media(max-width:880px){.progress-shell{grid-template-columns:1fr}.progress-row{grid-template-columns:1fr}.progress-ratio{text-align:left}.progress-evidence-grid,.progress-snapshot{grid-template-columns:1fr}}
 
 /* Settings panel */
 .settings-panel{position:absolute;top:100%;right:10px;background:rgba(20,18,16,0.94);border:1px solid rgba(212,175,105,0.14);border-radius:14px;padding:15px 16px;z-index:50;display:none;min-width:250px;max-width:330px;box-shadow:0 18px 46px rgba(0,0,0,0.32);backdrop-filter:blur(18px) saturate(1.08);-webkit-backdrop-filter:blur(18px) saturate(1.08);}
@@ -1706,7 +1721,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
   </div>
   <!-- Progress Panel -->
   <div class="progress-panel" id="progressPanel">
-    <h3>Your Journey</h3>
+    <h3>Progress</h3>
     <div id="progressContent"></div>
   </div>
   <!-- Settings Panel -->
