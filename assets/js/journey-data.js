@@ -225,6 +225,64 @@ var JOURNEY_STUDENT_COMPANIONS = {
       "Return to music: A minor conversation, then swap roles",
       "Reflect: what worked, what was hard, what to practise"
     ],
+    lessonButtons: [
+      {
+        label: "Tune in",
+        source: "Hearth + Practice",
+        aim: "Arrive before teaching.",
+        action: "Tune the guitar, check shoulders, jaw, breath, fretting hand, picking hand, then listen to open strings.",
+        prompt: "What does Jen's body and sound need before we start?"
+      },
+      {
+        label: "Review",
+        source: "Journey memory",
+        aim: "Bring back the last map.",
+        action: "Touch A minor pentatonic slowly, then find A root notes without rushing.",
+        prompt: "What stayed available, and what went foggy?"
+      },
+      {
+        label: "Doorway",
+        source: "Student interest",
+        aim: "Use what motivates her.",
+        action: "Make only the A root notes musical with the metronome before adding more scale notes.",
+        prompt: "Does rhythm, right hand, flamenco feel, or call-and-response open the door today?"
+      },
+      {
+        label: "Map",
+        source: "Study + Knowing",
+        aim: "Turn the scale into pattern recognition.",
+        action: "Split A minor pentatonic into three small boxes. Each box has an A root note as a safety point.",
+        prompt: "Can she see where she is, or is it still one big blur?"
+      },
+      {
+        label: "Apply",
+        source: "Doing",
+        aim: "Use the map immediately.",
+        action: "Add one or two nearby pentatonic notes to the root-note pulse and make tiny phrases.",
+        prompt: "Which tiny phrase feels musical enough to repeat?"
+      },
+      {
+        label: "Practice",
+        source: "Practice temple",
+        aim: "Build calm repetition.",
+        action: "Try 60 BPM first, then 76 BPM. Touch 100 BPM only if relaxed and steady.",
+        prompt: "Which tempo keeps tone clean and confidence intact?"
+      },
+      {
+        label: "Play",
+        source: "Play + Create",
+        aim: "Return the drill to music.",
+        action: "Do an A minor musical conversation: one person holds A minor, the other answers with small pentatonic phrases, then swap.",
+        prompt: "What sounded like a conversation rather than an exercise?"
+      },
+      {
+        label: "Reflect",
+        source: "Hearth + Journey",
+        aim: "Capture the next safe step.",
+        action: "Write what worked, what was hard, what Jen enjoyed, and what Ayla should prepare next.",
+        prompt: "What should repeat, simplify, or wait?"
+      }
+    ],
     practice: [
       "Make A root notes musical at 60 BPM",
       "Repeat at 76 BPM only if the pulse stays calm",

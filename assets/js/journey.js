@@ -447,7 +447,7 @@
       '<summary class="journey-companion-summary">' +
         '<span><span class="journey-kicker">'+esc(companion.label || 'Lesson Companion')+'</span>' +
         '<strong>'+esc(companion.title || 'Next lesson focus')+'</strong></span>' +
-        '<span>Open prep</span>' +
+        '<span>Open Live Lesson</span>' +
       '</summary>' +
       '<div class="journey-companion-head">' +
         '<div>' +
@@ -455,7 +455,7 @@
           '<div class="journey-companion-title">'+esc(companion.title || 'Next lesson focus')+'</div>' +
         '</div>' +
         '<div class="journey-actions compact">' +
-          '<button class="journey-btn" onclick="Journey.openCompanionLesson(\''+student.id+'\')">Live Lesson</button>' +
+        '<button type="button" class="journey-btn" onclick="Journey.openCompanionLesson(\''+student.id+'\')">Open Live Lesson</button>' +
           '<button class="journey-btn secondary" onclick="Journey.openLevel('+(student.currentLevel || 1)+')">Open Path</button>' +
         '</div>' +
       '</div>' +
@@ -481,7 +481,7 @@
       '<div class="journey-preview-title">'+esc(companion.label || companionStudent.name)+'</div>' +
       '<div class="journey-preview-copy">'+esc(companion.nextAction || '')+'</div></div>' +
       '<div class="journey-actions compact">' +
-        '<button class="journey-btn" onclick="Journey.openCompanionLesson(\''+companionStudent.id+'\')">Live Lesson</button>' +
+        '<button type="button" class="journey-btn" onclick="Journey.openCompanionLesson(\''+companionStudent.id+'\')">Open Live Lesson</button>' +
         '<button class="journey-btn secondary" onclick="Journey.switchStudent(\''+companionStudent.id+'\')">Show Jen</button>' +
       '</div>' +
     '</div>';
@@ -799,6 +799,24 @@
     return [5, 8, 7, 10, 10, 8, 10, 2][index] || 5;
   }
 
+  function companionLessonSteps(companion){
+    const flow = companion.lessonFlow || [];
+    const buttons = companion.lessonButtons || [];
+    return flow.map((step, index) => {
+      const colon = step.indexOf(':');
+      const fallbackLabel = colon >= 0 ? step.slice(0, colon).trim() : 'Step '+(index + 1);
+      const fallbackAction = colon >= 0 ? step.slice(colon + 1).trim() : step;
+      return Object.assign({
+        label: fallbackLabel,
+        source: 'Journey',
+        aim: fallbackAction,
+        action: fallbackAction,
+        prompt: 'What should we notice before moving on?',
+        min: companionStepMinutes(index)
+      }, buttons[index] || {});
+    });
+  }
+
   function renderCompanionLesson(studentId, saved){
     injectStyles();
     showPanel('p-lesson');
@@ -818,7 +836,8 @@
     saveState(state);
     const level = getLevel(student.currentLevel || 2);
     const guideImage = guideAsset('encouraging');
-    const totalMinutes = (companion.lessonFlow || []).reduce((sum, _, index) => sum + companionStepMinutes(index), 0);
+    const lessonSteps = companionLessonSteps(companion);
+    const totalMinutes = lessonSteps.reduce((sum, step) => sum + (step.min || 0), 0);
 
     let html = '<div class="journey-shell journey-live-companion">';
     html += '<div class="journey-level-command-row"><button class="back-btn" onclick="Journey.render()">← Back</button>'+renderStudentPicker(state, student)+'</div>';
@@ -829,13 +848,25 @@
     html += '<div class="journey-live-rule"><strong>Main rule:</strong> no new challenge unless Jen is relaxed, clear, and asking for it. The win is pattern recognition and musical confidence.</div>';
     if(saved) html += '<div class="journey-save-confirm">Saved. This lesson note is now part of Jen\'s Journey memory.</div>';
     html += '<div class="journey-live-flow">';
-    (companion.lessonFlow || []).forEach((step, index) => {
-      html += '<section class="journey-live-step">' +
+    html += '<div class="journey-live-step-buttons" role="list" aria-label="Lesson stages">';
+    lessonSteps.forEach((step, index) => {
+      html += '<button type="button" class="journey-live-step-btn '+(index === 0 ? 'active' : '')+'" data-step="'+index+'" onclick="Journey.focusCompanionStep('+index+')">' +
         '<span>'+String(index + 1).padStart(2, '0')+'</span>' +
-        '<div><h3>'+esc(step.split(':')[0] || ('Step '+(index + 1)))+'</h3><p>'+esc(step.indexOf(':') >= 0 ? step.slice(step.indexOf(':') + 1).trim() : step)+'</p></div>' +
-        '<small>'+companionStepMinutes(index)+' min</small>' +
+        '<strong>'+esc(step.label)+'</strong>' +
+        '<small>'+esc(step.source)+'</small>' +
+      '</button>';
+    });
+    html += '</div>';
+    html += '<div class="journey-live-focus-stack">';
+    lessonSteps.forEach((step, index) => {
+      html += '<section class="journey-live-focus '+(index === 0 ? 'active' : '')+'" data-step-panel="'+index+'">' +
+        '<div class="journey-live-focus-top"><span>'+String(index + 1).padStart(2, '0')+'</span><div><div class="journey-kicker">'+esc(step.source)+'</div><h3>'+esc(step.label)+'</h3></div><small>'+esc(String(step.min || companionStepMinutes(index)))+' min</small></div>' +
+        '<p class="journey-live-aim">'+esc(step.aim || '')+'</p>' +
+        '<div class="journey-live-action"><strong>Do this:</strong> '+esc(step.action || '')+'</div>' +
+        '<div class="journey-live-prompt"><strong>Notice:</strong> '+esc(step.prompt || '')+'</div>' +
       '</section>';
     });
+    html += '</div>';
     html += '</div>';
     html += '<div class="journey-companion-grid live">' +
       '<div><div class="journey-mini-label">Doorways</div><div class="journey-pill-row">'+renderPillList(companion.doorway)+'</div></div>' +
@@ -1050,8 +1081,8 @@
       .journey-input{width:100%;background:#0d0b08;border:1px solid var(--border);border-radius:10px;color:var(--text);padding:10px;font-family:DM Sans,sans-serif;font-size:.78rem;min-height:72px;box-sizing:border-box}
       .journey-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.journey-btn{background:var(--gold);color:#0d0b08;border:none;border-radius:10px;padding:10px 14px;font-weight:800;cursor:pointer}.journey-btn.secondary{background:transparent;color:var(--gold);border:1px solid var(--border)}.journey-btn.danger{background:#cc3344;color:white}
       .journey-actions.compact{margin-top:0;justify-content:flex-end}
-      .journey-live-companion{max-width:1180px}
-      .journey-live-stage{display:grid;grid-template-columns:240px minmax(0,1fr);gap:24px;align-items:start;margin-top:18px}
+      .journey-live-companion{max-width:1260px;width:100%}
+      .journey-live-stage{display:grid;grid-template-columns:220px minmax(0,1fr);gap:24px;align-items:start;margin-top:18px}
       .journey-live-guide{position:sticky;top:20px;display:flex;flex-direction:column;align-items:center}
       .journey-live-guide img{width:156px;height:190px;object-fit:contain;object-position:center bottom;filter:drop-shadow(0 10px 18px rgba(0,0,0,.42));animation:char-float 5.5s ease-in-out infinite}
       .journey-live-panel{position:relative;border:1px solid rgba(212,175,105,.2);border-radius:24px;background:radial-gradient(circle at 20% 8%,rgba(212,175,105,.11),transparent 28%),linear-gradient(180deg,rgba(35,29,23,.78),rgba(12,10,8,.88));box-shadow:0 24px 56px rgba(0,0,0,.32),inset 0 1px 0 rgba(255,255,255,.06);padding:24px}
@@ -1061,6 +1092,26 @@
       .journey-live-rule,.journey-save-confirm{border:1px solid rgba(212,175,105,.2);background:rgba(212,175,105,.07);border-radius:14px;padding:10px 12px;color:var(--text);font-size:.74rem;line-height:1.45;margin-bottom:12px}
       .journey-save-confirm{border-color:rgba(104,214,131,.32);background:rgba(104,214,131,.08);color:#eaffdd}
       .journey-live-flow{display:grid;gap:9px;margin:14px 0}
+      .journey-live-step-buttons{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+      .journey-live-step-btn{position:relative;min-height:88px;text-align:left;border:1px solid rgba(255,245,204,.1);border-radius:15px;background:linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,.012));color:var(--text);padding:10px;cursor:pointer;overflow:hidden;box-shadow:inset 0 1px 0 rgba(255,255,255,.04);transition:transform .16s ease,border-color .16s ease,box-shadow .16s ease,background .16s ease}
+      .journey-live-step-btn:before{content:"";position:absolute;inset:auto 10px 0;height:3px;border-radius:99px;background:rgba(212,175,105,.24)}
+      .journey-live-step-btn span{width:30px;height:30px;border-radius:999px;display:grid;place-items:center;background:rgba(5,4,3,.78);border:1px solid rgba(212,175,105,.24);font-family:JetBrains Mono,monospace;color:var(--gold);font-size:.58rem;margin-bottom:8px}
+      .journey-live-step-btn strong{display:block;font-family:Cinzel,serif;font-size:.82rem;line-height:1.05;color:var(--text)}
+      .journey-live-step-btn small{display:block;margin-top:5px;color:var(--dim);font-size:.58rem;line-height:1.25}
+      .journey-live-step-btn:hover,.journey-live-step-btn.active{transform:translateY(-1px);border-color:rgba(212,175,105,.46);box-shadow:0 12px 28px rgba(0,0,0,.22),0 0 24px rgba(212,175,105,.1)}
+      .journey-live-step-btn.active{background:linear-gradient(180deg,rgba(212,175,105,.2),rgba(255,255,255,.03))}
+      .journey-live-step-btn.active:before{background:var(--gold);box-shadow:0 0 14px rgba(212,175,105,.38)}
+      .journey-live-step-btn.active span{background:radial-gradient(circle at 35% 30%,rgba(255,244,214,.95),var(--gold) 44%,rgba(13,11,8,.9) 80%);color:#fff8dc;text-shadow:0 1px 4px rgba(0,0,0,.75)}
+      .journey-live-focus-stack{margin-top:10px}
+      .journey-live-focus{display:none;border:1px solid rgba(212,175,105,.22);border-radius:18px;background:radial-gradient(circle at 12% 8%,rgba(212,175,105,.13),transparent 32%),linear-gradient(180deg,rgba(255,255,255,.04),rgba(0,0,0,.12));padding:16px;box-shadow:inset 0 1px 0 rgba(255,255,255,.05)}
+      .journey-live-focus.active{display:block}
+      .journey-live-focus-top{display:grid;grid-template-columns:42px 1fr auto;gap:12px;align-items:center;margin-bottom:10px}
+      .journey-live-focus-top > span{width:38px;height:38px;border-radius:999px;display:grid;place-items:center;background:#090806;border:1px solid rgba(212,175,105,.34);font-family:JetBrains Mono,monospace;color:var(--gold);font-size:.64rem}
+      .journey-live-focus h3{font-family:Cinzel,serif;color:var(--gold);font-size:1.2rem;line-height:1.05;margin:3px 0 0}
+      .journey-live-focus-top small{font-family:JetBrains Mono,monospace;color:var(--gold);font-size:.62rem}
+      .journey-live-aim{margin:0 0 10px;color:var(--text);font-size:.78rem;line-height:1.45}
+      .journey-live-action,.journey-live-prompt{border:1px solid rgba(255,245,204,.08);border-radius:12px;background:rgba(8,7,6,.38);padding:10px 12px;color:var(--dim);font-size:.72rem;line-height:1.45;margin-top:8px}
+      .journey-live-action strong,.journey-live-prompt strong{color:var(--text)}
       .journey-live-step{display:grid;grid-template-columns:38px 1fr 48px;align-items:center;gap:12px;border:1px solid rgba(255,245,204,.08);border-radius:16px;background:linear-gradient(90deg,rgba(255,255,255,.045),rgba(255,255,255,.012));padding:10px 12px}
       .journey-live-step > span{width:34px;height:34px;border-radius:999px;display:grid;place-items:center;background:radial-gradient(circle at 35% 30%,rgba(255,244,214,.95),var(--gold) 44%,rgba(13,11,8,.9) 80%);font-family:Cinzel,serif;color:#fff8dc;font-size:.62rem;font-weight:900;text-shadow:0 1px 4px rgba(0,0,0,.8)}
       .journey-live-step h3{margin:0;font-family:Cinzel,serif;color:var(--text);font-size:.84rem;line-height:1.1}
@@ -1087,8 +1138,8 @@
       @media(max-width:860px){.journey-entry-stage{min-height:auto;display:flex;flex-direction:column;align-items:center;gap:12px}.journey-map-guide{position:static;order:2;width:min(280px,88vw)}.journey-neck-stage{order:1;width:min(340px,88vw)}.journey-map-bubble{width:min(250px,78vw)}}
       @media(max-width:1700px){.journey-entry-guide{left:calc(50% + 500px);width:220px}.journey-entry-guide img{width:min(200px,78%)}.journey-entry-bubble{width:min(230px,90%)}}
       @media(max-width:1440px){.journey-level-entry-stage{display:flex;flex-direction:column;align-items:center;gap:18px;min-height:auto}.journey-entry-guide{position:relative;left:auto;right:auto;top:auto;order:2;width:min(620px,100%);min-height:auto;display:flex;flex-direction:row;justify-content:center;align-items:flex-end;padding-top:0}.journey-entry-guide img{width:104px;height:126px}.journey-entry-bubble{width:min(390px,70vw);order:0}.journey-entry-bubble:before{left:30px}.journey-level-map{order:1;min-height:auto}.journey-level-map:before{right:-2%;width:52%;opacity:.1}}
-      @media(max-width:980px){.journey-level-command-row{width:100%}.journey-roadmap-section{grid-template-columns:1fr;border-radius:22px}.journey-roadmap-section:before{left:22px}.journey-roadmap-levels{grid-template-columns:repeat(8,minmax(28px,1fr));gap:6px}.journey-roadmap-level-dot span{bottom:auto;top:calc(100% + 8px)}.journey-level-entry-foot{flex-direction:column;align-items:stretch;text-align:center}.journey-next-step-card{max-width:none}.journey-entry-actions{justify-content:center}.journey-entry-actions .journey-btn{width:100%}.journey-begin-btn{width:100%}}
-      @media(max-width:720px){.journey-shell{padding:14px}.journey-level-command-row{flex-direction:column;align-items:stretch}.journey-level-command-row .journey-top-row{justify-content:center}.journey-grid,.journey-companion-grid{grid-template-columns:1fr}.journey-neck-stage{width:min(330px,92vw);background-size:contain}.journey-neck-wrap{padding-top:14px}.journey-headstock{width:140px;height:64px}.journey-neck{width:min(250px,74vw);height:520px;min-height:460px}.journey-body-arc{width:min(360px,92vw);height:95px}.journey-guide-scene{left:50%;bottom:38px;transform:translateX(-50%);width:min(300px,78vw)}.journey-guide-character{width:126px;height:174px}.journey-guide-bubble.game{max-width:250px}.journey-title{font-size:1.25rem}.journey-guide img{width:64px;height:64px}.journey-companion-head,.journey-companion-preview,.journey-companion-summary{align-items:flex-start;flex-direction:column}.journey-student-bar{border-radius:16px;width:100%;box-sizing:border-box}.journey-student-menu{width:min(280px,88vw)}.journey-level-map{padding:18px}.journey-level-map-head,.journey-live-head{flex-direction:column;align-items:stretch}.journey-level-progress{width:100%}.journey-roadmap-board{padding:8px}.journey-roadmap-section{padding:10px}.journey-roadmap-level-dot{width:38px;height:38px;min-width:38px}.journey-roadmap-level-dot.selected{width:46px;height:46px;min-width:46px}.journey-entry-guide{flex-direction:column;align-items:center}.journey-entry-bubble{width:min(270px,82vw)}.journey-entry-bubble:before{left:50%}.journey-live-stage{grid-template-columns:1fr}.journey-live-guide{position:static}.journey-live-panel{padding:16px}.journey-live-step{grid-template-columns:34px 1fr}.journey-live-step small{justify-self:start;grid-column:2}}
+      @media(max-width:980px){.journey-level-command-row{width:100%}.journey-roadmap-section{grid-template-columns:1fr;border-radius:22px}.journey-roadmap-section:before{left:22px}.journey-roadmap-levels{grid-template-columns:repeat(8,minmax(28px,1fr));gap:6px}.journey-roadmap-level-dot span{bottom:auto;top:calc(100% + 8px)}.journey-level-entry-foot{flex-direction:column;align-items:stretch;text-align:center}.journey-next-step-card{max-width:none}.journey-entry-actions{justify-content:center}.journey-entry-actions .journey-btn{width:100%}.journey-begin-btn{width:100%}.journey-live-step-buttons{grid-template-columns:repeat(2,minmax(0,1fr))}}
+      @media(max-width:720px){.journey-shell{padding:14px}.journey-level-command-row{flex-direction:column;align-items:stretch}.journey-level-command-row .journey-top-row{justify-content:center}.journey-grid,.journey-companion-grid{grid-template-columns:1fr}.journey-neck-stage{width:min(330px,92vw);background-size:contain}.journey-neck-wrap{padding-top:14px}.journey-headstock{width:140px;height:64px}.journey-neck{width:min(250px,74vw);height:520px;min-height:460px}.journey-body-arc{width:min(360px,92vw);height:95px}.journey-guide-scene{left:50%;bottom:38px;transform:translateX(-50%);width:min(300px,78vw)}.journey-guide-character{width:126px;height:174px}.journey-guide-bubble.game{max-width:250px}.journey-title{font-size:1.25rem}.journey-guide img{width:64px;height:64px}.journey-companion-head,.journey-companion-preview,.journey-companion-summary{align-items:flex-start;flex-direction:column}.journey-student-bar{border-radius:16px;width:100%;box-sizing:border-box}.journey-student-menu{width:min(280px,88vw)}.journey-level-map{padding:18px}.journey-level-map-head,.journey-live-head{flex-direction:column;align-items:stretch}.journey-level-progress{width:100%}.journey-roadmap-board{padding:8px}.journey-roadmap-section{padding:10px}.journey-roadmap-level-dot{width:38px;height:38px;min-width:38px}.journey-roadmap-level-dot.selected{width:46px;height:46px;min-width:46px}.journey-entry-guide{flex-direction:column;align-items:center}.journey-entry-bubble{width:min(270px,82vw)}.journey-entry-bubble:before{left:50%}.journey-live-stage{grid-template-columns:1fr}.journey-live-guide{position:static}.journey-live-panel{padding:16px}.journey-live-step-buttons{grid-template-columns:1fr}.journey-live-focus-top{grid-template-columns:38px 1fr}.journey-live-focus-top small{grid-column:2}.journey-live-step{grid-template-columns:34px 1fr}.journey-live-step small{justify-self:start;grid-column:2}}
     `;
     document.head.appendChild(style);
   }
@@ -1445,6 +1496,14 @@
     },
     openCompanionLesson(studentId){
       renderCompanionLesson(studentId);
+    },
+    focusCompanionStep(index){
+      document.querySelectorAll('.journey-live-step-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.getAttribute('data-step') === String(index));
+      });
+      document.querySelectorAll('.journey-live-focus').forEach(panel => {
+        panel.classList.toggle('active', panel.getAttribute('data-step-panel') === String(index));
+      });
     },
     saveCompanionLessonNote(studentId){
       const state = loadState();
