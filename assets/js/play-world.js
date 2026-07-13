@@ -1,5 +1,5 @@
 // Play World — Listening Shrine interaction.
-// Play is currently rendered here. play-worldmap.js and play-worldmap.js contain legacy/fallback map logic.
+// The active atlas entrance lives in adapters/play-atlas-viewer.js.
 (function(){
   function esc(v){return String(v==null?'':v).replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'" :'&#39;'}[ch]));}
   function regions(){return window.WORLD_MAP_REGIONS||[];}
@@ -215,6 +215,5 @@
   }
 
   window.PlayWorld={render,detail,lens,lensPanel};
-  window.showPlay=render;
   window.wmClick=detail;
 })();

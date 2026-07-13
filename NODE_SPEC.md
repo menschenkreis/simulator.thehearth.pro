@@ -58,7 +58,7 @@ The goal is not to describe every detail of the current prototype. The goal is t
 - Reflection notes
 - Practice log
 
-**Current status:** Built as the active scene-first Practise room.
+**Current status:** Built as the active Practice candle room.
 
 ---
 
@@ -76,7 +76,7 @@ The goal is not to describe every detail of the current prototype. The goal is t
 - Rhythm, touch, scale colour, and story
 - Song and listening pathways
 
-**Current status:** Built as the active scene-first world map, with Play world data/viewer support.
+**Current status:** Built as the active Play atlas world map, with Play world data/viewer support.
 
 ---
 
@@ -114,7 +114,7 @@ The goal is not to describe every detail of the current prototype. The goal is t
 - Concept relationships
 - Recall questions and review
 
-**Current status:** Built as the active scene-first Study chamber. Older brain-map study ideas are historical, not the current active meaning.
+**Current status:** Built as the active Study Key Chamber. Older brain-map study ideas are historical, not the current active meaning.
 
 ---
 
@@ -134,7 +134,7 @@ The goal is not to describe every detail of the current prototype. The goal is t
 - Notes, lyric ideas, riff ideas, and rhythm ideas
 - Mutations
 
-**Current status:** Built as the active scene-first Create cauldron, with data in Create ingredient, obstruction, and combo files.
+**Current status:** Built as the active Create Cauldron scene, with data in Create ingredient, obstruction, and combo files.
 
 ---
 
@@ -173,7 +173,7 @@ The goal is not to describe every detail of the current prototype. The goal is t
 - Learning from artists and teachers
 - Returning to the map with deeper understanding
 
-**Current status:** Built as the active scene-first Mastery screen. It still needs deeper content.
+**Current status:** Built as the active Mastery Phoenix scene. It still needs deeper content.
 
 ---
 

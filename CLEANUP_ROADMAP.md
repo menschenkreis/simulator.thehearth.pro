@@ -42,6 +42,7 @@ Older docs may still describe past versions of the app. Treat `CODEX_HANDOVER.md
 python3 tools/prototype_smoke_check.py
 python3 tools/core_smoke_check.py
 python3 tools/core_js_smoke_check.py
+python3 tools/renderer_ownership_check.py
 ```
 
 For documentation-only changes, `git diff --check` is enough.
@@ -86,6 +87,18 @@ Done recently:
 - Replaced the cropped Journey scene with a generated guitar/neck cutout made from a green-screen source and keyed to transparency, so the map is an object instead of a background image.
 - Reworked Journey's first-read UI: the active student's journey is chosen from one dropdown control, and the guide character explains what the guitar map is before the learner enters a level.
 - Tightened the Journey guide voice so the character explains the path metaphor in plain simulator language instead of generic UI instructions.
+- Moved the old inline Journey button helper functions out of `simulator.html` into `adapters/journey-legacy-handlers.js`, so Journey ownership is clearer.
+- Moved the old inline Foundation, Doing, and Knowing helper functions out of `simulator.html` into `adapters/node-legacy-handlers.js`.
+- Added `NODE_RENDERER_OWNERSHIP.md` and `tools/renderer_ownership_check.py` so accidental node-renderer overrides are caught instead of rediscovered by eye.
+- Moved the active Hearth Inner Instrument renderer out of `assets/js/scene-first.js` into `adapters/hearth-body-viewer.js`.
+- Stopped loading the older `assets/js/hearth-brain.js` Hearth renderer so Hearth now has one active owner.
+- Moved the active Practice Candle Timer renderer out of `assets/js/scene-first.js` into `adapters/practice-candle-viewer.js`.
+- Stopped loading the older `assets/js/practice-room.js` Practice renderer so Practice now has one active owner.
+- Moved the active Play world-atlas entrance out of `assets/js/scene-first.js` into `adapters/play-atlas-viewer.js`, while keeping the deeper Play listening shrine in `assets/js/play-world.js`.
+- Moved the active Study Key Chamber entrance out of `assets/js/scene-first.js` into `adapters/study-key-chamber-viewer.js`, while keeping the older Study session helper available without owning the main Study button.
+- Moved the active Create Cauldron scene out of `assets/js/scene-first.js` into `adapters/create-cauldron-scene-viewer.js`, while keeping older Create workshop helpers from owning the main Create button.
+- Moved the active Mastery Phoenix scene out of `assets/js/scene-first.js` into `adapters/mastery-phoenix-viewer.js`.
+- Reduced `assets/js/scene-first.js` to a legacy placeholder so it no longer owns any active node entrance.
 
 Next good steps:
 

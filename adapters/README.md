@@ -55,20 +55,28 @@ Adapters are allowed to connect the clean core to those outside systems.
 | `foundation-topic-viewer.js` | Renders the legacy Foundation topic tab fallback view. |
 | `foundation-ui-utils.js` | Shared color and HTML escaping helpers for Foundation views. |
 | `header-tools-controller.js` | Coordinates legacy search, progress, and settings header panels. |
+| `hearth-body-viewer.js` | Renders the active Hearth Inner Instrument body chamber. |
+| `journey-legacy-handlers.js` | Keeps old Journey button helper names while Journey itself lives in `assets/js/journey.js`. |
+| `play-atlas-viewer.js` | Renders the active Play world-atlas entrance. |
 | `practice-state.js` | Wraps legacy Practice localStorage state, log, preferences, and drill selection. |
 | `practice-guide-model.js` | Chooses contextual Practice Temple guidance from preferences and session history. |
 | `practice-dashboard-viewer.js` | Renders the Practice Temple dashboard screen. |
 | `practice-drill-viewer.js` | Renders the Practice drill detail screen. |
 | `practice-session-model.js` | Decides Practice drill completion outcomes and next drill. |
 | `practice-session-viewer.js` | Renders the timed Practice candle session screen. |
+| `practice-candle-viewer.js` | Renders the active Practice Candle Timer node entrance. |
 | `practice-ui-utils.js` | Shared Practice display helpers for streaks, relative time, and feeling labels. |
 | `practice-metronome-controller.js` | Runs the Practice candle timer and Web Audio metronome controls. |
 | `play-world-viewer.js` | Renders the Play world-map overview screen. |
+| `study-key-chamber-viewer.js` | Renders the active Study Key Chamber node entrance. |
 | `references-panel-controller.js` | Renders and opens the legacy References header popup. |
 | `recorder-controller.js` | Updates the legacy recorder button and status state. |
 | `mastery-viewer.js` | Renders the Mastery and Masters at Play screens. |
+| `mastery-phoenix-viewer.js` | Renders the active Mastery Phoenix node entrance. |
+| `node-legacy-handlers.js` | Keeps old Foundation, Doing, and Knowing global helper names while those nodes use adapters. |
 | `notebook-controller.js` | Handles legacy notebook notes, context, and progress summaries. |
 | `create-cauldron-model.js` | Resolves selected Create ingredients into a cauldron prompt result. |
+| `create-cauldron-scene-viewer.js` | Renders the active Create Cauldron node entrance and song-seed workstation. |
 | `create-cauldron-viewer.js` | Renders the Create Cauldron dashboard screen. |
 | `create-cauldron-controller.js` | Updates Create Cauldron ingredient selection and reset UI. |
 | `text-to-speech-controller.js` | Controls legacy lesson read-aloud behavior and TTS button state. |

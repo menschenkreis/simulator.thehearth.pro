@@ -47,5 +47,4 @@
     document.head.appendChild(s);
   }
   window.CreateWorkshop={render,addIngredient,updateTitle,updateNotes,saveProject,newSeed,loadProject};
-  window.showCreate=render;
 })();

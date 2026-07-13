@@ -2243,6 +2243,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 <script src="assets/js/journey-data.js"></script>
 <script src="assets/js/guide-character-data.js"></script>
 <script src="assets/js/journey.js?v=6"></script>
+<script src="adapters/journey-legacy-handlers.js"></script>
 
 <script src="assets/js/play.js"></script>
 <script src="assets/js/play-worldmap.js?v=20260702"></script>
@@ -2252,6 +2253,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 <script src="assets/js/references.js"></script>
 <script src="assets/js/map-node-data.js"></script>
 <script src="assets/js/map-node-info.js"></script>
+<script src="adapters/node-legacy-handlers.js"></script>
 <script>
 let _flameNode = localStorage.getItem('flameNode') || 'foundation';
 window._flameNode = _flameNode;
@@ -2587,82 +2589,6 @@ function calcOverallLevel(progress) {
   let lvl = 0;
   for (let i = 1; i <= 8; i++) { if (progress['L'+i]) lvl = i; else break; }
   return lvl || '-';
-}
-
-function startFoundationLesson(topicId){
-  if(window.HearthFoundationPanelController){
-    return window.HearthFoundationPanelController.startFoundationLesson(topicId);
-  }
-}
-function startLesson1(){
-  if(window.HearthFoundationPanelController){
-    return window.HearthFoundationPanelController.startLesson1();
-  }
-}
-
-
-function showFoundation(){
-  if(window.HearthFoundationPanelController){
-    return window.HearthFoundationPanelController.showFoundation();
-  }
-}
-
-async function showFoundationTopic(topicId){
-  if(window.HearthFoundationTopicController){
-    return window.HearthFoundationTopicController.showFoundationTopic(topicId);
-  }
-}
-
-function renderFoundationTopicStep(topicId, stepIndex){
-  if(window.HearthFoundationTopicController){
-    return window.HearthFoundationTopicController.renderFoundationTopicStep(topicId, stepIndex);
-  }
-}
-
-window.completeFoundationTopic=function(tid){
-  if(window.HearthFoundationTopicController){
-    return window.HearthFoundationTopicController.completeFoundationTopic(tid);
-  }
-};
-
-// ═══ DOING NODE ═══
-function showDoing(){
-  if(window.HearthDoingPanelController){
-    return window.HearthDoingPanelController.showDoing();
-  }
-}
-
-// ═══ DOING MAP INTERACTION
-function showDoingBubble(zoneEl){
-  if(window.HearthDoingMapViewer){
-    return window.HearthDoingMapViewer.showDoingBubble(zoneEl);
-  }
-}
-function hideDoingBubble(){
-  if(window.HearthDoingMapViewer){
-    return window.HearthDoingMapViewer.hideDoingBubble();
-  }
-}
-function enterDoingZone(zoneId){
-  // This function is defined inside showDoing scope - we use a global proxy
-  if(window._enterDoingZone) window._enterDoingZone(zoneId);
-}
-function toggleDoingDebug(){
-  if(window._toggleDoingDebug) window._toggleDoingDebug();
-}
-// ═══ KNOWING NODE - BOOKSHELF UI ═══
-function showKnowing(){
-  if(window.HearthKnowingPanelController){
-    return window.HearthKnowingPanelController.showKnowing();
-  }
-}
-
-if(window.HearthKnowingPanelController){
-  window.HearthKnowingPanelController.bindKnowingGlobals({
-    documentRef:document,
-    storage:localStorage,
-    playSfx:typeof playSfx === 'function' ? playSfx : function(){}
-  });
 }
 
 // ═══ STUDY NODE - GUIDED STUDY SESSIONS ═══
@@ -3234,15 +3160,6 @@ function closeDictionary(){
   }
 }
 
-// ═══ JOURNEY - CENTRAL SPINE MODE ═══
-// Implemented in assets/js/journey.js. Thin wrappers kept for legacy inline handlers.
-function populateJourney(){ if(window.Journey) window.Journey.render(); }
-function startJourneyLesson(){ if(window.Journey) window.Journey.startLesson(); }
-function openJourneyLevel(levelNum){ if(window.Journey) window.Journey.openLevel(levelNum); }
-function completeJourneyLesson(){ if(window.Journey) window.Journey.completeLesson(); }
-function openLessonStep(){ if(window.Journey) window.Journey.startLesson(); }
-function assessLesson(){ if(window.Journey) window.Journey.saveLessonDraft(); }
-
 // ═══ NOTEBOOK ═══
 function populateNotebook(){
   if(window.HearthNotebookController)window.HearthNotebookController.populateNotebook(document,localStorage,window);
@@ -3676,8 +3593,6 @@ function renderMetroBeats(){
 // Init count on load
 updateInsightCount();
 </script>
-<script src="assets/js/practice-room.js?v=1"></script>
-<script src="assets/js/hearth-brain.js?v=1"></script>
 <script src="assets/js/beatbot.js"></script>
 <script src="adapters/foundation-audio.js"></script>
 <script src="assets/js/lesson-1-foundation.js"></script>
@@ -3686,7 +3601,13 @@ updateInsightCount();
 <script src="assets/js/study-key.js?v=1"></script>
 <script src="assets/js/create-workshop.js?v=1"></script>
 <script src="assets/js/hearth-body-data.js"></script>
+<script src="adapters/hearth-body-viewer.js"></script>
 <script src="assets/js/scene-first.js?v=20260701"></script>
+<script src="adapters/create-cauldron-scene-viewer.js"></script>
+<script src="adapters/study-key-chamber-viewer.js"></script>
+<script src="adapters/play-atlas-viewer.js"></script>
+<script src="adapters/practice-candle-viewer.js"></script>
+<script src="adapters/mastery-phoenix-viewer.js"></script>
 <img src="images/character-neutral.png" class="mobile-character" alt="Guide" />
 <script>// YouTube Link Deposit
 function toggleLinkDeposit(){

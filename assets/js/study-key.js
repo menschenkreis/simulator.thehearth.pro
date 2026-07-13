@@ -70,6 +70,5 @@
     document.head.appendChild(s);
   }
   window.StudyKey={render,openSession,complete,copyTerm};
-  window.showStudy=render;
   window.showStudySession=openSession;
 })();
