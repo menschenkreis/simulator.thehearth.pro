@@ -18,6 +18,7 @@
     if (Object.prototype.hasOwnProperty.call(nextState, "activeStyle")) target.activeStyle = nextState.activeStyle;
     if (Object.prototype.hasOwnProperty.call(nextState, "activeLevel")) target.activeLevel = nextState.activeLevel;
     if (Object.prototype.hasOwnProperty.call(nextState, "activeSearch")) target.activeSearch = nextState.activeSearch;
+    if (Object.prototype.hasOwnProperty.call(nextState, "activeBoard")) target.activeBoard = nextState.activeBoard;
   }
 
   function showDoing() {
@@ -51,6 +52,7 @@
       activeStyle: "all",
       activeLevel: "all",
       activeSearch: "",
+      activeBoard: "both-hands",
       doingView: "map",
       activeExpTab: "notes",
       doingDebug: false
@@ -62,7 +64,8 @@
         config: doingConfig,
         activeStyle: state.activeStyle,
         activeLevel: state.activeLevel,
-        activeSearch: state.activeSearch
+        activeSearch: state.activeSearch,
+        activeBoard: state.activeBoard
       };
     }
 
@@ -95,7 +98,8 @@
         progress: progress,
         activeStyle: state.activeStyle,
         activeLevel: state.activeLevel,
-        activeSearch: state.activeSearch
+        activeSearch: state.activeSearch,
+        activeBoard: state.activeBoard
       });
     }
 
@@ -190,6 +194,7 @@
         documentRef: documentRef,
         doingView: state.doingView,
         focusCats: focusCats,
+        activeBoard: state.activeBoard,
         setState: function setDoingState(nextState) {
           applyState(state, nextState);
         },

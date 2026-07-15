@@ -36,7 +36,11 @@
     var esc = ui().escapeHtml;
 
     var svgZones = "";
-    zones.forEach(function renderZone(zone) {
+    zones.slice().sort(function sortZones(a, b) {
+      if (a.id === "both-hands") return -1;
+      if (b.id === "both-hands") return 1;
+      return 0;
+    }).forEach(function renderZone(zone) {
       svgZones += '<polygon class="doing-map-zone' + (doingDebug ? " debug" : "") + '" ' +
         'data-zone="' + esc(zone.id) + '" ' +
         'points="' + esc(zone.points) + '" ' +
@@ -56,7 +60,7 @@
 
     return '<div class="doing-map-wrap" id="doing-map-container">' +
       '<button class="back-btn doing-map-back" onclick="backToMap()">\u2190 Map</button>' +
-      '<img src="images/doing-guitar-map.png" alt="Guitar training map" draggable="false">' +
+      '<img src="images/doing/doing-arms-guitar-v1.png" alt="Guitar hand-training map" draggable="false">' +
       '<svg class="doing-map-svg" viewBox="0 0 1280 960" preserveAspectRatio="xMidYMid meet">' +
       svgZones +
       "</svg>" +

@@ -42,12 +42,27 @@
     return (drill.title + " " + drill.style + " " + cat.title + " " + drill.source).toLowerCase().indexOf(normalized) >= 0;
   }
 
+  function matchesBoard(config, cat, drill, boardId) {
+    if (!boardId || boardId === "all") {
+      return true;
+    }
+    var board = config.boardForId ? config.boardForId(boardId) : null;
+    if (!board || !board.categories || !board.categories.length) {
+      return true;
+    }
+    return board.categories.indexOf(cat.id) >= 0 || board.categories.indexOf(drill.style) >= 0;
+  }
+
   function isVisible(options, cat, drill) {
     var activeStyle = options.activeStyle || "all";
     var activeLevel = options.activeLevel || "all";
     var activeSearch = options.activeSearch || "";
+    var activeBoard = options.activeBoard || "both-hands";
     var config = options.config;
 
+    if (!matchesBoard(config, cat, drill, activeBoard)) {
+      return false;
+    }
     if (!matchesGenre(config, drill, activeStyle)) {
       return false;
     }
@@ -61,6 +76,9 @@
     var count = 0;
     options.doing.categories.forEach(function eachCategory(cat) {
       cat.drills.forEach(function eachDrill(drill) {
+        if (!matchesBoard(options.config, cat, drill, options.activeBoard || "both-hands")) {
+          return;
+        }
         if (!matchesGenre(options.config, drill, genreId)) {
           return;
         }
@@ -80,6 +98,9 @@
     var count = 0;
     options.doing.categories.forEach(function eachCategory(cat) {
       cat.drills.forEach(function eachDrill(drill) {
+        if (!matchesBoard(options.config, cat, drill, options.activeBoard || "both-hands")) {
+          return;
+        }
         if (String(options.config.levelForDrill(drill)) !== String(level)) {
           return;
         }
@@ -96,6 +117,9 @@
     var count = 0;
     options.doing.categories.forEach(function eachCategory(cat) {
       cat.drills.forEach(function eachDrill(drill) {
+        if (!matchesBoard(options.config, cat, drill, options.activeBoard || "both-hands")) {
+          return;
+        }
         if (!drillMatchesSearch(cat, drill, options.activeSearch || "")) {
           return;
         }
@@ -188,6 +212,7 @@
     findNextDrill: findNextDrill,
     getState: getState,
     isVisible: isVisible,
+    matchesBoard: matchesBoard,
     matchesGenre: matchesGenre,
     rowDrills: rowDrills,
     summarizeProgress: summarizeProgress,

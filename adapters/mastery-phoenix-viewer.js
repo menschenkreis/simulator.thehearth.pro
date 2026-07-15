@@ -78,18 +78,25 @@
       ".sf-sub{font-size:.78rem;color:var(--dim);line-height:1.55;max-width:560px}",
       ".sf-guide{display:flex;gap:9px;align-items:center;max-width:290px;background:rgba(13,11,8,.58);border:1px solid var(--border);border-radius:13px;padding:10px;font-size:.72rem;color:var(--text);line-height:1.42}",
       ".sf-guide img{width:68px;height:68px;object-fit:contain;filter:drop-shadow(0 4px 12px rgba(0,0,0,.42));animation:char-float 3s ease-in-out infinite}",
+      ".sf-door-summary{position:relative;z-index:2;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;padding:0 18px 12px}",
+      ".sf-door-summary div{border:1px solid rgba(212,175,105,.1);border-radius:12px;background:rgba(13,11,8,.38);padding:10px 12px;min-width:0}",
+      ".sf-door-summary strong{display:block;font-family:Cinzel,serif;color:var(--sf,var(--gold));font-size:.72rem;margin-bottom:4px}",
+      ".sf-door-summary span{display:block;color:var(--dim);font-size:.68rem;line-height:1.38}",
       ".sf-stage{position:relative;z-index:2;display:flex;justify-content:center;align-items:center;min-height:280px;padding:8px 18px 18px}",
       ".sf-phoenix svg{width:min(680px,100%);display:block}",
       ".sf-phoenix .seal{cursor:pointer;transition:.2s}",
       ".sf-phoenix .seal:hover{filter:drop-shadow(0 0 14px var(--sf,var(--gold)));transform-origin:center}",
       ".sf-drawer{position:relative;z-index:2;margin:0 18px 18px;background:rgba(13,11,8,.74);border:1px solid var(--border);border-radius:16px;padding:14px;color:var(--text);font-size:.78rem;line-height:1.55}",
+      ".sf-primary-row{position:relative;z-index:2;display:flex;justify-content:center;gap:8px;flex-wrap:wrap;padding:0 18px 16px}",
+      ".sf-primary{background:var(--sf,var(--gold));color:#0d0b08;border:none;border-radius:999px;padding:10px 18px;font-family:DM Sans,sans-serif;font-weight:900;cursor:pointer;box-shadow:0 8px 24px color-mix(in srgb,var(--sf,var(--gold)),transparent 75%)}",
+      ".sf-secondary{background:rgba(13,11,8,.62);color:var(--sf,var(--gold));border:1px solid color-mix(in srgb,var(--sf,var(--gold)),transparent 55%);border-radius:999px;padding:9px 13px;font-weight:800;cursor:pointer}",
       ".sf-master-list{display:grid;grid-template-columns:1fr 1fr;gap:10px}",
       ".sf-master-card{background:#0d0b08;border:1px solid var(--border);border-radius:12px;padding:12px}",
       ".sf-master-card b{font-family:Cinzel;color:var(--sf)}",
       ".sf-master-card p{font-size:.72rem;color:var(--dim);line-height:1.45}",
       ".sf-proof-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}",
       ".sf-proof-grid textarea{width:100%;box-sizing:border-box;background:#0d0b08;border:1px solid var(--border);border-radius:10px;color:var(--text);padding:9px;font-family:DM Sans;font-size:.76rem;min-height:70px}",
-      "@media(max-width:780px){.sf-top{flex-direction:column}.sf-guide{max-width:none}.sf-proof-grid,.sf-master-list{grid-template-columns:1fr}.sf-stage{min-height:280px}}",
+      "@media(max-width:780px){.sf-top{flex-direction:column}.sf-guide{max-width:none}.sf-door-summary,.sf-proof-grid,.sf-master-list{grid-template-columns:1fr}.sf-stage{min-height:280px}}",
     ].join("");
     root.document.head.appendChild(style);
   }
@@ -115,6 +122,11 @@
       '<img src="images/character-symbols/Celebrator with sparks.png" alt="">' +
       "<div>You do not master by finishing. You master by returning, transforming, and going beyond what the map first showed you.</div>" +
       "</div>" +
+      "</div>" +
+      '<div class="sf-door-summary">' +
+      '<div><strong>What it is</strong><span>A place to study master artists and notice what skill can become.</span></div>' +
+      '<div><strong>Why it matters</strong><span>Technique is not the end. Voice, taste, courage, and transformation are the deeper goal.</span></div>' +
+      '<div><strong>First move</strong><span>Start with voice: play one phrase until it sounds less copied and more like you.</span></div>' +
       "</div>"
     );
   }
@@ -153,7 +165,11 @@
     el.innerHTML =
       sceneStart() +
       '<div class="sf-stage">' + renderPhoenixSvg() + "</div>" +
-      '<div id="sf-drawer" class="sf-drawer">Choose a phoenix seal: hear beyond, find your voice, transform skill, or transmit the fire.</div>' +
+      '<div class="sf-primary-row">' +
+        '<button class="sf-primary" onclick="MasteryPhoenix.openSeal(\'voice\')">Start With Voice</button>' +
+        '<button class="sf-secondary" onclick="MasteryPhoenix.openSeal(\'microtones\')">Hear Between Notes</button>' +
+      '</div>' +
+      '<div id="sf-drawer" class="sf-drawer"><strong>Mastery is the transformation room.</strong><br>Choose a phoenix seal when you want a lens: hear beyond, find your voice, transform skill into art, or learn to transmit the fire.</div>' +
       "</div></div>";
   }
 

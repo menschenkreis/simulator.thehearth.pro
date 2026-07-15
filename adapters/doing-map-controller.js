@@ -17,7 +17,7 @@
     if (zone.view === "explorer") {
       return { doingView: "explorer", activeExpTab: "notes" };
     }
-    return { doingView: "training", activeStyle: "all", activeLevel: "all" };
+    return { doingView: "training", activeStyle: "all", activeLevel: "all", activeBoard: zone.board || zone.id || "both-hands" };
   }
 
   function updateDebugUi(documentRef, doingDebug) {

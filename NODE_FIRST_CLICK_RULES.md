@@ -32,14 +32,14 @@ Examples:
 | --- | --- | --- | --- |
 | Foundation | Guitar neck threshold | Strong | Keep lesson path calm and sequential. |
 | Journey | Guitar level path | In progress | Keep it as the learner path, not a dashboard. |
-| Do | Guitar body training map | Improved | Keep one clear training choice before drill detail. |
+| Do | Guitar body training map into physical boards | In progress | Left hand, right hand, and both hands should open distinct drill boards before drill detail. |
 | Practise | Candle timer | Strong | Add better practice feedback later. |
 | Play | World atlas | Strong | Add sound/groove pathways later. |
 | Know | Reference library | Improved doorway | Keep the first click to one recommended shelf; full shelves stay behind Browse all shelves. |
 | Study | Key chamber | Strong | Connect doors to real study actions over time. |
 | Create | Cauldron | Strong | Keep creative prompts simple and playable. |
-| Hearth | Inner body map | Good direction | Deepen brain, hands, eyes, ears, and nervous-system content. |
-| Mastery | Phoenix chamber | Visually alive, content thin | Build artist examples and transformation prompts. |
+| Hearth | Inner instrument / body systems map | Clearer doorway | Deepen brain, hands, eyes, ears, and nervous-system content. |
+| Mastery | Phoenix transformation chamber | Clearer doorway | Build artist examples and transformation prompts. |
 
 ## Design Guardrails
 
@@ -60,3 +60,13 @@ Foundation should eventually use the same clean image logic as Journey:
 - Existing lesson/fret logic should stay; only the visual scene and overlay alignment need to be rebuilt.
 
 This is a medium visual pass, not a backend rebuild.
+
+## Do Visual Rebuild Note
+
+Do is the physical training node. Its first click should show the guitar and hands, then route the learner into one of three boards:
+
+- Left Hand: a guitar neck drill board for fretting, reach, pressure, shifts, scale boxes, and clean contact.
+- Right Hand: a soundhole/string board for picking, strumming, rest/free stroke, PIMA, tone, accents, pulse, and groove.
+- Both Hands: a whole-guitar board for coordination, clean sound, timing, chord changes, scale rhythm, riffs, and application.
+
+These boards should use the existing drill data, level filters, genre filters, and progress states. The visual layer should orient the learner; it should not duplicate or hardcode the drill content.

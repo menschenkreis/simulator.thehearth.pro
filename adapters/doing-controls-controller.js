@@ -20,7 +20,7 @@
       return item.id === focusId;
     });
     if (focus && focus.categories && focus.categories.length) {
-      return { doingView: "training", activeStyle: "all", activeLevel: "all" };
+      return { doingView: "training", activeStyle: "all", activeLevel: "all", activeBoard: focus.board || focus.id || "both-hands" };
     }
     return { doingView: "training" };
   }
@@ -83,6 +83,17 @@
     }
 
     if (doingView !== "training") return;
+
+    var boardTabs = documentRef.getElementById("doing-board-tabs");
+    if (boardTabs && rerenderBoard) {
+      boardTabs.addEventListener("click", function onBoardTabClick(event) {
+        var btn = event.target.closest(".doing-board-tab");
+        if (!btn) return;
+        setState({ activeBoard: btn.getAttribute("data-board") || "both-hands" });
+        if (normalizeActiveStyle) normalizeActiveStyle();
+        rerenderBoard();
+      });
+    }
 
     var styleFilters = documentRef.getElementById("style-filters");
     if (styleFilters && rerenderBoard) {

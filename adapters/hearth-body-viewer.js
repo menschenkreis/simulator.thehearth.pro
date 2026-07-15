@@ -33,6 +33,7 @@
     if (!el) return;
     var svgZones = "";
     var seals = "";
+    var systemRail = "";
 
     HEARTH_BODY_ZONES.forEach(function(zone) {
       svgZones += '<circle class="hb-zone' + (debugHotspots ? " debug" : "") + '" data-zone="' + esc(zone.id) + '" '
@@ -42,6 +43,10 @@
         + 'cx="' + esc(zone.x) + '" cy="' + esc(zone.y) + '" r="' + esc(zone.r) + '" />';
       seals += '<div class="hb-seal" id="seal-' + esc(zone.id) + '" style="left:calc(' + esc(zone.x) + ' - 19px);top:calc(' + esc(zone.y) + ' - 19px)">'
         + '<span class="seal-icon">' + esc(zone.seal) + '</span></div>';
+      systemRail += '<button class="hb-system-pill" onclick="HearthBody.openZone(\'' + esc(zone.id) + '\')" '
+        + 'onmouseenter="HearthBody.hoverZone(\'' + esc(zone.id) + '\')" '
+        + 'onmouseleave="HearthBody.unhoverZone()">'
+        + '<span>' + esc(zone.seal) + '</span>' + esc(zone.label) + '</button>';
     });
 
     el.innerHTML =
@@ -53,9 +58,14 @@
             + '<div class="hb-title">' + esc(HEARTH_BODY_COPY.title) + '</div>'
             + '<div class="hb-sub">' + esc(HEARTH_BODY_COPY.subtitle) + '</div></div>'
             + '<div class="hb-guide">'
-              + '<img src="images/character-full/Encouraging.png" alt="">'
+              + '<img src="images/character-generated/guide-head-lightbulb-v1-ui.webp" alt="">'
               + '<div>' + esc(HEARTH_BODY_COPY.guide) + '</div>'
             + '</div>'
+          + '</div>'
+          + '<div class="hb-door-summary">'
+            + '<div><strong>What it is</strong><span>The learner behind the guitar: brain, hands, ears, eyes, breath, and feeling.</span></div>'
+            + '<div><strong>Why it matters</strong><span>Technique improves faster when you understand what your body is developing.</span></div>'
+            + '<div><strong>First move</strong><span>Start with the brain, then follow the systems that affect today\'s practice.</span></div>'
           + '</div>'
           + '<div class="hb-body-wrap">'
             + '<img src="images/hearth-body-guitar.png" alt="Body behind the instrument" onerror="this.style.display=\'none\'">'
@@ -64,6 +74,10 @@
             + '<div class="hb-guide-bar" id="hb-guide-bar">'
               + '<div class="hb-guide-text">' + esc(HEARTH_BODY_COPY.defaultPrompt) + '</div>'
             + '</div>'
+          + '</div>'
+          + '<div class="hb-system-rail">' + systemRail + '</div>'
+          + '<div class="hb-primary-row">'
+            + '<button class="hb-primary-action" onclick="HearthBody.openZone(\'brain\')">Start with Brain</button>'
           + '</div>'
         + '</div>'
       + '</div>';

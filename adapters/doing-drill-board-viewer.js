@@ -22,13 +22,16 @@
     var activeStyle = options.activeStyle || "all";
     var activeLevel = options.activeLevel || "all";
     var activeSearch = options.activeSearch || "";
+    var activeBoard = options.activeBoard || "both-hands";
 
     if (!doing || !config || !ui || !boardModel) {
       return "";
     }
 
     var levels = config.levels;
-    var stringRows = config.stringRows;
+    var boards = config.trainingBoards || [];
+    var board = config.boardForId ? config.boardForId(activeBoard) : boards[0];
+    var stringRows = (board && board.rows) || config.stringRows;
     var stateOrder = config.stateOrder;
     var stateLabels = config.stateLabels;
     var genreFilters = config.genreFilters;
@@ -38,7 +41,8 @@
       config: config,
       activeStyle: activeStyle,
       activeLevel: activeLevel,
-      activeSearch: activeSearch
+      activeSearch: activeSearch,
+      activeBoard: activeBoard
     };
 
     var totalDrills = 0;
@@ -54,9 +58,22 @@
       });
     });
 
-    var html = '<div class="doing-controls">' +
+    var html = '<div class="doing-board-intro">' +
+      '<div><div class="doing-board-kicker">Physical board</div>' +
+      '<h3>' + esc(board ? board.title : "Training Board") + "</h3>" +
+      '<p>' + esc(board ? board.description : "Choose one drill dot and train it cleanly.") + "</p></div>" +
+      '<div class="doing-board-tabs" id="doing-board-tabs">';
+    boards.forEach(function renderBoardTab(item) {
+      html += '<button class="doing-board-tab' + (item.id === activeBoard ? " active" : "") + '" data-board="' + esc(item.id) + '">' +
+        '<span>' + esc(item.shortLabel || item.label) + "</span>" +
+        '<small>' + esc(item.layout === "neck" ? "Neck" : item.layout === "soundhole" ? "Soundhole" : "Whole guitar") + "</small>" +
+        "</button>";
+    });
+    html += "</div></div>";
+
+    html += '<div class="doing-controls">' +
       '<div id="doing-level-filters" class="doing-level-rail">' +
-      '<span class="doing-level-filter' + (activeLevel === "all" ? " active" : "") + '" data-level="all">All frets<span class="filter-count">' + boardModel.countForAllGenresAllLevels(boardOptions) + "</span></span>";
+      '<span class="doing-level-filter' + (activeLevel === "all" ? " active" : "") + '" data-level="all">All levels<span class="filter-count">' + boardModel.countForAllGenresAllLevels(boardOptions) + "</span></span>";
     levels.forEach(function renderLevel(lv) {
       var lvCount = boardModel.countForLevelAnyGenre(boardOptions, lv.level);
       html += '<span class="doing-level-filter' + (String(activeLevel) === String(lv.level) ? " active" : "") + (lvCount === 0 ? " disabled" : "") + '" data-level="' + lv.level + '">' + lv.label + '<span class="filter-count">' + lvCount + "</span></span>";
@@ -72,13 +89,13 @@
     });
     html += "</div></div></div>";
 
-    html += '<div class="doing-fretboard-stage">' +
+    html += '<div class="doing-fretboard-stage doing-board-stage doing-board-' + esc(board ? board.layout : "neck") + '">' +
       '<div class="doing-string-labels" aria-label="Standard guitar tuning">';
     stringRows.forEach(function renderStringLabel(row) {
       html += '<div class="doing-string-note" title="' + esc(row.hint) + '">' + esc(row.label) + "</div>";
     });
     html += "</div>" +
-      '<div class="doing-fretboard-wrap"><div class="doing-fretboard">' +
+      '<div class="doing-fretboard-wrap"><div class="doing-board-art" aria-hidden="true"></div><div class="doing-fretboard">' +
       '<div class="doing-fret-header">';
     levels.forEach(function renderLevelHeader(lv) {
       html += '<div class="doing-level-head" title="' + esc(lv.tag) + '">' +
