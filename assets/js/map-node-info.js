@@ -44,7 +44,7 @@
     if (title) title.textContent = data.title || '';
     if (role) role.textContent = data.role || '';
     if (desc) desc.textContent = data.desc || '';
-    if (enter) enter.textContent = 'Enter ' + (data.title || 'Node') + ' \u2192';
+    if (enter) enter.textContent = data.cta || ('Enter ' + (data.title || 'Node') + ' \u2192');
     overlay.classList.add('vis');
     panel.classList.add('vis');
   }

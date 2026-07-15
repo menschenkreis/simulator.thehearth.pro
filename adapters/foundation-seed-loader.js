@@ -19,7 +19,9 @@
     encouraging: "images/character-face/Encouraging.png",
     thinking: "images/character-face/Thinking.png",
     celebratory: "images/character-face/Celebratory.png",
-    lightbulb: "images/character-face/Encouraging.png"
+    lightbulb: "images/character-generated/guide-head-lightbulb-v1-ui.webp",
+    headNeutral: "images/character-generated/guide-head-neutral-v1-ui.webp",
+    headQuestion: "images/character-generated/guide-head-question-v1-ui.webp"
   };
 
   function clone(value) {

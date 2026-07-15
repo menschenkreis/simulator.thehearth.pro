@@ -13,7 +13,10 @@ const CHAR = {
   neutral:    'images/character-face/Neutral.png',
   encouraging:'images/character-face/Encouraging.png',
   thinking:   'images/character-face/Thinking.png',
-  celebratory:'images/character-face/Celebratory.png'
+  celebratory:'images/character-face/Celebratory.png',
+  headNeutral:'images/character-generated/guide-head-neutral-v1-ui.webp',
+  headQuestion:'images/character-generated/guide-head-question-v1-ui.webp',
+  lightbulb:  'images/character-generated/guide-head-lightbulb-v1-ui.webp'
 };
 
 // ── Conversation Step Types ──

@@ -116,17 +116,79 @@
     return html + '</div></div>';
   }
 
+  function levelByNumber(levels, levelNumber) {
+    return levels.find(function findLevel(level) {
+      return level.level === levelNumber;
+    }) || levels[0] || null;
+  }
+
+  function nextReadableCategory(level) {
+    if (!level || !level.categories) return null;
+    return level.categories.find(function findInProgress(cat) {
+      return cat.hasTopics && cat.done < cat.total;
+    }) || level.categories.find(function findAny(cat) {
+      return cat.hasTopics;
+    }) || null;
+  }
+
+  function renderKnowingDoorway(knowing, levels, recommendedLevel) {
+    var level = levelByNumber(levels, recommendedLevel);
+    if (!level) return "";
+    var nextCat = nextReadableCategory(level);
+    var pct = progressPercent(level);
+    var primaryAction = nextCat
+      ? '<button class="knowing-entry-primary" onclick="playSfx(\'book-open\');showKnowingBook(\'' + nextCat.id + '\',' + level.level + ')">Open ' + nextCat.title + '</button>'
+      : '<button class="knowing-entry-primary" onclick="showKnowingAll()">Browse shelves</button>';
+
+    return '<div class="knowing-entry">' +
+      '<button class="back-btn" onclick="backToMap()">\u2190 Map</button>' +
+      '<section class="knowing-entry-stage">' +
+        '<div class="knowing-entry-head">' +
+          '<div class="knowing-entry-title-row">' +
+            '<img src="images/knowing-icon.png" alt="">' +
+            '<div>' +
+              '<div class="knowing-entry-kicker">Knowing Library</div>' +
+              '<h2>' + knowing.title + '</h2>' +
+              '<p>Use this room when a word, sound, shape, or idea needs to become clear.</p>' +
+            '</div>' +
+          '</div>' +
+          '<div class="knowing-entry-guide">' +
+            '<img src="images/character-symbols/Thinking Question Mark.png" alt="">' +
+            '<div>Open one book. Clear one idea. Then return to the guitar and use it.</div>' +
+          '</div>' +
+        '</div>' +
+        '<div class="knowing-entry-focus">' +
+          '<div>' +
+            '<div class="knowing-entry-kicker" style="color:' + level.color + '">Recommended shelf</div>' +
+            '<h3>' + level.label + ' &middot; ' + level.sub + '</h3>' +
+          '</div>' +
+          '<div class="knowing-entry-progress">' + level.totalDone + '/' + level.totalTopics + ' visited &middot; ' + pct + '%</div>' +
+        '</div>' +
+        renderLevelShelf(knowing, level, recommendedLevel) +
+        '<div class="knowing-entry-actions">' +
+          primaryAction +
+          '<button class="knowing-entry-secondary" onclick="showKnowingAll()">Browse all shelves</button>' +
+        '</div>' +
+      '</section>' +
+      '<div class="knowing-entry-source">Sources: ' + ((knowing.sources || []).join(' \u00B7 ')) + '</div>' +
+    '</div>';
+  }
+
   function renderKnowingShelf(options) {
     options = options || {};
     var knowing = options.knowing || {};
     var levels = options.levels || [];
     var recommendedLevel = options.recommendedLevel || 1;
+    var viewMode = options.viewMode || "doorway";
+    if (viewMode !== "all") {
+      return renderKnowingDoorway(knowing, levels, recommendedLevel);
+    }
     var html = '<div style="padding:20px;max-width:900px;margin:0 auto">' +
       '<button class="back-btn" onclick="backToMap()">← Map</button>' +
       '<div style="display:flex;align-items:center;gap:12px;margin-bottom:24px">' +
         '<img src="images/knowing-icon.png" style="width:56px;height:56px;border-radius:50%;object-fit:cover;border:2px solid var(--gold);box-shadow:0 0 12px rgba(212,175,105,0.1)"/>' +
         '<div><div style="font-family:Josefin Sans,sans-serif;color:var(--gold);font-size:1.1rem;letter-spacing:2px">' + knowing.title + '</div>' +
-        '<div style="color:var(--dim);font-size:0.7rem;margin-top:2px">Your reference library. Browse any book, any time.</div></div>' +
+        '<div style="color:var(--dim);font-size:0.7rem;margin-top:2px">All shelves. Browse any book, any time.</div></div>' +
       '</div>';
 
     levels.forEach(function renderLevel(level) {

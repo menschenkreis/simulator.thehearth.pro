@@ -143,3 +143,17 @@
 - Jorgenson's "listen first" = music as language (hear before you speak)
 - Berklee's "no TAB" = forces engagement with notation (absence of mass = you must touch the real thing)
 - All books pair notation + fretboard = clay demo principle (if you can represent it...)
+
+---
+
+## Video Resources
+
+### Guitar Mastery Method — How To Instantly Solo In Any Key
+
+**Source:** https://www.youtube.com/watch?v=tC-Ne_IriNc
+
+**Local note:** `knowledge-base/resources/guitar/solo-in-any-key-guitar-mastery-method/index.md`
+
+**Maps to:** Foundation → Musical Alphabet / Fretboard Map, Journey → Level 1 Pentatonic, Play → Improvisation
+
+**Key value:** Shows why the musical alphabet matters in practice: note names help locate roots, roots help place movable patterns, and movable patterns let the learner begin soloing in different keys.

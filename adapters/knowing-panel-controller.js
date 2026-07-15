@@ -33,7 +33,7 @@
     return JSON.parse((storage && storage.getItem("hearth-knowing-progress")) || "{}");
   }
 
-  function showKnowing() {
+  function renderKnowingShelf(viewMode) {
     var documentRef = root.document;
     var panel = showPanel(documentRef);
     var knowing = root.KNOWING;
@@ -44,8 +44,17 @@
     panel.innerHTML = root.HearthKnowingShelfViewer.renderKnowingShelf({
       knowing: knowing,
       levels: levels,
-      recommendedLevel: recommendedLevel
+      recommendedLevel: recommendedLevel,
+      viewMode: viewMode || "doorway"
     });
+  }
+
+  function showKnowing() {
+    renderKnowingShelf("doorway");
+  }
+
+  function showKnowingAll() {
+    renderKnowingShelf("all");
   }
 
   function showKnowingBook(catId, levelFilter) {
@@ -101,6 +110,7 @@
   function bindKnowingGlobals(options) {
     options = options || {};
     var documentRef = options.documentRef || root.document;
+    root.showKnowingAll = showKnowingAll;
     root.showKnowingBook = showKnowingBook;
     root.showKnowingTopic = showKnowingTopic;
     if (root.HearthKnowingShelfController) {
@@ -122,6 +132,7 @@
     bindKnowingGlobals: bindKnowingGlobals,
     readProgress: readProgress,
     showKnowing: showKnowing,
+    showKnowingAll: showKnowingAll,
     showKnowingBook: showKnowingBook,
     showKnowingTopic: showKnowingTopic
   };

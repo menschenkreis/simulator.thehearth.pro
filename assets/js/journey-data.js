@@ -221,8 +221,9 @@ var JOURNEY_STUDENT_COMPANIONS = {
       "Doorway: play the root notes musically with a metronome",
       "Map: split the scale into three small boxes, each with a root as safety",
       "Apply: add one or two nearby pentatonic notes to make tiny phrases",
-      "Tempo ladder: 60 BPM, then 76 BPM, then 100 BPM only if relaxed",
-      "Return to music: A minor conversation, then swap roles",
+      "Groove: 60 BPM, then 76 BPM, then 100 BPM only if relaxed",
+      "Create: make one tiny phrase or call-and-response idea",
+      "Mastery: listen for the musical goal, not more difficulty",
       "Reflect: what worked, what was hard, what to practise"
     ],
     lessonButtons: [
@@ -262,18 +263,25 @@ var JOURNEY_STUDENT_COMPANIONS = {
         prompt: "Which tiny phrase feels musical enough to repeat?"
       },
       {
-        label: "Practice",
-        source: "Practice temple",
-        aim: "Build calm repetition.",
+        label: "Groove",
+        source: "Play + Practice",
+        aim: "Lock the phrase to time.",
         action: "Try 60 BPM first, then 76 BPM. Touch 100 BPM only if relaxed and steady.",
         prompt: "Which tempo keeps tone clean and confidence intact?"
       },
       {
-        label: "Play",
+        label: "Create",
         source: "Play + Create",
-        aim: "Return the drill to music.",
+        aim: "Turn the drill into a musical exchange.",
         action: "Do an A minor musical conversation: one person holds A minor, the other answers with small pentatonic phrases, then swap.",
         prompt: "What sounded like a conversation rather than an exercise?"
+      },
+      {
+        label: "Mastery",
+        source: "Mastery",
+        aim: "Remember what this can become.",
+        action: "Listen for a short blues, rock, flamenco, or song moment that uses small pentatonic ideas musically.",
+        prompt: "What kind of player or sound would inspire the next version?"
       },
       {
         label: "Reflect",

@@ -141,11 +141,18 @@
       ? "backToMap()"
       : "showFoundationTopic('" + foundation.topics[activeIdx].id + "')";
 
-    targetEl.innerHTML = '<div style="padding:16px;max-width:900px;margin:0 auto;display:flex;flex-direction:column;height:100%;box-sizing:border-box">' +
+    targetEl.innerHTML = '<div class="foundation-entry">' +
       '<button class="back-btn" onclick="backToMap()">&larr; Map</button>' +
-      '<div class="found-neck-wrap">' +
-      '<img src="images/foundation-threshold-neck.webp" alt="Foundation threshold neck" draggable="false">' +
-      '<svg class="found-neck-svg" viewBox="0 0 500 700" preserveAspectRatio="xMidYMid meet">' +
+      '<section class="foundation-entry-stage">' +
+      '<aside class="foundation-entry-guide">' +
+      '<img src="images/character-full/Encouraging.png" alt="">' +
+      '<div class="found-neck-bubble">' +
+      "<p>" + speechText + "</p>" +
+      "</div>" +
+      "</aside>" +
+      '<div class="found-neck-wrap" aria-label="Foundation threshold neck">' +
+      '<img class="found-neck-image" src="images/foundation/foundation-unlocks-neck-v1-alpha.png" alt="Foundation unlocks the guitar neck" draggable="false">' +
+      '<svg class="found-neck-svg" viewBox="0 0 500 700" preserveAspectRatio="none">' +
       svgZones +
       "</svg>" +
       '<div class="found-neck-title">' +
@@ -155,16 +162,11 @@
       '<div class="found-neck-progress">' +
       "<span>" + doneCount + "/" + foundation.topics.length + " frets crossed</span>" +
       "</div>" +
-      '<div class="found-neck-guide">' +
-      '<img src="images/character-full/Encouraging.png" alt="">' +
-      '<div class="found-neck-bubble">' +
-      "<p>" + speechText + "</p>" +
-      "</div>" +
-      "</div>" +
       '<div class="found-neck-start">' +
       '<button onclick="' + startAction + '">' + startLabel + "</button>" +
       "</div>" +
       "</div>" +
+      "</section>" +
       "</div>";
 
     return {

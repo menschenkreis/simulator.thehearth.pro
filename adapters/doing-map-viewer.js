@@ -55,6 +55,7 @@
     });
 
     return '<div class="doing-map-wrap" id="doing-map-container">' +
+      '<button class="back-btn doing-map-back" onclick="backToMap()">\u2190 Map</button>' +
       '<img src="images/doing-guitar-map.png" alt="Guitar training map" draggable="false">' +
       '<svg class="doing-map-svg" viewBox="0 0 1280 960" preserveAspectRatio="xMidYMid meet">' +
       svgZones +
@@ -62,11 +63,11 @@
       seals +
       '<div class="doing-map-title-overlay">' +
       "<h2>Doing</h2>" +
-      "<p>The guitar body is the training map.</p>" +
+      "<p>Choose one physical skill to train.</p>" +
       "</div>" +
       '<div class="doing-map-info" id="doing-map-info">' +
       '<div class="gc-title">Choose a training chamber</div>' +
-      '<div class="gc-body">Touch part of the guitar: left hand, right hand, rhythm, chords, scales, or map.</div>' +
+      '<div class="gc-body">Touch one part of the guitar map. Each chamber gives your hands one clear job.</div>' +
       "</div>" +
       '<button class="doing-map-debug-btn' + (doingDebug ? " active" : "") + '" onclick="toggleDoingDebug()" title="Debug: show hotspots">&#9881;</button>' +
       "</div>";
@@ -108,7 +109,7 @@
     if (card) {
       card.classList.remove("active");
       card.querySelector(".gc-title").textContent = "Choose a training chamber";
-      card.querySelector(".gc-body").textContent = "Touch part of the guitar: left hand, right hand, rhythm, chords, scales, or map.";
+      card.querySelector(".gc-body").textContent = "Touch one part of the guitar map. Each chamber gives your hands one clear job.";
     }
   }
 

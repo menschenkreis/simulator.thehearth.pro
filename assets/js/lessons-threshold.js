@@ -12,12 +12,14 @@ window.LESSON_THRESHOLD = {
     // ── OPENING: Welcome ──
     {
       type: 'speak',
-      char: TeachingCHAR.neutral,
-      text: '<p>Welcome. Before you learn guitar, you need to know where you are.</p><p>This is <strong>The Hearth Mastery</strong> — a quest-based learning path. You\'re not just following lessons. You\'re walking a map.</p>',
+      char: TeachingCHAR.lightbulb,
+      charSize: 'big',
+      typing: false,
+      text: '<div class="threshold-lesson-preview"><div class="threshold-preview-kicker">Fret 0 - The Threshold</div><h3>First, I will show you how this world works.</h3><p>This is not a hard guitar lesson yet. This is orientation: where you are, what the map means, and how Foundation opens the neck.</p><div class="threshold-preview-grid"><div class="threshold-preview-card"><span>1</span><b>See the map</b><small>Nodes, paths, and places to enter.</small></div><div class="threshold-preview-card"><span>2</span><b>Meet the guide</b><small>I explain what matters in the moment.</small></div><div class="threshold-preview-card"><span>3</span><b>Read the neck</b><small>Foundation has ten frets: 0 to 9.</small></div><div class="threshold-preview-card"><span>4</span><b>Open Journey</b><small>Clear the threshold, then Level 1 can begin.</small></div></div><div class="threshold-preview-route" aria-hidden="true"><i class="active">0</i><i>1</i><i>2</i><i>3</i><em></em><strong>Journey</strong></div></div>',
     },
     {
       type: 'speak',
-      char: TeachingCHAR.neutral,
+      char: TeachingCHAR.headNeutral,
       text: '<p>There are <strong>eight nodes</strong> on the map. You\'re standing at the first one: <strong>Foundation</strong>. This is the threshold — the doorway before everything else.</p><p>Foundation has <strong>ten frets</strong> (steps 0 through 9). Each one builds on the last. When you cross all ten, the Journey gate opens and Level 1 begins.</p>',
     },
 
@@ -25,7 +27,7 @@ window.LESSON_THRESHOLD = {
     {
       type: 'ask',
       concept: 'map-awareness',
-      char: TeachingCHAR.thinking,
+      char: TeachingCHAR.headQuestion,
       charSize: 'big',
       text: '<p>Look around. You\'ll see a map with nodes connected by golden paths. What do you notice first?</p>',
       choices: [
@@ -63,7 +65,7 @@ window.LESSON_THRESHOLD = {
     // ── EXPLAIN: How the map works ──
     {
       type: 'speak',
-      char: TeachingCHAR.encouraging,
+      char: TeachingCHAR.lightbulb,
       text: '<p>Here\'s how it works:</p><p>• <strong>The Map</strong> — your overview of all eight nodes. Click any node to enter it.<br>• <strong>The Guide</strong> — that\'s me. I\'ll give you context, recommendations, and feedback.<br>• <strong>Progress markers</strong> — the golden dots and completed steps you see across the map.</p><p>Everything you do is saved automatically. Your progress lives in this browser. When you come back, you pick up where you left off.</p>',
     },
 
@@ -71,7 +73,7 @@ window.LESSON_THRESHOLD = {
     {
       type: 'ask',
       concept: 'forward-motion',
-      char: TeachingCHAR.thinking,
+      char: TeachingCHAR.headQuestion,
       text: '<p>How do you move forward on this path?</p>',
       choices: [
         {
