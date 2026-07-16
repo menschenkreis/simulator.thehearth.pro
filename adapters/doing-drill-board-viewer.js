@@ -76,6 +76,18 @@
     });
     html += "</div></div>";
 
+    if (activeBoard === "left-hand") {
+      html += '<div class="doing-jen-focus">' +
+        '<div><span>Jen focus</span><strong>A minor pentatonic + clean left-hand contact</strong></div>' +
+        '<ul>' +
+          '<li>A roots</li>' +
+          '<li>A minor pentatonic box</li>' +
+          '<li>E / A landmarks</li>' +
+          '<li>tiny finger-independence</li>' +
+        '</ul>' +
+      '</div>';
+    }
+
     html += '<div class="doing-controls">' +
       '<div id="doing-level-filters" class="doing-level-rail">' +
       '<span class="doing-level-filter' + (activeLevel === "all" ? " active" : "") + '" data-level="all">All levels<span class="filter-count">' + boardModel.countForAllGenresAllLevels(boardOptions) + "</span></span>";

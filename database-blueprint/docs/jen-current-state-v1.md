@@ -49,6 +49,17 @@ Jen has also done a musical conversation:
 
 Jen needs consolidation more than more information right now.
 
+Latest lesson update - 2026-07-16:
+
+- What felt like home: the jamming.
+- What sounded most musical: the A minor pentatonic scale itself started to feel musical.
+- What Jen enjoyed or asked for: more jamming.
+- CAGED helped, as long as it stayed a small map clue rather than a full theory lesson.
+- Everything still needs lots of repetition.
+- Jen is committing to 20 minutes of practice a day.
+- Jen wants the next lesson to include a song that uses A minor pentatonic with rhythm guitar and lead guitar.
+- Jen requested notes on the drills learned so far and a clear list of what to practise.
+
 Current anchors:
 
 - E and A string landmarks need repetition.
@@ -67,6 +78,8 @@ Jen wants to:
 - write a song
 - learn right-hand patterns
 - make technical work feel musical
+- jam more
+- learn a song that uses A minor pentatonic with rhythm guitar and lead guitar
 
 Use her interests as the doorway.
 
@@ -97,6 +110,7 @@ Ayla should prepare:
 
 Useful reminders:
 
+- Practise 20 minutes a day.
 - Practise E and A note positions slowly.
 - Review A, E, C, and D on the top two strings.
 - Practise the Marcello scale warm-up slowly, aiming for clean sound rather than speed.
@@ -159,6 +173,8 @@ Guide examples:
 - Clean-sound pass condition: no buzz, no rushing, even tone.
 - Right-hand pattern chamber.
 - End-of-lesson musical conversation prompt.
+- Printable/shareable practice sheet generated from lesson memory.
+- Song-based consolidation path: rhythm guitar part plus lead/pentatonic part.
 
 ## One-Liner
 

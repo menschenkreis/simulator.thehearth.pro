@@ -40,6 +40,11 @@
     if(!target) return null;
     document.querySelectorAll('.pnl').forEach(panel => panel.classList.remove('on'));
     target.classList.add('on');
+    if(panelId === 'p-lesson'){
+      document.querySelectorAll('.top-tool').forEach(button => {
+        button.classList.toggle('on', button.textContent.trim() === 'Journey');
+      });
+    }
     return target;
   }
 
@@ -853,6 +858,8 @@
     const guideImage = guideAsset('encouraging');
     const lessonSteps = companionLessonSteps(companion);
     const totalMinutes = lessonSteps.reduce((sum, step) => sum + (step.min || 0), 0);
+    const commitment = companion.commitment || {};
+    const commitmentPct = Math.max(0, Math.min(100, Number(commitment.progressPercent || 0)));
 
     let html = '<div class="journey-shell journey-live-companion">';
     html += '<div class="journey-level-command-row"><button class="back-btn" onclick="Journey.render()">← Back</button>'+renderStudentPicker(state, student)+'</div>';
@@ -873,13 +880,44 @@
       '</div>';
     }
     if(saved) html += '<div class="journey-save-confirm">Saved. This lesson note is now part of Jen\'s Journey memory.</div>';
+    html += '<div class="journey-commit-strip">' +
+      '<div class="journey-commit-main">' +
+        '<div class="journey-kicker">Practice Thread</div>' +
+        '<strong>'+esc(commitment.title || 'Gentle practice commitment')+'</strong>' +
+        '<span>Day '+esc(commitment.currentDay || 1)+' / '+esc(commitment.totalDays || 7)+' · '+esc(commitment.today || 'today is a small repeatable contact')+'</span>' +
+      '</div>' +
+      '<div class="journey-commit-meter" aria-label="Practice commitment progress">' +
+        '<i><b style="width:'+commitmentPct+'%"></b></i>' +
+        '<small>'+commitmentPct+'%</small>' +
+      '</div>' +
+      '<div class="journey-tomorrow-card"><span>Tomorrow</span><strong>'+esc(commitment.tomorrow || 'Repeat the useful step before adding more.')+'</strong></div>' +
+    '</div>';
+    if(companion.latestReview){
+      const review = companion.latestReview;
+      html += '<div class="journey-latest-review">' +
+        '<div class="journey-kicker">Latest Lesson Result</div>' +
+        '<div class="journey-latest-review-grid">' +
+          '<span><b>Home:</b> '+esc(review.feltHome || '')+'</span>' +
+          '<span><b>Musical:</b> '+esc(review.mostMusical || '')+'</span>' +
+          '<span><b>Enjoyed:</b> '+esc(review.enjoyed || '')+'</span>' +
+          '<span><b>Helped:</b> '+esc(review.helped || '')+'</span>' +
+          '<span><b>Repeat:</b> '+esc(review.needs || '')+'</span>' +
+          '<span><b>Commit:</b> '+esc(review.commitment || '')+'</span>' +
+        '</div>' +
+        '<strong class="journey-latest-next">Next: '+esc(review.nextLesson || '')+'</strong>' +
+      '</div>';
+    }
     html += '<div class="journey-live-flow">';
-    html += '<div class="journey-live-step-buttons" role="list" aria-label="Lesson stages">';
+    html += '<div class="journey-live-step-buttons journey-widget-path" role="list" aria-label="Lesson widgets">';
     lessonSteps.forEach((step, index) => {
+      const stepIcon = step.iconImage
+        ? '<img src="'+attr(step.iconImage)+'" alt="" />'
+        : '<i>'+esc(step.icon || String(index + 1).padStart(2, '0'))+'</i>';
       html += '<button type="button" class="journey-live-step-btn '+(index === 0 ? 'active' : '')+'" data-step="'+index+'" onclick="Journey.focusCompanionStep('+index+')">' +
-        '<span>'+String(index + 1).padStart(2, '0')+'</span>' +
+        '<span class="journey-widget-orb">'+stepIcon+'</span>' +
         '<strong>'+esc(step.label)+'</strong>' +
-        '<small>'+esc(step.source)+'</small>' +
+        '<small>'+esc(String(step.min || companionStepMinutes(index)))+' min · '+esc(step.source)+'</small>' +
+        '<em>Open step</em>' +
       '</button>';
     });
     html += '</div>';
@@ -1150,17 +1188,36 @@
       .journey-map-clue-grid span{border:1px solid rgba(255,245,204,.08);border-radius:12px;background:rgba(8,7,6,.36);padding:9px 10px;color:var(--dim);font-size:.7rem;line-height:1.42}
       .journey-map-clue-grid b{color:var(--text)}
       .journey-save-confirm{border-color:rgba(104,214,131,.32);background:rgba(104,214,131,.08);color:#eaffdd}
+      .journey-commit-strip{display:grid;grid-template-columns:minmax(0,1.1fr) 170px minmax(210px,.9fr);gap:10px;align-items:stretch;margin:0 0 14px}
+      .journey-commit-main,.journey-commit-meter,.journey-tomorrow-card{border:1px solid rgba(212,175,105,.16);border-radius:16px;background:rgba(8,7,6,.34);padding:11px 12px;box-shadow:inset 0 1px 0 rgba(255,255,255,.04)}
+      .journey-commit-main strong,.journey-tomorrow-card strong{display:block;color:var(--text);font-size:.76rem;line-height:1.35;margin-top:3px}
+      .journey-commit-main span,.journey-tomorrow-card span{display:block;color:var(--dim);font-size:.62rem;line-height:1.35;margin-top:4px}
+      .journey-commit-meter{display:grid;align-content:center;gap:7px;text-align:center}
+      .journey-commit-meter i{display:block;height:8px;border-radius:99px;background:rgba(255,255,255,.08);overflow:hidden}
+      .journey-commit-meter b{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,#ff6b5b,var(--gold));box-shadow:0 0 16px rgba(212,175,105,.34)}
+      .journey-commit-meter small{font-family:JetBrains Mono,monospace;color:var(--gold);font-size:.62rem}
+      .journey-latest-review{border:1px solid rgba(255,120,92,.22);border-radius:18px;background:radial-gradient(circle at 9% 18%,rgba(255,92,72,.13),transparent 36%),rgba(8,7,6,.3);padding:12px;margin:0 0 14px;box-shadow:inset 0 1px 0 rgba(255,255,255,.04)}
+      .journey-latest-review-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin-top:8px}
+      .journey-latest-review-grid span{border:1px solid rgba(255,245,204,.08);border-radius:10px;background:rgba(8,7,6,.36);padding:8px 9px;color:var(--dim);font-size:.66rem;line-height:1.35}
+      .journey-latest-review-grid b{color:var(--text)}
+      .journey-latest-next{display:block;margin-top:9px;color:#f5d18f;font-size:.76rem;line-height:1.35}
       .journey-live-flow{display:grid;gap:9px;margin:14px 0}
       .journey-live-step-buttons{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
-      .journey-live-step-btn{position:relative;min-height:88px;text-align:left;border:1px solid rgba(255,245,204,.1);border-radius:15px;background:linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,.012));color:var(--text);padding:10px;cursor:pointer;overflow:hidden;box-shadow:inset 0 1px 0 rgba(255,255,255,.04);transition:transform .16s ease,border-color .16s ease,box-shadow .16s ease,background .16s ease}
-      .journey-live-step-btn:before{content:"";position:absolute;inset:auto 10px 0;height:3px;border-radius:99px;background:rgba(212,175,105,.24)}
-      .journey-live-step-btn span{width:30px;height:30px;border-radius:999px;display:grid;place-items:center;background:rgba(5,4,3,.78);border:1px solid rgba(212,175,105,.24);font-family:JetBrains Mono,monospace;color:var(--gold);font-size:.58rem;margin-bottom:8px}
-      .journey-live-step-btn strong{display:block;font-family:Cinzel,serif;font-size:.82rem;line-height:1.05;color:var(--text)}
+      .journey-widget-path{position:relative;padding:4px 0 8px}
+      .journey-widget-path:before{content:"";position:absolute;left:4%;right:4%;top:47px;height:1px;background:linear-gradient(90deg,transparent,rgba(212,175,105,.36),transparent);pointer-events:none}
+      .journey-live-step-btn{position:relative;min-height:122px;text-align:center;border:1px solid rgba(255,245,204,.1);border-radius:18px;background:radial-gradient(circle at 50% 20%,rgba(212,175,105,.1),transparent 44%),linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,.012));color:var(--text);padding:12px 9px 10px;cursor:pointer;overflow:hidden;box-shadow:inset 0 1px 0 rgba(255,255,255,.04),0 12px 24px rgba(0,0,0,.14);transition:transform .16s ease,border-color .16s ease,box-shadow .16s ease,background .16s ease}
+      .journey-live-step-btn:before{content:"";position:absolute;inset:auto 12px 7px;height:3px;border-radius:99px;background:rgba(212,175,105,.24)}
+      .journey-live-step-btn .journey-widget-orb{position:relative;width:58px;height:58px;border-radius:999px;display:block;margin:0 auto 10px;background:radial-gradient(circle at 50% 50%,rgba(255,244,214,.68),rgba(212,175,105,.3) 34%,rgba(8,7,6,.9) 74%);border:1px solid rgba(255,245,204,.22);box-shadow:0 0 0 6px rgba(212,175,105,.05),0 10px 18px rgba(0,0,0,.24);font-family:Cinzel,serif;color:#fff7d8;font-size:.88rem;overflow:hidden}
+      .journey-live-step-btn .journey-widget-orb img{position:absolute;left:50%;top:50%;width:48px;height:48px;object-fit:contain;transform:translate(-50%,-50%);filter:drop-shadow(0 5px 8px rgba(0,0,0,.45))}
+      .journey-live-step-btn .journey-widget-orb i{font-style:normal;text-shadow:0 1px 5px rgba(0,0,0,.8)}
+      .journey-live-step-btn strong{display:block;font-family:Cinzel,serif;font-size:.86rem;line-height:1.05;color:var(--text)}
       .journey-live-step-btn small{display:block;margin-top:5px;color:var(--dim);font-size:.58rem;line-height:1.25}
+      .journey-live-step-btn em{display:block;margin-top:7px;font-family:JetBrains Mono,monospace;font-style:normal;font-size:.5rem;letter-spacing:.12em;text-transform:uppercase;color:rgba(212,175,105,.66)}
       .journey-live-step-btn:hover,.journey-live-step-btn.active{transform:translateY(-1px);border-color:rgba(212,175,105,.46);box-shadow:0 12px 28px rgba(0,0,0,.22),0 0 24px rgba(212,175,105,.1)}
       .journey-live-step-btn.active{background:linear-gradient(180deg,rgba(212,175,105,.2),rgba(255,255,255,.03))}
       .journey-live-step-btn.active:before{background:var(--gold);box-shadow:0 0 14px rgba(212,175,105,.38)}
-      .journey-live-step-btn.active span{background:radial-gradient(circle at 35% 30%,rgba(255,244,214,.95),var(--gold) 44%,rgba(13,11,8,.9) 80%);color:#fff8dc;text-shadow:0 1px 4px rgba(0,0,0,.75)}
+      .journey-live-step-btn.active .journey-widget-orb{background:radial-gradient(circle at 50% 50%,rgba(255,244,214,.86),var(--gold) 42%,rgba(13,11,8,.9) 82%);color:#fff8dc;text-shadow:0 1px 4px rgba(0,0,0,.75);box-shadow:0 0 0 7px rgba(212,175,105,.12),0 0 24px rgba(212,175,105,.34),0 10px 18px rgba(0,0,0,.24)}
+      .journey-live-step-btn.active .journey-widget-orb img{transform:translate(-50%,-50%) scale(1.06);filter:drop-shadow(0 0 10px rgba(255,223,151,.44)) drop-shadow(0 6px 8px rgba(0,0,0,.46))}
       .journey-live-focus-stack{margin-top:10px}
       .journey-live-focus{display:none;border:1px solid rgba(212,175,105,.22);border-radius:18px;background:radial-gradient(circle at 12% 8%,rgba(212,175,105,.13),transparent 32%),linear-gradient(180deg,rgba(255,255,255,.04),rgba(0,0,0,.12));padding:16px;box-shadow:inset 0 1px 0 rgba(255,255,255,.05)}
       .journey-live-focus.active{display:block}
@@ -1191,7 +1248,7 @@
       @keyframes journey-mastery-orbit-reverse{to{transform:translate(-50%,-50%) rotate(-360deg)}}
       @keyframes journey-mastery-particle{from{transform:rotate(0deg) translateX(58px) translate(-50%,-50%)}to{transform:rotate(360deg) translateX(58px) translate(-50%,-50%)}}
       @keyframes journey-mastery-particle-wide{from{transform:rotate(0deg) translateX(70px) translate(-50%,-50%)}to{transform:rotate(360deg) translateX(70px) translate(-50%,-50%)}}
-      @media(max-width:720px){.journey-map-clue-grid,.journey-review-prompts{grid-template-columns:1fr}}
+      @media(max-width:720px){.journey-map-clue-grid,.journey-review-prompts,.journey-latest-review-grid{grid-template-columns:1fr}}
       @media(prefers-reduced-motion:reduce){
         .journey-map-guide img,.journey-guide-character,.journey-guide img,.journey-entry-guide img,.journey-neck-level:after,.journey-neck-level.mastery:before,.journey-neck-level.mastery:after,.journey-neck-level.mastery .journey-mastery-orbit,.journey-neck-level.mastery .journey-mastery-particle{animation:none!important}
         .journey-neck-level.mastery .journey-mastery-particle{display:none}
@@ -1200,7 +1257,7 @@
       @media(max-width:1700px){.journey-entry-guide{left:calc(50% + 500px);width:220px}.journey-entry-guide img{width:min(200px,78%)}.journey-entry-bubble{width:min(230px,90%)}}
       @media(max-width:1440px){.journey-level-entry-stage{display:flex;flex-direction:column;align-items:center;gap:18px;min-height:auto}.journey-entry-guide{position:relative;left:auto;right:auto;top:auto;order:2;width:min(620px,100%);min-height:auto;display:flex;flex-direction:row;justify-content:center;align-items:flex-end;padding-top:0}.journey-entry-guide img{width:104px;height:126px}.journey-entry-bubble{width:min(390px,70vw);order:0}.journey-entry-bubble:before{left:30px}.journey-level-map{order:1;min-height:auto}.journey-level-map:before{right:-2%;width:52%;opacity:.1}}
       @media(max-width:980px){.journey-level-command-row{width:100%}.journey-roadmap-section{grid-template-columns:1fr;border-radius:22px}.journey-roadmap-section:before{left:22px}.journey-roadmap-levels{grid-template-columns:repeat(8,minmax(28px,1fr));gap:6px}.journey-roadmap-level-dot span{bottom:auto;top:calc(100% + 8px)}.journey-level-entry-foot{flex-direction:column;align-items:stretch;text-align:center}.journey-next-step-card{max-width:none}.journey-entry-actions{justify-content:center}.journey-entry-actions .journey-btn{width:100%}.journey-begin-btn{width:100%}.journey-live-step-buttons{grid-template-columns:repeat(2,minmax(0,1fr))}.journey-lesson-route{grid-template-columns:repeat(2,minmax(0,1fr))}}
-      @media(max-width:720px){.journey-shell{padding:14px}.journey-level-command-row{flex-direction:column;align-items:stretch}.journey-level-command-row .journey-top-row{justify-content:center}.journey-grid,.journey-companion-grid{grid-template-columns:1fr}.journey-neck-stage{width:min(330px,92vw);background-size:contain}.journey-neck-wrap{padding-top:14px}.journey-headstock{width:140px;height:64px}.journey-neck{width:min(250px,74vw);height:520px;min-height:460px}.journey-body-arc{width:min(360px,92vw);height:95px}.journey-guide-scene{left:50%;bottom:38px;transform:translateX(-50%);width:min(300px,78vw)}.journey-guide-character{width:126px;height:174px}.journey-guide-bubble.game{max-width:250px}.journey-title{font-size:1.25rem}.journey-guide img{width:64px;height:64px}.journey-companion-head,.journey-companion-preview,.journey-companion-summary{align-items:flex-start;flex-direction:column}.journey-student-bar{border-radius:16px;width:100%;box-sizing:border-box}.journey-student-menu{width:min(280px,88vw)}.journey-level-map{padding:18px}.journey-level-map-head,.journey-live-head{flex-direction:column;align-items:stretch}.journey-level-progress{width:100%}.journey-roadmap-board{padding:8px}.journey-roadmap-section{padding:10px}.journey-roadmap-level-dot{width:38px;height:38px;min-width:38px}.journey-roadmap-level-dot.selected{width:46px;height:46px;min-width:46px}.journey-entry-guide{flex-direction:column;align-items:center}.journey-entry-bubble{width:min(270px,82vw)}.journey-entry-bubble:before{left:50%}.journey-live-stage{grid-template-columns:1fr}.journey-live-guide{position:static}.journey-live-panel{padding:16px}.journey-live-step-buttons{grid-template-columns:1fr}.journey-live-focus-top{grid-template-columns:38px 1fr}.journey-live-focus-top small{grid-column:2}.journey-live-step{grid-template-columns:34px 1fr}.journey-live-step small{justify-self:start;grid-column:2}.journey-lesson-route{grid-template-columns:1fr}.journey-lesson-route-step{min-height:64px}}
+      @media(max-width:720px){.journey-shell{padding:14px}.journey-level-command-row{flex-direction:column;align-items:stretch}.journey-level-command-row .journey-top-row{justify-content:center}.journey-grid,.journey-companion-grid{grid-template-columns:1fr}.journey-neck-stage{width:min(330px,92vw);background-size:contain}.journey-neck-wrap{padding-top:14px}.journey-headstock{width:140px;height:64px}.journey-neck{width:min(250px,74vw);height:520px;min-height:460px}.journey-body-arc{width:min(360px,92vw);height:95px}.journey-guide-scene{left:50%;bottom:38px;transform:translateX(-50%);width:min(300px,78vw)}.journey-guide-character{width:126px;height:174px}.journey-guide-bubble.game{max-width:250px}.journey-title{font-size:1.25rem}.journey-guide img{width:64px;height:64px}.journey-companion-head,.journey-companion-preview,.journey-companion-summary{align-items:flex-start;flex-direction:column}.journey-student-bar{border-radius:16px;width:100%;box-sizing:border-box}.journey-student-menu{width:min(280px,88vw)}.journey-level-map{padding:18px}.journey-level-map-head,.journey-live-head{flex-direction:column;align-items:stretch}.journey-level-progress{width:100%}.journey-roadmap-board{padding:8px}.journey-roadmap-section{padding:10px}.journey-roadmap-level-dot{width:38px;height:38px;min-width:38px}.journey-roadmap-level-dot.selected{width:46px;height:46px;min-width:46px}.journey-entry-guide{flex-direction:column;align-items:center}.journey-entry-bubble{width:min(270px,82vw)}.journey-entry-bubble:before{left:50%}.journey-live-stage{grid-template-columns:1fr}.journey-live-guide{position:static}.journey-live-panel{padding:16px}.journey-commit-strip{grid-template-columns:1fr}.journey-live-step-buttons{grid-template-columns:1fr}.journey-live-focus-top{grid-template-columns:38px 1fr}.journey-live-focus-top small{grid-column:2}.journey-live-step{grid-template-columns:34px 1fr}.journey-live-step small{justify-self:start;grid-column:2}.journey-lesson-route{grid-template-columns:1fr}.journey-lesson-route-step{min-height:64px}}
     `;
     document.head.appendChild(style);
   }

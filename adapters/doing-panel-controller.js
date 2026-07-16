@@ -227,6 +227,7 @@
         doing: doing,
         ui: doingUi,
         progressSummary: progressSummary,
+        doingView: state.doingView,
         contentHtml: contentHtml
       });
       bindControls();

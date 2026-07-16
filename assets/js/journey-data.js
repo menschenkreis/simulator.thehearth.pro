@@ -201,7 +201,25 @@ var JOURNEY_STUDENT_COMPANIONS = {
       use: "Show one connection: A is home, the A minor pentatonic box sits around that home, and the phrase can always land back on A.",
       avoid: "Avoid all five shapes, transposition, full-neck theory, or proving that she understands CAGED."
     },
-    nextAction: "Use right-hand pattern work to make A minor pentatonic clearer. Play A roots musically, add nearby notes into tiny phrases, and end with an A minor musical conversation.",
+    nextAction: "Plan the next lesson around a song that uses A minor pentatonic with rhythm guitar and lead guitar. Keep jamming as the doorway, repeat the scale map often, and use CAGED only as a helpful landmark clue.",
+    latestReview: {
+      date: "2026-07-16",
+      feltHome: "The jamming.",
+      mostMusical: "The scale itself started to sound musical.",
+      enjoyed: "Jen enjoyed and asked for more jamming.",
+      helped: "The CAGED clue definitely helped.",
+      needs: "Everything still needs lots of repetition.",
+      commitment: "Practise 20 minutes a day.",
+      nextLesson: "Learn a song that uses A minor pentatonic with rhythm guitar and lead guitar."
+    },
+    commitment: {
+      title: "20-minute daily practice thread",
+      currentDay: 1,
+      totalDays: 7,
+      progressPercent: 14,
+      today: "20 minutes: A minor pentatonic, A roots, and one musical jam.",
+      tomorrow: "Repeat the same map, then start choosing a song for rhythm + lead."
+    },
     doorway: [
       "Right-hand patterns",
       "Flamenco feel for energy",
@@ -235,6 +253,8 @@ var JOURNEY_STUDENT_COMPANIONS = {
     lessonButtons: [
       {
         label: "Tune in",
+        icon: "T",
+        iconImage: "images/journey-category-icons/technique.png",
         source: "Hearth + Practice",
         aim: "Arrive before teaching.",
         action: "Tune the guitar, check shoulders, jaw, breath, fretting hand, picking hand, then listen to open strings.",
@@ -242,6 +262,8 @@ var JOURNEY_STUDENT_COMPANIONS = {
       },
       {
         label: "Safe Map",
+        icon: "A",
+        iconImage: "images/journey-category-icons/scales.png",
         source: "Journey memory",
         aim: "Make A feel like home before adding anything new.",
         action: "Find A root notes slowly. Touch A minor pentatonic shape 1, then stop on A and let it sound settled.",
@@ -249,6 +271,8 @@ var JOURNEY_STUDENT_COMPANIONS = {
       },
       {
         label: "Right Hand",
+        icon: "R",
+        iconImage: "images/journey-category-icons/picking.png",
         source: "Student interest",
         aim: "Use the thing Jen asked for as the doorway.",
         action: "Choose one right-hand pattern. Repeat it four times calmly, then use it under A roots or a tiny A minor phrase.",
@@ -256,6 +280,8 @@ var JOURNEY_STUDENT_COMPANIONS = {
       },
       {
         label: "Map Clue",
+        icon: "M",
+        iconImage: "images/journey-category-icons/theory.png",
         source: "Study + Knowing",
         aim: "Show one CAGED connection without teaching the whole system.",
         action: "Say: chord shapes are landmarks. Pentatonic notes live around those landmarks. Show only how A is home inside the current A minor pentatonic area.",
@@ -263,6 +289,8 @@ var JOURNEY_STUDENT_COMPANIONS = {
       },
       {
         label: "Make Music",
+        icon: "P",
+        iconImage: "images/journey-category-icons/improvisation.png",
         source: "Doing",
         aim: "Turn roots and nearby notes into a phrase.",
         action: "Play only A roots with rhythm. Add one nearby pentatonic note, then one more. Repeat the phrase and change the ending.",
@@ -270,6 +298,8 @@ var JOURNEY_STUDENT_COMPANIONS = {
       },
       {
         label: "Conversation",
+        icon: "C",
+        iconImage: "images/journey-category-icons/integration.png",
         source: "Play + Create",
         aim: "End by making the idea social and musical.",
         action: "One person holds A minor or a simple pulse. The other plays small A minor pentatonic phrases. Leave space, answer, then swap.",
@@ -277,6 +307,8 @@ var JOURNEY_STUDENT_COMPANIONS = {
       },
       {
         label: "Review",
+        icon: "N",
+        iconImage: "images/journey-category-icons/reading.png",
         source: "Hearth + Journey",
         aim: "Capture the next safe step.",
         action: "Ask what felt like home, what sounded musical, what was confusing, and whether the chord-shape map clue helped or felt like too much.",
@@ -292,11 +324,11 @@ var JOURNEY_STUDENT_COMPANIONS = {
       "What does Ayla need to prepare before teaching again?"
     ],
     practice: [
+      "Practise 20 minutes a day",
       "Make A root notes musical at 60 BPM",
-      "Repeat at 76 BPM only if the pulse stays calm",
-      "Skip 100 BPM unless Jen is relaxed and curious",
+      "Repeat the A minor pentatonic map until it feels familiar",
       "Use A as the safety note inside the pentatonic box",
-      "Create one tiny A minor pentatonic phrase"
+      "Choose a song that can hold rhythm guitar and lead guitar"
     ]
   }
 };

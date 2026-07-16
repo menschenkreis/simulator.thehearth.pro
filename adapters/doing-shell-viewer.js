@@ -18,13 +18,14 @@
     var ui = options.ui || root.HearthDoingUiUtils;
     var progressSummary = options.progressSummary || {};
     var contentHtml = options.contentHtml || "";
+    var doingView = options.doingView || "entry";
 
     if (!ui) {
       return "";
     }
 
     var esc = ui.escapeHtml;
-    return '<div class="doing-shell">' +
+    return '<div class="doing-shell doing-shell--' + esc(doingView) + '">' +
       '<button class="back-btn" onclick="window._doingBackToMap()">&larr; Map</button>' +
       '<div class="doing-hero">' +
         '<img class="doing-hero-icon" src="images/doing-icon.png" alt="">' +
