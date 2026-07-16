@@ -55,7 +55,8 @@
         return;
       }
       seals += '<div class="doing-seal" data-seal="' + esc(zone.id) + '" style="left:' + esc(zone.seal.x) + ";top:" + esc(zone.seal.y) + '">' +
-        '<span class="seal-icon">' + zone.seal.icon + "</span></div>";
+        '<span class="seal-icon">' + zone.seal.icon + '</span>' +
+        '<span class="seal-label">' + esc(zone.label) + "</span></div>";
     });
 
     return '<div class="doing-map-wrap" id="doing-map-container">' +
