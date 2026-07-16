@@ -19,6 +19,7 @@
     if (Object.prototype.hasOwnProperty.call(nextState, "activeLevel")) target.activeLevel = nextState.activeLevel;
     if (Object.prototype.hasOwnProperty.call(nextState, "activeSearch")) target.activeSearch = nextState.activeSearch;
     if (Object.prototype.hasOwnProperty.call(nextState, "activeBoard")) target.activeBoard = nextState.activeBoard;
+    if (Object.prototype.hasOwnProperty.call(nextState, "activeRoomConcept")) target.activeRoomConcept = nextState.activeRoomConcept;
   }
 
   function showDoing() {
@@ -55,7 +56,8 @@
       activeBoard: "both-hands",
       doingView: "map",
       activeExpTab: "notes",
-      doingDebug: false
+      doingDebug: false,
+      activeRoomConcept: "left-hand"
     };
 
     function boardOptions() {
@@ -149,6 +151,111 @@
       });
     }
 
+    function collectRoomDrills(board) {
+      var candidates = [];
+      doing.categories.forEach(function eachCategory(cat) {
+        if (board.categories.indexOf(cat.id) < 0) return;
+        cat.drills.forEach(function eachDrill(drill) {
+          if (getDoingLevel(drill) !== 1) return;
+          candidates.push({ cat: cat, drill: drill });
+        });
+      });
+      return candidates.slice(0, 7);
+    }
+
+    function renderRoomGraphic(board, roomDrills) {
+      var drillDots = roomDrills.map(function renderDot(item, index) {
+        var initials = item.drill.title.split(/\s+/).filter(Boolean).slice(0, 2).map(function firstLetter(word) {
+          return word.charAt(0);
+        }).join("").toUpperCase();
+        return '<button class="doing-room-dot" type="button" style="--dot-x:' + (18 + (index * 11)) + '%;--dot-y:' + (36 + ((index % 3) * 14)) + '%" ' +
+          'onclick="showDoingDrill(\'' + doingUi.escapeHtml(item.cat.id) + "', '" + doingUi.escapeHtml(item.drill.id) + '\')" ' +
+          'title="' + doingUi.escapeHtml(item.drill.title) + '">' + doingUi.escapeHtml(initials) + "</button>";
+      }).join("");
+
+      var strings = [1, 2, 3, 4, 5, 6].map(function renderString(i) {
+        return '<i class="doing-room-string doing-room-string--' + i + '"></i>';
+      }).join("");
+
+      if (board.layout === "soundhole") {
+        return '<div class="doing-room-graphic doing-room-graphic--soundhole">' +
+          '<div class="doing-room-soundhole"></div>' +
+          '<div class="doing-room-bridge"></div>' +
+          strings +
+          drillDots +
+          "</div>";
+      }
+
+      if (board.layout === "whole-guitar") {
+        return '<div class="doing-room-graphic doing-room-graphic--whole">' +
+          '<div class="doing-room-body"></div>' +
+          '<div class="doing-room-neck"></div>' +
+          '<div class="doing-room-soundhole"></div>' +
+          strings +
+          drillDots +
+          "</div>";
+      }
+
+      return '<div class="doing-room-graphic doing-room-graphic--neck">' +
+        '<div class="doing-room-headstock"></div>' +
+        '<div class="doing-room-nut"></div>' +
+        '<div class="doing-room-frets">' +
+        '<i></i><i></i><i></i><i></i><i></i><i></i>' +
+        "</div>" +
+        strings +
+        drillDots +
+        "</div>";
+    }
+
+    function renderRoomConcept() {
+      var roomIds = ["left-hand", "right-hand", "both-hands"];
+      var board = doingConfig.boardForId(state.activeRoomConcept || "left-hand");
+      var roomDrills = collectRoomDrills(board);
+      var roomButtons = roomIds.map(function renderRoomButton(roomId) {
+        var room = doingConfig.boardForId(roomId);
+        var active = room.id === board.id;
+        return '<button class="doing-room-tab' + (active ? " active" : "") + '" type="button" onclick="window._setDoingRoomConcept(\'' + room.id + '\')">' +
+          '<span>' + doingUi.escapeHtml(room.shortLabel) + "</span>" +
+          '<b>' + doingUi.escapeHtml(room.label) + "</b>" +
+          "</button>";
+      }).join("");
+      var drillList = roomDrills.map(function renderDrill(item) {
+        return '<button class="doing-room-drill" type="button" onclick="showDoingDrill(\'' + doingUi.escapeHtml(item.cat.id) + "', '" + doingUi.escapeHtml(item.drill.id) + '\')">' +
+          '<span>' + doingUi.escapeHtml(item.cat.title) + "</span>" +
+          '<b>' + doingUi.escapeHtml(item.drill.title) + "</b>" +
+          '<em>' + doingUi.escapeHtml(item.drill.duration || "5 min") + "</em>" +
+          "</button>";
+      }).join("");
+
+      return '<section class="doing-room-preview" aria-label="Level 1 room preview">' +
+        '<div class="doing-room-preview-head">' +
+        '<div>' +
+        '<div class="doing-board-kicker">Do node · Level 1 room</div>' +
+        '<h3>' + doingUi.escapeHtml(board.title) + "</h3>" +
+        '<p>' + doingUi.escapeHtml(board.description) + "</p>" +
+        "</div>" +
+        '<button class="doing-board-tab active" type="button" onclick="window._doingBackToMap()">Back to Do map</button>' +
+        "</div>" +
+        '<div class="doing-room-tabs" aria-label="Choose a training room">' + roomButtons + "</div>" +
+        '<div class="doing-room-focus">' +
+        renderRoomGraphic(board, roomDrills) +
+        '<aside class="doing-room-side">' +
+        '<div class="doing-room-side-kicker">Start here</div>' +
+        '<h4>' + doingUi.escapeHtml(board.label) + "</h4>" +
+        '<p>Only this room is visible now. Choose one small drill, keep it clean, then come back.</p>' +
+        '<div class="doing-room-drills">' + drillList + "</div>" +
+        "</aside>" +
+        "</div>" +
+        '<div class="doing-room-preview-note">Clean build note: this replaces the frilly image with live layers we can refine. Left shows only left-hand work; Right shows only right-hand work; Both shows coordination.</div>' +
+        "</section>";
+    }
+
+    root._setDoingRoomConcept = function setDoingRoomConcept(roomId) {
+      state.activeRoomConcept = roomId || "left-hand";
+      state.doingView = "room-concept";
+      shell();
+    };
+
     function bindDrillPreviews() {
       if (!root.HearthDoingDrillPreviewController) return;
       root.HearthDoingDrillPreviewController.bindDrillPreviews({
@@ -218,6 +325,8 @@
         contentHtml = '<div id="doing-fretboard">' + renderBoard() + "</div>";
       } else if (state.doingView === "explorer") {
         contentHtml = renderExplorerView();
+      } else if (state.doingView === "room-concept") {
+        contentHtml = renderRoomConcept();
       } else {
         contentHtml = renderEntry();
       }

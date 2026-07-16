@@ -125,3 +125,49 @@ Can the Do node help Ayla find the right drill quickly during a real lesson?
 Polish the Do first-click screen first, because that is the doorway.
 
 Then move one layer deeper into the three boards.
+
+## Logic Shift - Level Rooms
+
+After reviewing the first board mockups, the better Do-node structure is:
+
+1. Choose the hand room:
+   - Left Hand
+   - Right Hand
+   - Both Hands
+2. Choose one level at a time.
+3. Show only the drills for that level on the guitar surface.
+4. Keep other levels in a small selector outside the guitar image.
+
+Reason:
+
+- Showing all levels at once turns the guitar into a dashboard.
+- One level at a time keeps the screen calm and playable.
+- The guitar can act like a physical room instead of a table.
+
+Current concept:
+
+- `tools/doing-level-one-room-concept-v2.html`
+- `tools/doing-level-one-room-concept-v2-preview.png`
+
+Concept details:
+
+- Left Hand uses the neck/fretting-hand area of the guitar image.
+- Right Hand uses the soundhole, strings, bridge, and right-hand area.
+- Level 1 is red.
+- Drill dots represent only Level 1 drills.
+- Future implementation should use the same logic for Both Hands.
+
+Room-feel improvement:
+
+- Keep the guitar image as the physical room.
+- Add a guide character and short instruction strip so it still feels like the simulator is teaching.
+- Bring back the old drill-board usefulness as compact room features:
+  - start-here progress bar
+  - lane chips from the old board rows
+  - practice-state legend
+  - learner-specific reminder cards
+- Avoid returning to the all-level grid.
+
+Current improved preview:
+
+- `tools/doing-level-one-room-concept-v2-full-preview.png`

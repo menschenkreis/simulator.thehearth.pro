@@ -79,6 +79,13 @@
     return undefined;
   };
 
+  root.openDoingRoomConcept = function openDoingRoomConcept() {
+    if (root._openDoingRoomConcept) {
+      return root._openDoingRoomConcept();
+    }
+    return undefined;
+  };
+
   root.showKnowing = function showKnowing() {
     if (root.HearthKnowingPanelController) {
       return root.HearthKnowingPanelController.showKnowing();

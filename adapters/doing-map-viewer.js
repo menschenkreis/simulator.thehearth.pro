@@ -73,6 +73,7 @@
       '<div class="gc-title">Choose a training chamber</div>' +
       '<div class="gc-body">Touch one part of the guitar map. Each chamber gives your hands one clear job.</div>' +
       "</div>" +
+      '<button class="doing-map-concept-btn" type="button" onclick="openDoingRoomConcept()">Level 1 room preview</button>' +
       '<button class="doing-map-debug-btn' + (doingDebug ? " active" : "") + '" onclick="toggleDoingDebug()" title="Debug: show hotspots">&#9881;</button>' +
       "</div>";
   }

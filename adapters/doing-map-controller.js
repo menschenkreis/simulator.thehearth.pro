@@ -63,6 +63,11 @@
       setState({ doingView: "map" });
       shell();
     };
+
+    root._openDoingRoomConcept = function openDoingRoomConcept() {
+      setState({ doingView: "room-concept" });
+      shell();
+    };
   }
 
   return {
