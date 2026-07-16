@@ -47,11 +47,16 @@
 
     var totalDrills = 0;
     var doneDrills = 0;
+    var nextVisible = null;
     doing.categories.forEach(function eachCategory(cat) {
       cat.drills.forEach(function eachDrill(drill) {
         if (boardModel.isVisible(boardOptions, cat, drill)) {
           totalDrills++;
-          if (boardModel.getState(progress, stateOrder, drill.id) === "mastered") {
+          var drillState = boardModel.getState(progress, stateOrder, drill.id);
+          if (!nextVisible && (!drillState || drillState === "seen")) {
+            nextVisible = { cat: cat, drill: drill };
+          }
+          if (drillState === "mastered") {
             doneDrills++;
           }
         }
@@ -89,6 +94,14 @@
     });
     html += "</div></div></div>";
 
+    if (nextVisible) {
+      html += '<button class="doing-board-next" data-cat="' + esc(nextVisible.cat.id) + '" data-drill="' + esc(nextVisible.drill.id) + '">' +
+        '<span>Start here</span>' +
+        '<strong>' + esc(nextVisible.drill.title) + '</strong>' +
+        '<small>' + esc(nextVisible.cat.title + " · Level " + config.levelForDrill(nextVisible.drill) + " · " + nextVisible.drill.duration) + "</small>" +
+        "</button>";
+    }
+
     html += '<div class="doing-fretboard-stage doing-board-stage doing-board-' + esc(board ? board.layout : "neck") + '">' +
       '<div class="doing-string-labels" aria-label="Standard guitar tuning">';
     stringRows.forEach(function renderStringLabel(row) {
@@ -112,13 +125,15 @@
         var drills = filtered.filter(function atLevel(item) {
           return config.levelForDrill(item.drill) === lv.level;
         });
-        html += '<div class="doing-fret-cell">';
+        html += '<div class="doing-fret-cell" data-level="' + esc(lv.level) + '">';
         if (drills.length) {
           drills.forEach(function renderDrillDot(item) {
             var drill = item.drill;
             var cat = item.cat;
+            var level = config.levelForDrill(drill);
             var state = boardModel.getState(progress, stateOrder, drill.id);
-            html += '<button class="drill-dot" data-cat="' + esc(cat.id) + '" data-drill="' + esc(drill.id) + '" data-state="' + esc(state) + '" data-short="' + esc(ui.drillShort(drill)) + '" title="' + esc(cat.title + ": " + drill.title) + '"></button>';
+            var isNext = nextVisible && nextVisible.drill.id === drill.id;
+            html += '<button class="drill-dot level-' + esc(level) + (isNext ? " is-next" : "") + '" data-cat="' + esc(cat.id) + '" data-drill="' + esc(drill.id) + '" data-state="' + esc(state) + '" data-level="' + esc(level) + '" data-short="' + esc(ui.drillShort(drill)) + '" title="' + esc(cat.title + ": " + drill.title) + '"></button>';
           });
         } else {
           html += '<span class="doing-empty-fret">-</span>';

@@ -191,10 +191,17 @@ var JOURNEY_AUTHORED_LESSONS = {
 var JOURNEY_STUDENT_COMPANIONS = {
   jen: {
     label: "Jen Lesson Companion",
-    title: "A minor pentatonic consolidation",
-    focus: "No new challenge tomorrow. Make A minor pentatonic musical by treating root notes as safety points, then adding nearby notes into tiny phrases.",
-    guideNote: "Jen asked for consolidation. Keep the gradient gentle: roots first, rhythm second, then one or two extra pentatonic notes. The teaching point is pattern recognition, not more information.",
-    nextAction: "Use a metronome at 60, 76, and only if calm 100 BPM. Make the A roots musical, divide the pentatonic into three small boxes, and end with an A minor musical conversation.",
+    title: "A minor pentatonic consolidation + tiny CAGED clue",
+    focus: "Consolidate A minor pentatonic and right-hand patterns. Use CAGED only as a tiny map clue: chord shapes are landmarks, and pentatonic notes live around those landmarks.",
+    guideNote: "Jen asked for consolidation. Keep the gradient gentle: root notes as safety points, rhythm second, then one or two extra pentatonic notes. CAGED is optional language, not the lesson goal.",
+    mainRule: "Do not teach the full CAGED system today. If Jen overloads, drop the word CAGED and return to: find A, play a tiny phrase, come back to A.",
+    mapClue: {
+      title: "The only CAGED idea for today",
+      phrase: "Chord shapes are landmarks. Pentatonic notes live around those landmarks.",
+      use: "Show one connection: A is home, the A minor pentatonic box sits around that home, and the phrase can always land back on A.",
+      avoid: "Avoid all five shapes, transposition, full-neck theory, or proving that she understands CAGED."
+    },
+    nextAction: "Use right-hand pattern work to make A minor pentatonic clearer. Play A roots musically, add nearby notes into tiny phrases, and end with an A minor musical conversation.",
     doorway: [
       "Right-hand patterns",
       "Flamenco feel for energy",
@@ -211,19 +218,18 @@ var JOURNEY_STUDENT_COMPANIONS = {
     gaps: [
       "C chord showed up as a gap",
       "Pentatonic meaning needs a simpler explanation",
+      "CAGED can overload the lesson if treated as a new system",
       "Finger-independence drills must be tiny",
       "Scale-to-fretboard relationship needs repetition",
       "Do not move into extra challenges until the current map feels safer"
     ],
     lessonFlow: [
       "Tune in: body scan, stretch, tune, open-string sound",
-      "Review: A minor pentatonic shape and the A root notes",
-      "Doorway: play the root notes musically with a metronome",
-      "Map: split the scale into three small boxes, each with a root as safety",
-      "Apply: add one or two nearby pentatonic notes to make tiny phrases",
-      "Groove: 60 BPM, then 76 BPM, then 100 BPM only if relaxed",
-      "Create: make one tiny phrase or call-and-response idea",
-      "Mastery: listen for the musical goal, not more difficulty",
+      "Safe map: find A roots and revisit A minor pentatonic slowly",
+      "Right hand: use one pattern to make the map feel musical",
+      "Map clue: chord shapes are landmarks; pentatonic notes live around them",
+      "Make music: add nearby notes and make tiny repeatable phrases",
+      "Conversation: one person holds A minor, the other answers with small phrases",
       "Reflect: what worked, what was hard, what to practise"
     ],
     lessonButtons: [
@@ -235,67 +241,61 @@ var JOURNEY_STUDENT_COMPANIONS = {
         prompt: "What does Jen's body and sound need before we start?"
       },
       {
-        label: "Review",
+        label: "Safe Map",
         source: "Journey memory",
-        aim: "Bring back the last map.",
-        action: "Touch A minor pentatonic slowly, then find A root notes without rushing.",
-        prompt: "What stayed available, and what went foggy?"
+        aim: "Make A feel like home before adding anything new.",
+        action: "Find A root notes slowly. Touch A minor pentatonic shape 1, then stop on A and let it sound settled.",
+        prompt: "Can Jen hear or feel A as home, or is the box still foggy?"
       },
       {
-        label: "Doorway",
+        label: "Right Hand",
         source: "Student interest",
-        aim: "Use what motivates her.",
-        action: "Make only the A root notes musical with the metronome before adding more scale notes.",
-        prompt: "Does rhythm, right hand, flamenco feel, or call-and-response open the door today?"
+        aim: "Use the thing Jen asked for as the doorway.",
+        action: "Choose one right-hand pattern. Repeat it four times calmly, then use it under A roots or a tiny A minor phrase.",
+        prompt: "Did the pattern make the map more musical, or did it add pressure?"
       },
       {
-        label: "Map",
+        label: "Map Clue",
         source: "Study + Knowing",
-        aim: "Turn the scale into pattern recognition.",
-        action: "Split A minor pentatonic into three small boxes. Each box has an A root note as a safety point.",
-        prompt: "Can she see where she is, or is it still one big blur?"
+        aim: "Show one CAGED connection without teaching the whole system.",
+        action: "Say: chord shapes are landmarks. Pentatonic notes live around those landmarks. Show only how A is home inside the current A minor pentatonic area.",
+        prompt: "Did this map clue help, or should we drop the word CAGED for now?"
       },
       {
-        label: "Apply",
+        label: "Make Music",
         source: "Doing",
-        aim: "Use the map immediately.",
-        action: "Add one or two nearby pentatonic notes to the root-note pulse and make tiny phrases.",
+        aim: "Turn roots and nearby notes into a phrase.",
+        action: "Play only A roots with rhythm. Add one nearby pentatonic note, then one more. Repeat the phrase and change the ending.",
         prompt: "Which tiny phrase feels musical enough to repeat?"
       },
       {
-        label: "Groove",
-        source: "Play + Practice",
-        aim: "Lock the phrase to time.",
-        action: "Try 60 BPM first, then 76 BPM. Touch 100 BPM only if relaxed and steady.",
-        prompt: "Which tempo keeps tone clean and confidence intact?"
-      },
-      {
-        label: "Create",
+        label: "Conversation",
         source: "Play + Create",
-        aim: "Turn the drill into a musical exchange.",
-        action: "Do an A minor musical conversation: one person holds A minor, the other answers with small pentatonic phrases, then swap.",
+        aim: "End by making the idea social and musical.",
+        action: "One person holds A minor or a simple pulse. The other plays small A minor pentatonic phrases. Leave space, answer, then swap.",
         prompt: "What sounded like a conversation rather than an exercise?"
       },
       {
-        label: "Mastery",
-        source: "Mastery",
-        aim: "Remember what this can become.",
-        action: "Listen for a short blues, rock, flamenco, or song moment that uses small pentatonic ideas musically.",
-        prompt: "What kind of player or sound would inspire the next version?"
-      },
-      {
-        label: "Reflect",
+        label: "Review",
         source: "Hearth + Journey",
         aim: "Capture the next safe step.",
-        action: "Write what worked, what was hard, what Jen enjoyed, and what Ayla should prepare next.",
-        prompt: "What should repeat, simplify, or wait?"
+        action: "Ask what felt like home, what sounded musical, what was confusing, and whether the chord-shape map clue helped or felt like too much.",
+        prompt: "What should repeat, simplify, or wait next time?"
       }
+    ],
+    reviewPrompts: [
+      "What felt like home today?",
+      "What sounded most musical?",
+      "Did the CAGED/chord-shape clue help, or was it too much?",
+      "What did Jen enjoy or ask for?",
+      "What needs repetition next time?",
+      "What does Ayla need to prepare before teaching again?"
     ],
     practice: [
       "Make A root notes musical at 60 BPM",
       "Repeat at 76 BPM only if the pulse stays calm",
-      "Try 100 BPM as a light test, not a pass/fail challenge",
-      "Practise three small pentatonic boxes with a root safety note",
+      "Skip 100 BPM unless Jen is relaxed and curious",
+      "Use A as the safety note inside the pentatonic box",
       "Create one tiny A minor pentatonic phrase"
     ]
   }

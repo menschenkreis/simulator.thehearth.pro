@@ -64,6 +64,14 @@
 
     if (!rootEl || !documentRef || !doing || !ui) return;
 
+    rootEl.querySelectorAll(".doing-board-next").forEach(function bindNextButton(btn) {
+      btn.onclick = function openNext() {
+        if (onOpenDrill) {
+          onOpenDrill(this.getAttribute("data-cat"), this.getAttribute("data-drill"));
+        }
+      };
+    });
+
     rootEl.querySelectorAll(".drill-dot").forEach(function bindDot(dot) {
       dot.onclick = function openDot() {
         if (onOpenDrill) {
