@@ -87,14 +87,14 @@
       title: "Both Hands Coordination",
       description: "The full guitar: clean sound, timing, chord changes, scale rhythm, riffs, and applied coordination.",
       layout: "whole-guitar",
-      categories: ["picking", "fretting", "rhythm", "scales", "arpeggios", "speed", "styles", "fundamentals"],
+      categories: ["picking", "fretting", "rhythm", "scales", "chords", "coordination", "arpeggios", "speed", "styles", "fundamentals"],
       rows: [
         { id: "clean-sound", label: "Clean Sound", hint: "Both hands produce one clear note", weight: "1.4px", categories: ["fretting", "picking", "fundamentals"] },
         { id: "time", label: "In Time", hint: "Fretting and attack land together", weight: "1.8px", categories: ["rhythm", "picking"] },
-        { id: "changes", label: "Changes", hint: "Chord and shape changes", weight: "2.2px", categories: ["arpeggios", "fretting"] },
+        { id: "changes", label: "Changes", hint: "Chord and shape changes", weight: "2.2px", categories: ["chords", "arpeggios", "fretting"] },
         { id: "scale-time", label: "Scale Time", hint: "Scale patterns with pulse", weight: "2.6px", categories: ["scales", "rhythm"] },
         { id: "style", label: "Style", hint: "Physical accents inside musical style", weight: "3px", categories: ["styles", "rhythm"] },
-        { id: "voice", label: "Voice", hint: "Technique becomes music", weight: "3.4px", categories: ["scales", "arpeggios", "speed", "styles"] }
+        { id: "voice", label: "Voice", hint: "Technique becomes music", weight: "3.4px", categories: ["coordination", "scales", "arpeggios", "speed", "styles"] }
       ]
     }
   ];
@@ -146,7 +146,7 @@
       hint: "Coordination drills - timing, clean sound, chord changes, scale rhythm",
       points: "438,280 1054,220 1270,410 1110,650 512,690 334,472",
       board: "both-hands",
-      categories: ["picking", "fretting", "rhythm", "scales", "arpeggios", "speed", "styles"],
+      categories: ["picking", "fretting", "rhythm", "scales", "chords", "coordination", "arpeggios", "speed", "styles"],
       view: "training",
       seal: { icon: "\u21c4", x: "52%", y: "55%" }
     },
@@ -170,13 +170,13 @@
 
   var roomDrillPlans = {
     "left-hand": {
-      1: ["chrom-1", "classical-1", "stretch-1", "pent-1", "major-1"]
+      1: ["chrom-1", "classical-1", "stretch-1", "pent-1"]
     },
     "right-hand": {
       1: ["alt-1", "flatpick-1", "strum-1", "shuffle-1", "pima-1"]
     },
     "both-hands": {
-      1: ["chrom-1", "strum-1", "pent-1", "maj-arp", "pima-2"]
+      1: ["clean-note-1", "chord-clean-am", "chord-change-am-c", "pent-roots-time", "strum-1"]
     }
   };
 
@@ -250,6 +250,26 @@
       pass: "Record one loop and check whether the style is recognisable.",
       easier: "Slow the tempo. Focus on one accent per bar.",
       harder: "Combine two style techniques. Play it at original tempo."
+    },
+    chords: {
+      whatDo: "Build one chord carefully, check its strings, then connect it to one other chord.",
+      howDo: "Keep shared fingers close and move only what needs to move.",
+      howLong: "Three clean builds, then eight slow changes.",
+      listen: "Every intended string should ring and unwanted bass strings should stay quiet.",
+      mistake: "Squeezing harder instead of correcting fingertip angle and placement.",
+      pass: "Build the shape three times and make eight controlled changes without stopping.",
+      easier: "Practise the silent hand movement before adding a strum.",
+      harder: "Keep a steady four-beat strum through the change."
+    },
+    coordination: {
+      whatDo: "Make one small movement where the fretting and picking hands arrive together.",
+      howDo: "Prepare slowly, play once, listen, release, and reset.",
+      howLong: "Five clean repetitions, then one short phrase in time.",
+      listen: "The note should begin clearly, with no scrape, buzz, or delayed finger.",
+      mistake: "Repeating quickly before hearing what happened.",
+      pass: "Make five clean contacts in a row with the same relaxed movement.",
+      easier: "Separate the actions: fret, pause, then pick.",
+      harder: "Make both hands land together with a 60 BPM click."
     }
   };
 

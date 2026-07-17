@@ -152,6 +152,21 @@ REQUIRED_MARKERS = {
         "renderPracticeCandle",
         "lightPracticeCandle",
     ],
+    "adapters/practice-entry-model.js": [
+        "root.HearthPracticeEntryModel",
+        "buildSnapshot",
+        "learnerPracticeEvents",
+    ],
+    "adapters/practice-entry-viewer.js": [
+        "root.HearthPracticeEntryViewer",
+        "renderContext",
+        "practice-entry-hotspot",
+    ],
+    "adapters/practice-entry-controller.js": [
+        "root.HearthPracticeEntryController",
+        "root.showPractice = showPractice",
+        "hearth:journey-state",
+    ],
     "adapters/mastery-phoenix-viewer.js": [
         "root.MasteryPhoenix",
         "root.showMastery",

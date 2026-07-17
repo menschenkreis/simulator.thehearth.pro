@@ -24,6 +24,10 @@
     return "";
   }
 
+  function isLearnerReady(drill) {
+    return Boolean(drill && drill.reviewStatus !== "draft");
+  }
+
   function matchesGenre(config, drill, genreId) {
     if (genreId === "all") {
       return true;
@@ -80,6 +84,10 @@
     var activeStatus = options.activeStatus || "all";
     var config = options.config;
 
+    if (!isLearnerReady(drill)) {
+      return false;
+    }
+
     if (!matchesBoard(config, cat, drill, activeBoard)) {
       return false;
     }
@@ -102,6 +110,9 @@
     var count = 0;
     options.doing.categories.forEach(function eachCategory(cat) {
       cat.drills.forEach(function eachDrill(drill) {
+        if (!isLearnerReady(drill)) {
+          return;
+        }
         if (!matchesBoard(options.config, cat, drill, options.activeBoard || "both-hands")) {
           return;
         }
@@ -130,6 +141,9 @@
     var count = 0;
     options.doing.categories.forEach(function eachCategory(cat) {
       cat.drills.forEach(function eachDrill(drill) {
+        if (!isLearnerReady(drill)) {
+          return;
+        }
         if (!matchesBoard(options.config, cat, drill, options.activeBoard || "both-hands")) {
           return;
         }
@@ -155,6 +169,9 @@
     var count = 0;
     options.doing.categories.forEach(function eachCategory(cat) {
       cat.drills.forEach(function eachDrill(drill) {
+        if (!isLearnerReady(drill)) {
+          return;
+        }
         if (!matchesBoard(options.config, cat, drill, options.activeBoard || "both-hands")) {
           return;
         }
@@ -206,6 +223,9 @@
     var touched = 0;
     doing.categories.forEach(function eachCategory(cat) {
       cat.drills.forEach(function eachDrill(drill) {
+        if (!isLearnerReady(drill)) {
+          return;
+        }
         total++;
         var state = getState(progress, stateOrder, drill.id);
         if (state) {
@@ -228,12 +248,19 @@
     var lowPct = 101;
     doing.categories.forEach(function eachCategory(cat) {
       var done = 0;
-      var all = cat.drills.length;
+      var all = 0;
       cat.drills.forEach(function eachDrill(drill) {
+        if (!isLearnerReady(drill)) {
+          return;
+        }
+        all++;
         if (getState(progress, stateOrder, drill.id) === "mastered") {
           done++;
         }
       });
+      if (!all) {
+        return;
+      }
       var pct = all ? Math.round(done / all * 100) : 0;
       if (pct < lowPct) {
         lowPct = pct;
@@ -250,6 +277,9 @@
     for (var ci = 0; ci < doing.categories.length; ci++) {
       var cat = doing.categories[ci];
       for (var di = 0; di < cat.drills.length; di++) {
+        if (!isLearnerReady(cat.drills[di])) {
+          continue;
+        }
         var state = getState(progress, stateOrder, cat.drills[di].id);
         if (!state || state === "seen") {
           return { cat: cat, drill: cat.drills[di] };
@@ -268,6 +298,7 @@
     findNextDrill: findNextDrill,
     getState: getState,
     isVisible: isVisible,
+    isLearnerReady: isLearnerReady,
     matchesBoard: matchesBoard,
     matchesCategory: matchesCategory,
     matchesGenre: matchesGenre,

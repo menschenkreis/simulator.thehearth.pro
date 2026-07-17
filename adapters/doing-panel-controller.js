@@ -38,6 +38,10 @@
 
     var doing = root.DOING;
     if (!doing) return;
+    var drillCatalog = root.HearthDoingDrillCatalog;
+    if (drillCatalog && drillCatalog.apply) {
+      drillCatalog.apply(doing);
+    }
     var storage = root.localStorage;
     var progress = JSON.parse((storage && storage.getItem("hearth-doing-progress")) || "{}");
     var doingConfig = root.HearthDoingConfig;

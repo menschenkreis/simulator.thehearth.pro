@@ -94,6 +94,8 @@ eval(readText(root + "/adapters/practice-session-model.js"));
 eval(readText(root + "/adapters/practice-session-viewer.js"));
 eval(readText(root + "/adapters/practice-ui-utils.js"));
 eval(readText(root + "/adapters/practice-metronome-controller.js"));
+eval(readText(root + "/adapters/practice-entry-model.js"));
+eval(readText(root + "/adapters/practice-entry-viewer.js"));
 eval(readText(root + "/adapters/play-world-viewer.js"));
 eval(readText(root + "/adapters/mastery-viewer.js"));
 eval(readText(root + "/adapters/create-cauldron-model.js"));
@@ -162,6 +164,18 @@ assert(HearthDoingConfig.focusCats.length === 4, "Doing config should expose foc
 assert(HearthDoingConfig.roomDrillPlans["left-hand"][1].indexOf("chrom-1") !== -1, "Doing config should expose curated room drills");
 assert(HearthDoingUiUtils.escapeHtml("<pick>") === "&lt;pick&gt;", "Doing UI utils should escape HTML");
 assert(HearthDoingUiUtils.drillShort({{ title: "Alternate Picking" }}) === "AP", "Doing UI utils should build drill initials");
+var practiceEntrySnapshot = HearthPracticeEntryModel.buildSnapshot({{
+  journeyState: {{ activeStudentId: "jen-1", students: [{{ id: "jen-1", name: "Jen", levels: {{}} }}] }},
+  companions: {{ jen: {{ commitment: {{ title: "20-minute daily practice thread", today: "A roots and one musical jam." }}, practice: ["A minor pentatonic", "Right-hand pattern"] }} }},
+  events: [{{ event_type: "practice_session_completed", learner_id: "jen-1", duration_minutes: 8, created_at: new Date().toISOString(), data: {{ focus: "A roots" }} }}],
+  candleState: {{ running: false }}
+}});
+assert(practiceEntrySnapshot.learner.name === "Jen", "Practice entry should use the active learner");
+assert(practiceEntrySnapshot.commitment.targetMinutes === 20, "Practice entry should derive the commitment length");
+assert(practiceEntrySnapshot.commitment.todayMinutes === 8, "Practice entry should total today's learner-specific minutes");
+var practiceEntryHtml = HearthPracticeEntryViewer.render(practiceEntrySnapshot, "planned");
+assert(practiceEntryHtml.indexOf('data-practice-mode="planned"') !== -1, "Practice entry should render the planned-session hotspot");
+assert(practiceEntryHtml.indexOf("streak") === -1, "Practice entry should not use guilt-based streak language");
 var fakeDoing = {{
   categories: [
     {{

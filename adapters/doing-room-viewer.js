@@ -13,6 +13,41 @@
 })(typeof globalThis !== "undefined" ? globalThis : this, function createDoingRoomViewer(root) {
   "use strict";
 
+  function renderTeachingVisual(drill, ui) {
+    var asset = drill.asset || "";
+    var title = drill.shortTitle || drill.title;
+    var visualType = drill.visualType || "movement";
+    var assetHtml = asset
+      ? '<img class="doing-teaching-asset" src="' + ui.escapeHtml(asset) + '?v=20260717" alt="' + ui.escapeHtml(title + " demonstration") + '" draggable="false">'
+      : '<div class="doing-teaching-diagram doing-teaching-diagram--' + ui.escapeHtml(visualType) + '" aria-hidden="true">' +
+        '<div class="doing-teaching-diagram-neck"><i></i><i></i><i></i><i></i><i></i><i></i></div>' +
+        '<div class="doing-teaching-diagram-motion"><b>1</b><b>2</b><b>3</b><b>4</b></div>' +
+        '</div>';
+
+    return '<div class="doing-teaching-visual">' +
+      assetHtml +
+      '<div class="doing-teaching-visual-label"><span>Movement</span><b>' + ui.escapeHtml(title) + '</b></div>' +
+      '</div>';
+  }
+
+  function renderTeachingSteps(drill, coach, ui) {
+    var steps = Array.isArray(drill.steps) && drill.steps.length
+      ? drill.steps
+      : [coach && coach.whatDo, coach && coach.howDo, coach && coach.howLong].filter(Boolean);
+    return steps.map(function renderStep(step, index) {
+      return '<li><b>' + (index + 1) + '</b><span>' + ui.escapeHtml(step) + '</span></li>';
+    }).join("");
+  }
+
+  function renderListenChips(drill, coach, ui) {
+    var listenFor = Array.isArray(drill.listenFor) && drill.listenFor.length
+      ? drill.listenFor
+      : [coach && coach.listen].filter(Boolean);
+    return listenFor.map(function renderListenItem(item) {
+      return '<span>' + ui.escapeHtml(item) + '</span>';
+    }).join("");
+  }
+
   function renderRoomStage(options) {
     var selectedItem = options.selectedItem;
     var config = options.config;
@@ -21,10 +56,9 @@
     var stateLabels = options.stateLabels || {};
 
     if (!selectedItem) {
-      return '<div class="doing-room-stage-panel doing-room-stage-panel--empty">' +
-        '<div class="doing-room-stage-kicker">Choose a drill</div>' +
-        '<h4>Pick one circle below.</h4>' +
-        '<p>The photo stays clean. The drill opens here when you choose what you want to practise.</p>' +
+      return '<div class="doing-room-empty-prompt">' +
+        '<span>Choose one drill below</span>' +
+        '<b>The teaching scene will open here.</b>' +
         "</div>";
     }
 
@@ -47,24 +81,28 @@
         "</button>";
     }).join("");
 
-    return '<div class="doing-room-stage-panel">' +
-      '<div class="doing-room-stage-kicker">' + ui.escapeHtml(cat.title) + ' · ' + ui.escapeHtml(drill.duration || "5 min") + "</div>" +
-      '<h4>' + ui.escapeHtml(drill.title) + "</h4>" +
-      '<div class="doing-room-stage-meta">' +
-      '<span>BPM ' + ui.escapeHtml(drill.bpm || "gentle") + "</span>" +
-      '<span>' + ui.escapeHtml(label) + "</span>" +
-      "</div>" +
-      '<div class="doing-room-stage-body">' + (drill.body || "<p>Practise this slowly enough that the sound stays clean.</p>") + "</div>" +
-      (coach ? '<div class="doing-room-coach-grid">' +
-        '<div><b>Do</b><span>' + ui.escapeHtml(coach.whatDo) + "</span></div>" +
-        '<div><b>Listen</b><span>' + ui.escapeHtml(coach.listen) + "</span></div>" +
-        '<div><b>Clean means</b><span>' + ui.escapeHtml(coach.pass) + "</span></div>" +
-        "</div>" : "") +
-      '<div class="doing-room-feedback">' +
-      '<span>How did it go?</span>' +
-      feedbackButtons +
-      "</div>" +
-      "</div>";
+    var passCondition = drill.passCondition || (coach && coach.pass) || "Repeat the movement cleanly three times.";
+    var easier = drill.easier || (coach && coach.easier) || "Slow down and use fewer notes.";
+    var goal = drill.goal || "Train this movement slowly enough to hear what your hands are doing.";
+    var safety = drill.safety || "Stop and reset if the movement becomes tense.";
+
+    return '<div class="doing-teaching-scene">' +
+      renderTeachingVisual(drill, ui) +
+      '<div class="doing-teaching-content">' +
+        '<div class="doing-room-stage-kicker">' + ui.escapeHtml(cat.title) + ' · ' + ui.escapeHtml(drill.duration || "5 min") + '</div>' +
+        '<h4>' + ui.escapeHtml(drill.title) + '</h4>' +
+        '<p class="doing-teaching-goal">' + ui.escapeHtml(goal) + '</p>' +
+        '<div class="doing-room-stage-meta"><span>BPM ' + ui.escapeHtml(drill.bpm || "gentle") + '</span><span>' + ui.escapeHtml(label) + '</span></div>' +
+        '<ol class="doing-teaching-steps">' + renderTeachingSteps(drill, coach, ui) + '</ol>' +
+        '<div class="doing-teaching-listen"><b>Listen for</b><div>' + renderListenChips(drill, coach, ui) + '</div></div>' +
+        '<div class="doing-teaching-checks">' +
+          '<div><span>Success</span><b>' + ui.escapeHtml(passCondition) + '</b></div>' +
+          '<div><span>Make it easier</span><b>' + ui.escapeHtml(easier) + '</b></div>' +
+        '</div>' +
+        '<p class="doing-teaching-safety">' + ui.escapeHtml(safety) + '</p>' +
+        '<div class="doing-room-feedback"><span>How did it go?</span>' + feedbackButtons + '</div>' +
+      '</div>' +
+      '</div>';
   }
 
   function renderRoomGraphic(options) {
@@ -73,7 +111,7 @@
     var ui = options.ui;
     var selectedItem = options.selectedItem;
     return '<div class="doing-room-graphic doing-room-graphic--zoom doing-room-graphic--' + ui.escapeHtml(roomId) + (selectedItem ? " is-drill-open" : "") + '">' +
-      '<img src="images/doing/doing-arms-guitar-v2.png?v=20260717b" alt="' + ui.escapeHtml(board.label) + ' guitar training zoom" draggable="false">' +
+      '<img class="doing-room-base-image" src="images/doing/doing-arms-guitar-v2.png?v=20260717b" alt="' + ui.escapeHtml(board.label) + ' guitar training zoom" draggable="false">' +
       '<div class="doing-room-vignette" aria-hidden="true"></div>' +
       renderRoomStage(options) +
       "</div>";

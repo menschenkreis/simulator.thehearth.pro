@@ -269,10 +269,25 @@
     renderPracticeCandle();
   }
 
+  function openPracticeCandle(options) {
+    options = options || {};
+    if (!options.preserve) {
+      clearInterval(PRACTICE_CANDLE.timerId);
+      PRACTICE_CANDLE.durationMinutes = Number(options.durationMinutes) || PRACTICE_CANDLE.durationMinutes || 20;
+      PRACTICE_CANDLE.totalMs = PRACTICE_CANDLE.durationMinutes * 60 * 1000;
+      PRACTICE_CANDLE.focus = options.focus || PRACTICE_CANDLE.focus || "Clean";
+      PRACTICE_CANDLE.startedAt = null;
+      PRACTICE_CANDLE.running = false;
+      PRACTICE_CANDLE.complete = false;
+    }
+    renderPracticeCandle();
+  }
+
   root.PracticeCandle = {
     practiceDuration: setPracticeDuration,
     practiceFocus: setPracticeFocus,
     lightCandle: lightPracticeCandle,
+    open: openPracticeCandle,
     saveEmber: savePracticeEmber,
     render: renderPracticeCandle,
     state: function() { return PRACTICE_CANDLE; }
