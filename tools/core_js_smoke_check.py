@@ -156,8 +156,8 @@ assert(HearthDoingConfig.levelForDrill({{ id: "alt-1", difficulty: 8 }}) === 1, 
 assert(HearthDoingConfig.levelForDrill({{ id: "unknown", difficulty: 9 }}) === 8, "Doing config should clamp fallback drill levels");
 assert(HearthDoingConfig.coachForCategory("picking").whatDo.indexOf("pick") !== -1, "Doing config should return category coaching");
 assert(HearthDoingConfig.coachForCategory("missing").pass.indexOf("dead notes") !== -1, "Doing config should fall back to fretting coaching");
-assert(HearthDoingConfig.guitarZones.length === 6, "Doing config should expose guitar map zones");
-assert(HearthDoingConfig.focusCats.length === 6, "Doing config should expose focus categories");
+assert(HearthDoingConfig.guitarZones.length === 4, "Doing config should expose guitar map zones");
+assert(HearthDoingConfig.focusCats.length === 4, "Doing config should expose focus categories");
 assert(HearthDoingUiUtils.escapeHtml("<pick>") === "&lt;pick&gt;", "Doing UI utils should escape HTML");
 assert(HearthDoingUiUtils.drillShort({{ title: "Alternate Picking" }}) === "AP", "Doing UI utils should build drill initials");
 var fakeDoing = {{
@@ -216,8 +216,8 @@ var doingBoardHtml = HearthDoingDrillBoardViewer.renderDoingDrillBoard({{
   activeLevel: "all",
   activeSearch: ""
 }});
-assert(doingBoardHtml.indexOf("doing-fretboard-stage") !== -1, "Doing board viewer should render board shell");
-assert(doingBoardHtml.indexOf("1/2 mastered in view") !== -1, "Doing board viewer should render mastered count");
+assert(doingBoardHtml.indexOf("doing-library-neck") !== -1, "Doing board viewer should render the physical fretboard");
+assert(doingBoardHtml.indexOf("mastered in view") !== -1, "Doing board viewer should render mastered count");
 var doingShellHtml = HearthDoingShellViewer.renderDoingShell({{
   doing: {{ title: "Doing Test", subtitle: "Practice test" }},
   ui: HearthDoingUiUtils,

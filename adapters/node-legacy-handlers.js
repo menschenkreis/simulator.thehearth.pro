@@ -86,6 +86,13 @@
     return undefined;
   };
 
+  root.openDoingDrillLibrary = function openDoingDrillLibrary() {
+    if (root._openDoingDrillLibrary) {
+      return root._openDoingDrillLibrary();
+    }
+    return undefined;
+  };
+
   root.showKnowing = function showKnowing() {
     if (root.HearthKnowingPanelController) {
       return root.HearthKnowingPanelController.showKnowing();

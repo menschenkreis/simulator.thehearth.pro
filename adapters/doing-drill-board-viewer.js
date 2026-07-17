@@ -1,7 +1,8 @@
 /*
- * Doing drill board viewer adapter v0.
+ * Doing drill board viewer adapter v1.
  *
- * Renders the level/string drill grid for the legacy Doing view.
+ * Renders a real six-string, twelve-fret drill library over the shared wood
+ * asset. Drill data and progress remain independent from the artwork.
  */
 (function initDoingDrillBoardViewer(root, factory) {
   if (typeof module !== "undefined" && module.exports) {
@@ -12,6 +13,59 @@
 })(typeof globalThis !== "undefined" ? globalThis : this, function createDoingDrillBoardViewer(root) {
   "use strict";
 
+  var STRING_LABELS = ["e", "B", "G", "D", "A", "E"];
+  var FRET_COUNT = 12;
+  var CATEGORY_ROWS = {
+    speed: 1,
+    styles: 1,
+    arpeggios: 2,
+    scales: 3,
+    picking: 4,
+    fretting: 5,
+    fundamentals: 5,
+    rhythm: 6
+  };
+
+  function hashString(value) {
+    var hash = 0;
+    String(value || "").split("").forEach(function hashChar(ch) {
+      hash = ((hash * 31) + ch.charCodeAt(0)) >>> 0;
+    });
+    return hash;
+  }
+
+  function assignPositions(items) {
+    var used = {};
+    return items.map(function assignPosition(item, index) {
+      var row = CATEGORY_ROWS[item.cat.id] || ((index % 6) + 1);
+      if (!used[row]) used[row] = {};
+      var fret = (hashString(item.drill.id) % FRET_COUNT) + 1;
+      var attempts = 0;
+      while (used[row][fret] && attempts < FRET_COUNT) {
+        fret = (fret % FRET_COUNT) + 1;
+        attempts++;
+      }
+      if (attempts >= FRET_COUNT) {
+        row = (row % 6) + 1;
+        if (!used[row]) used[row] = {};
+        fret = (hashString(item.drill.id + index) % FRET_COUNT) + 1;
+        while (used[row][fret]) fret = (fret % FRET_COUNT) + 1;
+      }
+      used[row][fret] = true;
+      return { item: item, row: row, fret: fret };
+    });
+  }
+
+  function progressDegrees(state, stateOrder) {
+    if (!state) return 0;
+    var index = stateOrder.indexOf(state);
+    return index < 0 ? 0 : Math.round(((index + 1) / stateOrder.length) * 360);
+  }
+
+  function optionHtml(esc, value, label, selected) {
+    return '<option value="' + esc(value) + '"' + (String(value) === String(selected) ? " selected" : "") + '>' + esc(label) + '</option>';
+  }
+
   function renderDoingDrillBoard(options) {
     options = options || {};
     var doing = options.doing;
@@ -20,155 +74,134 @@
     var boardModel = options.boardModel || root.HearthDoingDrillBoardModel;
     var progress = options.progress || {};
     var activeStyle = options.activeStyle || "all";
-    var activeLevel = options.activeLevel || "all";
+    var activeLevel = String(options.activeLevel === "all" ? "1" : (options.activeLevel || "1"));
     var activeSearch = options.activeSearch || "";
-    var activeBoard = options.activeBoard || "both-hands";
+    var activeBoard = options.activeBoard || "all";
+    var activeCategory = options.activeCategory || "all";
+    var activeStatus = options.activeStatus || "all";
 
-    if (!doing || !config || !ui || !boardModel) {
-      return "";
-    }
+    if (!doing || !config || !ui || !boardModel) return "";
 
-    var levels = config.levels;
-    var boards = config.trainingBoards || [];
-    var board = config.boardForId ? config.boardForId(activeBoard) : boards[0];
-    var stringRows = (board && board.rows) || config.stringRows;
-    var stateOrder = config.stateOrder;
-    var stateLabels = config.stateLabels;
-    var genreFilters = config.genreFilters;
     var esc = ui.escapeHtml;
+    var stateOrder = config.stateOrder || [];
     var boardOptions = {
       doing: doing,
       config: config,
+      progress: progress,
+      stateOrder: stateOrder,
       activeStyle: activeStyle,
       activeLevel: activeLevel,
       activeSearch: activeSearch,
-      activeBoard: activeBoard
+      activeBoard: activeBoard,
+      activeCategory: activeCategory,
+      activeStatus: activeStatus
     };
+    var visible = boardModel.visibleDrills(boardOptions);
+    var positioned = assignPositions(visible);
+    var selectedBoard = activeBoard === "all" ? null : config.boardForId(activeBoard);
+    var title = selectedBoard ? selectedBoard.title : "Drill Library";
+    var description = selectedBoard
+      ? selectedBoard.description
+      : "Every physical drill lives here. Filter the library without losing your place on the instrument.";
+    var mastered = visible.filter(function countMastered(entry) {
+      return boardModel.getState(progress, stateOrder, entry.drill.id) === "mastered";
+    }).length;
+    var nextVisible = visible.find(function findNext(entry) {
+      var state = boardModel.getState(progress, stateOrder, entry.drill.id);
+      return !state || state === "seen";
+    }) || visible[0] || null;
 
-    var totalDrills = 0;
-    var doneDrills = 0;
-    var nextVisible = null;
-    doing.categories.forEach(function eachCategory(cat) {
-      cat.drills.forEach(function eachDrill(drill) {
-        if (boardModel.isVisible(boardOptions, cat, drill)) {
-          totalDrills++;
-          var drillState = boardModel.getState(progress, stateOrder, drill.id);
-          if (!nextVisible && (!drillState || drillState === "seen")) {
-            nextVisible = { cat: cat, drill: drill };
-          }
-          if (drillState === "mastered") {
-            doneDrills++;
-          }
-        }
-      });
+    var html = '<section class="doing-library" aria-label="Guitar drill library">' +
+      '<header class="doing-library-head">' +
+        '<div><div class="doing-board-kicker">Do node &middot; Level ' + esc(activeLevel) + '</div>' +
+        '<h3>' + esc(title) + '</h3><p>' + esc(description) + '</p></div>' +
+        '<div class="doing-library-progress" aria-label="' + mastered + ' of ' + visible.length + ' drills mastered">' +
+          '<strong>' + mastered + '<span>/' + visible.length + '</span></strong><small>mastered in view</small>' +
+        '</div>' +
+      '</header>' +
+      '<div class="doing-library-toolbar" aria-label="Drill filters">' +
+        '<label><span>Level</span><select id="doing-level-select">';
+    config.levels.forEach(function renderLevel(level) {
+      html += optionHtml(esc, level.level, level.label, activeLevel);
     });
-
-    var html = '<div class="doing-board-intro">' +
-      '<div><div class="doing-board-kicker">Physical board</div>' +
-      '<h3>' + esc(board ? board.title : "Training Board") + "</h3>" +
-      '<p>' + esc(board ? board.description : "Choose one drill dot and train it cleanly.") + "</p></div>" +
-      '<div class="doing-board-tabs" id="doing-board-tabs">';
-    boards.forEach(function renderBoardTab(item) {
-      html += '<button class="doing-board-tab' + (item.id === activeBoard ? " active" : "") + '" data-board="' + esc(item.id) + '">' +
-        '<span>' + esc(item.shortLabel || item.label) + "</span>" +
-        '<small>' + esc(item.layout === "neck" ? "Neck" : item.layout === "soundhole" ? "Soundhole" : "Whole guitar") + "</small>" +
-        "</button>";
+    html += '</select></label><label><span>Area</span><select id="doing-board-select">' +
+      optionHtml(esc, "all", "All drills", activeBoard);
+    (config.trainingBoards || []).forEach(function renderBoard(board) {
+      html += optionHtml(esc, board.id, board.label, activeBoard);
     });
-    html += "</div></div>";
-
-    if (activeBoard === "left-hand") {
-      html += '<div class="doing-jen-focus">' +
-        '<div><span>Jen focus</span><strong>A minor pentatonic + clean left-hand contact</strong></div>' +
-        '<ul>' +
-          '<li>A roots</li>' +
-          '<li>A minor pentatonic box</li>' +
-          '<li>E / A landmarks</li>' +
-          '<li>tiny finger-independence</li>' +
-        '</ul>' +
+    html += '</select></label><label><span>Skill</span><select id="doing-category-select">' +
+      optionHtml(esc, "all", "All skills", activeCategory);
+    doing.categories.forEach(function renderCategory(cat) {
+      html += optionHtml(esc, cat.id, cat.title, activeCategory);
+    });
+    html += '</select></label><label><span>Genre</span><select id="doing-style-select">' +
+      optionHtml(esc, "all", "All genres", activeStyle);
+    config.genreFilters.forEach(function renderGenre(genre) {
+      html += optionHtml(esc, genre.id, genre.label, activeStyle);
+    });
+    html += '</select></label><label><span>Status</span><select id="doing-status-select">' +
+      optionHtml(esc, "all", "Any status", activeStatus) +
+      optionHtml(esc, "new", "New", activeStatus) +
+      optionHtml(esc, "in-progress", "In progress", activeStatus) +
+      optionHtml(esc, "mastered", "Mastered", activeStatus) +
+      '</select></label><label class="doing-library-search"><span>Search</span>' +
+      '<input id="doing-search" type="search" value="' + esc(activeSearch) + '" placeholder="Find a drill"></label>' +
       '</div>';
-    }
-
-    html += '<div class="doing-controls">' +
-      '<div id="doing-level-filters" class="doing-level-rail">' +
-      '<span class="doing-level-filter' + (activeLevel === "all" ? " active" : "") + '" data-level="all">All levels<span class="filter-count">' + boardModel.countForAllGenresAllLevels(boardOptions) + "</span></span>";
-    levels.forEach(function renderLevel(lv) {
-      var lvCount = boardModel.countForLevelAnyGenre(boardOptions, lv.level);
-      html += '<span class="doing-level-filter' + (String(activeLevel) === String(lv.level) ? " active" : "") + (lvCount === 0 ? " disabled" : "") + '" data-level="' + lv.level + '">' + lv.label + '<span class="filter-count">' + lvCount + "</span></span>";
-    });
-    html += "</div>" +
-      '<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">' +
-      '<input id="doing-search" class="doing-search" type="text" placeholder="Search drills..." value="' + esc(activeSearch) + '">' +
-      '<div id="style-filters" style="display:flex;gap:6px;flex-wrap:wrap">' +
-      '<span class="style-filter' + (activeStyle === "all" ? " active" : "") + '" data-style="all">All genres<span class="filter-count">' + boardModel.countForGenre(boardOptions, "all") + "</span></span>";
-    genreFilters.forEach(function renderGenre(genre) {
-      var genreCount = boardModel.countForGenre(boardOptions, genre.id);
-      html += '<span class="style-filter' + (activeStyle === genre.id ? " active" : "") + (genreCount === 0 ? " disabled" : "") + '" data-style="' + esc(genre.id) + '">' + esc(genre.label) + '<span class="filter-count">' + genreCount + "</span></span>";
-    });
-    html += "</div></div></div>";
 
     if (nextVisible) {
-      html += '<button class="doing-board-next" data-cat="' + esc(nextVisible.cat.id) + '" data-drill="' + esc(nextVisible.drill.id) + '">' +
-        '<span>Start here</span>' +
-        '<strong>' + esc(nextVisible.drill.title) + '</strong>' +
-        '<small>' + esc(nextVisible.cat.title + " · Level " + config.levelForDrill(nextVisible.drill) + " · " + nextVisible.drill.duration) + "</small>" +
-        "</button>";
+      var nextState = boardModel.getState(progress, stateOrder, nextVisible.drill.id);
+      html += '<button class="doing-board-next doing-library-next" data-cat="' + esc(nextVisible.cat.id) + '" data-drill="' + esc(nextVisible.drill.id) + '">' +
+        '<span>Next drill</span><strong>' + esc(nextVisible.drill.title) + '</strong>' +
+        '<small>' + esc(nextVisible.cat.title + " - " + nextVisible.drill.duration + (nextState ? " - Continue" : "")) + '</small></button>';
     }
 
-    html += '<div class="doing-fretboard-stage doing-board-stage doing-board-' + esc(board ? board.layout : "neck") + '">' +
-      '<div class="doing-string-labels" aria-label="Standard guitar tuning">';
-    stringRows.forEach(function renderStringLabel(row) {
-      html += '<div class="doing-string-note" title="' + esc(row.hint) + '">' + esc(row.label) + "</div>";
+    html += '<div class="doing-library-scroll" role="region" tabindex="0" aria-label="Twelve-fret drill board">' +
+      '<div class="doing-library-instrument">' +
+        '<div class="doing-library-fret-numbers" aria-hidden="true">';
+    for (var fretNumber = 1; fretNumber <= FRET_COUNT; fretNumber++) {
+      html += '<span>' + fretNumber + '</span>';
+    }
+    html += '</div><div class="doing-library-neck">' +
+      '<div class="doing-library-frets" aria-hidden="true">';
+    for (var fretWire = 1; fretWire <= FRET_COUNT; fretWire++) html += '<i></i>';
+    html += '</div><div class="doing-library-strings" aria-hidden="true">';
+    STRING_LABELS.forEach(function renderString(label, index) {
+      html += '<i style="--string-row:' + (index + 1) + ';--string-weight:' + (1 + (index * 0.38)) + 'px"><span>' + esc(label) + '</span></i>';
     });
-    html += "</div>" +
-      '<div class="doing-fretboard-wrap"><div class="doing-board-art" aria-hidden="true"></div><div class="doing-fretboard">' +
-      '<div class="doing-fret-header">';
-    levels.forEach(function renderLevelHeader(lv) {
-      html += '<div class="doing-level-head" title="' + esc(lv.tag) + '">' +
-        '<div class="doing-level-roman">' + esc(lv.label.replace("Level ", "")) + "</div>" +
-        '<div class="doing-level-name">' + esc(lv.name) + "</div>" +
-        "</div>";
-    });
-    html += "</div>";
+    html += '</div><div class="doing-library-inlays" aria-hidden="true">' +
+      '<i style="grid-column:3"></i><i style="grid-column:5"></i><i style="grid-column:7"></i><i style="grid-column:9"></i>' +
+      '<i class="double one" style="grid-column:12"></i><i class="double two" style="grid-column:12"></i>' +
+      '</div><div class="doing-library-nodes">';
 
-    stringRows.forEach(function renderStringRow(row) {
-      var filtered = boardModel.rowDrills(boardOptions, row);
-      html += '<div class="doing-string-row" data-string="' + esc(row.id) + '" style="--string-weight:' + esc(row.weight) + '">';
-      levels.forEach(function renderFretCell(lv) {
-        var drills = filtered.filter(function atLevel(item) {
-          return config.levelForDrill(item.drill) === lv.level;
-        });
-        html += '<div class="doing-fret-cell" data-level="' + esc(lv.level) + '">';
-        if (drills.length) {
-          drills.forEach(function renderDrillDot(item) {
-            var drill = item.drill;
-            var cat = item.cat;
-            var level = config.levelForDrill(drill);
-            var state = boardModel.getState(progress, stateOrder, drill.id);
-            var isNext = nextVisible && nextVisible.drill.id === drill.id;
-            html += '<button class="drill-dot level-' + esc(level) + (isNext ? " is-next" : "") + '" data-cat="' + esc(cat.id) + '" data-drill="' + esc(drill.id) + '" data-state="' + esc(state) + '" data-level="' + esc(level) + '" data-short="' + esc(ui.drillShort(drill)) + '" title="' + esc(cat.title + ": " + drill.title) + '"></button>';
-          });
-        } else {
-          html += '<span class="doing-empty-fret">-</span>';
-        }
-        html += "</div>";
-      });
-      html += "</div>";
+    positioned.forEach(function renderDrillNode(position) {
+      var item = position.item;
+      var state = boardModel.getState(progress, stateOrder, item.drill.id);
+      var level = config.levelForDrill(item.drill);
+      var isNext = nextVisible && nextVisible.drill.id === item.drill.id;
+      var degrees = progressDegrees(state, stateOrder);
+      html += '<button class="drill-dot doing-library-dot level-' + esc(level) + (isNext ? " is-next" : "") + '" ' +
+        'style="grid-column:' + position.fret + ';grid-row:' + position.row + ';--node-progress:' + degrees + 'deg" ' +
+        'data-cat="' + esc(item.cat.id) + '" data-drill="' + esc(item.drill.id) + '" data-state="' + esc(state) + '" ' +
+        'data-level="' + esc(level) + '" data-short="' + esc(ui.drillShort(item.drill)) + '" ' +
+        'aria-label="' + esc(item.cat.title + ": " + item.drill.title) + '" title="' + esc(item.cat.title + ": " + item.drill.title) + '">' +
+        '<span>' + esc(ui.drillShort(item.drill)) + '</span></button>';
     });
 
-    html += "</div></div></div>" +
-      '<div class="doing-legend">' +
-      "<span><i></i> Untouched</span>" +
-      '<span><i style="border-color:#e8a020"></i> In training</span>' +
-      '<span class="done"><i></i> Mastered</span>' +
-      '<span style="margin-left:auto">' + doneDrills + "/" + totalDrills + " mastered in view</span>" +
-      "</div>" +
-      (totalDrills === 0 ? '<div style="margin-top:10px;color:var(--dim);font-size:0.75rem">No drills match this search and filter combination.</div>' : "");
+    html += '</div>' +
+      (visible.length ? "" : '<div class="doing-library-empty">No drills match these filters.</div>') +
+      '</div></div></div>' +
+      '<footer class="doing-library-legend">' +
+        '<span><i class="new"></i>New</span><span><i class="progress"></i>In progress</span><span><i class="complete"></i>Mastered</span>' +
+        '<b>' + visible.length + ' drill' + (visible.length === 1 ? "" : "s") + '</b>' +
+      '</footer></section>';
 
     return html;
   }
 
   return {
-    version: "0.1.0",
+    version: "1.0.0",
+    assignPositions: assignPositions,
+    progressDegrees: progressDegrees,
     renderDoingDrillBoard: renderDoingDrillBoard
   };
 });

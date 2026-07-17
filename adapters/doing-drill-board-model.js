@@ -53,14 +53,40 @@
     return board.categories.indexOf(cat.id) >= 0 || board.categories.indexOf(drill.style) >= 0;
   }
 
+  function matchesCategory(cat, categoryId) {
+    return !categoryId || categoryId === "all" || cat.id === categoryId;
+  }
+
+  function matchesStatus(progress, stateOrder, drillId, statusId) {
+    if (!statusId || statusId === "all") {
+      return true;
+    }
+    var state = getState(progress || {}, stateOrder || [], drillId);
+    if (statusId === "new") {
+      return !state || state === "seen";
+    }
+    if (statusId === "in-progress") {
+      return Boolean(state) && state !== "mastered";
+    }
+    return statusId === "mastered" ? state === "mastered" : true;
+  }
+
   function isVisible(options, cat, drill) {
     var activeStyle = options.activeStyle || "all";
     var activeLevel = options.activeLevel || "all";
     var activeSearch = options.activeSearch || "";
     var activeBoard = options.activeBoard || "both-hands";
+    var activeCategory = options.activeCategory || "all";
+    var activeStatus = options.activeStatus || "all";
     var config = options.config;
 
     if (!matchesBoard(config, cat, drill, activeBoard)) {
+      return false;
+    }
+    if (!matchesCategory(cat, activeCategory)) {
+      return false;
+    }
+    if (!matchesStatus(options.progress, options.stateOrder, drill.id, activeStatus)) {
       return false;
     }
     if (!matchesGenre(config, drill, activeStyle)) {
@@ -77,6 +103,12 @@
     options.doing.categories.forEach(function eachCategory(cat) {
       cat.drills.forEach(function eachDrill(drill) {
         if (!matchesBoard(options.config, cat, drill, options.activeBoard || "both-hands")) {
+          return;
+        }
+        if (!matchesCategory(cat, options.activeCategory || "all")) {
+          return;
+        }
+        if (!matchesStatus(options.progress, options.stateOrder, drill.id, options.activeStatus || "all")) {
           return;
         }
         if (!matchesGenre(options.config, drill, genreId)) {
@@ -101,6 +133,12 @@
         if (!matchesBoard(options.config, cat, drill, options.activeBoard || "both-hands")) {
           return;
         }
+        if (!matchesCategory(cat, options.activeCategory || "all")) {
+          return;
+        }
+        if (!matchesStatus(options.progress, options.stateOrder, drill.id, options.activeStatus || "all")) {
+          return;
+        }
         if (String(options.config.levelForDrill(drill)) !== String(level)) {
           return;
         }
@@ -120,6 +158,12 @@
         if (!matchesBoard(options.config, cat, drill, options.activeBoard || "both-hands")) {
           return;
         }
+        if (!matchesCategory(cat, options.activeCategory || "all")) {
+          return;
+        }
+        if (!matchesStatus(options.progress, options.stateOrder, drill.id, options.activeStatus || "all")) {
+          return;
+        }
         if (!drillMatchesSearch(cat, drill, options.activeSearch || "")) {
           return;
         }
@@ -135,6 +179,18 @@
       if (row.categories.indexOf(cat.id) < 0) {
         return;
       }
+      cat.drills.forEach(function eachDrill(drill) {
+        if (isVisible(options, cat, drill)) {
+          items.push({ cat: cat, drill: drill });
+        }
+      });
+    });
+    return items;
+  }
+
+  function visibleDrills(options) {
+    var items = [];
+    options.doing.categories.forEach(function eachCategory(cat) {
       cat.drills.forEach(function eachDrill(drill) {
         if (isVisible(options, cat, drill)) {
           items.push({ cat: cat, drill: drill });
@@ -213,9 +269,12 @@
     getState: getState,
     isVisible: isVisible,
     matchesBoard: matchesBoard,
+    matchesCategory: matchesCategory,
     matchesGenre: matchesGenre,
+    matchesStatus: matchesStatus,
     rowDrills: rowDrills,
     summarizeProgress: summarizeProgress,
+    visibleDrills: visibleDrills,
     weakestCategory: weakestCategory
   };
 });

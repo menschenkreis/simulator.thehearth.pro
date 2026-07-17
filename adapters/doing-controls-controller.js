@@ -20,13 +20,13 @@
       return item.id === focusId;
     });
     if (focus && focus.categories && focus.categories.length) {
-      return { doingView: "training", activeStyle: "all", activeLevel: "all", activeBoard: focus.board || focus.id || "both-hands" };
+      return { doingView: "training", activeStyle: "all", activeLevel: "1", activeBoard: focus.board || focus.id || "both-hands", activeCategory: "all", activeStatus: "all" };
     }
-    return { doingView: "training" };
+    return { doingView: "training", activeLevel: "1" };
   }
 
   function stateForQuickLink(action) {
-    if (action === "open-map") return { doingView: "training" };
+    if (action === "open-map") return { doingView: "training", activeBoard: "all", activeLevel: "1", activeCategory: "all", activeStatus: "all" };
     if (action === "open-explorer") return { doingView: "explorer", activeExpTab: "notes" };
     return {};
   }
@@ -83,6 +83,49 @@
     }
 
     if (doingView !== "training") return;
+
+    var boardSelect = documentRef.getElementById("doing-board-select");
+    if (boardSelect && rerenderBoard) {
+      boardSelect.onchange = function onBoardSelect() {
+        setState({ activeBoard: this.value || "all", activeCategory: "all" });
+        if (normalizeActiveStyle) normalizeActiveStyle();
+        rerenderBoard();
+      };
+    }
+
+    var levelSelect = documentRef.getElementById("doing-level-select");
+    if (levelSelect && rerenderBoard) {
+      levelSelect.onchange = function onLevelSelect() {
+        setState({ activeLevel: this.value || "1" });
+        if (normalizeActiveStyle) normalizeActiveStyle();
+        rerenderBoard();
+      };
+    }
+
+    var categorySelect = documentRef.getElementById("doing-category-select");
+    if (categorySelect && rerenderBoard) {
+      categorySelect.onchange = function onCategorySelect() {
+        setState({ activeCategory: this.value || "all" });
+        if (normalizeActiveStyle) normalizeActiveStyle();
+        rerenderBoard();
+      };
+    }
+
+    var styleSelect = documentRef.getElementById("doing-style-select");
+    if (styleSelect && rerenderBoard) {
+      styleSelect.onchange = function onStyleSelect() {
+        setState({ activeStyle: this.value || "all" });
+        rerenderBoard();
+      };
+    }
+
+    var statusSelect = documentRef.getElementById("doing-status-select");
+    if (statusSelect && rerenderBoard) {
+      statusSelect.onchange = function onStatusSelect() {
+        setState({ activeStatus: this.value || "all" });
+        rerenderBoard();
+      };
+    }
 
     var boardTabs = documentRef.getElementById("doing-board-tabs");
     if (boardTabs && rerenderBoard) {

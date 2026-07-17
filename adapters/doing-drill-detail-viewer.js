@@ -21,6 +21,7 @@
     var config = options.config || root.HearthDoingConfig;
     var ui = options.ui || root.HearthDoingUiUtils;
     var stateAction = options.stateAction || "setDoingDrillState";
+    var backAction = options.backAction || "showDoing";
 
     if (!cat || !drill || !config || !ui) {
       return "";
@@ -37,7 +38,7 @@
     }).join("");
 
     return '<div class="doing-drill-page">' +
-      '<button class="back-btn" onclick="showDoing()">&larr; Back</button>' +
+      '<button class="back-btn" onclick="' + esc(backAction) + '()">&larr; Drill Library</button>' +
       '<div class="doing-drill-card doing-drill-card--clean">' +
         '<div class="doing-kicker">' + esc(cat.title) + ' &middot; ' + esc(level.name || "Current level") + '</div>' +
         '<h2>' + esc(drill.title) + '</h2>' +

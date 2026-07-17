@@ -19,6 +19,8 @@
     if (Object.prototype.hasOwnProperty.call(nextState, "activeLevel")) target.activeLevel = nextState.activeLevel;
     if (Object.prototype.hasOwnProperty.call(nextState, "activeSearch")) target.activeSearch = nextState.activeSearch;
     if (Object.prototype.hasOwnProperty.call(nextState, "activeBoard")) target.activeBoard = nextState.activeBoard;
+    if (Object.prototype.hasOwnProperty.call(nextState, "activeCategory")) target.activeCategory = nextState.activeCategory;
+    if (Object.prototype.hasOwnProperty.call(nextState, "activeStatus")) target.activeStatus = nextState.activeStatus;
     if (Object.prototype.hasOwnProperty.call(nextState, "activeRoomConcept")) target.activeRoomConcept = nextState.activeRoomConcept;
   }
 
@@ -51,9 +53,11 @@
     var nextDrill = doingBoard.findNextDrill(doing, progress, stateOrder);
     var state = {
       activeStyle: "all",
-      activeLevel: "all",
+      activeLevel: "1",
       activeSearch: "",
-      activeBoard: "both-hands",
+      activeBoard: "all",
+      activeCategory: "all",
+      activeStatus: "all",
       doingView: "map",
       activeExpTab: "notes",
       doingDebug: false,
@@ -67,7 +71,11 @@
         activeStyle: state.activeStyle,
         activeLevel: state.activeLevel,
         activeSearch: state.activeSearch,
-        activeBoard: state.activeBoard
+        activeBoard: state.activeBoard,
+        activeCategory: state.activeCategory,
+        activeStatus: state.activeStatus,
+        progress: progress,
+        stateOrder: stateOrder
       };
     }
 
@@ -101,7 +109,9 @@
         activeStyle: state.activeStyle,
         activeLevel: state.activeLevel,
         activeSearch: state.activeSearch,
-        activeBoard: state.activeBoard
+        activeBoard: state.activeBoard,
+        activeCategory: state.activeCategory,
+        activeStatus: state.activeStatus
       });
     }
 
@@ -111,6 +121,11 @@
       if (!cat) return;
       var drill = cat.drills.find(function findDrill(item) { return item.id === drillId; });
       if (!drill) return;
+      if (!getState(drillId)) {
+        progress[drillId] = "seen";
+        if (storage) storage.setItem("hearth-doing-progress", JSON.stringify(progress));
+        progressSummary = doingBoard.summarizeProgress(doing, progress, stateOrder);
+      }
       var level = levels.find(function findLevel(item) {
         return item.level === getDoingLevel(drill);
       }) || levels[0];
@@ -121,8 +136,17 @@
         level: level,
         state: getState(drillId),
         config: doingConfig,
-        ui: doingUi
+        ui: doingUi,
+        backAction: "window._doingBackToLibrary"
       });
+    };
+
+    root.setDoingDrillState = function setDoingDrillState(catId, drillId, nextState) {
+      if (stateOrder.indexOf(nextState) < 0) return;
+      progress[drillId] = nextState;
+      if (storage) storage.setItem("hearth-doing-progress", JSON.stringify(progress));
+      progressSummary = doingBoard.summarizeProgress(doing, progress, stateOrder);
+      root.showDoingDrill(catId, drillId);
     };
 
     function renderEntry() {
@@ -253,6 +277,11 @@
     root._setDoingRoomConcept = function setDoingRoomConcept(roomId) {
       state.activeRoomConcept = roomId || "left-hand";
       state.doingView = "room-concept";
+      shell();
+    };
+
+    root._doingBackToLibrary = function doingBackToLibrary() {
+      state.doingView = "training";
       shell();
     };
 

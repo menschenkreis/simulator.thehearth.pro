@@ -17,7 +17,7 @@
     if (zone.view === "explorer") {
       return { doingView: "explorer", activeExpTab: "notes" };
     }
-    return { doingView: "training", activeStyle: "all", activeLevel: "all", activeBoard: zone.board || zone.id || "both-hands" };
+    return { doingView: "training", activeStyle: "all", activeLevel: "1", activeBoard: zone.board || zone.id || "both-hands", activeCategory: "all", activeStatus: "all" };
   }
 
   function updateDebugUi(documentRef, doingDebug) {
@@ -66,6 +66,11 @@
 
     root._openDoingRoomConcept = function openDoingRoomConcept() {
       setState({ doingView: "room-concept" });
+      shell();
+    };
+
+    root._openDoingDrillLibrary = function openDoingDrillLibrary() {
+      setState({ doingView: "training", activeStyle: "all", activeLevel: "1", activeBoard: "all", activeCategory: "all", activeStatus: "all" });
       shell();
     };
   }

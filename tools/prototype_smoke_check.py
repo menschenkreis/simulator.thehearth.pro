@@ -368,7 +368,7 @@ REQUIRED_MARKERS = {
     "adapters/doing-drill-board-viewer.js": [
         "HearthDoingDrillBoardViewer",
         "renderDoingDrillBoard",
-        "doing-fretboard-stage",
+        "doing-library-neck",
     ],
     "adapters/doing-shell-viewer.js": [
         "HearthDoingShellViewer",

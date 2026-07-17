@@ -78,7 +78,7 @@
           onOpenDrill(this.getAttribute("data-cat"), this.getAttribute("data-drill"));
         }
       };
-      dot.onmouseenter = function showPreview() {
+      function showPreview() {
         var catId = this.getAttribute("data-cat");
         var drillId = this.getAttribute("data-drill");
         var found = findDrill(doing, catId, drillId);
@@ -95,13 +95,21 @@
           ui: ui
         });
         var bounds = this.getBoundingClientRect();
+        var previewWidth = 260;
+        var previewHeight = 112;
+        var viewportWidth = documentRef.documentElement.clientWidth;
+        var viewportHeight = documentRef.documentElement.clientHeight;
         preview.style.display = "block";
-        preview.style.left = (bounds.right + 8) + "px";
-        preview.style.top = (bounds.top - 10) + "px";
-      };
-      dot.onmouseleave = function hidePreview() {
+        preview.style.left = Math.max(8, Math.min(bounds.right + 8, viewportWidth - previewWidth - 8)) + "px";
+        preview.style.top = Math.max(8, Math.min(bounds.top - 10, viewportHeight - previewHeight - 8)) + "px";
+      }
+      function hidePreview() {
         if (previewEl) previewEl.style.display = "none";
-      };
+      }
+      dot.onmouseenter = showPreview;
+      dot.onfocus = showPreview;
+      dot.onmouseleave = hidePreview;
+      dot.onblur = hidePreview;
     });
   }
 
