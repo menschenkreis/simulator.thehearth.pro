@@ -54,15 +54,18 @@
       if (!zone.seal) {
         return;
       }
-      seals += '<div class="doing-seal" data-seal="' + esc(zone.id) + '" style="left:' + esc(zone.seal.x) + ";top:" + esc(zone.seal.y) + '">' +
-        '<span class="seal-icon">' + zone.seal.icon + '</span>' +
-        '<span class="seal-label">' + esc(zone.label) + "</span></div>";
+      seals += '<button class="doing-seal" type="button" data-seal="' + esc(zone.id) + '" style="left:' + esc(zone.seal.x) + ";top:" + esc(zone.seal.y) + '" ' +
+        'onmouseenter="showDoingBubble(this)" ' +
+        'onmouseleave="hideDoingBubble()" ' +
+        'onclick="enterDoingZone(\'' + esc(zone.id) + '\')">' +
+        (zone.seal.icon ? '<span class="seal-icon">' + zone.seal.icon + '</span>' : "") +
+        '<span class="seal-label">' + esc(zone.label) + "</span></button>";
     });
 
     return '<div class="doing-map-wrap" id="doing-map-container">' +
       '<button class="back-btn doing-map-back" onclick="backToMap()">\u2190 Map</button>' +
-      '<img src="images/doing/doing-arms-guitar-v1.png" alt="Guitar hand-training map" draggable="false">' +
-      '<svg class="doing-map-svg" viewBox="0 0 1280 960" preserveAspectRatio="xMidYMid meet">' +
+      '<img src="images/doing/doing-arms-guitar-v2.png?v=20260717b" alt="Complete classical guitar with left- and right-hand training areas" draggable="false">' +
+      '<svg class="doing-map-svg" viewBox="0 0 1672 941" preserveAspectRatio="xMidYMid meet">' +
       svgZones +
       "</svg>" +
       seals +

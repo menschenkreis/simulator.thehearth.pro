@@ -124,40 +124,40 @@
       id: "left-hand",
       label: "Left Hand",
       hint: "Fretboard drills - fretting, legato, stretches, shifts, scale boxes",
-      points: "680,208 930,178 1050,318 950,528 705,538 610,360",
+      points: "962,210 1238,212 1450,442 1390,725 1112,674 1010,490",
       board: "left-hand",
       categories: ["fretting", "scales", "arpeggios", "speed"],
       view: "training",
-      seal: { icon: "L", x: "66%", y: "35%" }
+      seal: { icon: "", x: "69%", y: "37%" }
     },
     {
       id: "right-hand",
       label: "Right Hand",
       hint: "Picking, strumming, rest stroke, free stroke, tone",
-      points: "112,330 390,300 468,505 342,646 122,604 48,446",
+      points: "92,182 332,180 612,336 608,610 338,672 102,530",
       board: "right-hand",
       categories: ["picking", "rhythm", "styles", "speed"],
       view: "training",
-      seal: { icon: "R", x: "22%", y: "50%" }
+      seal: { icon: "", x: "29%", y: "45%" }
     },
     {
       id: "both-hands",
       label: "Both Hands",
       hint: "Coordination drills - timing, clean sound, chord changes, scale rhythm",
-      points: "320,210 815,205 970,496 770,755 296,674 162,428",
+      points: "438,280 1054,220 1270,410 1110,650 512,690 334,472",
       board: "both-hands",
       categories: ["picking", "fretting", "rhythm", "scales", "arpeggios", "speed", "styles"],
       view: "training",
-      seal: { icon: "\u21c4", x: "48%", y: "52%" }
+      seal: { icon: "\u21c4", x: "52%", y: "55%" }
     },
     {
       id: "tuning",
       label: "Map / Tuning",
       hint: "Fretboard explorer, note finder, tuning, E/A highways",
-      points: "925,32 1260,42 1272,240 1010,264 884,150",
+      points: "1284,76 1644,54 1664,310 1362,350 1240,198",
       categories: [],
       view: "explorer",
-      seal: { icon: "\u2699", x: "86%", y: "14%" }
+      seal: { icon: "", x: "88%", y: "18%" }
     }
   ];
 
@@ -167,6 +167,18 @@
     { id: "both-hands", label: "Both Hands", icon: "\u21c4", board: "both-hands", categories: ["picking", "fretting", "rhythm", "scales", "arpeggios", "speed", "styles"] },
     { id: "fretboard", label: "Fretboard Map", icon: "&#x1F5FA;", categories: [] }
   ];
+
+  var roomDrillPlans = {
+    "left-hand": {
+      1: ["chrom-1", "classical-1", "stretch-1", "pent-1", "major-1"]
+    },
+    "right-hand": {
+      1: ["alt-1", "flatpick-1", "strum-1", "shuffle-1", "pima-1"]
+    },
+    "both-hands": {
+      1: ["chrom-1", "strum-1", "pent-1", "maj-arp", "pima-2"]
+    }
+  };
 
   var coachingByCategory = {
     picking: {
@@ -266,6 +278,7 @@
     stateLabels: stateLabels,
     guitarZones: guitarZones,
     focusCats: focusCats,
+    roomDrillPlans: roomDrillPlans,
     boardForId: boardForId,
     coachingByCategory: coachingByCategory,
     coachForCategory: coachForCategory,

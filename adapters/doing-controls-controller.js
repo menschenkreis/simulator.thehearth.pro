@@ -20,13 +20,23 @@
       return item.id === focusId;
     });
     if (focus && focus.categories && focus.categories.length) {
-      return { doingView: "training", activeStyle: "all", activeLevel: "1", activeBoard: focus.board || focus.id || "both-hands", activeCategory: "all", activeStatus: "all" };
+      return {
+        doingView: "room-concept",
+        activeRoomConcept: focus.board || focus.id || "both-hands",
+        activeRoomDrill: null,
+        activeStyle: "all",
+        activeLevel: "1",
+        activeBoard: focus.board || focus.id || "both-hands",
+        activeCategory: "all",
+        activeStatus: "all"
+      };
     }
     return { doingView: "training", activeLevel: "1" };
   }
 
   function stateForQuickLink(action) {
-    if (action === "open-map") return { doingView: "training", activeBoard: "all", activeLevel: "1", activeCategory: "all", activeStatus: "all" };
+    if (action === "open-map") return { doingView: "map", activeRoomDrill: null };
+    if (action === "open-library") return { doingView: "training", activeBoard: "all", activeLevel: "1", activeCategory: "all", activeStatus: "all" };
     if (action === "open-explorer") return { doingView: "explorer", activeExpTab: "notes" };
     return {};
   }

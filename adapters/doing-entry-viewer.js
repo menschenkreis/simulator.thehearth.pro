@@ -42,7 +42,7 @@
 
     var html = '<div class="doing-calm">' +
       '<h2 style="font-family:Cinzel,serif;color:var(--gold);font-size:1.1rem;margin:0 0 4px">Doing</h2>' +
-      '<p style="color:var(--dim);font-size:0.8rem;margin:0 0 16px">Train one physical skill at a time.</p>' +
+      '<p style="color:var(--dim);font-size:0.8rem;margin:0 0 16px">Choose the part of the body you are training today.</p>' +
       '<div class="doing-focus-grid">';
     focusCats.forEach(function renderFocusButton(fc) {
       html += '<button class="doing-focus-btn" data-focus="' + esc(fc.id) + '">' + esc(fc.icon) + ' ' + esc(fc.label) + '</button>';
@@ -50,7 +50,8 @@
     html += '</div>' +
       recHtml +
       '<div class="doing-quick-links">' +
-        '<button class="doing-link-btn" data-action="open-map">&#9654; Open Training Map</button>' +
+        '<button class="doing-link-btn" data-action="open-map">&#9654; Guitar room map</button>' +
+        '<button class="doing-link-btn" data-action="open-library">&#9654; Full Drill Library</button>' +
         '<button class="doing-link-btn" data-action="open-explorer">&#9654; Open Fretboard Explorer</button>' +
       '</div>' +
     '</div>';

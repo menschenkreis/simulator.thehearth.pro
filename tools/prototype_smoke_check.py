@@ -52,6 +52,7 @@ REQUIRED_MARKERS = {
         "adapters/doing-explorer-controller.js",
         "adapters/doing-map-viewer.js",
         "adapters/doing-map-controller.js",
+        "adapters/doing-room-viewer.js",
         "adapters/doing-panel-controller.js",
         "adapters/knowing-level-model.js",
         "adapters/knowing-shelf-viewer.js",
@@ -400,6 +401,11 @@ REQUIRED_MARKERS = {
         "HearthDoingMapController",
         "bindDoingMapGlobals",
         "stateForZone",
+    ],
+    "adapters/doing-room-viewer.js": [
+        "HearthDoingRoomViewer",
+        "renderRoomConcept",
+        "doing-room-preview",
     ],
     "adapters/doing-panel-controller.js": [
         "HearthDoingPanelController",
@@ -1072,6 +1078,7 @@ def main() -> int:
         "adapters/doing-explorer-controller.js",
         "adapters/doing-map-viewer.js",
         "adapters/doing-map-controller.js",
+        "adapters/doing-room-viewer.js",
         "adapters/doing-panel-controller.js",
         "adapters/knowing-level-model.js",
         "adapters/knowing-shelf-viewer.js",
@@ -1109,11 +1116,14 @@ def main() -> int:
     ]
     previous_index = -1
     for script_path in expected_script_order:
-        script_tag = f'<script src="{script_path}"></script>'
-        current_index = simulator.find(script_tag)
-        if current_index == -1:
+        script_tag = re.search(
+            rf'<script\s+src="{re.escape(script_path)}(?:\?[^\"]*)?"\s*></script>',
+            simulator,
+        )
+        if script_tag is None:
             failures.append(f"simulator.html is missing script tag: {script_path}")
             continue
+        current_index = script_tag.start()
         if current_index < previous_index:
             failures.append(f"simulator.html loads {script_path} out of clean-core bridge order")
         previous_index = current_index

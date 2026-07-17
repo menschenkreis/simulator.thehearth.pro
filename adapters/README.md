@@ -26,6 +26,7 @@ Adapters are allowed to connect the clean core to those outside systems.
 | `doing-explorer-viewer.js` | Renders the Doing fretboard explorer tabs and panels. |
 | `doing-map-controller.js` | Binds Doing map zone, debug, and back-to-map handlers. |
 | `doing-map-viewer.js` | Renders the Doing guitar-body training map. |
+| `doing-room-viewer.js` | Renders the focused Doing hand-training room. |
 | `doing-panel-controller.js` | Opens and coordinates the Doing panel using the smaller Doing adapters. |
 | `doing-ui-utils.js` | Shared text and display helpers for the legacy Doing view. |
 | `knowing-level-model.js` | Groups Knowing topics into the 8-level bookshelf roadmap. |

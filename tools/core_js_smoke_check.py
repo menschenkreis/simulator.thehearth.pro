@@ -71,6 +71,7 @@ eval(readText(root + "/adapters/doing-explorer-viewer.js"));
 eval(readText(root + "/adapters/doing-explorer-controller.js"));
 eval(readText(root + "/adapters/doing-map-viewer.js"));
 eval(readText(root + "/adapters/doing-map-controller.js"));
+eval(readText(root + "/adapters/doing-room-viewer.js"));
 eval(readText(root + "/adapters/doing-panel-controller.js"));
 eval(readText(root + "/adapters/knowing-level-model.js"));
 eval(readText(root + "/adapters/knowing-shelf-viewer.js"));
@@ -158,6 +159,7 @@ assert(HearthDoingConfig.coachForCategory("picking").whatDo.indexOf("pick") !== 
 assert(HearthDoingConfig.coachForCategory("missing").pass.indexOf("dead notes") !== -1, "Doing config should fall back to fretting coaching");
 assert(HearthDoingConfig.guitarZones.length === 4, "Doing config should expose guitar map zones");
 assert(HearthDoingConfig.focusCats.length === 4, "Doing config should expose focus categories");
+assert(HearthDoingConfig.roomDrillPlans["left-hand"][1].indexOf("chrom-1") !== -1, "Doing config should expose curated room drills");
 assert(HearthDoingUiUtils.escapeHtml("<pick>") === "&lt;pick&gt;", "Doing UI utils should escape HTML");
 assert(HearthDoingUiUtils.drillShort({{ title: "Alternate Picking" }}) === "AP", "Doing UI utils should build drill initials");
 var fakeDoing = {{
@@ -186,8 +188,12 @@ assert(
   "Doing controls controller should route fretboard focus to explorer"
 );
 assert(
-  HearthDoingControlsController.stateForQuickLink("open-map").doingView === "training",
-  "Doing controls controller should route map quick link to training"
+  HearthDoingControlsController.stateForQuickLink("open-map").doingView === "map",
+  "Doing controls controller should route map quick link to the room map"
+);
+assert(
+  HearthDoingControlsController.stateForQuickLink("open-library").doingView === "training",
+  "Doing controls controller should route library quick link to training"
 );
 assert(
   HearthDoingDrillAdjustController.messageForAdjustment("easier").indexOf("slowing the BPM") !== -1,
@@ -247,7 +253,7 @@ var doingEntryHtml = HearthDoingEntryViewer.renderDoingEntry({{
 }});
 assert(doingEntryHtml.indexOf("doing-calm") !== -1, "Doing entry viewer should render entry shell");
 assert(doingEntryHtml.indexOf("Recommended next") !== -1, "Doing entry viewer should render recommendation");
-assert(doingEntryHtml.indexOf("Open Training Map") !== -1, "Doing entry viewer should render map action");
+assert(doingEntryHtml.indexOf("Guitar room map") !== -1, "Doing entry viewer should render map action");
 var doingExplorerHtml = HearthDoingExplorerViewer.renderDoingExplorer({{
   activeTab: "notes"
 }});
@@ -272,7 +278,20 @@ var doingMapHtml = HearthDoingMapViewer.renderDoingMap({{
 }});
 assert(doingMapHtml.indexOf("doing-map-wrap") !== -1, "Doing map viewer should render map shell");
 assert(doingMapHtml.indexOf("doing-map-zone debug") !== -1, "Doing map viewer should render debug zones");
+assert(doingMapHtml.indexOf("button class=\\"doing-seal\\"") !== -1, "Doing map viewer should render clickable room labels");
 assert(typeof HearthDoingMapViewer.showDoingBubble === "function", "Doing map viewer should expose bubble helper");
+var doingRoomHtml = HearthDoingRoomViewer.renderRoomConcept({{
+  board: HearthDoingConfig.boardForId("left-hand"),
+  config: HearthDoingConfig,
+  ui: HearthDoingUiUtils,
+  roomDrills: [{{ cat: fakeDoing.categories[0], drill: fakeDoing.categories[0].drills[0] }}],
+  selectedItem: null,
+  getState: function() {{ return null; }},
+  progressDegrees: function() {{ return 0; }},
+  stateLabels: HearthDoingConfig.stateLabels
+}});
+assert(doingRoomHtml.indexOf("doing-room-preview") !== -1, "Doing room viewer should render room preview");
+assert(doingRoomHtml.indexOf("doing-room-drill-node") !== -1, "Doing room viewer should render drill nodes");
 assert(
   HearthDoingMapController.stateForZone({{ view: "explorer" }}).activeExpTab === "notes",
   "Doing map controller should route explorer zones to notes tab"

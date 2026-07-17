@@ -22,6 +22,7 @@
     if (Object.prototype.hasOwnProperty.call(nextState, "activeCategory")) target.activeCategory = nextState.activeCategory;
     if (Object.prototype.hasOwnProperty.call(nextState, "activeStatus")) target.activeStatus = nextState.activeStatus;
     if (Object.prototype.hasOwnProperty.call(nextState, "activeRoomConcept")) target.activeRoomConcept = nextState.activeRoomConcept;
+    if (Object.prototype.hasOwnProperty.call(nextState, "activeRoomDrill")) target.activeRoomDrill = nextState.activeRoomDrill;
   }
 
   function showDoing() {
@@ -61,7 +62,8 @@
       doingView: "map",
       activeExpTab: "notes",
       doingDebug: false,
-      activeRoomConcept: "left-hand"
+      activeRoomConcept: "left-hand",
+      activeRoomDrill: null
     };
 
     function boardOptions() {
@@ -85,6 +87,12 @@
 
     function getState(drillId) {
       return doingBoard.getState(progress, stateOrder, drillId);
+    }
+
+    function progressDegrees(drillId) {
+      var currentState = getState(drillId);
+      var index = stateOrder.indexOf(currentState);
+      return index < 0 ? 0 : Math.round(((index + 1) / stateOrder.length) * 360);
     }
 
     function countForGenre(genreId) {
@@ -175,7 +183,24 @@
       });
     }
 
+    function findDrillEntry(drillId) {
+      var found = null;
+      doing.categories.some(function findCategory(cat) {
+        var drill = cat.drills.find(function findDrill(item) {
+          return item.id === drillId;
+        });
+        if (!drill) return false;
+        found = { cat: cat, drill: drill };
+        return true;
+      });
+      return found;
+    }
+
     function collectRoomDrills(board) {
+      var plan = (doingConfig.roomDrillPlans && doingConfig.roomDrillPlans[board.id] && doingConfig.roomDrillPlans[board.id][1]) || [];
+      var planned = plan.map(findDrillEntry).filter(Boolean);
+      if (planned.length) return planned;
+
       var candidates = [];
       doing.categories.forEach(function eachCategory(cat) {
         if (board.categories.indexOf(cat.id) < 0) return;
@@ -184,103 +209,78 @@
           candidates.push({ cat: cat, drill: drill });
         });
       });
-      return candidates.slice(0, 7);
+      return candidates.slice(0, 5);
     }
 
-    function renderRoomGraphic(board, roomDrills) {
-      var drillDots = roomDrills.map(function renderDot(item, index) {
-        var initials = item.drill.title.split(/\s+/).filter(Boolean).slice(0, 2).map(function firstLetter(word) {
-          return word.charAt(0);
-        }).join("").toUpperCase();
-        return '<button class="doing-room-dot" type="button" style="--dot-x:' + (18 + (index * 11)) + '%;--dot-y:' + (36 + ((index % 3) * 14)) + '%" ' +
-          'onclick="showDoingDrill(\'' + doingUi.escapeHtml(item.cat.id) + "', '" + doingUi.escapeHtml(item.drill.id) + '\')" ' +
-          'title="' + doingUi.escapeHtml(item.drill.title) + '">' + doingUi.escapeHtml(initials) + "</button>";
-      }).join("");
-
-      var strings = [1, 2, 3, 4, 5, 6].map(function renderString(i) {
-        return '<i class="doing-room-string doing-room-string--' + i + '"></i>';
-      }).join("");
-
-      if (board.layout === "soundhole") {
-        return '<div class="doing-room-graphic doing-room-graphic--soundhole">' +
-          '<div class="doing-room-soundhole"></div>' +
-          '<div class="doing-room-bridge"></div>' +
-          strings +
-          drillDots +
-          "</div>";
-      }
-
-      if (board.layout === "whole-guitar") {
-        return '<div class="doing-room-graphic doing-room-graphic--whole">' +
-          '<div class="doing-room-body"></div>' +
-          '<div class="doing-room-neck"></div>' +
-          '<div class="doing-room-soundhole"></div>' +
-          strings +
-          drillDots +
-          "</div>";
-      }
-
-      return '<div class="doing-room-graphic doing-room-graphic--neck">' +
-        '<div class="doing-room-headstock"></div>' +
-        '<div class="doing-room-nut"></div>' +
-        '<div class="doing-room-frets">' +
-        '<i></i><i></i><i></i><i></i><i></i><i></i>' +
-        "</div>" +
-        strings +
-        drillDots +
-        "</div>";
+    function findRoomDrill(roomDrills, selected) {
+      if (!selected) return null;
+      return roomDrills.find(function findMatch(item) {
+        return item.cat.id === selected.catId && item.drill.id === selected.drillId;
+      }) || null;
     }
 
     function renderRoomConcept() {
-      var roomIds = ["left-hand", "right-hand", "both-hands"];
+      if (!root.HearthDoingRoomViewer) return "";
       var board = doingConfig.boardForId(state.activeRoomConcept || "left-hand");
       var roomDrills = collectRoomDrills(board);
-      var roomButtons = roomIds.map(function renderRoomButton(roomId) {
-        var room = doingConfig.boardForId(roomId);
-        var active = room.id === board.id;
-        return '<button class="doing-room-tab' + (active ? " active" : "") + '" type="button" onclick="window._setDoingRoomConcept(\'' + room.id + '\')">' +
-          '<span>' + doingUi.escapeHtml(room.shortLabel) + "</span>" +
-          '<b>' + doingUi.escapeHtml(room.label) + "</b>" +
-          "</button>";
-      }).join("");
-      var drillList = roomDrills.map(function renderDrill(item) {
-        return '<button class="doing-room-drill" type="button" onclick="showDoingDrill(\'' + doingUi.escapeHtml(item.cat.id) + "', '" + doingUi.escapeHtml(item.drill.id) + '\')">' +
-          '<span>' + doingUi.escapeHtml(item.cat.title) + "</span>" +
-          '<b>' + doingUi.escapeHtml(item.drill.title) + "</b>" +
-          '<em>' + doingUi.escapeHtml(item.drill.duration || "5 min") + "</em>" +
-          "</button>";
-      }).join("");
-
-      return '<section class="doing-room-preview" aria-label="Level 1 room preview">' +
-        '<div class="doing-room-preview-head">' +
-        '<div>' +
-        '<div class="doing-board-kicker">Do node · Level 1 room</div>' +
-        '<h3>' + doingUi.escapeHtml(board.title) + "</h3>" +
-        '<p>' + doingUi.escapeHtml(board.description) + "</p>" +
-        "</div>" +
-        '<button class="doing-board-tab active" type="button" onclick="window._doingBackToMap()">Back to Do map</button>' +
-        "</div>" +
-        '<div class="doing-room-tabs" aria-label="Choose a training room">' + roomButtons + "</div>" +
-        '<div class="doing-room-focus">' +
-        renderRoomGraphic(board, roomDrills) +
-        '<aside class="doing-room-side">' +
-        '<div class="doing-room-side-kicker">Start here</div>' +
-        '<h4>' + doingUi.escapeHtml(board.label) + "</h4>" +
-        '<p>Only this room is visible now. Choose one small drill, keep it clean, then come back.</p>' +
-        '<div class="doing-room-drills">' + drillList + "</div>" +
-        "</aside>" +
-        "</div>" +
-        '<div class="doing-room-preview-note">Clean build note: this replaces the frilly image with live layers we can refine. Left shows only left-hand work; Right shows only right-hand work; Both shows coordination.</div>' +
-        "</section>";
+      var selectedItem = findRoomDrill(roomDrills, state.activeRoomDrill);
+      return root.HearthDoingRoomViewer.renderRoomConcept({
+        board: board,
+        config: doingConfig,
+        ui: doingUi,
+        roomDrills: roomDrills,
+        selectedItem: selectedItem,
+        getState: getState,
+        progressDegrees: progressDegrees,
+        stateLabels: stateLabels
+      });
     }
 
     root._setDoingRoomConcept = function setDoingRoomConcept(roomId) {
       state.activeRoomConcept = roomId || "left-hand";
+      state.activeRoomDrill = null;
+      state.doingView = "room-concept";
+      shell();
+    };
+
+    root._openDoingRoomDrill = function openDoingRoomDrill(catId, drillId) {
+      if (root.playSfx) root.playSfx("drill-click");
+      var cat = doing.categories.find(function findCategory(category) { return category.id === catId; });
+      if (!cat) return;
+      var drill = cat.drills.find(function findDrill(item) { return item.id === drillId; });
+      if (!drill) return;
+      if (!getState(drillId)) {
+        progress[drillId] = "seen";
+        if (storage) storage.setItem("hearth-doing-progress", JSON.stringify(progress));
+        progressSummary = doingBoard.summarizeProgress(doing, progress, stateOrder);
+      }
+      state.activeRoomDrill = { catId: catId, drillId: drillId };
+      state.doingView = "room-concept";
+      shell();
+    };
+
+    root._setDoingRoomDrillState = function setDoingRoomDrillState(catId, drillId, nextState) {
+      if (stateOrder.indexOf(nextState) < 0) return;
+      progress[drillId] = nextState;
+      if (storage) storage.setItem("hearth-doing-progress", JSON.stringify(progress));
+      progressSummary = doingBoard.summarizeProgress(doing, progress, stateOrder);
+      state.activeRoomDrill = { catId: catId, drillId: drillId };
       state.doingView = "room-concept";
       shell();
     };
 
     root._doingBackToLibrary = function doingBackToLibrary() {
+      state.doingView = "training";
+      shell();
+    };
+
+    root._doingRoomToLibrary = function doingRoomToLibrary(boardId) {
+      state.activeBoard = boardId || state.activeRoomConcept || "all";
+      state.activeLevel = "1";
+      state.activeCategory = "all";
+      state.activeStatus = "all";
+      state.activeStyle = "all";
+      state.activeRoomDrill = null;
       state.doingView = "training";
       shell();
     };
