@@ -317,8 +317,11 @@
 
   function fretboardEligibleNotes(fretboardEl) {
     var mode = fretboardEl.getAttribute("data-fretboard-mode") || "shape";
-    return Array.prototype.filter.call(fretboardEl.querySelectorAll(".doing-fretboard-note"), function filterNote(note) {
+    var notes = Array.prototype.filter.call(fretboardEl.querySelectorAll(".doing-fretboard-note"), function filterNote(note) {
       return mode !== "roots" || note.getAttribute("data-fretboard-root") === "true";
+    });
+    return notes.sort(function sortByPlayingOrder(left, right) {
+      return parseInt(left.getAttribute("data-fretboard-sequence"), 10) - parseInt(right.getAttribute("data-fretboard-sequence"), 10);
     });
   }
 
