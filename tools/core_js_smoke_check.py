@@ -190,9 +190,12 @@ assert(practiceEntryHtml.indexOf("streak") === -1, "Practice entry should not us
 var plannedPracticeSession = HearthPracticePlannedSessionViewer.createSession(practiceEntrySnapshot);
 assert(plannedPracticeSession.focus.indexOf("A roots") !== -1, "Planned Practice should inherit today's focus");
 assert(plannedPracticeSession.minutes === 20, "Planned Practice should inherit the commitment length");
+assert(plannedPracticeSession.bodyState === "ready", "Planned Practice should start with a gentle body-ready state");
 var plannedPracticeHtml = HearthPracticePlannedSessionViewer.render(plannedPracticeSession);
 assert(plannedPracticeHtml.indexOf("Choose the focus") !== -1 || plannedPracticeHtml.indexOf("Arrive") !== -1, "Planned Practice should render the guided steps");
 assert(plannedPracticeHtml.indexOf('data-practice-flow-action="next"') !== -1, "Planned Practice should render next-step action");
+assert(plannedPracticeHtml.indexOf('data-practice-body-state="ready"') !== -1, "Planned Practice should render the body arrival choices");
+assert(plannedPracticeHtml.indexOf('practice-flow-art') !== -1, "Planned Practice should keep the chamber artwork visible");
 var fakeDoing = {{
   categories: [
     {{

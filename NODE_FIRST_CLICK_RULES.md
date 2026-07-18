@@ -38,7 +38,7 @@ Examples:
 | Know | Reference library | Improved doorway | Keep the first click to one recommended shelf; full shelves stay behind Browse all shelves. |
 | Study | Key chamber | Strong | Connect doors to real study actions over time. |
 | Create | Cauldron | Strong | Keep creative prompts simple and playable. |
-| Hearth | Inner instrument / body systems map | Clearer doorway | Deepen brain, hands, eyes, ears, and nervous-system content. |
+| Hearth | Layered Inner Instrument | Clearer doorway | Replace the rectangular body artwork and dashboard-like summaries with coordinated clickable transparent layers for brain, hands, eyes, ears, breath/body, feeling, and guitar integration. |
 | Mastery | Phoenix transformation chamber | Clearer doorway | Build artist examples and transformation prompts. |
 
 ## Design Guardrails
@@ -60,6 +60,25 @@ Foundation should eventually use the same clean image logic as Journey:
 - Existing lesson/fret logic should stay; only the visual scene and overlay alignment need to be rebuilt.
 
 This is a medium visual pass, not a backend rebuild.
+
+## Hearth Visual Rebuild Note
+
+Hearth should use one layered Inner Instrument composition rather than a
+rectangular room image plus duplicate system menus.
+
+- The guitar is the central integration spine.
+- Brain, eyes, ears, hands, breath/body, and feeling are separate transparent
+  visual layers.
+- The layers form one composition but can glow and open independently.
+- Labels appear on hover/focus rather than being baked into the art.
+- The guide sits beside the scene and uses one plain sentence at a time.
+- The first click stays visual; detailed anatomy and exercises begin after a
+  system is selected.
+- The active renderer remains `adapters/hearth-body-viewer.js`; do not revive a
+  competing Hearth renderer.
+
+The full art, interaction, content, and implementation brief lives in
+`database-blueprint/docs/hearth-node-rebuild-brief-2026-07-18.md`.
 
 ## Do Visual Rebuild Note
 

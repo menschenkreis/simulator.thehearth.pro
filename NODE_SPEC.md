@@ -144,15 +144,18 @@ The goal is not to describe every detail of the current prototype. The goal is t
 
 **Purpose:** Explain what is happening behind the instrument.
 
-**Current experience:** A body / inner learning map with zones for the brain, hands, ears, breath/body, and heart/feeling.
+**Current experience:** A body / inner learning map with zones for the brain and nervous system, hands, ears, eyes, breath/body, and feeling/motivation.
 
 **Content:**
 - Brain and memory
 - Hands and safe movement
 - Ears and listening
+- Eyes, visual maps, notation, and pattern recognition
 - Breath, body, and tension
 - Feeling, motivation, confidence, and expression
 - Habits that shape practice
+
+**Next visual direction:** Rebuild the doorway as one layered Inner Instrument composition. The guitar, brain, eyes, ears, hands, breath/nervous system, and feeling center should be coordinated transparent assets that read as one image while remaining independently interactive.
 
 **Current status:** Built as the active scene-first Hearth body chamber. Older dashboard/HQ descriptions are historical.
 

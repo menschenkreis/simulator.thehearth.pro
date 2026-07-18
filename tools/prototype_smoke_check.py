@@ -13,6 +13,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 REQUIRED_MARKERS = {
     "simulator.html": [
+        "window.HEARTH_AUTO_AMBIENCE=false;",
         "assets/js/scene-first.js",
         "adapters/create-cauldron-scene-viewer.js",
         "adapters/study-key-chamber-viewer.js",
@@ -196,6 +197,8 @@ REQUIRED_MARKERS = {
         "root.HearthPracticePlannedSessionViewer",
         "createSession",
         "data-practice-flow-action",
+        "data-practice-body-state",
+        "practice-flow-art",
     ],
     "adapters/practice-planned-session-controller.js": [
         "root.PracticePlannedSession",
@@ -726,6 +729,10 @@ MAP_NODE_IMAGES = [
     "images/map-nodes-generated-v2-normalized/create.png",
 ]
 
+ENTRY_SCENE_ASSETS = [
+    "images/create/create-cauldron-tableau-v1.png",
+]
+
 LESSON_SEEDS = {
     "database-blueprint/seeds/foundation_threshold_lesson_v2.json": {
         "lesson_id": "f-threshold",
@@ -1021,6 +1028,13 @@ def main() -> int:
             failures.append(f"Missing map node image: {relative_path}")
         elif path.stat().st_size == 0:
             failures.append(f"Map node image is empty: {relative_path}")
+
+    for relative_path in ENTRY_SCENE_ASSETS:
+        path = ROOT / relative_path
+        if not path.exists():
+            failures.append(f"Missing entry scene image: {relative_path}")
+        elif path.stat().st_size == 0:
+            failures.append(f"Entry scene image is empty: {relative_path}")
 
     for relative_path, spec in LESSON_SEEDS.items():
         path = ROOT / relative_path
