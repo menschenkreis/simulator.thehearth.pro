@@ -87,6 +87,9 @@ REQUIRED_MARKERS = {
         "adapters/create-cauldron-model.js",
         "adapters/create-cauldron-viewer.js",
         "adapters/create-cauldron-controller.js",
+        "adapters/create-entry-model.js",
+        "adapters/create-entry-viewer.js",
+        "adapters/create-entry-controller.js",
         "adapters/text-to-speech-controller.js",
         "adapters/header-tools-controller.js",
         "adapters/references-panel-controller.js",
@@ -140,6 +143,21 @@ REQUIRED_MARKERS = {
         "root.showCreate",
         "CREATE_HEAT_LEVELS",
         "stirCauldron",
+    ],
+    "adapters/create-entry-model.js": [
+        "root.HearthCreateEntryModel",
+        "buildSnapshot",
+        "hasMaterial",
+    ],
+    "adapters/create-entry-viewer.js": [
+        "root.HearthCreateEntryViewer",
+        "create-entry-hotspot",
+        "renderContext",
+    ],
+    "adapters/create-entry-controller.js": [
+        "root.HearthCreateEntryController",
+        "root.showCreate = showCreate",
+        "openCauldron",
     ],
     "adapters/play-atlas-viewer.js": [
         "root.PlayAtlas",

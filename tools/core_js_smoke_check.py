@@ -104,6 +104,8 @@ eval(readText(root + "/adapters/mastery-viewer.js"));
 eval(readText(root + "/adapters/create-cauldron-model.js"));
 eval(readText(root + "/adapters/create-cauldron-viewer.js"));
 eval(readText(root + "/adapters/create-cauldron-controller.js"));
+eval(readText(root + "/adapters/create-entry-model.js"));
+eval(readText(root + "/adapters/create-entry-viewer.js"));
 eval(readText(root + "/adapters/text-to-speech-controller.js"));
 eval(readText(root + "/adapters/header-tools-controller.js"));
 eval(readText(root + "/adapters/references-panel-controller.js"));
@@ -490,6 +492,24 @@ assert(cauldronResult.prompt === "write a hook", "Create cauldron model should p
 var cauldronResultHtml = HearthCreateCauldronViewer.renderMixResult(cauldronResult);
 assert(cauldronResultHtml.indexOf("Single ingredient: Melody") >= 0, "Create cauldron viewer should render mix result");
 assert(typeof HearthCreateCauldronController.syncSelectionUi === "function", "Create cauldron controller should expose selection sync");
+var fakeCreateStorage = {{
+  values: {{
+    "hearth-create-current": JSON.stringify({{ title: "A minor spark", ingredients: ["Rhythm"], prompt: "Keep the root note present." }}),
+    "hearth-create-projects": JSON.stringify([{{ title: "Old fragment", ingredients: ["Riff"], savedAt: "2026-07-18T00:00:00.000Z" }}])
+  }},
+  getItem: function(key) {{ return this.values[key] || null; }}
+}};
+var createEntrySnapshot = HearthCreateEntryModel.buildSnapshot({{
+  storage: fakeCreateStorage,
+  journeyState: {{ activeStudentId: "jen-1", students: [{{ id: "jen-1", name: "Jen" }}] }},
+  ingredients: [{{ name: "Rhythm" }}, {{ name: "Riff" }}]
+}});
+assert(createEntrySnapshot.learner.name === "Jen", "Create entry should use the active learner");
+assert(createEntrySnapshot.current.hasMaterial === true, "Create entry should recognise an active seed");
+assert(createEntrySnapshot.saved.length === 1, "Create entry should surface saved fragments");
+var createEntryHtml = HearthCreateEntryViewer.render(createEntrySnapshot, "ingredient");
+assert(createEntryHtml.indexOf('data-create-mode="ingredient"') !== -1, "Create entry should render the ingredient hotspot");
+assert(createEntryHtml.indexOf("The Cauldron") !== -1, "Create entry should render the Cauldron title");
 var ttsText = HearthTextToSpeechController.readableText({{
   querySelectorAll: function() {{
     return [{{ textContent: "Hello ☐" }}, {{ textContent: "world" }}];

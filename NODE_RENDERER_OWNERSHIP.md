@@ -11,7 +11,7 @@ The old prototype sometimes defines the same screen in more than one place. In t
 | Hearth | `adapters/hearth-body-viewer.js` | Uses `assets/js/hearth-body-data.js` for the Inner Instrument copy and zones. |
 | Play | `adapters/play-atlas-viewer.js` | Uses the world atlas scene and delegates region detail to `assets/js/play-world.js`. |
 | Study | `adapters/study-key-chamber-viewer.js` | Uses the Key Chamber scene. |
-| Create | `adapters/create-cauldron-scene-viewer.js` | Uses the active Cauldron scene and song-seed workstation. |
+| Create | `adapters/create-entry-controller.js` | Uses the image-led Cauldron entrance, then hands off to `create-cauldron-scene-viewer.js` for ingredients and song-seed work. |
 | Practice | `adapters/practice-entry-controller.js` | Uses the image-led Practice chamber. Planned sessions flow through `practice-planned-session-controller.js`, with the candle timer still owned by `practice-candle-viewer.js`. |
 | Mastery | `adapters/mastery-phoenix-viewer.js` | Uses the Phoenix scene. |
 | Journey | `assets/js/journey.js` | Old button names are kept in `adapters/journey-legacy-handlers.js`. |

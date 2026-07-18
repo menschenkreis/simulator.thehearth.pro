@@ -717,10 +717,10 @@
   position: absolute;
   z-index: 4;
   top: 4.5%;
-  right: 3.5%;
+  right: 26%;
   display: grid;
   grid-template-columns: repeat(6, minmax(0, 1fr));
-  width: 52%;
+  width: 42%;
   gap: 4px;
   padding: 0;
 }
@@ -761,9 +761,9 @@
   position: absolute;
   z-index: 3;
   top: 26%;
-  left: 21%;
+  left: 24%;
   display: block;
-  width: 58%;
+  width: 50%;
   padding: 0;
 }
 
@@ -901,6 +901,23 @@
 .practice-flow-body-signal.is-selected,
 .practice-flow-focus-choice.is-selected {
   color: var(--bright);
+}
+
+.practice-flow-body-signal.is-selected > span,
+.practice-flow-focus-choice.is-selected .practice-flow-focus-orb {
+  background: radial-gradient(circle, rgba(245, 211, 132, 0.34), rgba(5, 4, 3, 0.88) 70%);
+}
+
+.practice-flow-focus-choice.is-selected .practice-flow-focus-orb::after {
+  content: '';
+  position: absolute;
+  right: 4px;
+  bottom: 4px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #f2d58a;
+  box-shadow: 0 0 10px rgba(242, 213, 138, 0.9);
 }
 
 .practice-flow-quiet-note {
