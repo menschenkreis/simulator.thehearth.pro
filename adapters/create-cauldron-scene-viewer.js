@@ -97,6 +97,14 @@
     var selected = new Set(seed.selected || []);
     var hasSeed = seed.prompt && seed.prompt.length > 0;
     var glowColor = createHeatGlow();
+    var entryIntent = read("hearth-create-entry-intent", "");
+    var guideText = hasSeed
+      ? "Shape the seed. Mutate it. Save it when it sings."
+      : entryIntent === "prompt"
+        ? "Ask one clear question. Choose an ingredient, then let the constraint give you somewhere to begin."
+        : entryIntent === "ingredient"
+          ? "Begin with one ingredient. A chord, rhythm, riff, lyric, or question is enough."
+          : "Do not judge the spark too early. Add one ingredient, catch what bubbles up, then shape it.";
 
     var ingredientButtons = ingredients.map(function (ingredient) {
       var active = selected.has(ingredient.id);
@@ -132,7 +140,7 @@
       "</div>" +
       '<div class="sk-guide">' +
       '<img src="images/character-symbols/Celebrator with sparks.png" alt="">' +
-      "<div>" + (hasSeed ? "Shape the seed. Mutate it. Save it when it sings." : "Do not judge the spark too early. Add one ingredient, catch what bubbles up, then shape it.") + "</div>" +
+      "<div>" + guideText + "</div>" +
       "</div>" +
       "</div>" +
       '<div class="sf-stage" style="flex-direction:column;min-height:auto;padding:8px 18px">' +
@@ -253,6 +261,7 @@
     }
 
     if (!result) return;
+    write("hearth-create-entry-intent", "");
     var levelBadge = result.level <= 2 ? "Ingredient" : result.level <= 3 ? "Forge" : "Alchemy";
     var seed = {
       id: "seed-" + Date.now(),
@@ -313,6 +322,7 @@
   }
 
   function newSeed() {
+    write("hearth-create-entry-intent", "");
     saveCreateSeed({
       title: "Untitled Song Seed",
       ingredients: [],

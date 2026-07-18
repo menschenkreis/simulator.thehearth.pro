@@ -12,11 +12,11 @@ The old prototype sometimes defines the same screen in more than one place. In t
 | Play | `adapters/play-atlas-viewer.js` | Uses the world atlas scene and delegates region detail to `assets/js/play-world.js`. |
 | Study | `adapters/study-key-chamber-viewer.js` | Uses the Key Chamber scene. |
 | Create | `adapters/create-cauldron-scene-viewer.js` | Uses the active Cauldron scene and song-seed workstation. |
-| Practice | `adapters/practice-candle-viewer.js` | Uses the Candle Timer scene. |
+| Practice | `adapters/practice-entry-controller.js` | Uses the image-led Practice chamber. Planned sessions flow through `practice-planned-session-controller.js`, with the candle timer still owned by `practice-candle-viewer.js`. |
 | Mastery | `adapters/mastery-phoenix-viewer.js` | Uses the Phoenix scene. |
 | Journey | `assets/js/journey.js` | Old button names are kept in `adapters/journey-legacy-handlers.js`. |
 | Foundation | `adapters/foundation-panel-controller.js` | Old button names are kept in `adapters/node-legacy-handlers.js`. |
-| Doing | `adapters/doing-panel-controller.js` | Old button names are kept in `adapters/node-legacy-handlers.js`. |
+| Doing | `adapters/doing-panel-controller.js` | Uses `doing-drill-catalog.js` for reviewed data, `doing-room-viewer.js` for hand rooms, and `doing-teaching-viewer.js` for the final drill scene. Old button names are kept in `adapters/node-legacy-handlers.js`. |
 | Knowing | `adapters/knowing-panel-controller.js` | Old button names are kept in `adapters/node-legacy-handlers.js`. |
 
 ## Rule Going Forward

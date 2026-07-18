@@ -20,7 +20,7 @@ EXPECTED_ACTIVE_OWNERS = {
     "showPlay": "adapters/play-atlas-viewer.js",
     "showStudy": "adapters/study-key-chamber-viewer.js",
     "showCreate": "adapters/create-cauldron-scene-viewer.js",
-    "showPractice": "adapters/practice-candle-viewer.js",
+    "showPractice": "adapters/practice-entry-controller.js",
     "showMastery": "adapters/mastery-phoenix-viewer.js",
 }
 

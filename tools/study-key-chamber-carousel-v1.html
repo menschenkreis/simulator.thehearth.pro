@@ -1,0 +1,832 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Study Key Chamber Carousel</title>
+  <style>
+    :root {
+      --ink: #080706;
+      --text: #f4eee2;
+      --muted: #a79b88;
+      --gold: #d7b36a;
+      --gold-bright: #ffe2a0;
+      --line: rgba(215, 179, 106, 0.24);
+      --turn-duration: 620ms;
+    }
+
+    * { box-sizing: border-box; }
+
+    html,
+    body {
+      width: 100%;
+      min-height: 100%;
+      margin: 0;
+      background: var(--ink);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    body {
+      overflow-x: hidden;
+    }
+
+    button {
+      color: inherit;
+      font: inherit;
+    }
+
+    .prototype-bar {
+      position: relative;
+      z-index: 20;
+      min-height: 62px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      padding: 10px 24px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(8, 7, 6, 0.96);
+    }
+
+    .prototype-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .prototype-brand img {
+      width: 34px;
+      height: 34px;
+      object-fit: contain;
+    }
+
+    .prototype-brand strong,
+    .prototype-brand span {
+      display: block;
+    }
+
+    .prototype-brand strong {
+      font-family: Georgia, serif;
+      font-size: 15px;
+      font-weight: 500;
+      letter-spacing: 0;
+    }
+
+    .prototype-brand span {
+      margin-top: 2px;
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .mode-note {
+      color: var(--gold);
+      font-size: 11px;
+      text-align: right;
+    }
+
+    .experience {
+      width: 100%;
+      min-height: calc(100vh - 62px);
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) clamp(180px, 15vw, 245px);
+      align-content: center;
+      align-items: stretch;
+    }
+
+    .chamber-stage {
+      position: relative;
+      width: 100%;
+      min-height: 0;
+      aspect-ratio: 1672 / 941;
+      align-self: center;
+      overflow: hidden;
+      isolation: isolate;
+      background: #050403;
+      touch-action: pan-y;
+    }
+
+    .scene-art {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      transform: scale(1.006);
+      transform-origin: center 55%;
+      transition: filter 220ms ease;
+      user-select: none;
+      pointer-events: none;
+    }
+
+    .chamber-stage::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      background:
+        linear-gradient(180deg, rgba(3, 3, 2, 0.4) 0%, transparent 22%, transparent 76%, rgba(3, 3, 2, 0.34) 100%),
+        radial-gradient(circle at 50% 48%, transparent 24%, rgba(0, 0, 0, 0.18) 86%);
+    }
+
+    .subject-plaque {
+      position: absolute;
+      z-index: 6;
+      top: clamp(18px, 3.5vh, 42px);
+      left: 50%;
+      width: min(520px, 55vw);
+      transform: translateX(-50%);
+      text-align: center;
+      pointer-events: none;
+      text-shadow: 0 2px 16px #000, 0 1px 4px #000;
+    }
+
+    .subject-plaque .eyebrow,
+    .door-caption .eyebrow,
+    .guide-copy .eyebrow,
+    .activity-dialog .eyebrow {
+      color: var(--gold);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    .subject-plaque h1 {
+      margin: 8px 0 0;
+      font-family: Georgia, serif;
+      font-size: clamp(20px, 2vw, 31px);
+      font-weight: 500;
+      line-height: 1.14;
+      letter-spacing: 0;
+    }
+
+    .door-hotspot {
+      position: absolute;
+      z-index: 5;
+      display: grid;
+      place-items: end center;
+      padding: 0 4px 16px;
+      border: 0;
+      background: transparent;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .door-hotspot::before {
+      content: "";
+      position: absolute;
+      inset: 2%;
+      border-radius: 50% 50% 8px 8px / 26% 26% 8px 8px;
+      border: 1px solid transparent;
+      background: transparent;
+      transition: border-color 180ms ease, background 180ms ease, box-shadow 180ms ease;
+    }
+
+    .door-hotspot:hover::before,
+    .door-hotspot:focus-visible::before {
+      border-color: rgba(255, 220, 144, 0.48);
+      background: rgba(215, 179, 106, 0.04);
+      box-shadow: inset 0 0 38px rgba(255, 198, 92, 0.08), 0 0 32px rgba(255, 198, 92, 0.1);
+      outline: none;
+    }
+
+    .door-hotspot[data-slot="-2"] { left: 0.5%; top: 20%; width: 12%; height: 53%; }
+    .door-hotspot[data-slot="-1"] { left: 19%; top: 27%; width: 18%; height: 46%; }
+    .door-hotspot[data-slot="0"]  { left: 39%; top: 18%; width: 22%; height: 58%; }
+    .door-hotspot[data-slot="1"]  { left: 63%; top: 27%; width: 18%; height: 46%; }
+    .door-hotspot[data-slot="2"]  { left: 87.5%; top: 20%; width: 12%; height: 53%; }
+
+    .door-hotspot[data-slot="0"]::before {
+      border-color: rgba(255, 224, 160, 0.23);
+      box-shadow: 0 0 54px rgba(255, 175, 58, 0.07);
+    }
+
+    .slot-name {
+      position: relative;
+      z-index: 2;
+      max-width: 100%;
+      padding: 5px 8px;
+      border: 1px solid rgba(215, 179, 106, 0.18);
+      border-radius: 999px;
+      background: rgba(8, 7, 6, 0.72);
+      color: #d6c39d;
+      font-family: Georgia, serif;
+      font-size: clamp(9px, 0.75vw, 12px);
+      line-height: 1;
+      white-space: nowrap;
+      opacity: 0.54;
+      backdrop-filter: blur(5px);
+      transition: opacity 180ms ease, color 180ms ease, border-color 180ms ease;
+    }
+
+    .door-hotspot:hover .slot-name,
+    .door-hotspot:focus-visible .slot-name {
+      opacity: 1;
+      color: var(--gold-bright);
+      border-color: rgba(215, 179, 106, 0.48);
+    }
+
+    .door-hotspot[data-slot="0"] .slot-name {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .door-caption {
+      position: absolute;
+      z-index: 7;
+      top: 50.5%;
+      left: 50%;
+      width: min(230px, 19vw);
+      transform: translateX(-50%);
+      text-align: center;
+      pointer-events: none;
+      text-shadow: 0 2px 10px #000, 0 1px 3px #000;
+    }
+
+    .door-caption h2 {
+      margin: 5px 0 4px;
+      font-family: Georgia, serif;
+      font-size: clamp(22px, 2vw, 34px);
+      font-weight: 500;
+      line-height: 1;
+      letter-spacing: 0;
+    }
+
+    .door-caption p {
+      margin: 0;
+      color: #d8c9af;
+      font-size: clamp(10px, 0.85vw, 13px);
+      line-height: 1.35;
+    }
+
+    .floor-logo {
+      position: absolute;
+      z-index: 5;
+      left: 50%;
+      top: 82.2%;
+      width: clamp(40px, 4.4vw, 74px);
+      aspect-ratio: 1;
+      display: grid;
+      place-items: center;
+      transform: translate(-50%, -50%) scaleY(0.54);
+      pointer-events: none;
+    }
+
+    .floor-logo::before {
+      content: "";
+      position: absolute;
+      inset: -22%;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(24, 16, 8, 0.98) 0 34%, rgba(24, 16, 8, 0.83) 55%, transparent 75%);
+      box-shadow: 0 0 22px rgba(255, 194, 80, 0.2);
+    }
+
+    .floor-logo img {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      filter: sepia(1) saturate(3.6) hue-rotate(351deg) brightness(1.25) drop-shadow(0 0 8px rgba(255, 194, 80, 0.5));
+      opacity: 0.9;
+    }
+
+    .floor-node {
+      position: absolute;
+      z-index: 8;
+      width: clamp(26px, 3.4vw, 54px);
+      aspect-ratio: 1.9 / 1;
+      transform: translate(-50%, -50%);
+      border: 1px solid transparent;
+      border-radius: 50%;
+      background: transparent;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .floor-node::after {
+      content: "";
+      position: absolute;
+      inset: 31%;
+      border-radius: 50%;
+      background: rgba(215, 179, 106, 0.18);
+      box-shadow: 0 0 0 1px rgba(215, 179, 106, 0.12);
+      transition: background 180ms ease, box-shadow 180ms ease, transform 180ms ease;
+    }
+
+    .floor-node:hover::after,
+    .floor-node:focus-visible::after {
+      background: var(--gold);
+      box-shadow: 0 0 14px rgba(255, 200, 96, 0.72);
+      transform: scale(1.4);
+    }
+
+    .floor-node[aria-current="true"]::after {
+      background: var(--gold-bright);
+      box-shadow: 0 0 16px rgba(255, 200, 96, 0.86), 0 0 0 4px rgba(215, 179, 106, 0.13);
+      transform: scale(1.3);
+    }
+
+    .floor-node[data-floor="0"] { left: 50%; top: 76.25%; }
+    .floor-node[data-floor="1"] { left: 61.2%; top: 79.1%; }
+    .floor-node[data-floor="2"] { left: 61.9%; top: 86.4%; }
+    .floor-node[data-floor="3"] { left: 50%; top: 91.3%; }
+    .floor-node[data-floor="4"] { left: 36.7%; top: 86%; }
+    .floor-node[data-floor="5"] { left: 36.8%; top: 79.1%; }
+
+    .turn-button {
+      position: absolute;
+      z-index: 9;
+      top: 48%;
+      width: 46px;
+      height: 54px;
+      display: grid;
+      place-items: center;
+      transform: translateY(-50%);
+      border: 1px solid rgba(215, 179, 106, 0.22);
+      border-radius: 50%;
+      background: rgba(8, 7, 6, 0.58);
+      color: var(--gold);
+      font-family: Georgia, serif;
+      font-size: 34px;
+      line-height: 1;
+      cursor: pointer;
+      backdrop-filter: blur(6px);
+      transition: color 180ms ease, border-color 180ms ease, background 180ms ease, transform 180ms ease;
+    }
+
+    .turn-button:hover,
+    .turn-button:focus-visible {
+      color: var(--gold-bright);
+      border-color: rgba(255, 224, 160, 0.64);
+      background: rgba(18, 12, 7, 0.82);
+      outline: none;
+    }
+
+    .turn-button:active { transform: translateY(-50%) scale(0.94); }
+    .turn-button.previous { left: 18px; }
+    .turn-button.next { right: 18px; }
+
+    .turn-veil {
+      position: absolute;
+      z-index: 10;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0;
+      background: linear-gradient(90deg, rgba(0, 0, 0, 0.34), transparent 34%, transparent 66%, rgba(0, 0, 0, 0.34));
+    }
+
+    .chamber-stage.turning-next .scene-art {
+      animation: turnSceneNext var(--turn-duration) cubic-bezier(.22, .75, .25, 1);
+    }
+
+    .chamber-stage.turning-previous .scene-art {
+      animation: turnScenePrevious var(--turn-duration) cubic-bezier(.22, .75, .25, 1);
+    }
+
+    .chamber-stage.turning-next .turn-veil,
+    .chamber-stage.turning-previous .turn-veil {
+      animation: turnVeil var(--turn-duration) ease;
+    }
+
+    .chamber-stage.turning-next .door-caption,
+    .chamber-stage.turning-previous .door-caption,
+    .chamber-stage.turning-next .slot-name,
+    .chamber-stage.turning-previous .slot-name {
+      animation: captionTurn var(--turn-duration) ease;
+    }
+
+    @keyframes turnSceneNext {
+      0% { transform: perspective(1500px) rotateY(0) translateX(0) scale(1.006); filter: brightness(1); }
+      48% { transform: perspective(1500px) rotateY(-5.5deg) translateX(-3.2%) scale(1.045); filter: brightness(0.64) blur(0.8px); }
+      100% { transform: perspective(1500px) rotateY(0) translateX(0) scale(1.006); filter: brightness(1); }
+    }
+
+    @keyframes turnScenePrevious {
+      0% { transform: perspective(1500px) rotateY(0) translateX(0) scale(1.006); filter: brightness(1); }
+      48% { transform: perspective(1500px) rotateY(5.5deg) translateX(3.2%) scale(1.045); filter: brightness(0.64) blur(0.8px); }
+      100% { transform: perspective(1500px) rotateY(0) translateX(0) scale(1.006); filter: brightness(1); }
+    }
+
+    @keyframes turnVeil {
+      0%, 100% { opacity: 0; }
+      48% { opacity: 1; }
+    }
+
+    @keyframes captionTurn {
+      0%, 100% { opacity: 1; }
+      45% { opacity: 0; }
+    }
+
+    .guide-rail {
+      position: relative;
+      z-index: 3;
+      min-height: 0;
+      height: 100%;
+      overflow: hidden;
+      border-left: 1px solid var(--line);
+      background:
+        radial-gradient(circle at 50% 72%, rgba(126, 72, 24, 0.13), transparent 45%),
+        #090806;
+    }
+
+    .guide-copy {
+      position: relative;
+      z-index: 2;
+      margin: 32px 18px 0;
+      padding: 0 0 18px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .guide-copy p {
+      margin: 9px 0 0;
+      color: #ded4c3;
+      font-family: Georgia, serif;
+      font-size: clamp(14px, 1.15vw, 18px);
+      line-height: 1.48;
+    }
+
+    .guide-rail > img {
+      position: absolute;
+      z-index: 1;
+      right: -14%;
+      bottom: -2%;
+      width: 128%;
+      max-width: none;
+      object-fit: contain;
+      filter: drop-shadow(0 16px 26px rgba(0, 0, 0, 0.45));
+      pointer-events: none;
+    }
+
+    .activity-dialog {
+      width: min(620px, calc(100vw - 36px));
+      max-height: calc(100vh - 60px);
+      padding: 0;
+      border: 1px solid rgba(215, 179, 106, 0.42);
+      border-radius: 8px;
+      background: #0d0b08;
+      color: var(--text);
+      box-shadow: 0 30px 90px rgba(0, 0, 0, 0.72);
+    }
+
+    .activity-dialog::backdrop {
+      background: rgba(0, 0, 0, 0.76);
+      backdrop-filter: blur(7px);
+    }
+
+    .activity-inner {
+      padding: clamp(24px, 5vw, 48px);
+    }
+
+    .activity-dialog h2 {
+      margin: 9px 0 12px;
+      font-family: Georgia, serif;
+      font-size: clamp(26px, 5vw, 42px);
+      font-weight: 500;
+      letter-spacing: 0;
+    }
+
+    .activity-dialog p {
+      margin: 0;
+      color: #cfc4b3;
+      font-size: 15px;
+      line-height: 1.65;
+    }
+
+    .activity-proof {
+      margin: 24px 0 0;
+      padding: 17px 0;
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      color: var(--gold-bright);
+      font-family: Georgia, serif;
+      font-size: 17px;
+      line-height: 1.5;
+    }
+
+    .activity-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 24px;
+    }
+
+    .activity-actions button {
+      min-height: 42px;
+      padding: 0 18px;
+      border: 1px solid rgba(215, 179, 106, 0.38);
+      border-radius: 7px;
+      background: transparent;
+      color: var(--gold-bright);
+      cursor: pointer;
+    }
+
+    .activity-actions button:hover,
+    .activity-actions button:focus-visible {
+      border-color: var(--gold-bright);
+      background: rgba(215, 179, 106, 0.09);
+      outline: none;
+    }
+
+    @media (max-width: 900px) {
+      .experience { grid-template-columns: 1fr; }
+      .chamber-stage { min-height: 0; }
+      .guide-rail {
+        min-height: 180px;
+        border-top: 1px solid var(--line);
+        border-left: 0;
+      }
+      .guide-copy { width: min(62%, 520px); margin-top: 24px; }
+      .guide-rail > img { width: 210px; right: 0; bottom: -56px; }
+      .door-caption { top: 49%; width: 26vw; }
+      .subject-plaque { width: 70vw; }
+    }
+
+    @media (max-width: 620px) {
+      .prototype-bar { padding-inline: 14px; }
+      .mode-note { display: none; }
+      .chamber-stage { min-height: 0; }
+      .scene-art { object-position: center; }
+      .subject-plaque { top: 15px; width: 78vw; }
+      .subject-plaque h1 { font-size: 18px; }
+      .door-hotspot[data-slot="-2"],
+      .door-hotspot[data-slot="2"] { display: none; }
+      .door-hotspot[data-slot="-1"] { left: 4%; width: 28%; }
+      .door-hotspot[data-slot="0"] { left: 35%; width: 30%; }
+      .door-hotspot[data-slot="1"] { left: 68%; width: 28%; }
+      .door-caption { top: 49%; width: 34vw; }
+      .turn-button { width: 40px; height: 46px; }
+      .turn-button.previous { left: 8px; }
+      .turn-button.next { right: 8px; }
+      .floor-node { width: 28px; }
+      .slot-name { display: none; }
+      .guide-copy { width: calc(100% - 155px); margin-inline: 18px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 1ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="prototype-bar">
+    <div class="prototype-brand">
+      <img src="../images/logo_icon_white.png" alt="">
+      <div>
+        <strong>Study: The Key Chamber</strong>
+        <span>Interactive first-click prototype</span>
+      </div>
+    </div>
+    <div class="mode-note">Click a door, floor point, arrow, or use the keyboard</div>
+  </header>
+
+  <main class="experience">
+    <section class="chamber-stage" id="chamber-stage" aria-label="Six-door Study chamber">
+      <img class="scene-art" src="../images/study/study-key-chamber-concept-v1.png" alt="A circular chamber with study doors">
+      <div class="turn-veil"></div>
+
+      <div class="subject-plaque">
+        <div class="eyebrow">Current study</div>
+        <h1>A as home inside A minor pentatonic</h1>
+      </div>
+
+      <button class="turn-button previous" type="button" id="previous-door" title="Previous door" aria-label="Previous Study door">&#8249;</button>
+      <button class="turn-button next" type="button" id="next-door" title="Next door" aria-label="Next Study door">&#8250;</button>
+
+      <button class="door-hotspot" type="button" data-slot="-2"><span class="slot-name"></span></button>
+      <button class="door-hotspot" type="button" data-slot="-1"><span class="slot-name"></span></button>
+      <button class="door-hotspot" type="button" data-slot="0" aria-label="Enter selected Study door"><span class="slot-name"></span></button>
+      <button class="door-hotspot" type="button" data-slot="1"><span class="slot-name"></span></button>
+      <button class="door-hotspot" type="button" data-slot="2"><span class="slot-name"></span></button>
+
+      <div class="door-caption" aria-live="polite">
+        <div class="eyebrow" id="door-state"></div>
+        <h2 id="door-name"></h2>
+        <p id="door-purpose"></p>
+      </div>
+
+      <div class="floor-logo" aria-hidden="true">
+        <img src="../images/logo_icon_white.png" alt="">
+      </div>
+
+      <button class="floor-node" type="button" data-floor="0" title="Word door" aria-label="Go to Word door"></button>
+      <button class="floor-node" type="button" data-floor="1" title="Sound door" aria-label="Go to Sound door"></button>
+      <button class="floor-node" type="button" data-floor="2" title="Shape door" aria-label="Go to Shape door"></button>
+      <button class="floor-node" type="button" data-floor="3" title="Pattern door" aria-label="Go to Pattern door"></button>
+      <button class="floor-node" type="button" data-floor="4" title="Test door" aria-label="Go to Test door"></button>
+      <button class="floor-node" type="button" data-floor="5" title="Review door" aria-label="Go to Review door"></button>
+    </section>
+
+    <aside class="guide-rail" aria-label="Guide">
+      <div class="guide-copy">
+        <div class="eyebrow">Guide</div>
+        <p id="guide-message"></p>
+      </div>
+      <img src="../images/character-generated/guide-seated-teaching-v1-ui.webp" alt="The Hearth guide">
+    </aside>
+  </main>
+
+  <dialog class="activity-dialog" id="activity-dialog">
+    <div class="activity-inner">
+      <div class="eyebrow" id="activity-mode"></div>
+      <h2 id="activity-title"></h2>
+      <p id="activity-copy"></p>
+      <div class="activity-proof" id="activity-proof"></div>
+      <div class="activity-actions">
+        <button type="button" id="close-activity">Back to chamber</button>
+      </div>
+    </div>
+  </dialog>
+
+  <script>
+    (function () {
+      "use strict";
+
+      var doors = [
+        {
+          id: "word",
+          name: "Word",
+          purpose: "Say the idea plainly.",
+          state: "Available",
+          guide: "Start here when a name or explanation feels foggy.",
+          activity: "Clear the words root note, tonal centre, and pentatonic without adding more theory.",
+          proof: "Explain in one sentence why A can feel like home."
+        },
+        {
+          id: "sound",
+          name: "Sound",
+          purpose: "Hear home before finding it.",
+          state: "Available",
+          guide: "Listen first. Your ear can recognise home before your fingers can name it.",
+          activity: "Hear a short A minor phrase twice. Notice which note sounds settled when the phrase ends.",
+          proof: "Choose the home note by ear, then confirm it on the guitar."
+        },
+        {
+          id: "shape",
+          name: "Shape",
+          purpose: "See where the idea lives.",
+          state: "Recommended next",
+          guide: "Use the A roots as safety points. We are adding one small CAGED clue, not the whole system.",
+          activity: "Find the A root notes inside the familiar A minor pentatonic shape, then notice one nearby A-shape landmark.",
+          proof: "Play away from an A root and return to it so the phrase feels complete."
+        },
+        {
+          id: "pattern",
+          name: "Pattern",
+          purpose: "Notice what repeats and connects.",
+          state: "Available",
+          guide: "A pattern is useful when it makes the fretboard easier to predict.",
+          activity: "Compare the three small pentatonic boxes and mark the A root that anchors each one.",
+          proof: "Move between two boxes without losing the nearest A safety point."
+        },
+        {
+          id: "test",
+          name: "Test",
+          purpose: "Retrieve it without a hint.",
+          state: "Opens after one learning door",
+          guide: "Testing is proof, not punishment. It should show us what needs another route.",
+          activity: "Without the diagram, locate two A roots and explain how they support the pentatonic shape.",
+          proof: "Locate, explain, and play the idea once without being shown first."
+        },
+        {
+          id: "review",
+          name: "Review",
+          purpose: "Return to what still needs time.",
+          state: "Opens when evidence is saved",
+          guide: "Forgetting is information. Review brings back the exact part that needs another pass.",
+          activity: "Compare today with the last attempt and choose one root, box, or right-hand pattern to repeat tomorrow.",
+          proof: "Name what improved and save one precise next focus."
+        }
+      ];
+
+      var selectedIndex = 2;
+      var turning = false;
+      var pointerStartX = null;
+      var stage = document.getElementById("chamber-stage");
+      var dialog = document.getElementById("activity-dialog");
+      var doorName = document.getElementById("door-name");
+      var doorPurpose = document.getElementById("door-purpose");
+      var doorState = document.getElementById("door-state");
+      var guideMessage = document.getElementById("guide-message");
+      var slotButtons = Array.prototype.slice.call(document.querySelectorAll(".door-hotspot"));
+      var floorButtons = Array.prototype.slice.call(document.querySelectorAll(".floor-node"));
+
+      function wrap(index) {
+        return (index + doors.length) % doors.length;
+      }
+
+      function doorAtOffset(offset) {
+        return doors[wrap(selectedIndex + offset)];
+      }
+
+      function render() {
+        var selected = doors[selectedIndex];
+        doorName.textContent = selected.name;
+        doorPurpose.textContent = selected.purpose;
+        doorState.textContent = selected.state;
+        guideMessage.textContent = selected.guide;
+
+        slotButtons.forEach(function (button) {
+          var offset = Number(button.getAttribute("data-slot"));
+          var door = doorAtOffset(offset);
+          var label = button.querySelector(".slot-name");
+          label.textContent = door.name;
+          button.setAttribute("aria-label", offset === 0 ? "Enter " + door.name + " door" : "Turn to " + door.name + " door");
+          button.setAttribute("title", offset === 0 ? "Enter " + door.name : "Turn to " + door.name);
+        });
+
+        floorButtons.forEach(function (button, index) {
+          button.setAttribute("aria-current", index === selectedIndex ? "true" : "false");
+        });
+      }
+
+      function finishTurn() {
+        stage.classList.remove("turning-next", "turning-previous");
+        turning = false;
+      }
+
+      function turnBy(step) {
+        if (!step || turning) return;
+        turning = true;
+        selectedIndex = wrap(selectedIndex + step);
+        stage.classList.remove("turning-next", "turning-previous");
+        void stage.offsetWidth;
+        stage.classList.add(step > 0 ? "turning-next" : "turning-previous");
+        render();
+        window.setTimeout(finishTurn, 640);
+      }
+
+      function turnTo(index) {
+        var forward = wrap(index - selectedIndex);
+        if (forward === 0 || turning) return;
+        var step = forward <= doors.length / 2 ? 1 : -1;
+        selectedIndex = index;
+        turning = true;
+        stage.classList.add(step > 0 ? "turning-next" : "turning-previous");
+        render();
+        window.setTimeout(finishTurn, 640);
+      }
+
+      function openSelectedDoor() {
+        var door = doors[selectedIndex];
+        document.getElementById("activity-mode").textContent = door.name + " door";
+        document.getElementById("activity-title").textContent = "A as home";
+        document.getElementById("activity-copy").textContent = door.activity;
+        document.getElementById("activity-proof").textContent = "Proof: " + door.proof;
+        if (typeof dialog.showModal === "function") dialog.showModal();
+      }
+
+      document.getElementById("previous-door").addEventListener("click", function () { turnBy(-1); });
+      document.getElementById("next-door").addEventListener("click", function () { turnBy(1); });
+      document.getElementById("close-activity").addEventListener("click", function () { dialog.close(); });
+
+      slotButtons.forEach(function (button) {
+        button.addEventListener("click", function () {
+          var offset = Number(button.getAttribute("data-slot"));
+          if (offset === 0) openSelectedDoor();
+          else turnBy(offset > 0 ? 1 : -1);
+        });
+      });
+
+      floorButtons.forEach(function (button, index) {
+        button.addEventListener("click", function () { turnTo(index); });
+      });
+
+      document.addEventListener("keydown", function (event) {
+        if (dialog.open && event.key !== "Escape") return;
+        if (event.key === "ArrowLeft") turnBy(-1);
+        if (event.key === "ArrowRight") turnBy(1);
+        if (event.key === "Enter" && !dialog.open) openSelectedDoor();
+      });
+
+      stage.addEventListener("pointerdown", function (event) {
+        pointerStartX = event.clientX;
+      });
+
+      stage.addEventListener("pointerup", function (event) {
+        if (pointerStartX == null) return;
+        var distance = event.clientX - pointerStartX;
+        pointerStartX = null;
+        if (Math.abs(distance) < 55) return;
+        turnBy(distance < 0 ? 1 : -1);
+      });
+
+      dialog.addEventListener("click", function (event) {
+        var bounds = dialog.getBoundingClientRect();
+        var outside = event.clientX < bounds.left || event.clientX > bounds.right || event.clientY < bounds.top || event.clientY > bounds.bottom;
+        if (outside) dialog.close();
+      });
+
+      render();
+    })();
+  </script>
+</body>
+</html>

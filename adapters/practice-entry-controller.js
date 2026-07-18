@@ -88,6 +88,10 @@
       return;
     }
     if (action === "start-planned" && lastSnapshot) {
+      if (root.PracticePlannedSession && typeof root.PracticePlannedSession.open === "function") {
+        root.PracticePlannedSession.open(lastSnapshot);
+        return;
+      }
       openCandle({
         durationMinutes: lastSnapshot.commitment.targetMinutes,
         focus: lastSnapshot.commitment.today

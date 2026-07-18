@@ -13,41 +13,6 @@
 })(typeof globalThis !== "undefined" ? globalThis : this, function createDoingRoomViewer(root) {
   "use strict";
 
-  function renderTeachingVisual(drill, ui) {
-    var asset = drill.asset || "";
-    var title = drill.shortTitle || drill.title;
-    var visualType = drill.visualType || "movement";
-    var assetHtml = asset
-      ? '<img class="doing-teaching-asset" src="' + ui.escapeHtml(asset) + '?v=20260717" alt="' + ui.escapeHtml(title + " demonstration") + '" draggable="false">'
-      : '<div class="doing-teaching-diagram doing-teaching-diagram--' + ui.escapeHtml(visualType) + '" aria-hidden="true">' +
-        '<div class="doing-teaching-diagram-neck"><i></i><i></i><i></i><i></i><i></i><i></i></div>' +
-        '<div class="doing-teaching-diagram-motion"><b>1</b><b>2</b><b>3</b><b>4</b></div>' +
-        '</div>';
-
-    return '<div class="doing-teaching-visual">' +
-      assetHtml +
-      '<div class="doing-teaching-visual-label"><span>Movement</span><b>' + ui.escapeHtml(title) + '</b></div>' +
-      '</div>';
-  }
-
-  function renderTeachingSteps(drill, coach, ui) {
-    var steps = Array.isArray(drill.steps) && drill.steps.length
-      ? drill.steps
-      : [coach && coach.whatDo, coach && coach.howDo, coach && coach.howLong].filter(Boolean);
-    return steps.map(function renderStep(step, index) {
-      return '<li><b>' + (index + 1) + '</b><span>' + ui.escapeHtml(step) + '</span></li>';
-    }).join("");
-  }
-
-  function renderListenChips(drill, coach, ui) {
-    var listenFor = Array.isArray(drill.listenFor) && drill.listenFor.length
-      ? drill.listenFor
-      : [coach && coach.listen].filter(Boolean);
-    return listenFor.map(function renderListenItem(item) {
-      return '<span>' + ui.escapeHtml(item) + '</span>';
-    }).join("");
-  }
-
   function renderRoomStage(options) {
     var selectedItem = options.selectedItem;
     var config = options.config;
@@ -62,47 +27,17 @@
         "</div>";
     }
 
-    var cat = selectedItem.cat;
-    var drill = selectedItem.drill;
-    var coach = config.coachForCategory ? config.coachForCategory(cat.id) : null;
-    var currentState = getState(drill.id);
-    var label = stateLabels[currentState] || "Not started";
-    var feedbackButtons = [
-      { id: "seen", label: "Too hard today" },
-      { id: "practiced", label: "Practised" },
-      { id: "clean", label: "Clean once" },
-      { id: "comfortable", label: "Comfortable" },
-      { id: "mastered", label: "Mastered" }
-    ].map(function renderFeedbackButton(option) {
-      var active = option.id === currentState;
-      return '<button class="doing-room-feedback-btn' + (active ? " active" : "") + '" type="button" ' +
-        'onclick="window._setDoingRoomDrillState(\'' + ui.escapeHtml(cat.id) + "', '" + ui.escapeHtml(drill.id) + "', '" + option.id + '\')">' +
-        ui.escapeHtml(option.label) +
-        "</button>";
-    }).join("");
-
-    var passCondition = drill.passCondition || (coach && coach.pass) || "Repeat the movement cleanly three times.";
-    var easier = drill.easier || (coach && coach.easier) || "Slow down and use fewer notes.";
-    var goal = drill.goal || "Train this movement slowly enough to hear what your hands are doing.";
-    var safety = drill.safety || "Stop and reset if the movement becomes tense.";
-
-    return '<div class="doing-teaching-scene">' +
-      renderTeachingVisual(drill, ui) +
-      '<div class="doing-teaching-content">' +
-        '<div class="doing-room-stage-kicker">' + ui.escapeHtml(cat.title) + ' · ' + ui.escapeHtml(drill.duration || "5 min") + '</div>' +
-        '<h4>' + ui.escapeHtml(drill.title) + '</h4>' +
-        '<p class="doing-teaching-goal">' + ui.escapeHtml(goal) + '</p>' +
-        '<div class="doing-room-stage-meta"><span>BPM ' + ui.escapeHtml(drill.bpm || "gentle") + '</span><span>' + ui.escapeHtml(label) + '</span></div>' +
-        '<ol class="doing-teaching-steps">' + renderTeachingSteps(drill, coach, ui) + '</ol>' +
-        '<div class="doing-teaching-listen"><b>Listen for</b><div>' + renderListenChips(drill, coach, ui) + '</div></div>' +
-        '<div class="doing-teaching-checks">' +
-          '<div><span>Success</span><b>' + ui.escapeHtml(passCondition) + '</b></div>' +
-          '<div><span>Make it easier</span><b>' + ui.escapeHtml(easier) + '</b></div>' +
-        '</div>' +
-        '<p class="doing-teaching-safety">' + ui.escapeHtml(safety) + '</p>' +
-        '<div class="doing-room-feedback"><span>How did it go?</span>' + feedbackButtons + '</div>' +
-      '</div>' +
-      '</div>';
+    var teachingViewer = root.HearthDoingTeachingViewer;
+    if (!teachingViewer) return "";
+    return teachingViewer.renderScene({
+      cat: selectedItem.cat,
+      drill: selectedItem.drill,
+      config: config,
+      ui: ui,
+      currentState: getState(selectedItem.drill.id),
+      stateLabels: stateLabels,
+      stateAction: "_setDoingRoomDrillState"
+    });
   }
 
   function renderRoomGraphic(options) {

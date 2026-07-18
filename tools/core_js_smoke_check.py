@@ -59,10 +59,12 @@ eval(readText(root + "/adapters/foundation-progress-bridge.js"));
 eval(readText(root + "/adapters/teaching-engine-core-adapter.js"));
 eval(readText(root + "/adapters/doing-ui-utils.js"));
 eval(readText(root + "/adapters/doing-config.js"));
+eval(readText(root + "/adapters/doing-drill-catalog.js"));
 eval(readText(root + "/adapters/doing-drill-board-model.js"));
 eval(readText(root + "/adapters/doing-controls-controller.js"));
 eval(readText(root + "/adapters/doing-drill-adjust-controller.js"));
 eval(readText(root + "/adapters/doing-drill-preview-controller.js"));
+eval(readText(root + "/adapters/doing-teaching-viewer.js"));
 eval(readText(root + "/adapters/doing-drill-detail-viewer.js"));
 eval(readText(root + "/adapters/doing-drill-board-viewer.js"));
 eval(readText(root + "/adapters/doing-shell-viewer.js"));
@@ -96,6 +98,7 @@ eval(readText(root + "/adapters/practice-ui-utils.js"));
 eval(readText(root + "/adapters/practice-metronome-controller.js"));
 eval(readText(root + "/adapters/practice-entry-model.js"));
 eval(readText(root + "/adapters/practice-entry-viewer.js"));
+eval(readText(root + "/adapters/practice-planned-session-viewer.js"));
 eval(readText(root + "/adapters/play-world-viewer.js"));
 eval(readText(root + "/adapters/mastery-viewer.js"));
 eval(readText(root + "/adapters/create-cauldron-model.js"));
@@ -162,6 +165,12 @@ assert(HearthDoingConfig.coachForCategory("missing").pass.indexOf("dead notes") 
 assert(HearthDoingConfig.guitarZones.length === 4, "Doing config should expose guitar map zones");
 assert(HearthDoingConfig.focusCats.length === 4, "Doing config should expose focus categories");
 assert(HearthDoingConfig.roomDrillPlans["left-hand"][1].indexOf("chrom-1") !== -1, "Doing config should expose curated room drills");
+var curatedDoing = {{ categories: [{{ id: "picking", title: "Picking", drills: [{{ id: "alt-1", title: "Old title", style: "rock", source: "Test", duration: "5 min", body: "<p>Test</p>" }}, {{ id: "alt-2", title: "Draft", style: "rock", source: "Test", duration: "5 min", body: "<p>Test</p>" }}] }}] }};
+HearthDoingDrillCatalog.apply(curatedDoing);
+assert(curatedDoing.catalog.approvedCount === 13, "Doing catalogue should expose the reviewed drill count");
+assert(HearthDoingDrillCatalog.findDrill(curatedDoing, "alt-1").title.indexOf("One String") !== -1, "Doing catalogue should apply reviewed teaching data");
+assert(HearthDoingDrillCatalog.findDrill(curatedDoing, "alt-2").reviewStatus === "draft", "Doing catalogue should preserve unreviewed drills as drafts");
+assert(HearthDoingDrillCatalog.findDrill(curatedDoing, "chord-change-am-c").reviewStatus === "approved", "Doing catalogue should add reviewed chord drills");
 assert(HearthDoingUiUtils.escapeHtml("<pick>") === "&lt;pick&gt;", "Doing UI utils should escape HTML");
 assert(HearthDoingUiUtils.drillShort({{ title: "Alternate Picking" }}) === "AP", "Doing UI utils should build drill initials");
 var practiceEntrySnapshot = HearthPracticeEntryModel.buildSnapshot({{
@@ -176,6 +185,12 @@ assert(practiceEntrySnapshot.commitment.todayMinutes === 8, "Practice entry shou
 var practiceEntryHtml = HearthPracticeEntryViewer.render(practiceEntrySnapshot, "planned");
 assert(practiceEntryHtml.indexOf('data-practice-mode="planned"') !== -1, "Practice entry should render the planned-session hotspot");
 assert(practiceEntryHtml.indexOf("streak") === -1, "Practice entry should not use guilt-based streak language");
+var plannedPracticeSession = HearthPracticePlannedSessionViewer.createSession(practiceEntrySnapshot);
+assert(plannedPracticeSession.focus.indexOf("A roots") !== -1, "Planned Practice should inherit today's focus");
+assert(plannedPracticeSession.minutes === 20, "Planned Practice should inherit the commitment length");
+var plannedPracticeHtml = HearthPracticePlannedSessionViewer.render(plannedPracticeSession);
+assert(plannedPracticeHtml.indexOf("Choose the focus") !== -1 || plannedPracticeHtml.indexOf("Arrive") !== -1, "Planned Practice should render the guided steps");
+assert(plannedPracticeHtml.indexOf('data-practice-flow-action="next"') !== -1, "Planned Practice should render next-step action");
 var fakeDoing = {{
   categories: [
     {{
@@ -255,9 +270,9 @@ var doingDetailHtml = HearthDoingDrillDetailViewer.renderDoingDrillDetail({{
   config: HearthDoingConfig,
   ui: HearthDoingUiUtils
 }});
-assert(doingDetailHtml.indexOf("doing-drill-card") !== -1, "Doing detail viewer should render detail card");
+assert(doingDetailHtml.indexOf("doing-teaching-scene--page") !== -1, "Doing detail viewer should render the full teaching scene");
 assert(doingDetailHtml.indexOf("Alternate Picking") !== -1, "Doing detail viewer should render drill title");
-assert(doingDetailHtml.indexOf("Pass condition") !== -1, "Doing detail viewer should render coaching sections");
+assert(doingDetailHtml.indexOf("Success") !== -1, "Doing detail viewer should render a success condition");
 var doingEntryHtml = HearthDoingEntryViewer.renderDoingEntry({{
   focusCats: HearthDoingConfig.focusCats,
   nextDrill: {{ cat: fakeDoing.categories[0], drill: fakeDoing.categories[0].drills[0] }},

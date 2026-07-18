@@ -33,8 +33,7 @@
       harder: "Cross all six strings at 60 BPM, one note per click.",
       safety: "Stop and shake out the hand if the wrist pinches or the thumb grips hard.",
       bpmChoices: ["Free", "50", "60", "76"],
-      visualType: "finger-sequence",
-      asset: "images/doing/drills/chromatic-1234-v1.png"
+      visualType: "finger-sequence"
     },
     "classical-1": {
       title: "Fretting Hand Position",
@@ -345,10 +344,15 @@
         targetCategory.drills.push(drill);
       }
       if (!drill) return;
+      if (drill.video && reviewed.videoStatus !== "verified") {
+        drill.referenceVideo = drill.video;
+        drill.video = "";
+      }
       Object.keys(reviewed).forEach(function copyField(key) {
         if (key !== "categoryId") drill[key] = reviewed[key];
       });
       drill.reviewStatus = "approved";
+      drill.videoStatus = reviewed.videoStatus || "needs-review";
     });
 
     doing.catalog = {

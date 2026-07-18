@@ -9,7 +9,9 @@
     startedAt: null,
     totalMs: 20 * 60 * 1000,
     running: false,
-    complete: false
+    complete: false,
+    returnAction: "",
+    returnLabel: ""
   };
 
   function panel() {
@@ -149,6 +151,8 @@
     var focuses = ["Warm", "Clean", "Groove", "Carry"];
     var running = PRACTICE_CANDLE.running;
     var complete = PRACTICE_CANDLE.complete;
+    var backAction = PRACTICE_CANDLE.returnAction || "backToMap";
+    var backLabel = PRACTICE_CANDLE.returnLabel || "Map";
 
     var durationPills = durations.map(function(minutes) {
       var active = PRACTICE_CANDLE.durationMinutes === minutes;
@@ -232,7 +236,7 @@
 
     el.innerHTML =
       '<div class="sk-wrap">'
-        + '<button class="back-btn" onclick="backToMap()">&larr; Map</button>'
+        + '<button class="back-btn" onclick="' + backAction + '()">&larr; ' + backLabel + '</button>'
         + '<div class="sk-scene">'
           + '<div class="sk-top">'
             + '<div><div class="sk-kicker">Practise Room</div>'
@@ -276,6 +280,8 @@
       PRACTICE_CANDLE.durationMinutes = Number(options.durationMinutes) || PRACTICE_CANDLE.durationMinutes || 20;
       PRACTICE_CANDLE.totalMs = PRACTICE_CANDLE.durationMinutes * 60 * 1000;
       PRACTICE_CANDLE.focus = options.focus || PRACTICE_CANDLE.focus || "Clean";
+      PRACTICE_CANDLE.returnAction = options.returnAction || "";
+      PRACTICE_CANDLE.returnLabel = options.returnLabel || "";
       PRACTICE_CANDLE.startedAt = null;
       PRACTICE_CANDLE.running = false;
       PRACTICE_CANDLE.complete = false;

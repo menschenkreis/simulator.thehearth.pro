@@ -18,7 +18,9 @@
   var CATEGORY_ROWS = {
     speed: 1,
     styles: 1,
+    coordination: 1,
     arpeggios: 2,
+    chords: 2,
     scales: 3,
     picking: 4,
     fretting: 5,
@@ -26,20 +28,13 @@
     rhythm: 6
   };
 
-  function hashString(value) {
-    var hash = 0;
-    String(value || "").split("").forEach(function hashChar(ch) {
-      hash = ((hash * 31) + ch.charCodeAt(0)) >>> 0;
-    });
-    return hash;
-  }
-
   function assignPositions(items) {
     var used = {};
+    var nextFretByRow = {};
     return items.map(function assignPosition(item, index) {
       var row = CATEGORY_ROWS[item.cat.id] || ((index % 6) + 1);
       if (!used[row]) used[row] = {};
-      var fret = (hashString(item.drill.id) % FRET_COUNT) + 1;
+      var fret = nextFretByRow[row] || 1;
       var attempts = 0;
       while (used[row][fret] && attempts < FRET_COUNT) {
         fret = (fret % FRET_COUNT) + 1;
@@ -48,10 +43,11 @@
       if (attempts >= FRET_COUNT) {
         row = (row % 6) + 1;
         if (!used[row]) used[row] = {};
-        fret = (hashString(item.drill.id + index) % FRET_COUNT) + 1;
+        fret = nextFretByRow[row] || 1;
         while (used[row][fret]) fret = (fret % FRET_COUNT) + 1;
       }
       used[row][fret] = true;
+      nextFretByRow[row] = (fret % FRET_COUNT) + 1;
       return { item: item, row: row, fret: fret };
     });
   }
@@ -84,6 +80,25 @@
 
     var esc = ui.escapeHtml;
     var stateOrder = config.stateOrder || [];
+    var reviewedDrills = [];
+    doing.categories.forEach(function collectReviewed(cat) {
+      cat.drills.forEach(function collectDrill(drill) {
+        if (boardModel.isLearnerReady(drill)) reviewedDrills.push({ cat: cat, drill: drill });
+      });
+    });
+    var availableLevels = config.levels.filter(function hasReviewedLevel(level) {
+      return reviewedDrills.some(function matchesLevel(entry) {
+        return String(config.levelForDrill(entry.drill)) === String(level.level);
+      });
+    });
+    var availableCategories = doing.categories.filter(function hasReviewedCategory(cat) {
+      return cat.drills.some(boardModel.isLearnerReady);
+    });
+    var availableGenres = config.genreFilters.filter(function hasReviewedGenre(genre) {
+      return reviewedDrills.some(function matchesGenre(entry) {
+        return genre.styles.indexOf(entry.drill.style) >= 0;
+      });
+    });
     var boardOptions = {
       doing: doing,
       config: config,
@@ -102,7 +117,7 @@
     var title = selectedBoard ? selectedBoard.title : "Drill Library";
     var description = selectedBoard
       ? selectedBoard.description
-      : "Every physical drill lives here. Filter the library without losing your place on the instrument.";
+      : "A small reviewed collection of useful physical drills. Each drill has exact steps, an easier version, and a clear success test.";
     var mastered = visible.filter(function countMastered(entry) {
       return boardModel.getState(progress, stateOrder, entry.drill.id) === "mastered";
     }).length;
@@ -113,7 +128,7 @@
 
     var html = '<section class="doing-library" aria-label="Guitar drill library">' +
       '<header class="doing-library-head">' +
-        '<div><div class="doing-board-kicker">Do node &middot; Level ' + esc(activeLevel) + '</div>' +
+        '<div><div class="doing-board-kicker">Do node &middot; Reviewed Level ' + esc(activeLevel) + '</div>' +
         '<h3>' + esc(title) + '</h3><p>' + esc(description) + '</p></div>' +
         '<div class="doing-library-progress" aria-label="' + mastered + ' of ' + visible.length + ' drills mastered">' +
           '<strong>' + mastered + '<span>/' + visible.length + '</span></strong><small>mastered in view</small>' +
@@ -121,7 +136,7 @@
       '</header>' +
       '<div class="doing-library-toolbar" aria-label="Drill filters">' +
         '<label><span>Level</span><select id="doing-level-select">';
-    config.levels.forEach(function renderLevel(level) {
+    availableLevels.forEach(function renderLevel(level) {
       html += optionHtml(esc, level.level, level.label, activeLevel);
     });
     html += '</select></label><label><span>Area</span><select id="doing-board-select">' +
@@ -131,12 +146,12 @@
     });
     html += '</select></label><label><span>Skill</span><select id="doing-category-select">' +
       optionHtml(esc, "all", "All skills", activeCategory);
-    doing.categories.forEach(function renderCategory(cat) {
+    availableCategories.forEach(function renderCategory(cat) {
       html += optionHtml(esc, cat.id, cat.title, activeCategory);
     });
     html += '</select></label><label><span>Genre</span><select id="doing-style-select">' +
       optionHtml(esc, "all", "All genres", activeStyle);
-    config.genreFilters.forEach(function renderGenre(genre) {
+    availableGenres.forEach(function renderGenre(genre) {
       html += optionHtml(esc, genre.id, genre.label, activeStyle);
     });
     html += '</select></label><label><span>Status</span><select id="doing-status-select">' +

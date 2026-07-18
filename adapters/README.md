@@ -28,6 +28,7 @@ Adapters are allowed to connect the clean core to those outside systems.
 | `doing-map-viewer.js` | Renders the Doing guitar-body training map. |
 | `doing-room-viewer.js` | Renders the focused Doing hand-training room. |
 | `doing-drill-catalog.js` | Curates the learner-ready drill catalogue and preserves the larger source archive. |
+| `doing-teaching-viewer.js` | Renders the shared visual teaching scene for a selected drill. |
 | `doing-panel-controller.js` | Opens and coordinates the Doing panel using the smaller Doing adapters. |
 | `doing-ui-utils.js` | Shared text and display helpers for the legacy Doing view. |
 | `knowing-level-model.js` | Groups Knowing topics into the 8-level bookshelf roadmap. |
@@ -67,6 +68,11 @@ Adapters are allowed to connect the clean core to those outside systems.
 | `practice-session-model.js` | Decides Practice drill completion outcomes and next drill. |
 | `practice-session-viewer.js` | Renders the timed Practice candle session screen. |
 | `practice-candle-viewer.js` | Renders the active Practice Candle Timer node entrance. |
+| `practice-entry-model.js` | Builds the learner-aware Practice first-click summary. |
+| `practice-entry-viewer.js` | Renders the image-led Practice chamber entrance. |
+| `practice-entry-controller.js` | Wires the Practice chamber hotspots and entry actions. |
+| `practice-planned-session-viewer.js` | Renders the guided Arrive-Focus-Set-Practise-Listen-Reflect practice flow. |
+| `practice-planned-session-controller.js` | Manages the planned-session state, candle handoff, recorder check, and reflection save. |
 | `practice-ui-utils.js` | Shared Practice display helpers for streaks, relative time, and feeling labels. |
 | `practice-metronome-controller.js` | Runs the Practice candle timer and Web Audio metronome controls. |
 | `play-world-viewer.js` | Renders the Play world-map overview screen. |
@@ -79,6 +85,9 @@ Adapters are allowed to connect the clean core to those outside systems.
 | `notebook-controller.js` | Handles legacy notebook notes, context, and progress summaries. |
 | `create-cauldron-model.js` | Resolves selected Create ingredients into a cauldron prompt result. |
 | `create-cauldron-scene-viewer.js` | Renders the active Create Cauldron node entrance and song-seed workstation. |
+| `create-entry-model.js` | Builds the active learner's current seed and saved-fragment summary for the Create entrance. |
+| `create-entry-viewer.js` | Renders the image-led Cauldron entrance and its four focused routes. |
+| `create-entry-controller.js` | Routes the Create entrance into the existing Cauldron workbench or saved fragments. |
 | `create-cauldron-viewer.js` | Renders the Create Cauldron dashboard screen. |
 | `create-cauldron-controller.js` | Updates Create Cauldron ingredient selection and reset UI. |
 | `text-to-speech-controller.js` | Controls legacy lesson read-aloud behavior and TTS button state. |
