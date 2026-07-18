@@ -59,17 +59,61 @@ The Hearth Mastery is one connected guitar-learning world.
      thresholds.
    - A lesson-by-lesson comparison and a safer route beyond QJam ownership.
 
+8. `whole-simulator-integration-audit-and-improvement-prompt-v2.md`
+   - The master instruction for the final whole-product audit.
+   - Traces click paths, learner evidence, node handoffs, visual unity,
+     performance, architecture, and controlled implementation.
+
+9. `level-one-content-gap-pass-roadmap-v1.md`
+   - Protects the queued song, listening, TAB/diagram, right-hand,
+     practice-history, saved-creation, and Mastery workstream.
+   - Defines one connected Ayla/Jen vertical slice and its finish line.
+
+10. `node-remaining-work-index-v1.md`
+    - Consolidates the current maturity, dependencies, and next proof for every
+      node and shared workstream.
+    - Separates claimed completion, verification still required, intentional
+      gaps, missing current handovers, and future production work.
+
+11. Current remaining-work briefs:
+    - `practice-node-remaining-work-brief-2026-07-18.md`
+    - `study-node-remaining-work-brief-2026-07-18.md`
+    - `hearth-node-remaining-work-brief-2026-07-18.md`
+    - `play-node-remaining-work-brief-2026-07-18.md`
+    - `audio-create-integration-remaining-work-brief-2026-07-18.md`
+    - `mastery-node-remaining-work-brief-2026-07-18.md`
+    - These preserve what each specialist task says is already built, what
+      still needs proof, and what must not be disturbed.
+
+12. `app-readiness-audit-brief-2026-07-18.md`
+    - Defines the later route from prototype to responsive web app, PWA, and
+      optional app-store wrappers.
+    - Informs current architecture without replacing the immediate learning
+      experience completion pass.
+
+13. `post-audit-node-continuation-brief-standard-v1.md`
+    - Defines the fresh, commit-stamped handoff every node and Journey must
+      receive after the final audit.
+    - Keeps specialist node tasks aligned with verified ownership, shared
+      evidence, protected decisions, and the next ordered build.
+
 ## Next Safe Documents
 
-These can be added while node implementations continue:
+These should be added or confirmed while node implementations continue:
 
-1. Final audit evidence template and click-path matrix.
+1. Current remaining-work handovers for Foundation, Do, and Know.
+2. A current Journey handover if its implementation has materially changed
+   since the Level 1 capability map and content-gap roadmap were written.
+3. The final audit should generate its evidence and click-path matrices from
+   the live implementation using the master prompt above.
 
 ## When The Final Audit May Begin
 
 The comprehensive audit is ready to run when:
 
 - every current node owner says its active build is at a stable checkpoint;
+- current Foundation, Do, Know, and Journey status is recorded in the
+  remaining-work index;
 - each node has completed the Concept, Interaction, and Learning gates in the
   Node Definition of Done;
 - incomplete features are labelled honestly rather than presented as done;

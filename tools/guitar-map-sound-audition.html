@@ -48,25 +48,44 @@
       var sourceRoot = "file:///Users/alessandralove/Desktop/guitar%20sounds/";
       var storageKey = "hearth-guitar-map-sound-audition-v1";
       var candidates = [
-        { id:"foundation", node:"Foundation", feeling:"First clear note", file:"Single 6_C.wav" },
-        { id:"doing", node:"Do", feeling:"Physical forward motion", file:"Single 2_E.wav" },
+        { id:"foundation-c", group:"foundation", node:"Foundation", feeling:"First clear note", file:"Single 6_C.wav" },
+        { id:"doing-open-fifths", group:"doing", node:"Do", feeling:"Open fifths", file:"Chord 19_G-D-A.wav" },
+        { id:"doing-wide-strum", group:"doing", node:"Do", feeling:"Wide strum", file:"Strum 13_EMaj.wav" },
+        { id:"doing-fast-slide", group:"doing", node:"Do", feeling:"Quick slide", file:"Dobro Fast Slide_B.wav" },
         { id:"practise", node:"Practise", feeling:"Settled home note", file:"Single 9_A.wav" },
         { id:"play", node:"Play", feeling:"Immediate movement", file:"Strum 22_Amin.wav" },
-        { id:"hearth", node:"The Hearth", feeling:"Warm reflection", file:"gtrchord_Emin7.wav" },
-        { id:"knowing", node:"Know", feeling:"Small insight", file:"Single 4_G.wav" },
+        { id:"hearth-suspended", group:"hearth", node:"The Hearth", feeling:"Suspended warmth", file:"gtrchord_A7sus2.wav" },
+        { id:"hearth-gravity", group:"hearth", node:"The Hearth", feeling:"Quiet gravity", file:"Chord 26_Dmin.wav" },
+        { id:"hearth-interior", group:"hearth", node:"The Hearth", feeling:"Soft interior", file:"COY_Guitar_Chord_Bmin7.wav" },
+        { id:"knowing-clear-c", group:"knowing", node:"Know", feeling:"Clear answer", file:"Single 6_C.wav" },
+        { id:"knowing-opened", group:"knowing", node:"Know", feeling:"An idea opening", file:"Chord 5_GMaj7.wav" },
+        { id:"knowing-bright", group:"knowing", node:"Know", feeling:"Bright discovery", file:"Chord 12_EMaj7wav.wav" },
         { id:"study", node:"Study", feeling:"Focus and resolution", file:"Chord 2_D.wav" },
         { id:"create", node:"Create", feeling:"Colour and possibility", file:"Chord 24_EMaj7.wav" },
         { id:"mastery", node:"Mastery", feeling:"Open arrival", file:"COY_Guitar_Chord_Gmaj7.wav" },
-        { id:"clean-take", node:"Clean take", feeling:"Small expressive reward", file:"Dobro - High Vibrato_1_D.wav" }
+        { id:"clean-take-bright", group:"clean-take", node:"Clean take", feeling:"Quick bright nod", file:"AccEStab1_keyAMaj_134bpm.wav" },
+        { id:"clean-take-lift", group:"clean-take", node:"Clean take", feeling:"Small blues lift", file:"BluesySlideLick.2_keyGMaj_120bpm.wav" },
+        { id:"clean-take-flourish", group:"clean-take", node:"Clean take", feeling:"Gentle flourish", file:"BluesySlideLick3_keyGMaj_120bpm.wav" }
       ];
-      var chosen = new Set();
+      candidates.forEach(function (candidate) { candidate.group = candidate.group || candidate.id; });
+      var chosen = {};
       var currentAudio = null;
-      try { chosen = new Set(JSON.parse(localStorage.getItem(storageKey) || "[]")); } catch (_) {}
+      try {
+        var stored = JSON.parse(localStorage.getItem(storageKey) || "{}");
+        if (Array.isArray(stored)) {
+          stored.forEach(function (id) {
+            var candidate = candidates.find(function (item) { return item.id === id; });
+            if (candidate) chosen[candidate.group] = candidate.id;
+          });
+        } else if (stored && typeof stored === "object") {
+          chosen = stored;
+        }
+      } catch (_) {}
 
       function audioUrl(file) { return sourceRoot + encodeURIComponent(file); }
-      function save() { localStorage.setItem(storageKey, JSON.stringify(Array.from(chosen))); }
+      function save() { localStorage.setItem(storageKey, JSON.stringify(chosen)); }
       function updateCount() {
-        document.getElementById("count").textContent = chosen.size + " selected";
+        document.getElementById("count").textContent = Object.keys(chosen).length + " selected";
       }
       function stopCurrent() {
         if (!currentAudio) return;
@@ -93,7 +112,7 @@
       function render() {
         var board = document.getElementById("board");
         board.innerHTML = candidates.map(function (candidate) {
-          var isChosen = chosen.has(candidate.id);
+          var isChosen = chosen[candidate.group] === candidate.id;
           return '<article class="sound' + (isChosen ? ' is-chosen' : '') + '" data-id="' + candidate.id + '">' +
             '<button class="play" type="button" aria-label="Play ' + candidate.node + ' sound">&#9654;</button>' +
             '<div class="sound-copy"><small>' + candidate.node + '</small><b>' + candidate.feeling + '</b><span>' + candidate.file + '</span></div>' +
@@ -104,7 +123,7 @@
           var candidate = candidates.find(function (item) { return item.id === row.dataset.id; });
           row.querySelector(".play").addEventListener("click", function () { togglePlay(candidate, this); });
           row.querySelector(".choose").addEventListener("click", function () {
-            if (chosen.has(candidate.id)) chosen.delete(candidate.id); else chosen.add(candidate.id);
+            if (chosen[candidate.group] === candidate.id) delete chosen[candidate.group]; else chosen[candidate.group] = candidate.id;
             save(); render();
           });
         });
