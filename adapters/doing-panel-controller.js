@@ -70,6 +70,16 @@
       activeRoomDrill: null
     };
 
+    function practiceReturnHtml() {
+      var activeSession = root.PracticePlannedSession && typeof root.PracticePlannedSession.current === "function"
+        ? root.PracticePlannedSession.current()
+        : null;
+      if (!activeSession) return "";
+      return '<button type="button" class="doing-practice-return" onclick="window.PracticePlannedSession.resume()">' +
+        '<span>&larr;</span><b>Guided practice</b><small>' + doingUi.escapeHtml(activeSession.focus || "Current focus") + '</small>' +
+      '</button>';
+    }
+
     function boardOptions() {
       return {
         doing: doing,
@@ -97,6 +107,16 @@
       var currentState = getState(drillId);
       var index = stateOrder.indexOf(currentState);
       return index < 0 ? 0 : Math.round(((index + 1) / stateOrder.length) * 360);
+    }
+
+    function revealRoomDrill() {
+      if (!root.requestAnimationFrame) return;
+      root.requestAnimationFrame(function revealAfterRender() {
+        var scene = panel.querySelector(".doing-teaching-scene");
+        if (scene && scene.scrollIntoView) {
+          scene.scrollIntoView({ block: "start", behavior: "auto" });
+        }
+      });
     }
 
     function countForGenre(genreId) {
@@ -142,7 +162,7 @@
         return item.level === getDoingLevel(drill);
       }) || levels[0];
       if (!root.HearthDoingDrillDetailViewer) return;
-      panel.innerHTML = root.HearthDoingDrillDetailViewer.renderDoingDrillDetail({
+      panel.innerHTML = practiceReturnHtml() + root.HearthDoingDrillDetailViewer.renderDoingDrillDetail({
         cat: cat,
         drill: drill,
         level: level,
@@ -199,6 +219,24 @@
       });
       return found;
     }
+
+    root._openDoingCreate = function openDoingCreate(catId, drillId) {
+      var entry = findDrillEntry(drillId);
+      var handoff = entry && entry.drill && entry.drill.createHandoff;
+      if (!entry || entry.cat.id !== catId || !handoff || !root.HearthCreateHandoff ||
+          typeof root.HearthCreateHandoff.open !== "function") return;
+
+      root.HearthCreateHandoff.open({
+        source_node_id: "doing",
+        source_id: entry.drill.id,
+        lesson_id: handoff.lesson_id || "",
+        source_title: entry.drill.title,
+        suggested_ingredient: handoff.suggested_ingredient,
+        seed_title: handoff.seed_title,
+        starter: handoff.starter,
+        instruction: handoff.instruction
+      });
+    };
 
     function collectRoomDrills(board) {
       var plan = (doingConfig.roomDrillPlans && doingConfig.roomDrillPlans[board.id] && doingConfig.roomDrillPlans[board.id][1]) || [];
@@ -261,6 +299,7 @@
       state.activeRoomDrill = { catId: catId, drillId: drillId };
       state.doingView = "room-concept";
       shell();
+      revealRoomDrill();
     };
 
     root._setDoingRoomDrillState = function setDoingRoomDrillState(catId, drillId, nextState) {
@@ -271,6 +310,7 @@
       state.activeRoomDrill = { catId: catId, drillId: drillId };
       state.doingView = "room-concept";
       shell();
+      revealRoomDrill();
     };
 
     root._doingBackToLibrary = function doingBackToLibrary() {
@@ -348,7 +388,7 @@
 
     function shell() {
       if (state.doingView === "map") {
-        panel.innerHTML = renderMap();
+        panel.innerHTML = practiceReturnHtml() + renderMap();
         bindControls();
         return;
       }
@@ -365,7 +405,7 @@
       }
 
       if (!root.HearthDoingShellViewer) return;
-      panel.innerHTML = root.HearthDoingShellViewer.renderDoingShell({
+      panel.innerHTML = practiceReturnHtml() + root.HearthDoingShellViewer.renderDoingShell({
         doing: doing,
         ui: doingUi,
         progressSummary: progressSummary,

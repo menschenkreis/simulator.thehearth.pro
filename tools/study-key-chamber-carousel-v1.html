@@ -202,8 +202,14 @@
     .door-hotspot[data-slot="2"]  { left: 87.5%; top: 20%; width: 12%; height: 53%; }
 
     .door-hotspot[data-slot="0"]::before {
-      border-color: rgba(255, 224, 160, 0.23);
-      box-shadow: 0 0 54px rgba(255, 175, 58, 0.07);
+      border-color: transparent;
+      box-shadow: none;
+    }
+
+    .door-hotspot[data-slot="0"]:hover::before,
+    .door-hotspot[data-slot="0"]:focus-visible::before {
+      border-color: rgba(255, 224, 160, 0.32);
+      box-shadow: 0 0 54px rgba(255, 175, 58, 0.1);
     }
 
     .slot-name {
@@ -269,7 +275,7 @@
       z-index: 5;
       left: 49.35%;
       top: 82.35%;
-      width: clamp(48px, 5.1vw, 84px);
+      width: clamp(58px, 6.2vw, 102px);
       aspect-ratio: 1;
       display: grid;
       place-items: center;
@@ -280,10 +286,10 @@
     .floor-logo::before {
       content: "";
       position: absolute;
-      inset: -12%;
+      inset: -7%;
       border-radius: 50%;
-      background: radial-gradient(circle, rgba(24, 16, 8, 0.98) 0 34%, rgba(24, 16, 8, 0.83) 55%, transparent 75%);
-      box-shadow: 0 0 22px rgba(255, 194, 80, 0.2);
+      background: radial-gradient(circle, rgba(24, 16, 8, 0.78) 0 34%, rgba(24, 16, 8, 0.48) 55%, transparent 75%);
+      box-shadow: 0 0 18px rgba(255, 194, 80, 0.14);
     }
 
     .floor-logo img {
@@ -309,6 +315,18 @@
       -webkit-tap-highlight-color: transparent;
     }
 
+    .floor-node::before {
+      content: "";
+      position: absolute;
+      inset: 14%;
+      border-radius: 50%;
+      background: conic-gradient(var(--gold-bright) calc(var(--progress, 0) * 1%), rgba(215, 179, 106, 0.17) 0);
+      -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 2px), #000 0);
+      mask: radial-gradient(farthest-side, transparent calc(100% - 2px), #000 0);
+      opacity: 0.78;
+      transition: opacity 180ms ease, transform 180ms ease;
+    }
+
     .floor-node::after {
       content: "";
       position: absolute;
@@ -330,6 +348,12 @@
       background: var(--gold-bright);
       box-shadow: 0 0 16px rgba(255, 200, 96, 0.86), 0 0 0 4px rgba(215, 179, 106, 0.13);
       transform: scale(1.3);
+    }
+
+    .floor-node[aria-current="true"]::before {
+      opacity: 1;
+      transform: scale(1.18);
+      filter: drop-shadow(0 0 5px rgba(255, 210, 120, 0.42));
     }
 
     .floor-node[data-floor="0"] { left: 50%; top: 76.25%; }
@@ -399,6 +423,25 @@
     .chamber-stage.turning-next .slot-name,
     .chamber-stage.turning-previous .slot-name {
       animation: captionTurn var(--turn-duration) ease;
+    }
+
+    .door-hotspot[data-slot="0"]::after {
+      content: "";
+      position: absolute;
+      left: 21%;
+      right: 21%;
+      bottom: 4.5%;
+      height: 3px;
+      border-radius: 999px;
+      background: rgba(255, 224, 160, 0.68);
+      box-shadow: 0 0 10px rgba(255, 184, 65, 0.72), 0 0 24px rgba(255, 184, 65, 0.28);
+      animation: thresholdPulse 2.8s ease-in-out infinite;
+      pointer-events: none;
+    }
+
+    @keyframes thresholdPulse {
+      0%, 100% { opacity: 0.45; transform: scaleX(0.82); }
+      50% { opacity: 0.94; transform: scaleX(1); }
     }
 
     @keyframes turnSceneNext {
@@ -590,7 +633,7 @@
         <span>Interactive first-click prototype</span>
       </div>
     </div>
-    <div class="mode-note">Click a door, floor point, arrow, or use the keyboard</div>
+    <div class="mode-note">One idea &middot; six ways in</div>
   </header>
 
   <main class="experience">
@@ -600,7 +643,9 @@
 
       <div class="subject-plaque">
         <div class="eyebrow">Current study</div>
-        <h1>A as home inside A minor pentatonic</h1>
+        <h1 id="subject-title">A as home inside A minor pentatonic</h1>
+        <div id="subject-learner" style="margin-top:6px;color:#d7b36a;font-size:10px;letter-spacing:.12em;text-transform:uppercase"></div>
+        <div id="subject-summary" style="margin-top:6px;color:#d8c9af;font-size:12px;line-height:1.35"></div>
       </div>
 
       <button class="turn-button previous" type="button" id="previous-door" title="Previous door" aria-label="Previous Study door">&#8249;</button>
@@ -651,11 +696,15 @@
     </div>
   </dialog>
 
+  <script src="../assets/js/journey-data.js"></script>
+  <script src="../assets/js/knowing.js"></script>
+  <script src="../adapters/progress-event-store.js"></script>
+  <script src="../adapters/study-key-chamber-model.js"></script>
   <script>
     (function () {
       "use strict";
 
-      var doors = [
+      var legacyDoors = [
         {
           id: "word",
           name: "Word",
@@ -664,6 +713,7 @@
           guide: "Start here when a name or explanation feels foggy.",
           activity: "Clear the words root note, tonal centre, and pentatonic without adding more theory.",
           proof: "Explain in one sentence why A can feel like home."
+          , progress: 22
         },
         {
           id: "sound",
@@ -673,6 +723,7 @@
           guide: "Listen first. Your ear can recognise home before your fingers can name it.",
           activity: "Hear a short A minor phrase twice. Notice which note sounds settled when the phrase ends.",
           proof: "Choose the home note by ear, then confirm it on the guitar."
+          , progress: 0
         },
         {
           id: "shape",
@@ -682,6 +733,7 @@
           guide: "Use the A roots as safety points. We are adding one small CAGED clue, not the whole system.",
           activity: "Find the A root notes inside the familiar A minor pentatonic shape, then notice one nearby A-shape landmark.",
           proof: "Play away from an A root and return to it so the phrase feels complete."
+          , progress: 35
         },
         {
           id: "pattern",
@@ -691,6 +743,7 @@
           guide: "A pattern is useful when it makes the fretboard easier to predict.",
           activity: "Compare the three small pentatonic boxes and mark the A root that anchors each one.",
           proof: "Move between two boxes without losing the nearest A safety point."
+          , progress: 0
         },
         {
           id: "test",
@@ -700,6 +753,7 @@
           guide: "Testing is proof, not punishment. It should show us what needs another route.",
           activity: "Without the diagram, locate two A roots and explain how they support the pentatonic shape.",
           proof: "Locate, explain, and play the idea once without being shown first."
+          , progress: 0
         },
         {
           id: "review",
@@ -709,8 +763,37 @@
           guide: "Forgetting is information. Review brings back the exact part that needs another pass.",
           activity: "Compare today with the last attempt and choose one root, box, or right-hand pattern to repeat tomorrow.",
           proof: "Name what improved and save one precise next focus."
+          , progress: 0
         }
       ];
+
+      var studyModel = window.StudyKeyChamberModel;
+      var studySnapshot = studyModel
+        ? studyModel.snapshot({ storage: window.localStorage })
+        : { learner: { name: "Preview" }, subject: { title: "A as home inside A minor pentatonic", summary: "" }, doors: legacyDoors };
+
+      function stateLabel(state) {
+        return {
+          available: "Available",
+          recommended: "Recommended next",
+          visited: "Visited",
+          understood: "Understood",
+          locked: "Opens when evidence exists"
+        }[state] || state;
+      }
+
+      function doorsFromSnapshot(snapshot) {
+        return (snapshot.doors || []).map(function (door) {
+          return Object.assign({}, door, {
+            name: door.label || door.name,
+            purpose: door.purpose || door.action,
+            status: door.state,
+            state: stateLabel(door.state)
+          });
+        });
+      }
+
+      var doors = studyModel ? doorsFromSnapshot(studySnapshot) : legacyDoors;
 
       var selectedIndex = 2;
       var turning = false;
@@ -721,6 +804,9 @@
       var doorPurpose = document.getElementById("door-purpose");
       var doorState = document.getElementById("door-state");
       var guideMessage = document.getElementById("guide-message");
+      var subjectTitle = document.getElementById("subject-title");
+      var subjectLearner = document.getElementById("subject-learner");
+      var subjectSummary = document.getElementById("subject-summary");
       var slotButtons = Array.prototype.slice.call(document.querySelectorAll(".door-hotspot"));
       var floorButtons = Array.prototype.slice.call(document.querySelectorAll(".floor-node"));
 
@@ -734,6 +820,9 @@
 
       function render() {
         var selected = doors[selectedIndex];
+        subjectTitle.textContent = studySnapshot.subject.title;
+        subjectLearner.textContent = "Learner · " + studySnapshot.learner.name;
+        subjectSummary.textContent = studySnapshot.subject.summary || "Make one idea clear enough to use.";
         doorName.textContent = selected.name;
         doorPurpose.textContent = selected.purpose;
         doorState.textContent = selected.state;
@@ -744,12 +833,15 @@
           var door = doorAtOffset(offset);
           var label = button.querySelector(".slot-name");
           label.textContent = door.name;
+          button.style.setProperty("--progress", door.progress);
           button.setAttribute("aria-label", offset === 0 ? "Enter " + door.name + " door" : "Turn to " + door.name + " door");
-          button.setAttribute("title", offset === 0 ? "Enter " + door.name : "Turn to " + door.name);
+          button.setAttribute("title", (offset === 0 ? "Enter " : "Turn to ") + door.name + " - " + door.progress + "% explored");
         });
 
         floorButtons.forEach(function (button, index) {
+          button.style.setProperty("--progress", doors[index].progress);
           button.setAttribute("aria-current", index === selectedIndex ? "true" : "false");
+          button.setAttribute("title", doors[index].name + " door - " + doors[index].progress + "% explored");
         });
       }
 
@@ -782,6 +874,22 @@
 
       function openSelectedDoor() {
         var door = doors[selectedIndex];
+        if (door.status === "locked") {
+          document.getElementById("activity-mode").textContent = door.name + " door";
+          document.getElementById("activity-title").textContent = "Not needed yet";
+          document.getElementById("activity-copy").textContent = "This route opens after another kind of evidence exists. Start with the recommended door for this subject.";
+          document.getElementById("activity-proof").textContent = "The chamber will bring this door forward when it becomes useful.";
+          if (typeof dialog.showModal === "function") dialog.showModal();
+          return;
+        }
+        if (studyModel) {
+          studySnapshot = studyModel.markVisited(door.id, { storage: window.localStorage });
+          doors = doorsFromSnapshot(studySnapshot);
+          selectedIndex = doors.findIndex(function (item) { return item.id === door.id; });
+          door = doors[selectedIndex];
+        }
+        door.progress = Math.max(door.progress, 68);
+        render();
         document.getElementById("activity-mode").textContent = door.name + " door";
         document.getElementById("activity-title").textContent = "A as home";
         document.getElementById("activity-copy").textContent = door.activity;

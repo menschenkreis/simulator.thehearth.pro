@@ -33,7 +33,12 @@
       harder: "Cross all six strings at 60 BPM, one note per click.",
       safety: "Stop and shake out the hand if the wrist pinches or the thumb grips hard.",
       bpmChoices: ["Free", "50", "60", "76"],
-      visualType: "finger-sequence"
+      visualType: "interactive-tab",
+      tab: {
+        strings: ["e", "B", "G", "D", "A", "E"],
+        frets: [5, 6, 7, 8],
+        fingers: [1, 2, 3, 4]
+      }
     },
     "classical-1": {
       title: "Fretting Hand Position",
@@ -133,7 +138,17 @@
       harder: "Apply the motion to Am and C without interrupting the pulse.",
       safety: "The wrist and elbow should feel loose, not locked.",
       bpmChoices: ["Free", "60", "76", "100"],
-      visualType: "strum-path"
+      visualType: "interactive-strum-grid",
+      strumGrid: [
+        { count: "1", stroke: "D", play: true },
+        { count: "&", stroke: "U", play: false },
+        { count: "2", stroke: "D", play: true },
+        { count: "&", stroke: "U", play: false },
+        { count: "3", stroke: "D", play: true },
+        { count: "&", stroke: "U", play: false },
+        { count: "4", stroke: "D", play: true },
+        { count: "&", stroke: "U", play: false }
+      ]
     },
     "shuffle-1": {
       title: "Blues Shuffle Pulse",
@@ -239,7 +254,20 @@
       harder: "Build the full shape silently before the next click.",
       safety: "Do not squeeze harder when one string is muted; change the fingertip angle.",
       bpmChoices: ["Free", "50", "60"],
-      visualType: "chord-diagram"
+      visualType: "interactive-chord-check",
+      chord: {
+        name: "A minor",
+        symbol: "Am",
+        strings: [
+          { name: "6", state: "mute", fret: null, finger: null },
+          { name: "5", state: "open", fret: 0, finger: null },
+          { name: "4", state: "fretted", fret: 2, finger: 2 },
+          { name: "3", state: "fretted", fret: 2, finger: 3 },
+          { name: "2", state: "fretted", fret: 1, finger: 1 },
+          { name: "1", state: "open", fret: 0, finger: null }
+        ],
+        checkOrder: [1, 2, 3, 4, 5]
+      }
     },
     "chord-change-am-c": {
       categoryId: "chords",
@@ -285,6 +313,13 @@
       harder: "Repeat at 76, then 100 BPM, adding two scale notes.",
       safety: "Keep movements small as you cross strings.",
       bpmChoices: ["60", "76", "100"],
+      createHandoff: {
+        label: "Make it musical",
+        suggested_ingredient: "riff",
+        seed_title: "A minor root phrase",
+        starter: "A root notes in time",
+        instruction: "Turn your four-bar root-note phrase into a two-bar riff. Keep one A root as home, add one or two nearby pentatonic notes, and leave space before repeating it."
+      },
       visualType: "fretboard-roots"
     }
   };

@@ -74,26 +74,47 @@
     return [latest.feedback, latest.teacherNotes].filter(Boolean);
   }
 
-  function recommendationsFor(learner, companion) {
+  function latestRepeatFocus(events) {
+    for (var index = 0; index < (events || []).length; index++) {
+      var repeat = events[index] && events[index].data && events[index].data.repeat_next;
+      if (repeat) return repeat;
+    }
+    return "";
+  }
+
+  function recommendationsFor(learner, companion, events) {
+    var recommendations = [];
+    var repeatFocus = latestRepeatFocus(events);
+    if (repeatFocus) recommendations.push(repeatFocus);
     if (companion && Array.isArray(companion.practice) && companion.practice.length) {
-      return companion.practice.slice();
+      recommendations = recommendations.concat(companion.practice);
     }
     var lessonSignals = latestLessonSignals(learner);
-    if (lessonSignals.length) return lessonSignals;
-    return [
-      "Choose one unfinished drill from Do",
-      "Set a small clean target",
-      "Finish by making the movement musical"
-    ];
+    if (lessonSignals.length) recommendations = recommendations.concat(lessonSignals);
+    if (!recommendations.length) {
+      recommendations = [
+        "Choose one unfinished drill from Do",
+        "Set a small clean target",
+        "Finish by making the movement musical"
+      ];
+    }
+    return recommendations.filter(function uniqueRecommendation(item, index, list) {
+      return item && list.indexOf(item) === index;
+    });
   }
 
   function historyRows(events) {
     return events.slice(0, 4).map(function toHistoryRow(event) {
       var data = event.data || {};
       return {
+        id: event.id || event.created_at || "practice-history",
         createdAt: event.created_at || "",
         minutes: Number(event.duration_minutes) || 0,
-        focus: data.focus || event.note || "Practice session"
+        focus: data.focus || event.note || "Practice session",
+        improved: data.improved || data.feeling || "",
+        hard: data.hard || (Array.isArray(data.blockers) ? data.blockers.join(", ") : ""),
+        repeatNext: data.repeat_next || event.note || "",
+        listeningNote: data.recording_note || ""
       };
     });
   }
@@ -111,9 +132,18 @@
         : total;
     }, 0);
     var commitment = (companion && companion.commitment) || {};
-    var recommendations = recommendationsFor(learner, companion);
-    var focus = commitment.today || recommendations[0] || "One small clean practice step.";
+    var repeatFocus = latestRepeatFocus(events);
+    var recommendations = recommendationsFor(learner, companion, events);
+    var focus = repeatFocus || commitment.today || recommendations[0] || "One small clean practice step.";
     var candleState = options.candleState || {};
+    var plannedSession = options.plannedSession || null;
+    var plannedLearnerId = plannedSession && plannedSession.learner && plannedSession.learner.id;
+    var plannedMatchesLearner = !plannedLearnerId || plannedLearnerId === learner.id;
+    var candleMatchesLearner = !candleState.learnerId || candleState.learnerId === learner.id;
+    var guidedActive = Boolean(plannedSession && !plannedSession.saved && plannedMatchesLearner);
+    var candleActive = Boolean(candleState.running && candleMatchesLearner);
+    var activeKind = candleActive ? "candle" : guidedActive ? "guided" : "";
+    var guidedStepIndex = Number(plannedSession && plannedSession.stepIndex) || 0;
 
     return {
       learner: {
@@ -139,18 +169,26 @@
         }, 0)
       },
       activeSession: {
-        running: Boolean(candleState.running),
-        minutes: Number(candleState.durationMinutes) || targetMinutes,
-        focus: candleState.focus || focus
+        running: Boolean(activeKind),
+        kind: activeKind,
+        minutes: candleActive ? Number(candleState.durationMinutes) || targetMinutes : Number(plannedSession && plannedSession.minutes) || targetMinutes,
+        focus: candleActive ? candleState.focus || focus : plannedSession && plannedSession.focus || focus,
+        stepIndex: guidedStepIndex,
+        stepTitle: options.plannedStepTitle || "Guided practice",
+        progressPercent: candleActive
+          ? Math.min(100, Math.max(0, Number(candleState.progressPercent) || 0))
+          : guidedActive ? Math.round((guidedStepIndex + 1) / 6 * 100) : 0
       },
-      guideText: candleState.running
+      guideText: candleActive
         ? "Your candle is still burning. Return when you are ready."
-        : (learner.name || "This learner") + " has " + targetMinutes + " minutes planned. Begin small, then make it musical."
+        : guidedActive
+          ? "Your guided practice is waiting at " + (options.plannedStepTitle || "the next step") + "."
+          : (learner.name || "This learner") + " has " + targetMinutes + " minutes planned. Begin small, then make it musical."
     };
   }
 
   return {
-    version: "1.0.0",
+    version: "1.1.0",
     activeLearner: activeLearner,
     buildSnapshot: buildSnapshot,
     companionFor: companionFor,

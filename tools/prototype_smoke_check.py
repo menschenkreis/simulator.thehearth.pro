@@ -88,6 +88,8 @@ REQUIRED_MARKERS = {
         "adapters/create-cauldron-model.js",
         "adapters/create-cauldron-viewer.js",
         "adapters/create-cauldron-controller.js",
+        "adapters/create-state.js",
+        "adapters/create-handoff-controller.js",
         "adapters/create-entry-model.js",
         "adapters/create-entry-viewer.js",
         "adapters/create-entry-controller.js",
@@ -145,6 +147,21 @@ REQUIRED_MARKERS = {
         "CREATE_HEAT_LEVELS",
         "stirCauldron",
     ],
+    "adapters/create-state.js": [
+        "root.HearthCreateState",
+        "createStore",
+        "hearth-create-v1",
+    ],
+    "adapters/create-handoff-controller.js": [
+        "root.HearthCreateHandoff",
+        "buildSeed",
+        "create_handoff_opened",
+    ],
+    "adapters/doing-teaching-viewer.js": [
+        "renderCreateHandoff",
+        "When it starts to sound like music",
+        "_openDoingCreate",
+    ],
     "adapters/create-entry-model.js": [
         "root.HearthCreateEntryModel",
         "buildSnapshot",
@@ -159,6 +176,7 @@ REQUIRED_MARKERS = {
         "root.HearthCreateEntryController",
         "root.showCreate = showCreate",
         "openCauldron",
+        "receiveFirePrompt",
     ],
     "adapters/play-atlas-viewer.js": [
         "root.PlayAtlas",
@@ -177,21 +195,29 @@ REQUIRED_MARKERS = {
         "root.showPractice",
         "renderPracticeCandle",
         "lightPracticeCandle",
+        "hearth-practice-candle-v1",
+        "repeat_next",
     ],
     "adapters/practice-entry-model.js": [
         "root.HearthPracticeEntryModel",
         "buildSnapshot",
         "learnerPracticeEvents",
+        "plannedSession",
+        "candleMatchesLearner",
     ],
     "adapters/practice-entry-viewer.js": [
         "root.HearthPracticeEntryViewer",
         "renderContext",
         "practice-entry-hotspot",
+        "data-practice-free-minutes",
+        "data-practice-review-id",
     ],
     "adapters/practice-entry-controller.js": [
         "root.HearthPracticeEntryController",
         "root.showPractice = showPractice",
         "hearth:journey-state",
+        "freeDraft",
+        "continue-session",
     ],
     "adapters/practice-planned-session-viewer.js": [
         "root.HearthPracticePlannedSessionViewer",
@@ -199,11 +225,14 @@ REQUIRED_MARKERS = {
         "data-practice-flow-action",
         "data-practice-body-state",
         "practice-flow-art",
+        "practice-flow-condition-orb",
+        "practice-flow-practise-path",
     ],
     "adapters/practice-planned-session-controller.js": [
         "root.PracticePlannedSession",
         "open-candle",
         "practice_session_completed",
+        "hearth-planned-practice-v1",
     ],
     "adapters/mastery-phoenix-viewer.js": [
         "root.MasteryPhoenix",
@@ -475,6 +504,8 @@ REQUIRED_MARKERS = {
         "HearthDoingPanelController",
         "showDoing",
         "applyState",
+        "doing-practice-return",
+        "PracticePlannedSession.resume",
     ],
     "adapters/knowing-level-model.js": [
         "HearthKnowingLevelModel",
@@ -730,7 +761,7 @@ MAP_NODE_IMAGES = [
 ]
 
 ENTRY_SCENE_ASSETS = [
-    "images/create/create-cauldron-tableau-v1.png",
+    "images/create/create-cauldron-tableau-v2.png",
 ]
 
 LESSON_SEEDS = {

@@ -928,6 +928,7 @@
         '<p class="journey-live-aim">'+esc(step.aim || '')+'</p>' +
         '<div class="journey-live-action"><strong>Do this:</strong> '+esc(step.action || '')+'</div>' +
         '<div class="journey-live-prompt"><strong>Notice:</strong> '+esc(step.prompt || '')+'</div>' +
+        (step.createHandoff ? '<div class="journey-actions" style="margin-top:12px"><button type="button" class="journey-btn secondary" onclick="Journey.openCompanionCreate(\''+attr(student.id)+'\','+index+')">'+esc(step.createHandoff.label || 'Make it yours')+'</button></div>' : '') +
       '</section>';
     });
     html += '</div>';
@@ -1661,6 +1662,24 @@
       });
       document.querySelectorAll('.journey-live-focus').forEach(panel => {
         panel.classList.toggle('active', panel.getAttribute('data-step-panel') === String(index));
+      });
+    },
+    openCompanionCreate(studentId, stepIndex){
+      const state = loadState();
+      const student = state.students.find(item => item.id === studentId) || activeStudent(state);
+      const companion = getCompanion(student);
+      const step = companionLessonSteps(companion)[stepIndex];
+      const handoff = step && step.createHandoff;
+      if(!handoff || !window.HearthCreateHandoff || typeof window.HearthCreateHandoff.open !== 'function') return;
+      window.HearthCreateHandoff.open({
+        source_node_id:'journey',
+        source_id:'jen-a-minor-conversation',
+        lesson_id:'jen-a-minor-pentatonic-consolidation',
+        source_title:step.label,
+        suggested_ingredient:handoff.suggested_ingredient,
+        seed_title:handoff.seed_title,
+        starter:handoff.starter,
+        instruction:handoff.instruction
       });
     },
     saveCompanionLessonNote(studentId){

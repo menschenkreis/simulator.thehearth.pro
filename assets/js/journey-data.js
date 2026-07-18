@@ -193,6 +193,15 @@ var JOURNEY_STUDENT_COMPANIONS = {
     label: "Jen Lesson Companion",
     title: "A minor pentatonic consolidation + tiny CAGED clue",
     focus: "Consolidate A minor pentatonic and right-hand patterns. Use CAGED only as a tiny map clue: chord shapes are landmarks, and pentatonic notes live around those landmarks.",
+    studySubject: {
+      id: "jen-a-minor-pentatonic-home",
+      title: "A as home inside A minor pentatonic",
+      summary: "Use A as a safety point inside the A minor pentatonic map, then return to it musically.",
+      source: "Journey lesson notes",
+      categoryId: "scales",
+      topicId: "pentatonic",
+      recommendedDoor: "shape"
+    },
     guideNote: "Jen asked for consolidation. Keep the gradient gentle: root notes as safety points, rhythm second, then one or two extra pentatonic notes. CAGED is optional language, not the lesson goal.",
     mainRule: "Do not teach the full CAGED system today. If Jen overloads, drop the word CAGED and return to: find A, play a tiny phrase, come back to A.",
     mapClue: {
@@ -303,7 +312,14 @@ var JOURNEY_STUDENT_COMPANIONS = {
         source: "Play + Create",
         aim: "End by making the idea social and musical.",
         action: "One person holds A minor or a simple pulse. The other plays small A minor pentatonic phrases. Leave space, answer, then swap.",
-        prompt: "What sounded like a conversation rather than an exercise?"
+        prompt: "What sounded like a conversation rather than an exercise?",
+        createHandoff: {
+          label: "Turn this into a riff",
+          suggested_ingredient: "riff",
+          seed_title: "A minor conversation",
+          starter: "A minor pentatonic root notes as safety points",
+          instruction: "Make a two-bar answer from one A root note and two nearby pentatonic notes over an A minor groove. Leave one small space before you repeat it."
+        }
       },
       {
         label: "Review",

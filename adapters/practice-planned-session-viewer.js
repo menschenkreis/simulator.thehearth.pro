@@ -49,6 +49,7 @@
       bodyState: "ready",
       bodyCheck: "",
       drillNote: "",
+      recordingCaptured: false,
       recordingNote: "",
       reflectionImproved: "",
       reflectionHard: "",
@@ -75,6 +76,13 @@
 
   function fieldTextarea(name, value, placeholder) {
     return '<textarea data-practice-flow-field="' + escapeHtml(name) + '" placeholder="' + escapeHtml(placeholder || "") + '">' + escapeHtml(value) + "</textarea>";
+  }
+
+  function conditionField(name, label, value, min, max, cue) {
+    return '<label class="practice-flow-condition">' +
+      '<span class="practice-flow-condition-orb"><em>' + escapeHtml(label) + '</em>' + fieldInput(name, value, "number", ' min="' + min + '" max="' + max + '"') + '</span>' +
+      '<small>' + escapeHtml(cue) + '</small>' +
+    '</label>';
   }
 
   function focusOptions(session) {
@@ -121,44 +129,78 @@
       "</div>";
     }
     if (step.id === "conditions") {
-      return '<div class="practice-flow-body">' +
-        '<p>Make the practice measurable but gentle. Small clear targets beat vague hard work.</p>' +
+      return '<div class="practice-flow-body practice-flow-body--conditions">' +
+        '<p class="practice-flow-question">Set a kind, measurable container.</p>' +
+        '<p class="practice-flow-guidance">These are boundaries for attention, not a test you can fail.</p>' +
         '<div class="practice-flow-condition-grid">' +
-          '<label><span>Minutes</span>' + fieldInput("minutes", session.minutes, "number", ' min="1" max="90"') + '</label>' +
-          '<label><span>BPM</span>' + fieldInput("bpm", session.bpm, "number", ' min="30" max="220"') + '</label>' +
-          '<label><span>Repetitions</span>' + fieldInput("repetitions", session.repetitions, "number", ' min="1" max="50"') + '</label>' +
-          '<label><span>Clean takes</span>' + fieldInput("cleanTakeGoal", session.cleanTakeGoal, "number", ' min="1" max="10"') + '</label>' +
+          conditionField("minutes", "Minutes", session.minutes, 1, 90, "Session") +
+          conditionField("bpm", "BPM", session.bpm, 30, 220, "Starting tempo") +
+          conditionField("repetitions", "Reps", session.repetitions, 1, 50, "Patient repeats") +
+          conditionField("cleanTakeGoal", "Clean", session.cleanTakeGoal, 1, 10, "Clear takes") +
         "</div>" +
       "</div>";
     }
     if (step.id === "practise") {
-      return '<div class="practice-flow-body">' +
-        '<p>Use Do for the movement, then keep the candle burning while you repeat it. Stay below the speed where the sound falls apart.</p>' +
-        '<div class="practice-flow-tool-row">' +
-          '<button type="button" class="practice-flow-tool" data-practice-flow-action="open-do">Open Do drills</button>' +
-          '<button type="button" class="practice-flow-tool is-primary" data-practice-flow-action="open-candle">Open candle timer</button>' +
+      return '<div class="practice-flow-body practice-flow-body--practise">' +
+        '<p class="practice-flow-question">Find the movement. Then stay with it.</p>' +
+        '<p class="practice-flow-guidance">Today&apos;s focus: <strong>' + escapeHtml(session.focus) + '</strong></p>' +
+        '<div class="practice-flow-practise-path" aria-label="Practice handoff">' +
+          '<button type="button" class="practice-flow-path-stop" data-practice-flow-action="open-do">' +
+            '<span aria-hidden="true">1</span><b>Open the drill</b><small>Do</small>' +
+          '</button>' +
+          '<i aria-hidden="true"></i>' +
+          '<button type="button" class="practice-flow-path-stop is-primary" data-practice-flow-action="open-candle">' +
+            '<span aria-hidden="true">2</span><b>Begin repetition</b><small>Candle timer</small>' +
+          '</button>' +
         '</div>' +
-        '<label class="practice-flow-custom"><span>Drill note</span>' + fieldTextarea("drillNote", session.drillNote, "BPM, drill name, what happened") + '</label>' +
+        '<label class="practice-flow-quiet-note"><span>Small drill note</span>' + fieldInput("drillNote", session.drillNote, "text", ' placeholder="Drill, BPM, or one thing to notice"') + '</label>' +
       "</div>";
     }
     if (step.id === "listen") {
-      return '<div class="practice-flow-body">' +
-        '<p>Record if useful. The point is not perfection. The point is honest feedback.</p>' +
-        '<div class="practice-flow-tool-row">' +
-          '<button type="button" class="practice-flow-tool" id="rec-btn" data-practice-flow-action="toggle-record">Record check</button>' +
-          '<span class="practice-flow-status" id="rs">Ready</span>' +
+      return '<div class="practice-flow-body practice-flow-body--listen">' +
+        '<p class="practice-flow-question">Listen like a teacher, not a judge.</p>' +
+        '<p class="practice-flow-guidance">Capture one short take. Play it back once, then name only what you can actually hear.</p>' +
+        '<div class="practice-flow-listen-path" aria-label="Listening check">' +
+          '<div class="practice-flow-listen-stop">' +
+            '<button type="button" class="practice-flow-record-orb" id="practice-rec-btn" data-practice-flow-action="toggle-record" aria-pressed="false">' +
+              '<span class="practice-flow-record-mark" aria-hidden="true"></span>' +
+              '<b data-recorder-label>Capture one take</b>' +
+            '</button>' +
+            '<small id="practice-rs">Microphone starts only when you choose</small>' +
+          '</div>' +
+          '<i aria-hidden="true"></i>' +
+          '<div class="practice-flow-listen-stop practice-flow-playback-stop">' +
+            '<span class="practice-flow-listen-orb" aria-hidden="true">2</span>' +
+            '<b>Play it back once</b>' +
+            '<audio id="practice-playback" class="practice-flow-playback" controls hidden></audio>' +
+            '<button type="button" class="practice-flow-reset-recording" data-practice-flow-action="clear-recording" hidden>Try another take</button>' +
+          '</div>' +
         '</div>' +
-        '<label class="practice-flow-custom"><span>Listening note</span>' + fieldTextarea("recordingNote", session.recordingNote, "What did the recording reveal?") + '</label>' +
+        '<label class="practice-flow-quiet-note practice-flow-listening-note"><span>What did you notice?</span>' + fieldInput("recordingNote", session.recordingNote, "text", ' placeholder="Even pulse, string noise, a cleaner change..."') + '</label>' +
       "</div>";
     }
-    return '<div class="practice-flow-body">' +
-      '<p>Close the loop. This is what lets tomorrow&apos;s Practice and Journey know what to bring back.</p>' +
-      '<div class="practice-flow-mini-grid">' +
-        '<label><span>What improved?</span>' + fieldTextarea("reflectionImproved", session.reflectionImproved, "Example: A roots felt more secure") + '</label>' +
-        '<label><span>What stayed difficult?</span>' + fieldTextarea("reflectionHard", session.reflectionHard, "Example: rushing when changing strings") + '</label>' +
-        '<label><span>Bring back next time</span>' + fieldTextarea("reflectionReturn", session.reflectionReturn, "Example: 60 BPM, box 1 roots, one jam") + '</label>' +
-      "</div>" +
-      (session.saved ? '<div class="practice-flow-saved">Saved. This practice note can feed the next Journey step.</div>' : "") +
+    if (session.saved) {
+      return '<div class="practice-flow-body practice-flow-body--reflect practice-flow-body--complete">' +
+        '<p class="practice-flow-question">The session is set.</p>' +
+        '<p class="practice-flow-guidance">Tomorrow begins with what you noticed today.</p>' +
+        '<div class="practice-flow-review" aria-label="Practice review">' +
+          '<div><span>Focus</span><b>' + escapeHtml(session.focus) + '</b></div>' +
+          '<div><span>Improved</span><b>' + escapeHtml(session.reflectionImproved || "Notice it again next time") + '</b></div>' +
+          '<div><span>Bring back</span><b>' + escapeHtml(session.reflectionReturn || session.reflectionHard || session.focus) + '</b></div>' +
+        '</div>' +
+        '<p class="practice-flow-tomorrow"><span>Tomorrow</span>' + escapeHtml(session.reflectionReturn || session.reflectionHard || session.focus) + '</p>' +
+      '</div>';
+    }
+    return '<div class="practice-flow-body practice-flow-body--reflect">' +
+      '<p class="practice-flow-question">What should tomorrow remember?</p>' +
+      '<p class="practice-flow-guidance">Three short truths are enough. They shape the next Practice recommendation.</p>' +
+      '<div class="practice-flow-reflection-path">' +
+        '<label><span class="practice-flow-reflection-orb">1</span><b>What improved?</b>' + fieldTextarea("reflectionImproved", session.reflectionImproved, "A roots felt more secure") + '</label>' +
+        '<i aria-hidden="true"></i>' +
+        '<label><span class="practice-flow-reflection-orb">2</span><b>What stayed difficult?</b>' + fieldTextarea("reflectionHard", session.reflectionHard, "I rushed when changing strings") + '</label>' +
+        '<i aria-hidden="true"></i>' +
+        '<label><span class="practice-flow-reflection-orb">3</span><b>Bring back next time</b>' + fieldTextarea("reflectionReturn", session.reflectionReturn, "60 BPM, box 1 roots, one jam") + '</label>' +
+      '</div>' +
     "</div>";
   }
 
@@ -166,6 +208,8 @@
     var step = steps[session.stepIndex] || steps[0];
     var canGoBack = session.stepIndex > 0;
     var isLast = session.stepIndex >= steps.length - 1;
+    var primaryAction = isLast ? (session.saved ? "entry" : "save") : "next";
+    var primaryLabel = isLast ? (session.saved ? "Return to Practice room" : "Save reflection") : "Next";
     return '<div class="practice-flow-shell">' +
       '<button type="button" class="back-btn practice-flow-map" data-practice-flow-action="entry">&larr; Practice room</button>' +
       '<section class="practice-flow-stage practice-flow-stage--' + escapeHtml(step.id) + '" aria-label="Guided practice: ' + escapeHtml(step.title) + '">' +
@@ -184,7 +228,7 @@
         '</div>' +
         '<footer class="practice-flow-actions">' +
           '<button type="button" class="practice-flow-secondary" data-practice-flow-action="prev"' + (canGoBack ? "" : " disabled") + '>Previous</button>' +
-          '<button type="button" class="practice-flow-primary" data-practice-flow-action="' + (isLast ? "save" : "next") + '">' + (isLast ? "Save reflection" : "Next") + '</button>' +
+          '<button type="button" class="practice-flow-primary" data-practice-flow-action="' + primaryAction + '">' + primaryLabel + '</button>' +
         '</footer>' +
       '</section>' +
     '</div>';

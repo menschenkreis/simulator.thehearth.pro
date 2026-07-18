@@ -43,6 +43,7 @@ Those pieces can use the core, but they should not live inside the core.
 | `lesson-view-model.js` | Converts lesson seeds into frontend-friendly lesson view objects. |
 | `lesson-session.js` | Pure lesson navigation and answer evaluation state. |
 | `learner-progress.js` | Pure learner progress record helpers for lessons. |
+| `play-domain.js` | Pure Play destination, cultural context, route, activity, result, and recommendation contracts. |
 
 ## Checks
 
@@ -86,6 +87,15 @@ Those pieces can use the core, but they should not live inside the core.
 - `recordLessonAnswer(record, lessonId, concept, correct, options)`
 - `summarizeProgress(record)`
 
+`play-domain.js` currently exposes:
+
+- normalized destination and hotspot coordinate helpers
+- sourced cultural-context and claim-status validation
+- learner-specific route marker selection
+- Play activity and result normalization
+- shared progress-event conversion
+- Practice recommendation creation
+
 The core modules work in both:
 
 - browser globals, such as `window.HearthLessonCore`
@@ -107,6 +117,7 @@ Move one stable contract at a time. Completed first-pass contracts:
 8. learner progress record
 9. browser progress storage adapter
 10. TeachingEngine-to-core controller adapter
+11. Play destination, culture, route, activity, and result contracts
 
 Likely next contracts:
 

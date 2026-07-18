@@ -2,8 +2,29 @@
 (function initPracticePlannedSessionController(root) {
   "use strict";
 
+  var SESSION_STORAGE_KEY = "hearth-planned-practice-v1";
   var session = null;
   var recording = false;
+
+  function restoreSession() {
+    try {
+      var saved = JSON.parse(localStorage.getItem(SESSION_STORAGE_KEY) || "null");
+      return saved && saved.id ? saved : null;
+    } catch (error) {
+      return null;
+    }
+  }
+
+  function persistSession() {
+    try {
+      if (session) localStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify(session));
+      else localStorage.removeItem(SESSION_STORAGE_KEY);
+    } catch (error) {
+      // The current in-memory session remains usable without storage.
+    }
+  }
+
+  session = restoreSession();
 
   function panel() {
     document.querySelectorAll(".pnl").forEach(function hidePanel(item) {
@@ -34,9 +55,11 @@
         cleanTakeGoal: [1, 10]
       }[name];
       session[name] = clampNumber(value, session[name], limits[0], limits[1]);
+      persistSession();
       return;
     }
     session[name] = value;
+    persistSession();
   }
 
   function snapshotSession() {
@@ -53,6 +76,7 @@
       button.addEventListener("click", function onStepClick() {
         if (!session) return;
         session.stepIndex = clampNumber(button.getAttribute("data-practice-flow-step"), session.stepIndex, 0, root.HearthPracticePlannedSessionViewer.steps.length - 1);
+        persistSession();
         render();
       });
     });
@@ -60,6 +84,7 @@
       button.addEventListener("click", function onFocusClick() {
         if (!session) return;
         session.focus = button.getAttribute("data-practice-flow-focus") || session.focus;
+        persistSession();
         render();
       });
     });
@@ -67,6 +92,7 @@
       button.addEventListener("click", function onBodyStateClick() {
         if (!session) return;
         session.bodyState = button.getAttribute("data-practice-body-state") || session.bodyState;
+        persistSession();
         render();
       });
     });
@@ -85,13 +111,18 @@
     if (!target || !root.HearthPracticePlannedSessionViewer || !session) return;
     target.innerHTML = root.HearthPracticePlannedSessionViewer.render(session);
     bind(target);
+    if (root.HearthRecorderController && typeof root.HearthRecorderController.sync === "function") {
+      root.HearthRecorderController.sync(target);
+    }
   }
 
   function saveReflection() {
-    if (!session) return;
+    if (!session || session.saved) return;
     session.saved = true;
+    persistSession();
     if (root.HearthProgressEvents && typeof root.HearthProgressEvents.append === "function") {
       root.HearthProgressEvents.append({
+        learner_id: session.learner && session.learner.id || null,
         event_type: "practice_session_completed",
         node_id: "practise",
         duration_minutes: session.minutes,
@@ -105,12 +136,18 @@
           body_state: session.bodyState,
           body_check: session.bodyCheck,
           drill_note: session.drillNote,
+          recording_captured: Boolean(session.recordingCaptured),
           recording_note: session.recordingNote,
           improved: session.reflectionImproved,
           hard: session.reflectionHard,
           repeat_next: session.reflectionReturn
         }
       }, localStorage);
+    }
+    if (root.dispatchEvent && root.CustomEvent) {
+      root.dispatchEvent(new root.CustomEvent("hearth:practice-completed", {
+        detail: snapshotSession()
+      }));
     }
   }
 
@@ -125,11 +162,13 @@
     }
     if (action === "prev") {
       session.stepIndex = Math.max(0, session.stepIndex - 1);
+      persistSession();
       render();
       return;
     }
     if (action === "next") {
       session.stepIndex = Math.min(root.HearthPracticePlannedSessionViewer.steps.length - 1, session.stepIndex + 1);
+      persistSession();
       render();
       return;
     }
@@ -141,13 +180,31 @@
       root.PracticeCandle.open({
         durationMinutes: session.minutes,
         focus: session.focus,
+        learnerId: session.learner && session.learner.id || null,
         returnAction: "PracticePlannedSession.resume",
         returnLabel: "Guided session"
       });
       return;
     }
     if (action === "toggle-record" && root.HearthRecorderController) {
-      recording = root.HearthRecorderController.toggleRecording(recording, document);
+      if (typeof root.HearthRecorderController.toggleCapture === "function") {
+        root.HearthRecorderController.toggleCapture(document).then(function updateRecordingState(state) {
+          recording = Boolean(state && state.recording);
+          session.recordingCaptured = Boolean(state && state.hasRecording);
+          persistSession();
+        });
+      } else {
+        recording = root.HearthRecorderController.toggleRecording(recording, document);
+      }
+      return;
+    }
+    if (action === "clear-recording" && root.HearthRecorderController) {
+      if (typeof root.HearthRecorderController.clearCapture === "function") {
+        root.HearthRecorderController.clearCapture(document);
+      }
+      recording = false;
+      session.recordingCaptured = false;
+      persistSession();
       return;
     }
     if (action === "save") {
@@ -158,12 +215,17 @@
 
   function open(snapshot, options) {
     if (!root.HearthPracticePlannedSessionViewer) return;
+    if (root.HearthRecorderController && typeof root.HearthRecorderController.clearCapture === "function") {
+      root.HearthRecorderController.clearCapture(document);
+    }
+    recording = false;
     session = root.HearthPracticePlannedSessionViewer.createSession(snapshot, options);
+    persistSession();
     render();
   }
 
   root.PracticePlannedSession = {
-    version: "0.1.0",
+    version: "0.2.0",
     current: snapshotSession,
     open: open,
     resume: render,

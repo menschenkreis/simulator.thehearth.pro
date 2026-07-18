@@ -5,16 +5,34 @@
   var selectedMode = "ingredient";
   var lastSnapshot = null;
 
-  function read(key, fallback) {
-    try {
-      return JSON.parse(localStorage.getItem(key) || JSON.stringify(fallback));
-    } catch (_error) {
-      return fallback;
-    }
+  function createState() {
+    return root.HearthCreateState && typeof root.HearthCreateState.createStore === "function"
+      ? root.HearthCreateState.createStore({ storage: localStorage })
+      : null;
   }
 
-  function write(key, value) {
-    localStorage.setItem(key, JSON.stringify(value));
+  function saveCurrent(seed) {
+    var state = createState();
+    if (state) return state.setCurrent(seed, journeyState());
+    localStorage.setItem("hearth-create-current", JSON.stringify(seed));
+    return seed;
+  }
+
+  function setIntent(intent) {
+    var state = createState();
+    if (state) return state.setIntent(intent, journeyState());
+    localStorage.setItem("hearth-create-entry-intent", JSON.stringify(intent || ""));
+    return intent;
+  }
+
+  function projects() {
+    var state = createState();
+    if (state) return state.listProjects(journeyState());
+    try {
+      return JSON.parse(localStorage.getItem("hearth-create-projects") || "[]");
+    } catch (_error) {
+      return [];
+    }
   }
 
   function panel() {
@@ -35,6 +53,7 @@
     return root.HearthCreateEntryModel.buildSnapshot({
       storage: localStorage,
       journeyState: journeyState(),
+      createState: createState(),
       ingredients: root.CAULDRON_INGREDIENTS || []
     });
   }
@@ -60,12 +79,30 @@
   }
 
   function openCauldron(intent) {
-    if (intent) localStorage.setItem("hearth-create-entry-intent", intent);
+    if (intent) setIntent(intent);
     if (root.CreateCauldronScene && typeof root.CreateCauldronScene.render === "function") {
       root.CreateCauldronScene.render();
       return;
     }
     if (typeof root.showCreate === "function" && root.showCreate !== showCreate) root.showCreate();
+  }
+
+  function receiveFirePrompt() {
+    var ingredients = (root.CAULDRON_INGREDIENTS || []).filter(function withPrompt(ingredient) {
+      return ingredient && ingredient.id && Array.isArray(ingredient.prompts) && ingredient.prompts.length;
+    });
+    if (!ingredients.length) {
+      openCauldron("prompt");
+      return;
+    }
+    var ingredient = ingredients[Math.floor(Math.random() * ingredients.length)];
+    var seed = blankSeed();
+    seed.selected = [ingredient.id];
+    saveCurrent(seed);
+    openCauldron("prompt");
+    if (root.CreateCauldronScene && typeof root.CreateCauldronScene.stirCauldron === "function") {
+      root.CreateCauldronScene.stirCauldron();
+    }
   }
 
   function setSelectedMode(mode) {
@@ -84,9 +121,9 @@
   }
 
   function loadSaved(index) {
-    var projects = read("hearth-create-projects", []);
-    if (!projects[index]) return;
-    write("hearth-create-current", Object.assign({}, projects[index]));
+    var saved = projects();
+    if (!saved[index]) return;
+    saveCurrent(Object.assign({}, saved[index]));
     openCauldron("archive");
   }
 
@@ -101,13 +138,12 @@
       return;
     }
     if (action === "new-seed") {
-      write("hearth-create-current", blankSeed());
+      saveCurrent(blankSeed());
       openCauldron("ingredient");
       return;
     }
     if (action === "ask-fire") {
-      write("hearth-create-current", blankSeed());
-      openCauldron("prompt");
+      receiveFirePrompt();
     }
   }
 
@@ -151,7 +187,8 @@
     version: "1.0.0",
     showCreate: showCreate,
     selectMode: setSelectedMode,
-    openCauldron: openCauldron
+    openCauldron: openCauldron,
+    receiveFirePrompt: receiveFirePrompt
   };
   root.showCreate = showCreate;
 

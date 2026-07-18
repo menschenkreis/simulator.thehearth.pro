@@ -85,6 +85,8 @@ Adapters are allowed to connect the clean core to those outside systems.
 | `notebook-controller.js` | Handles legacy notebook notes, context, and progress summaries. |
 | `create-cauldron-model.js` | Resolves selected Create ingredients into a cauldron prompt result. |
 | `create-cauldron-scene-viewer.js` | Renders the active Create Cauldron node entrance and song-seed workstation. |
+| `create-state.js` | Keeps each learner's working seed, saved fragments, and Create entry intent separate in browser storage. |
+| `create-handoff-controller.js` | Carries a small playable idea from Journey, Do, Practice, or Play into the Cauldron using source context. |
 | `create-entry-model.js` | Builds the active learner's current seed and saved-fragment summary for the Create entrance. |
 | `create-entry-viewer.js` | Renders the image-led Cauldron entrance and its four focused routes. |
 | `create-entry-controller.js` | Routes the Create entrance into the existing Cauldron workbench or saved fragments. |

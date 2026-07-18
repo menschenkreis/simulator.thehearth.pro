@@ -8,7 +8,8 @@ Play is where learned material becomes music. Its main interface is the musical
 world atlas. Journey may recommend a route, but the learner can also explore the
 atlas freely.
 
-Play should help a learner listen, find the pulse, find home, join in, converse,
+Play should help a learner listen, meet the people and place, understand how
+culture shaped something audible, find the pulse, find home, join in, converse,
 explore, make a musical choice, and remember what happened. It should not become
 another lesson dashboard, drill library, or practice timer.
 
@@ -96,6 +97,12 @@ being the direct ancestor of another.
 - Replace the blank video placeholder with a real sourced listening item or a
   deliberate `audio coming later` state that does not look playable.
 - Add one complete Play-owned activity before adding more destinations.
+- Give each destination a short sourced cultural doorway, with clear labels for
+  documented history, interpretation, oral tradition, contested claims, and
+  material still awaiting review.
+- Treat destinations as living traditions, not genre/style pins. Require named
+  communities, social purpose, practice settings, transmission, and present-day
+  continuity before a destination can be published.
 - Move new Play data out of rendering code and into reusable data modules.
 - Retire duplicate renderers only after ownership tests cover the new path.
 
@@ -136,6 +143,28 @@ listening_focus { pulse, hand, colour, story }
 artist_refs[]
 recording_refs[]
 source_refs[]
+tradition_profile {
+  community_names[]
+  place_and_period
+  social_functions[]
+  practice_settings[]
+  instruments_and_voices[]
+  embodied_practices[]
+  transmission
+  historical_forces[]
+  living_now
+  learner_relationship_note
+}
+culture {
+  people_and_place
+  cultural_doorway
+  sound_connection
+  living_tradition
+  respectful_listening_prompt
+  claims[] { id, text, status, source_ref_ids[] }
+  source_refs[]
+  community_review_status
+}
 content_status
 review_status
 ```
@@ -174,7 +203,7 @@ progress_tags[]
 
 Activity steps use the shared Play sequence:
 
-`listen -> pulse -> home -> join -> converse -> explore -> own -> remember`
+`arrive -> listen -> meet_tradition -> pulse -> home -> join -> converse -> explore -> own -> remember`
 
 ### Play Progress Event
 
@@ -210,13 +239,16 @@ data {
 Build one reusable activity: `A Minor Musical Conversation`.
 
 1. Listen to a sourced, simple A minor groove.
-2. Find the pulse with muted strings or one A note.
-3. Find A root notes as safe landing points.
-4. Join with two or three notes from one pentatonic box.
-5. Play a short call and leave space for an answer.
-6. Switch rhythm and lead roles.
-7. Make one small variation.
-8. Record what sounded musical and what should return in Practice.
+2. Meet the people, place, and historical setting through one reviewed cultural
+   doorway, then connect it to something audible.
+3. Find the pulse with muted strings or one A note.
+4. Find A root notes as safe landing points.
+5. Join with two or three notes from one pentatonic box.
+6. Play a short call and leave space for an answer.
+7. Switch rhythm and lead roles.
+8. Make one small variation.
+9. Record what sounded musical, what should return in Practice, and how context
+   changed the learner's listening.
 
 The activity should write one Play progress event and create a useful Practice
 recommendation. Jen's information belongs in learner/route data, not in the

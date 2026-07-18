@@ -18,6 +18,25 @@
   margin: 10px auto 0;
 }
 
+.create-entry-scene::before {
+  position: absolute;
+  z-index: -2;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: radial-gradient(ellipse 23% 25% at 63% 61%, rgba(255, 116, 34, 0.2) 0%, rgba(232, 154, 40, 0.12) 32%, rgba(196, 90, 32, 0) 75%);
+  content: "";
+  opacity: 0.72;
+  pointer-events: none;
+  animation: create-entry-ember-breathe 3.8s ease-in-out infinite;
+}
+
+@keyframes create-entry-ember-breathe {
+  0%, 100% { opacity: 0.52; transform: scale(0.96); }
+  50% { opacity: 0.92; transform: scale(1.05); }
+}
+
 .create-entry-art {
   position: absolute;
   z-index: -1;
@@ -271,6 +290,9 @@
   .create-entry-shell { min-height: auto; padding: 12px 12px 24px; }
   .create-entry-scene { min-height: 690px; }
   .create-entry-art { right: -18vw; bottom: 0; width: 122vw; max-height: none; }
+  .create-entry-scene::before {
+    background: radial-gradient(ellipse 28% 23% at 67% 62%, rgba(255, 116, 34, 0.2) 0%, rgba(232, 154, 40, 0.12) 32%, rgba(196, 90, 32, 0) 75%);
+  }
   .create-entry-intro { top: 30px; left: 22px; width: min(310px, 63%); }
   .create-entry-context { top: 205px; left: 22px; width: min(340px, calc(100% - 44px)); }
   .create-entry-guide { bottom: 22px; left: 18px; width: min(380px, calc(100% - 36px)); }

@@ -4,15 +4,7 @@
 
   var GOLD = "#d4af69";
   var AMBER = "#e8a020";
-
-  var STUDY_DOORS = [
-    { id: "word", label: "Word", symbol: "\u25c7", state: "open", color: "#ff4444", guide: "A misunderstood word can blank everything after it.", action: "Choose one unclear term and clear it before continuing.", mode: "Dictionary / terms" },
-    { id: "sound", label: "Sound", symbol: "\u266a", state: "recommended", color: "#ff8800", guide: "Your ear learns before your fingers obey.", action: "Listen to two notes and decide which feels like home.", mode: "Listening / ear training" },
-    { id: "shape", label: "Shape", symbol: "\u2301", state: "open", color: "#ffcc00", guide: "A concept becomes easier when you can see where it lives.", action: "Compare one tab pattern to the fretboard.", mode: "Tab / notation / fretboard" },
-    { id: "pattern", label: "Pattern", symbol: "\u2736", state: "open", color: "#44cc44", guide: "Study connects separate facts into a map.", action: "Link notes to intervals, scales, and chords.", mode: "Concept relationships" },
-    { id: "test", label: "Test", symbol: "?", state: "open", color: "#3366ff", guide: "If you can explain it simply, it is becoming yours.", action: "Answer one tiny recall question.", mode: "Quiz / recall" },
-    { id: "review", label: "Review", symbol: "\u21ba", state: "locked", color: "#6633cc", guide: "Forgetting is not failure. It is a signal to revisit.", action: "Return to one weak concept.", mode: "Spaced review" },
-  ];
+  var fallbackStudySession = root.showStudySession;
 
   var currentDoorIndex = 0;
   var panelOpen = false;
@@ -38,6 +30,13 @@
     return el;
   }
 
+  function modelSnapshot() {
+    if (root.StudyKeyChamberModel) {
+      return root.StudyKeyChamberModel.snapshot({ storage: root.localStorage });
+    }
+    return { doors: [], subject: { title: "One clear musical idea", summary: "" }, learner: { name: "My Journey" }, summary: {} };
+  }
+
   function doorStateColor(state) {
     if (state === "locked") return "#666";
     if (state === "recommended") return AMBER;
@@ -45,17 +44,17 @@
     return "#888";
   }
 
-  function guideText() {
-    var door = STUDY_DOORS[currentDoorIndex];
+  function guideText(snapshot) {
+    var door = snapshot.doors[currentDoorIndex];
+    if (!door) return "Choose one door and make one idea clearer.";
     if (panelOpen) return "";
-    if (door.state === "locked") return "This door is locked. Open more doors first, or start with the Word door.";
-    if (door.state === "recommended") return door.guide + " This door is recommended next.";
+    if (door.state === "locked") return "This door is not needed yet. Start with an available door, then return here when there is evidence to review.";
+    if (door.state === "recommended") return door.guide + " This is the safest next route for this subject.";
     return door.guide;
   }
 
-  function sideDoor(x, door, prevDoor) {
+  function sideDoor(x, door, direction) {
     var color = doorStateColor(door.state);
-    var direction = door === prevDoor ? -1 : 1;
     return (
       '<g class="door-group" style="opacity:.35" onclick="StudyKeyChamber.rotate(' + direction + ')">' +
       '<rect x="' + (x - 28) + '" y="100" width="56" height="180" rx="14" fill="' + color + '" opacity=".12" stroke="' + color + '" stroke-opacity=".3" class="door-shape"/>' +
@@ -65,15 +64,15 @@
     );
   }
 
-  function renderDoorSvg(current, previous, next) {
+  function renderDoorSvg(snapshot, current, previous, next) {
     var color = doorStateColor(current.state);
     var opacity = current.state === "locked" ? ".25" : ".6";
     var glowId = "sk-glow-" + current.id;
     var svg = '<svg viewBox="0 0 560 360" class="sk-door-svg">';
 
     svg += '<ellipse cx="280" cy="320" rx="200" ry="20" fill="' + GOLD + '" opacity=".06"/>';
-    svg += sideDoor(110, previous, previous);
-    svg += sideDoor(450, next, previous);
+    svg += sideDoor(110, previous, -1);
+    svg += sideDoor(450, next, 1);
     svg += '<defs><radialGradient id="' + glowId + '"><stop offset="0%" stop-color="' + color + '" stop-opacity=".25"/><stop offset="100%" stop-color="' + color + '" stop-opacity="0"/></radialGradient></defs>';
     svg += '<circle cx="280" cy="190" r="110" fill="url(#' + glowId + ')"/>';
     svg += '<g class="door-group" onclick="StudyKeyChamber.enter()">';
@@ -86,7 +85,7 @@
     svg += "</g>";
     svg += '<g style="cursor:pointer" onclick="StudyKeyChamber.rotate(-1)"><text x="30" y="200" fill="' + GOLD + '" font-size="24" opacity=".4" font-family="DM Sans">\u2039</text></g>';
     svg += '<g style="cursor:pointer" onclick="StudyKeyChamber.rotate(1)"><text x="530" y="200" fill="' + GOLD + '" font-size="24" opacity=".4" font-family="DM Sans">\u203a</text></g>';
-    STUDY_DOORS.forEach(function (_door, index) {
+    snapshot.doors.forEach(function (_door, index) {
       var dotX = 220 + index * 24;
       svg += '<circle cx="' + dotX + '" cy="340" r="' + (index === currentDoorIndex ? "3.5" : "2.5") + '" fill="' + GOLD + '" opacity="' + (index === currentDoorIndex ? "1" : ".25") + '"/>';
     });
@@ -97,10 +96,14 @@
   function renderStudyChamber() {
     var el = panel();
     if (!el) return;
-    var total = STUDY_DOORS.length;
-    var previous = STUDY_DOORS[(currentDoorIndex - 1 + total) % total];
-    var current = STUDY_DOORS[currentDoorIndex];
-    var next = STUDY_DOORS[(currentDoorIndex + 1) % total];
+    var snapshot = modelSnapshot();
+    var doors = snapshot.doors;
+    if (!doors.length) return;
+    var total = doors.length;
+    currentDoorIndex = Math.max(0, Math.min(currentDoorIndex, total - 1));
+    var previous = doors[(currentDoorIndex - 1 + total) % total];
+    var current = doors[currentDoorIndex];
+    var next = doors[(currentDoorIndex + 1) % total];
     var color = doorStateColor(current.state);
 
     el.innerHTML =
@@ -112,13 +115,18 @@
       '<div class="sk-kicker">Study</div>' +
       '<div class="sk-title">The Key Chamber</div>' +
       '<div class="sk-sub">Study is where the books unlock doors. Choose the kind of clarity you need.</div>' +
+      '<div style="margin-top:12px;padding:9px 11px;border:1px solid ' + color + '55;border-radius:10px;background:' + color + '10;max-width:520px">' +
+      '<div class="sk-kicker" style="color:' + color + '">Current study · ' + esc(snapshot.learner.name) + '</div>' +
+      '<div style="font-family:Cinzel;color:var(--text);font-size:.86rem;margin-top:3px">' + esc(snapshot.subject.title) + '</div>' +
+      '<div style="font-size:.68rem;color:var(--dim);margin-top:3px">' + esc(snapshot.subject.summary || "Make one idea clear enough to use.") + '</div>' +
+      '</div>' +
       "</div>" +
       '<div class="sk-guide">' +
       '<img src="images/character-symbols/Thinking Question Mark.png" alt="">' +
-      "<div>" + esc(guideText()) + "</div>" +
+      "<div>" + esc(guideText(snapshot)) + "</div>" +
       "</div>" +
       "</div>" +
-      '<div class="sk-stage">' + renderDoorSvg(current, previous, next) + "</div>" +
+      '<div class="sk-stage">' + renderDoorSvg(snapshot, current, previous, next) + "</div>" +
       "</div>" +
       '<div class="sk-drawer" id="sk-drawer">' +
       '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">' +
@@ -132,6 +140,7 @@
       "</div>" +
       '<div style="font-size:.75rem;color:var(--dim);line-height:1.5">' + esc(current.guide) + "</div>" +
       '<div style="font-size:.72rem;color:var(--amber);margin-top:6px">' + esc(current.action) + "</div>" +
+      '<div style="font-size:.64rem;color:var(--dim);margin-top:8px">' + current.progress + '% explored · ' + esc(snapshot.summary.visited) + '/6 doors visited</div>' +
       "</div>" +
       "</div>";
   }
@@ -139,7 +148,8 @@
   function renderDoorPanel(doorId) {
     var el = panel();
     if (!el) return;
-    var door = STUDY_DOORS.find(function (item) {
+    var snapshot = modelSnapshot();
+    var door = snapshot.doors.find(function (item) {
       return item.id === doorId;
     });
     if (!door) {
@@ -152,6 +162,7 @@
       '<div class="sk-panel-card">' +
       '<div class="sk-mode">' + esc(door.mode) + "</div>" +
       "<h3>" + door.symbol + " " + esc(door.label) + "</h3>" +
+      '<div style="font-size:.68rem;color:var(--dim);margin-bottom:12px">Current study: ' + esc(snapshot.subject.title) + '</div>' +
       '<div class="sk-guide-text">' + esc(door.guide) + "</div>" +
       '<div class="sk-action">' + esc(door.action) + "</div>" +
       '<div class="sk-panel-btns">' +
@@ -162,6 +173,46 @@
       "</div>";
   }
 
+  function openKnownStudySession(categoryId, topicId, subjectTitle) {
+    var K = root.KNOWING;
+    var sessionModel = root.HearthKnowingStudySessionModel;
+    var sessionViewer = root.HearthKnowingStudySessionViewer;
+    if (!K || !sessionModel || !sessionViewer || !categoryId || !topicId) return false;
+
+    var completed = {};
+    try {
+      completed = JSON.parse(root.localStorage.getItem("hearth-knowing-progress") || "{}");
+    } catch (error) {
+      completed = {};
+    }
+    var session = sessionModel.topicContext(K, categoryId, topicId, completed);
+    if (!session) return false;
+
+    var questions = root.HearthKnowingStudyQuestionModel
+      ? root.HearthKnowingStudyQuestionModel.generateQuestions(session.topic)
+      : [];
+    var el = panel();
+    if (!el) return false;
+    el.innerHTML =
+      '<div class="sk-panel">' +
+      '<button class="back-btn" onclick="showStudy()">\u2190 Back to Key Chamber</button>' +
+      '<div style="margin:10px 0 14px;padding:10px 12px;border:1px solid ' + session.color + '55;border-radius:10px;background:' + session.color + '10">' +
+      '<div class="sk-mode" style="color:' + session.color + '">Shape door · current study</div>' +
+      '<div style="font-family:Cinzel;color:var(--text);font-size:.9rem">' + esc(subjectTitle || session.topic.title) + '</div>' +
+      '<div style="font-size:.68rem;color:var(--dim);margin-top:3px">The chamber has opened the existing Study Session for this idea.</div>' +
+      '</div>' +
+      sessionViewer.renderStudySession({ session: session, questions: questions }) +
+      '</div>';
+    root._currentQuiz = questions;
+    root._quizScore = { correct: 0, total: 0 };
+    return true;
+  }
+
+  function showStudySession(categoryId, topicId) {
+    if (openKnownStudySession(categoryId, topicId)) return;
+    if (typeof fallbackStudySession === "function") return fallbackStudySession(categoryId, topicId);
+  }
+
   function showStudy() {
     panelOpen = false;
     currentDoorIndex = 0;
@@ -169,13 +220,24 @@
   }
 
   function rotate(direction) {
-    currentDoorIndex = (currentDoorIndex + direction + STUDY_DOORS.length) % STUDY_DOORS.length;
+    var total = modelSnapshot().doors.length;
+    if (!total) return;
+    currentDoorIndex = (currentDoorIndex + direction + total) % total;
     renderStudyChamber();
   }
 
   function enter() {
-    var door = STUDY_DOORS[currentDoorIndex];
+    var snapshot = modelSnapshot();
+    var door = snapshot.doors[currentDoorIndex];
+    if (!door) return;
     if (door.state === "locked") return;
+    if (root.StudyKeyChamberModel) {
+      root.StudyKeyChamberModel.markVisited(door.id, { storage: root.localStorage });
+    }
+    if (door.id === "shape" && openKnownStudySession(snapshot.subject.categoryId, snapshot.subject.topicId, snapshot.subject.title)) {
+      panelOpen = true;
+      return;
+    }
     panelOpen = true;
     renderDoorPanel(door.id);
   }
@@ -186,21 +248,26 @@
   }
 
   function tryDoor(id) {
-    var door = STUDY_DOORS.find(function (item) {
+    var snapshot = modelSnapshot();
+    var door = snapshot.doors.find(function (item) {
       return item.id === id;
     });
     if (!door) return;
-    var drawer = root.document.getElementById("sk-drawer");
-    if (!drawer) return;
-    drawer.innerHTML =
-      '<div style="padding:8px">' +
-      '<div class="sk-kicker" style="color:' + door.color + '">Try This</div>' +
-      '<div style="font-size:.82rem;color:var(--text);line-height:1.6;margin:8px 0">' + esc(door.action) + "</div>" +
+    var el = panel();
+    if (!el) return;
+    el.innerHTML =
+      '<div class="sk-panel">' +
+      '<button class="back-btn" onclick="StudyKeyChamber.back()">\u2190 Back to Chamber</button>' +
+      '<div class="sk-panel-card">' +
+      '<div class="sk-mode" style="color:' + door.color + '">A small proof</div>' +
+      '<h3>' + esc(door.label) + ': ' + esc(snapshot.subject.title) + '</h3>' +
+      '<div class="sk-guide-text">' + esc(door.action) + '</div>' +
+      '<div class="sk-action">Keep the task small. The aim is evidence, not a perfect performance.</div>' +
       '<div class="sk-panel-btns"><button class="secondary" onclick="StudyKeyChamber.back()">Back to Chamber</button></div>' +
-      "</div>";
+      '</div></div>';
   }
 
-  root.STUDY_DOORS = STUDY_DOORS;
+  root.STUDY_DOORS = root.StudyKeyChamberModel ? root.StudyKeyChamberModel.definitions() : [];
   root.StudyKeyChamber = {
     render: showStudy,
     rotate: rotate,
@@ -209,4 +276,5 @@
     tryDoor: tryDoor,
   };
   root.showStudy = showStudy;
+  root.showStudySession = showStudySession;
 })(typeof window !== "undefined" ? window : globalThis);

@@ -57,6 +57,14 @@ CORE_MARKERS = {
         "recordLessonAnswer",
         "summarizeProgress",
     ],
+    "core/play-domain.js": [
+        "HearthPlayDomain",
+        "normalizeDestination",
+        "validateCultureContext",
+        "buildMarkerStates",
+        "toProgressEvent",
+        "createPracticeRecommendation",
+    ],
 }
 
 ACTIVE_ROUTE_COUNT = 10

@@ -59,9 +59,9 @@
 
     if (mode === "prompt") {
       html += "<h2>Ask the fire</h2>";
-      html += "<p>Choose one ingredient, then let the cauldron give you a small constraint. The point is movement, not a perfect answer.</p>";
+      html += "<p>The fire will choose one starting ingredient and give you a small playable constraint. The point is movement, not a perfect answer.</p>";
       html += '<div class="create-entry-meta">One clear prompt · One short experiment</div>';
-      html += actionButton("ask-fire", "Choose a prompt");
+      html += actionButton("ask-fire", "Receive a prompt");
       return html;
     }
 
@@ -94,7 +94,7 @@
     return '<div class="create-entry-shell">' +
       '<button type="button" class="back-btn create-entry-back" data-create-back>&larr; Map</button>' +
       '<section class="create-entry-scene" aria-label="The Cauldron creative chamber">' +
-        '<img class="create-entry-art" src="images/create/create-cauldron-tableau-v1.png" alt="A glowing cauldron with an acoustic guitar, notebook, and saved sparks">' +
+        '<img class="create-entry-art" src="images/create/create-cauldron-tableau-v2.png" alt="A glowing cauldron with a notebook and saved sparks">' +
         '<div class="create-entry-shade" aria-hidden="true"></div>' +
         '<header class="create-entry-intro"><div class="create-entry-kicker">Create</div><h1>The Cauldron</h1><p>Bring fragments to the fire. Keep what begins to glow.</p></header>' +
         '<div class="create-entry-guide"><img src="images/character-generated/guide-thinking-v1-ui.webp" alt="Guide beside the creative chamber"><p>' + escapeHtml(snapshot.guideText) + "</p></div>" +

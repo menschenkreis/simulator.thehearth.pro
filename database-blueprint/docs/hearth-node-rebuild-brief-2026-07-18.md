@@ -78,17 +78,27 @@ The image itself becomes the navigation.
 
 ### Visual Metaphor
 
-Build one vertical, balanced emblem around a classical/acoustic guitar:
+Build one anatomically believable seated learner holding a classical/acoustic
+guitar in a plausible playing position:
 
-- the guitar is the central spine and integration point;
-- the brain floats above or around the headstock;
-- the eyes and ears sit near the upper neck as paired sensory elements;
-- the two hands frame the neck and soundhole areas;
-- breath/body and nervous-system pathways surround the guitar body;
-- feeling/motivation is represented as a warm living center near the soundhole;
-- subtle pathways connect the systems so the collection reads as one image.
+- the person and guitar form one complete, calm composition;
+- the brain remains inside the head rather than floating like a separate icon;
+- the eyes and ears stay in their anatomically correct positions;
+- the complete left arm reaches the neck and the left hand frets naturally;
+- the complete right arm crosses the guitar body and the right hand plays near
+  the soundhole;
+- breath/body, spine, and nervous-system pathways are visible as restrained
+  internal overlays within the person;
+- feeling/motivation is represented by a warm non-literal glow through the
+  chest and whole nervous system, not a false claim that feeling lives in one
+  organ;
+- the guitar is the outer instrument and the learner is the inner instrument;
+- subtle pathways connect attention, senses, movement, body, and sound so the
+  whole scene reads as one image.
 
-It should feel like one inner instrument, not seven icons arranged in a menu.
+It should feel like one learner making music, not seven icons arranged around a
+guitar. The anatomy creates the navigation: the learner clicks the actual head,
+eyes, ears, hands, torso, or whole person/guitar integration.
 
 ### Clickable Systems
 
@@ -115,12 +125,13 @@ Do not bake the whole scene into one rectangular image.
 
 Build it from coordinated transparent assets:
 
-- `hearth-base-guitar.webp`
-- `hearth-brain.webp`
+- `hearth-base-person-guitar.webp`
+- `hearth-brain-nervous-system.webp`
 - `hearth-eyes.webp`
 - `hearth-ears.webp`
-- `hearth-hands.webp`
-- `hearth-breath-nervous-system.webp`
+- `hearth-left-hand.webp`
+- `hearth-right-hand.webp`
+- `hearth-breath-body.webp`
 - `hearth-feeling-center.webp`
 - `hearth-connection-paths.webp` (decorative and non-clickable)
 
@@ -180,13 +191,21 @@ The assets should match the strongest Foundation, Journey, and map-node work:
 
 Accuracy rules:
 
+- show one complete, anatomically believable human learner;
+- show complete shoulders, upper arms, forearms, wrists, hands, and all five
+  digits on each visible hand;
+- use a plausible seated guitar posture with coherent joints and limb paths;
+- in the default right-handed version, the left hand frets the neck and the
+  right hand plays the strings near the soundhole;
 - guitar has exactly six strings and six tuning machines;
 - guitar proportions and string paths are plausible;
 - every visible hand has five anatomically plausible digits;
 - left/right hands must not be duplicated or mirrored incorrectly;
-- eyes and ears appear as paired organs where the design calls for pairs;
+- eyes and ears appear as paired organs in their correct positions on the head;
 - brain, heart, lungs, spine, and major nervous pathways remain recognizable;
 - no invented anatomical structures;
+- no detached limb, missing upper arm, impossible wrist, reversed elbow, or
+  hand passing through the guitar;
 - no labels generated inside the image.
 
 ## Asset Production Method
@@ -217,16 +236,23 @@ Create the master visual reference before generating production layers:
 Create a unified vertical "Inner Instrument" composition for The Hearth
 Mastery, a sophisticated guitar-learning simulator.
 
-The composition should feel like one symbolic living instrument assembled
-around an anatomically correct classical/acoustic guitar. The guitar is the
-central spine. An elegant anatomical brain glows above and around the
-headstock. A paired set of eyes and a paired set of ears sit near the upper
-neck as visual and auditory systems. Two anatomically correct human hands,
-each with five clear plausible digits, relate naturally to the neck and
-soundhole. Subtle lungs, diaphragm, spine, and nervous-system pathways surround
-the guitar body. A warm living center near the soundhole represents feeling,
-motivation, and expression. Fine luminous pathways connect every system so the
-whole composition reads as one image, not a grid of icons.
+Show one complete anatomically believable adult learner seated calmly and
+holding an anatomically and mechanically correct six-string classical/acoustic
+guitar. Use a plausible right-handed playing posture: the learner's complete
+left arm reaches the neck and the left hand frets naturally; the complete right
+arm crosses the guitar body and the right hand rests or plays naturally near
+the soundhole. Both arms must include coherent shoulders, upper arms, elbows,
+forearms, wrists, hands, and five clear plausible digits per visible hand. The
+limbs must not be mirrored, detached, cropped, duplicated, or pass through the
+instrument.
+
+Reveal the learner's inner systems as elegant restrained overlays within the
+same person: a recognizable brain inside the head, normal paired eyes and ears
+in their correct positions, subtle spinal and peripheral nervous pathways,
+lungs and diaphragm inside the torso, and a warm non-literal chest-to-body glow
+for feeling, motivation, safety, and expression. Fine luminous pathways connect
+attention, hearing, sight, touch, breath, movement, and sound. The guitar is the
+outer instrument; the whole learner is the inner instrument.
 
 Style: elegant hand-painted engraving, warm gold and ember light, dark polished
 wood, subtle ivory linework, restrained rainbow glimmers in neural and sensory
@@ -235,16 +261,20 @@ than ornate, clinical, gothic, or hyper-real. Anatomically recognizable but
 not graphic or medical-gory. Match the visual family of a dark Hearth map with
 gold engraved node objects.
 
-Composition: centered vertical emblem, balanced negative space, each major
-system visually distinct enough to become a separate clickable layer later,
-but close and connected enough to look like one living inner instrument. Keep
-the guitar fully readable. Exactly six strings and exactly six tuning
-machines. No cropped hands, brain, headstock, or guitar body.
+Composition: centered seated figure, balanced negative space, readable at
+laptop and mobile sizes. Keep the full head, torso, both arms, both hands, full
+guitar body, neck, and headstock inside the canvas. Each system must remain
+visually distinct enough to become a separate clickable transparent layer
+later while still looking like one person. The guitar must have exactly six
+continuous strings and exactly six tuning machines, with plausible proportions
+and string paths.
 
 Do not include: text, letters, labels, interface controls, buttons, character
 guide, room, books, candles, dashboard, cards, frames, border, black rectangle,
-extra fingers, missing fingers, extra strings, missing tuners, duplicated
-organs, random symbols, excessive filigree, or a photographic human body.
+extra fingers, missing fingers, extra strings, missing tuners, detached organs,
+floating organ icons, duplicated anatomy, missing upper arms, impossible
+joints, random symbols, excessive filigree, clinical gore, or hyper-real stock
+photography.
 
 Background: perfectly flat solid #00ff00 chroma-key background with no shadow,
 gradient, texture, glow, reflection, or green spill. Do not use #00ff00 in any
@@ -375,4 +405,3 @@ Avoid unsupported statements such as:
 Do not delete the old brain-map files during this work. They remain useful
 historical and data references, but they should not become a second active
 Hearth renderer.
-

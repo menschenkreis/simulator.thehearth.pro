@@ -49,8 +49,13 @@
     options = options || {};
     var storage = options.storage;
     var learner = activeLearner(options.journeyState);
-    var current = read(storage, "hearth-create-current", {});
-    var saved = read(storage, "hearth-create-projects", []).slice().reverse();
+    var createState = options.createState;
+    var current = createState && typeof createState.getCurrent === "function"
+      ? createState.getCurrent(options.journeyState)
+      : read(storage, "hearth-create-current", {});
+    var saved = createState && typeof createState.listProjects === "function"
+      ? createState.listProjects(options.journeyState).slice().reverse()
+      : read(storage, "hearth-create-projects", []).slice().reverse();
     var ingredients = Array.isArray(options.ingredients) ? options.ingredients : [];
     var hasCurrent = hasMaterial(current);
 

@@ -54,6 +54,8 @@ eval(readText(root + "/adapters/foundation-audio.js"));
 eval(readText(root + "/core/lesson-view-model.js"));
 eval(readText(root + "/core/lesson-session.js"));
 eval(readText(root + "/core/learner-progress.js"));
+eval(readText(root + "/core/play-domain.js"));
+eval(readText(root + "/assets/js/play-traditions.js"));
 eval(readText(root + "/adapters/browser-progress-store.js"));
 eval(readText(root + "/adapters/foundation-progress-bridge.js"));
 eval(readText(root + "/adapters/teaching-engine-core-adapter.js"));
@@ -104,6 +106,8 @@ eval(readText(root + "/adapters/mastery-viewer.js"));
 eval(readText(root + "/adapters/create-cauldron-model.js"));
 eval(readText(root + "/adapters/create-cauldron-viewer.js"));
 eval(readText(root + "/adapters/create-cauldron-controller.js"));
+eval(readText(root + "/adapters/create-state.js"));
+eval(readText(root + "/adapters/create-handoff-controller.js"));
 eval(readText(root + "/adapters/create-entry-model.js"));
 eval(readText(root + "/adapters/create-entry-viewer.js"));
 eval(readText(root + "/adapters/text-to-speech-controller.js"));
@@ -173,6 +177,30 @@ assert(curatedDoing.catalog.approvedCount === 13, "Doing catalogue should expose
 assert(HearthDoingDrillCatalog.findDrill(curatedDoing, "alt-1").title.indexOf("One String") !== -1, "Doing catalogue should apply reviewed teaching data");
 assert(HearthDoingDrillCatalog.findDrill(curatedDoing, "alt-2").reviewStatus === "draft", "Doing catalogue should preserve unreviewed drills as drafts");
 assert(HearthDoingDrillCatalog.findDrill(curatedDoing, "chord-change-am-c").reviewStatus === "approved", "Doing catalogue should add reviewed chord drills");
+var tabPilot = HearthDoingDrillCatalog.reviewed["chrom-1"];
+assert(tabPilot.visualType === "interactive-tab", "1-2-3-4 should use the interactive tab renderer");
+var tabPilotHtml = HearthDoingTeachingViewer.renderVisual(tabPilot, HearthDoingUiUtils);
+assert(tabPilotHtml.indexOf("doing-interactive-tab") !== -1, "Doing teaching viewer should render the interactive tab pilot");
+assert(tabPilotHtml.indexOf("Finger") !== -1 && tabPilotHtml.indexOf("fret") !== -1, "Interactive tab should expose finger and fret guidance");
+var strumPilot = HearthDoingDrillCatalog.reviewed["strum-1"];
+assert(strumPilot.visualType === "interactive-strum-grid", "Strum Engine should use the interactive strum renderer");
+var strumPilotHtml = HearthDoingTeachingViewer.renderVisual(strumPilot, HearthDoingUiUtils);
+assert(strumPilotHtml.indexOf("doing-interactive-strum") !== -1, "Doing teaching viewer should render the interactive strum pilot");
+assert(strumPilotHtml.indexOf("Silent return") !== -1, "Interactive strum guide should explain unplayed return strokes");
+var chordPilot = HearthDoingDrillCatalog.reviewed["chord-clean-am"];
+assert(chordPilot.visualType === "interactive-chord-check", "Clean Am should use the interactive chord checker");
+var chordPilotHtml = HearthDoingTeachingViewer.renderVisual(chordPilot, HearthDoingUiUtils);
+assert(chordPilotHtml.indexOf("doing-interactive-chord") !== -1, "Doing teaching viewer should render the interactive chord checker");
+assert(chordPilotHtml.indexOf("Numbers are fingers") !== -1, "Chord checker should explain finger numbers");
+var rootsPilot = HearthDoingDrillCatalog.findDrill(curatedDoing, "pent-roots-time");
+var rootsPilotScene = HearthDoingTeachingViewer.renderScene({{
+  cat: {{ id: "coordination", title: "Coordination" }},
+  drill: rootsPilot,
+  config: HearthDoingConfig,
+  ui: HearthDoingUiUtils
+}});
+assert(rootsPilotScene.indexOf("Make it musical") !== -1, "A Root Notes in Time should offer an optional Create handoff");
+assert(rootsPilotScene.indexOf("_openDoingCreate") !== -1 && rootsPilotScene.indexOf("pent-roots-time") !== -1, "Doing Create handoff should preserve its drill source");
 assert(HearthDoingUiUtils.escapeHtml("<pick>") === "&lt;pick&gt;", "Doing UI utils should escape HTML");
 assert(HearthDoingUiUtils.drillShort({{ title: "Alternate Picking" }}) === "AP", "Doing UI utils should build drill initials");
 var practiceEntrySnapshot = HearthPracticeEntryModel.buildSnapshot({{
@@ -184,18 +212,63 @@ var practiceEntrySnapshot = HearthPracticeEntryModel.buildSnapshot({{
 assert(practiceEntrySnapshot.learner.name === "Jen", "Practice entry should use the active learner");
 assert(practiceEntrySnapshot.commitment.targetMinutes === 20, "Practice entry should derive the commitment length");
 assert(practiceEntrySnapshot.commitment.todayMinutes === 8, "Practice entry should total today's learner-specific minutes");
+var reflectedPracticeSnapshot = HearthPracticeEntryModel.buildSnapshot({{
+  journeyState: {{ activeStudentId: "jen-1", students: [{{ id: "jen-1", name: "Jen", levels: {{}} }}] }},
+  companions: {{ jen: {{ commitment: {{ today: "Original plan" }}, practice: ["A minor pentatonic"] }} }},
+  events: [{{ event_type: "practice_session_completed", learner_id: "jen-1", created_at: new Date().toISOString(), data: {{ repeat_next: "Return to the clean chord change" }} }}]
+}});
+assert(reflectedPracticeSnapshot.commitment.today === "Return to the clean chord change", "Practice reflection should become the next recommended focus");
 var practiceEntryHtml = HearthPracticeEntryViewer.render(practiceEntrySnapshot, "planned");
 assert(practiceEntryHtml.indexOf('data-practice-mode="planned"') !== -1, "Practice entry should render the planned-session hotspot");
 assert(practiceEntryHtml.indexOf("streak") === -1, "Practice entry should not use guilt-based streak language");
+var freePracticeContextHtml = HearthPracticeEntryViewer.renderContext(practiceEntrySnapshot, "free", {{ freeDraft: {{ minutes: 10, focus: "Groove" }} }});
+assert(freePracticeContextHtml.indexOf('data-practice-free-minutes="10"') !== -1, "Free Practice should expose compact duration choices");
+assert(freePracticeContextHtml.indexOf('data-practice-free-focus="Groove"') !== -1, "Free Practice should expose intention choices");
+var reviewPracticeContextHtml = HearthPracticeEntryViewer.renderContext(practiceEntrySnapshot, "review", {{}});
+assert(reviewPracticeContextHtml.indexOf('data-practice-review-id=') !== -1, "Previous Practice should expose learner-specific review entries");
 var plannedPracticeSession = HearthPracticePlannedSessionViewer.createSession(practiceEntrySnapshot);
 assert(plannedPracticeSession.focus.indexOf("A roots") !== -1, "Planned Practice should inherit today's focus");
 assert(plannedPracticeSession.minutes === 20, "Planned Practice should inherit the commitment length");
 assert(plannedPracticeSession.bodyState === "ready", "Planned Practice should start with a gentle body-ready state");
+var activeGuidedPracticeSnapshot = HearthPracticeEntryModel.buildSnapshot({{
+  journeyState: {{ activeStudentId: "jen-1", students: [{{ id: "jen-1", name: "Jen", levels: {{}} }}] }},
+  companions: {{ jen: {{ commitment: {{ today: "A roots" }} }} }},
+  events: [],
+  plannedSession: plannedPracticeSession,
+  plannedStepTitle: "Arrive"
+}});
+assert(activeGuidedPracticeSnapshot.activeSession.kind === "guided", "Continue Today should recognize an unfinished guided Practice session");
+assert(activeGuidedPracticeSnapshot.activeSession.stepTitle === "Arrive", "Continue Today should remember the exact guided step");
+var isolatedPracticeSnapshot = HearthPracticeEntryModel.buildSnapshot({{
+  journeyState: {{ activeStudentId: "ayla-1", students: [{{ id: "ayla-1", name: "Ayla", levels: {{}} }}] }},
+  companions: {{}},
+  events: [],
+  plannedSession: plannedPracticeSession,
+  candleState: {{ running: true, learnerId: "jen-1", focus: "Jen focus" }}
+}});
+assert(isolatedPracticeSnapshot.activeSession.running === false, "Continue Today should never leak another learner's guided or candle session");
 var plannedPracticeHtml = HearthPracticePlannedSessionViewer.render(plannedPracticeSession);
 assert(plannedPracticeHtml.indexOf("Choose the focus") !== -1 || plannedPracticeHtml.indexOf("Arrive") !== -1, "Planned Practice should render the guided steps");
 assert(plannedPracticeHtml.indexOf('data-practice-flow-action="next"') !== -1, "Planned Practice should render next-step action");
 assert(plannedPracticeHtml.indexOf('data-practice-body-state="ready"') !== -1, "Planned Practice should render the body arrival choices");
 assert(plannedPracticeHtml.indexOf('practice-flow-art') !== -1, "Planned Practice should keep the chamber artwork visible");
+plannedPracticeSession.stepIndex = 2;
+var plannedConditionsHtml = HearthPracticePlannedSessionViewer.render(plannedPracticeSession);
+assert(plannedConditionsHtml.indexOf('practice-flow-condition-orb') !== -1, "Planned Practice should render visual condition controls");
+plannedPracticeSession.stepIndex = 3;
+var plannedPractiseHtml = HearthPracticePlannedSessionViewer.render(plannedPracticeSession);
+assert(plannedPractiseHtml.indexOf('data-practice-flow-action="open-do"') !== -1, "Planned Practice should hand off to Do");
+assert(plannedPractiseHtml.indexOf('data-practice-flow-action="open-candle"') !== -1, "Planned Practice should hand off to the candle timer");
+plannedPracticeSession.stepIndex = 4;
+var plannedListenHtml = HearthPracticePlannedSessionViewer.render(plannedPracticeSession);
+assert(plannedListenHtml.indexOf('id="practice-rec-btn"') !== -1, "Planned Practice should offer a deliberate recording check");
+assert(plannedListenHtml.indexOf('id="practice-playback"') !== -1, "Planned Practice should provide recording playback");
+plannedPracticeSession.stepIndex = 5;
+var plannedReflectHtml = HearthPracticePlannedSessionViewer.render(plannedPracticeSession);
+assert(plannedReflectHtml.indexOf("What should tomorrow remember?") !== -1, "Planned Practice should close with tomorrow-facing reflection");
+plannedPracticeSession.saved = true;
+var plannedReviewHtml = HearthPracticePlannedSessionViewer.render(plannedPracticeSession);
+assert(plannedReviewHtml.indexOf("The session is set") !== -1, "Saved Practice should render an end-of-session review");
 var fakeDoing = {{
   categories: [
     {{
@@ -500,16 +573,52 @@ var fakeCreateStorage = {{
     "hearth-create-current": JSON.stringify({{ title: "A minor spark", ingredients: ["Rhythm"], prompt: "Keep the root note present." }}),
     "hearth-create-projects": JSON.stringify([{{ title: "Old fragment", ingredients: ["Riff"], savedAt: "2026-07-18T00:00:00.000Z" }}])
   }},
-  getItem: function(key) {{ return this.values[key] || null; }}
+  getItem: function(key) {{ return this.values[key] || null; }},
+  setItem: function(key, value) {{ this.values[key] = value; }}
 }};
+var createState = HearthCreateState.createStore({{ storage: fakeCreateStorage }});
 var createEntrySnapshot = HearthCreateEntryModel.buildSnapshot({{
   storage: fakeCreateStorage,
   journeyState: {{ activeStudentId: "jen-1", students: [{{ id: "jen-1", name: "Jen" }}] }},
+  createState: createState,
   ingredients: [{{ name: "Rhythm" }}, {{ name: "Riff" }}]
 }});
 assert(createEntrySnapshot.learner.name === "Jen", "Create entry should use the active learner");
 assert(createEntrySnapshot.current.hasMaterial === true, "Create entry should recognise an active seed");
 assert(createEntrySnapshot.saved.length === 1, "Create entry should surface saved fragments");
+createState.saveProject(
+  {{ id: "seed-jen", title: "Jen fragment", ingredients: ["Melody"] }},
+  {{ activeStudentId: "jen-1", students: [{{ id: "jen-1", name: "Jen" }}] }}
+);
+var createStateStore = JSON.parse(fakeCreateStorage.getItem("hearth-create-v1"));
+assert(createStateStore.profiles["jen-1"].projects.length === 2, "Create state should keep Jen's fragments in her profile");
+var createHandoffSeed = HearthCreateHandoff.buildSeed({{
+  source_node_id: "journey",
+  lesson_id: "jen-a-minor-pentatonic-consolidation",
+  suggested_ingredient: "riff",
+  starter: "A minor root notes",
+  instruction: "Make a two-bar answer."
+}});
+assert(createHandoffSeed.selected[0] === "riff", "Create handoff should preselect the suggested ingredient");
+assert(createHandoffSeed.sourceContext.lesson_id === "jen-a-minor-pentatonic-consolidation", "Create handoff should preserve its lesson source");
+var handoffEvents = [];
+var handoffState = {{
+  current: null,
+  intent: "",
+  setCurrent: function(seed) {{ this.current = seed; return seed; }},
+  setIntent: function(intent) {{ this.intent = intent; return intent; }}
+}};
+var handoffRenderCount = 0;
+var handoffOpener = HearthCreateHandoff.createHandoff({{
+  root: {{
+    HearthCreateState: {{ createStore: function() {{ return handoffState; }} }},
+    HearthProgressEvents: {{ append: function(event) {{ handoffEvents.push(event); }} }},
+    CreateCauldronScene: {{ render: function() {{ handoffRenderCount += 1; }} }}
+  }}
+}});
+handoffOpener.open({{ suggested_ingredient: "riff", instruction: "Make it musical." }});
+assert(handoffState.current.selected[0] === "riff" && handoffState.intent === "handoff", "Create handoff should prepare the learner's Cauldron state");
+assert(handoffRenderCount === 1 && handoffEvents[0].event_type === "create_handoff_opened", "Create handoff should open the Cauldron and log progress");
 var createEntryHtml = HearthCreateEntryViewer.render(createEntrySnapshot, "ingredient");
 assert(createEntryHtml.indexOf('data-create-mode="ingredient"') !== -1, "Create entry should render the ingredient hotspot");
 assert(createEntryHtml.indexOf("The Cauldron") !== -1, "Create entry should render the Cauldron title");
@@ -649,6 +758,7 @@ var recorderDoc = {{
 assert(HearthRecorderController.toggleRecording(false, recorderDoc) === true, "Recorder controller should toggle recording on");
 assert(recorderButtonClass.added === "on", "Recorder controller should mark button active");
 assert(recorderStatus.textContent === "Recording...", "Recorder controller should update status text");
+assert(HearthRecorderController.captureSupported() === false, "Recorder controller should report unavailable capture in the smoke environment");
 var notebookStorage = {{
   values: {{ "hearth-foundation-progress": JSON.stringify({{ one: true }}) }},
   getItem: function(key) {{ return this.values[key] || null; }},
@@ -834,6 +944,119 @@ assert(lessonProgress.status === "completed", "progress should mark lesson compl
 assert(lessonProgress.last_step_index === 3, "progress should keep last step");
 assert(lessonProgress.wrong_answers === 1, "progress should track wrong answers");
 assert(HearthLearnerProgress.summarizeProgress(progress).completed_count === 1, "progress summary mismatch");
+
+var legacyPlayCoordinates = HearthPlayDomain.normalizeLegacyCoordinates([205, 290], {{ width: 900, height: 600 }});
+assert(Math.abs(legacyPlayCoordinates.x_percent - 22.777777) < 0.001, "Play should normalize legacy hotspot x coordinates");
+assert(Math.abs(legacyPlayCoordinates.y_percent - 48.333333) < 0.001, "Play should normalize legacy hotspot y coordinates");
+
+var sourcedCulture = {{
+  people_and_place: "Quechua and Aymara communities across the Andes",
+  cultural_doorway: "The charango carries both cultural adaptation and living Andean identity.",
+  claims: [{{
+    id: "charango-oral-history",
+    text: "One oral-history account says the instrument could be concealed beneath a poncho.",
+    status: "oral_tradition",
+    source_ref_ids: ["mendivil-charango-history"]
+  }}],
+  source_refs: [{{
+    id: "mendivil-charango-history",
+    title: "La construccion de la historia: el charango en la memoria colectiva mestiza ayacuchana",
+    creator: "Julio Mendivil",
+    publisher: "Revista Musical Chilena",
+    url: "https://revistas.uchile.cl/index.php/RMCH/article/download/12491/12803",
+    source_type: "research_paper",
+    review_status: "reviewed"
+  }}],
+  community_review_status: "pending"
+}};
+var cultureValidation = HearthPlayDomain.validateCultureContext(sourcedCulture);
+assert(cultureValidation.valid === true, "Play culture should accept a sourced oral-history claim");
+assert(cultureValidation.warnings.indexOf("culture_community_review_incomplete") !== -1, "Play culture should keep community review visible");
+var unsourcedCultureValidation = HearthPlayDomain.validateCultureContext({{
+  claims: [{{ id: "unsupported", text: "Unsupported certainty", status: "documented" }}]
+}});
+assert(unsourcedCultureValidation.valid === false, "Play culture should reject unsourced documented claims");
+
+var livingTradition = {{
+  community_names: ["Black communities of the Mississippi Delta"],
+  place_and_period: "The Mississippi Delta, especially the late nineteenth and early twentieth centuries",
+  social_functions: ["personal testimony", "dance and social gathering", "shared storytelling"],
+  practice_settings: ["homes and porches", "juke joints", "travelling performance"],
+  instruments_and_voices: ["voice", "acoustic guitar", "slide guitar"],
+  embodied_practices: ["call and response", "foot pulse", "voice-and-guitar dialogue"],
+  transmission: "Carried through listening, watching, playing together, travel, performance, and recording.",
+  historical_forces: ["racial violence", "Jim Crow", "sharecropping", "migration"],
+  living_now: "The tradition continues through performers, families, teaching, recordings, gatherings, and connected blues practices.",
+  learner_relationship_note: "The learner is visiting one practice inside a living tradition, not mastering the culture."
+}};
+var livingTraditionValidation = HearthPlayDomain.validateTraditionProfile(livingTradition, {{ strict: true }});
+assert(livingTraditionValidation.valid === true, "Play should accept a complete living-tradition profile");
+var genreOnlyValidation = HearthPlayDomain.validateTraditionProfile({{ instruments_and_voices: ["guitar"] }}, {{ strict: true }});
+assert(genreOnlyValidation.valid === false, "Published Play destinations should not pass with genre-only metadata");
+assert(genreOnlyValidation.errors.indexOf("tradition_community_names_required") !== -1, "Play should require the communities carrying a published tradition");
+assert(HearthPlayDomain.defaultPlaySequence[2] === "meet_tradition", "Play should meet the tradition before copying its gestures");
+var mississippiTradition = PLAY_TRADITIONS.mississippi;
+var mississippiDestinationValidation = HearthPlayDomain.validateDestination({{
+  id: mississippiTradition.destination_id,
+  name: "Mississippi Delta",
+  coordinates: {{ x_percent: 23, y_percent: 48 }},
+  tradition_label: mississippiTradition.tradition_label,
+  tradition_profile: mississippiTradition.tradition_profile,
+  culture: mississippiTradition.culture,
+  content_status: mississippiTradition.content_status,
+  review_status: mississippiTradition.review_status
+}});
+assert(mississippiDestinationValidation.valid === true, "The first Play tradition record should pass structural validation");
+assert(mississippiDestinationValidation.warnings.indexOf("culture_community_review_incomplete") !== -1, "The first Play tradition should remain visibly pending community review");
+
+var playDestinations = [
+  {{ id: "mississippi", name: "Mississippi Delta", coordinates: {{ x_percent: 23, y_percent: 48 }} }},
+  {{ id: "usa", name: "USA", coordinates: {{ x_percent: 21, y_percent: 42 }} }}
+];
+var jenPlayRoute = {{
+  id: "jen-level-one-play",
+  learner_id: "jen",
+  destination_ids: ["mississippi", "usa"],
+  current_destination_id: "mississippi"
+}};
+var aylaPlayRoute = {{
+  id: "ayla-level-one-play",
+  learner_id: "ayla",
+  destination_ids: ["mississippi", "usa"],
+  current_destination_id: "usa"
+}};
+var jenMarkerStates = HearthPlayDomain.buildMarkerStates(playDestinations, jenPlayRoute, {{ mississippi: {{ percent: 28 }} }});
+var aylaMarkerStates = HearthPlayDomain.buildMarkerStates(playDestinations, aylaPlayRoute, {{}});
+assert(jenMarkerStates[0].state === "current", "Jen's Play route should select Jen's current destination");
+assert(aylaMarkerStates[1].state === "current", "Ayla's Play route should remain separate from Jen's route");
+assert(jenPlayRoute.current_destination_id === "mississippi", "Play marker selection should not mutate route data");
+
+var playResult = {{
+  learner_id: "jen",
+  route_id: "jen-level-one-play",
+  destination_id: "mississippi",
+  activity_id: "a-minor-musical-conversation",
+  journey_level_id: "level-1",
+  lesson_id: "level-1-lesson-1",
+  duration_minutes: 12,
+  role: "lead",
+  tempo: 76,
+  enjoyment: 5,
+  confidence: 3,
+  stayed_with_pulse: true,
+  found_home: true,
+  reflection: "The call and response sounded musical.",
+  repeat_focus: "Land on A after each short phrase.",
+  revisit: true,
+  completed_at: "2026-07-18T12:00:00.000Z"
+}};
+var playProgressEvent = HearthPlayDomain.toProgressEvent(playResult);
+assert(playProgressEvent.event_type === "play_activity_completed", "Play should create the shared completion event type");
+assert(playProgressEvent.learner_id === "jen", "Play completion events should belong to one learner");
+assert(playProgressEvent.data.found_home === true, "Play completion events should preserve musical evidence");
+var playPracticeRecommendation = HearthPlayDomain.createPracticeRecommendation(playResult);
+assert(playPracticeRecommendation.learner_id === "jen", "Play Practice recommendations should stay learner-specific");
+assert(playPracticeRecommendation.focus.indexOf("Land on A") !== -1, "Play should pass the repeat focus into Practice");
 
 var fakeStorage = {{
   values: {{}},

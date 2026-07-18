@@ -5,10 +5,10 @@
   var FIRE = "#c45a20";
 
   var CREATE_HEAT_LEVELS = [
-    { id: "low", label: "Low Heat", levels: [1, 2], guide: "Playful pressure. Enough spark to begin.", color: "#44cc44" },
-    { id: "medium", label: "Medium Heat", levels: [2, 3], guide: "Focused pressure. Make one clear choice.", color: "#ffcc00" },
-    { id: "high", label: "High Heat", levels: [3, 4], guide: "Emotional pressure. Let the idea show its teeth.", color: "#ff8800" },
-    { id: "alchemy", label: "Alchemy", levels: [4, 5], guide: "Maximum exposure. No hiding behind cleverness.", color: "#ff4444" },
+    { id: "low", label: "Low Heat", levels: [1, 2], guide: "Playful pressure. Enough spark to begin.", constraint: "Keep it tiny: make one idea for two minutes.", color: "#44cc44" },
+    { id: "medium", label: "Medium Heat", levels: [2, 3], guide: "Focused pressure. Make one clear choice.", constraint: "Repeat it three times before you add anything new.", color: "#ffcc00" },
+    { id: "high", label: "High Heat", levels: [3, 4], guide: "Emotional pressure. Let the idea show its teeth.", constraint: "Use the version that feels a little risky, then keep the strongest part.", color: "#ff8800" },
+    { id: "alchemy", label: "Alchemy", levels: [4, 5], guide: "Maximum exposure. No hiding behind cleverness.", constraint: "Remove the obvious choice and replace it with one unexpected move.", color: "#ff4444" },
   ];
 
   var CREATE_MUTATIONS = {
@@ -45,6 +45,12 @@
     root.localStorage.setItem(key, JSON.stringify(value));
   }
 
+  function createState() {
+    return root.HearthCreateState && typeof root.HearthCreateState.createStore === "function"
+      ? root.HearthCreateState.createStore({ storage: root.localStorage })
+      : null;
+  }
+
   function panel() {
     root.document.querySelectorAll(".pnl").forEach(function (pnl) {
       pnl.classList.remove("on");
@@ -55,11 +61,57 @@
   }
 
   function getCreateSeed() {
+    var state = createState();
+    if (state) return state.getCurrent();
     return read("hearth-create-current", {});
   }
 
   function saveCreateSeed(seed) {
+    var state = createState();
+    if (state) return state.setCurrent(seed);
     write("hearth-create-current", seed);
+    return seed;
+  }
+
+  function createIntent() {
+    var state = createState();
+    if (state) return state.getIntent();
+    return read("hearth-create-entry-intent", "");
+  }
+
+  function setCreateIntent(intent) {
+    var state = createState();
+    if (state) return state.setIntent(intent);
+    write("hearth-create-entry-intent", intent || "");
+    return intent;
+  }
+
+  function saveCreateProject(seed) {
+    var state = createState();
+    if (state) return state.saveProject(seed);
+    var projects = read("hearth-create-projects", []);
+    projects.push(Object.assign({}, seed, { savedAt: new Date().toISOString() }));
+    write("hearth-create-projects", projects);
+    return seed;
+  }
+
+  function recordCreateEvent(eventType, data) {
+    if (!root.HearthProgressEvents || typeof root.HearthProgressEvents.append !== "function") return;
+    root.HearthProgressEvents.append({
+      event_type: eventType,
+      node_id: "create",
+      data: data || {}
+    });
+  }
+
+  function renderSourceContext(seed) {
+    var source = seed && seed.sourceContext;
+    if (!source || !source.instruction) return "";
+    return '<div style="width:min(100%,520px);box-sizing:border-box;margin:0 auto 12px;padding:10px 12px;border-left:2px solid rgba(212,175,105,.7);background:linear-gradient(90deg,rgba(212,175,105,.11),rgba(212,175,105,0));font-size:.72rem;line-height:1.45;color:var(--text)">' +
+      '<div style="font-family:JetBrains Mono,monospace;font-size:.54rem;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin-bottom:4px">From ' + esc(source.source_node_id || "Journey") + '</div>' +
+      '<strong style="display:block;font-family:Cinzel,serif;color:#f4dca5;font-size:.78rem;margin-bottom:3px">' + esc(source.starter || source.title || "A small musical idea") + '</strong>' +
+      esc(source.instruction) +
+    '</div>';
   }
 
   function createHeatGlow() {
@@ -97,11 +149,13 @@
     var selected = new Set(seed.selected || []);
     var hasSeed = seed.prompt && seed.prompt.length > 0;
     var glowColor = createHeatGlow();
-    var entryIntent = read("hearth-create-entry-intent", "");
+    var entryIntent = createIntent();
     var guideText = hasSeed
       ? "Shape the seed. Mutate it. Save it when it sings."
       : entryIntent === "prompt"
         ? "Ask one clear question. Choose an ingredient, then let the constraint give you somewhere to begin."
+        : entryIntent === "handoff"
+          ? "The lesson has brought you a small musical thread. Keep it playable, then make one part of it your own."
         : entryIntent === "ingredient"
           ? "Begin with one ingredient. A chord, rhythm, riff, lyric, or question is enough."
           : "Do not judge the spark too early. Add one ingredient, catch what bubbles up, then shape it.";
@@ -145,6 +199,7 @@
       "</div>" +
       '<div class="sf-stage" style="flex-direction:column;min-height:auto;padding:8px 18px">' +
       renderCauldronSvg(selected.size, glowColor) +
+      renderSourceContext(seed) +
       '<div style="text-align:center;color:var(--gold);font-family:Cinzel;font-size:.82rem;margin:8px auto 0;max-width:420px;line-height:1.5;white-space:pre-line">' +
       esc(seed.prompt || "Select ingredients and stir the cauldron.") +
       "</div>" +
@@ -261,13 +316,21 @@
     }
 
     if (!result) return;
-    write("hearth-create-entry-intent", "");
+    var heat = CREATE_HEAT_LEVELS.find(function (item) {
+      return item.id === createHeat;
+    });
+    if (heat && heat.constraint) {
+      result.constraint += " " + heat.constraint;
+    }
+    setCreateIntent("");
     var levelBadge = result.level <= 2 ? "Ingredient" : result.level <= 3 ? "Forge" : "Alchemy";
     var seed = {
       id: "seed-" + Date.now(),
       createdAt: new Date().toISOString(),
       title: "Untitled Song Seed",
       heat: createHeat,
+      heatLabel: heat ? heat.label : "",
+      sourceContext: seedState.sourceContext || null,
       ingredients: selected.map(function (id) {
         var ingredient = ingredients.find(function (item) {
           return item.id === id;
@@ -284,6 +347,12 @@
       rhythmIdea: "",
     };
     saveCreateSeed(seed);
+    recordCreateEvent("create_seed_started", {
+      seed_id: seed.id,
+      heat: createHeat,
+      ingredients: seed.ingredients,
+      prompt_level: result.level
+    });
     renderCreate();
   }
 
@@ -315,14 +384,19 @@
     if (riffIdea) seed.riffIdea = riffIdea.value;
     if (rhythmIdea) seed.rhythmIdea = rhythmIdea.value;
     saveCreateSeed(seed);
-    var projects = read("hearth-create-projects", []);
-    projects.push(Object.assign({}, seed, { savedAt: new Date().toISOString() }));
-    write("hearth-create-projects", projects);
+    var saved = saveCreateProject(seed);
+    recordCreateEvent("create_seed_saved", {
+      seed_id: saved.id,
+      ingredients: saved.ingredients || [],
+      has_lyric: Boolean(saved.firstLyric),
+      has_riff: Boolean(saved.riffIdea),
+      has_rhythm: Boolean(saved.rhythmIdea)
+    });
     renderCreate();
   }
 
   function newSeed() {
-    write("hearth-create-entry-intent", "");
+    setCreateIntent("");
     saveCreateSeed({
       title: "Untitled Song Seed",
       ingredients: [],
@@ -348,6 +422,7 @@
     var seed = getCreateSeed();
     seed.mutation = CREATE_MUTATIONS[type] || "";
     saveCreateSeed(seed);
+    recordCreateEvent("create_seed_mutated", { seed_id: seed.id || null, mutation: type });
     renderCreate();
   }
 

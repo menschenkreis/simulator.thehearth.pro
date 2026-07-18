@@ -2,6 +2,8 @@
 (function(root) {
   "use strict";
 
+  var CANDLE_STORAGE_KEY = "hearth-practice-candle-v1";
+
   var PRACTICE_CANDLE = {
     durationMinutes: 20,
     focus: "Clean",
@@ -10,9 +12,60 @@
     totalMs: 20 * 60 * 1000,
     running: false,
     complete: false,
+    learnerId: null,
     returnAction: "",
     returnLabel: ""
   };
+
+  function persistedCandle() {
+    return {
+      durationMinutes: PRACTICE_CANDLE.durationMinutes,
+      focus: PRACTICE_CANDLE.focus,
+      startedAt: PRACTICE_CANDLE.startedAt,
+      totalMs: PRACTICE_CANDLE.totalMs,
+      running: PRACTICE_CANDLE.running,
+      complete: PRACTICE_CANDLE.complete,
+      learnerId: PRACTICE_CANDLE.learnerId,
+      returnAction: PRACTICE_CANDLE.returnAction,
+      returnLabel: PRACTICE_CANDLE.returnLabel,
+      updatedAt: new Date().toISOString()
+    };
+  }
+
+  function persistCandle() {
+    try {
+      localStorage.setItem(CANDLE_STORAGE_KEY, JSON.stringify(persistedCandle()));
+    } catch (error) {
+      // The in-memory timer still works when storage is unavailable.
+    }
+  }
+
+  function restoreCandle() {
+    try {
+      var saved = JSON.parse(localStorage.getItem(CANDLE_STORAGE_KEY) || "null");
+      if (!saved) return;
+      PRACTICE_CANDLE.durationMinutes = Number(saved.durationMinutes) || 20;
+      PRACTICE_CANDLE.focus = saved.focus || "Clean";
+      PRACTICE_CANDLE.startedAt = Number(saved.startedAt) || null;
+      PRACTICE_CANDLE.totalMs = Number(saved.totalMs) || PRACTICE_CANDLE.durationMinutes * 60 * 1000;
+      PRACTICE_CANDLE.returnAction = saved.returnAction || "";
+      PRACTICE_CANDLE.returnLabel = saved.returnLabel || "";
+      PRACTICE_CANDLE.complete = Boolean(saved.complete);
+      PRACTICE_CANDLE.learnerId = saved.learnerId || null;
+      PRACTICE_CANDLE.running = Boolean(saved.running && PRACTICE_CANDLE.startedAt && Date.now() - PRACTICE_CANDLE.startedAt < PRACTICE_CANDLE.totalMs);
+      if (saved.running && !PRACTICE_CANDLE.running) PRACTICE_CANDLE.complete = true;
+    } catch (error) {
+      // Keep the default candle state if older storage is malformed.
+    }
+  }
+
+  function candleProgressPercent() {
+    if (PRACTICE_CANDLE.complete) return 100;
+    if (!PRACTICE_CANDLE.running || !PRACTICE_CANDLE.startedAt) return 0;
+    return Math.min(100, Math.max(0, Math.round((Date.now() - PRACTICE_CANDLE.startedAt) / PRACTICE_CANDLE.totalMs * 100)));
+  }
+
+  restoreCandle();
 
   function panel() {
     document.querySelectorAll(".pnl").forEach(function(item) {
@@ -27,11 +80,13 @@
     PRACTICE_CANDLE.durationMinutes = minutes;
     PRACTICE_CANDLE.totalMs = minutes * 60 * 1000;
     updatePracticeTimeReadout(PRACTICE_CANDLE.totalMs);
+    persistCandle();
     renderPracticeCandle();
   }
 
   function setPracticeFocus(focus) {
     PRACTICE_CANDLE.focus = focus;
+    persistCandle();
     renderPracticeCandle();
   }
 
@@ -42,6 +97,7 @@
     PRACTICE_CANDLE.complete = false;
     clearInterval(PRACTICE_CANDLE.timerId);
     PRACTICE_CANDLE.timerId = setInterval(updatePracticeCandle, 250);
+    persistCandle();
     updatePracticeCandle();
   }
 
@@ -49,6 +105,7 @@
     clearInterval(PRACTICE_CANDLE.timerId);
     PRACTICE_CANDLE.running = false;
     PRACTICE_CANDLE.complete = true;
+    persistCandle();
     setPracticeCandleVisual(1, true);
     showPracticeReflection();
   }
@@ -130,6 +187,7 @@
 
     if (root.HearthProgressEvents) {
       root.HearthProgressEvents.append({
+        learner_id: PRACTICE_CANDLE.learnerId,
         event_type: "practice_session_completed",
         node_id: "practise",
         duration_minutes: PRACTICE_CANDLE.durationMinutes,
@@ -137,10 +195,14 @@
         data: {
           focus: PRACTICE_CANDLE.focus,
           feeling: feeling,
-          blockers: blockers.split(",").map(function(item) { return item.trim(); }).filter(Boolean)
+          blockers: blockers.split(",").map(function(item) { return item.trim(); }).filter(Boolean),
+          improved: feeling,
+          hard: blockers,
+          repeat_next: nextStep
         }
       });
     }
+    persistCandle();
     renderPracticeCandle();
   }
 
@@ -270,6 +332,7 @@
     PRACTICE_CANDLE.running = false;
     PRACTICE_CANDLE.complete = false;
     clearInterval(PRACTICE_CANDLE.timerId);
+    persistCandle();
     renderPracticeCandle();
   }
 
@@ -280,11 +343,15 @@
       PRACTICE_CANDLE.durationMinutes = Number(options.durationMinutes) || PRACTICE_CANDLE.durationMinutes || 20;
       PRACTICE_CANDLE.totalMs = PRACTICE_CANDLE.durationMinutes * 60 * 1000;
       PRACTICE_CANDLE.focus = options.focus || PRACTICE_CANDLE.focus || "Clean";
+      PRACTICE_CANDLE.learnerId = options.learnerId || PRACTICE_CANDLE.learnerId || null;
       PRACTICE_CANDLE.returnAction = options.returnAction || "";
       PRACTICE_CANDLE.returnLabel = options.returnLabel || "";
       PRACTICE_CANDLE.startedAt = null;
       PRACTICE_CANDLE.running = false;
       PRACTICE_CANDLE.complete = false;
+      persistCandle();
+    } else if (PRACTICE_CANDLE.running && !PRACTICE_CANDLE.timerId) {
+      PRACTICE_CANDLE.timerId = setInterval(updatePracticeCandle, 250);
     }
     renderPracticeCandle();
   }
@@ -296,7 +363,9 @@
     open: openPracticeCandle,
     saveEmber: savePracticeEmber,
     render: renderPracticeCandle,
-    state: function() { return PRACTICE_CANDLE; }
+    state: function() {
+      return Object.assign({}, PRACTICE_CANDLE, { progressPercent: candleProgressPercent() });
+    }
   };
   root.showPractice = showPractice;
 
