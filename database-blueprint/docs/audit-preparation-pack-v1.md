@@ -76,6 +76,10 @@ The Hearth Mastery is one connected guitar-learning world.
       gaps, missing current handovers, and future production work.
 
 11. Current remaining-work briefs:
+    - `foundation-node-remaining-work-brief-2026-07-18.md`
+    - `do-node-remaining-work-brief-2026-07-18.md`
+    - `know-node-remaining-work-brief-2026-07-18.md`
+    - `journey-remaining-work-brief-2026-07-18.md`
     - `practice-node-remaining-work-brief-2026-07-18.md`
     - `study-node-remaining-work-brief-2026-07-18.md`
     - `hearth-node-remaining-work-brief-2026-07-18.md`
@@ -99,13 +103,13 @@ The Hearth Mastery is one connected guitar-learning world.
 
 ## Next Safe Documents
 
-These should be added or confirmed while node implementations continue:
+The current handover set is complete. The next safe documents should come from
+the final audit rather than another speculative planning pass:
 
-1. Current remaining-work handovers for Foundation, Do, and Know.
-2. A current Journey handover if its implementation has materially changed
-   since the Level 1 capability map and content-gap roadmap were written.
-3. The final audit should generate its evidence and click-path matrices from
-   the live implementation using the master prompt above.
+1. verified click-path, ownership, storage, and evidence matrices;
+2. one whole-product findings and implementation roadmap;
+3. fresh post-audit continuation briefs for every node and Journey, following
+   `post-audit-node-continuation-brief-standard-v1.md`.
 
 ## When The Final Audit May Begin
 

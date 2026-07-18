@@ -148,6 +148,10 @@ REQUIRED READING
 - `database-blueprint/docs/resource-library-inventory-gap-map-v1.md`
 - `database-blueprint/docs/hearth-level-one-capability-map-v1.md`
 - `database-blueprint/docs/level-one-content-gap-pass-roadmap-v1.md`
+- `database-blueprint/docs/foundation-node-remaining-work-brief-2026-07-18.md`
+- `database-blueprint/docs/do-node-remaining-work-brief-2026-07-18.md`
+- `database-blueprint/docs/know-node-remaining-work-brief-2026-07-18.md`
+- `database-blueprint/docs/journey-remaining-work-brief-2026-07-18.md`
 - `database-blueprint/docs/practice-node-remaining-work-brief-2026-07-18.md`
 - `database-blueprint/docs/study-node-remaining-work-brief-2026-07-18.md`
 - `database-blueprint/docs/hearth-node-remaining-work-brief-2026-07-18.md`

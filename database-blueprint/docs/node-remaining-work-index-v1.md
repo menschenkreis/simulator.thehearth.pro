@@ -27,8 +27,6 @@ which dependencies should be handled first.
   known, learner separation is tested, and focused checks pass.
 - **Intentional gap** means planned work that must not be reported as an
   accidental regression.
-- **Status confirmation required** means no current remaining-work handover
-  has yet been supplied for that system.
 - **Future stage** means useful work that should not block the immediate
   learning-product completion pass.
 
@@ -36,10 +34,10 @@ which dependencies should be handled first.
 
 | System | Current reading | Most important next proof | Audit readiness |
 | --- | --- | --- | --- |
-| Foundation | Mature historical blueprint and migration material exist, but no current remaining-work handover is indexed here | Confirm the live first-to-final route, active owner, Foundation/Journey boundary, learner state, and current regressions | Status confirmation required |
-| Do | Drill catalogue and recent first/second-click work exist, but no current remaining-work handover is indexed here | Confirm the active first-click owner, left/right/both-hand routes, legitimate Level 1 drill set, progress evidence, Practice handoff, and removal of obsolete competing views | Status confirmation required |
-| Know | No current remaining-work handover is indexed here | Confirm its source-backed reference contract, final useful actions, learner evidence, Study boundary, and active renderer | Status confirmation required |
-| Journey | Hearth-owned Level 1 capability map and protected content-gap roadmap exist | Prove Journey launches node-owned activities, receives evidence back, explains progress, and supports one connected Ayla/Jen Level 1 slice | Intentional content and integration gaps remain |
+| Foundation | Ten-fret first click and Fret 0 guided scene are live; ten seed routes exist | Make progress learner-specific, enforce one Foundation/Journey readiness rule, source-review all ten topics, and strengthen later endpoints | Visual route is strong; memory, evidence, and content gaps remain |
+| Do | First click, left/right/both rooms, thirteen curated Level 1 drills, teaching scenes, and shared drill events are live | Unify learner-specific rings and events, replace one-click mastery, validate the drill set, and complete direct Practice/Journey handoffs | Strong Level 1 vertical slice; evidence and handoff gaps remain |
+| Know | Level shelves and the flipbook reader are live with 15 categories and 52 topics | Give the active reader one owner, add learner-specific evidence, source-review Level 1, and complete Know/Study returns | Visual route is strong; active-reader memory and source gaps remain |
+| Journey | Guitar map, Level 1 roadmap, ten-stage lesson path, capability model, and Jen companion exist | Make capability evidence authoritative, treat entry check as preflight, return Jen to Level 1 consolidation, and prove one connected cross-node slice | Intentional progression, content, and integration gaps remain |
 | Practice | Six-stage planned practice, free practice, resume, recording, reflection, events, and recommendations are claimed complete | Test the full learner-specific route, converge storage ownership, enrich Do handoff context, and prove Journey consumes the result | Close to stable checkpoint, verification pending |
 | Study | Six-door Key Chamber, learner state, proof statuses, events, and downstream readers are claimed complete | Browser-test every door and lock, prove learner isolation, settle one active owner, and verify downstream evidence | Close to stable checkpoint, verification pending |
 | Hearth | Inner Instrument meaning and seven systems are settled; approved artwork and prototype exist | Install the approved first click, establish one active owner, build the Brain pilot chamber, and connect shared evidence | Deliberate rebuild in progress |
@@ -50,6 +48,89 @@ which dependencies should be handled first.
 | App/PWA readiness | A production audit brief exists | Run only after the primary learning routes and ownership boundaries are stable | Future stage |
 
 ## Detailed Briefs
+
+### Foundation
+
+Read:
+
+- `foundation-node-remaining-work-brief-2026-07-18.md`
+
+Protect:
+
+- Foundation as the threshold before Level 1;
+- the ten-fret guitar-neck metaphor;
+- the approved scene-first Fret 0 orientation.
+
+Resolve:
+
+- learner-specific progress and shared events;
+- one real Foundation-to-Journey readiness rule;
+- factual and source review for all ten topics;
+- useful guitar contact at later lesson endpoints;
+- profile, mobile, refresh, and accessibility checks.
+
+### Do
+
+Read:
+
+- `do-node-remaining-work-brief-2026-07-18.md`
+
+Protect:
+
+- the guitar first click and left/right/both-hand rooms;
+- the thirteen-drill Level 1 catalogue;
+- the image-led teaching scene and interactive drill assets.
+
+Resolve:
+
+- the split between global visual rings and learner-specific events;
+- the one-click Mastered label;
+- exact Practice and Journey launch/return context;
+- technical review of every Level 1 drill;
+- ownership, profile, responsive, and accessibility checks.
+
+### Know
+
+Read:
+
+- `know-node-remaining-work-brief-2026-07-18.md`
+
+Protect:
+
+- the source-backed shelf and book metaphor;
+- plain explanations;
+- honest incomplete later levels.
+
+Resolve:
+
+- one active reader owner;
+- learner-specific opened, unclear, clarified, applied, and review evidence;
+- the active flipbook's missing progress contract;
+- precise topic-level sources and rights;
+- Know/Study and return-to-lesson handoffs.
+
+### Journey
+
+Read:
+
+- `journey-remaining-work-brief-2026-07-18.md`
+- `hearth-level-one-capability-map-v1.md`
+- `level-one-content-gap-pass-roadmap-v1.md`
+
+Protect:
+
+- Journey as the itinerary and nodes as the places;
+- the guitar-neck level map and reusable curriculum roadmap;
+- Hearth-owned capabilities rather than QJam-owned progression;
+- the protected Level 1 content-gap pass.
+
+Resolve:
+
+- count-based progression versus capability evidence;
+- the entry check being displayed and counted as Lesson 1;
+- Jen's incorrect Level 2 unlock despite the Level 1 consolidation decision;
+- stable node-owned launches and evidence returns;
+- the connected Ayla/Jen Level 1 vertical slice.
 
 ### Practice
 
@@ -188,12 +269,7 @@ Resolve:
 - responsive visual checks;
 - legacy `MASTERY_SEALS` and `openSeal()` only after proving they are unused.
 
-### Journey And Level 1 Content
-
-Read:
-
-- `hearth-level-one-capability-map-v1.md`
-- `level-one-content-gap-pass-roadmap-v1.md`
+### Protected Level 1 Content Gap
 
 The protected Level 1 content gap pass includes:
 
@@ -223,28 +299,25 @@ It covers architecture, backend, security, privacy, mobile/iPad behaviour,
 performance, packaging, and release phases. It must inform current architecture
 decisions, but it should not interrupt completion of the core learning routes.
 
-## Missing Current Handovers
+## Current Handover Set
 
-Before declaring the whole simulator ready for the final integration audit,
-create or confirm concise current-state handovers for:
+Current remaining-work handovers now exist for Foundation, Do, Know, Journey,
+Practice, Study, Hearth, Play, Create/audio, and Mastery.
 
-1. Foundation;
-2. Do;
-3. Know;
-4. Journey itself, if the current implementation has changed materially since
-   the capability map and content-gap roadmap were written.
+These are pre-audit evidence, not permanent truth. The final audit must verify
+them against its inspected commit and replace them with fresh continuation
+briefs following `post-audit-node-continuation-brief-standard-v1.md`.
 
-Each handover should state:
+The 2026-07-18 shared checks currently report:
 
-- current active owner;
-- claimed completed route;
-- intentional placeholders;
-- remaining work in order;
-- learner storage and events;
-- cross-node dependencies;
-- tests already passing;
-- browser checks still required;
-- specific visual decisions that must be protected.
+- prototype smoke check: passed;
+- core smoke check: passed;
+- core JavaScript smoke check: passed;
+- renderer-ownership check: failed because Play, Create, and Practice have
+  conflicting or stale owner expectations.
+
+Do not call the product ownership-stable until that final check is corrected
+and expanded to cover Foundation, Do, Know, and Journey.
 
 ## Cross-Node Dependency Order
 
@@ -292,9 +365,10 @@ The safest order is:
 The documentation is ready when:
 
 - every supplied handover is stored in the repository;
-- Foundation, Do, Know, and Journey have current status confirmed;
+- Foundation, Do, Know, and Journey have current handovers linked;
 - the master audit prompt requires this index;
 - the preparation pack distinguishes node completion from future app
   readiness;
 - no live node code or unrelated concurrent work was changed by this banking
-  pass.
+  pass;
+- the final audit is instructed to issue fresh post-audit continuation briefs.
