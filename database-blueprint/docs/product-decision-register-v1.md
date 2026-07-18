@@ -68,8 +68,8 @@ Foundation teaches how to enter the simulator, how learning works here, music
 as language, first physical contact, and recovery from confusion.
 
 Level 1 begins the first real technical and musical Journey after Foundation.
-QJam Level 1 remains an important curriculum spine, not a complete curriculum
-by itself.
+The Journey is now owned by Hearth learning outcomes. QJam remains an important
+technical roadmap and source collection, not the curriculum spine.
 
 ### 5. Every node needs a distinct purpose and boundary
 
@@ -191,6 +191,21 @@ the Journey.
 No exam-equivalence claim should appear until a sourced crosswalk and evidence
 rule have been reviewed.
 
+### 16. Hearth capabilities own the Journey spine
+
+Status: Confirmed 2026-07-18
+
+Journey levels are defined by observable musical, technical, listening,
+creative, and learning capabilities. No external teacher, course, roadmap, or
+exam board owns the curriculum.
+
+QJam remains a strong technical roadmap source. JustinGuitar, Trinity, RSL,
+ABRSM, the knowledge library, teacher judgement, and learner evidence provide
+additional checks. These sources map beneath Hearth-owned outcomes.
+
+Current Level 1 direction is recorded in
+`hearth-level-one-capability-map-v1.md`.
+
 ## Superseded Directions
 
 ### 1. Play is optional or should live under another node
@@ -234,6 +249,18 @@ Status: Superseded
 
 Reason: guide language must reflect context and learner evidence.
 
+### 7. QJam is the curriculum spine
+
+Status: Superseded 2026-07-18
+
+Reason: QJam provides a useful technical progression but does not fully cover
+songs, systematic listening, embodied learning, creativity, learner memory,
+consolidation, cultural context, or evidence-based progress. It remains a
+source beneath the Hearth capability spine.
+
+Historical sources: `decision-log.md`, `qjam-roadmap-source-note.md`, and
+`journey-strategy-v1.md`.
+
 ## Temporary Prototype Decisions
 
 These are allowed while the prototype develops, but they are not final product
@@ -255,11 +282,12 @@ they protect working behaviour.
 
 Do not silently decide these during implementation:
 
-1. Which official music assessment systems will be included in the first
-   benchmark crosswalk?
+1. Which South African or additional framework, if any, should follow the
+   Trinity, RSL, and ABRSM first benchmark wave?
 2. What evidence is sufficient before the simulator suggests an external grade
    comparison?
-3. Which Level 1 accomplishments are required, optional, or consolidation-only?
+3. Which working Level 1 evidence thresholds need adjustment after Ayla, Jen,
+   and a qualified teacher test the capability map?
 4. What is the final whole-simulator progress-screen metaphor?
 5. Which recordings remain local, and which require backend media storage?
 6. What teacher permissions and learner privacy rules apply beyond the local
@@ -276,4 +304,3 @@ When a decision changes:
 3. add the new current decision and date;
 4. state what code, content, tests, and briefs are affected;
 5. update this register before asking the final audit to judge the product.
-

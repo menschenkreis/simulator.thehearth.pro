@@ -39,6 +39,95 @@
     },
   ];
 
+  var MASTERY_ENCOUNTER_STORAGE = "hearth-mastery-encounter-v1";
+
+  function currentLearner() {
+    var state = null;
+    try {
+      state = typeof root.getJourneyState === "function"
+        ? root.getJourneyState()
+        : JSON.parse(root.localStorage.getItem("hearth-journey-v2") || "null");
+    } catch (error) {
+      state = null;
+    }
+    var students = state && Array.isArray(state.students) ? state.students : [];
+    var learner = students.filter(function (student) {
+      return student && student.id === state.activeStudentId;
+    })[0] || students[0] || null;
+    return {
+      id: learner && learner.id || state && state.activeStudentId || "default",
+      name: learner && learner.name || "My Journey"
+    };
+  }
+
+  function exemplar() {
+    var records = Array.isArray(root.MASTERY_EXEMPLARS) ? root.MASTERY_EXEMPLARS : [];
+    return records[0] || {
+      id: "level-1-pentatonic-voice",
+      level: 1,
+      title: "Pentatonic in Motion",
+      sourceLabel: "Level 1 pentatonic source",
+      sourceTitle: "Pentatonic source",
+      sourceUrl: "https://www.youtube.com/watch?v=X9rYOhX77mA",
+      reason: "A small note map can become a musical voice.",
+      noticePrompt: "Listen for what makes a small group of notes sound intentional.",
+      noticeOptions: [{ id: "root-home", label: "Root notes feel like home" }],
+      tryPrompt: "Use one A root as home, then add two nearby pentatonic notes.",
+      tryOptions: [{ id: "return-to-root", label: "Return to A" }],
+      practiceInstruction: "Play the idea at 60 BPM over an A minor groove.",
+      createStarter: "Make a two-bar answer from one A root and two nearby pentatonic notes.",
+      carryPrompt: "Keep one choice from the encounter in your own playing."
+    };
+  }
+
+  function encounterStorageKey(learnerId) {
+    return MASTERY_ENCOUNTER_STORAGE + ":" + (learnerId || "default");
+  }
+
+  function readEncounter(learnerId) {
+    try {
+      var saved = JSON.parse(root.localStorage.getItem(encounterStorageKey(learnerId)) || "null");
+      return saved && saved.exemplarId ? saved : null;
+    } catch (error) {
+      return null;
+    }
+  }
+
+  function writeEncounter(state) {
+    try {
+      root.localStorage.setItem(encounterStorageKey(state.learnerId), JSON.stringify(state));
+    } catch (error) {
+      // The encounter remains usable in memory when storage is unavailable.
+    }
+  }
+
+  function appendEncounterEvent(eventType, state, data) {
+    if (!root.HearthProgressEvents || typeof root.HearthProgressEvents.append !== "function") return;
+    root.HearthProgressEvents.append({
+      learner_id: state.learnerId,
+      event_type: eventType,
+      node_id: "mastery",
+      source_id: state.exemplarId,
+      data: data || {}
+    }, root.localStorage);
+  }
+
+  function newEncounter(learner, record) {
+    return {
+      id: "mastery-encounter-" + Date.now(),
+      exemplarId: record.id,
+      learnerId: learner.id,
+      learnerName: learner.name,
+      step: 0,
+      notice: "",
+      tryIdea: "",
+      carriedTo: "",
+      completed: false,
+      startedAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    };
+  }
+
   function esc(value) {
     return String(value == null ? "" : value).replace(/[&<>"']/g, function (ch) {
       return {
@@ -88,6 +177,17 @@
       ".sf-primary-row{position:relative;z-index:2;display:flex;justify-content:center;gap:8px;flex-wrap:wrap;padding:0 18px 16px}",
       ".sf-primary{background:var(--sf,var(--gold));color:#0d0b08;border:none;border-radius:999px;padding:10px 18px;font-family:DM Sans,sans-serif;font-weight:900;cursor:pointer;box-shadow:0 8px 24px rgba(212,175,105,.2)}",
       ".sf-secondary{background:rgba(13,11,8,.62);color:var(--sf,var(--gold));border:1px solid rgba(212,175,105,.44);border-radius:999px;padding:9px 13px;font-weight:800;cursor:pointer}",
+      ".sf-encounter-steps{display:flex;gap:5px;align-items:center;margin-bottom:10px;flex-wrap:wrap}",
+      ".sf-encounter-step{font-family:JetBrains Mono;font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);padding:4px 7px;border:1px solid rgba(212,175,105,.18);border-radius:999px}",
+      ".sf-encounter-step.is-current{color:#0d0b08;background:var(--sf,var(--gold));border-color:var(--sf,var(--gold))}",
+      ".sf-encounter-source{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:9px 0;border-top:1px solid rgba(212,175,105,.15);border-bottom:1px solid rgba(212,175,105,.15);margin:12px 0;color:var(--text)}",
+      ".sf-encounter-source a{color:var(--sf,var(--gold));font-weight:800;text-decoration:none}",
+      ".sf-encounter-source a:hover{text-decoration:underline}",
+      ".sf-encounter-choices{display:flex;gap:7px;flex-wrap:wrap;margin:12px 0}",
+      ".sf-encounter-choice{background:rgba(23,17,9,.8);color:var(--text);border:1px solid rgba(212,175,105,.32);border-radius:10px;padding:9px 11px;font-weight:750;cursor:pointer;text-align:left}",
+      ".sf-encounter-choice:hover,.sf-encounter-choice:focus-visible{border-color:var(--sf,var(--gold));box-shadow:0 0 0 2px rgba(212,175,105,.12);outline:none}",
+      ".sf-encounter-note{color:var(--dim);font-size:.72rem;margin:6px 0}",
+      ".sf-encounter-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}",
       ".sf-master-list{display:grid;grid-template-columns:1fr 1fr;gap:10px}",
       ".sf-master-card{background:#0d0b08;border:1px solid var(--border);border-radius:12px;padding:12px}",
       ".sf-master-card b{font-family:Cinzel;color:var(--sf)}",
@@ -147,44 +247,202 @@
       "</div></div>";
   }
 
-  function openPath(id) {
-    var content = {
-      continue: {
-        kicker: "Continue today",
-        title: "Return to your current encounter",
-        body: "Open the short Mastery encounter recommended by your Journey focus. Start with one thing to notice, then carry one small experiment back into practice.",
-        action: "Open encounter",
-        seal: "voice",
-      },
-      watch: {
-        kicker: "Witness",
-        title: "Watch a master",
-        body: "Choose a precise excerpt and listen for the choice underneath it: time, touch, tone, space, phrasing, or form.",
-        action: "Start with voice",
-        seal: "voice",
-      },
-      thread: {
-        kicker: "Explore",
-        title: "Follow an artistic thread",
-        body: "Follow one question through different artists: how can a familiar guitar idea become more spacious, rhythmic, expressive, strange, or personal?",
-        action: "Hear between notes",
-        seal: "microtones",
-      },
-      review: {
-        kicker: "Return",
-        title: "Review what changed",
-        body: "Revisit the choices you noticed, the experiments you tried, and the directions you want to bring back into your music.",
-        action: "Open a reflection",
-        seal: null,
-      },
-    }[id];
+  function choiceLabel(options, id) {
+    var choice = (options || []).filter(function (item) {
+      return item && item.id === id;
+    })[0];
+    return choice ? choice.label : "Not chosen yet";
+  }
+
+  function renderEncounterSteps(state) {
+    return ["Witness", "Notice", "Try", "Carry"].map(function (label, index) {
+      return '<span class="sf-encounter-step' + (state.step === index ? " is-current" : "") + '">' + label + "</span>";
+    }).join("");
+  }
+
+  function renderEncounter() {
+    var learner = currentLearner();
+    var record = exemplar();
+    var state = readEncounter(learner.id);
     var el = root.document.getElementById("sf-drawer");
-    if (!content || !el) return;
+    if (!el) return;
+    if (!state || state.exemplarId !== record.id) {
+      startEncounter(false);
+      return;
+    }
+
+    var title = [
+      "Watch the idea become music",
+      "Choose one thing to notice",
+      "Try one choice in your own hands",
+      "Carry it back into the music"
+    ][state.step] || "Watch the idea become music";
+    var body = "";
+    var actions = "";
+
+    if (state.step === 0) {
+      body = '<p class="sf-encounter-note">' + esc(record.reason) + " Listen for one small decision, not the whole performance.</p>" +
+        '<div class="sf-encounter-source"><div><div class="sf-kicker">' + esc(record.sourceLabel) + "</div><strong>" + esc(record.sourceTitle) + '</strong></div><a href="' + esc(record.sourceUrl) + '" target="_blank" rel="noopener">Open source</a></div>' +
+        '<p class="sf-encounter-note">' + esc(record.noticePrompt) + "</p>";
+      actions = '<button class="sf-primary" onclick="MasteryPhoenix.advanceEncounter()">I\'ve listened</button>';
+    } else if (state.step === 1) {
+      body = '<p class="sf-encounter-note">' + esc(record.noticePrompt) + " There is no wrong observation. Choose the detail your ear actually caught.</p>" +
+        '<div class="sf-encounter-choices">' + (record.noticeOptions || []).map(function (item) {
+          return '<button class="sf-encounter-choice" onclick="MasteryPhoenix.chooseNotice(\'' + esc(item.id) + '\')">' + esc(item.label) + "</button>";
+        }).join("") + "</div>";
+    } else if (state.step === 2) {
+      body = '<p class="sf-encounter-note">You noticed: <strong>' + esc(choiceLabel(record.noticeOptions, state.notice)) + "</strong></p>" +
+        '<p class="sf-encounter-note">' + esc(record.tryPrompt) + " Choose one small way to test it.</p>" +
+        '<div class="sf-encounter-choices">' + (record.tryOptions || []).map(function (item) {
+          return '<button class="sf-encounter-choice" onclick="MasteryPhoenix.chooseTry(\'' + esc(item.id) + '\')">' + esc(item.label) + "</button>";
+        }).join("") + "</div>";
+    } else {
+      body = '<p class="sf-encounter-note">You noticed: <strong>' + esc(choiceLabel(record.noticeOptions, state.notice)) + "</strong>.</p>" +
+        '<p class="sf-encounter-note">You will try: <strong>' + esc(choiceLabel(record.tryOptions, state.tryIdea)) + "</strong>.</p>" +
+        '<p class="sf-encounter-note">' + esc(record.carryPrompt) + "</p>";
+      actions = '<div class="sf-encounter-actions"><button class="sf-primary" onclick="MasteryPhoenix.carryTo(\'practice\')">Send to Practice</button><button class="sf-secondary" onclick="MasteryPhoenix.carryTo(\'create\')">Send to Create</button></div>';
+    }
+
     el.innerHTML =
-      '<div class="sf-kicker">' + esc(content.kicker) + "</div>" +
-      '<h3 style="font-family:Cinzel;color:' + GOLD + ';margin:5px 0">' + esc(content.title) + "</h3>" +
-      '<p style="margin:0 0 10px;color:var(--dim)">' + esc(content.body) + "</p>" +
-      (content.seal ? '<button class="sf-primary" onclick="MasteryPhoenix.openSeal(\'' + content.seal + '\')">' + esc(content.action) + "</button>" : "");
+      '<div class="sf-encounter-steps">' + renderEncounterSteps(state) + "</div>" +
+      '<div class="sf-kicker">' + esc(record.sourceLabel) + " · " + esc(learner.name) + "</div>" +
+      '<h3 style="font-family:Cinzel;color:' + GOLD + ';margin:5px 0">' + esc(title) + "</h3>" +
+      body + actions;
+  }
+
+  function startEncounter(restart) {
+    var learner = currentLearner();
+    var record = exemplar();
+    var saved = readEncounter(learner.id);
+    var state = saved && saved.exemplarId === record.id ? saved : null;
+    if (!state || state.completed || restart) {
+      state = newEncounter(learner, record);
+      writeEncounter(state);
+      appendEncounterEvent("mastery_encounter_opened", state, {
+        title: record.title,
+        level: record.level,
+        category: record.category
+      });
+    }
+    renderEncounter();
+  }
+
+  function updateEncounterStep(step, eventType, data) {
+    var learner = currentLearner();
+    var state = readEncounter(learner.id);
+    if (!state || state.completed) return;
+    state.step = step;
+    state.updatedAt = new Date().toISOString();
+    writeEncounter(state);
+    appendEncounterEvent(eventType, state, data);
+    renderEncounter();
+  }
+
+  function advanceEncounter() {
+    updateEncounterStep(1, "mastery_encounter_witnessed", { step: "witness" });
+  }
+
+  function chooseNotice(id) {
+    var learner = currentLearner();
+    var state = readEncounter(learner.id);
+    var record = exemplar();
+    var valid = (record.noticeOptions || []).some(function (item) { return item.id === id; });
+    if (!state || state.step !== 1 || !valid) return;
+    state.notice = id;
+    state.step = 2;
+    state.updatedAt = new Date().toISOString();
+    writeEncounter(state);
+    appendEncounterEvent("mastery_encounter_noticed", state, { notice: id });
+    renderEncounter();
+  }
+
+  function chooseTry(id) {
+    var learner = currentLearner();
+    var state = readEncounter(learner.id);
+    var record = exemplar();
+    var valid = (record.tryOptions || []).some(function (item) { return item.id === id; });
+    if (!state || state.step !== 2 || !valid) return;
+    state.tryIdea = id;
+    state.step = 3;
+    state.updatedAt = new Date().toISOString();
+    writeEncounter(state);
+    appendEncounterEvent("mastery_encounter_tried", state, { notice: state.notice, try_idea: id });
+    renderEncounter();
+  }
+
+  function carryTo(destination) {
+    var learner = currentLearner();
+    var record = exemplar();
+    var state = readEncounter(learner.id);
+    if (!state || state.step !== 3 || state.completed) return;
+    state.carriedTo = destination;
+    state.completed = true;
+    state.completedAt = new Date().toISOString();
+    state.updatedAt = state.completedAt;
+    writeEncounter(state);
+    appendEncounterEvent("mastery_encounter_carried", state, {
+      destination: destination,
+      notice: state.notice,
+      try_idea: state.tryIdea,
+      repeat_next: record.practiceInstruction,
+      create_instruction: record.createStarter
+    });
+
+    if (destination === "practice") {
+      if (root.PracticeCandle && typeof root.PracticeCandle.open === "function") {
+        root.PracticeCandle.open({
+          durationMinutes: 10,
+          focus: "Pentatonic phrase · " + choiceLabel(record.tryOptions, state.tryIdea),
+          learnerId: learner.id,
+          returnAction: "showMastery",
+          returnLabel: "Mastery"
+        });
+      } else if (typeof root.showPractice === "function") {
+        root.showPractice();
+      }
+      return;
+    }
+
+    if (destination === "create" && root.HearthCreateHandoff && typeof root.HearthCreateHandoff.open === "function") {
+      root.HearthCreateHandoff.open({
+        suggested_ingredient: "riff",
+        source_node_id: "mastery",
+        source_id: record.id,
+        source_title: record.title,
+        seed_title: "A phrase with a voice",
+        starter: record.createStarter,
+        instruction: record.carryPrompt + " Try: " + choiceLabel(record.tryOptions, state.tryIdea) + "."
+      });
+    } else if (typeof root.showCreate === "function") {
+      root.showCreate();
+    }
+  }
+
+  function renderReview() {
+    var learner = currentLearner();
+    var record = exemplar();
+    var state = readEncounter(learner.id);
+    var el = root.document.getElementById("sf-drawer");
+    if (!el) return;
+    if (!state) {
+      el.innerHTML = '<div class="sf-kicker">Return</div><h3 style="font-family:Cinzel;color:' + GOLD + ';margin:5px 0">Nothing to review yet</h3><p class="sf-encounter-note">Complete one short Mastery encounter and this place will remember what you noticed and tried.</p><button class="sf-primary" onclick="MasteryPhoenix.startEncounter()">Begin encounter</button>';
+      return;
+    }
+    el.innerHTML =
+      '<div class="sf-kicker">Return · ' + esc(learner.name) + "</div>" +
+      '<h3 style="font-family:Cinzel;color:' + GOLD + ';margin:5px 0">What changed?</h3>' +
+      '<p class="sf-encounter-note">' + (state.completed ? "This encounter was carried into " + esc(state.carriedTo) + "." : "This encounter is still open.") + "</p>" +
+      '<p class="sf-encounter-note">Noticed: <strong>' + esc(choiceLabel(record.noticeOptions, state.notice)) + "</strong></p>" +
+      '<p class="sf-encounter-note">Tried: <strong>' + esc(choiceLabel(record.tryOptions, state.tryIdea)) + "</strong></p>" +
+      '<div class="sf-encounter-actions"><button class="sf-primary" onclick="MasteryPhoenix.startEncounter(true)">Start again</button></div>';
+  }
+
+  function openPath(id) {
+    if (id === "review") {
+      renderReview();
+      return;
+    }
+    startEncounter(false);
   }
 
   function openSeal(id) {
@@ -214,6 +472,11 @@
     render: showMastery,
     openPath: openPath,
     openSeal: openSeal,
+    startEncounter: startEncounter,
+    advanceEncounter: advanceEncounter,
+    chooseNotice: chooseNotice,
+    chooseTry: chooseTry,
+    carryTo: carryTo,
   };
   root.showMastery = showMastery;
 })(typeof window !== "undefined" ? window : globalThis);

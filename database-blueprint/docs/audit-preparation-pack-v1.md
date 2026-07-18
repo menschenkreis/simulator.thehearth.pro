@@ -49,12 +49,21 @@ The Hearth Mastery is one connected guitar-learning world.
    - Current book, video, source-note, and OCR counts.
    - Evidence-based content strengths, gaps, and Level 1 priorities.
 
+6. `external-music-exam-benchmark-plan-v1.md`
+   - A safe way to use Trinity, RSL, and ABRSM as external measuring rulers.
+   - Capability domains, evidence language, source rules, and a phased Level 1
+     crosswalk plan without claiming official grade equivalence.
+
+7. `hearth-level-one-capability-map-v1.md`
+   - The Hearth-owned Level 1 promise, capabilities, and working evidence
+     thresholds.
+   - A lesson-by-lesson comparison and a safer route beyond QJam ownership.
+
 ## Next Safe Documents
 
 These can be added while node implementations continue:
 
-1. External music-exam benchmark plan.
-2. Final audit evidence template and click-path matrix.
+1. Final audit evidence template and click-path matrix.
 
 ## When The Final Audit May Begin
 

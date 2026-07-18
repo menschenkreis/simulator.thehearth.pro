@@ -55,11 +55,13 @@ eval(readText(root + "/core/lesson-view-model.js"));
 eval(readText(root + "/core/lesson-session.js"));
 eval(readText(root + "/core/learner-progress.js"));
 eval(readText(root + "/core/play-domain.js"));
+eval(readText(root + "/assets/js/journey-data.js"));
 eval(readText(root + "/assets/js/play-traditions.js"));
 eval(readText(root + "/adapters/play-atlas-model.js"));
 eval(readText(root + "/adapters/play-atlas-viewer.js"));
 eval(readText(root + "/adapters/browser-progress-store.js"));
 eval(readText(root + "/adapters/foundation-progress-bridge.js"));
+eval(readText(root + "/adapters/doing-progress-bridge.js"));
 eval(readText(root + "/adapters/teaching-engine-core-adapter.js"));
 eval(readText(root + "/adapters/doing-ui-utils.js"));
 eval(readText(root + "/adapters/doing-config.js"));
@@ -123,6 +125,31 @@ eval(readText(root + "/adapters/dictionary-controller.js"));
 var seed = JSON.parse(readText(root + "/database-blueprint/seeds/foundation_conversations_lesson_v2.json"));
 var foundationManifest = JSON.parse(readText(root + "/core/foundation-route-manifest.json"));
 
+assert(JOURNEY_CAPABILITY_FAMILIES.length === 7, "Journey should expose seven learner-facing capability families");
+assert(JOURNEY_LEVEL_CAPABILITIES.L1.length === 17, "Level 1 should expose the canonical capability set");
+assert(JOURNEY_EVIDENCE_STAGES.indexOf("applied_musically") !== -1, "Journey should expose musical application evidence");
+var journeyCapabilityIds = {{}};
+JOURNEY_LEVEL_CAPABILITIES.L1.forEach(function rememberCapability(capability) {{
+  assert(!journeyCapabilityIds[capability.id], "Journey capability ids should be unique: " + capability.id);
+  assert(JOURNEY_EVIDENCE_STAGES.indexOf(capability.minimumEvidence) !== -1, "Journey capability should use a known evidence stage: " + capability.id);
+  journeyCapabilityIds[capability.id] = true;
+}});
+var currentLevelOneActivities = JOURNEY_LEVEL_ACTIVITY_CAPABILITY_MAP.L1;
+assert(Object.keys(currentLevelOneActivities).length === 8, "Current Level 1 activities should all have capability mappings");
+assert(currentLevelOneActivities["l1-entry-preflight"].countsTowardLevel === false, "Level 1 entry check should be classified as preflight");
+Object.keys(currentLevelOneActivities).forEach(function checkJourneyActivity(activityId) {{
+  var activity = currentLevelOneActivities[activityId];
+  assert(Object.keys(activity.blocks).length === 6, "Each current Journey activity should map its six authored blocks: " + activityId);
+  activity.capabilityIds.forEach(function checkActivityCapability(capabilityId) {{
+    assert(journeyCapabilityIds[capabilityId], "Journey activity references an unknown capability: " + capabilityId);
+  }});
+  Object.keys(activity.blocks).forEach(function checkJourneyBlock(blockId) {{
+    activity.blocks[blockId].forEach(function checkBlockCapability(capabilityId) {{
+      assert(journeyCapabilityIds[capabilityId], "Journey block references an unknown capability: " + capabilityId);
+    }});
+  }});
+}});
+
 assert(
   JSON.stringify(HearthFoundationRouteManifest.routes) === JSON.stringify(foundationManifest.routes),
   "runtime Foundation manifest should match core JSON manifest"
@@ -173,6 +200,20 @@ assert(HearthDoingConfig.coachForCategory("missing").pass.indexOf("dead notes") 
 assert(HearthDoingConfig.guitarZones.length === 4, "Doing config should expose guitar map zones");
 assert(HearthDoingConfig.focusCats.length === 4, "Doing config should expose focus categories");
 assert(HearthDoingConfig.roomDrillPlans["left-hand"][1].indexOf("chrom-1") !== -1, "Doing config should expose curated room drills");
+var doingFeedbackEvent = HearthDoingProgressBridge.feedbackEvent({{
+  category: {{ id: "scales", title: "Scales" }},
+  drill: {{ id: "pent-1", title: "A Minor Pentatonic Box 1", duration: "5 min" }},
+  state: "clean",
+  level: 1,
+  room: "left-hand"
+}});
+assert(doingFeedbackEvent.event_type === "drill_feedback_recorded", "Doing feedback should use the shared event vocabulary");
+assert(doingFeedbackEvent.rating === 3 && doingFeedbackEvent.journey_level_id === "L1", "Doing feedback should preserve skill strength and level");
+assert(doingFeedbackEvent.data.journey_categories.indexOf("Scales") !== -1, "Doing feedback should map into Journey categories");
+var doingEvidenceEvents = [Object.assign({{ learner_id: "jen-1", created_at: new Date().toISOString() }}, doingFeedbackEvent)];
+var doingScaleEvidence = HearthDoingProgressBridge.summaryForJourneyCategory(doingEvidenceEvents, "jen-1", "Scales", 1);
+assert(doingScaleEvidence.count === 1 && doingScaleEvidence.strongestLabel === "Clean once", "Journey should summarize learner-specific Do evidence");
+assert(HearthDoingProgressBridge.practiceRecommendations(doingEvidenceEvents, "jen-1", 2)[0].indexOf("reliable") !== -1, "Practice should receive an unfinished Do recommendation");
 var curatedDoing = {{ categories: [{{ id: "picking", title: "Picking", drills: [{{ id: "alt-1", title: "Old title", style: "rock", source: "Test", duration: "5 min", body: "<p>Test</p>" }}, {{ id: "alt-2", title: "Draft", style: "rock", source: "Test", duration: "5 min", body: "<p>Test</p>" }}] }}] }};
 HearthDoingDrillCatalog.apply(curatedDoing);
 assert(curatedDoing.catalog.approvedCount === 13, "Doing catalogue should expose the reviewed drill count");
@@ -215,6 +256,7 @@ var practiceEntrySnapshot = HearthPracticeEntryModel.buildSnapshot({{
   journeyState: {{ activeStudentId: "jen-1", students: [{{ id: "jen-1", name: "Jen", levels: {{}} }}] }},
   companions: {{ jen: {{ commitment: {{ title: "20-minute daily practice thread", today: "A roots and one musical jam." }}, practice: ["A minor pentatonic", "Right-hand pattern"] }} }},
   events: [{{ event_type: "practice_session_completed", learner_id: "jen-1", duration_minutes: 8, created_at: new Date().toISOString(), data: {{ focus: "A roots" }} }}],
+  doingProgressBridge: HearthDoingProgressBridge,
   candleState: {{ running: false }}
 }});
 assert(practiceEntrySnapshot.learner.name === "Jen", "Practice entry should use the active learner");

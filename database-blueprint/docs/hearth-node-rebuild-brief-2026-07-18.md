@@ -228,6 +228,94 @@ Use a credit-efficient approval sequence:
 This approach is safer and cheaper than repeatedly generating a full composite
 whenever one hand, organ, or tuner is wrong.
 
+## Master Reference Status
+
+The first approved-direction master reference is currently saved as:
+
+- `images/hearth/hearth-inner-instrument-master-v1-chroma.png` - original
+  chroma-key source;
+- `images/hearth/hearth-inner-instrument-master-v1.png` - locally removed
+  background with alpha transparency.
+
+The revised anatomical-sketch candidate is now saved as:
+
+- `images/hearth/hearth-inner-instrument-master-v2-chroma.png` - chroma-key
+  source;
+- `images/hearth/hearth-inner-instrument-master-v2.png` - locally removed
+  background with alpha transparency.
+
+These are composition and anatomy references, not yet the live Hearth asset.
+V1 is retained for comparison only. V2 is the current visual candidate: an
+anatomical sketch/cutaway where the inner structures themselves form the
+visible learner.
+
+Before live installation, make one targeted revision toward the anatomical
+sketch direction below. Do not produce additional component layers from v1.
+
+## Master Reference Revision: Anatomical Sketch
+
+The learner should read like an elegant anatomical study, not a normal person
+wearing clothes and not a photorealistic exposed body. Show the person through
+recognizable inner structures: ivory and gold linework for bones, joints,
+tendons, muscles, nerves, brain, eyes, ears, lungs, spine, and hands. The
+guitar remains a complete visible instrument held in a plausible playing pose.
+
+Use a dignified educational cutaway/engraving treatment with no skin surface,
+no clothing surface, no sexualised anatomy, no gore, and no medical horror.
+Keep the figure understandable as one person holding the instrument. The
+visible anatomy should make the click targets obvious: brain in the head, eyes
+and ears at the head, fretting hand on the neck, playing hand at the soundhole,
+breath/body through the torso, feeling as a restrained living glow, and the
+whole figure/guitar as integration.
+
+### Revision prompt
+
+```text
+Create a unified vertical anatomical-sketch master reference for The Hearth
+Mastery, a sophisticated guitar-learning simulator.
+
+Show one complete human learner seated and holding a correct classical/acoustic
+guitar in a natural standard right-handed posture. This is an elegant
+educational anatomical cutaway illustration: do not show skin or clothing as
+the visible body surface. Instead, represent the learner with clear, dignified
+ivory and warm-gold engraved linework showing the skull and brain, eyes, ears,
+spine, nerves, shoulders, upper arms, elbows, forearms, wrists, hands, joints,
+tendons, major muscles, lungs/diaphragm, and a restrained warm feeling glow.
+The inner structures should form one coherent person, not a collection of
+floating organ icons.
+
+The complete left arm reaches the neck and the left hand frets naturally. The
+complete right arm crosses the guitar body and the right hand plays naturally
+near the soundhole. Each visible hand has five anatomically plausible digits.
+The guitar has exactly six continuous strings and exactly six tuning machines,
+with a readable headstock, neck, soundhole, bridge, and body. No hand passes
+through the instrument. No duplicated or detached anatomy.
+
+Style: anatomical plate meets Hearth Mastery engraved game art; precise ivory
+linework, warm gold structure, dark wood guitar, ember light, restrained
+rainbow glimmers along selected sensory and nervous pathways. Calm, intelligent,
+beautiful, and alive. It must feel like a visual map of the learner's inner
+instrument, not a hospital illustration, medical horror image, nude figure, or
+photorealistic body.
+
+Composition: centered portrait 4:5. Keep the full head, brain, eyes, ears,
+torso, shoulders, complete arms, both hands, full guitar body, neck, and
+headstock inside the canvas with generous padding. Make the brain, eyes, ears,
+left hand, right hand, torso/breath, feeling center, and whole integration
+visually distinct enough for later semantic click zones and transparent
+highlight layers. Use a gentle three-quarter-front angle so both eyes and both
+ears remain discoverable while the guitar posture stays believable.
+
+Background: perfectly flat solid #00ff00 chroma-key background with no shadow,
+gradient, texture, reflection, floor, vignette, or lighting variation. Do not
+use #00ff00 in the subject.
+
+Do not include text, labels, UI, guide character, cards, room, books, candles,
+border, watermark, skin surface, clothing surface, nudity, sexualised anatomy,
+gore, extra fingers, missing fingers, extra strings, missing tuners, impossible
+joints, cropped anatomy, floating organs, random symbols, or a black rectangle.
+```
+
 ## Comprehensive Master Image Prompt
 
 Create the master visual reference before generating production layers:

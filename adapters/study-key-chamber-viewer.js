@@ -41,8 +41,18 @@
   function doorStateColor(state) {
     if (state === "locked") return "#666";
     if (state === "recommended") return AMBER;
+    if (state === "understood") return "#2ecc71";
+    if (state === "visited") return GOLD;
     if (state === "open") return GOLD;
     return "#888";
+  }
+
+  function doorStateLabel(state) {
+    if (state === "locked") return "LOCKED";
+    if (state === "recommended") return "RECOMMENDED";
+    if (state === "understood") return "UNDERSTOOD";
+    if (state === "visited") return "VISITED";
+    return "OPEN";
   }
 
   function guideText(snapshot) {
@@ -82,7 +92,7 @@
     svg += '<rect x="278" y="175" width="4" height="14" rx="2" fill="' + GOLD + '" opacity=".7"/>';
     svg += '<text x="280" y="145" text-anchor="middle" fill="' + color + '" font-family="Cinzel,serif" font-size="32">' + current.symbol + "</text>";
     svg += '<text x="280" y="220" text-anchor="middle" fill="' + color + '" font-family="Cinzel,serif" font-size="16" font-weight="600">' + esc(current.label) + "</text>";
-    svg += '<text x="280" y="245" text-anchor="middle" fill="' + color + '" font-family="JetBrains Mono" font-size="8" opacity=".7">' + (current.state === "locked" ? "LOCKED" : current.state === "recommended" ? "RECOMMENDED" : "OPEN") + "</text>";
+    svg += '<text x="280" y="245" text-anchor="middle" fill="' + color + '" font-family="JetBrains Mono" font-size="8" opacity=".7">' + doorStateLabel(current.state) + "</text>";
     svg += "</g>";
     svg += '<g style="cursor:pointer" onclick="StudyKeyChamber.rotate(-1)"><text x="30" y="200" fill="' + GOLD + '" font-size="24" opacity=".4" font-family="DM Sans">\u2039</text></g>';
     svg += '<g style="cursor:pointer" onclick="StudyKeyChamber.rotate(1)"><text x="530" y="200" fill="' + GOLD + '" font-size="24" opacity=".4" font-family="DM Sans">\u203a</text></g>';
@@ -141,7 +151,7 @@
       "</div>" +
       '<div style="font-size:.75rem;color:var(--dim);line-height:1.5">' + esc(current.guide) + "</div>" +
       '<div style="font-size:.72rem;color:var(--amber);margin-top:6px">' + esc(current.action) + "</div>" +
-      '<div style="font-size:.64rem;color:var(--dim);margin-top:8px">' + current.progress + '% explored · ' + esc(snapshot.summary.visited) + '/6 doors visited</div>' +
+      '<div style="font-size:.64rem;color:var(--dim);margin-top:8px">' + current.progress + '% explored · ' + doorStateLabel(current.state).toLowerCase() + ' · ' + esc(snapshot.summary.visited) + '/6 doors visited</div>' +
       "</div>" +
       "</div>";
   }

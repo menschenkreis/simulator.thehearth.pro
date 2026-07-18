@@ -55,6 +55,194 @@ var JOURNEY_TASK_BANK = {
   ]
 };
 
+// Hearth-owned capability spine. External roadmaps and exam frameworks map
+// beneath these outcomes; they do not control Journey completion directly.
+var JOURNEY_EVIDENCE_STAGES = [
+  "not_encountered",
+  "contact",
+  "attempted",
+  "demonstrated",
+  "applied_musically",
+  "consolidated",
+  "externally_assessed"
+];
+
+var JOURNEY_CAPABILITY_FAMILIES = [
+  { id: "keep-time", title: "Keep time", summary: "Pulse, rhythm, strumming, and groove.", order: 1 },
+  { id: "make-harmony", title: "Make harmony", summary: "Chords and changes that continue in time.", order: 2 },
+  { id: "navigate-notes", title: "Navigate notes", summary: "Fretboard maps, scales, clean movement, and technique.", order: 3 },
+  { id: "listen-understand", title: "Listen and understand", summary: "Ear, TAB, diagrams, theory, and musical words.", order: 4 },
+  { id: "make-music", title: "Make music", summary: "Songs, jams, phrases, accompaniment, and role exchange.", order: 5 },
+  { id: "create-express", title: "Create and express", summary: "Variation, improvisation, riffs, and personal choices.", order: 6 },
+  { id: "learn-sustainably", title: "Learn sustainably", summary: "Preparation, practice, feedback, consolidation, and reflection.", order: 7 }
+];
+
+var JOURNEY_LEVEL_CAPABILITIES = {
+  L1: [
+    { id: "L1-TIME-01", familyId: "keep-time", title: "Hold a simple pulse", minimumEvidence: "demonstrated", required: true, nodeIds: ["practice", "play", "doing"] },
+    { id: "L1-TIME-02", familyId: "keep-time", title: "Use a basic rhythm pattern musically", minimumEvidence: "demonstrated", required: true, nodeIds: ["doing", "practice", "play"] },
+    { id: "L1-HARM-01", familyId: "make-harmony", title: "Build a working open-chord vocabulary", minimumEvidence: "demonstrated", required: true, nodeIds: ["doing", "practice", "knowing"] },
+    { id: "L1-HARM-02", familyId: "make-harmony", title: "Change chords without abandoning time", minimumEvidence: "demonstrated", required: true, nodeIds: ["doing", "practice", "play"] },
+    { id: "L1-MAP-01", familyId: "navigate-notes", title: "Find home inside a minor pentatonic map", minimumEvidence: "demonstrated", required: true, nodeIds: ["knowing", "study", "doing", "practice"] },
+    { id: "L1-MAP-02", familyId: "navigate-notes", title: "Turn the map into a phrase", minimumEvidence: "demonstrated", required: true, nodeIds: ["doing", "play", "create"] },
+    { id: "L1-EAR-01", familyId: "listen-understand", title: "Hear pulse and home", minimumEvidence: "attempted", required: true, nodeIds: ["hearth", "study", "play"] },
+    { id: "L1-READ-01", familyId: "listen-understand", title: "Follow a simple guitar representation", minimumEvidence: "attempted", required: true, nodeIds: ["study", "knowing", "doing"] },
+    { id: "L1-KNOW-01", familyId: "listen-understand", title: "Explain the current musical relationship", minimumEvidence: "attempted", required: true, nodeIds: ["knowing", "study", "play"] },
+    { id: "L1-PLAY-01", familyId: "make-music", title: "Join a musical exchange", minimumEvidence: "demonstrated", required: true, nodeIds: ["play", "journey"] },
+    { id: "L1-SONG-01", familyId: "make-music", title: "Carry one complete small piece", minimumEvidence: "applied_musically", required: true, nodeIds: ["play", "practice", "mastery"] },
+    { id: "L1-ROLE-01", familyId: "make-music", title: "Experience rhythm and lead as related roles", minimumEvidence: "attempted", required: true, nodeIds: ["play", "journey"] },
+    { id: "L1-CREATE-01", familyId: "create-express", title: "Make and keep one musical choice", minimumEvidence: "attempted", required: true, nodeIds: ["create", "play"] },
+    { id: "L1-STYLE-01", familyId: "create-express", title: "Meet one style without making it compulsory", minimumEvidence: "contact", required: true, nodeIds: ["play", "study", "mastery"] },
+    { id: "L1-PREP-01", familyId: "learn-sustainably", title: "Prepare the instrument and body", minimumEvidence: "demonstrated", required: true, nodeIds: ["foundation", "hearth", "practice"] },
+    { id: "L1-PRACTICE-01", familyId: "learn-sustainably", title: "Repeat a real weakness over time", minimumEvidence: "demonstrated", required: true, nodeIds: ["practice", "journey"] },
+    { id: "L1-REFLECT-01", familyId: "learn-sustainably", title: "Name evidence and choose the next gradient", minimumEvidence: "demonstrated", required: true, nodeIds: ["hearth", "journey"] }
+  ]
+};
+
+var JOURNEY_LEVEL_EVIDENCE_RULES = {
+  L1: {
+    version: "1.0",
+    completionMode: "capability-evidence",
+    allFamiliesEncountered: true,
+    minimumByCapability: {
+      "L1-TIME-01": "demonstrated",
+      "L1-HARM-02": "demonstrated",
+      "L1-MAP-02": "demonstrated",
+      "L1-PLAY-01": "demonstrated",
+      "L1-PRACTICE-01": "demonstrated",
+      "L1-SONG-01": "applied_musically",
+      "L1-READ-01": "attempted",
+      "L1-ROLE-01": "attempted"
+    },
+    requiredArtifacts: [
+      "one-complete-guided-or-independent-take",
+      "one-saved-creative-choice",
+      "one-next-step-reflection"
+    ],
+    note: "These are prototype Hearth thresholds, not official exam equivalence."
+  }
+};
+
+// Maps the currently authored lesson blocks to capabilities without changing
+// the visible eight-lesson prototype. Lesson 1 is now classified as preflight;
+// the later content migration will replace it with eight counted lessons.
+var JOURNEY_LEVEL_ACTIVITY_CAPABILITY_MAP = {
+  L1: {
+    "l1-entry-preflight": {
+      sourceLessonNumber: 1,
+      kind: "preflight",
+      countsTowardLevel: false,
+      capabilityIds: ["L1-PREP-01", "L1-TIME-01", "L1-HARM-01", "L1-PLAY-01", "L1-REFLECT-01"],
+      blocks: {
+        review: ["L1-PREP-01", "L1-REFLECT-01"],
+        warmup: ["L1-PREP-01", "L1-EAR-01"],
+        concept: ["L1-REFLECT-01"],
+        drill: ["L1-TIME-01", "L1-HARM-01"],
+        music: ["L1-TIME-01", "L1-PLAY-01"],
+        reflect: ["L1-REFLECT-01", "L1-PRACTICE-01"]
+      }
+    },
+    "l1-open-chord-audit": {
+      sourceLessonNumber: 2,
+      kind: "lesson",
+      countsTowardLevel: true,
+      capabilityIds: ["L1-TIME-01", "L1-HARM-01", "L1-HARM-02", "L1-PREP-01", "L1-REFLECT-01"],
+      blocks: {
+        review: ["L1-TIME-01"],
+        warmup: ["L1-HARM-01", "L1-PREP-01"],
+        concept: ["L1-HARM-01", "L1-KNOW-01"],
+        drill: ["L1-HARM-01"],
+        music: ["L1-HARM-02", "L1-TIME-01", "L1-PLAY-01"],
+        reflect: ["L1-REFLECT-01", "L1-PRACTICE-01"]
+      }
+    },
+    "l1-common-finger-changes": {
+      sourceLessonNumber: 3,
+      kind: "lesson",
+      countsTowardLevel: true,
+      capabilityIds: ["L1-TIME-02", "L1-HARM-01", "L1-HARM-02", "L1-PREP-01", "L1-PLAY-01", "L1-REFLECT-01"],
+      blocks: {
+        review: ["L1-HARM-01"],
+        warmup: ["L1-HARM-02", "L1-PREP-01"],
+        concept: ["L1-HARM-02", "L1-KNOW-01"],
+        drill: ["L1-HARM-02", "L1-TIME-01"],
+        music: ["L1-HARM-02", "L1-TIME-02", "L1-PLAY-01"],
+        reflect: ["L1-REFLECT-01", "L1-PRACTICE-01"]
+      }
+    },
+    "l1-pentatonic-map": {
+      sourceLessonNumber: 4,
+      kind: "lesson",
+      countsTowardLevel: true,
+      capabilityIds: ["L1-MAP-01", "L1-MAP-02", "L1-EAR-01", "L1-READ-01", "L1-KNOW-01", "L1-PLAY-01", "L1-REFLECT-01"],
+      blocks: {
+        review: ["L1-HARM-02"],
+        warmup: ["L1-MAP-01", "L1-PREP-01"],
+        concept: ["L1-MAP-01", "L1-KNOW-01", "L1-READ-01"],
+        drill: ["L1-MAP-01", "L1-READ-01"],
+        music: ["L1-MAP-02", "L1-EAR-01", "L1-PLAY-01"],
+        reflect: ["L1-REFLECT-01", "L1-PRACTICE-01"]
+      }
+    },
+    "l1-pentatonic-phrasing": {
+      sourceLessonNumber: 5,
+      kind: "lesson",
+      countsTowardLevel: true,
+      capabilityIds: ["L1-TIME-02", "L1-MAP-01", "L1-MAP-02", "L1-EAR-01", "L1-PLAY-01", "L1-CREATE-01", "L1-REFLECT-01"],
+      blocks: {
+        review: ["L1-MAP-01"],
+        warmup: ["L1-MAP-01", "L1-PREP-01"],
+        concept: ["L1-MAP-02", "L1-KNOW-01"],
+        drill: ["L1-MAP-02", "L1-TIME-02", "L1-CREATE-01"],
+        music: ["L1-MAP-02", "L1-EAR-01", "L1-PLAY-01", "L1-CREATE-01"],
+        reflect: ["L1-REFLECT-01", "L1-PRACTICE-01"]
+      }
+    },
+    "l1-style-improvisation": {
+      sourceLessonNumber: 6,
+      kind: "lesson",
+      countsTowardLevel: true,
+      capabilityIds: ["L1-TIME-02", "L1-MAP-02", "L1-EAR-01", "L1-PLAY-01", "L1-CREATE-01", "L1-STYLE-01", "L1-REFLECT-01"],
+      blocks: {
+        review: ["L1-MAP-02", "L1-CREATE-01"],
+        warmup: ["L1-MAP-01", "L1-PREP-01"],
+        concept: ["L1-EAR-01", "L1-KNOW-01", "L1-STYLE-01"],
+        drill: ["L1-MAP-02", "L1-TIME-02"],
+        music: ["L1-PLAY-01", "L1-CREATE-01", "L1-STYLE-01"],
+        reflect: ["L1-REFLECT-01", "L1-PRACTICE-01"]
+      }
+    },
+    "l1-chords-meet-pentatonics": {
+      sourceLessonNumber: 7,
+      kind: "lesson",
+      countsTowardLevel: true,
+      capabilityIds: ["L1-TIME-02", "L1-HARM-02", "L1-MAP-02", "L1-KNOW-01", "L1-PLAY-01", "L1-SONG-01", "L1-ROLE-01", "L1-CREATE-01", "L1-REFLECT-01"],
+      blocks: {
+        review: ["L1-HARM-02", "L1-MAP-02"],
+        warmup: ["L1-PREP-01", "L1-ROLE-01"],
+        concept: ["L1-KNOW-01", "L1-ROLE-01"],
+        drill: ["L1-TIME-02", "L1-HARM-02", "L1-MAP-02", "L1-ROLE-01"],
+        music: ["L1-PLAY-01", "L1-SONG-01", "L1-ROLE-01", "L1-CREATE-01"],
+        reflect: ["L1-REFLECT-01", "L1-PRACTICE-01"]
+      }
+    },
+    "l1-integration": {
+      sourceLessonNumber: 8,
+      kind: "checkpoint",
+      countsTowardLevel: true,
+      capabilityIds: ["L1-TIME-01", "L1-TIME-02", "L1-HARM-01", "L1-HARM-02", "L1-MAP-01", "L1-MAP-02", "L1-EAR-01", "L1-READ-01", "L1-KNOW-01", "L1-PLAY-01", "L1-SONG-01", "L1-ROLE-01", "L1-CREATE-01", "L1-STYLE-01", "L1-PREP-01", "L1-PRACTICE-01", "L1-REFLECT-01"],
+      blocks: {
+        review: ["L1-TIME-01", "L1-HARM-01", "L1-MAP-01", "L1-READ-01", "L1-PRACTICE-01"],
+        warmup: ["L1-PREP-01", "L1-TIME-01", "L1-HARM-02", "L1-MAP-02"],
+        concept: ["L1-KNOW-01", "L1-REFLECT-01"],
+        drill: ["L1-TIME-01", "L1-HARM-02", "L1-MAP-02"],
+        music: ["L1-PLAY-01", "L1-SONG-01", "L1-ROLE-01", "L1-CREATE-01", "L1-STYLE-01"],
+        reflect: ["L1-PRACTICE-01", "L1-REFLECT-01"]
+      }
+    }
+  }
+};
+
 var JOURNEY_AUTHORED_LESSONS = {
   L1: [
     {
@@ -353,6 +541,11 @@ if (typeof window !== "undefined") {
   window.JOURNEY_LEVELS = JOURNEY_LEVELS;
   window.JOURNEY_CONCEPT_BANK = JOURNEY_CONCEPT_BANK;
   window.JOURNEY_TASK_BANK = JOURNEY_TASK_BANK;
+  window.JOURNEY_EVIDENCE_STAGES = JOURNEY_EVIDENCE_STAGES;
+  window.JOURNEY_CAPABILITY_FAMILIES = JOURNEY_CAPABILITY_FAMILIES;
+  window.JOURNEY_LEVEL_CAPABILITIES = JOURNEY_LEVEL_CAPABILITIES;
+  window.JOURNEY_LEVEL_EVIDENCE_RULES = JOURNEY_LEVEL_EVIDENCE_RULES;
+  window.JOURNEY_LEVEL_ACTIVITY_CAPABILITY_MAP = JOURNEY_LEVEL_ACTIVITY_CAPABILITY_MAP;
   window.JOURNEY_AUTHORED_LESSONS = JOURNEY_AUTHORED_LESSONS;
   window.JOURNEY_STUDENT_COMPANIONS = JOURNEY_STUDENT_COMPANIONS;
 }

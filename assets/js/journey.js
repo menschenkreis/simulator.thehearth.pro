@@ -726,6 +726,17 @@
     };
   }
 
+  function journeyDoingEvents(){
+    if(!window.HearthProgressEvents || typeof window.HearthProgressEvents.list !== 'function') return [];
+    try { return window.HearthProgressEvents.list(localStorage) || []; } catch(e){ return []; }
+  }
+
+  function journeyDoingEvidence(events, student, level, category){
+    const bridge = window.HearthDoingProgressBridge;
+    if(!bridge || typeof bridge.summaryForJourneyCategory !== 'function') return null;
+    return bridge.summaryForJourneyCategory(events, student.id, category.label, level.num);
+  }
+
   function renderLevelEntry(num){
     injectStyles();
     showPanel('p-lesson');
@@ -745,6 +756,7 @@
       : 'Stay with '+level.name+'. Each dot shows what this level asks from that category.';
     const actionLabel = companion ? 'Open Live Lesson' : lessonsDone >= level.totalLessons ? 'Review '+level.name : lessonsDone > 0 ? 'Continue '+level.name : "Let's begin";
     const categories = journeyRoadmapCategories();
+    const doingEvents = journeyDoingEvents();
     const categoryLessons = {};
     categories.forEach(section => {
       categoryLessons[section.label] = journeyCategoryLessonNumbers(level, section);
@@ -779,6 +791,7 @@
     html += '<div class="journey-roadmap-board" aria-label="Journey category roadmap">';
     categories.forEach((section, sectionIndex) => {
       const sectionLessons = categoryLessons[section.label] || [];
+      const doingEvidence = journeyDoingEvidence(doingEvents, student, level, section);
       const sectionTotal = sectionLessons.length;
       const sectionDone = sectionLessons.filter(n => n <= lessonsDone).length;
       const sectionPct = sectionTotal ? Math.min(100, Math.round(sectionDone / sectionTotal * 100)) : pct;
@@ -788,10 +801,11 @@
       const sectionClasses = ['journey-roadmap-section'];
       if(activeCategory) sectionClasses.push('active-category');
       if(completeCategory) sectionClasses.push('complete-category');
+      if(doingEvidence) sectionClasses.push('has-doing-evidence');
       html += '<section class="'+sectionClasses.join(' ')+'" style="--row-index:'+sectionIndex+';--section-progress:'+sectionPct+'%">';
       html += '<div class="journey-roadmap-section-head">';
       html += '<span class="journey-category-icon">'+(section.iconImage ? '<img src="'+attr(section.iconImage)+'" alt="" />' : esc(section.icon || (sectionIndex + 1)))+'</span>';
-      html += '<div><h3>'+esc(section.label)+'</h3><p>'+esc(section.note)+'</p></div>';
+      html += '<div><h3>'+esc(section.label)+'</h3><p>'+esc(section.note)+'</p>'+(doingEvidence ? '<em class="journey-roadmap-practice">'+esc(doingEvidence.label)+'</em>' : '')+'</div>';
       html += '<small class="'+(activeCategory ? 'is-next' : completeCategory ? 'is-done' : sectionTotal ? '' : 'is-later')+'">'+sectionStatus+'</small>';
       html += '</div>';
       html += '<div class="journey-roadmap-levels">';
@@ -809,7 +823,7 @@
         if(!unlocked && lp.num > level.num) classes.push('future');
         if(!unlocked && lp.num === Math.min(LEVELS.length, level.num + 1)) classes.push('preparing');
         const dotPct = isSelected ? sectionPct : done ? 100 : 0;
-        const title = lp.name+' · '+section.label+': '+roadmapLevelText(section, lp);
+        const title = lp.name+' · '+section.label+': '+roadmapLevelText(section, lp)+(isSelected && doingEvidence ? ' · '+doingEvidence.label : '');
         const click = unlocked ? ' onclick="Journey.openLevel('+lp.num+')"': ' disabled';
         html += '<button type="button" class="'+classes.join(' ')+'" style="--dot-color:'+attr(lp.color)+';--dot-rgb:'+hexToRgb(lp.color)+';--dot-progress:'+dotPct+'%"'+click+' title="'+attr(title)+'" aria-label="'+attr(title)+'">';
         html += '<b>L'+lp.num+'</b>';
@@ -1129,12 +1143,14 @@
       .journey-roadmap-section.done{border-color:rgba(255,226,179,.14)}
       .journey-roadmap-section.active-category{border-color:rgba(var(--journey-level-rgb),.44);background:linear-gradient(90deg,rgba(var(--journey-level-rgb),.13),rgba(255,255,255,.018));box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 0 34px rgba(var(--journey-level-rgb),.24)}
       .journey-roadmap-section.complete-category{border-color:rgba(255,226,179,.18)}
+      .journey-roadmap-section.has-doing-evidence{box-shadow:inset 3px 0 0 rgba(var(--journey-level-rgb),.34),inset 0 1px 0 rgba(255,255,255,.04)}
       .journey-roadmap-section-head{position:relative;z-index:2;display:grid;grid-template-columns:46px minmax(0,1fr) auto;gap:10px;align-items:center}
       .journey-roadmap-section-head > span{width:46px;height:36px;border-radius:11px;display:grid;place-items:center;background:linear-gradient(145deg,rgba(255,244,214,.12),rgba(8,7,6,.86));border:1px solid rgba(255,236,198,.24);font-family:Cinzel,serif;color:#fff8dc;font-weight:900;font-size:.82rem;text-shadow:0 1px 4px rgba(0,0,0,.86);box-shadow:0 0 18px rgba(var(--journey-level-rgb),.2),inset 0 1px 0 rgba(255,255,255,.08);overflow:hidden}
       .journey-roadmap-section-head > span.journey-category-icon{background:linear-gradient(145deg,rgba(var(--journey-level-rgb),.16),rgba(8,7,6,.84));border-color:rgba(255,226,179,.24);letter-spacing:.02em}
       .journey-category-icon img{width:34px;height:34px;display:block;object-fit:contain;border-radius:0;filter:saturate(.88) contrast(1.02) brightness(.94) drop-shadow(0 2px 4px rgba(0,0,0,.58))}
       .journey-roadmap-section-head h3{margin:0;font-family:Cinzel,serif;color:var(--text);font-size:.78rem;line-height:1.08}
       .journey-roadmap-section-head p{margin:2px 0 0;color:var(--dim);font-size:.53rem;line-height:1.14}
+      .journey-roadmap-practice{display:block;margin-top:3px;color:rgba(255,226,179,.76);font-family:JetBrains Mono,monospace;font-size:.49rem;font-style:normal;line-height:1.2}
       .journey-roadmap-section-head small{justify-self:end;align-self:center;min-width:46px;border:1px solid rgba(255,226,179,.16);border-radius:999px;background:rgba(13,11,8,.5);padding:4px 7px;text-align:center;font-family:JetBrains Mono,monospace;color:rgba(255,226,179,.66);font-size:.56rem;line-height:1}
       .journey-roadmap-section-head small.is-next{border-color:rgba(var(--journey-level-rgb),.5);background:rgba(var(--journey-level-rgb),.16);color:#fff5d4;box-shadow:0 0 18px rgba(var(--journey-level-rgb),.24)}
       .journey-roadmap-section-head small.is-done{color:#f7df9e;border-color:rgba(247,223,158,.28)}

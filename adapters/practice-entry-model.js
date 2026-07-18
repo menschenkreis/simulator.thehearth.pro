@@ -125,13 +125,16 @@
     };
   }
 
-  function recommendationsFor(learner, companion, events, studySignal) {
+  function recommendationsFor(learner, companion, events, studySignal, doingProgressBridge) {
     var recommendations = [];
     var repeatFocus = latestRepeatFocus(events);
     if (repeatFocus) recommendations.push(repeatFocus);
     if (studySignal) recommendations.push(studySignal.nextFocus);
     if (companion && Array.isArray(companion.practice) && companion.practice.length) {
       recommendations = recommendations.concat(companion.practice);
+    }
+    if (doingProgressBridge && typeof doingProgressBridge.practiceRecommendations === "function") {
+      recommendations = recommendations.concat(doingProgressBridge.practiceRecommendations(events, learner.id, 2));
     }
     var lessonSignals = latestLessonSignals(learner);
     if (lessonSignals.length) recommendations = recommendations.concat(lessonSignals);
@@ -183,7 +186,7 @@
     }, 0);
     var commitment = (companion && companion.commitment) || {};
     var repeatFocus = latestRepeatFocus(learnerEvents);
-    var recommendations = recommendationsFor(learner, companion, learnerEvents, studySignal);
+    var recommendations = recommendationsFor(learner, companion, learnerEvents, studySignal, options.doingProgressBridge);
     var focus = repeatFocus || commitment.today || recommendations[0] || "One small clean practice step.";
     var candleState = options.candleState || {};
     var plannedSession = options.plannedSession || null;
@@ -239,7 +242,7 @@
   }
 
   return {
-    version: "1.2.0",
+    version: "1.3.0",
     activeLearner: activeLearner,
     buildSnapshot: buildSnapshot,
     companionFor: companionFor,

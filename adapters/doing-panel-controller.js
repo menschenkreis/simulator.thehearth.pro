@@ -147,6 +147,23 @@
       });
     }
 
+    function recordDrillFeedback(catId, drillId, nextState, previousState, room) {
+      var entry = findDrillEntry(drillId);
+      var bridge = root.HearthDoingProgressBridge;
+      if (!entry || entry.cat.id !== catId || !bridge || typeof bridge.recordFeedback !== "function") return;
+      bridge.recordFeedback({
+        category: entry.cat,
+        drill: entry.drill,
+        state: nextState,
+        previousState: previousState,
+        stateLabels: stateLabels,
+        room: room,
+        level: getDoingLevel(entry.drill),
+        eventStore: root.HearthProgressEvents,
+        storage: storage
+      });
+    }
+
     root.showDoingDrill = function showDoingDrill(catId, drillId) {
       if (root.playSfx) root.playSfx("drill-click");
       var cat = doing.categories.find(function findCategory(category) { return category.id === catId; });
@@ -175,9 +192,11 @@
 
     root.setDoingDrillState = function setDoingDrillState(catId, drillId, nextState) {
       if (stateOrder.indexOf(nextState) < 0) return;
+      var previousState = getState(drillId);
       progress[drillId] = nextState;
       if (storage) storage.setItem("hearth-doing-progress", JSON.stringify(progress));
       progressSummary = doingBoard.summarizeProgress(doing, progress, stateOrder);
+      recordDrillFeedback(catId, drillId, nextState, previousState, state.activeBoard === "all" ? "library" : state.activeBoard);
       root.showDoingDrill(catId, drillId);
     };
 
@@ -304,9 +323,11 @@
 
     root._setDoingRoomDrillState = function setDoingRoomDrillState(catId, drillId, nextState) {
       if (stateOrder.indexOf(nextState) < 0) return;
+      var previousState = getState(drillId);
       progress[drillId] = nextState;
       if (storage) storage.setItem("hearth-doing-progress", JSON.stringify(progress));
       progressSummary = doingBoard.summarizeProgress(doing, progress, stateOrder);
+      recordDrillFeedback(catId, drillId, nextState, previousState, state.activeRoomConcept || "room");
       state.activeRoomDrill = { catId: catId, drillId: drillId };
       state.doingView = "room-concept";
       shell();
