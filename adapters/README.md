@@ -60,7 +60,9 @@ Adapters are allowed to connect the clean core to those outside systems.
 | `header-tools-controller.js` | Coordinates legacy search, progress, and settings header panels. |
 | `hearth-body-viewer.js` | Renders the active Hearth Inner Instrument body chamber. |
 | `journey-legacy-handlers.js` | Keeps old Journey button helper names while Journey itself lives in `assets/js/journey.js`. |
-| `play-atlas-viewer.js` | Renders the active Play world-atlas entrance. |
+| `play-atlas-model.js` | Reads the active learner, Play progress, atlas markers, and the current tradition route. |
+| `play-atlas-viewer.js` | Renders the active Play world atlas and its tradition-led musical route. |
+| `play-atlas-controller.js` | Owns Play navigation, per-learner session state, completion events, and the Practice handoff. |
 | `practice-state.js` | Wraps legacy Practice localStorage state, log, preferences, and drill selection. |
 | `practice-guide-model.js` | Chooses contextual Practice Temple guidance from preferences and session history. |
 | `practice-dashboard-viewer.js` | Renders the Practice Temple dashboard screen. |

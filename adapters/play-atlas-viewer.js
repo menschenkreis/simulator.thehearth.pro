@@ -122,12 +122,12 @@
     var home = state.home === "open-a" ? "open A" : "low A";
     var role = state.role === "rhythm" ? "Rhythm first" : "Lead first";
     return '<span class="play-atlas-eyebrow">Voice and guitar answer</span><h3>Converse</h3>' +
-      '<span class="play-atlas-eyebrow">Moment 6 of 8 - ' + esc(role) + '</span>' +
+      '<span class="play-atlas-eyebrow">Moments 6-7 of 8 - ' + esc(role) + '</span>' +
       '<div class="play-atlas-turn"><b>Call</b><br>Play for two beats. Use only what you can hear clearly.</div>' +
       '<div class="play-atlas-turn"><b>Space</b><br>Leave two beats open. Listen instead of filling them.</div>' +
       '<div class="play-atlas-turn"><b>Answer</b><br>Reply with a different phrase and settle on ' + esc(home) + '.</div>' +
-      '<p class="play-atlas-copy">After four calls, swap rhythm and lead. Keep the pulse underneath, but let the phrase behave like a voice.</p>' +
-      '<button class="play-atlas-primary" type="button" data-play-action="remember">We played four calls</button>' +
+      '<p class="play-atlas-copy">After four calls, swap rhythm and lead, then play four more. Keep the pulse underneath, but let the phrase behave like a voice.</p>' +
+      '<button class="play-atlas-primary" type="button" data-play-action="remember">We played and swapped roles</button>' +
       '<button class="play-atlas-secondary" type="button" data-play-action="swap-role">Swap my starting role</button>' +
       '<button class="play-atlas-secondary" type="button" data-play-action="join">Back to roles</button>';
   }
