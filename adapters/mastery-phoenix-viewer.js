@@ -3,8 +3,6 @@
   "use strict";
 
   var GOLD = "#d4af69";
-  var FIRE = "#c45a20";
-  var PHOENIX = "#ff6b35";
 
   var MASTERY_SEALS = [
     {
@@ -67,36 +65,37 @@
     var style = root.document.createElement("style");
     style.id = "mastery-phoenix-style";
     style.textContent = [
-      ".sf-wrap{padding:18px;max-width:980px;margin:0 auto;display:flex;flex-direction:column}",
-      ".sf-scene{position:relative;border:1px solid var(--border);border-radius:22px;overflow:visible;background:radial-gradient(circle at 50% 35%,rgba(212,175,105,.13),rgba(13,11,8,.96) 55%,#080704);box-shadow:0 20px 60px rgba(0,0,0,.35)}",
-      ".sf-scene:before{content:\"\";position:absolute;inset:0;background:radial-gradient(circle at 20% 20%,rgba(232,160,32,.08),transparent 24%),radial-gradient(circle at 80% 70%,rgba(138,106,170,.09),transparent 28%);pointer-events:none}",
+      ".sf-wrap{padding:18px;max-width:1180px;margin:0 auto;display:flex;flex-direction:column}",
+      ".sf-scene{position:relative;border:1px solid rgba(212,175,105,.28);border-radius:18px;overflow:hidden;background:#080704;box-shadow:0 20px 60px rgba(0,0,0,.35)}",
+      ".sf-scene:before{content:\"\";position:absolute;inset:0;background:radial-gradient(circle at 50% 44%,rgba(255,185,70,.08),transparent 34%),linear-gradient(180deg,rgba(8,7,4,.14),rgba(8,7,4,.5));pointer-events:none;z-index:1}",
       ".sf-top{position:relative;z-index:2;display:flex;justify-content:space-between;gap:14px;align-items:flex-start;padding:18px}",
       ".sf-node-ident{display:flex;align-items:center;gap:11px;margin-bottom:8px}",
-      ".sf-node-ident>img{width:58px;height:58px;border-radius:50%;object-fit:cover;border:2px solid var(--sf,var(--gold));box-shadow:0 0 18px color-mix(in srgb,var(--sf,var(--gold)),transparent 72%);background:#0d0b08}",
+      ".sf-node-ident>img{width:58px;height:58px;border-radius:50%;object-fit:contain;border:1px solid rgba(212,175,105,.44);box-shadow:0 0 18px rgba(212,175,105,.2);background:#0d0b08}",
       ".sf-kicker{font-family:JetBrains Mono;font-size:.58rem;color:var(--sf,var(--gold));letter-spacing:.16em;text-transform:uppercase}",
       ".sf-title{font-family:Cinzel;color:var(--sf,var(--gold));font-size:1.55rem;font-weight:800;margin:2px 0}",
       ".sf-sub{font-size:.78rem;color:var(--dim);line-height:1.55;max-width:560px}",
-      ".sf-guide{display:flex;gap:9px;align-items:center;max-width:290px;background:rgba(13,11,8,.58);border:1px solid var(--border);border-radius:13px;padding:10px;font-size:.72rem;color:var(--text);line-height:1.42}",
+      ".sf-guide{display:flex;gap:9px;align-items:center;max-width:310px;background:rgba(13,11,8,.78);border:1px solid rgba(212,175,105,.28);border-radius:13px;padding:10px;font-size:.72rem;color:var(--text);line-height:1.42}",
       ".sf-guide img{width:68px;height:68px;object-fit:contain;filter:drop-shadow(0 4px 12px rgba(0,0,0,.42));animation:char-float 3s ease-in-out infinite}",
-      ".sf-door-summary{position:relative;z-index:2;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;padding:0 18px 12px}",
-      ".sf-door-summary div{border:1px solid rgba(212,175,105,.1);border-radius:12px;background:rgba(13,11,8,.38);padding:10px 12px;min-width:0}",
-      ".sf-door-summary strong{display:block;font-family:Cinzel,serif;color:var(--sf,var(--gold));font-size:.72rem;margin-bottom:4px}",
-      ".sf-door-summary span{display:block;color:var(--dim);font-size:.68rem;line-height:1.38}",
-      ".sf-stage{position:relative;z-index:2;display:flex;justify-content:center;align-items:center;min-height:280px;padding:8px 18px 18px}",
-      ".sf-phoenix svg{width:min(680px,100%);display:block}",
-      ".sf-phoenix .seal{cursor:pointer;transition:.2s}",
-      ".sf-phoenix .seal:hover{filter:drop-shadow(0 0 14px var(--sf,var(--gold)));transform-origin:center}",
-      ".sf-drawer{position:relative;z-index:2;margin:0 18px 18px;background:rgba(13,11,8,.74);border:1px solid var(--border);border-radius:16px;padding:14px;color:var(--text);font-size:.78rem;line-height:1.55}",
+      ".sf-stage{position:relative;z-index:2;aspect-ratio:16/9;margin:0 18px 14px;border:1px solid rgba(212,175,105,.18);border-radius:14px;overflow:hidden;background:#050403}",
+      ".sf-mastery-tableau{display:block;width:100%;height:100%;object-fit:contain;pointer-events:none}",
+      ".sf-hotspot{position:absolute;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:5px;border:0;background:transparent;color:var(--text);font:700 .67rem DM Sans,sans-serif;cursor:pointer;white-space:nowrap;filter:drop-shadow(0 2px 7px rgba(0,0,0,.8));transition:transform .2s ease,filter .2s ease}",
+      ".sf-hotspot:before{content:\"\";width:28px;height:28px;border:1px solid rgba(255,224,142,.82);border-radius:50%;background:radial-gradient(circle,rgba(255,211,104,.7),rgba(90,38,10,.74) 52%,rgba(8,7,4,.86) 74%);box-shadow:0 0 0 5px rgba(255,176,60,.1),0 0 16px rgba(255,166,49,.62);animation:mastery-hotspot-pulse 3.8s ease-in-out infinite}",
+      ".sf-hotspot:hover,.sf-hotspot:focus-visible{transform:translate(-50%,-50%) scale(1.06);filter:drop-shadow(0 0 12px rgba(255,193,84,.95));outline:none}",
+      ".sf-hotspot span{padding:4px 8px;border:1px solid rgba(212,175,105,.34);border-radius:999px;background:rgba(10,8,5,.86);letter-spacing:.02em}",
+      ".sf-hotspot-continue{left:13.5%;top:76.5%}.sf-hotspot-watch{left:20%;top:89%}.sf-hotspot-thread{left:85%;top:76.5%}.sf-hotspot-review{left:81.5%;top:89%}",
+      ".sf-scene-prompt{position:relative;z-index:2;text-align:center;color:var(--dim);font-size:.7rem;letter-spacing:.03em;padding:0 18px 15px}",
+      ".sf-drawer{position:relative;z-index:2;margin:0 18px 18px;background:rgba(13,11,8,.84);border:1px solid rgba(212,175,105,.3);border-radius:14px;padding:14px;color:var(--text);font-size:.78rem;line-height:1.55}",
       ".sf-primary-row{position:relative;z-index:2;display:flex;justify-content:center;gap:8px;flex-wrap:wrap;padding:0 18px 16px}",
-      ".sf-primary{background:var(--sf,var(--gold));color:#0d0b08;border:none;border-radius:999px;padding:10px 18px;font-family:DM Sans,sans-serif;font-weight:900;cursor:pointer;box-shadow:0 8px 24px color-mix(in srgb,var(--sf,var(--gold)),transparent 75%)}",
-      ".sf-secondary{background:rgba(13,11,8,.62);color:var(--sf,var(--gold));border:1px solid color-mix(in srgb,var(--sf,var(--gold)),transparent 55%);border-radius:999px;padding:9px 13px;font-weight:800;cursor:pointer}",
+      ".sf-primary{background:var(--sf,var(--gold));color:#0d0b08;border:none;border-radius:999px;padding:10px 18px;font-family:DM Sans,sans-serif;font-weight:900;cursor:pointer;box-shadow:0 8px 24px rgba(212,175,105,.2)}",
+      ".sf-secondary{background:rgba(13,11,8,.62);color:var(--sf,var(--gold));border:1px solid rgba(212,175,105,.44);border-radius:999px;padding:9px 13px;font-weight:800;cursor:pointer}",
       ".sf-master-list{display:grid;grid-template-columns:1fr 1fr;gap:10px}",
       ".sf-master-card{background:#0d0b08;border:1px solid var(--border);border-radius:12px;padding:12px}",
       ".sf-master-card b{font-family:Cinzel;color:var(--sf)}",
       ".sf-master-card p{font-size:.72rem;color:var(--dim);line-height:1.45}",
       ".sf-proof-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}",
       ".sf-proof-grid textarea{width:100%;box-sizing:border-box;background:#0d0b08;border:1px solid var(--border);border-radius:10px;color:var(--text);padding:9px;font-family:DM Sans;font-size:.76rem;min-height:70px}",
-      "@media(max-width:780px){.sf-top{flex-direction:column}.sf-guide{max-width:none}.sf-door-summary,.sf-proof-grid,.sf-master-list{grid-template-columns:1fr}.sf-stage{min-height:280px}}",
+      "@keyframes mastery-hotspot-pulse{0%,100%{transform:scale(.92);opacity:.74}50%{transform:scale(1.08);opacity:1}}",
+      "@media(max-width:780px){.sf-top{flex-direction:column}.sf-guide{max-width:none}.sf-stage{margin-inline:10px}.sf-hotspot{font-size:.55rem}.sf-hotspot:before{width:23px;height:23px}.sf-hotspot span{padding:3px 5px}.sf-hotspot-continue{left:14%;top:76%}.sf-hotspot-watch{left:20%;top:89%}.sf-hotspot-thread{left:84%;top:76%}.sf-hotspot-review{left:81%;top:89%}.sf-drawer{margin-inline:10px}.sf-proof-grid,.sf-master-list{grid-template-columns:1fr}}",
     ].join("");
     root.document.head.appendChild(style);
   }
@@ -116,45 +115,23 @@
       '<div class="sf-title">' + esc(title) + "</div>" +
       "</div>" +
       "</div>" +
-      '<div class="sf-sub">Mastery is not just proof. Proof is the floor. Mastery is going beyond: studying those who crossed the boundary, transforming skill into voice, and rising into a new form.</div>' +
+      '<div class="sf-sub">See what a skill can become. Notice one choice, try it in your own hands, and carry it back into the music.</div>' +
       "</div>" +
       '<div class="sf-guide">' +
       '<img src="images/character-symbols/Celebrator with sparks.png" alt="">' +
-      "<div>You do not master by finishing. You master by returning, transforming, and going beyond what the map first showed you.</div>" +
+      "<div>Do not copy the whole performance. Notice one choice, then let it change something in your own playing.</div>" +
       "</div>" +
-      "</div>" +
-      '<div class="sf-door-summary">' +
-      '<div><strong>What it is</strong><span>A place to study master artists and notice what skill can become.</span></div>' +
-      '<div><strong>Why it matters</strong><span>Technique is not the end. Voice, taste, courage, and transformation are the deeper goal.</span></div>' +
-      '<div><strong>First move</strong><span>Start with voice: play one phrase until it sounds less copied and more like you.</span></div>' +
       "</div>"
     );
   }
 
-  function renderPhoenixSvg() {
-    var seals = MASTERY_SEALS.map(function (seal, index) {
-      var angle = (index / MASTERY_SEALS.length) * Math.PI * 2 - Math.PI / 2;
-      var cx = 280 + 155 * Math.cos(angle);
-      var cy = 190 + 120 * Math.sin(angle);
-      return (
-        '<g class="seal" onclick="MasteryPhoenix.openSeal(\'' + seal.id + '\')">' +
-        '<circle cx="' + cx + '" cy="' + cy + '" r="34" fill="' + seal.color + '" opacity=".12"><animate attributeName="r" values="25;38;25" dur="4s" repeatCount="indefinite"/></circle>' +
-        '<circle cx="' + cx + '" cy="' + cy + '" r="17" fill="' + seal.color + '" opacity=".55"/>' +
-        '<text x="' + cx + '" y="' + (cy + 49) + '" text-anchor="middle" fill="' + seal.color + '" font-family="JetBrains Mono" font-size="8">' + esc(seal.name) + "</text>" +
-        "</g>"
-      );
-    }).join("");
-
+  function renderMasteryTableau() {
     return (
-      '<svg viewBox="0 0 560 390">' +
-      '<circle cx="280" cy="190" r="150" fill="none" stroke="' + PHOENIX + '" stroke-opacity=".16"/>' +
-      '<path d="M280,235 C235,210 205,170 185,105 C230,135 260,150 280,175 C300,150 330,135 375,105 C355,170 325,210 280,235Z" fill="' + PHOENIX + '" opacity=".22"/>' +
-      '<path d="M280,90 C305,135 302,180 280,230 C258,180 255,135 280,90Z" fill="' + GOLD + '" opacity=".35"/>' +
-      '<path d="M252,235 C235,265 235,300 250,330 C260,295 275,270 280,238 C285,270 300,295 310,330 C325,300 325,265 308,235Z" fill="' + FIRE + '" opacity=".45"/>' +
-      seals +
-      '<circle cx="280" cy="190" r="26" fill="' + GOLD + '" opacity=".18"/>' +
-      '<circle cx="280" cy="190" r="10" fill="' + GOLD + '" opacity=".72"/>' +
-      "</svg>"
+      '<img class="sf-mastery-tableau" src="images/mastery/mastery-phoenix-tableau-v1.png" alt="Phoenix rising beside a six-string guitar" />' +
+      '<button class="sf-hotspot sf-hotspot-continue" aria-label="Continue today\'s encounter" onclick="MasteryPhoenix.openPath(\'continue\')"><span>Continue today</span></button>' +
+      '<button class="sf-hotspot sf-hotspot-watch" aria-label="Watch a master" onclick="MasteryPhoenix.openPath(\'watch\')"><span>Watch a master</span></button>' +
+      '<button class="sf-hotspot sf-hotspot-thread" aria-label="Follow an artistic thread" onclick="MasteryPhoenix.openPath(\'thread\')"><span>Follow a thread</span></button>' +
+      '<button class="sf-hotspot sf-hotspot-review" aria-label="Review what changed" onclick="MasteryPhoenix.openPath(\'review\')"><span>Review what changed</span></button>'
     );
   }
 
@@ -164,13 +141,50 @@
     if (!el) return;
     el.innerHTML =
       sceneStart() +
-      '<div class="sf-stage">' + renderPhoenixSvg() + "</div>" +
-      '<div class="sf-primary-row">' +
-        '<button class="sf-primary" onclick="MasteryPhoenix.openSeal(\'voice\')">Start With Voice</button>' +
-        '<button class="sf-secondary" onclick="MasteryPhoenix.openSeal(\'microtones\')">Hear Between Notes</button>' +
-      '</div>' +
-      '<div id="sf-drawer" class="sf-drawer"><strong>Mastery is the transformation room.</strong><br>Choose a phoenix seal when you want a lens: hear beyond, find your voice, transform skill into art, or learn to transmit the fire.</div>' +
+      '<div class="sf-stage">' + renderMasteryTableau() + "</div>" +
+      '<div class="sf-scene-prompt">Choose one ember. Begin with a short encounter, not a performance to prove.</div>' +
+      '<div id="sf-drawer" class="sf-drawer"><strong>Witness → Notice → Try → Carry</strong><br>Choose one ember to begin. Mastery is where a skill becomes a musical possibility.</div>' +
       "</div></div>";
+  }
+
+  function openPath(id) {
+    var content = {
+      continue: {
+        kicker: "Continue today",
+        title: "Return to your current encounter",
+        body: "Open the short Mastery encounter recommended by your Journey focus. Start with one thing to notice, then carry one small experiment back into practice.",
+        action: "Open encounter",
+        seal: "voice",
+      },
+      watch: {
+        kicker: "Witness",
+        title: "Watch a master",
+        body: "Choose a precise excerpt and listen for the choice underneath it: time, touch, tone, space, phrasing, or form.",
+        action: "Start with voice",
+        seal: "voice",
+      },
+      thread: {
+        kicker: "Explore",
+        title: "Follow an artistic thread",
+        body: "Follow one question through different artists: how can a familiar guitar idea become more spacious, rhythmic, expressive, strange, or personal?",
+        action: "Hear between notes",
+        seal: "microtones",
+      },
+      review: {
+        kicker: "Return",
+        title: "Review what changed",
+        body: "Revisit the choices you noticed, the experiments you tried, and the directions you want to bring back into your music.",
+        action: "Open a reflection",
+        seal: null,
+      },
+    }[id];
+    var el = root.document.getElementById("sf-drawer");
+    if (!content || !el) return;
+    el.innerHTML =
+      '<div class="sf-kicker">' + esc(content.kicker) + "</div>" +
+      '<h3 style="font-family:Cinzel;color:' + GOLD + ';margin:5px 0">' + esc(content.title) + "</h3>" +
+      '<p style="margin:0 0 10px;color:var(--dim)">' + esc(content.body) + "</p>" +
+      (content.seal ? '<button class="sf-primary" onclick="MasteryPhoenix.openSeal(\'' + content.seal + '\')">' + esc(content.action) + "</button>" : "");
   }
 
   function openSeal(id) {
@@ -198,6 +212,7 @@
   root.MASTERY_SEALS = MASTERY_SEALS;
   root.MasteryPhoenix = {
     render: showMastery,
+    openPath: openPath,
     openSeal: openSeal,
   };
   root.showMastery = showMastery;

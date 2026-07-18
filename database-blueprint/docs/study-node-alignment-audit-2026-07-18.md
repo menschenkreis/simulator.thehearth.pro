@@ -73,9 +73,10 @@ context, then hands the content, terms, questions, and assessment UI to the
 existing Study Session modules. The return action comes back to the Key Chamber.
 
 This is intentionally one vertical slice rather than six new door screens.
-The remaining gap is the final proof controller: the Shape activity still uses
-the older Study Session assessment storage until we add a shared evidence
-record that can also feed Practice and Journey.
+The existing end-of-study assessment now also writes a learner-scoped chamber
+evidence record. `Nailed it` marks the door understood; `Review` and `Stuck`
+preserve the attempt and mark it for another pass. The older Study Session
+storage remains in place for compatibility.
 
 ## Recommended Next Step
 
@@ -83,7 +84,7 @@ Build one complete path for Jen only as data, not as a special screen:
 
 `Journey recommendation -> Study Shape door -> A minor pentatonic topic/activity -> gentle proof -> saved evidence -> chamber progress -> Practice recommendation`
 
-The first three links now work. The next small implementation should complete
-the evidence handoff, then reuse the same controller for Word, Sound, Pattern,
-Test, and Review. This keeps the visual metaphor stable while the learning
-content becomes real.
+The first four links now work through the Shape vertical slice. The next small
+implementation should make Practice consume the saved Study evidence, then
+reuse the same controller for Word, Sound, Pattern, Test, and Review. This
+keeps the visual metaphor stable while the learning content becomes real.

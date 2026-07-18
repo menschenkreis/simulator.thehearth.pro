@@ -76,16 +76,60 @@
 
   function latestRepeatFocus(events) {
     for (var index = 0; index < (events || []).length; index++) {
-      var repeat = events[index] && events[index].data && events[index].data.repeat_next;
+      var data = events[index] && events[index].data || {};
+      var repeat = data.repeat_next || data.repeat_focus;
       if (repeat) return repeat;
     }
     return "";
   }
 
-  function recommendationsFor(learner, companion, events) {
+  function studySignalFor(studySnapshot) {
+    if (!studySnapshot || !studySnapshot.subject) return null;
+    var subject = studySnapshot.subject;
+    var record = studySnapshot.record || {};
+    var evidence = record.lastEvidence || null;
+    var door = evidence && studySnapshot.doors
+      ? studySnapshot.doors.find(function findDoor(item) { return item.id === evidence.doorId; })
+      : null;
+    if (evidence && evidence.needsReview) {
+      return {
+        subject: subject.title,
+        door: door ? door.label : "Study",
+        progress: door ? door.progress : 0,
+        nextFocus: "Return to Study: " + subject.title,
+        message: "Study found a useful edge to revisit. Keep this idea small before adding more.",
+        needsReview: true
+      };
+    }
+    if (evidence && evidence.feeling === "nailed") {
+      return {
+        subject: subject.title,
+        door: door ? door.label : "Study",
+        progress: door ? door.progress : 100,
+        nextFocus: "Apply " + subject.title + " in Practice",
+        message: "This idea is clear enough to take out of Study and make musical.",
+        needsReview: false
+      };
+    }
+    var recommended = (studySnapshot.doors || []).find(function findRecommended(item) {
+      return item.state === "recommended";
+    });
+    if (!recommended) return null;
+    return {
+      subject: subject.title,
+      door: recommended.label,
+      progress: recommended.progress,
+      nextFocus: "Study " + subject.title,
+      message: "Study recommends one clear pass through the " + recommended.label.toLowerCase() + " door before practice.",
+      needsReview: false
+    };
+  }
+
+  function recommendationsFor(learner, companion, events, studySignal) {
     var recommendations = [];
     var repeatFocus = latestRepeatFocus(events);
     if (repeatFocus) recommendations.push(repeatFocus);
+    if (studySignal) recommendations.push(studySignal.nextFocus);
     if (companion && Array.isArray(companion.practice) && companion.practice.length) {
       recommendations = recommendations.concat(companion.practice);
     }
@@ -124,7 +168,13 @@
     var now = options.now instanceof Date ? options.now : new Date();
     var learner = activeLearner(options.journeyState);
     var companion = companionFor(learner, options.companions);
-    var events = learnerPracticeEvents(options.events, learner.id);
+    var learnerEvents = (Array.isArray(options.events) ? options.events : []).filter(function belongsToLearner(event) {
+      return event && event.learner_id === learner.id;
+    }).sort(function newestFirst(a, b) {
+      return new Date(b.created_at || 0) - new Date(a.created_at || 0);
+    });
+    var events = learnerPracticeEvents(learnerEvents, learner.id);
+    var studySignal = studySignalFor(options.studySnapshot);
     var targetMinutes = targetMinutesFor(companion);
     var todayMinutes = events.reduce(function totalToday(total, event) {
       return localDay(event.created_at) === localDay(now)
@@ -132,8 +182,8 @@
         : total;
     }, 0);
     var commitment = (companion && companion.commitment) || {};
-    var repeatFocus = latestRepeatFocus(events);
-    var recommendations = recommendationsFor(learner, companion, events);
+    var repeatFocus = latestRepeatFocus(learnerEvents);
+    var recommendations = recommendationsFor(learner, companion, learnerEvents, studySignal);
     var focus = repeatFocus || commitment.today || recommendations[0] || "One small clean practice step.";
     var candleState = options.candleState || {};
     var plannedSession = options.plannedSession || null;
@@ -161,6 +211,7 @@
         tomorrow: commitment.tomorrow || "Let today's reflection choose the next small step."
       },
       recommendations: recommendations,
+      study: studySignal,
       history: historyRows(events),
       totals: {
         sessions: events.length,
@@ -188,7 +239,7 @@
   }
 
   return {
-    version: "1.1.0",
+    version: "1.2.0",
     activeLearner: activeLearner,
     buildSnapshot: buildSnapshot,
     companionFor: companionFor,

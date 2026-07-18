@@ -268,11 +268,85 @@
     return snapshot({ storage: storage });
   }
 
+  function evidenceValue(value, limit) {
+    if (value == null) return "";
+    return String(value).trim().slice(0, limit || 240);
+  }
+
+  function recordEvidence(doorId, evidence, options) {
+    var storage = storageFor(options);
+    var current = snapshot({ storage: storage });
+    var door = current.doors.find(function findDoor(item) { return item.id === doorId; });
+    if (!door || door.state === "locked") return current;
+
+    var details = evidence && typeof evidence === "object" ? evidence : {};
+    var feeling = evidenceValue(details.feeling, 32);
+    var understood = feeling === "nailed" || details.understood === true || details.completed === true;
+    var needsReview = feeling === "review" || feeling === "stuck" || details.needsReview === true;
+    var progress = understood ? 100 : (feeling === "review" ? 60 : feeling === "stuck" ? 30 : 45);
+    var pair = learnerRecord(storage, current.learner.id);
+    var saved = pair.record.doors[doorId] || {};
+    var now = new Date().toISOString();
+
+    saved.state = understood ? "understood" : "visited";
+    saved.progress = understood ? 100 : Math.max(Number(saved.progress) || 0, progress);
+    saved.visitedAt = saved.visitedAt || now;
+    saved.lastEvidenceAt = now;
+    saved.needsReview = needsReview;
+    saved.evidence = {
+      feeling: feeling,
+      note: evidenceValue(details.note, 500),
+      proof: evidenceValue(details.proof, 500),
+      categoryId: evidenceValue(details.categoryId, 80),
+      topicId: evidenceValue(details.topicId, 120),
+      subjectId: evidenceValue(details.subjectId || current.subject.id, 120),
+      subjectTitle: evidenceValue(details.subjectTitle || current.subject.title, 180),
+      quizCorrect: Number.isFinite(Number(details.quizCorrect)) ? Number(details.quizCorrect) : null,
+      quizTotal: Number.isFinite(Number(details.quizTotal)) ? Number(details.quizTotal) : null
+    };
+    pair.record.doors[doorId] = saved;
+    pair.record.lastVisitedDoor = doorId;
+    pair.record.lastVisitedAt = now;
+    pair.record.lastEvidence = Object.assign({ doorId: doorId, recordedAt: now }, saved.evidence);
+    if (!pair.record.currentSubject) pair.record.currentSubject = current.subject;
+    pair.record.attempts = Array.isArray(pair.record.attempts) ? pair.record.attempts : [];
+    pair.record.attempts.push({
+      doorId: doorId,
+      feeling: feeling,
+      understood: understood,
+      needsReview: needsReview,
+      recordedAt: now
+    });
+    pair.state.learners[current.learner.id] = pair.record;
+    pair.state.version = 1;
+    writeJson(storage, STORAGE_KEY, pair.state);
+
+    if (root.HearthProgressEvents && typeof root.HearthProgressEvents.append === "function") {
+      root.HearthProgressEvents.append({
+        event_type: "study_door_evidence_recorded",
+        node_id: "study",
+        learner_id: current.learner.id,
+        data: {
+          door_id: doorId,
+          subject_id: current.subject.id,
+          subject_title: current.subject.title,
+          feeling: feeling,
+          understood: understood,
+          needs_review: needsReview,
+          quiz_correct: saved.evidence.quizCorrect,
+          quiz_total: saved.evidence.quizTotal
+        }
+      }, storage);
+    }
+    return snapshot({ storage: storage });
+  }
+
   return {
     version: "1.0.0",
     storageKey: STORAGE_KEY,
     definitions: function definitions() { return DOOR_DEFINITIONS.slice(); },
     snapshot: snapshot,
-    markVisited: markVisited
+    markVisited: markVisited,
+    recordEvidence: recordEvidence
   };
 });

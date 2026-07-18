@@ -124,6 +124,9 @@
     }
     html += "</div>";
     html += listHtml(snapshot.recommendations);
+    if (snapshot.study) {
+      html += '<div class="practice-entry-study-signal"><span>Study signal</span><strong>' + escapeHtml(snapshot.study.nextFocus) + '</strong><p>' + escapeHtml(snapshot.study.message) + '</p></div>';
+    }
     html += actionButton("start-planned", "Begin planned session");
     return html;
   }

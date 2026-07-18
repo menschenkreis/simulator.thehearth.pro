@@ -705,6 +705,27 @@
     };
   }
 
+  function journeyStudySignal(){
+    if(!window.StudyKeyChamberModel || typeof window.StudyKeyChamberModel.snapshot !== 'function') return null;
+    let snapshot;
+    try { snapshot = window.StudyKeyChamberModel.snapshot({ storage: localStorage }); } catch(e){ return null; }
+    const evidence = snapshot && snapshot.record && snapshot.record.lastEvidence;
+    if(!evidence || !snapshot.subject) return null;
+    const door = (snapshot.doors || []).find(item => item.id === evidence.doorId);
+    if(evidence.needsReview){
+      return {
+        kicker:'Study signal',
+        title:'Return to '+(door ? door.label : 'Study')+': '+snapshot.subject.title,
+        body:'Study found an edge worth repeating. Keep this idea small before adding the next lesson layer.'
+      };
+    }
+    return {
+      kicker:'Study signal',
+      title:'Apply '+snapshot.subject.title+' in Practice',
+      body:'This idea is clear enough for now. Bring it into the next musical or physical task and let the result teach you more.'
+    };
+  }
+
   function renderLevelEntry(num){
     injectStyles();
     showPanel('p-lesson');
@@ -737,6 +758,8 @@
       title: companion.title || 'Lesson companion',
       body: companion.nextAction || companion.focus || 'Open the live lesson companion for today.'
     } : journeyNextActionText(student, level, lessons, lessonsDone, nextLesson, activeCategory);
+    const studySignal = journeyStudySignal();
+    if(studySignal && !companion) Object.assign(nextAction, studySignal);
 
     let html = '<div class="journey-shell journey-level-entry" style="--journey-level-color:'+attr(level.color)+';--journey-level-rgb:'+hexToRgb(level.color)+';--journey-level-progress:'+pct+'%">';
     html += '<div class="journey-level-command-row"><button class="back-btn" onclick="Journey.render()">← Back</button>'+renderStudentPicker(state, student)+'</div>';

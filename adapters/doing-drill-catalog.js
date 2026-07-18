@@ -14,6 +14,25 @@
 })(typeof globalThis !== "undefined" ? globalThis : this, function createDoingDrillCatalog() {
   "use strict";
 
+  var AM_PENTATONIC_BOX_1 = {
+    strings: ["e", "B", "G", "D", "A", "E"],
+    frets: [5, 6, 7, 8],
+    positions: [
+      { string: "E", fret: 5, note: "A", finger: 1, root: true },
+      { string: "E", fret: 8, note: "C", finger: 4 },
+      { string: "A", fret: 5, note: "D", finger: 1 },
+      { string: "A", fret: 7, note: "E", finger: 3 },
+      { string: "D", fret: 5, note: "G", finger: 1 },
+      { string: "D", fret: 7, note: "A", finger: 3, root: true },
+      { string: "G", fret: 5, note: "C", finger: 1 },
+      { string: "G", fret: 7, note: "D", finger: 3 },
+      { string: "B", fret: 5, note: "E", finger: 1 },
+      { string: "B", fret: 8, note: "G", finger: 4 },
+      { string: "e", fret: 5, note: "A", finger: 1, root: true },
+      { string: "e", fret: 8, note: "C", finger: 4 }
+    ]
+  };
+
   var REVIEWED = {
     "chrom-1": {
       title: "1-2-3-4 Clean Contact",
@@ -98,7 +117,9 @@
       harder: "Make a four-note phrase that ends on an A root.",
       safety: "Keep the thumb and shoulder loose while the hand changes strings.",
       bpmChoices: ["Free", "60", "76", "100"],
-      visualType: "fretboard-map"
+      visualType: "interactive-fretboard",
+      fretboard: AM_PENTATONIC_BOX_1,
+      fretboardMode: "shape"
     },
     "alt-1": {
       title: "Alternate Picking on One String",
@@ -320,7 +341,9 @@
         starter: "A root notes in time",
         instruction: "Turn your four-bar root-note phrase into a two-bar riff. Keep one A root as home, add one or two nearby pentatonic notes, and leave space before repeating it."
       },
-      visualType: "fretboard-roots"
+      visualType: "interactive-fretboard",
+      fretboard: AM_PENTATONIC_BOX_1,
+      fretboardMode: "roots"
     }
   };
 

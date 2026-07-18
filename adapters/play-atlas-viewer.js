@@ -1,159 +1,181 @@
-// Active Play atlas entrance.
-// The deeper Play shrine stays in assets/js/play-world.js as PlayWorld.detail/lens/lensPanel.
-(function initPlayAtlasViewer(root) {
+/* Renders the active Play atlas from model data and controller state. */
+(function initPlayAtlasViewer(root, factory) {
+  if (typeof module !== "undefined" && module.exports) {
+    module.exports = factory();
+  } else {
+    root.HearthPlayAtlasViewer = factory();
+  }
+})(typeof globalThis !== "undefined" ? globalThis : this, function createPlayAtlasViewer() {
   "use strict";
 
   function esc(value) {
-    return String(value == null ? "" : value).replace(/[&<>"']/g, function (ch) {
-      return {
-        "&": "&amp;",
-        "<": "&lt;",
-        ">": "&gt;",
-        '"': "&quot;",
-        "'": "&#39;",
-      }[ch];
+    return String(value == null ? "" : value).replace(/[&<>"']/g, function escapeCharacter(character) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[character];
     });
   }
 
-  function panel() {
-    root.document.querySelectorAll(".pnl").forEach(function (pnl) {
-      pnl.classList.remove("on");
-    });
-    var el = root.document.getElementById("p-foundation");
-    if (el) el.classList.add("on");
-    return el;
+  function markerFor(snapshot, region) {
+    return snapshot.markers.find(function findMarker(marker) {
+      return marker.destination_id === region.id;
+    }) || { state: "open", percent: 0, selected: false };
   }
 
-  function regions() {
-    return root.WORLD_MAP_REGIONS || [];
+  function renderHotspots(snapshot) {
+    return snapshot.regions.map(function renderRegion(region) {
+      var marker = markerFor(snapshot, region);
+      var x = Number(region.coords && region.coords[0]) / 900 * 100;
+      var y = Number(region.coords && region.coords[1]) / 600 * 100;
+      return '<button class="play-atlas-hotspot ' + esc(marker.state) + (marker.selected ? " selected" : "") + '" type="button" ' +
+        'data-play-action="select-destination" data-destination-id="' + esc(region.id) + '" ' +
+        'aria-label="' + esc(region.name + ": " + region.tradition + ". " + marker.percent + " percent of this learner route explored.") + '" ' +
+        'style="--x:' + x + '%;--y:' + y + '%;--marker:' + esc(region.color || "#d4af69") + ';--progress:' + (marker.percent * 3.6) + 'deg">' +
+        '<span class="play-atlas-hotspot-label">' + esc(region.name) + '</span></button>';
+    }).join("");
   }
 
-  function ensureStyle() {
-    if (root.document.getElementById("play-atlas-style")) return;
-    var style = root.document.createElement("style");
-    style.id = "play-atlas-style";
-    style.textContent = [
-      ".sf-wrap{padding:18px;max-width:980px;margin:0 auto;display:flex;flex-direction:column}",
-      ".sf-scene{position:relative;border:1px solid var(--border);border-radius:22px;overflow:visible;background:radial-gradient(circle at 50% 35%,rgba(212,175,105,.13),rgba(13,11,8,.96) 55%,#080704);box-shadow:0 20px 60px rgba(0,0,0,.35)}",
-      ".sf-scene:before{content:\"\";position:absolute;inset:0;background:radial-gradient(circle at 20% 20%,rgba(232,160,32,.08),transparent 24%),radial-gradient(circle at 80% 70%,rgba(138,106,170,.09),transparent 28%);pointer-events:none}",
-      ".sf-top{position:relative;z-index:2;display:flex;justify-content:space-between;gap:14px;align-items:flex-start;padding:18px}",
-      ".sf-node-ident{display:flex;align-items:center;gap:11px;margin-bottom:8px}",
-      ".sf-node-ident>img{width:58px;height:58px;border-radius:50%;object-fit:cover;border:2px solid var(--sf,var(--gold));box-shadow:0 0 18px color-mix(in srgb,var(--sf,var(--gold)),transparent 72%);background:#0d0b08}",
-      ".sf-kicker{font-family:JetBrains Mono;font-size:.58rem;color:var(--sf,var(--gold));letter-spacing:.16em;text-transform:uppercase}",
-      ".sf-title{font-family:Cinzel;color:var(--sf,var(--gold));font-size:1.55rem;font-weight:800;margin:2px 0}",
-      ".sf-sub{font-size:.78rem;color:var(--dim);line-height:1.55;max-width:560px}",
-      ".sf-guide{display:flex;gap:9px;align-items:center;max-width:290px;background:rgba(13,11,8,.58);border:1px solid var(--border);border-radius:13px;padding:10px;font-size:.72rem;color:var(--text);line-height:1.42}",
-      ".sf-guide img{width:68px;height:68px;object-fit:contain;filter:drop-shadow(0 4px 12px rgba(0,0,0,.42));animation:char-float 3s ease-in-out infinite}",
-      ".sf-stage{position:relative;z-index:2;display:flex;justify-content:center;align-items:center;min-height:280px;padding:8px 18px 18px}",
-      ".sf-drawer{position:relative;z-index:2;margin:0 18px 18px;background:rgba(13,11,8,.74);border:1px solid var(--border);border-radius:16px;padding:14px;color:var(--text);font-size:.78rem;line-height:1.55}",
-      ".sf-map-wrap{position:relative;width:min(100%,980px);aspect-ratio:1672/941;min-height:0;margin:0 auto;border-radius:14px;overflow:hidden;background:#0d0b08}",
-      ".sf-map-img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;display:block}",
-      ".sf-map-svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:auto}",
-      ".sf-map-guide{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);background:rgba(13,11,8,.88);border:1px solid var(--border);border-radius:8px;padding:10px 20px;z-index:10;pointer-events:none;backdrop-filter:blur(6px);text-align:center;min-width:260px;max-width:400px;transition:all .25s}",
-      ".sf-map-guide-region{font-family:Cinzel,serif;font-size:.85rem;color:var(--gold);font-weight:600;margin-bottom:2px}",
-      ".sf-map-guide-tradition{font-family:JetBrains Mono,monospace;font-size:.6rem;color:var(--amber);letter-spacing:.08em;text-transform:uppercase}",
-      ".sf-map-count{position:absolute;top:12px;right:16px;z-index:10;pointer-events:none;font-family:JetBrains Mono,monospace;font-size:.55rem;color:var(--dim);opacity:.5;letter-spacing:.08em;text-transform:uppercase}",
-      "@media(max-width:780px){.sf-top{flex-direction:column}.sf-guide{max-width:none}.sf-stage{min-height:280px}}",
-    ].join("");
-    root.document.head.appendChild(style);
+  function sourceLinks(culture) {
+    return (culture && culture.source_refs || []).slice(0, 2).map(function renderSource(source) {
+      return '<a href="' + esc(source.url) + '" target="_blank" rel="noreferrer">' + esc(source.publisher || source.title) + '</a>';
+    }).join("");
   }
 
-  function sceneStart() {
-    var icon = "images/play-icon.png";
-    var title = root.NODE_DATA && root.NODE_DATA.play ? root.NODE_DATA.play.title : "Play";
-    return (
-      '<div class="sf-wrap">' +
-      '<button class="back-btn" onclick="backToMap()">\u2190 Map</button>' +
-      '<div class="sf-scene sf-map">' +
-      '<div class="sf-top">' +
-      "<div>" +
-      '<div class="sf-node-ident">' +
-      '<img src="' + icon + '" alt="">' +
-      "<div>" +
-      '<div class="sf-kicker">Play</div>' +
-      '<div class="sf-title">' + esc(title) + "</div>" +
-      "</div>" +
-      "</div>" +
-      '<div class="sf-sub">Touch a region. Learn how guitar speaks there.</div>' +
-      "</div>" +
-      '<div class="sf-guide">' +
-      '<img src="images/character-symbols/Encouraging Face Lightbulb.png" alt="">' +
-      "<div>Play is a map, not a menu. Click one place and listen for its hand, pulse, scale colour, and story.</div>" +
-      "</div>" +
-      "</div>"
-    );
+  function drawerDestination(snapshot) {
+    var region = snapshot.selectedRegion;
+    if (!region) return "";
+    var current = region.id === snapshot.route.currentDestinationId;
+    return '<span class="play-atlas-eyebrow">' + (current ? "Your current destination" : "Selected destination") + '</span>' +
+      '<h3>' + esc(region.name) + '</h3>' +
+      '<div class="play-atlas-tradition">' + esc(region.tradition) + '</div>' +
+      '<p class="play-atlas-copy">' + (current ? "Your A minor pentatonic already belongs in musical conversation here." : "Explore freely. This tradition needs reviewed material before it becomes a full learning route.") + '</p>' +
+      '<button class="play-atlas-primary" type="button" data-play-action="enter-tradition">Enter the tradition</button>';
   }
 
-  function renderPlayAtlas() {
-    ensureStyle();
-    var el = panel();
-    if (!el) return;
-    var rs = regions();
-    var svgHotspots = "";
-
-    rs.forEach(function (region) {
-      svgHotspots +=
-        '<g class="sf-hotspot" data-region="' + esc(region.id) + '" ' +
-        'onclick="PlayAtlas.openPlay(\'' + esc(region.id) + '\')" ' +
-        'onmouseenter="PlayAtlas.mapHover(\'' + esc(region.id) + '\')" ' +
-        'onmouseleave="PlayAtlas.mapUnhover()" style="cursor:pointer">' +
-        '<circle cx="' + region.coords[0] + '" cy="' + region.coords[1] + '" r="14" fill="none" stroke="' + region.color + '" stroke-width="0.8" opacity="0.15">' +
-        '<animate attributeName="r" values="8;20;8" dur="3s" repeatCount="indefinite"/>' +
-        '<animate attributeName="opacity" values="0.2;0;0.2" dur="3s" repeatCount="indefinite"/>' +
-        "</circle>" +
-        '<circle cx="' + region.coords[0] + '" cy="' + region.coords[1] + '" r="7" fill="' + region.color + '" opacity="0.12"/>' +
-        '<circle cx="' + region.coords[0] + '" cy="' + region.coords[1] + '" r="3.5" fill="' + region.color + '" opacity="0.7"/>' +
-        '<circle cx="' + region.coords[0] + '" cy="' + region.coords[1] + '" r="1.5" fill="white" opacity="0.5"/>' +
-        "</g>";
-    });
-
-    el.innerHTML =
-      sceneStart() +
-      '<div class="sf-stage" style="padding:0;min-height:0;flex:1">' +
-      '<div class="sf-map-wrap">' +
-      '<img class="sf-map-img" src="images/play-world-atlas.webp" alt="World Map of Guitar">' +
-      '<svg viewBox="0 0 900 600" class="sf-map-svg">' +
-      '<defs><filter id="sf-glow"><feGaussianBlur stdDeviation="6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>' +
-      svgHotspots +
-      "</svg>" +
-      '<div class="sf-map-count">' + rs.length + " traditions</div>" +
-      '<div class="sf-map-guide" id="sf-map-guide">' +
-      '<div class="sf-map-guide-text" id="sf-map-guide-text">Choose a region. Listen for its rhythm, touch, scale colour, and story.</div>' +
-      "</div>" +
-      "</div>" +
-      "</div>" +
-      '<div id="sf-drawer" class="sf-drawer"></div>' +
-      "</div></div>";
+  function drawerTradition(snapshot) {
+    var region = snapshot.selectedRegion;
+    var tradition = snapshot.selectedTradition;
+    if (!tradition || !tradition.tradition_profile || !tradition.culture) {
+      return '<span class="play-atlas-eyebrow">Tradition review required</span>' +
+        '<h3>' + esc(region && region.name) + '</h3>' +
+        '<p class="play-atlas-copy">This point currently has a style label, but it does not yet name the communities, purpose, setting, transmission, and living practice responsibly enough to teach.</p>' +
+        '<button class="play-atlas-secondary" type="button" data-play-action="destination">Back to destination</button>';
+    }
+    var profile = tradition.tradition_profile;
+    var culture = tradition.culture;
+    return '<span class="play-atlas-eyebrow">Living tradition</span>' +
+      '<h3>' + esc(region.name) + '</h3>' +
+      '<div class="play-atlas-tradition">' + esc(tradition.tradition_label) + '</div>' +
+      '<p class="play-atlas-copy">' + esc(culture.cultural_doorway) + '</p>' +
+      '<div class="play-atlas-facts">' +
+        '<div class="play-atlas-fact"><b>Carried by</b><span>' + esc(profile.community_names.join(", ")) + '</span></div>' +
+        '<div class="play-atlas-fact"><b>What the music does</b><span>' + esc(profile.social_functions.join(", ")) + '</span></div>' +
+        '<div class="play-atlas-fact"><b>Where it lives</b><span>' + esc(profile.practice_settings.join(", ")) + '</span></div>' +
+        '<div class="play-atlas-fact"><b>How it travels</b><span>' + esc(profile.transmission) + '</span></div>' +
+      '</div>' +
+      '<div class="play-atlas-connection">' + esc(culture.sound_connection) + '</div>' +
+      '<p class="play-atlas-note">' + esc(profile.living_now) + '</p>' +
+      '<div class="play-atlas-sources">' + sourceLinks(culture) + '</div>' +
+      '<button class="play-atlas-primary" type="button" data-play-action="pulse">Find the pulse</button>' +
+      '<p class="play-atlas-note">' + esc(profile.learner_relationship_note) + '</p>' +
+      '<button class="play-atlas-secondary" type="button" data-play-action="destination">Back to destination</button>';
   }
 
-  function openPlay(id) {
-    if (root.PlayWorld && root.PlayWorld.detail) return root.PlayWorld.detail(id);
-    return undefined;
+  function drawerPulse(state) {
+    return '<span class="play-atlas-eyebrow">Feel before copying</span><h3>Find the pulse</h3>' +
+      '<span class="play-atlas-eyebrow">Moment 3 of 8 - 60 BPM</span>' +
+      '<p class="play-atlas-copy">Mute the strings and make four small downstrokes. Keep the ground steady, but leave your hand relaxed enough for a voice to move around it.</p>' +
+      '<div class="play-atlas-pulse' + (state.pulseRunning ? " running" : "") + '" aria-label="Four-beat visual pulse"><span class="play-atlas-beat"></span><span class="play-atlas-beat"></span><span class="play-atlas-beat"></span><span class="play-atlas-beat"></span></div>' +
+      '<button class="play-atlas-primary" type="button" data-play-action="toggle-pulse">' + (state.pulseRunning ? "Pause visual pulse" : "Start visual pulse") + '</button>' +
+      '<button class="play-atlas-secondary" type="button" data-play-action="home">I can hold the ground</button>' +
+      '<button class="play-atlas-secondary" type="button" data-play-action="tradition">Back to tradition</button>';
   }
 
-  function mapHover(id) {
-    var region = regions().find(function (item) {
-      return item.id === id;
-    });
-    if (!region) return;
-    var guide = root.document.getElementById("sf-map-guide-text");
-    if (!guide) return;
-    guide.innerHTML =
-      '<div class="sf-map-guide-region">' + esc(region.name) + "</div>" +
-      '<div class="sf-map-guide-tradition">' + esc(region.tradition) + "</div>";
+  function drawerHome(state) {
+    return '<span class="play-atlas-eyebrow">A safe place to return</span><h3>Find home</h3>' +
+      '<span class="play-atlas-eyebrow">Moment 4 of 8 - A minor</span>' +
+      '<p class="play-atlas-copy">Choose one A as your safety point. Play a tiny phrase, leave space, then return to that A without rushing.</p>' +
+      '<div class="play-atlas-choices">' +
+        choice("home", "open-a", "Open A", "5th string - open", state.home === "open-a") +
+        choice("home", "low-a", "Low A", "6th string - fret 5", state.home === "low-a") +
+      '</div>' +
+      '<button class="play-atlas-primary" type="button" data-play-action="join"' + (state.home ? "" : " disabled") + '>Choose how to join</button>' +
+      '<button class="play-atlas-secondary" type="button" data-play-action="pulse">Back to pulse</button>';
   }
 
-  function mapUnhover() {
-    var guide = root.document.getElementById("sf-map-guide-text");
-    if (!guide) return;
-    guide.innerHTML = "Choose a region. Listen for its rhythm, touch, scale colour, and story.";
+  function choice(kind, value, title, detail, selected) {
+    return '<button class="play-atlas-choice' + (selected ? " selected" : "") + '" type="button" data-play-action="choose-' + esc(kind) + '" data-value="' + esc(value) + '">' +
+      '<strong>' + esc(title) + '</strong><span>' + esc(detail) + '</span></button>';
   }
 
-  root.PlayAtlas = {
-    render: renderPlayAtlas,
-    openPlay: openPlay,
-    mapHover: mapHover,
-    mapUnhover: mapUnhover,
-  };
-  root.showPlay = renderPlayAtlas;
-})(typeof window !== "undefined" ? window : globalThis);
+  function drawerJoin(state) {
+    return '<span class="play-atlas-eyebrow">Music needs more than one job</span><h3>Join the music</h3>' +
+      '<span class="play-atlas-eyebrow">Moment 5 of 8 - Choose a role</span>' +
+      '<p class="play-atlas-copy">Begin with one clear responsibility. You will swap after four calls.</p>' +
+      '<div class="play-atlas-choices">' +
+        choice("role", "rhythm", "Rhythm", "Hold A minor and protect the pulse", state.role === "rhythm") +
+        choice("role", "lead", "Lead", "Use a few pentatonic notes and return home", state.role === "lead") +
+      '</div>' +
+      '<button class="play-atlas-primary" type="button" data-play-action="converse"' + (state.role ? "" : " disabled") + '>Begin the conversation</button>' +
+      '<button class="play-atlas-secondary" type="button" data-play-action="home">Back to home note</button>';
+  }
+
+  function drawerConversation(state) {
+    var home = state.home === "open-a" ? "open A" : "low A";
+    var role = state.role === "rhythm" ? "Rhythm first" : "Lead first";
+    return '<span class="play-atlas-eyebrow">Voice and guitar answer</span><h3>Converse</h3>' +
+      '<span class="play-atlas-eyebrow">Moment 6 of 8 - ' + esc(role) + '</span>' +
+      '<div class="play-atlas-turn"><b>Call</b><br>Play for two beats. Use only what you can hear clearly.</div>' +
+      '<div class="play-atlas-turn"><b>Space</b><br>Leave two beats open. Listen instead of filling them.</div>' +
+      '<div class="play-atlas-turn"><b>Answer</b><br>Reply with a different phrase and settle on ' + esc(home) + '.</div>' +
+      '<p class="play-atlas-copy">After four calls, swap rhythm and lead. Keep the pulse underneath, but let the phrase behave like a voice.</p>' +
+      '<button class="play-atlas-primary" type="button" data-play-action="remember">We played four calls</button>' +
+      '<button class="play-atlas-secondary" type="button" data-play-action="swap-role">Swap my starting role</button>' +
+      '<button class="play-atlas-secondary" type="button" data-play-action="join">Back to roles</button>';
+  }
+
+  function drawerRemember(state) {
+    return '<span class="play-atlas-eyebrow">Remember the relationship</span><h3>What changed?</h3>' +
+      '<span class="play-atlas-eyebrow">Moment 8 of 8 - Reflection</span>' +
+      '<p class="play-atlas-copy">Choose what became most audible after meeting the tradition and playing together.</p>' +
+      '<div class="play-atlas-choices single">' +
+        choice("reflection", "voice", "The guitar felt like a voice", "The phrase answered instead of only running through a scale.", state.reflection === "voice") +
+        choice("reflection", "space", "The space mattered", "Listening became part of the phrase.", state.reflection === "space") +
+        choice("reflection", "ground", "The pulse held the story", "Rhythm supported the conversation without crowding it.", state.reflection === "ground") +
+      '</div>' +
+      '<p class="play-atlas-note">Credit the musicians and communities you learned from. This route is one visit, not completion of a culture.</p>' +
+      '<button class="play-atlas-primary" type="button" data-play-action="finish"' + (state.reflection || state.finished ? "" : " disabled") + '>' + (state.finished ? "Route saved" : "Finish and remember") + '</button>' +
+      (state.finished ? '<p class="play-atlas-confirmation">This reflection now feeds Journey and your future Practice plan.</p>' : "") +
+      '<button class="play-atlas-secondary" type="button" data-play-action="converse">Back to conversation</button>';
+  }
+
+  function renderDrawer(snapshot, state) {
+    if (state.view === "tradition") return drawerTradition(snapshot);
+    if (state.view === "pulse") return drawerPulse(state);
+    if (state.view === "home") return drawerHome(state);
+    if (state.view === "join") return drawerJoin(state);
+    if (state.view === "converse") return drawerConversation(state);
+    if (state.view === "remember") return drawerRemember(state);
+    return drawerDestination(snapshot);
+  }
+
+  function render(snapshot, state) {
+    var moment = Number(state.moment) || snapshot.route.defaultMoment;
+    var selected = snapshot.selectedRegion || {};
+    return '<div class="play-atlas-shell" style="--destination:' + esc(selected.color || "#d4af69") + '">' +
+      '<button class="play-atlas-back" type="button" data-play-action="back" title="Back to map" aria-label="Back to map">&larr;</button>' +
+      '<div class="play-atlas-heading"><span class="play-atlas-eyebrow">Play - Musical world atlas</span><h2>Where shall the guitar take us?</h2></div>' +
+      '<div class="play-atlas-learner"><span class="play-atlas-eyebrow">Active learner</span><strong>' + esc(snapshot.learner.name) + '</strong></div>' +
+      '<section class="play-atlas-stage" aria-label="Musical world atlas">' +
+        '<img class="play-atlas-art" src="images/play-world-atlas.webp" alt="Illustrated world atlas of guitar traditions">' +
+        '<div class="play-atlas-shade" aria-hidden="true"></div>' +
+        '<div class="play-atlas-hotspots">' + renderHotspots(snapshot) + '</div>' +
+      '</section>' +
+      '<aside class="play-atlas-guide" aria-label="Guide"><img src="images/character-generated/guide-seated-listening-v1-ui.webp" alt="Guide listening with a guitar"><div class="play-atlas-guide-bubble"><span class="play-atlas-eyebrow">Guide</span><p>Your Journey is pointing to one tradition. Follow the bright glow, or wander and listen.</p></div></aside>' +
+      '<aside class="play-atlas-drawer" aria-live="polite">' + renderDrawer(snapshot, state) + '</aside>' +
+      '<div class="play-atlas-route" aria-label="Current Play route"><div class="play-atlas-progress" style="--value:' + (moment / snapshot.route.totalMoments * 360) + 'deg"></div>' +
+        '<div class="play-atlas-route-copy"><span class="play-atlas-eyebrow">Today\'s Level 1 route</span><strong>' + esc(snapshot.route.title) + '</strong><span>' + esc(snapshot.route.summary) + '</span></div>' +
+        '<div class="play-atlas-route-status">' + moment + ' of ' + snapshot.route.totalMoments + '<br>moments explored</div></div>' +
+      '</div>';
+  }
+
+  return { version: "0.1.0", render: render, renderDrawer: renderDrawer };
+});

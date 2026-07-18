@@ -56,6 +56,8 @@ eval(readText(root + "/core/lesson-session.js"));
 eval(readText(root + "/core/learner-progress.js"));
 eval(readText(root + "/core/play-domain.js"));
 eval(readText(root + "/assets/js/play-traditions.js"));
+eval(readText(root + "/adapters/play-atlas-model.js"));
+eval(readText(root + "/adapters/play-atlas-viewer.js"));
 eval(readText(root + "/adapters/browser-progress-store.js"));
 eval(readText(root + "/adapters/foundation-progress-bridge.js"));
 eval(readText(root + "/adapters/teaching-engine-core-adapter.js"));
@@ -192,7 +194,13 @@ assert(chordPilot.visualType === "interactive-chord-check", "Clean Am should use
 var chordPilotHtml = HearthDoingTeachingViewer.renderVisual(chordPilot, HearthDoingUiUtils);
 assert(chordPilotHtml.indexOf("doing-interactive-chord") !== -1, "Doing teaching viewer should render the interactive chord checker");
 assert(chordPilotHtml.indexOf("Numbers are fingers") !== -1, "Chord checker should explain finger numbers");
+var scalePilot = HearthDoingDrillCatalog.reviewed["pent-1"];
+assert(scalePilot.visualType === "interactive-fretboard", "A minor Box 1 should use the interactive fretboard");
+var scalePilotHtml = HearthDoingTeachingViewer.renderVisual(scalePilot, HearthDoingUiUtils);
+assert(scalePilotHtml.indexOf("doing-interactive-fretboard") !== -1, "Doing teaching viewer should render the interactive fretboard");
+assert(scalePilotHtml.indexOf("A roots") !== -1 && scalePilotHtml.indexOf("Full shape") !== -1, "Interactive fretboard should switch between shape and root views");
 var rootsPilot = HearthDoingDrillCatalog.findDrill(curatedDoing, "pent-roots-time");
+assert(rootsPilot.visualType === "interactive-fretboard" && rootsPilot.fretboardMode === "roots", "A roots drill should open in root-note mode");
 var rootsPilotScene = HearthDoingTeachingViewer.renderScene({{
   cat: {{ id: "coordination", title: "Coordination" }},
   drill: rootsPilot,
@@ -218,6 +226,18 @@ var reflectedPracticeSnapshot = HearthPracticeEntryModel.buildSnapshot({{
   events: [{{ event_type: "practice_session_completed", learner_id: "jen-1", created_at: new Date().toISOString(), data: {{ repeat_next: "Return to the clean chord change" }} }}]
 }});
 assert(reflectedPracticeSnapshot.commitment.today === "Return to the clean chord change", "Practice reflection should become the next recommended focus");
+var playFedPracticeSnapshot = HearthPracticeEntryModel.buildSnapshot({{
+  journeyState: {{ activeStudentId: "jen-1", students: [{{ id: "jen-1", name: "Jen", levels: {{}} }}] }},
+  companions: {{ jen: {{ commitment: {{ today: "Original plan" }}, practice: ["A minor pentatonic"] }} }},
+  events: [{{
+    event_type: "play_activity_completed",
+    node_id: "play",
+    learner_id: "jen-1",
+    created_at: new Date().toISOString(),
+    data: {{ repeat_focus: "Return to A after each short phrase, then leave space." }}
+  }}]
+}});
+assert(playFedPracticeSnapshot.commitment.today.indexOf("Return to A") !== -1, "A Play reflection should feed the learner's next Practice focus");
 var practiceEntryHtml = HearthPracticeEntryViewer.render(practiceEntrySnapshot, "planned");
 assert(practiceEntryHtml.indexOf('data-practice-mode="planned"') !== -1, "Practice entry should render the planned-session hotspot");
 assert(practiceEntryHtml.indexOf("streak") === -1, "Practice entry should not use guilt-based streak language");
@@ -1008,6 +1028,36 @@ var mississippiDestinationValidation = HearthPlayDomain.validateDestination({{
 }});
 assert(mississippiDestinationValidation.valid === true, "The first Play tradition record should pass structural validation");
 assert(mississippiDestinationValidation.warnings.indexOf("culture_community_review_incomplete") !== -1, "The first Play tradition should remain visibly pending community review");
+var livePlaySnapshot = HearthPlayAtlasModel.buildSnapshot({{
+  journeyState: {{ activeStudentId: "jen", students: [{{ id: "ayla", name: "Ayla" }}, {{ id: "jen", name: "Jen" }}] }},
+  regions: [
+    {{ id: "mississippi", name: "Mississippi Delta", tradition: "Delta Blues", color: "#5a9fd4", coords: [205, 290] }},
+    {{ id: "andalusia", name: "Andalusia", tradition: "Flamenco", color: "#d63031", coords: [478, 270] }}
+  ],
+  traditions: PLAY_TRADITIONS,
+  events: [],
+  selectedId: "mississippi"
+}});
+assert(livePlaySnapshot.learner.name === "Jen", "The live Play atlas should use the globally active learner");
+assert(livePlaySnapshot.selectedTradition.id === "mississippi-delta-country-blues", "The live Play atlas should resolve reviewed tradition data");
+var livePlayEntryHtml = HearthPlayAtlasViewer.render(livePlaySnapshot, {{
+  selectedId: "mississippi", view: "destination", moment: 2, pulseRunning: false,
+  home: "", role: "", reflection: "", finished: false
+}});
+assert(livePlayEntryHtml.indexOf("Where shall the guitar take us?") !== -1, "The live Play atlas should render the approved visual entrance");
+assert(livePlayEntryHtml.indexOf("Enter the tradition") !== -1, "The live Play atlas should open a tradition-led route");
+assert(livePlayEntryHtml.indexOf("Active learner") !== -1 && livePlayEntryHtml.indexOf("Jen") !== -1, "The live Play atlas should show the active learner");
+var livePlayTraditionHtml = HearthPlayAtlasViewer.render(livePlaySnapshot, {{
+  selectedId: "mississippi", view: "tradition", moment: 2, pulseRunning: false,
+  home: "", role: "", reflection: "", finished: false
+}});
+assert(livePlayTraditionHtml.indexOf("Carried by") !== -1, "The live Play route should identify who carries the tradition");
+assert(livePlayTraditionHtml.indexOf('data-play-action="pulse"') !== -1, "The live Play tradition should lead into a playable pulse step");
+var livePlayConversationHtml = HearthPlayAtlasViewer.render(livePlaySnapshot, {{
+  selectedId: "mississippi", view: "converse", moment: 6, pulseRunning: false,
+  home: "open-a", role: "lead", reflection: "", finished: false
+}});
+assert(livePlayConversationHtml.indexOf("Voice and guitar answer") !== -1, "The live Play route should own musical conversation");
 
 var playDestinations = [
   {{ id: "mississippi", name: "Mississippi Delta", coordinates: {{ x_percent: 23, y_percent: 48 }} }},

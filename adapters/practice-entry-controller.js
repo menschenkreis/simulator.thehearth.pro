@@ -45,12 +45,16 @@
     var plannedStep = plannedSession && root.HearthPracticePlannedSessionViewer
       ? root.HearthPracticePlannedSessionViewer.steps[plannedSession.stepIndex]
       : null;
+    var studySnapshot = root.StudyKeyChamberModel && typeof root.StudyKeyChamberModel.snapshot === "function"
+      ? root.StudyKeyChamberModel.snapshot({ storage: localStorage })
+      : null;
     return root.HearthPracticeEntryModel.buildSnapshot({
       journeyState: journeyState(),
       companions: root.JOURNEY_STUDENT_COMPANIONS,
       events: progressEvents(),
       candleState: candleState(),
       plannedSession: plannedSession,
+      studySnapshot: studySnapshot,
       plannedStepTitle: plannedStep && plannedStep.title
     });
   }

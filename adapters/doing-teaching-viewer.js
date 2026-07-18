@@ -256,17 +256,139 @@
     updateInteractiveChordCheck(chordEl);
   }
 
+  function normalizedFretboard(drill) {
+    var fretboard = drill.fretboard || {};
+    var strings = Array.isArray(fretboard.strings) && fretboard.strings.length
+      ? fretboard.strings
+      : ["e", "B", "G", "D", "A", "E"];
+    var frets = Array.isArray(fretboard.frets) && fretboard.frets.length
+      ? fretboard.frets
+      : [5, 6, 7, 8];
+    var positions = Array.isArray(fretboard.positions) ? fretboard.positions : [];
+    return { strings: strings, frets: frets, positions: positions };
+  }
+
+  function renderInteractiveFretboard(drill, ui) {
+    var fretboard = normalizedFretboard(drill);
+    var mode = drill.fretboardMode === "roots" ? "roots" : "shape";
+    var rows = fretboard.strings.map(function renderFretboardString(stringName) {
+      var spokenString = stringName === "e" ? "high e" : (stringName === "E" ? "low E" : stringName);
+      var frets = fretboard.frets.map(function renderFretboardFret(fret) {
+        var sequenceIndex = -1;
+        var position = null;
+        fretboard.positions.some(function findPosition(item, index) {
+          if (item.string !== stringName || item.fret !== fret) return false;
+          position = item;
+          sequenceIndex = index;
+          return true;
+        });
+        if (!position) return '<span class="doing-fretboard-fret is-empty"></span>';
+        var rootClass = position.root ? " is-root" : "";
+        var filteredClass = mode === "roots" && !position.root ? " is-filtered" : "";
+        var activeClass = sequenceIndex === 0 ? " is-active" : "";
+        return '<span class="doing-fretboard-fret"><button class="doing-fretboard-note' + rootClass + filteredClass + activeClass + '" type="button" ' +
+          'data-fretboard-sequence="' + sequenceIndex + '" data-fretboard-root="' + (position.root ? "true" : "false") + '" ' +
+          'data-fretboard-string="' + ui.escapeHtml(spokenString) + '" data-fretboard-fret="' + ui.escapeHtml(position.fret) + '" ' +
+          'data-fretboard-note="' + ui.escapeHtml(position.note) + '" data-fretboard-finger="' + ui.escapeHtml(position.finger) + '" ' +
+          'aria-label="' + ui.escapeHtml(position.note + ', ' + spokenString + ', fret ' + position.fret + ', finger ' + position.finger) + '" ' +
+          'onclick="window.HearthDoingTeachingViewer.selectFretboardNote(this)"><b>' + ui.escapeHtml(position.note) + '</b><small>' + ui.escapeHtml(position.finger) + '</small></button></span>';
+      }).join("");
+      return '<div class="doing-fretboard-row"><b>' + ui.escapeHtml(stringName) + '</b><div class="doing-fretboard-string-line">' + frets + '</div></div>';
+    }).join("");
+    var fretLabels = fretboard.frets.map(function renderFretLabel(fret) {
+      return '<span>Fret ' + ui.escapeHtml(fret) + '</span>';
+    }).join("");
+
+    return '<div class="doing-interactive-fretboard" style="--doing-fret-count:' + fretboard.frets.length + '" ' +
+      'data-fretboard-mode="' + mode + '" data-fretboard-step="0">' +
+      '<div class="doing-fretboard-head"><div><span>A minor pentatonic</span><b>Box 1 · fifth position</b></div>' +
+        '<div class="doing-fretboard-modes" aria-label="Choose fretboard view">' +
+          '<button class="' + (mode === "shape" ? "is-active" : "") + '" type="button" data-fretboard-mode="shape" onclick="window.HearthDoingTeachingViewer.setFretboardMode(this, \'shape\')">Full shape</button>' +
+          '<button class="' + (mode === "roots" ? "is-active" : "") + '" type="button" data-fretboard-mode="roots" onclick="window.HearthDoingTeachingViewer.setFretboardMode(this, \'roots\')">A roots</button>' +
+        '</div></div>' +
+      '<div class="doing-fretboard-current"><span>A · low E · fret 5</span><b>Finger 1</b></div>' +
+      '<div class="doing-fretboard-labels"><i></i>' + fretLabels + '</div>' +
+      '<div class="doing-fretboard-board" aria-label="Interactive A minor pentatonic fretboard">' + rows + '</div>' +
+      '<div class="doing-fretboard-legend"><span><i></i>Scale note</span><span><i class="is-root"></i>A root · home</span></div>' +
+      '<div class="doing-tab-controls"><button type="button" title="Previous scale note" aria-label="Previous scale note" onclick="window.HearthDoingTeachingViewer.stepFretboard(this, -1)">←</button>' +
+        '<span>Follow the shape, then find home</span>' +
+        '<button type="button" title="Next scale note" aria-label="Next scale note" onclick="window.HearthDoingTeachingViewer.stepFretboard(this, 1)">→</button></div></div>';
+  }
+
+  function fretboardEligibleNotes(fretboardEl) {
+    var mode = fretboardEl.getAttribute("data-fretboard-mode") || "shape";
+    return Array.prototype.filter.call(fretboardEl.querySelectorAll(".doing-fretboard-note"), function filterNote(note) {
+      return mode !== "roots" || note.getAttribute("data-fretboard-root") === "true";
+    });
+  }
+
+  function updateInteractiveFretboard(fretboardEl) {
+    if (!fretboardEl) return;
+    var mode = fretboardEl.getAttribute("data-fretboard-mode") || "shape";
+    var eligible = fretboardEligibleNotes(fretboardEl);
+    var step = parseInt(fretboardEl.getAttribute("data-fretboard-step"), 10) || 0;
+    if (eligible.length) step = (step + eligible.length) % eligible.length;
+    fretboardEl.setAttribute("data-fretboard-step", String(step));
+    var active = eligible[step];
+    Array.prototype.forEach.call(fretboardEl.querySelectorAll(".doing-fretboard-note"), function updateNote(note) {
+      var isEligible = mode !== "roots" || note.getAttribute("data-fretboard-root") === "true";
+      note.classList.toggle("is-filtered", !isEligible);
+      note.classList.toggle("is-active", note === active);
+    });
+    Array.prototype.forEach.call(fretboardEl.querySelectorAll(".doing-fretboard-modes button"), function updateMode(button) {
+      button.classList.toggle("is-active", button.getAttribute("data-fretboard-mode") === mode);
+    });
+    var current = fretboardEl.querySelector(".doing-fretboard-current");
+    if (current && active) {
+      current.querySelector("span").textContent = active.getAttribute("data-fretboard-note") + " · " +
+        active.getAttribute("data-fretboard-string") + " · fret " + active.getAttribute("data-fretboard-fret");
+      current.querySelector("b").textContent = "Finger " + active.getAttribute("data-fretboard-finger") + " · " +
+        (step + 1) + " of " + eligible.length + (mode === "roots" ? " roots" : " notes");
+    }
+  }
+
+  function setFretboardMode(control, mode) {
+    var fretboardEl = control && control.closest ? control.closest(".doing-interactive-fretboard") : null;
+    if (!fretboardEl || ["shape", "roots"].indexOf(mode) === -1) return;
+    fretboardEl.setAttribute("data-fretboard-mode", mode);
+    fretboardEl.setAttribute("data-fretboard-step", "0");
+    updateInteractiveFretboard(fretboardEl);
+  }
+
+  function stepFretboard(control, delta) {
+    var fretboardEl = control && control.closest ? control.closest(".doing-interactive-fretboard") : null;
+    if (!fretboardEl) return;
+    var eligible = fretboardEligibleNotes(fretboardEl);
+    if (!eligible.length) return;
+    var current = parseInt(fretboardEl.getAttribute("data-fretboard-step"), 10) || 0;
+    fretboardEl.setAttribute("data-fretboard-step", String((current + delta + eligible.length) % eligible.length));
+    updateInteractiveFretboard(fretboardEl);
+  }
+
+  function selectFretboardNote(control) {
+    var fretboardEl = control && control.closest ? control.closest(".doing-interactive-fretboard") : null;
+    if (!fretboardEl || control.classList.contains("is-filtered")) return;
+    var eligible = fretboardEligibleNotes(fretboardEl);
+    var index = eligible.indexOf(control);
+    if (index < 0) return;
+    fretboardEl.setAttribute("data-fretboard-step", String(index));
+    updateInteractiveFretboard(fretboardEl);
+  }
+
   function renderVisual(drill, ui) {
     var asset = drill.asset || "";
     var title = drill.shortTitle || drill.title;
     var visualType = drill.visualType || "movement";
-    var isInteractive = visualType === "interactive-tab" || visualType === "interactive-strum-grid" || visualType === "interactive-chord-check";
+    var isInteractive = visualType === "interactive-tab" || visualType === "interactive-strum-grid" ||
+      visualType === "interactive-chord-check" || visualType === "interactive-fretboard";
     var assetHtml = visualType === "interactive-tab"
       ? renderInteractiveTab(drill, ui)
       : visualType === "interactive-strum-grid"
       ? renderInteractiveStrumGrid(drill, ui)
       : visualType === "interactive-chord-check"
       ? renderInteractiveChordCheck(drill, ui)
+      : visualType === "interactive-fretboard"
+      ? renderInteractiveFretboard(drill, ui)
       : asset
       ? '<img class="doing-teaching-asset" src="' + ui.escapeHtml(asset) + '" alt="' + ui.escapeHtml(title + " demonstration") + '" draggable="false">'
       : '<div class="doing-teaching-diagram doing-teaching-diagram--' + ui.escapeHtml(visualType) + '" aria-hidden="true">' +
@@ -395,16 +517,21 @@
     normalizedTab: normalizedTab,
     normalizedStrumGrid: normalizedStrumGrid,
     normalizedChord: normalizedChord,
+    normalizedFretboard: normalizedFretboard,
     renderCreateHandoff: renderCreateHandoff,
     renderScene: renderScene,
     renderSteps: renderSteps,
     renderVisual: renderVisual,
     setTabDirection: setTabDirection,
+    setFretboardMode: setFretboardMode,
+    selectFretboardNote: selectFretboardNote,
     stepTab: stepTab,
     stepStrum: stepStrum,
     stepChordCheck: stepChordCheck,
+    stepFretboard: stepFretboard,
     updateInteractiveTab: updateInteractiveTab,
     updateInteractiveStrum: updateInteractiveStrum,
-    updateInteractiveChordCheck: updateInteractiveChordCheck
+    updateInteractiveChordCheck: updateInteractiveChordCheck,
+    updateInteractiveFretboard: updateInteractiveFretboard
   };
 });
