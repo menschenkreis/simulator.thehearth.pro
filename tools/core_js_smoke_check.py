@@ -667,6 +667,7 @@ var handoffEvents = [];
 var handoffState = {{
   current: null,
   intent: "",
+  activeLearnerId: function() {{ return "jen-1"; }},
   setCurrent: function(seed) {{ this.current = seed; return seed; }},
   setIntent: function(intent) {{ this.intent = intent; return intent; }}
 }};
@@ -681,6 +682,7 @@ var handoffOpener = HearthCreateHandoff.createHandoff({{
 handoffOpener.open({{ suggested_ingredient: "riff", instruction: "Make it musical." }});
 assert(handoffState.current.selected[0] === "riff" && handoffState.intent === "handoff", "Create handoff should prepare the learner's Cauldron state");
 assert(handoffRenderCount === 1 && handoffEvents[0].event_type === "create_handoff_opened", "Create handoff should open the Cauldron and log progress");
+assert(handoffEvents[0].learner_id === "jen-1", "Create handoff should log progress for the active learner");
 var createEntryHtml = HearthCreateEntryViewer.render(createEntrySnapshot, "ingredient");
 assert(createEntryHtml.indexOf('data-create-mode="ingredient"') !== -1, "Create entry should render the ingredient hotspot");
 assert(createEntryHtml.indexOf("The Cauldron") !== -1, "Create entry should render the Cauldron title");

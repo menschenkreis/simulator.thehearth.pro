@@ -17,7 +17,7 @@ HTML = ROOT / "simulator.html"
 
 EXPECTED_ACTIVE_OWNERS = {
     "showHearth": "adapters/hearth-body-viewer.js",
-    "showPlay": "adapters/play-atlas-viewer.js",
+    "showPlay": "adapters/play-atlas-controller.js",
     "showStudy": "adapters/study-key-chamber-viewer.js",
     "showCreate": "adapters/create-entry-controller.js",
     "showPractice": "adapters/practice-entry-controller.js",
@@ -42,7 +42,7 @@ def renderer_assignments(source: str) -> set[str]:
     found = set()
     for renderer in EXPECTED_ACTIVE_OWNERS:
         renderer_name = re.escape(renderer)
-        if re.search(r"\b(?:window|root)\." + renderer_name + r"\s*=", text):
+        if re.search(r"\b(?:window|root)\." + renderer_name + r"\s*=(?!=)", text):
             found.add(renderer)
     return found
 

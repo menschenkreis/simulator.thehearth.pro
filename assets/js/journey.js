@@ -187,6 +187,8 @@
         summary: authored.summary || '',
         conceptNames: authored.conceptNames || [],
         taskNames: authored.taskNames || [],
+        categoryTags: authored.categoryTags || [],
+        countsTowardLevel: authored.countsTowardLevel !== false,
         blocks: authored.blocks || []
       };
     }

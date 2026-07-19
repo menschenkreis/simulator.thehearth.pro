@@ -68,6 +68,7 @@
         host.HearthProgressEvents.append({
           event_type: "create_handoff_opened",
           node_id: "create",
+          learner_id: createState.activeLearnerId(),
           lesson_id: seed.sourceContext.lesson_id || null,
           data: {
             source_node_id: seed.sourceContext.source_node_id,

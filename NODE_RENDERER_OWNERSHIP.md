@@ -9,7 +9,7 @@ The old prototype sometimes defines the same screen in more than one place. In t
 | Node Screen | Active Owner | Notes |
 |---|---|---|
 | Hearth | `adapters/hearth-body-viewer.js` | Uses `assets/js/hearth-body-data.js` for the Inner Instrument copy and zones. |
-| Play | `adapters/play-atlas-viewer.js` | Uses the world atlas scene and delegates region detail to `assets/js/play-world.js`. |
+| Play | `adapters/play-atlas-controller.js` | Owns `showPlay`, uses `play-atlas-viewer.js` for the world atlas scene, and delegates region detail to `assets/js/play-world.js`. |
 | Study | `adapters/study-key-chamber-viewer.js` | Uses the Key Chamber scene. |
 | Create | `adapters/create-entry-controller.js` | Uses the image-led Cauldron entrance, then hands off to `create-cauldron-scene-viewer.js` for ingredients and song-seed work. |
 | Practice | `adapters/practice-entry-controller.js` | Uses the image-led Practice chamber. Planned sessions flow through `practice-planned-session-controller.js`, with the candle timer still owned by `practice-candle-viewer.js`. |
