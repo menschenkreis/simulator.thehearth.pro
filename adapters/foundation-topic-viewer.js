@@ -43,6 +43,19 @@
     };
   }
 
+  var FALLBACK_GUIDE_ASSETS = {
+    neutral: "images/character-generated/guide-neutral-v1-ui.webp",
+    encouraging: "images/character-generated/guide-encouraging-v1-ui.webp",
+    thinking: "images/character-generated/guide-thinking-v1-ui.webp",
+    celebratory: "images/character-generated/guide-celebratory-v1-ui.webp"
+  };
+
+  function guideAssetFor(mood) {
+    var catalogue = root.GUIDE_CHARACTER_ASSETS;
+    var asset = catalogue && catalogue.moods && catalogue.moods[mood];
+    return asset && asset.src ? asset.src : FALLBACK_GUIDE_ASSETS[mood];
+  }
+
   function renderFoundationTopicStep(options) {
     options = options || {};
     var foundation = options.foundation || root.FOUNDATION;
@@ -103,21 +116,22 @@
       : "";
 
     var stepLabel = (step.label || "").toLowerCase();
-    var guideImg = "Encouraging.png";
+    var guideMood = "encouraging";
     var guideSpeech = "";
     if (stepLabel === "understand") {
-      guideImg = "Neutral.png";
+      guideMood = "neutral";
       guideSpeech = "Let me explain this clearly.";
     } else if (stepLabel === "experience") {
-      guideImg = "Encouraging.png";
+      guideMood = "encouraging";
       guideSpeech = "Feel this in your hands. I'll guide you.";
     } else if (stepLabel === "apply") {
-      guideImg = "Thinking.png";
+      guideMood = "thinking";
       guideSpeech = "Now try it yourself. Think through each step.";
     } else if (stepLabel === "own") {
-      guideImg = "Celebratory.png";
+      guideMood = "celebratory";
       guideSpeech = "You've got this. This fret is yours.";
     }
+    var guideImg = guideAssetFor(guideMood);
 
     targetEl.innerHTML = '<div class="foundation-topic-page" style="--accent:' + color + '">' +
       '<div class="foundation-topic-wrap">' +
@@ -128,7 +142,7 @@
       '<div class="foundation-topic-grid">' +
       '<aside class="foundation-topic-side">' +
       '<div class="foundation-topic-guide">' +
-      '<img src="images/character-full/' + guideImg + '" alt="Guide character"/>' +
+      '<img src="' + ui.escapeHtml(guideImg) + '" alt="Guide character"/>' +
       (guideSpeech ? '<div class="foundation-guide-bubble"><p>' + guideSpeech + "</p></div>" : "") +
       "</div>" +
       '<div class="foundation-topic-meta">' +

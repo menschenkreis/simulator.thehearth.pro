@@ -901,6 +901,11 @@ globalThis.FOUNDATION = fakeMapFoundation;
 var fakePanelResult = HearthFoundationPanelController.showFoundation();
 assert(fakePanelResult.fret_count === 3, "Foundation panel controller should render map through map viewer");
 assert(fakePanelTarget.classList.added === "on", "Foundation panel controller should show panel");
+globalThis.GUIDE_CHARACTER_ASSETS = {{
+  moods: {{
+    neutral: {{ src: "images/character-generated/test-neutral.webp" }}
+  }}
+}};
 var fakeTopicTarget = {{ innerHTML: "" }};
 var fakeFoundation = {{
   tag: "TEST",
@@ -927,6 +932,7 @@ var fakeTopicResult = HearthFoundationTopicViewer.renderFoundationTopicStep({{
 assert(fakeTopicResult.topic_id === "f-test", "Foundation topic viewer should return topic id");
 assert(fakeTopicTarget.innerHTML.indexOf("foundation-topic-page") !== -1, "Foundation topic viewer should render page shell");
 assert(fakeTopicTarget.innerHTML.indexOf("Test Topic") !== -1, "Foundation topic viewer should render topic title");
+assert(fakeTopicTarget.innerHTML.indexOf("images/character-generated/test-neutral.webp") !== -1, "Foundation topic viewer should use the canonical guide asset catalogue");
 var fakeControllerTarget = {{ innerHTML: "" }};
 globalThis.document = {{
   getElementById: function(id) {{
