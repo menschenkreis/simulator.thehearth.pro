@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://thehearth.pro/contracts/handoff-envelope-v1.schema.json",
   "title": "The Hearth Cross-Node Handoff Envelope V1",
-  "description": "Proposed task contract for moving one learner between nodes without losing origin, success criteria, easier recovery, or return context.",
+  "description": "Approved task contract for moving one learner between nodes without losing origin, success criteria, easier recovery, or return context.",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -36,7 +36,10 @@
     "destination_node_id": { "$ref": "#/$defs/id" },
     "activity_id": { "$ref": "#/$defs/nullableId" },
     "lesson_id": { "$ref": "#/$defs/nullableId" },
-    "journey_level_id": { "$ref": "#/$defs/nullableId" },
+    "journey_level_id": {
+      "$ref": "#/$defs/nullableId",
+      "description": "Canonical live Journey level ID, such as L1."
+    },
     "capability_ids": {
       "type": "array",
       "description": "Credit-bearing task capabilities. Every ID must authorize destination_node_id in the Journey capability's nodeIds; source_node_id does not need authority merely to route the task.",

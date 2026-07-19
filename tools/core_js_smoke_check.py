@@ -58,6 +58,8 @@ var learnerMigrationPreviewSource = readText(root + "/core/learner-migration-pre
 assert(learnerMigrationPreviewSource.indexOf(".setItem(") === -1, "Learner migration preview must not contain a storage write call");
 assert(learnerMigrationPreviewSource.indexOf(".removeItem(") === -1, "Learner migration preview must not contain a storage delete call");
 eval(learnerMigrationPreviewSource);
+eval(readText(root + "/core/progress-event.js"));
+eval(readText(root + "/adapters/progress-event-store.js"));
 eval(readText(root + "/core/play-domain.js"));
 eval(readText(root + "/assets/js/journey-data.js"));
 eval(readText(root + "/assets/js/play-traditions.js"));
@@ -143,6 +145,215 @@ assert(evidenceStageCompatibility.canonical_to_journey.application === "applied_
 assert(evidenceStageCompatibility.journey_to_canonical.externally_assessed === null, "External assessment should not be inferred from a generic event stage");
 assert(proposedEventSchema.properties.capability_ids.description.indexOf("authorize node_id") !== -1, "Event capability IDs should obey producer-node authority");
 assert(proposedHandoffSchema.properties.capability_ids.description.indexOf("authorize destination_node_id") !== -1, "Handoff capability IDs should obey destination-node authority");
+assert(HearthProgressEventContract.normalizeJourneyLevelId("level-1") === "L1", "Journey level aliases should normalize to the live L1 identifier");
+assert(HearthProgressEventContract.toJourneyEvidenceStage("demonstration") === "demonstrated", "Canonical evidence should map into the live Journey stage vocabulary at read time");
+Object.keys(evidenceStageCompatibility.canonical_to_journey).forEach(function verifyRuntimeEvidenceStage(stage) {{
+  assert(HearthProgressEventContract.toJourneyEvidenceStage(stage) === evidenceStageCompatibility.canonical_to_journey[stage], "Runtime Journey stage mapping should match the approved compatibility contract: " + stage);
+}});
+
+var progressStoreLegacyEvent = {{
+  id: "legacy-event-1",
+  version: 1,
+  simulator_id: "hearth-guitar",
+  learner_id: "jen-1",
+  event_type: "concept_read",
+  node_id: "knowing",
+  journey_level_id: null,
+  category_id: "theory",
+  lesson_id: null,
+  drill_id: null,
+  source_id: "topic-intervals",
+  duration_minutes: null,
+  rating: null,
+  note: "",
+  data: {{ topic_id: "topic-intervals" }},
+  created_at: "2026-07-18T09:00:00.000Z"
+}};
+var progressStoreValues = {{
+  "hearth-progress-events": JSON.stringify([progressStoreLegacyEvent]),
+  "hearth-journey-v2": JSON.stringify({{ activeStudentId: "ayla-1" }})
+}};
+var progressStoreWriteCount = 0;
+var progressStoreStorage = {{
+  getItem: function(key) {{
+    return Object.prototype.hasOwnProperty.call(progressStoreValues, key) ? progressStoreValues[key] : null;
+  }},
+  setItem: function(key, value) {{
+    progressStoreWriteCount += 1;
+    progressStoreValues[key] = String(value);
+  }}
+}};
+var progressStoreBeforeRead = progressStoreStorage.getItem("hearth-progress-events");
+var progressStoreRawRead = HearthProgressEvents.listRaw(progressStoreStorage);
+var progressStoreNormalizedRead = HearthProgressEvents.listNormalized(progressStoreStorage);
+assert(progressStoreWriteCount === 0, "Raw and normalized event reads must not write storage");
+assert(progressStoreStorage.getItem("hearth-progress-events") === progressStoreBeforeRead, "Reading existing history must not rewrite it");
+assert(progressStoreRawRead[0].data.topic_id === "topic-intervals", "Legacy events should remain readable in their raw stored shape");
+assert(progressStoreNormalizedRead[0].source_format === "legacy_v0", "Legacy normalized reads should be explicitly labelled as compatibility projections");
+assert(progressStoreNormalizedRead[0].compatibility_mode === "read_time_projection_only", "Legacy normalization should say that it is read-time only");
+assert(progressStoreNormalizedRead[0].event.occurred_at === progressStoreLegacyEvent.created_at, "Legacy created_at should project to occurred_at without rewriting raw history");
+
+var completeDoEvent = {{
+  id: "evt-do-jen-pent-01",
+  version: 1,
+  simulator_id: "hearth-guitar",
+  event_type: "drill_feedback_recorded",
+  learner_id: "jen-1",
+  actor_role: "learner",
+  node_id: "doing",
+  destination_node_id: "journey",
+  journey_level_id: "L1",
+  category_id: "coordination",
+  lesson_id: "level-1-lesson-1",
+  activity_id: "pent-roots-time",
+  drill_id: "pent-roots-time",
+  capability_ids: ["L1-MAP-01", "L1-TIME-01"],
+  attempt_id: "attempt-jen-pent-01",
+  session_id: "session-jen-20260719",
+  evidence_stage: "demonstration",
+  evidence_source: "self_report",
+  source_id: null,
+  project_id: null,
+  recording_id: null,
+  handoff_id: "handoff-jen-pent-01",
+  duration_minutes: 5,
+  rating: 3,
+  note: "",
+  occurred_at: "2026-07-19T10:15:00.000Z",
+  recorded_at: "2026-07-19T10:15:02.000Z",
+  created_at: "2026-07-19T10:15:00.000Z",
+  return_route: {{
+    node_id: "journey",
+    view_id: "lesson",
+    params: {{ lesson_id: "level-1-lesson-1", block_id: "do" }}
+  }},
+  fallback_instruction: "Return to Journey and reopen Level 1 Lesson 1.",
+  data: {{
+    state: "clean",
+    destination_node_id: "journey",
+    activity_id: "pent-roots-time",
+    capability_ids: ["L1-MAP-01", "L1-TIME-01"],
+    related_capability_ids: ["L1-PRACTICE-01"],
+    attempt_id: "attempt-jen-pent-01",
+    session_id: "session-jen-20260719",
+    evidence_stage: "demonstration",
+    evidence_source: "self_report",
+    occurred_at: "2026-07-19T10:15:00.000Z",
+    recorded_at: "2026-07-19T10:15:02.000Z",
+    task: {{ instruction: "Play three A roots in time." }},
+    pass_condition: {{ description: "Three clean repetitions stay with the pulse." }},
+    easier_step: {{ instruction: "Play one A root without the metronome." }},
+    return_route: {{
+      node_id: "journey",
+      view_id: "lesson",
+      params: {{ lesson_id: "level-1-lesson-1", block_id: "do" }}
+    }},
+    fallback_instruction: "Return to Journey and reopen Level 1 Lesson 1."
+  }}
+}};
+
+var completeDoAppend = HearthProgressEvents.append(completeDoEvent, progressStoreStorage);
+assert(completeDoAppend && completeDoAppend.id === completeDoEvent.id, "A complete Do event should append through the producer-facing canonical bridge");
+var completeDoStored = HearthProgressEvents.listRaw(progressStoreStorage)[1];
+[
+  "destination_node_id",
+  "activity_id",
+  "capability_ids",
+  "attempt_id",
+  "session_id",
+  "evidence_stage",
+  "evidence_source",
+  "occurred_at",
+  "recorded_at",
+  "return_route",
+  "fallback_instruction"
+].forEach(function verifyCanonicalFieldSurvives(field) {{
+  assert(JSON.stringify(completeDoStored[field]) === JSON.stringify(completeDoEvent[field]), "Canonical append/read should preserve " + field);
+}});
+assert(completeDoStored.actor_role === "learner" && completeDoStored.handoff_id === "handoff-jen-pent-01", "Canonical append/read should preserve optional approved context");
+assert(completeDoStored.data.related_capability_ids[0] === "L1-PRACTICE-01", "Non-credit related capability context should survive in data");
+assert(completeDoStored.data.pass_condition.description.indexOf("pulse") !== -1, "Do pass conditions should survive in event data");
+assert(completeDoStored.data.easier_step.instruction.indexOf("without") !== -1, "Do easier steps should survive in event data");
+assert(HearthProgressEvents.listNormalized(progressStoreStorage)[1].source_format === "canonical_v1", "Canonical records should be recognized on normalized read");
+assert(HearthProgressEvents.listNormalized(progressStoreStorage)[1].valid === true, "A stored Do event should remain valid after read normalization");
+assert(JSON.stringify(HearthProgressEvents.listRaw(progressStoreStorage)[0]) === JSON.stringify(progressStoreLegacyEvent), "Appending a canonical event must preserve preceding legacy event records");
+
+var progressStoreAfterFirstAppend = progressStoreStorage.getItem("hearth-progress-events");
+var progressStoreWritesAfterFirstAppend = progressStoreWriteCount;
+var equivalentDoEvent = JSON.parse(JSON.stringify(completeDoEvent));
+equivalentDoEvent.journey_level_id = "level-1";
+var duplicateDoAppend = HearthProgressEvents.appendCanonical(equivalentDoEvent, progressStoreStorage);
+assert(duplicateDoAppend.ok && duplicateDoAppend.status === "duplicate", "The same ID and normalized payload should be idempotent");
+assert(progressStoreWriteCount === progressStoreWritesAfterFirstAppend, "An idempotent duplicate should not rewrite storage");
+assert(progressStoreStorage.getItem("hearth-progress-events") === progressStoreAfterFirstAppend, "An idempotent duplicate should leave history byte-for-byte unchanged");
+
+var conflictingDoEvent = JSON.parse(JSON.stringify(completeDoEvent));
+conflictingDoEvent.rating = 4;
+var conflictingDoAppend = HearthProgressEvents.appendCanonical(conflictingDoEvent, progressStoreStorage);
+assert(!conflictingDoAppend.ok && conflictingDoAppend.status === "conflict", "The same ID with different data should be a blocking conflict");
+assert(conflictingDoAppend.errors[0].code === "duplicate_id_conflict", "Duplicate conflicts should be distinguishable from validation failures");
+assert(progressStoreStorage.getItem("hearth-progress-events") === progressStoreAfterFirstAppend, "A conflicting duplicate must not overwrite or append anything");
+
+var missingLearnerDoEvent = JSON.parse(JSON.stringify(completeDoEvent));
+missingLearnerDoEvent.id = "evt-do-missing-learner";
+delete missingLearnerDoEvent.learner_id;
+var missingLearnerBefore = progressStoreStorage.getItem("hearth-progress-events");
+var missingLearnerAppend = HearthProgressEvents.appendResult(missingLearnerDoEvent, progressStoreStorage);
+assert(!missingLearnerAppend.ok && missingLearnerAppend.status === "rejected", "A canonical event without learner_id should be rejected");
+assert(missingLearnerAppend.errors.some(function(item) {{ return item.field === "learner_id"; }}), "Missing learner validation should identify learner_id");
+assert(progressStoreStorage.getItem("hearth-progress-events") === missingLearnerBefore, "Validation failure must not mutate storage");
+assert(HearthProgressEvents.listRaw(progressStoreStorage).length === 2, "Rejected and duplicate canonical events should not be added");
+var journeyStageEvent = JSON.parse(JSON.stringify(completeDoEvent));
+journeyStageEvent.id = "evt-do-wrong-stage-vocabulary";
+journeyStageEvent.evidence_stage = "attempted";
+var journeyStageAppend = HearthProgressEvents.appendCanonical(journeyStageEvent, progressStoreStorage);
+assert(!journeyStageAppend.ok && journeyStageAppend.errors.some(function(item) {{ return item.code === "invalid_evidence_stage"; }}), "Canonical writes should reject Journey display-stage labels rather than store them");
+assert(progressStoreStorage.getItem("hearth-progress-events") === missingLearnerBefore, "Evidence-stage validation failure must not mutate storage");
+
+var legacyCompatibilityValues = {{
+  "hearth-progress-events": "[]",
+  "hearth-journey-v2": JSON.stringify({{ activeStudentId: "jen-1" }})
+}};
+var legacyCompatibilityStorage = {{
+  getItem: function(key) {{ return Object.prototype.hasOwnProperty.call(legacyCompatibilityValues, key) ? legacyCompatibilityValues[key] : null; }},
+  setItem: function(key, value) {{ legacyCompatibilityValues[key] = String(value); }}
+}};
+var legacyCompatibilityAppend = HearthProgressEvents.appendResult({{
+  id: "legacy-play-1",
+  event_type: "play_activity_completed",
+  node_id: "play",
+  occurred_at: "2026-07-19T11:00:00.000Z",
+  data: {{ activity_id: "play-call-response" }}
+}}, legacyCompatibilityStorage);
+assert(legacyCompatibilityAppend.ok && legacyCompatibilityAppend.source_format === "legacy_v0", "Incomplete existing producers should be routed to the labelled legacy path");
+assert(legacyCompatibilityAppend.event.learner_id === "jen-1", "Only the labelled legacy path may retain active-Journey learner inference");
+assert(legacyCompatibilityAppend.event.occurred_at === "2026-07-19T11:00:00.000Z", "Approved transitional fields should not be stripped from legacy producer events");
+
+var cappedEvents = [];
+for (var cappedIndex = 0; cappedIndex < 1000; cappedIndex += 1) {{
+  cappedEvents.push({{
+    id: "legacy-cap-" + cappedIndex,
+    version: 1,
+    simulator_id: "hearth-guitar",
+    learner_id: "jen-1",
+    event_type: "concept_read",
+    node_id: "knowing",
+    data: {{ index: cappedIndex }},
+    created_at: "2026-07-18T09:00:00.000Z"
+  }});
+}}
+var cappedStorageValue = JSON.stringify(cappedEvents);
+var cappedStorage = {{
+  getItem: function(key) {{ return key === "hearth-progress-events" ? cappedStorageValue : null; }},
+  setItem: function(key, value) {{ if (key === "hearth-progress-events") cappedStorageValue = String(value); }}
+}};
+var cappedDoEvent = JSON.parse(JSON.stringify(completeDoEvent));
+cappedDoEvent.id = "evt-do-cap-1000";
+var cappedAppend = HearthProgressEvents.appendCanonical(cappedDoEvent, cappedStorage);
+var cappedAfter = HearthProgressEvents.listRaw(cappedStorage);
+assert(cappedAppend.ok && cappedAfter.length === 1000, "The shared event store should retain its predictable 1,000-event cap");
+assert(cappedAfter[0].id === "legacy-cap-1", "Appending event 1,001 should remove exactly the oldest event");
+assert(cappedAfter[999].id === "evt-do-cap-1000", "The newest canonical event should occupy the final capped position");
 
 var migrationStorageValues = {{
   "hearth_users": JSON.stringify([

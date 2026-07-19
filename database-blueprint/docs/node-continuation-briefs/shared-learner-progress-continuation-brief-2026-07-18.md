@@ -1,10 +1,11 @@
 # The Hearth Mastery: Shared Learner And Progress Continuation Brief
 
 Date: 2026-07-18
-Branch: `cleanup/handoff-architecture`
-Verified commit: `93bcc64`
+Updated: 2026-07-19
+Branch: `build/shared-learner-progress`
+Previous verified commit: `675c4c02f9b487dc49d8047a6a09973357bdc928`
 Audit: `whole-simulator-integration-audit-2026-07-18.md`
-Readiness: Partial infrastructure; blocks honest cross-node progress
+Readiness: Event runtime ready; active-learner service and migrations remain separate
 Browser verification: profile comparison complete; migration pending
 
 ## 1. Plain-Language Purpose
@@ -57,10 +58,12 @@ timestamps, schema version, and optional recording/project/source/return IDs.
 
 ## 7. Learner Memory And Progress
 
-Prototype events use `hearth-progress-events` with a 1,000-event cap and no
-validation or duplicate protection. Several legacy stores compete with it.
-Build a read-only migration report first, then migrate node by node. Capability
-status must be derived; raw events remain immutable evidence.
+Events use `hearth-progress-events` with a predictable 1,000-event cap.
+Canonical appends now validate the approved envelope, require explicit learner
+identity, and block conflicting duplicate IDs. A labelled compatibility path
+keeps existing incomplete producers and raw legacy events readable. Several
+legacy progress stores still compete with it. Capability status must be
+derived; raw events remain immutable evidence.
 
 ## 8. Content And Source State
 
@@ -74,30 +77,41 @@ copyrighted media or sensitive notes inside event payloads.
 - Create learner handoff regression: automated pass.
 - Shared node event model assertions: pass.
 - General smoke/ownership checks: pass at `93bcc64`.
+- Runtime event normalization/store regressions: JXA pass in this checkpoint.
+- Core, prototype, local-reference, and renderer-ownership checks: pass in this
+  checkpoint.
+- The Node-based loaded-script syntax check remains skipped because Node is not
+  installed; no dependency was installed, and the repository's JXA evaluator
+  successfully loaded the new runtime modules.
 
-Migration, duplicate event, profile switch in every node, refresh/resume,
-privacy, export, and two-device sync tests are pending.
+Duplicate event, canonical validation, legacy readability, non-rewriting reads,
+and the 1,000-event cap are automated. Profile switch in every node,
+refresh/resume round trips, privacy, export, and two-device sync tests remain.
 
 ## 10. Known Gaps And Risks
 
 - Profile leakage can misrepresent student work.
 - A migration mistake could overwrite valuable prototype history.
-- Event inference can attach work to the wrong learner.
+- Legacy compatibility inference can still attach an incomplete producer's work
+  to the wrong learner until the active-learner service replaces it.
 - Whole percentages are not pedagogically meaningful.
 - LocalStorage caps and no sync create future data loss.
 
 ## 11. Prioritized Next Build
 
-1. **Now:** inventory every active key and build a read-only per-profile
-   migration preview. Acceptance: report shows destination and conflicts without
-   modifying storage. Time: 3-5 hours. Credit: medium. Images/research: no.
-2. **Now:** create one active-learner service and validated event envelope.
-   Acceptance: all new node events require explicit learner and stable IDs.
-   Time: 4-7 hours. Credit: medium.
-3. **Next:** migrate Foundation, Do, Know, and Practice one at a time with
+1. **Completed:** inventory every active key and build a read-only per-profile
+   migration preview. The report shows destinations and conflicts without
+   modifying storage.
+2. **Completed:** add the validated, duplicate-safe event envelope runtime.
+   Canonical events require explicit learner and stable IDs; legacy producers
+   remain isolated behind a named compatibility path.
+3. **Now:** create one active-learner service without migrating node progress.
+   Acceptance: all nodes resolve the same explicit learner across profile
+   switch and refresh. Time: 3-5 hours. Credit: medium.
+4. **Next:** migrate Foundation, Do, Know, and Practice one at a time with
    rollback tests; redesign progress around capability evidence plus separate
    activity/time totals. Time: 10-18 hours staged. Credit: medium.
-4. **Later:** backend sync, conflict handling, roles, privacy, and export.
+5. **Later:** backend sync, cross-device conflict handling, roles, privacy, and export.
    Time: multi-day. Credit: high.
 
 ## 12. Do-Not-Disturb List
@@ -108,10 +122,10 @@ irreversible migration without preview and backup.
 
 ## 13. Recommended Opening Instruction
 
-Read this brief and the audit, inspect all active stores, and produce the
-read-only migration preview before changing learner data. Keep migrations
-reversible, require explicit learner identity, update this brief at the next
-checkpoint, explain decisions plainly, and warn before high-credit work.
+Read this brief, the storage inventory, and the event contract, then build only
+the active-learner service. Do not migrate learner records in that batch. Keep
+the event compatibility path intact, require explicit identity from canonical
+producers, and test profile switch plus refresh before changing node ownership.
 
 ## 14. Lane A Checkpoint — 2026-07-19
 
@@ -134,6 +148,35 @@ The detailed findings are in
 `shared-learner-storage-inventory-and-migration-preview-v1.md`; the proposed
 integration boundary is in `shared-event-and-handoff-contracts-proposal-v1.md`.
 
-Next gate: orchestrator review, then one active-learner service and validated,
-duplicate-safe event normalization. Foundation, Know, Practice, and other
-global legacy stores must not be migrated until that gate passes.
+The runtime event gate is complete. The next gate is the separate active-learner
+service. Foundation, Know, Practice, and other global legacy stores must not be
+migrated until that service and its profile-switch checks pass.
+
+## 15. Runtime Event Store Checkpoint — 2026-07-19
+
+This batch added `core/progress-event.js` and upgraded
+`adapters/progress-event-store.js` without changing learner records or applying
+the migration preview.
+
+- Canonical fields survive append and raw/normalized read, including Do's
+  destination, capability IDs, evidence stage/source, attempt/session IDs,
+  timestamps, return route, fallback instruction, and structured compatibility
+  payload.
+- Canonical `learner_id` is mandatory and never inferred. The old Journey-active
+  inference exists only inside `appendLegacy` for current incomplete producers.
+- Equivalent normalized duplicate IDs are idempotent. Conflicting duplicate IDs
+  are rejected before any write.
+- `list`/`listRaw` preserve direct access to legacy records. `listNormalized`
+  labels read-time projections and never writes them back.
+- Journey level aliases normalize to the live `L1` identifier for canonical
+  comparison; raw legacy values are unchanged. Shared evidence stages map into
+  Journey states only when read.
+- Invalid event-store JSON blocks append rather than being overwritten. The
+  newest-1,000 retention rule remains unchanged for successful new events.
+
+Remaining integration risks: the current shared branch does not yet contain
+Do commit `63e62d3aae8bf5af21eef6b0f2d8e0a22b73f180`; the active-learner service is
+still absent; legacy auto-routing is intentionally temporary; Journey does not
+yet aggregate these canonical events; and the real cross-node browser round
+trips must be verified after the branches integrate. No node progress migration
+belongs in this checkpoint.

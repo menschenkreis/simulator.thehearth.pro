@@ -4,17 +4,19 @@ Date: 2026-07-19
 
 Branch: `build/shared-learner-progress`
 
-Status: Proposed for orchestrator and node-owner review; not wired into producers
+Status: Approved integration boundary; event runtime wired, handoff receivers pending
 
-Formal proposals:
+Formal contracts:
 
 - `core/contracts/progress-event-envelope-v1.schema.json`
 - `core/contracts/handoff-envelope-v1.schema.json`
 - `core/contracts/evidence-stage-compatibility-v1.json`
 
-These contract files define the integration boundary. They do not yet replace
-`adapters/progress-event-store.js`, validate live events, or migrate existing
-records.
+These contract files define the integration boundary. `core/progress-event.js`
+now implements the event normalization and validation rules, and
+`adapters/progress-event-store.js` applies them to canonical appends. This batch
+does not validate handoff receivers, create an active-learner service, migrate
+node progress, or rewrite existing event records.
 
 ## Shared Event Envelope
 
@@ -23,7 +25,7 @@ command and it does not directly unlock a level.
 
 V1 preserves the current names `id`, `version`, `simulator_id`, `event_type`,
 `learner_id`, and `node_id`. `node_id` remains the node that owned the action,
-avoiding a breaking rename to `source_node_id`. The proposal adds explicit:
+avoiding a breaking rename to `source_node_id`. The contract adds explicit:
 
 - destination node when the result is meant for a handoff;
 - activity, lesson, Journey level, capability, attempt, and session context;
@@ -89,7 +91,7 @@ Example:
   "actor_role": "learner",
   "node_id": "doing",
   "destination_node_id": "journey",
-  "journey_level_id": "level-1",
+  "journey_level_id": "L1",
   "category_id": "scales",
   "lesson_id": "level-1-lesson-1",
   "activity_id": "a-minor-root-notes",
@@ -150,13 +152,32 @@ Example:
 6. Raw recordings, credentials, arbitrary copyrighted media, and unrestricted
    sensitive notes do not belong in `data`.
 
-### Placement During Legacy Compatibility
+### Runtime Storage And Legacy Compatibility
 
-The current local event store persists only its legacy envelope. Until that
-store is upgraded, producers should emit the new canonical fields at the top
-level and mirror them under `data`. They should also set `created_at` to the
-action's `occurred_at` value. This lets current storage retain the context while
-the producer shape is ready for the validated envelope.
+The local event store now preserves every approved canonical top-level field.
+New producers should call the strict canonical path and keep all contract fields
+top-level. A temporary `data` mirror remains readable for deployments or node
+branches that still pass through the older store, but it is compatibility data,
+not a second source of truth.
+
+Runtime APIs are deliberately separated:
+
+- `appendCanonical` validates and normalizes the full V1 envelope. It requires
+  explicit `learner_id` and never infers identity.
+- `appendResult` automatically sends events containing the new capability,
+  evidence, or recorded-time fields to the canonical path. This leaves current
+  incomplete Play and older node events on compatibility behavior until their
+  producers are upgraded.
+- `appendLegacy` is the clearly labelled compatibility path. It retains the old
+  active-Journey learner fallback only for existing incomplete producers.
+- `listRaw` (and the existing `list` alias) returns stored records unchanged.
+  `listNormalized` returns wrappers labelled `canonical_v1` or `legacy_v0`;
+  legacy values are projected in memory only.
+
+Validation, duplicate, conflict, startup, and read operations never rewrite
+existing history. A successful new append retains the predictable newest 1,000
+records. Invalid or non-array event-store JSON blocks an append instead of being
+silently replaced.
 
 Do not introduce `source_node_id` on an event: `node_id` is the source/owner.
 Use `attempt_id` for one activity attempt and `session_id` for its enclosing
@@ -193,7 +214,7 @@ Example:
   "destination_node_id": "doing",
   "activity_id": "a-minor-root-notes",
   "lesson_id": "level-1-lesson-1",
-  "journey_level_id": "level-1",
+  "journey_level_id": "L1",
   "capability_ids": ["L1-MAP-01", "L1-TIME-01"],
   "attempt_id": "attempt-jen-pent-01",
   "session_id": "session-jen-20260719",
@@ -242,12 +263,13 @@ Example:
 
 ## Compatibility And Next Gate
 
-The current event store remains readable. New validation should be introduced
-through a compatibility adapter, not by rewriting its existing 1,000-event
-history. Node branches should map their next events and handoffs to these
-schemas only after orchestrator review.
+Raw legacy records remain readable and are not rewritten by the normalization
+view. Duplicate protection compares normalized payloads: the same ID and same
+payload is idempotent without a storage write; the same ID with different data
+is a blocking conflict and cannot overwrite the earlier receipt.
 
-The next shared-progress batch is the active-learner service plus runtime event
-normalization, validation, and duplicate protection. It must include profile
-switch, refresh/resume, duplicate ID, and legacy compatibility tests before any
-node migration begins.
+The next shared-progress batch is the separate active-learner service. After
+that lands, integrate the Do producer commit and validate Journey -> Do ->
+Journey and Practice -> Do -> Practice round trips, including refresh and
+idempotent retry behavior. Node progress migration remains a later, separately
+approved operation.

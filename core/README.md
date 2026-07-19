@@ -44,9 +44,10 @@ Those pieces can use the core, but they should not live inside the core.
 | `lesson-session.js` | Pure lesson navigation and answer evaluation state. |
 | `learner-progress.js` | Pure learner progress record helpers for lessons. |
 | `learner-migration-preview.js` | Read-only inventory and per-profile preview for legacy learner/progress storage. |
+| `progress-event.js` | Pure canonical progress-event normalization, validation, duplicate comparison, Journey-stage mapping, and read-time legacy projection. |
 | `play-domain.js` | Pure Play destination, cultural context, route, activity, result, and recommendation contracts. |
-| `contracts/progress-event-envelope-v1.schema.json` | Proposed append-only shared evidence envelope. |
-| `contracts/handoff-envelope-v1.schema.json` | Proposed learner-safe cross-node task and return envelope. |
+| `contracts/progress-event-envelope-v1.schema.json` | Approved append-only shared evidence envelope. |
+| `contracts/handoff-envelope-v1.schema.json` | Approved learner-safe cross-node task and return envelope. |
 | `contracts/evidence-stage-compatibility-v1.json` | Explicit shared-event to Journey evidence-stage mapping. |
 
 ## Checks
@@ -98,6 +99,19 @@ Those pieces can use the core, but they should not live inside the core.
 
 The preview only reads a Storage-compatible object. It has no apply, write, or
 delete API and never includes raw stored values in its report.
+
+`progress-event.js` currently exposes:
+
+- canonical-candidate detection for the transitional store bridge
+- strict normalization and validation for the approved event envelope
+- `level-1` to `L1` and canonical-to-Journey evidence-stage mapping
+- stable normalized-payload comparison for duplicate protection
+- labelled, read-time-only projection of raw legacy records
+
+The matching `adapters/progress-event-store.js` keeps raw reads available,
+offers normalized read wrappers, and never rewrites history during startup or
+reading. Canonical appends require an explicit learner ID. Only the deliberately
+named legacy compatibility path retains the old active-Journey learner fallback.
 
 `play-domain.js` currently exposes:
 

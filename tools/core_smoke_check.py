@@ -57,6 +57,13 @@ CORE_MARKERS = {
         "recordLessonAnswer",
         "summarizeProgress",
     ],
+    "core/progress-event.js": [
+        "HearthProgressEventContract",
+        "validateAndNormalize",
+        "normalizeForRead",
+        "sameNormalizedPayload",
+        "toJourneyEvidenceStage",
+    ],
     "core/play-domain.js": [
         "HearthPlayDomain",
         "normalizeDestination",
