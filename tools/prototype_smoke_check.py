@@ -13,6 +13,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 REQUIRED_MARKERS = {
     "simulator.html": [
+        '<link rel="icon" type="image/png" sizes="192x192" href="images/icon-192.png">',
         "window.HEARTH_AUTO_AMBIENCE=false;",
         "assets/js/scene-first.js",
         "adapters/create-cauldron-scene-viewer.js",
