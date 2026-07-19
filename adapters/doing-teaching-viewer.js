@@ -462,6 +462,34 @@
     '</div>';
   }
 
+  function renderEvidence(options) {
+    var evidence = options.evidence;
+    var ui = options.ui;
+    if (!evidence || !evidence.projectedState) return "";
+    var title = "Evidence recorded";
+    var message = evidence.message || "This attempt is part of your drill history.";
+    var className = "";
+    if (evidence.needsEasierStep) {
+      title = "Easier step saved for Practice";
+      message = options.easier && typeof options.easier === "object"
+        ? options.easier.instruction || message
+        : options.easier || message;
+      className = " needs-easier";
+    } else if (evidence.projectedState === "mastered") {
+      title = "Mastery supported";
+      className = " is-mastered";
+    } else if (evidence.projectedState === "comfortable") {
+      title = "Building reliability";
+    } else if (evidence.projectedState === "practiced") {
+      title = "Attempt recorded";
+    } else if (evidence.projectedState === "seen") {
+      title = "Ready for a first attempt";
+    }
+    return '<div class="doing-teaching-evidence' + className + '" data-evidence-state="' + ui.escapeHtml(evidence.projectedState) + '">' +
+      '<span>Progress evidence</span><b>' + ui.escapeHtml(title) + '</b><p>' + ui.escapeHtml(message) + '</p>' +
+    '</div>';
+  }
+
   function renderScene(options) {
     options = options || {};
     var cat = options.cat;
@@ -502,6 +530,11 @@
           currentState: currentState,
           stateAction: options.stateAction
         }) + '</div>' +
+        renderEvidence({
+          evidence: options.evidence,
+          easier: easier,
+          ui: ui
+        }) +
         renderCreateHandoff({
           ui: ui,
           cat: cat,
@@ -513,7 +546,8 @@
   }
 
   return {
-    version: "1.0.0",
+    version: "1.1.0",
+    renderEvidence: renderEvidence,
     renderFeedback: renderFeedback,
     renderListenChips: renderListenChips,
     markersForVisual: markersForVisual,

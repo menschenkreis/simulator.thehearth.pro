@@ -18,6 +18,7 @@
     var config = options.config;
     var ui = options.ui;
     var getState = options.getState;
+    var getEvidence = options.getEvidence;
     var stateLabels = options.stateLabels || {};
 
     if (!selectedItem) {
@@ -35,6 +36,7 @@
       config: config,
       ui: ui,
       currentState: getState(selectedItem.drill.id),
+      evidence: typeof getEvidence === "function" ? getEvidence(selectedItem.drill.id) : null,
       stateLabels: stateLabels,
       stateAction: "_setDoingRoomDrillState"
     });
@@ -120,7 +122,7 @@
   }
 
   return {
-    version: "0.1.0",
+    version: "0.2.0",
     renderRoomConcept: renderRoomConcept,
     renderRoomDrillNodes: renderRoomDrillNodes,
     renderRoomGraphic: renderRoomGraphic,

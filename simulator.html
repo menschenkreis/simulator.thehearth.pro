@@ -1148,6 +1148,12 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 .doing-teaching-safety{margin:8px 0 0;color:rgba(255,200,155,.68);font-size:.57rem;line-height:1.35;}
 .doing-teaching-content .doing-room-feedback{margin-top:8px;padding-top:8px;gap:5px;}
 .doing-teaching-content .doing-room-feedback-btn{padding:6px 8px;font-size:.57rem;}
+.doing-teaching-evidence{display:grid;grid-template-columns:auto minmax(0,1fr);column-gap:9px;row-gap:2px;margin-top:8px;border-left:2px solid rgba(240,202,117,.46);background:linear-gradient(90deg,rgba(240,202,117,.08),transparent);padding:7px 9px;}
+.doing-teaching-evidence>span{grid-row:1/3;align-self:center;font-family:JetBrains Mono,monospace;font-size:.44rem;letter-spacing:.09em;text-transform:uppercase;color:rgba(212,175,105,.64);}
+.doing-teaching-evidence>b{color:rgba(244,235,216,.88);font-size:.59rem;line-height:1.25;}
+.doing-teaching-evidence>p{margin:0;color:rgba(238,227,207,.68);font-size:.55rem;line-height:1.35;}
+.doing-teaching-evidence.needs-easier{border-left-color:#ff8a6f;background:linear-gradient(90deg,rgba(255,112,88,.11),transparent);}
+.doing-teaching-evidence.is-mastered{border-left-color:#f3cf74;background:linear-gradient(90deg,rgba(243,207,116,.14),transparent);}
 .doing-teaching-create{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:9px;padding-top:9px;border-top:1px solid rgba(212,175,105,.12);}
 .doing-teaching-create>div{min-width:0;display:grid;gap:3px;}
 .doing-teaching-create span{font-family:JetBrains Mono,monospace;font-size:.45rem;letter-spacing:.09em;text-transform:uppercase;color:rgba(212,175,105,.62);}
@@ -2646,7 +2652,7 @@ body:has(.doing-shell) .mobile-character{display:none;}
 <script src="adapters/browser-progress-store.js"></script>
 <script src="adapters/progress-event-store.js"></script>
 <script src="adapters/foundation-progress-bridge.js"></script>
-<script src="adapters/doing-progress-bridge.js?v=20260719"></script>
+<script src="adapters/doing-progress-bridge.js?v=20260719b"></script>
 <script src="adapters/teaching-engine-core-adapter.js"></script>
 <script src="assets/js/teaching-engine.js"></script>
 <script src="assets/js/fretboard.js"></script>
@@ -2665,13 +2671,13 @@ body:has(.doing-shell) .mobile-character{display:none;}
 <script src="assets/js/video-roadmap.js"></script>
 <script src="adapters/doing-ui-utils.js?v=20260717"></script>
 <script src="adapters/doing-config.js?v=20260717"></script>
-<script src="adapters/doing-drill-catalog.js?v=20260718b"></script>
+<script src="adapters/doing-drill-catalog.js?v=20260719b"></script>
 <script src="adapters/doing-drill-board-model.js?v=20260717"></script>
 <script src="adapters/doing-controls-controller.js?v=20260717"></script>
 <script src="adapters/doing-drill-adjust-controller.js?v=20260717"></script>
 <script src="adapters/doing-drill-preview-controller.js?v=20260717"></script>
-<script src="adapters/doing-teaching-viewer.js?v=20260718b"></script>
-<script src="adapters/doing-drill-detail-viewer.js?v=20260717"></script>
+<script src="adapters/doing-teaching-viewer.js?v=20260719b"></script>
+<script src="adapters/doing-drill-detail-viewer.js?v=20260719b"></script>
 <script src="adapters/doing-drill-board-viewer.js?v=20260717"></script>
 <script src="adapters/doing-shell-viewer.js?v=20260717"></script>
 <script src="adapters/doing-entry-viewer.js"></script>
@@ -2679,8 +2685,8 @@ body:has(.doing-shell) .mobile-character{display:none;}
 <script src="adapters/doing-explorer-controller.js"></script>
 <script src="adapters/doing-map-viewer.js?v=20260717b"></script>
 <script src="adapters/doing-map-controller.js?v=20260717"></script>
-<script src="adapters/doing-room-viewer.js?v=20260717b"></script>
-<script src="adapters/doing-panel-controller.js?v=20260719"></script>
+<script src="adapters/doing-room-viewer.js?v=20260719b"></script>
+<script src="adapters/doing-panel-controller.js?v=20260719b"></script>
 <script src="adapters/knowing-level-model.js"></script>
 <script src="adapters/knowing-shelf-viewer.js"></script>
 <script src="adapters/knowing-shelf-controller.js"></script>

@@ -43,6 +43,7 @@
         config: config,
         ui: ui,
         currentState: state,
+        evidence: options.evidence || null,
         stateLabels: config.stateLabels || {},
         stateAction: stateAction,
         pageMode: true
@@ -51,7 +52,7 @@
   }
 
   return {
-    version: "0.1.0",
+    version: "0.2.0",
     renderDoingDrillDetail: renderDoingDrillDetail
   };
 });
