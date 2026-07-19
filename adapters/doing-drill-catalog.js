@@ -39,6 +39,8 @@
       shortTitle: "1-2-3-4",
       level: 1,
       hand: "left-hand",
+      capabilityIds: [],
+      relatedCapabilityIds: ["L1-PREP-01", "L1-PRACTICE-01"],
       goal: "Give every fretting finger one calm, clean contact with the string.",
       setup: "Start around fret 5 where the frets are comfortable. Use one finger per fret.",
       steps: [
@@ -64,6 +66,8 @@
       shortTitle: "Hand Position",
       level: 1,
       hand: "left-hand",
+      capabilityIds: [],
+      relatedCapabilityIds: ["L1-PREP-01"],
       goal: "Find a repeatable hand shape that lets the fingertips land cleanly.",
       setup: "Rest the thumb lightly behind the neck and let the fingers curve over the strings.",
       steps: [
@@ -84,6 +88,8 @@
       shortTitle: "1-2-4 Reach",
       level: 1,
       hand: "left-hand",
+      capabilityIds: [],
+      relatedCapabilityIds: ["L1-PREP-01", "L1-PRACTICE-01"],
       goal: "Teach the pinky to reach without forcing the hand open.",
       setup: "Begin around fret 7. Use fingers 1, 2, and 4 across three neighbouring frets.",
       steps: [
@@ -104,6 +110,7 @@
       shortTitle: "Am Box 1",
       level: 1,
       hand: "left-hand",
+      capabilityIds: ["L1-MAP-01", "L1-READ-01"],
       goal: "Learn one reliable A minor pentatonic shape and recognise its A root notes.",
       setup: "Use box 1 at the 5th fret. Begin and end on an A root.",
       steps: [
@@ -126,6 +133,8 @@
       shortTitle: "Down-Up",
       level: 1,
       hand: "right-hand",
+      capabilityIds: ["L1-TIME-01"],
+      relatedCapabilityIds: ["L1-PRACTICE-01"],
       goal: "Make down and up strokes feel like one even movement.",
       setup: "Mute or fret one comfortable note. Rest the forearm and hold the pick lightly.",
       steps: [
@@ -146,6 +155,7 @@
       shortTitle: "Strum Engine",
       level: 1,
       hand: "right-hand",
+      capabilityIds: ["L1-TIME-01", "L1-TIME-02"],
       goal: "Keep the strumming hand moving steadily, even when a stroke does not touch the strings.",
       setup: "Lightly mute all six strings with the fretting hand.",
       steps: [
@@ -176,6 +186,7 @@
       shortTitle: "Shuffle",
       level: 1,
       hand: "right-hand",
+      capabilityIds: ["L1-TIME-01", "L1-TIME-02"],
       goal: "Feel the long-short swing that gives a blues shuffle its movement.",
       setup: "Use one muted string or a simple A5 shape before adding chord changes.",
       steps: [
@@ -196,6 +207,8 @@
       shortTitle: "PIMA",
       level: 1,
       hand: "right-hand",
+      capabilityIds: ["L1-TIME-02"],
+      relatedCapabilityIds: ["L1-PREP-01"],
       goal: "Give the thumb and three fingers clear, separate jobs.",
       setup: "Use open strings: thumb on a bass string, i on G, m on B, a on high e.",
       steps: [
@@ -216,6 +229,8 @@
       shortTitle: "Rest / Free",
       level: 1,
       hand: "right-hand",
+      capabilityIds: [],
+      relatedCapabilityIds: ["L1-PREP-01", "L1-PRACTICE-01"],
       goal: "Hear and feel the difference between the two basic finger strokes.",
       setup: "Use the index finger on the first or second string.",
       steps: [
@@ -238,6 +253,8 @@
       difficulty: 1,
       level: 1,
       hand: "both-hands",
+      capabilityIds: [],
+      relatedCapabilityIds: ["L1-PREP-01", "L1-PRACTICE-01"],
       bpm: "Free",
       duration: "3 min",
       source: "Hearth synthesis: clean-contact principles",
@@ -261,6 +278,7 @@
       difficulty: 1,
       level: 1,
       hand: "both-hands",
+      capabilityIds: ["L1-HARM-01"],
       bpm: "Free",
       duration: "4 min",
       source: "Hearth synthesis: beginner chord-check routine",
@@ -297,6 +315,7 @@
       difficulty: 1,
       level: 1,
       hand: "both-hands",
+      capabilityIds: ["L1-HARM-01", "L1-HARM-02", "L1-TIME-01"],
       bpm: "Free-60",
       duration: "5 min",
       source: "Hearth synthesis: shared-finger chord transition",
@@ -320,6 +339,8 @@
       difficulty: 1,
       level: 1,
       hand: "both-hands",
+      capabilityIds: ["L1-MAP-01", "L1-MAP-02", "L1-TIME-01"],
+      relatedCapabilityIds: ["L1-PLAY-01"],
       bpm: "60-100",
       duration: "5 min",
       source: "Jen lesson: A minor pentatonic consolidation",

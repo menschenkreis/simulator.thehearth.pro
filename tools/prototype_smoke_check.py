@@ -444,6 +444,12 @@ REQUIRED_MARKERS = {
     "adapters/doing-progress-bridge.js": [
         "HearthDoingProgressBridge",
         "progressForLearner",
+        "evidenceForDrill",
+        "masteredDistinctDays",
+        "destination_node_id",
+        "attempt_id",
+        "occurred_at",
+        "return_route",
         "migrateLegacyProgress",
         "drill_opened",
         "hearth-doing-progress-migration-v1",
@@ -457,6 +463,7 @@ REQUIRED_MARKERS = {
     "adapters/doing-drill-catalog.js": [
         "HearthDoingDrillCatalog",
         "approvedCount",
+        "capabilityIds",
         "reviewStatus",
     ],
     "adapters/doing-ui-utils.js": [
@@ -487,6 +494,7 @@ REQUIRED_MARKERS = {
     "adapters/doing-teaching-viewer.js": [
         "HearthDoingTeachingViewer",
         "renderScene",
+        "renderEvidence",
         "doing-teaching-scene",
     ],
     "adapters/doing-drill-detail-viewer.js": [
