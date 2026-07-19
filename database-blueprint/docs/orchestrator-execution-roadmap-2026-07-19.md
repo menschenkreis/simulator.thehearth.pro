@@ -45,7 +45,7 @@ return evidence through stable contracts.
 
 | Area | Strongest current asset | Highest-priority risk | First responsible batch |
 | --- | --- | --- | --- |
-| Foundation | Strong threshold and Fret 0 route | Global progress and no shared evidence | Await Foundation status report, then learner migration |
+| Foundation | Strong threshold and Fret 0 route | Global progress and no shared evidence | Learner-scoped orientation evidence after the shared contract |
 | Do | Best physical drill interaction | One click can overclaim mastery | Finish repeated-evidence and handoff batch already in progress |
 | Know | Approved library and book metaphor | Reader paths and global shelf progress disagree | One reader path plus learner-scoped evidence |
 | Practice | Strong six-stage session | Unfinished plans can leak between learners | Learner-scoped active sessions and safe legacy read |
@@ -56,9 +56,9 @@ return evidence through stable contracts.
 | Mastery | Working Witness-Notice-Try-Carry loop | Tutorial source is not a true exemplar | Make one encounter trustworthy end to end |
 | Journey | Strong map, roadmap, and lesson rhythm | False level completion and Jen shown too far ahead | Evidence preview, correct preflight, one real node round trip |
 
-The Study report was submitted twice with the same result. Foundation is the
-only node specialist status report still missing. Do is already represented by
-its live continuation branch and current in-progress batch.
+All node specialist status reports have now been received. The Study report was
+submitted twice with the same result. Do is represented by its live
+continuation branch and current in-progress batch.
 
 ## Shared Contract Gate
 
@@ -171,7 +171,9 @@ Recommended order:
 
 1. Practice: learner-scoped unfinished sessions and legacy safety.
 2. Know: one reader path and learner-scoped opened/read/answered/applied events.
-3. Foundation: learner-scoped completion and first shared evidence.
+3. Foundation: learner-scoped `opened`, `experienced`, `answered`, and
+   `orientation_completed` evidence; resume the latest unfinished block and
+   preserve the approved gateway and ten-fret structure.
 4. Whole-progress display: remove misleading aggregate percentage and separate
    activity, time, capability evidence, and artifacts.
 
@@ -261,5 +263,5 @@ The first milestone is complete when:
 ## Current Orchestrator Assignments
 
 Start Lane A, Lane B, and Lane C only. Keep all other specialist chats in
-reporting or planning mode until their dependency gate opens. Obtain the
-missing Foundation status report, but do not begin its migration yet.
+planning mode until their dependency gate opens. Foundation reporting is
+complete, but its learner migration must not begin before the shared contract.
