@@ -62,6 +62,7 @@ eval(readText(root + "/core/progress-event.js"));
 eval(readText(root + "/adapters/progress-event-store.js"));
 eval(readText(root + "/core/play-domain.js"));
 eval(readText(root + "/assets/js/journey-data.js"));
+eval(readText(root + "/adapters/study-key-chamber-model.js"));
 eval(readText(root + "/assets/js/play-traditions.js"));
 eval(readText(root + "/adapters/play-atlas-model.js"));
 eval(readText(root + "/adapters/play-atlas-viewer.js"));
@@ -1657,6 +1658,143 @@ assert(playProgressEvent.data.found_home === true, "Play completion events shoul
 var playPracticeRecommendation = HearthPlayDomain.createPracticeRecommendation(playResult);
 assert(playPracticeRecommendation.learner_id === "jen", "Play Practice recommendations should stay learner-specific");
 assert(playPracticeRecommendation.focus.indexOf("Land on A") !== -1, "Play should pass the repeat focus into Practice");
+
+function createStudyStorage(initialValues) {{
+  var values = initialValues || {{}};
+  return {{
+    values: values,
+    getItem: function(key) {{ return this.values[key] || null; }},
+    setItem: function(key, value) {{ this.values[key] = String(value); }},
+    removeItem: function(key) {{ delete this.values[key]; }}
+  }};
+}}
+
+globalThis.JOURNEY_STUDENT_COMPANIONS = JOURNEY_STUDENT_COMPANIONS;
+globalThis.KNOWING = {{
+  categories: [
+    {{
+      id: "rhythm",
+      title: "Rhythm",
+      description: "Time, pulse, and grouping.",
+      topics: [{{ id: "time-signatures", title: "Time Signatures", source: "Test rhythm source" }}]
+    }},
+    {{
+      id: "scales",
+      title: "Scales",
+      description: "Roots and note maps.",
+      topics: [{{ id: "pentatonic", title: "Pentatonic Scale", source: "Test scale source" }}]
+    }}
+  ]
+}};
+
+var aMinorStudyStorage = createStudyStorage({{
+  "hearth-journey-v2": JSON.stringify({{
+    students: [{{ id: "jen", name: "Jen", levels: {{}} }}],
+    activeStudentId: "jen"
+  }})
+}});
+var aMinorStudy = StudyKeyChamberModel.snapshot({{ storage: aMinorStudyStorage }});
+var aMinorStudyText = aMinorStudy.doors.map(function(door) {{
+  return [door.action, door.activity, door.proof].join(" ");
+}}).join(" ").toLowerCase();
+assert(aMinorStudy.subject.subjectFamily === "scales", "A-minor pentatonic should resolve to the scales family");
+assert(aMinorStudy.subject.activityTemplateId === "study-a-minor-pentatonic-v1", "A-minor pentatonic should keep its dedicated Study template");
+assert(aMinorStudy.subject.usesGeneralFallback === false, "A-minor pentatonic should not use the general fallback");
+assert(aMinorStudy.subject.recommendedDoor === "shape", "A-minor pentatonic should still recommend the Shape door");
+assert(aMinorStudyText.indexOf("pentatonic") !== -1 && aMinorStudyText.indexOf("a root") !== -1, "A-minor pentatonic doors should retain root-note and pentatonic work");
+
+var timeSignatureStudyStorage = createStudyStorage({{
+  "hearth-journey-v2": JSON.stringify({{
+    students: [{{ id: "alex", name: "Alex", levels: {{}} }}],
+    activeStudentId: "alex"
+  }}),
+  "hearth-knowing-state": JSON.stringify({{ lastTopic: "time-signatures" }})
+}});
+var timeSignatureStudy = StudyKeyChamberModel.snapshot({{ storage: timeSignatureStudyStorage }});
+var timeSignatureStudyText = timeSignatureStudy.doors.map(function(door) {{
+  return [door.action, door.activity, door.proof].join(" ");
+}}).join(" ").toLowerCase();
+assert(timeSignatureStudy.subject.title === "Time Signatures", "Study should retain the Time Signatures subject title");
+assert(timeSignatureStudy.subject.subjectFamily === "rhythm", "Time Signatures should resolve to the rhythm family");
+assert(timeSignatureStudy.subject.activityTemplateId === "study-rhythm-family-v1", "Time Signatures should use the rhythm Study template");
+assert(timeSignatureStudy.subject.usesGeneralFallback === false, "Time Signatures should not use the general fallback");
+assert(timeSignatureStudyText.indexOf("beat") !== -1 && timeSignatureStudyText.indexOf("measure") !== -1, "Time Signatures doors should ask rhythm-specific work");
+assert(!/pentatonic|tonal centre|a root|a minor phrase|fretboard/.test(timeSignatureStudyText), "Time Signatures doors must not leak A-minor pentatonic activities");
+assert(timeSignatureStudy.doors.every(function(door) {{ return door.templateId === "study-rhythm-family-v1"; }}), "Every Time Signatures door should come from the rhythm template");
+assert(timeSignatureStudy.doors[0].activity !== aMinorStudy.doors[0].activity, "Time Signatures and A-minor pentatonic should receive contrasting Word activities");
+
+var completedTimeSignatureStudy = StudyKeyChamberModel.recordEvidence("word", {{
+  feeling: "nailed",
+  note: "I can count the beat grouping steadily."
+}}, {{ storage: timeSignatureStudyStorage }});
+var timeSignaturePracticeSnapshot = HearthPracticeEntryModel.buildSnapshot({{
+  journeyState: {{ activeStudentId: "alex", students: [{{ id: "alex", name: "Alex", levels: {{}} }}] }},
+  companions: {{}},
+  events: [],
+  studySnapshot: completedTimeSignatureStudy
+}});
+var timeSignaturePracticeText = [
+  timeSignaturePracticeSnapshot.study && timeSignaturePracticeSnapshot.study.nextFocus,
+  timeSignaturePracticeSnapshot.study && timeSignaturePracticeSnapshot.study.message
+].concat(timeSignaturePracticeSnapshot.recommendations || []).join(" ").toLowerCase();
+assert(timeSignaturePracticeSnapshot.study.nextFocus === "Apply Time Signatures in Practice", "A clear Time Signatures result should give Practice the matching subject");
+assert(timeSignaturePracticeSnapshot.recommendations.indexOf("Apply Time Signatures in Practice") !== -1, "Practice recommendations should include the completed Time Signatures Study result");
+assert(!/pentatonic|tonal centre|a root|a minor phrase/.test(timeSignaturePracticeText), "Time Signatures Practice handoff must not leak A-minor language");
+
+function extractFunctionSource(source, name) {{
+  var marker = "function " + name + "(";
+  var start = source.indexOf(marker);
+  assert(start !== -1, "Could not find Journey helper: " + name);
+  var braceStart = source.indexOf("{{", start);
+  var depth = 0;
+  for (var index = braceStart; index < source.length; index++) {{
+    if (source.charAt(index) === "{{") depth += 1;
+    if (source.charAt(index) === "}}") depth -= 1;
+    if (depth === 0) return source.slice(start, index + 1);
+  }}
+  throw new Error("Could not extract Journey helper: " + name);
+}}
+
+var originalJourneyWindow = globalThis.window;
+var originalJourneyStorage = globalThis.localStorage;
+globalThis.window = {{
+  StudyKeyChamberModel: {{
+    snapshot: function() {{ return completedTimeSignatureStudy; }}
+  }}
+}};
+globalThis.localStorage = timeSignatureStudyStorage;
+eval(extractFunctionSource(readText(root + "/assets/js/journey.js"), "journeyStudySignal"));
+var timeSignatureJourneySignal = journeyStudySignal();
+assert(timeSignatureJourneySignal.title === "Apply Time Signatures in Practice", "Journey should surface the correct completed Study subject");
+assert(!/pentatonic|tonal centre|a root|a minor phrase/.test(timeSignatureJourneySignal.title + " " + timeSignatureJourneySignal.body), "Journey Study signal must not leak A-minor language");
+globalThis.window = originalJourneyWindow;
+globalThis.localStorage = originalJourneyStorage;
+
+globalThis.KNOWING = {{
+  categories: [{{
+    id: "uncatalogued",
+    title: "Uncatalogued",
+    description: "A subject without an approved Study family.",
+    topics: [{{ id: "experimental-idea", title: "Experimental Idea", source: "Test unknown source" }}]
+  }}]
+}};
+var generalStudyStorage = createStudyStorage({{
+  "hearth-journey-v2": JSON.stringify({{
+    students: [{{ id: "casey", name: "Casey", levels: {{}} }}],
+    activeStudentId: "casey"
+  }}),
+  "hearth-knowing-state": JSON.stringify({{ lastTopic: "experimental-idea" }})
+}});
+var generalStudy = StudyKeyChamberModel.snapshot({{ storage: generalStudyStorage }});
+var generalStudyText = generalStudy.doors.map(function(door) {{ return door.activity; }}).join(" ").toLowerCase();
+assert(generalStudy.subject.subjectFamily === "general", "An unknown subject should resolve to the general inquiry family");
+assert(generalStudy.subject.activityTemplateId === "study-general-inquiry-v1", "An unknown subject should use the stable general inquiry template");
+assert(generalStudy.subject.usesGeneralFallback === true, "An unknown subject should expose that it uses the general fallback");
+assert(generalStudy.doors.every(function(door) {{ return door.activityLabel === "General inquiry" && door.usesGeneralFallback === true; }}), "Every unknown-subject door should be clearly labelled as a general inquiry");
+assert(generalStudyText.indexOf("general inquiry") !== -1, "Unknown-subject activities should label the general inquiry in their instructions");
+assert(!/pentatonic|tonal centre|a root|a minor phrase/.test(generalStudyText), "The general fallback must not leak A-minor pentatonic activities");
+var publicStudyDefinitions = StudyKeyChamberModel.definitions();
+assert(publicStudyDefinitions.every(function(door) {{ return door.usesGeneralFallback === true && door.activity; }}), "Public Study door definitions should remain complete and use the safe fallback without a subject");
 
 var fakeStorage = {{
   values: {{}},
