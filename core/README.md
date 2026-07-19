@@ -43,7 +43,11 @@ Those pieces can use the core, but they should not live inside the core.
 | `lesson-view-model.js` | Converts lesson seeds into frontend-friendly lesson view objects. |
 | `lesson-session.js` | Pure lesson navigation and answer evaluation state. |
 | `learner-progress.js` | Pure learner progress record helpers for lessons. |
+| `learner-migration-preview.js` | Read-only inventory and per-profile preview for legacy learner/progress storage. |
 | `play-domain.js` | Pure Play destination, cultural context, route, activity, result, and recommendation contracts. |
+| `contracts/progress-event-envelope-v1.schema.json` | Proposed append-only shared evidence envelope. |
+| `contracts/handoff-envelope-v1.schema.json` | Proposed learner-safe cross-node task and return envelope. |
+| `contracts/evidence-stage-compatibility-v1.json` | Explicit shared-event to Journey evidence-stage mapping. |
 
 ## Checks
 
@@ -86,6 +90,14 @@ Those pieces can use the core, but they should not live inside the core.
 - `markLessonCompleted(record, lessonId, options)`
 - `recordLessonAnswer(record, lessonId, concept, correct, options)`
 - `summarizeProgress(record)`
+
+`learner-migration-preview.js` currently exposes:
+
+- `inventory()`
+- `preview(storage, options)`
+
+The preview only reads a Storage-compatible object. It has no apply, write, or
+delete API and never includes raw stored values in its report.
 
 `play-domain.js` currently exposes:
 

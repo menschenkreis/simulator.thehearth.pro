@@ -1,0 +1,141 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://thehearth.pro/contracts/progress-event-envelope-v1.schema.json",
+  "title": "The Hearth Progress Event Envelope V1",
+  "description": "Proposed append-only learner evidence contract. Nullable context fields must still be supplied explicitly by new producers.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "version",
+    "simulator_id",
+    "event_type",
+    "learner_id",
+    "node_id",
+    "destination_node_id",
+    "journey_level_id",
+    "lesson_id",
+    "activity_id",
+    "capability_ids",
+    "attempt_id",
+    "session_id",
+    "evidence_stage",
+    "evidence_source",
+    "occurred_at",
+    "recorded_at",
+    "return_route",
+    "fallback_instruction",
+    "data"
+  ],
+  "properties": {
+    "id": { "$ref": "#/$defs/id" },
+    "version": { "const": 1 },
+    "simulator_id": { "$ref": "#/$defs/id" },
+    "event_type": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9]*(?:_[a-z0-9]+)+$"
+    },
+    "learner_id": { "$ref": "#/$defs/id" },
+    "actor_role": {
+      "type": "string",
+      "enum": ["learner", "teacher", "system"]
+    },
+    "node_id": { "$ref": "#/$defs/id" },
+    "destination_node_id": { "$ref": "#/$defs/nullableId" },
+    "journey_level_id": { "$ref": "#/$defs/nullableId" },
+    "category_id": { "$ref": "#/$defs/nullableId" },
+    "lesson_id": { "$ref": "#/$defs/nullableId" },
+    "activity_id": { "$ref": "#/$defs/nullableId" },
+    "drill_id": { "$ref": "#/$defs/nullableId" },
+    "capability_ids": {
+      "type": "array",
+      "description": "Credit-bearing capability candidates. Every ID must authorize node_id in the Journey capability's nodeIds. Put non-credit context in data.related_capability_ids.",
+      "items": { "$ref": "#/$defs/id" },
+      "uniqueItems": true
+    },
+    "attempt_id": { "$ref": "#/$defs/nullableId" },
+    "session_id": { "$ref": "#/$defs/nullableId" },
+    "evidence_stage": {
+      "type": "string",
+      "enum": ["contact", "attempt", "demonstration", "application", "consolidation"]
+    },
+    "evidence_source": {
+      "type": "string",
+      "enum": [
+        "self_report",
+        "direct_interaction",
+        "teacher_observation",
+        "system_measurement",
+        "artifact",
+        "recording_review",
+        "migrated_legacy"
+      ]
+    },
+    "source_id": { "$ref": "#/$defs/nullableId" },
+    "project_id": { "$ref": "#/$defs/nullableId" },
+    "recording_id": { "$ref": "#/$defs/nullableId" },
+    "handoff_id": { "$ref": "#/$defs/nullableId" },
+    "duration_minutes": {
+      "type": ["number", "null"],
+      "minimum": 0
+    },
+    "rating": {
+      "type": ["number", "null"],
+      "minimum": 0,
+      "maximum": 5
+    },
+    "note": {
+      "type": "string",
+      "maxLength": 2000
+    },
+    "occurred_at": { "$ref": "#/$defs/timestamp" },
+    "recorded_at": { "$ref": "#/$defs/timestamp" },
+    "created_at": {
+      "$ref": "#/$defs/timestamp",
+      "deprecated": true,
+      "description": "Temporary compatibility alias; new consumers use occurred_at and recorded_at."
+    },
+    "return_route": {
+      "oneOf": [
+        { "type": "null" },
+        { "$ref": "#/$defs/route" }
+      ]
+    },
+    "fallback_instruction": {
+      "type": ["string", "null"],
+      "maxLength": 500
+    },
+    "data": {
+      "type": "object",
+      "description": "Small event-specific values only; no raw media, credentials, or unrestricted sensitive notes. related_capability_ids may explain context but never grants capability credit."
+    }
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 160,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+    },
+    "nullableId": {
+      "oneOf": [
+        { "type": "null" },
+        { "$ref": "#/$defs/id" }
+      ]
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "route": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["node_id", "view_id", "params"],
+      "properties": {
+        "node_id": { "$ref": "#/$defs/id" },
+        "view_id": { "$ref": "#/$defs/id" },
+        "params": { "type": "object" }
+      }
+    }
+  }
+}

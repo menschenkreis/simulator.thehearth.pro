@@ -1,0 +1,41 @@
+{
+  "version": "1.0.0",
+  "canonical_stages": [
+    "contact",
+    "attempt",
+    "demonstration",
+    "application",
+    "consolidation"
+  ],
+  "journey_stages": [
+    "not_encountered",
+    "contact",
+    "attempted",
+    "demonstrated",
+    "applied_musically",
+    "consolidated",
+    "externally_assessed"
+  ],
+  "canonical_to_journey": {
+    "contact": "contact",
+    "attempt": "attempted",
+    "demonstration": "demonstrated",
+    "application": "applied_musically",
+    "consolidation": "consolidated"
+  },
+  "journey_to_canonical": {
+    "not_encountered": null,
+    "contact": "contact",
+    "attempted": "attempt",
+    "demonstrated": "demonstration",
+    "applied_musically": "application",
+    "consolidated": "consolidation",
+    "externally_assessed": null
+  },
+  "rules": {
+    "normalization_direction": "Normalize shared event stages into Journey display/progression stages when Journey reads evidence.",
+    "raw_event_policy": "Never rewrite the evidence_stage stored on an existing shared event.",
+    "not_encountered": "A Journey absence state, not an event evidence stage.",
+    "externally_assessed": "A Journey assessment state requiring a separate assessed-evidence contract; it is never inferred from a generic shared stage."
+  }
+}

@@ -1,0 +1,125 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://thehearth.pro/contracts/handoff-envelope-v1.schema.json",
+  "title": "The Hearth Cross-Node Handoff Envelope V1",
+  "description": "Proposed task contract for moving one learner between nodes without losing origin, success criteria, easier recovery, or return context.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "version",
+    "learner_id",
+    "source_node_id",
+    "destination_node_id",
+    "activity_id",
+    "lesson_id",
+    "journey_level_id",
+    "capability_ids",
+    "attempt_id",
+    "session_id",
+    "task",
+    "pass_condition",
+    "easier_step",
+    "return_route",
+    "fallback_instruction",
+    "created_at"
+  ],
+  "properties": {
+    "id": { "$ref": "#/$defs/id" },
+    "version": { "const": 1 },
+    "learner_id": { "$ref": "#/$defs/id" },
+    "actor_role": {
+      "type": "string",
+      "enum": ["learner", "teacher", "system"]
+    },
+    "source_node_id": { "$ref": "#/$defs/id" },
+    "destination_node_id": { "$ref": "#/$defs/id" },
+    "activity_id": { "$ref": "#/$defs/nullableId" },
+    "lesson_id": { "$ref": "#/$defs/nullableId" },
+    "journey_level_id": { "$ref": "#/$defs/nullableId" },
+    "capability_ids": {
+      "type": "array",
+      "description": "Credit-bearing task capabilities. Every ID must authorize destination_node_id in the Journey capability's nodeIds; source_node_id does not need authority merely to route the task.",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/id" },
+      "uniqueItems": true
+    },
+    "attempt_id": { "$ref": "#/$defs/nullableId" },
+    "session_id": { "$ref": "#/$defs/nullableId" },
+    "source_event_id": { "$ref": "#/$defs/nullableId" },
+    "source_id": { "$ref": "#/$defs/nullableId" },
+    "project_id": { "$ref": "#/$defs/nullableId" },
+    "recording_id": { "$ref": "#/$defs/nullableId" },
+    "task": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "instruction", "parameters"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "instruction": { "type": "string", "minLength": 1, "maxLength": 1000 },
+        "parameters": {
+          "type": "object",
+          "description": "Exact task settings such as drill ID, tempo, repetitions, key, role, or excerpt."
+        }
+      }
+    },
+    "pass_condition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["description", "minimum_evidence_stage", "criteria"],
+      "properties": {
+        "description": { "type": "string", "minLength": 1, "maxLength": 700 },
+        "minimum_evidence_stage": {
+          "type": "string",
+          "enum": ["contact", "attempt", "demonstration", "application", "consolidation"]
+        },
+        "criteria": { "type": "object" }
+      }
+    },
+    "easier_step": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["instruction", "parameters"],
+      "properties": {
+        "instruction": { "type": "string", "minLength": 1, "maxLength": 700 },
+        "parameters": { "type": "object" }
+      }
+    },
+    "return_route": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["node_id", "view_id", "params"],
+      "properties": {
+        "node_id": { "$ref": "#/$defs/id" },
+        "view_id": { "$ref": "#/$defs/id" },
+        "params": { "type": "object" }
+      }
+    },
+    "fallback_instruction": { "type": "string", "minLength": 1, "maxLength": 500 },
+    "created_at": { "$ref": "#/$defs/timestamp" },
+    "expires_at": {
+      "oneOf": [
+        { "type": "null" },
+        { "$ref": "#/$defs/timestamp" }
+      ]
+    }
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 160,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+    },
+    "nullableId": {
+      "oneOf": [
+        { "type": "null" },
+        { "$ref": "#/$defs/id" }
+      ]
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    }
+  }
+}

@@ -112,3 +112,28 @@ Read this brief and the audit, inspect all active stores, and produce the
 read-only migration preview before changing learner data. Keep migrations
 reversible, require explicit learner identity, update this brief at the next
 checkpoint, explain decisions plainly, and warn before high-credit work.
+
+## 14. Lane A Checkpoint — 2026-07-19
+
+Branch: `build/shared-learner-progress`
+
+Completed in the first orchestrator batch:
+
+- reviewed the active learner/progress key catalogue against live code;
+- added a read-only, per-profile migration preview with source fingerprints,
+  destinations, conflicts, and rollback instructions;
+- made multi-profile global ownership a blocking conflict rather than silently
+  assigning it to whichever learner is active;
+- proposed formal event and handoff JSON Schemas without wiring them into node
+  producers;
+- added non-destructive tests with write/delete traps and byte-for-byte input
+  comparison;
+- left every existing learner key and runtime migration path unchanged.
+
+The detailed findings are in
+`shared-learner-storage-inventory-and-migration-preview-v1.md`; the proposed
+integration boundary is in `shared-event-and-handoff-contracts-proposal-v1.md`.
+
+Next gate: orchestrator review, then one active-learner service and validated,
+duplicate-safe event normalization. Foundation, Know, Practice, and other
+global legacy stores must not be migrated until that gate passes.

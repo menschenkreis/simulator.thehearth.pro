@@ -54,6 +54,10 @@ eval(readText(root + "/adapters/foundation-audio.js"));
 eval(readText(root + "/core/lesson-view-model.js"));
 eval(readText(root + "/core/lesson-session.js"));
 eval(readText(root + "/core/learner-progress.js"));
+var learnerMigrationPreviewSource = readText(root + "/core/learner-migration-preview.js");
+assert(learnerMigrationPreviewSource.indexOf(".setItem(") === -1, "Learner migration preview must not contain a storage write call");
+assert(learnerMigrationPreviewSource.indexOf(".removeItem(") === -1, "Learner migration preview must not contain a storage delete call");
+eval(learnerMigrationPreviewSource);
 eval(readText(root + "/core/play-domain.js"));
 eval(readText(root + "/assets/js/journey-data.js"));
 eval(readText(root + "/assets/js/play-traditions.js"));
@@ -124,6 +128,98 @@ eval(readText(root + "/adapters/dictionary-controller.js"));
 
 var seed = JSON.parse(readText(root + "/database-blueprint/seeds/foundation_conversations_lesson_v2.json"));
 var foundationManifest = JSON.parse(readText(root + "/core/foundation-route-manifest.json"));
+var proposedEventSchema = JSON.parse(readText(root + "/core/contracts/progress-event-envelope-v1.schema.json"));
+var proposedHandoffSchema = JSON.parse(readText(root + "/core/contracts/handoff-envelope-v1.schema.json"));
+var evidenceStageCompatibility = JSON.parse(readText(root + "/core/contracts/evidence-stage-compatibility-v1.json"));
+
+assert(proposedEventSchema.required.indexOf("node_id") !== -1, "Event proposal should preserve node_id as the producing node");
+assert(proposedEventSchema.properties.source_node_id === undefined, "Event proposal should not introduce a competing source_node_id");
+assert(proposedEventSchema.properties.created_at.deprecated === true, "Event proposal should allow the temporary created_at compatibility alias");
+assert(proposedHandoffSchema.required.indexOf("source_node_id") !== -1, "Handoff proposal should require its source node");
+assert(proposedHandoffSchema.required.indexOf("destination_node_id") !== -1, "Handoff proposal should require one destination node");
+assert(proposedHandoffSchema.required.indexOf("fallback_instruction") !== -1, "Handoff proposal should require a top-level fallback instruction");
+assert(evidenceStageCompatibility.canonical_to_journey.attempt === "attempted", "Shared attempt evidence should map explicitly into Journey");
+assert(evidenceStageCompatibility.canonical_to_journey.application === "applied_musically", "Shared application evidence should map explicitly into Journey");
+assert(evidenceStageCompatibility.journey_to_canonical.externally_assessed === null, "External assessment should not be inferred from a generic event stage");
+assert(proposedEventSchema.properties.capability_ids.description.indexOf("authorize node_id") !== -1, "Event capability IDs should obey producer-node authority");
+assert(proposedHandoffSchema.properties.capability_ids.description.indexOf("authorize destination_node_id") !== -1, "Handoff capability IDs should obey destination-node authority");
+
+var migrationStorageValues = {{
+  "hearth_users": JSON.stringify([
+    {{ name: "private entry profile", level: 1 }}
+  ]),
+  "hearth_current": JSON.stringify({{ name: "private entry profile", level: 1 }}),
+  "hearth-journey-v2": JSON.stringify({{
+    activeStudentId: "ayla-1",
+    students: [
+      {{ id: "ayla-1", name: "Ayla" }},
+      {{ id: "jen-1", name: "Jen" }}
+    ]
+  }}),
+  "hearth-journey-active-student": "jen-1",
+  "hearth-foundation-progress": JSON.stringify({{ "f-threshold": true }}),
+  "hearth-progress-events": JSON.stringify([
+    {{ id: "event-1", learner_id: "jen-1", event_type: "drill_feedback_recorded" }},
+    {{ id: "event-2", event_type: "practice_session_completed", note: "private reflection text" }}
+  ]),
+  "hearth-practice-log": JSON.stringify([
+    {{ learner_id: "jen-1", duration_minutes: 5 }},
+    {{ duration_minutes: 3, reflection: "private practice note" }}
+  ]),
+  "hearth-create-v1": JSON.stringify({{
+    version: 1,
+    profiles: {{ "ayla-1": {{ current: {{ id: "scoped-seed" }}, projects: [] }} }}
+  }}),
+  "hearth-create-current": JSON.stringify({{ id: "legacy-seed" }}),
+  "hearth-knowing-progress": "{{invalid-json",
+  "hearth-play-session-v1:ghost-learner": JSON.stringify({{ view: "destination" }}),
+  "hearth-notebook-general": "private notebook content"
+}};
+var migrationStorageKeys = Object.keys(migrationStorageValues);
+var migrationWriteCalls = 0;
+var migrationDeleteCalls = 0;
+var migrationStorage = {{
+  get length() {{ return migrationStorageKeys.length; }},
+  key: function(index) {{ return migrationStorageKeys[index] || null; }},
+  getItem: function(key) {{
+    return Object.prototype.hasOwnProperty.call(migrationStorageValues, key)
+      ? migrationStorageValues[key]
+      : null;
+  }},
+  setItem: function() {{ migrationWriteCalls += 1; throw new Error("preview attempted a write"); }},
+  removeItem: function() {{ migrationDeleteCalls += 1; throw new Error("preview attempted a delete"); }},
+  clear: function() {{ migrationDeleteCalls += 1; throw new Error("preview attempted a clear"); }}
+}};
+var migrationStorageBefore = JSON.stringify(migrationStorageValues);
+var migrationPreview = HearthLearnerMigrationPreview.preview(migrationStorage, {{
+  now: "2026-07-19T12:00:00.000Z"
+}});
+var migrationStorageAfter = JSON.stringify(migrationStorageValues);
+function migrationItem(sourceKey) {{
+  return migrationPreview.items.find(function(item) {{ return item.source_key === sourceKey; }});
+}}
+function hasMigrationConflict(item, code) {{
+  return item && item.conflicts.some(function(itemConflict) {{ return itemConflict.code === code; }});
+}}
+
+assert(migrationPreview.safety.mode === "read_only" && migrationPreview.safety.can_apply === false, "Migration preview should declare that it cannot apply changes");
+assert(migrationPreview.safety.write_operations === 0 && migrationPreview.safety.delete_operations === 0, "Migration preview should report zero mutations");
+assert(migrationWriteCalls === 0 && migrationDeleteCalls === 0, "Migration preview should never invoke write/delete storage methods");
+assert(migrationStorageAfter === migrationStorageBefore, "Migration preview should leave source storage byte-for-byte unchanged");
+assert(HearthLearnerMigrationPreview.inventory().length === 36, "Learner storage inventory should contain all 36 reviewed key patterns");
+assert(hasMigrationConflict(migrationItem("hearth_users"), "records_missing_learner_id"), "Entry profiles without stable learner IDs should require reconciliation");
+assert(hasMigrationConflict(migrationItem("hearth-foundation-progress"), "ambiguous_global_owner"), "Global Foundation progress should be blocked when two learners exist");
+assert(hasMigrationConflict(migrationItem("hearth-progress-events"), "records_missing_learner_id"), "Shared events should report records with missing learner identity");
+assert(hasMigrationConflict(migrationItem("hearth-knowing-progress"), "invalid_source_json"), "Invalid legacy JSON should be preserved and blocked");
+assert(hasMigrationConflict(migrationItem("hearth-play-session-v1:ghost-learner"), "unknown_learner_id"), "Profile-key storage should report unknown learner IDs");
+assert(hasMigrationConflict(migrationItem("hearth-create-current"), "overlapping_destination_sources"), "Legacy Create state should report overlap with the learner-scoped store");
+assert(migrationPreview.conflicts.some(function(itemConflict) {{ return itemConflict.code === "active_learner_sources_disagree"; }}), "Preview should report conflicting active learner sources");
+assert(migrationItem("hearth-foundation-progress").rollback.preserve_source === true, "Every migration proposal should preserve its source key");
+var serializedMigrationPreview = JSON.stringify(migrationPreview);
+assert(serializedMigrationPreview.indexOf("private reflection text") === -1, "Preview report should not expose event note contents");
+assert(serializedMigrationPreview.indexOf("private practice note") === -1, "Preview report should not expose Practice note contents");
+assert(serializedMigrationPreview.indexOf("private notebook content") === -1, "Preview report should not expose notebook contents");
+assert(serializedMigrationPreview.indexOf("private entry profile") === -1, "Preview report should not expose entry profile names");
 
 assert(JOURNEY_CAPABILITY_FAMILIES.length === 7, "Journey should expose seven learner-facing capability families");
 assert(JOURNEY_LEVEL_CAPABILITIES.L1.length === 17, "Level 1 should expose the canonical capability set");
