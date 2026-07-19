@@ -2,7 +2,7 @@
 
 Date: 2026-07-18
 Branch: `cleanup/handoff-architecture`
-Verified commit: `93bcc64`
+Verified commit: `bb7adaf`
 Audit: `whole-simulator-integration-audit-2026-07-18.md`
 Readiness: Working Vertical Slice
 Browser verification: desktop complete; responsive partial and failing
@@ -39,9 +39,11 @@ and Study deepen ideas.
 
 ## 4. What The Audit Changed
 
-No Foundation behaviour or content was changed. The audit verified the active
-owner, live Fret 0 route, global progress leak, missing shared event, and
-responsive failure.
+The audit replaced obsolete guide-character image references in the active
+topic viewer with the canonical guide catalogue and valid fallbacks. It did not
+change Foundation meaning, content, progress, or the approved gateway. The
+audit also verified the active owner, live Fret 0 route, global progress leak,
+missing shared event, and responsive failure.
 
 ## 5. Protected Decisions
 
@@ -81,7 +83,8 @@ rights-recorded.
 - Desktop path: Map -> Foundation -> Fret 0 -> teaching scene: verified.
 - Profile switch: visible Foundation count did not change: leak verified.
 - Phone and iPad: clipped: verified.
-- Smoke checks and renderer ownership check: pass at `93bcc64`.
+- Smoke checks, renderer ownership, all loaded JavaScript syntax, and local
+  asset references: pass through `bb7adaf`.
 
 Keyboard, refresh/resume, and missing-media recovery need dedicated tests.
 

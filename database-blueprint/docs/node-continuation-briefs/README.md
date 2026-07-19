@@ -2,7 +2,8 @@
 
 Date: 2026-07-18
 Branch: `cleanup/handoff-architecture`
-Verified code checkpoint: `93bcc64`
+Base audit checkpoint: `93bcc64`
+Post-audit safe fixes verified through: `bb7adaf`
 
 Read the master audit first:
 

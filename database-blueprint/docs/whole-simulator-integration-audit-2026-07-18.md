@@ -394,7 +394,8 @@ rewrite.
 
 ## Controlled Changes Made During This Audit
 
-Checkpoint `93bcc64` contains only low-risk corrections:
+Checkpoints `93bcc64`, `9e72414`, and `bb7adaf` contain only low-risk
+corrections and safeguards:
 
 - the renderer ownership safeguard now identifies the actual Play controller
   and no longer mistakes equality checks for assignments;
@@ -402,21 +403,30 @@ Checkpoint `93bcc64` contains only low-risk corrections:
 - authored Journey lessons retain `categoryTags` and `countsTowardLevel` when
   converted into a live lesson;
 - Create handoff events explicitly record the active learner;
-- the Create handoff learner behaviour is regression-tested.
+- the Create handoff learner behaviour is regression-tested;
+- Foundation topic scenes use the canonical guide-character catalogue instead
+  of obsolete local paths;
+- read-only tools now check all loaded JavaScript syntax and local asset
+  references;
+- the existing Hearth browser and Apple touch icon is linked explicitly.
 
 No node meaning, approved image, learner history, or progression count was
 silently rewritten.
 
 ## Verification Evidence
 
-Automated checks at `93bcc64`:
+Automated checks through `bb7adaf`:
 
 - `tools/prototype_smoke_check.py`: pass;
 - `tools/core_smoke_check.py`: pass;
 - `tools/core_js_smoke_check.py`: pass;
 - `tools/renderer_ownership_check.py`: pass;
-- JavaScript syntax check for the changed Journey and Create files: pass;
-- `git diff --check`: pass before commit.
+- `tools/smoke-nodes.js`: pass for all nine node actions;
+- `tools/loaded_javascript_syntax_check.py`: pass for all 142 loaded local
+  JavaScript files;
+- `tools/local_reference_check.py`: pass for 268 references across
+  `simulator.html`, five stylesheets, and 142 scripts;
+- `git diff --check`: pass.
 
 Browser walkthrough:
 
@@ -427,6 +437,12 @@ Browser walkthrough:
   were inspected;
 - browser warning/error console was empty during the audit;
 - active profile was restored to My Journey after testing.
+
+The final live Foundation walkthrough also confirmed a remaining phone issue:
+at 390 x 844 the lesson's bottom action clips and the panel does not provide
+the needed scroll. Profile switching confirmed that Foundation visible progress
+is still global and that Jen currently exposes Level 2 despite the agreed Level
+1 consolidation state. These are recorded failures, not hidden as passes.
 
 ## Open Product Decisions
 
