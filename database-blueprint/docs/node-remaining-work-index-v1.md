@@ -2,6 +2,19 @@
 
 Date: 2026-07-18
 
+## Post-Audit Status
+
+This document is the preserved pre-audit control index. The whole-simulator
+audit has now been completed against code checkpoint `93bcc64`.
+
+Use these current documents for new work:
+
+- `whole-simulator-integration-audit-2026-07-18.md`
+- `node-continuation-briefs/README.md`
+
+The remaining-work briefs below are still useful historical evidence, but the
+fresh continuation briefs supersede their readiness claims and next-step order.
+
 ## Purpose
 
 This is the control document for unfinished node work before the final
@@ -301,23 +314,21 @@ decisions, but it should not interrupt completion of the core learning routes.
 
 ## Current Handover Set
 
-Current remaining-work handovers now exist for Foundation, Do, Know, Journey,
-Practice, Study, Hearth, Play, Create/audio, and Mastery.
-
-These are pre-audit evidence, not permanent truth. The final audit must verify
-them against its inspected commit and replace them with fresh continuation
-briefs following `post-audit-node-continuation-brief-standard-v1.md`.
+Current remaining-work handovers exist for Foundation, Do, Know, Journey,
+Practice, Study, Hearth, Play, Create/audio, and Mastery. They are pre-audit
+evidence, not permanent truth. Fresh verified continuation briefs now live in
+`node-continuation-briefs/`.
 
 The 2026-07-18 shared checks currently report:
 
 - prototype smoke check: passed;
 - core smoke check: passed;
 - core JavaScript smoke check: passed;
-- renderer-ownership check: failed because Play, Create, and Practice have
-  conflicting or stale owner expectations.
+- renderer-ownership check: passed after correcting the stale Play expectation
+  and equality-check parser at `93bcc64`.
 
-Do not call the product ownership-stable until that final check is corrected
-and expanded to cover Foundation, Do, Know, and Journey.
+The audit still found active legacy overlap beyond this global ownership check;
+see the master audit and node briefs before removing compatibility code.
 
 ## Cross-Node Dependency Order
 
