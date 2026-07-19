@@ -427,6 +427,13 @@ REQUIRED_MARKERS = {
         "HearthBrowserProgressStore",
         "createBrowserProgressStore",
     ],
+    "adapters/doing-progress-bridge.js": [
+        "HearthDoingProgressBridge",
+        "progressForLearner",
+        "migrateLegacyProgress",
+        "drill_opened",
+        "hearth-doing-progress-migration-v1",
+    ],
     "adapters/doing-config.js": [
         "HearthDoingConfig",
         "levelForDrill",
@@ -519,6 +526,8 @@ REQUIRED_MARKERS = {
         "HearthDoingPanelController",
         "showDoing",
         "applyState",
+        "progressForLearner",
+        "recordDrillOpen",
         "doing-practice-return",
         "PracticePlannedSession.resume",
     ],

@@ -43,7 +43,17 @@
       drillCatalog.apply(doing);
     }
     var storage = root.localStorage;
-    var progress = JSON.parse((storage && storage.getItem("hearth-doing-progress")) || "{}");
+    var progressBridge = root.HearthDoingProgressBridge;
+    var eventStore = root.HearthProgressEvents;
+    var learnerId = progressBridge && typeof progressBridge.activeLearnerId === "function"
+      ? progressBridge.activeLearnerId(storage)
+      : null;
+    var legacyProgress = {};
+    try {
+      legacyProgress = JSON.parse((storage && storage.getItem("hearth-doing-progress")) || "{}");
+    } catch (error) {
+      legacyProgress = {};
+    }
     var doingConfig = root.HearthDoingConfig;
     var doingUi = root.HearthDoingUiUtils;
     var doingBoard = root.HearthDoingDrillBoardModel;
@@ -54,6 +64,24 @@
     var stateLabels = doingConfig.stateLabels;
     var guitarZones = doingConfig.guitarZones;
     var focusCats = doingConfig.focusCats;
+    var learnerProgressReady = Boolean(
+      learnerId && progressBridge && typeof progressBridge.progressForLearner === "function" &&
+      eventStore && typeof eventStore.list === "function"
+    );
+    if (learnerProgressReady && typeof progressBridge.migrateLegacyProgress === "function") {
+      var migrationResult = progressBridge.migrateLegacyProgress({
+        doing: doing,
+        eventStore: eventStore,
+        learnerId: learnerId,
+        levelForDrill: doingConfig.levelForDrill,
+        stateLabels: stateLabels,
+        storage: storage
+      });
+      if (migrationResult && migrationResult.reason === "append_failed") learnerProgressReady = false;
+    }
+    var progress = learnerProgressReady
+      ? progressBridge.progressForLearner(eventStore.list(storage), learnerId)
+      : legacyProgress;
     var progressSummary = doingBoard.summarizeProgress(doing, progress, stateOrder);
     var nextDrill = doingBoard.findNextDrill(doing, progress, stateOrder);
     var state = {
@@ -69,6 +97,14 @@
       activeRoomConcept: "left-hand",
       activeRoomDrill: null
     };
+
+    function refreshProgressProjection(projectEvents) {
+      if (learnerProgressReady && projectEvents !== false) {
+        progress = progressBridge.progressForLearner(eventStore.list(storage), learnerId);
+      }
+      progressSummary = doingBoard.summarizeProgress(doing, progress, stateOrder);
+      nextDrill = doingBoard.findNextDrill(doing, progress, stateOrder);
+    }
 
     function practiceReturnHtml() {
       var activeSession = root.PracticePlannedSession && typeof root.PracticePlannedSession.current === "function"
@@ -149,11 +185,12 @@
 
     function recordDrillFeedback(catId, drillId, nextState, previousState, room) {
       var entry = findDrillEntry(drillId);
-      var bridge = root.HearthDoingProgressBridge;
+      var bridge = progressBridge;
       if (!entry || entry.cat.id !== catId || !bridge || typeof bridge.recordFeedback !== "function") return;
-      bridge.recordFeedback({
+      return bridge.recordFeedback({
         category: entry.cat,
         drill: entry.drill,
+        learnerId: learnerId,
         state: nextState,
         previousState: previousState,
         stateLabels: stateLabels,
@@ -164,6 +201,29 @@
       });
     }
 
+    function recordDrillOpen(cat, drill, room) {
+      if (!progressBridge || typeof progressBridge.recordOpen !== "function") {
+        progress[drill.id] = "seen";
+        refreshProgressProjection(false);
+        return null;
+      }
+      var recorded = progressBridge.recordOpen({
+        category: cat,
+        drill: drill,
+        learnerId: learnerId,
+        level: getDoingLevel(drill),
+        room: room,
+        eventStore: eventStore,
+        storage: storage
+      });
+      if (recorded && learnerProgressReady) refreshProgressProjection();
+      else {
+        progress[drill.id] = "seen";
+        refreshProgressProjection(false);
+      }
+      return recorded;
+    }
+
     root.showDoingDrill = function showDoingDrill(catId, drillId) {
       if (root.playSfx) root.playSfx("drill-click");
       var cat = doing.categories.find(function findCategory(category) { return category.id === catId; });
@@ -171,9 +231,7 @@
       var drill = cat.drills.find(function findDrill(item) { return item.id === drillId; });
       if (!drill) return;
       if (!getState(drillId)) {
-        progress[drillId] = "seen";
-        if (storage) storage.setItem("hearth-doing-progress", JSON.stringify(progress));
-        progressSummary = doingBoard.summarizeProgress(doing, progress, stateOrder);
+        recordDrillOpen(cat, drill, "library");
       }
       var level = levels.find(function findLevel(item) {
         return item.level === getDoingLevel(drill);
@@ -193,10 +251,14 @@
     root.setDoingDrillState = function setDoingDrillState(catId, drillId, nextState) {
       if (stateOrder.indexOf(nextState) < 0) return;
       var previousState = getState(drillId);
-      progress[drillId] = nextState;
-      if (storage) storage.setItem("hearth-doing-progress", JSON.stringify(progress));
-      progressSummary = doingBoard.summarizeProgress(doing, progress, stateOrder);
-      recordDrillFeedback(catId, drillId, nextState, previousState, state.activeBoard === "all" ? "library" : state.activeBoard);
+      if (previousState !== nextState) {
+        var recorded = recordDrillFeedback(catId, drillId, nextState, previousState, state.activeBoard === "all" ? "library" : state.activeBoard);
+        if (recorded && learnerProgressReady) refreshProgressProjection();
+        else {
+          progress[drillId] = nextState;
+          refreshProgressProjection(false);
+        }
+      }
       root.showDoingDrill(catId, drillId);
     };
 
@@ -311,9 +373,7 @@
       var drill = cat.drills.find(function findDrill(item) { return item.id === drillId; });
       if (!drill) return;
       if (!getState(drillId)) {
-        progress[drillId] = "seen";
-        if (storage) storage.setItem("hearth-doing-progress", JSON.stringify(progress));
-        progressSummary = doingBoard.summarizeProgress(doing, progress, stateOrder);
+        recordDrillOpen(cat, drill, state.activeRoomConcept || "room");
       }
       state.activeRoomDrill = { catId: catId, drillId: drillId };
       state.doingView = "room-concept";
@@ -324,10 +384,14 @@
     root._setDoingRoomDrillState = function setDoingRoomDrillState(catId, drillId, nextState) {
       if (stateOrder.indexOf(nextState) < 0) return;
       var previousState = getState(drillId);
-      progress[drillId] = nextState;
-      if (storage) storage.setItem("hearth-doing-progress", JSON.stringify(progress));
-      progressSummary = doingBoard.summarizeProgress(doing, progress, stateOrder);
-      recordDrillFeedback(catId, drillId, nextState, previousState, state.activeRoomConcept || "room");
+      if (previousState !== nextState) {
+        var recorded = recordDrillFeedback(catId, drillId, nextState, previousState, state.activeRoomConcept || "room");
+        if (recorded && learnerProgressReady) refreshProgressProjection();
+        else {
+          progress[drillId] = nextState;
+          refreshProgressProjection(false);
+        }
+      }
       state.activeRoomDrill = { catId: catId, drillId: drillId };
       state.doingView = "room-concept";
       shell();

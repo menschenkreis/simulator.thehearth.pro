@@ -203,17 +203,84 @@ assert(HearthDoingConfig.roomDrillPlans["left-hand"][1].indexOf("chrom-1") !== -
 var doingFeedbackEvent = HearthDoingProgressBridge.feedbackEvent({{
   category: {{ id: "scales", title: "Scales" }},
   drill: {{ id: "pent-1", title: "A Minor Pentatonic Box 1", duration: "5 min" }},
+  learnerId: "jen-1",
   state: "clean",
   level: 1,
   room: "left-hand"
 }});
 assert(doingFeedbackEvent.event_type === "drill_feedback_recorded", "Doing feedback should use the shared event vocabulary");
 assert(doingFeedbackEvent.rating === 3 && doingFeedbackEvent.journey_level_id === "L1", "Doing feedback should preserve skill strength and level");
+assert(doingFeedbackEvent.learner_id === "jen-1", "Doing feedback should explicitly preserve the active learner");
 assert(doingFeedbackEvent.data.journey_categories.indexOf("Scales") !== -1, "Doing feedback should map into Journey categories");
-var doingEvidenceEvents = [Object.assign({{ learner_id: "jen-1", created_at: new Date().toISOString() }}, doingFeedbackEvent)];
+var doingEvidenceEvents = [Object.assign({{ created_at: new Date().toISOString() }}, doingFeedbackEvent)];
 var doingScaleEvidence = HearthDoingProgressBridge.summaryForJourneyCategory(doingEvidenceEvents, "jen-1", "Scales", 1);
 assert(doingScaleEvidence.count === 1 && doingScaleEvidence.strongestLabel === "Clean once", "Journey should summarize learner-specific Do evidence");
 assert(HearthDoingProgressBridge.practiceRecommendations(doingEvidenceEvents, "jen-1", 2)[0].indexOf("reliable") !== -1, "Practice should receive an unfinished Do recommendation");
+var doingOpenedEvent = HearthDoingProgressBridge.drillOpenedEvent({{
+  category: {{ id: "scales", title: "Scales" }},
+  drill: {{ id: "pent-1", title: "A Minor Pentatonic Box 1" }},
+  learnerId: "jen-1",
+  level: 1,
+  room: "left-hand"
+}});
+assert(doingOpenedEvent.event_type === "drill_opened" && doingOpenedEvent.data.state === "seen", "Opening a Do drill should create learner evidence without claiming practice");
+var separatedDoingProgress = HearthDoingProgressBridge.progressForLearner([
+  Object.assign({{ created_at: "2026-07-19T08:00:00.000Z" }}, doingOpenedEvent),
+  Object.assign({{ created_at: "2026-07-19T08:01:00.000Z" }}, doingFeedbackEvent),
+  {{
+    event_type: "drill_feedback_recorded",
+    learner_id: "ayla-1",
+    drill_id: "pent-1",
+    rating: 5,
+    data: {{ state: "mastered" }},
+    created_at: "2026-07-19T08:02:00.000Z"
+  }}
+], "jen-1");
+assert(separatedDoingProgress["pent-1"] === "clean", "Do rings should use only the selected learner's latest evidence");
+
+var doingStorageValues = {{
+  "hearth-journey-v2": JSON.stringify({{ activeStudentId: "ayla-1" }}),
+  "hearth-doing-progress": JSON.stringify({{ "pent-1": "comfortable" }})
+}};
+var doingMemoryStorage = {{
+  getItem: function(key) {{ return Object.prototype.hasOwnProperty.call(doingStorageValues, key) ? doingStorageValues[key] : null; }},
+  setItem: function(key, value) {{ doingStorageValues[key] = String(value); }}
+}};
+var migratedDoingEvents = [];
+var doingMemoryEventStore = {{
+  list: function() {{ return migratedDoingEvents.slice(); }},
+  append: function(event) {{
+    var saved = Object.assign({{ id: "doing-event-" + (migratedDoingEvents.length + 1), created_at: new Date().toISOString() }}, event);
+    migratedDoingEvents.push(saved);
+    return saved;
+  }}
+}};
+var migrationDoing = {{
+  categories: [{{
+    id: "scales",
+    title: "Scales",
+    drills: [{{ id: "pent-1", title: "A Minor Pentatonic Box 1", duration: "5 min" }}]
+  }}]
+}};
+var doingMigration = HearthDoingProgressBridge.migrateLegacyProgress({{
+  doing: migrationDoing,
+  eventStore: doingMemoryEventStore,
+  learnerId: "ayla-1",
+  levelForDrill: function() {{ return 1; }},
+  storage: doingMemoryStorage
+}});
+assert(doingMigration.migrated && doingMigration.count === 1, "Legacy Do progress should migrate once without being deleted");
+assert(HearthDoingProgressBridge.progressForLearner(migratedDoingEvents, "ayla-1")["pent-1"] === "comfortable", "Migrated Do progress should appear for its assigned learner");
+assert(!HearthDoingProgressBridge.progressForLearner(migratedDoingEvents, "jen-1")["pent-1"], "Migrated Do progress should not leak into another learner's rings");
+var jenMigrationAttempt = HearthDoingProgressBridge.migrateLegacyProgress({{
+  doing: migrationDoing,
+  eventStore: doingMemoryEventStore,
+  learnerId: "jen-1",
+  levelForDrill: function() {{ return 1; }},
+  storage: doingMemoryStorage
+}});
+assert(jenMigrationAttempt.reason === "assigned_elsewhere" && migratedDoingEvents.length === 1, "The same legacy Do progress should never be copied into a second profile");
+assert(doingMemoryStorage.getItem("hearth-doing-progress") === JSON.stringify({{ "pent-1": "comfortable" }}), "Do migration should preserve the original legacy data for recovery");
 var curatedDoing = {{ categories: [{{ id: "picking", title: "Picking", drills: [{{ id: "alt-1", title: "Old title", style: "rock", source: "Test", duration: "5 min", body: "<p>Test</p>" }}, {{ id: "alt-2", title: "Draft", style: "rock", source: "Test", duration: "5 min", body: "<p>Test</p>" }}] }}] }};
 HearthDoingDrillCatalog.apply(curatedDoing);
 assert(curatedDoing.catalog.approvedCount === 13, "Doing catalogue should expose the reviewed drill count");
