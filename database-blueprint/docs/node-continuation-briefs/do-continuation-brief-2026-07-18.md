@@ -3,8 +3,8 @@
 Date: 2026-07-18
 Updated: 2026-07-19
 Branch: `build/do-node-continuation`
-Previous verified commit: `4832e4f`
-Current checkpoint: repeated-evidence and shared-contract reconciliation
+Verified commit: `63e62d3`
+Current checkpoint: repeated evidence and outgoing handoff contract complete
 Audit: `whole-simulator-integration-audit-2026-07-18.md`
 Readiness: Working Vertical Slice, closest to a wired drill place
 Browser verification: desktop complete; responsive partial and failing
@@ -191,8 +191,9 @@ or delete old learner data without migration.
 
 ## 13. Recommended Opening Instruction
 
-Read this brief and the audit, inspect the live Do path, then implement only the
-repeated-evidence and Practice/Journey handoff batch. Preserve the approved
-rooms, learner-specific projection, migration ledger, and reviewed catalogue.
-Update this brief at the next checkpoint, explain decisions plainly, and warn
-before high-credit visual work.
+Read this brief and the audit, inspect the live Do path, then implement one real
+incoming Journey/Practice deep-link and return round trip after the shared event
+store is ready. Preserve the approved rooms, learner-specific projection,
+evidence rules, migration ledger, and reviewed catalogue. Update this brief at
+the next checkpoint, explain decisions plainly, and warn before high-credit
+visual work.
