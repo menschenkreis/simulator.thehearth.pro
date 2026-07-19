@@ -10,6 +10,10 @@
   const TASK_BANK = window.JOURNEY_TASK_BANK || {};
   const AUTHORED_LESSONS = window.JOURNEY_AUTHORED_LESSONS || {};
   const STUDENT_COMPANIONS = window.JOURNEY_STUDENT_COMPANIONS || {};
+  const LEVEL_CAPABILITIES = window.JOURNEY_LEVEL_CAPABILITIES || {};
+  const EVIDENCE_STAGES = window.JOURNEY_EVIDENCE_STAGES || [];
+  const ACTIVITY_CAPABILITY_MAP = window.JOURNEY_LEVEL_ACTIVITY_CAPABILITY_MAP || {};
+  const ROADMAP_CAPABILITY_MAP = window.JOURNEY_ROADMAP_CAPABILITY_MAP || {};
   const GUIDE_ASSETS = window.GUIDE_CHARACTER_ASSETS || {};
   let studentPickerBound = false;
 
@@ -83,9 +87,7 @@
     if(!state || !state.students || !state.students.length){
       const mine = blankStudent('My Journey');
       const jen = blankStudent('Jen');
-      jen.currentLevel = 2;
-      jen.levels.L1.lessonsDone = 8; jen.levels.L1.complete = true;
-      jen.levels.L2.unlocked = true;
+      jen.currentLevel = 1;
       jen.levels.L2.notes.push({ date:'2026-06-14', text:"L2 with Jen: reviewed last week, practised finger gymnastics with metronome, learned pentatonic scale pattern with metronome, learned chord embellishments and how they colour songs. Jen is close to my ability; I need to level up fast to stay ahead. Need to understand how scales relate to piano and what they mean for playing the instrument. Jen wants to learn to write a song. She didn\'t know C chord, so we are seeing the gaps." });
       state = { version:2, students:[mine, jen], activeStudentId:mine.id };
       saveState(state);
@@ -176,6 +178,7 @@
   function buildLesson(student, levelNum, lessonNum){
     const level = getLevel(levelNum);
     const authored = AUTHORED_LESSONS[level.id] && AUTHORED_LESSONS[level.id][lessonNum - 1];
+    const activityMeta = Object.entries(ACTIVITY_CAPABILITY_MAP[level.id] || {}).find(([, value]) => value.sourceLessonNumber === lessonNum);
     if(authored){
       return {
         id: level.id + '-' + lessonNum,
@@ -188,7 +191,9 @@
         conceptNames: authored.conceptNames || [],
         taskNames: authored.taskNames || [],
         categoryTags: authored.categoryTags || [],
-        countsTowardLevel: authored.countsTowardLevel !== false,
+        activityId: activityMeta ? activityMeta[0] : null,
+        capabilityIds: activityMeta ? (activityMeta[1].capabilityIds || []).slice() : [],
+        countsTowardLevel: authored.countsTowardLevel !== false && (!activityMeta || activityMeta[1].countsTowardLevel !== false),
         blocks: authored.blocks || []
       };
     }
@@ -463,7 +468,7 @@
         '</div>' +
         '<div class="journey-actions compact">' +
         '<button type="button" class="journey-btn" onclick="Journey.openCompanionLesson(\''+student.id+'\')">Open Live Lesson</button>' +
-          '<button class="journey-btn secondary" onclick="Journey.openLevel('+(student.currentLevel || 1)+')">Open Path</button>' +
+          '<button class="journey-btn secondary" onclick="Journey.openLevel('+effectiveCurrentLevel(student).num+')">Open Path</button>' +
         '</div>' +
       '</div>' +
       '<p class="journey-companion-focus">'+esc(companion.focus || '')+'</p>' +
@@ -497,7 +502,7 @@
   function renderJourneyHomeActions(state, student){
     const companion = getCompanion(student);
     const companionStudent = companion ? student : findCompanionStudent(state);
-    const currentLevel = getLevel(student.currentLevel || 1);
+    const currentLevel = effectiveCurrentLevel(student);
     let html = '<div class="journey-home-actions" aria-label="Journey actions">';
     html += '<button type="button" class="journey-btn journey-home-primary" onclick="Journey.openLevel('+(currentLevel.num || 1)+')">Open '+esc(currentLevel.name || 'Level')+'</button>';
     if(companion){
@@ -568,8 +573,8 @@
       '<div class="journey-hotspot-layer" aria-label="Journey level guitar neck">';
 
     levelPositions.forEach((lp, i) => {
-      const active = lp.num === (student.currentLevel || 1);
-      const complete = !!lp.ls.complete;
+      const active = lp.num === level.num;
+      const complete = !!lp.complete;
       const lit = lp.unlocked;
       const top = markerTops[i] || (18 + i * 8.5);
       const classes = ['journey-neck-level'];
@@ -643,6 +648,108 @@
     return String(label || '').toLowerCase().replace(/&/g, 'and').replace(/[^a-z0-9]+/g, ' ').trim();
   }
 
+  function completedSourceLessons(student, level){
+    const records = (student.levels[level.id] && student.levels[level.id].lessonRecords) || [];
+    return new Set(records.filter(record => record && record.status === 'complete').map(record => Number(record.lessonNum)).filter(Boolean));
+  }
+
+  function countedLessonProgress(student, level){
+    const authored = AUTHORED_LESSONS[level.id] || [];
+    const completed = completedSourceLessons(student, level);
+    let done = 0;
+    let total = 0;
+    authored.forEach((_, index) => {
+      const lesson = buildLesson(student, level.num, index + 1);
+      if(!lesson.countsTowardLevel) return;
+      total += 1;
+      if(completed.has(index + 1)) done += 1;
+    });
+    return { done, total, completed };
+  }
+
+  function nextSourceLessonNumber(student, level){
+    const authored = AUTHORED_LESSONS[level.id] || [];
+    const completed = completedSourceLessons(student, level);
+    for(let sourceNumber = 1; sourceNumber <= authored.length; sourceNumber += 1){
+      if(!completed.has(sourceNumber)) return sourceNumber;
+    }
+    return Math.max(1, authored.length);
+  }
+
+  function countedLessonNumber(level, sourceLessonNumber){
+    const authored = AUTHORED_LESSONS[level.id] || [];
+    let count = 0;
+    for(let sourceNumber = 1; sourceNumber <= authored.length; sourceNumber += 1){
+      const lesson = buildLesson(null, level.num, sourceNumber);
+      if(lesson.countsTowardLevel) count += 1;
+      if(sourceNumber === sourceLessonNumber) return lesson.countsTowardLevel ? count : 0;
+    }
+    return 0;
+  }
+
+  function journeyEvidenceEvents(){
+    if(!window.HearthProgressEvents) return [];
+    try {
+      if(typeof window.HearthProgressEvents.listNormalized === 'function') return window.HearthProgressEvents.listNormalized(localStorage) || [];
+      if(typeof window.HearthProgressEvents.list === 'function') return window.HearthProgressEvents.list(localStorage) || [];
+    } catch(e){}
+    return [];
+  }
+
+  function journeyLevelProgress(student, level){
+    const capabilities = LEVEL_CAPABILITIES[level.id] || [];
+    if(window.HearthJourneyProgress && typeof window.HearthJourneyProgress.summarize === 'function'){
+      return window.HearthJourneyProgress.summarize({
+        events: journeyEvidenceEvents(),
+        learnerId: student.id,
+        levelId: level.id,
+        capabilities,
+        evidenceStages: EVIDENCE_STAGES,
+        eventContract: window.HearthProgressEventContract
+      });
+    }
+    return {
+      levelId: level.id,
+      learnerId: student.id,
+      capabilityEvidence: {},
+      metRequired: 0,
+      totalRequired: capabilities.filter(capability => capability.required !== false).length,
+      encountered: 0,
+      totalCapabilities: capabilities.length,
+      percent: 0,
+      complete: false
+    };
+  }
+
+  function effectiveCurrentLevel(student){
+    const levelOne = getLevel(1);
+    if((student.currentLevel || 1) > 1 && !journeyLevelProgress(student, levelOne).complete) return levelOne;
+    return getLevel(student.currentLevel || 1);
+  }
+
+  function isLevelUnlocked(student, levelNum){
+    if(levelNum <= 1) return true;
+    if(levelNum === 2) return journeyLevelProgress(student, getLevel(1)).complete;
+    const previous = student.levels['L'+(levelNum-1)] || {};
+    return !!previous.complete;
+  }
+
+  function roadmapCapabilitySummary(level, category, progress){
+    const ids = ((ROADMAP_CAPABILITY_MAP[level.id] || {})[categoryKey(category.label)] || []).slice();
+    const evidence = progress.capabilityEvidence || {};
+    const items = ids.map(id => evidence[id]).filter(Boolean);
+    const met = items.filter(item => item.met).length;
+    const encountered = items.filter(item => item.stage && item.stage !== 'not_encountered').length;
+    return {
+      ids,
+      met,
+      encountered,
+      total: ids.length,
+      complete: ids.length > 0 && met === ids.length,
+      percent: ids.length ? Math.round((met / ids.length) * 100) : 0
+    };
+  }
+
   function categorySignals(label){
     const signals = {
       rhythm:['rhythm','time feel','pulse','metronome','bpm','strum','strumming','quarter','eighth','count','groove','grid'],
@@ -681,17 +788,19 @@
 
   function journeyCategoryLessonNumbers(level, category){
     const found = [];
-    for(let i = 1; i <= level.totalLessons; i++){
+    const authoredCount = (AUTHORED_LESSONS[level.id] || []).length || level.totalLessons;
+    for(let i = 1; i <= authoredCount; i++){
       const lesson = buildLesson(null, level.num, i);
+      if(!lesson.countsTowardLevel) continue;
       if(lessonTouchesCategory(lesson, category)) found.push(i);
     }
     const fallback = fallbackCategoryLessonNumbers(level, category);
     const combined = found.length ? found.concat(fallback) : fallback;
-    return [...new Set(combined)].filter(n => n >= 1 && n <= level.totalLessons).sort((a,b) => a-b);
+    return [...new Set(combined)].filter(n => n >= 1 && n <= authoredCount).sort((a,b) => a-b);
   }
 
-  function journeyNextActionText(student, level, lessons, lessonsDone, nextLesson, activeCategory){
-    if(lessonsDone >= level.totalLessons){
+  function journeyNextActionText(student, level, lessons, lessonsDone, nextLesson, activeCategory, levelComplete){
+    if(levelComplete){
       return {
         kicker:'Next action',
         title:'Review and strengthen before the next level',
@@ -702,7 +811,7 @@
     const cleanTitle = (lesson.title || ('Lesson '+nextLesson)).replace(/^Lesson\s+\d+:\s*/i, '');
     return {
       kicker:'Next action',
-      title:'Lesson '+nextLesson+': '+cleanTitle,
+      title:lesson.countsTowardLevel === false ? cleanTitle : (lesson.title || cleanTitle),
       body:lesson.summary || 'Open the next lesson and keep the step small enough to succeed.'
     };
   }
@@ -750,28 +859,33 @@
     const lvlState = student.levels[level.id] || {};
     const companion = getCompanion(student);
     const lessons = AUTHORED_LESSONS[level.id] || [];
-    const lessonsDone = lvlState.lessonsDone || 0;
-    const nextLesson = Math.min(level.totalLessons, lessonsDone + 1);
-    const pct = Math.min(100, Math.round(lessonsDone / level.totalLessons * 100));
-    const guideLine = lessonsDone >= level.totalLessons
+    const lessonProgress = countedLessonProgress(student, level);
+    const lessonsDone = lessonProgress.done;
+    const nextLesson = nextSourceLessonNumber(student, level);
+    const progress = journeyLevelProgress(student, level);
+    const pct = progress.percent;
+    const legacyCompletionClaim = !progress.complete && (!!lvlState.complete || (lvlState.lessonsDone || 0) >= level.totalLessons);
+    const guideLine = progress.complete
       ? level.name+' is complete. Review the category map, then decide what needs strengthening before the next level.'
+      : legacyCompletionClaim
+        ? level.name+' is in consolidation. Earlier lesson records are kept, but the level stays open until the skills are demonstrated.'
       : 'Stay with '+level.name+'. Each dot shows what this level asks from that category.';
-    const actionLabel = companion ? 'Open Live Lesson' : lessonsDone >= level.totalLessons ? 'Review '+level.name : lessonsDone > 0 ? 'Continue '+level.name : "Let's begin";
+    const actionLabel = companion ? 'Open Live Lesson' : progress.complete ? 'Review '+level.name : lessonsDone > 0 ? 'Continue '+level.name : 'Start Entry Check';
     const categories = journeyRoadmapCategories();
     const doingEvents = journeyDoingEvents();
     const categoryLessons = {};
+    const categoryProgress = {};
     categories.forEach(section => {
       categoryLessons[section.label] = journeyCategoryLessonNumbers(level, section);
+      categoryProgress[section.label] = roadmapCapabilitySummary(level, section, progress);
     });
-    const activeCategory = categories.find(section => {
-      const sectionLessons = categoryLessons[section.label] || [];
-      return sectionLessons.includes(nextLesson) && lessonsDone < level.totalLessons;
-    });
+    const activeCategory = categories.find(section => categoryProgress[section.label].encountered > 0 && !categoryProgress[section.label].complete) ||
+      categories.find(section => categoryProgress[section.label].total > 0 && !categoryProgress[section.label].complete);
     const nextAction = companion ? {
       kicker:'Live lesson',
       title: companion.title || 'Lesson companion',
       body: companion.nextAction || companion.focus || 'Open the live lesson companion for today.'
-    } : journeyNextActionText(student, level, lessons, lessonsDone, nextLesson, activeCategory);
+    } : journeyNextActionText(student, level, lessons, lessonsDone, nextLesson, activeCategory, progress.complete);
     const studySignal = journeyStudySignal();
     if(studySignal && !companion) Object.assign(nextAction, studySignal);
 
@@ -780,43 +894,41 @@
 
     html += '<section class="journey-level-entry-stage" aria-label="'+attr(level.name)+' curriculum path">';
     html += '<aside class="journey-entry-guide">';
-    html += '<img src="'+attr(guideAsset(journeyGuideMood(student, lvlState)))+'" alt="" />';
+    html += '<img src="'+attr(guideAsset(journeyGuideMood(student, Object.assign({}, lvlState, { complete:progress.complete }))))+'" alt="" />';
     html += '<div class="journey-entry-bubble"><div class="journey-kicker">Guide</div><p>'+esc(guideLine)+'</p></div>';
     html += '</aside>';
 
     html += '<div class="journey-level-map">';
     html += '<div class="journey-level-map-head">';
     html += '<div><div class="journey-kicker">'+esc(student.name)+' · '+esc(level.tag || level.name)+'</div><h2>'+esc(level.name)+' Roadmap</h2><p>'+esc(level.focus || 'A clear overview of what this level teaches before the lesson begins.')+'</p></div>';
-    html += '<div class="journey-level-progress"><strong>'+lessonsDone+'/'+level.totalLessons+'</strong><span>lessons</span><i><b style="width:'+pct+'%"></b></i></div>';
+    html += '<div class="journey-level-progress"><strong>'+progress.metRequired+'/'+progress.totalRequired+'</strong><span>capabilities</span><i><b style="width:'+pct+'%"></b></i><small>'+lessonProgress.done+'/'+lessonProgress.total+' guided lessons recorded</small></div>';
     html += '</div>';
 
     html += '<div class="journey-roadmap-board" aria-label="Journey category roadmap">';
     categories.forEach((section, sectionIndex) => {
-      const sectionLessons = categoryLessons[section.label] || [];
       const doingEvidence = journeyDoingEvidence(doingEvents, student, level, section);
-      const sectionTotal = sectionLessons.length;
-      const sectionDone = sectionLessons.filter(n => n <= lessonsDone).length;
-      const sectionPct = sectionTotal ? Math.min(100, Math.round(sectionDone / sectionTotal * 100)) : pct;
-      const activeCategory = sectionLessons.includes(nextLesson) && lessonsDone < level.totalLessons;
-      const completeCategory = sectionTotal > 0 && sectionDone >= sectionTotal;
-      const sectionStatus = activeCategory ? 'Next' : completeCategory ? 'Done' : sectionTotal ? sectionDone+'/'+sectionTotal : 'Later';
+      const capabilitySummary = categoryProgress[section.label];
+      const sectionPct = capabilitySummary.percent;
+      const isActiveCategory = activeCategory === section;
+      const completeCategory = capabilitySummary.complete;
+      const sectionStatus = completeCategory ? 'Done' : capabilitySummary.encountered ? 'In progress' : capabilitySummary.total ? 'Not yet' : 'Later';
       const sectionClasses = ['journey-roadmap-section'];
-      if(activeCategory) sectionClasses.push('active-category');
+      if(isActiveCategory) sectionClasses.push('active-category');
       if(completeCategory) sectionClasses.push('complete-category');
       if(doingEvidence) sectionClasses.push('has-doing-evidence');
       html += '<section class="'+sectionClasses.join(' ')+'" style="--row-index:'+sectionIndex+';--section-progress:'+sectionPct+'%">';
       html += '<div class="journey-roadmap-section-head">';
       html += '<span class="journey-category-icon">'+(section.iconImage ? '<img src="'+attr(section.iconImage)+'" alt="" />' : esc(section.icon || (sectionIndex + 1)))+'</span>';
       html += '<div><h3>'+esc(section.label)+'</h3><p>'+esc(section.note)+'</p>'+(doingEvidence ? '<em class="journey-roadmap-practice">'+esc(doingEvidence.label)+'</em>' : '')+'</div>';
-      html += '<small class="'+(activeCategory ? 'is-next' : completeCategory ? 'is-done' : sectionTotal ? '' : 'is-later')+'">'+sectionStatus+'</small>';
+      html += '<small class="'+(isActiveCategory ? 'is-next' : completeCategory ? 'is-done' : capabilitySummary.total ? '' : 'is-later')+'">'+sectionStatus+'</small>';
       html += '</div>';
       html += '<div class="journey-roadmap-levels">';
       LEVELS.forEach(lp => {
         const lpState = student.levels[lp.id] || {};
         const isSelected = lp.num === level.num;
-        const done = lpState.complete || (lp.num === level.num && lessonsDone >= level.totalLessons);
-        const current = isSelected && lessonsDone < level.totalLessons;
-        const unlocked = lp.num === 1 || lpState.unlocked || student.levels['L'+(lp.num-1)]?.complete;
+        const done = lp.num === 1 ? journeyLevelProgress(student, lp).complete : !!lpState.complete;
+        const current = isSelected && !done;
+        const unlocked = isLevelUnlocked(student, lp.num);
         const classes = ['journey-roadmap-level-dot'];
         if(done) classes.push('done');
         if(current) classes.push('current');
@@ -893,7 +1005,7 @@
     }
     state.activeStudentId = student.id;
     saveState(state);
-    const level = getLevel(student.currentLevel || 2);
+    const level = effectiveCurrentLevel(student);
     const guideImage = guideAsset('encouraging');
     const lessonSteps = companionLessonSteps(companion);
     const totalMinutes = lessonSteps.reduce((sum, step) => sum + (step.min || 0), 0);
@@ -967,6 +1079,7 @@
         '<p class="journey-live-aim">'+esc(step.aim || '')+'</p>' +
         '<div class="journey-live-action"><strong>Do this:</strong> '+esc(step.action || '')+'</div>' +
         '<div class="journey-live-prompt"><strong>Notice:</strong> '+esc(step.prompt || '')+'</div>' +
+        (step.doingHandoff ? '<div class="journey-actions" style="margin-top:12px"><button type="button" class="journey-btn" onclick="Journey.openCompanionDoing(\''+attr(student.id)+'\','+index+')">'+esc(step.doingHandoff.label || 'Open drill')+'</button></div>' : '') +
         (step.createHandoff ? '<div class="journey-actions" style="margin-top:12px"><button type="button" class="journey-btn secondary" onclick="Journey.openCompanionCreate(\''+attr(student.id)+'\','+index+')">'+esc(step.createHandoff.label || 'Make it yours')+'</button></div>' : '') +
       '</section>';
     });
@@ -989,7 +1102,7 @@
     html +=
       '<textarea class="journey-input" id="journey-companion-note" placeholder="What happened? What worked? What felt messy?"></textarea>' +
       '<textarea class="journey-input" id="journey-companion-next" placeholder="Next safe step for Jen..." style="margin-top:8px"></textarea>' +
-      '<div class="journey-actions"><button class="journey-btn secondary" onclick="Journey.openLevel('+(student.currentLevel || 2)+')">Open '+esc(level.id || 'Level')+' Roadmap</button><button class="journey-btn" onclick="Journey.saveCompanionLessonNote(\''+student.id+'\')">Save Jen Note</button></div>' +
+      '<div class="journey-actions"><button class="journey-btn secondary" onclick="Journey.openLevel('+level.num+')">Open '+esc(level.id || 'Level')+' Roadmap</button><button class="journey-btn" onclick="Journey.saveCompanionLessonNote(\''+student.id+'\')">Save Jen Note</button></div>' +
     '</div>';
     html += '</div></section></div>';
     root.innerHTML = html;
@@ -1136,6 +1249,7 @@
       .journey-level-progress span{display:block;color:var(--dim);font-size:.56rem;letter-spacing:.08em;text-transform:uppercase;margin:4px 0 8px}
       .journey-level-progress i{display:block;height:4px;background:rgba(255,255,255,.08);border-radius:99px;overflow:hidden}
       .journey-level-progress b{display:block;height:100%;background:linear-gradient(90deg,var(--journey-level-color),#f3d08a)}
+      .journey-level-progress small{display:block;color:var(--dim);font-size:.52rem;line-height:1.35;margin-top:7px}
       .journey-skill-ribbon{position:relative;z-index:2;display:flex;gap:7px;flex-wrap:wrap;justify-content:center;margin:0 auto 10px;max-width:720px}
       .journey-skill-ribbon span{border:1px solid rgba(212,175,105,.16);background:rgba(212,175,105,.07);color:#f3d79a;border-radius:999px;padding:5px 9px;font-size:.6rem;font-weight:800;letter-spacing:.04em}
       .journey-roadmap-board{position:relative;z-index:2;display:grid;gap:7px;max-width:none;margin:0;padding:8px 0 0;background:transparent}
@@ -1311,14 +1425,16 @@
     if(!root) return;
     const state = loadState();
     const student = activeStudent(state);
-    const level = getLevel(student.currentLevel || 1);
-    const lvlState = student.levels[level.id];
+    const level = effectiveCurrentLevel(student);
+    const progress = journeyLevelProgress(student, level);
+    const lvlState = Object.assign({}, student.levels[level.id] || {}, { complete:progress.complete });
 
     // Build level positions
     const levelPositions = LEVELS.map((l, i) => ({
       ...l,
       ls: student.levels[l.id] || {},
-      unlocked: i === 0 || !!(student.levels[l.id]?.unlocked) || !!student.levels[LEVELS[i-1]?.id]?.complete
+      complete: l.num === 1 ? journeyLevelProgress(student, l).complete : !!student.levels[l.id]?.complete,
+      unlocked: isLevelUnlocked(student, l.num)
     }));
 
     let html = '<div class="journey-shell journey-home journey-map-home">';
@@ -1467,6 +1583,7 @@
     const level = getLevel(levelNum);
     const lvlState = student.levels[level.id];
     const lesson = buildLesson(student, levelNum, lessonNum);
+    const countedPosition = countedLessonNumber(level, lessonNum);
     student.activeLesson = student.activeLesson || { levelId:level.id, lessonNum, date:today(), blockNotes:{}, conceptRatings:{}, taskRatings:{}, feedback:'', teacherNotes:'', status:'in-progress', blockIdx:0 };
     student.activeLesson.lessonNum = lessonNum;
     student.activeLesson.levelId = level.id;
@@ -1506,7 +1623,7 @@
     html += '<div style="text-align:center;max-width:360px;width:100%;margin-bottom:10px">';
     html += '<div style="font-family:JetBrains Mono,monospace;font-size:0.55rem;color:var(--gold);letter-spacing:0.14em;text-transform:uppercase">'+esc(student.name)+' · '+('LEVEL '+level.num)+'</div>';
     html += '<div style="font-family:Cinzel,serif;font-size:1rem;color:'+level.color+';font-weight:800;margin-top:3px">'+esc(lesson.title)+'</div>';
-    html += '<div style="font-size:0.62rem;color:var(--dim);margin-top:3px">Lesson '+lessonNum+' of '+level.totalLessons+'</div>';
+    html += '<div style="font-size:0.62rem;color:var(--dim);margin-top:3px">'+(lesson.countsTowardLevel ? 'Lesson '+countedPosition+' of '+level.totalLessons : 'Entry Check · Before Level 1')+'</div>';
     html += '</div>';
     html += renderLessonRoute(levelNum, lessonNum, lesson, bi, isReview);
 
@@ -1620,9 +1737,9 @@
     if(!root) return;
     const state = loadState();
     const student = activeStudent(state);
-    const level = getLevel(student.currentLevel || 1);
+    const level = effectiveCurrentLevel(student);
     const lvlState = student.levels[level.id];
-    const lessonNum = (lvlState.lessonsDone || 0) + 1;
+    const lessonNum = nextSourceLessonNumber(student, level);
     const lesson = buildLesson(student, level.num, lessonNum);
     student.activeLesson = student.activeLesson || { levelId:level.id, lessonNum, date:today(), blockNotes:{}, conceptRatings:{}, taskRatings:{}, feedback:'', teacherNotes:'', status:'in-progress' };
     saveStudent(student);
@@ -1633,7 +1750,7 @@
     });
     html += '<div class="journey-card"><div class="journey-kicker">Concept status</div>'+ratingButtons('concept', lesson.conceptNames, student.activeLesson.conceptRatings)+'</div>';
     html += '<div class="journey-card" style="margin-top:12px"><div class="journey-kicker">Task status</div>'+ratingButtons('task', lesson.taskNames, student.activeLesson.taskRatings)+'</div>';
-    html += '<div class="journey-card" style="margin-top:12px"><div class="journey-kicker">Feedback / Next Gradient</div><textarea class="journey-input" id="journey-feedback" placeholder="How did this contact go? What should happen next?">'+esc(student.activeLesson.feedback || '')+'</textarea><textarea class="journey-input" id="journey-teacher-notes" style="margin-top:8px" placeholder="Teacher notes: gaps, interests, attitude, breakthroughs, exact relevance...">'+esc(student.activeLesson.teacherNotes || '')+'</textarea><div class="journey-actions"><button class="journey-btn secondary" onclick="Journey.saveLessonDraft()">Save Draft</button><button class="journey-btn" onclick="Journey.completeLesson()">Complete Lesson + Unlock Progress</button></div></div></div>';
+    html += '<div class="journey-card" style="margin-top:12px"><div class="journey-kicker">Feedback / Next Gradient</div><textarea class="journey-input" id="journey-feedback" placeholder="How did this contact go? What should happen next?">'+esc(student.activeLesson.feedback || '')+'</textarea><textarea class="journey-input" id="journey-teacher-notes" style="margin-top:8px" placeholder="Teacher notes: gaps, interests, attitude, breakthroughs, exact relevance...">'+esc(student.activeLesson.teacherNotes || '')+'</textarea><div class="journey-actions"><button class="journey-btn secondary" onclick="Journey.saveLessonDraft()">Save Draft</button><button class="journey-btn" onclick="Journey.completeLesson()">Save Lesson Review</button></div></div></div>';
     root.innerHTML = html;
   }
 
@@ -1657,7 +1774,7 @@
       render();
       return;
     }
-    const level = getLevel(student.currentLevel || 1);
+    const level = effectiveCurrentLevel(student);
     const lessonNum = student.activeLesson.lessonNum || 1;
     const blockIdx = student.activeLesson.blockIdx || 0;
     renderLevelLesson(level.num, lessonNum, blockIdx);
@@ -1665,13 +1782,12 @@
 
   const Journey = {
     render,
-    startLesson(){ const state=loadState(); const s=activeStudent(state); const l=getLevel(s.currentLevel||1); const ls=s.levels[l.id]; const num=(ls.lessonsDone||0)+1; renderLevelLesson(l.num, num); },
+    startLesson(){ const state=loadState(); const s=activeStudent(state); const l=effectiveCurrentLevel(s); renderLevelLesson(l.num, nextSourceLessonNumber(s, l)); },
     beginLevel(levelNum){
       const state = loadState();
       const s = activeStudent(state);
       const l = getLevel(levelNum || s.currentLevel || 1);
-      const ls = s.levels[l.id] || {};
-      const next = Math.min(l.totalLessons || 1, (ls.lessonsDone || 0) + 1);
+      const next = nextSourceLessonNumber(s, l);
       s.currentLevel = l.num;
       s.activeLesson = null;
       saveStudent(s);
@@ -1685,7 +1801,7 @@
     jumpLessonStage(levelNum, lessonNum, blockIdx){ const s=collectDraft(); saveStudent(s); renderLevelLesson(levelNum, lessonNum, blockIdx); },
     openLevel(num){
       const state = loadState(); const s = activeStudent(state); const l = getLevel(num);
-      const unlocked = num === 1 || s.levels[l.id].unlocked || s.levels['L'+(num-1)]?.complete;
+      const unlocked = isLevelUnlocked(s, num);
       if(!unlocked) return;
       s.currentLevel = num; s.activeLesson = null; saveStudent(s);
       renderLevelEntry(num);
@@ -1723,11 +1839,53 @@
         instruction:handoff.instruction
       });
     },
+    openCompanionDoing(studentId, stepIndex){
+      const state = loadState();
+      const student = state.students.find(item => item.id === studentId) || activeStudent(state);
+      const companion = getCompanion(student);
+      const step = companionLessonSteps(companion)[stepIndex];
+      const spec = step && step.doingHandoff;
+      if(!spec || !window.HearthCrossNodeHandoffStore || typeof window.HearthCrossNodeHandoffStore.createStore !== 'function') return;
+      const store = window.HearthCrossNodeHandoffStore.createStore({ storage:window.sessionStorage });
+      const suffix = Date.now().toString(36);
+      const handoff = {
+        id:'handoff-journey-doing-'+student.id+'-'+suffix,
+        version:1,
+        learner_id:student.id,
+        actor_role:'learner',
+        source_node_id:'journey',
+        destination_node_id:'doing',
+        activity_id:spec.drill_id,
+        lesson_id:'jen-a-minor-pentatonic-consolidation',
+        journey_level_id:'L1',
+        capability_ids:(spec.capability_ids || []).slice(),
+        attempt_id:null,
+        session_id:'journey-session-'+student.id+'-'+suffix,
+        task:{
+          id:spec.drill_id,
+          instruction:spec.instruction,
+          parameters:{ room_id:spec.room_id, category_id:spec.category_id, drill_id:spec.drill_id, bpm:[60,76,100] }
+        },
+        pass_condition:{
+          description:spec.pass_condition,
+          minimum_evidence_stage:'demonstration',
+          criteria:{ drill_id:spec.drill_id, clean_passes:1 }
+        },
+        easier_step:{ instruction:spec.easier_step, parameters:{ drill_id:spec.drill_id, bpm:60, root_notes_only:true } },
+        return_route:{ node_id:'journey', view_id:'companion', params:{ learner_id:student.id, step_index:stepIndex } },
+        fallback_instruction:'Return to Journey and reopen Jen\'s Make Music step.',
+        created_at:new Date().toISOString()
+      };
+      if(!store.set(handoff)) return;
+      if(typeof window.showDoing === 'function') window.showDoing();
+      if(typeof window._setDoingRoomConcept === 'function') window._setDoingRoomConcept(spec.room_id);
+      if(typeof window._openDoingRoomDrill === 'function') window._openDoingRoomDrill(spec.category_id, spec.drill_id);
+    },
     saveCompanionLessonNote(studentId){
       const state = loadState();
       const s = state.students.find(student => student.id === studentId) || activeStudent(state);
-      const level = getLevel(s.currentLevel || 2);
-      const ls = s.levels[level.id] || s.levels.L2 || s.levels.L1;
+      const level = effectiveCurrentLevel(s);
+      const ls = s.levels[level.id] || s.levels.L1;
       const noteEl = document.getElementById('journey-companion-note');
       const nextEl = document.getElementById('journey-companion-next');
       const happened = noteEl && noteEl.value.trim() ? noteEl.value.trim() : 'Used the live Jen consolidation companion.';
@@ -1829,7 +1987,7 @@
     completeLesson(){
       const s = collectDraft(); const level = getLevel(s.currentLevel); const ls = s.levels[level.id]; const lesson = s.activeLesson;
       lesson.status = 'complete'; lesson.completedAt = new Date().toISOString();
-      ls.lessonRecords.push(lesson); ls.lessonsDone = Math.max(ls.lessonsDone || 0, lesson.lessonNum);
+      ls.lessonRecords.push(lesson);
       Object.assign(ls.conceptRatings, lesson.conceptRatings || {}); Object.assign(ls.taskRatings, lesson.taskRatings || {});
       const noteBits = [];
       Object.entries(lesson.blockNotes || {}).forEach(([k,v]) => { if(v && v.trim()) noteBits.push(k.toUpperCase()+': '+v.trim()); });
@@ -1838,23 +1996,53 @@
       if(noteBits.length) ls.notes.push({ date:today(), text:noteBits.join(' | ') });
       if(window.HearthProgressEvents){
         const authoredLesson = buildLesson(s, level.num, lesson.lessonNum);
+        const reflectionCaptured = Boolean((lesson.feedback || '').trim() || (lesson.teacherNotes || '').trim() || (lesson.blockNotes && String(lesson.blockNotes.reflect || '').trim()));
+        const eventTime = lesson.completedAt;
+        const eventSuffix = Date.now().toString(36);
         window.HearthProgressEvents.append({
+          id:'journey-'+s.id+'-'+level.id+'-'+lesson.lessonNum+'-'+eventSuffix,
+          version:1,
+          simulator_id:'hearth-guitar',
           event_type:'lesson_completed',
-          node_id:'journey',
           learner_id:s.id,
+          actor_role:'learner',
+          node_id:'journey',
+          destination_node_id:null,
           journey_level_id:level.id,
-          lesson_id:level.id+'-lesson-'+lesson.lessonNum,
+          category_id:null,
+          lesson_id:authoredLesson.countsTowardLevel ? level.id+'-lesson-'+countedLessonNumber(level, lesson.lessonNum) : level.id+'-entry-check',
+          activity_id:authoredLesson.activityId,
+          drill_id:null,
+          capability_ids:reflectionCaptured && level.id === 'L1' ? ['L1-REFLECT-01'] : [],
+          attempt_id:'journey-attempt-'+s.id+'-'+eventSuffix,
+          session_id:'journey-session-'+s.id+'-'+eventSuffix,
+          evidence_stage:reflectionCaptured ? 'demonstration' : 'contact',
+          evidence_source:reflectionCaptured ? 'self_report' : 'direct_interaction',
+          source_id:null,
+          project_id:null,
+          recording_id:null,
+          handoff_id:null,
           duration_minutes:authoredLesson.minutes || null,
+          rating:null,
           note:lesson.feedback || lesson.teacherNotes || '',
+          occurred_at:eventTime,
+          recorded_at:eventTime,
+          created_at:eventTime,
+          return_route:{ node_id:'journey', view_id:'level', params:{ level_id:level.id } },
+          fallback_instruction:'Return to Journey and reopen '+level.name+'.',
           data:{
             lesson_title:authoredLesson.title,
+            counts_toward_level:authoredLesson.countsTowardLevel,
             category_tags:authoredLesson.categoryTags || [],
             concept_ratings:lesson.conceptRatings || {},
-            task_ratings:lesson.taskRatings || {}
+            task_ratings:lesson.taskRatings || {},
+            source_lesson_number:lesson.lessonNum
           }
         });
       }
-      if(ls.lessonsDone >= level.totalLessons){ ls.complete = true; const next = s.levels['L'+(level.num+1)]; if(next){ next.unlocked = true; s.currentLevel = level.num+1; } }
+      ls.lessonsDone = countedLessonProgress(s, level).done;
+      ls.complete = journeyLevelProgress(s, level).complete;
+      if(ls.complete){ const next = s.levels['L'+(level.num+1)]; if(next){ next.unlocked = true; s.currentLevel = level.num+1; } }
       s.activeLesson = null; saveStudent(s); render();
     },
     openJournal(){
@@ -1865,8 +2053,8 @@
     quickJenNote(){
       const state=loadState(); let s=activeStudent(state);
       if(!/jen/i.test(s.name)){ const jen=state.students.find(x=>/jen/i.test(x.name)); if(jen){ state.activeStudentId=jen.id; saveState(state); s=jen; } }
-      s.currentLevel = 2; s.levels.L2.unlocked = true;
-      s.levels.L2.notes.push({ date:today(), text:"L2 with Jen: reviewed what we learned last week; practised finger gymnastics with a metronome; learned pentatonic scale pattern with metronome; learned chord embellishments and how they colour songs. Relevance: Jen is close to my ability - I need to level up fast. Need to understand how scales relate to piano and what they mean on guitar. Jen wants to write a song. She didn\'t know C chord, so C chord is a gap to track." });
+      s.currentLevel = 1;
+      s.levels.L1.notes.push({ date:today(), text:"Level 1 consolidation with Jen: reviewed what we learned last week; practised finger gymnastics with a metronome; learned pentatonic scale pattern with metronome; learned chord embellishments and how they colour songs. Relevance: Jen is close to my ability - I need to level up fast. Need to understand how scales relate to piano and what they mean on guitar. Jen wants to write a song. She didn\'t know C chord, so C chord is a gap to track." });
       saveStudent(s); render();
     },
     reset(){ if(confirm('Reset Journey data on this device?')){ localStorage.removeItem(STORE); render(); } },

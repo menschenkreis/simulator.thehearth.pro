@@ -64,6 +64,12 @@ CORE_MARKERS = {
         "sameNormalizedPayload",
         "toJourneyEvidenceStage",
     ],
+    "core/journey-progress.js": [
+        "HearthJourneyProgress",
+        "normalizeLevelId",
+        "summarize",
+        "capabilityEvidence",
+    ],
     "core/play-domain.js": [
         "HearthPlayDomain",
         "normalizeDestination",

@@ -59,7 +59,9 @@ assert(learnerMigrationPreviewSource.indexOf(".setItem(") === -1, "Learner migra
 assert(learnerMigrationPreviewSource.indexOf(".removeItem(") === -1, "Learner migration preview must not contain a storage delete call");
 eval(learnerMigrationPreviewSource);
 eval(readText(root + "/core/progress-event.js"));
+eval(readText(root + "/core/journey-progress.js"));
 eval(readText(root + "/adapters/progress-event-store.js"));
+eval(readText(root + "/adapters/cross-node-handoff-store.js"));
 eval(readText(root + "/core/play-domain.js"));
 eval(readText(root + "/assets/js/journey-data.js"));
 eval(readText(root + "/adapters/study-key-chamber-model.js"));
@@ -443,8 +445,10 @@ JOURNEY_LEVEL_CAPABILITIES.L1.forEach(function rememberCapability(capability) {{
   journeyCapabilityIds[capability.id] = true;
 }});
 var currentLevelOneActivities = JOURNEY_LEVEL_ACTIVITY_CAPABILITY_MAP.L1;
-assert(Object.keys(currentLevelOneActivities).length === 8, "Current Level 1 activities should all have capability mappings");
+assert(Object.keys(currentLevelOneActivities).length === 9, "Entry Check and all eight Level 1 lessons should have capability mappings");
 assert(currentLevelOneActivities["l1-entry-preflight"].countsTowardLevel === false, "Level 1 entry check should be classified as preflight");
+assert(currentLevelOneActivities["l1-song-path"].countsTowardLevel === true, "Level 1 should include a counted song pathway");
+assert(Object.keys(currentLevelOneActivities).filter(function(activityId) {{ return currentLevelOneActivities[activityId].countsTowardLevel; }}).length === 8, "Level 1 should contain exactly eight counted lessons");
 Object.keys(currentLevelOneActivities).forEach(function checkJourneyActivity(activityId) {{
   var activity = currentLevelOneActivities[activityId];
   assert(Object.keys(activity.blocks).length === 6, "Each current Journey activity should map its six authored blocks: " + activityId);
@@ -457,6 +461,48 @@ Object.keys(currentLevelOneActivities).forEach(function checkJourneyActivity(act
     }});
   }});
 }});
+
+assert(JOURNEY_AUTHORED_LESSONS.L1.length === 9, "Level 1 should author one Entry Check plus eight lessons");
+assert(JOURNEY_AUTHORED_LESSONS.L1[0].countsTowardLevel === false, "The Entry Check must not count as Lesson 1");
+assert(JOURNEY_AUTHORED_LESSONS.L1.filter(function(lesson) {{ return lesson.countsTowardLevel !== false; }}).length === 8, "Only eight Level 1 lessons should count");
+assert(JOURNEY_AUTHORED_LESSONS.L1[7].title.indexOf("Carry It Into a Song") !== -1, "Level 1 should contain the protected song pathway");
+assert(JOURNEY_AUTHORED_LESSONS.L1[8].title.indexOf("Lesson 8") === 0, "The final integration should remain learner-facing Lesson 8");
+
+var journeyProgressEvents = [
+  {{ learner_id:"jen", journey_level_id:"L1", node_id:"doing", capability_ids:["L1-MAP-01"], evidence_stage:"demonstration", id:"jen-map" }},
+  {{ learner_id:"ayla", journey_level_id:"L1", node_id:"doing", capability_ids:["L1-MAP-01"], evidence_stage:"demonstration", id:"ayla-map" }},
+  {{ learner_id:"jen", journey_level_id:"L1", node_id:"journey", capability_ids:["L1-MAP-02"], evidence_stage:"consolidation", id:"wrong-authority" }}
+];
+var journeyProgressSummary = HearthJourneyProgress.summarize({{
+  events: journeyProgressEvents,
+  learnerId:"jen",
+  levelId:"L1",
+  capabilities:JOURNEY_LEVEL_CAPABILITIES.L1,
+  evidenceStages:JOURNEY_EVIDENCE_STAGES,
+  eventContract:HearthProgressEventContract
+}});
+assert(journeyProgressSummary.capabilityEvidence["L1-MAP-01"].met === true, "Authorized Do evidence should satisfy the mapped Level 1 capability");
+assert(journeyProgressSummary.capabilityEvidence["L1-MAP-02"].stage === "not_encountered", "A node without authority must not credit a capability");
+assert(journeyProgressSummary.complete === false, "One drill event must never complete Level 1");
+assert(journeyProgressSummary.metRequired === 1, "Another learner's evidence must not leak into Jen's progress");
+
+var handoffMemoryValues = {{}};
+var handoffMemoryStorage = {{
+  getItem: function(key) {{ return Object.prototype.hasOwnProperty.call(handoffMemoryValues, key) ? handoffMemoryValues[key] : null; }},
+  setItem: function(key, value) {{ handoffMemoryValues[key] = String(value); }},
+  removeItem: function(key) {{ delete handoffMemoryValues[key]; }}
+}};
+var handoffStore = HearthCrossNodeHandoffStore.createStore({{ storage:handoffMemoryStorage }});
+var testHandoff = {{
+  id:"handoff-test-1", version:1, learner_id:"jen", source_node_id:"journey", destination_node_id:"doing",
+  return_route:{{ node_id:"journey", view_id:"companion", params:{{ learner_id:"jen" }} }}
+}};
+assert(handoffStore.set(testHandoff) === testHandoff, "A valid cross-node handoff should be stored");
+assert(handoffStore.current({{ learnerId:"jen", destinationNodeId:"doing" }}).id === "handoff-test-1", "The intended learner and node should receive the handoff");
+assert(handoffStore.current({{ learnerId:"ayla", destinationNodeId:"doing" }}) === null, "A handoff must not leak to another learner");
+assert(handoffStore.current({{ learnerId:"jen", destinationNodeId:"practice" }}) === null, "A handoff must not leak to another destination node");
+assert(handoffStore.clear("another-handoff") === false, "A mismatched clear request must preserve the active handoff");
+assert(handoffStore.clear("handoff-test-1") === true && handoffStore.read() === null, "Returning should clear the matching handoff");
 
 assert(
   JSON.stringify(HearthFoundationRouteManifest.routes) === JSON.stringify(foundationManifest.routes),
