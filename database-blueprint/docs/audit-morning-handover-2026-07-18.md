@@ -46,7 +46,6 @@ creation, and a genuine Mastery encounter.
 
 ## GitHub Note
 
-The code checkpoint is committed locally. The first push attempt could not
-authenticate through the repository's HTTPS remote in this environment. No
-work was lost; GitHub Desktop can publish it, or the remote can be deliberately
-switched back to the user's SSH setup before the next push.
+The code and audit checkpoints are committed and the tracked remote branch has
+been updated through the repository's existing GitHub integration. The final
+audit commit is `d2170f3` on `cleanup/handoff-architecture`.
