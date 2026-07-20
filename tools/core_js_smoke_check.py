@@ -62,6 +62,7 @@ eval(learnerMigrationPreviewSource);
 eval(readText(root + "/core/progress-event.js"));
 eval(readText(root + "/core/journey-progress.js"));
 eval(readText(root + "/core/hearth-brain-chamber.js"));
+eval(readText(root + "/core/knowing-progress.js"));
 eval(readText(root + "/core/level-one-song-thread.js"));
 eval(readText(root + "/adapters/progress-event-store.js"));
 eval(readText(root + "/adapters/cross-node-handoff-store.js"));
@@ -1204,24 +1205,49 @@ var knowingTopicHtml = HearthKnowingTopicViewer.renderKnowingTopic({{
   knowing: fakeKnowing,
   cat: fakeKnowing.categories[0],
   topic: fakeKnowing.categories[0].topics[0],
-  completed: {{ pulse: true }}
+  completed: {{ pulse: true }},
+  topicState: {{ opened: true, read: true, answeredCorrect: false }}
 }});
 assert(knowingTopicHtml.indexOf("Back to Rhythm") !== -1, "Knowing topic viewer should render book back action");
 assert(knowingTopicHtml.indexOf("Mark as understood") === -1, "Knowing topic viewer should reflect completed topic");
+assert(knowingTopicHtml.indexOf("I have read this") === -1 && knowingTopicHtml.indexOf(">Read<") !== -1, "Knowing topic viewer should distinguish reading from understanding");
+assert(knowingTopicHtml.indexOf("Open exact topic in Study") !== -1, "Knowing topic viewer should expose the exact Study handoff");
 assert(
   HearthKnowingTopicViewer.nextTopicFor(fakeKnowing.categories[0], fakeKnowing.categories[0].topics[0]).id === "sync",
   "Knowing topic viewer should find next topic"
 );
+var knowingOpenedEvent = HearthKnowingProgress.buildEvent({{
+  learnerId: "jen-1", stage: "opened", categoryId: "rhythm", topicId: "pulse", topicTitle: "Pulse",
+  timestamp: "2026-07-20T10:00:00.000Z", suffix: "open"
+}});
+var knowingReadEvent = HearthKnowingProgress.buildEvent({{
+  learnerId: "jen-1", stage: "read", categoryId: "rhythm", topicId: "pulse", topicTitle: "Pulse",
+  timestamp: "2026-07-20T10:01:00.000Z", suffix: "read"
+}});
+var knowingAnswerEvent = HearthKnowingProgress.buildEvent({{
+  learnerId: "jen-1", stage: "answered", categoryId: "rhythm", topicId: "pulse", topicTitle: "Pulse",
+  answerId: "beats-per-measure", correct: true, timestamp: "2026-07-20T10:02:00.000Z", suffix: "answer"
+}});
+assert(knowingOpenedEvent.capability_ids.length === 0, "Opening a KNOW topic must not grant capability credit");
+assert(knowingReadEvent.evidence_stage === "contact", "Reading remains contact rather than demonstrated understanding");
+assert(knowingAnswerEvent.capability_ids[0] === "L1-KNOW-01", "A correct KNOW check may supply Level 1 knowledge evidence");
+var jenKnowingProjection = HearthKnowingProgress.project([knowingOpenedEvent, knowingReadEvent, knowingAnswerEvent], "jen-1");
+assert(jenKnowingProjection.pulse.read === true && jenKnowingProjection.pulse.answeredCorrect === true, "KNOW projection should preserve separate evidence stages");
+assert(Object.keys(HearthKnowingProgress.project([knowingOpenedEvent], "ayla-1")).length === 0, "KNOW evidence must not leak between Jen and Ayla");
 var fakeKnowingStorage = {{
-  value: "{{}}",
-  getItem: function() {{ return this.value; }},
-  setItem: function(key, value) {{ this.value = value; }}
+  values: {{
+    "hearth-journey-v2": JSON.stringify({{ activeStudentId: "jen-1", students: [{{ id: "jen-1", name: "Jen" }}, {{ id: "ayla-1", name: "Ayla" }}] }}),
+    "hearth-knowing-progress": JSON.stringify({{ "old-global-topic": true }})
+  }},
+  getItem: function(key) {{ return this.values[key] || null; }},
+  setItem: function(key, value) {{ this.values[key] = value; }}
 }};
-HearthKnowingProgressController.markTopic({{ topicId: "pulse", storage: fakeKnowingStorage }});
+HearthKnowingProgressController.recordStage({{ stage: "read", catId: "rhythm", topicId: "pulse", topicTitle: "Pulse", storage: fakeKnowingStorage, timestamp: "2026-07-20T10:03:00.000Z", suffix: "controller" }});
 assert(
   HearthKnowingProgressController.readProgress(fakeKnowingStorage).pulse === true,
-  "Knowing progress controller should mark topic complete"
+  "Knowing progress controller should project learner-scoped topic contact"
 );
+assert(HearthKnowingProgressController.readLegacyProgress(fakeKnowingStorage)["old-global-topic"] === true, "KNOW should preserve old global progress without assigning it to a learner");
 assert(typeof HearthKnowingPanelController.showKnowing === "function", "Knowing panel controller should expose showKnowing");
 assert(
   HearthKnowingPanelController.readProgress(fakeKnowingStorage).pulse === true,
@@ -2013,6 +2039,27 @@ var completedTimeSignatureStudy = StudyKeyChamberModel.recordEvidence("word", {{
   feeling: "nailed",
   note: "I can count the beat grouping steadily."
 }}, {{ storage: timeSignatureStudyStorage }});
+var switchedScaleStudy = StudyKeyChamberModel.setSubject({{
+  id: "pentatonic",
+  title: "Pentatonic Scale",
+  summary: "Roots and note maps.",
+  source: "KNOW",
+  categoryId: "scales",
+  topicId: "pentatonic",
+  recommendedDoor: "shape"
+}}, {{ storage: timeSignatureStudyStorage }});
+assert(switchedScaleStudy.subject.title === "Pentatonic Scale", "KNOW should set the exact Study subject");
+assert(switchedScaleStudy.doors.find(function(door) {{ return door.id === "word"; }}).state !== "understood", "Study evidence must not leak from Time Signatures into Pentatonic Scale");
+var restoredTimeSignatureStudy = StudyKeyChamberModel.setSubject({{
+  id: "time-signatures",
+  title: "Time Signatures",
+  summary: "Time, pulse, and grouping.",
+  source: "KNOW",
+  categoryId: "rhythm",
+  topicId: "time-signatures",
+  recommendedDoor: "word"
+}}, {{ storage: timeSignatureStudyStorage }});
+assert(restoredTimeSignatureStudy.doors.find(function(door) {{ return door.id === "word"; }}).state === "understood", "Study should restore evidence when the learner returns to the same subject");
 var timeSignaturePracticeSnapshot = HearthPracticeEntryModel.buildSnapshot({{
   journeyState: {{ activeStudentId: "alex", students: [{{ id: "alex", name: "Alex", levels: {{}} }}] }},
   companions: {{}},

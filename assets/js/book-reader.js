@@ -9,6 +9,7 @@
   let pageFlip = null;
   let pages = [];
   let pageNotes = [];
+  let pageTopics = [];
   let currentCat = null;
 
   const QUOTES = [
@@ -39,7 +40,7 @@
     'modulation': [{ cat: 'chords-harmony', level: 'level6', num: 51 }]
   };
 
-  function esc(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+  function esc(s) { return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
   function ytEmbed(url) {
     if (!url) return '';
@@ -118,14 +119,37 @@
     '</div>';
   }
 
+  function renderLearningActions(cat, topic) {
+    var check = topic.id === 'time-signatures'
+      ? '<div class="topic-check" data-knowing-check="time-signatures">' +
+          '<div class="concept-heading">Quick check</div>' +
+          '<p>What does the top number of a time signature tell you?</p>' +
+          '<div class="topic-check-actions">' +
+            '<button type="button" data-knowing-action="answer" data-answer-id="beats-per-measure" data-correct="true">How many beats are in each measure</button>' +
+            '<button type="button" data-knowing-action="answer" data-answer-id="chord-name" data-correct="false">Which chord to play</button>' +
+          '</div>' +
+        '</div>'
+      : '';
+    return '<div class="topic-learning-actions" data-category-id="' + esc(cat.id) + '" data-topic-id="' + esc(topic.id) + '" data-topic-title="' + esc(topic.title) + '">' +
+      check +
+      '<div class="topic-learning-buttons">' +
+        '<button type="button" data-knowing-action="read">I have read this</button>' +
+        '<button type="button" data-knowing-action="study">Open exact topic in Study</button>' +
+      '</div>' +
+      '<div class="topic-learning-status" role="status" aria-live="polite"></div>' +
+    '</div>';
+  }
+
   function buildPages(cat) {
     const result = [];
     const notes = [];
+    const topics = [];
     let qi = 0;
 
-    function addPage(html, note) {
+    function addPage(html, note, topicId) {
       result.push(html);
       notes.push(note);
+      topics.push(topicId || null);
     }
 
     // Cover
@@ -149,19 +173,20 @@
       var diffDots = '\u25CF'.repeat(topic.difficulty) + '\u25CB'.repeat(3 - topic.difficulty);
 
       addPage(
-        '<div class="page">' +
+        '<div class="page" data-knowing-topic-id="' + esc(topic.id) + '">' +
           '<div class="page-content page-topic">' +
             '<div class="topic-label">' + esc(cat.title) + '</div>' +
             '<div class="topic-title">' + esc(topic.title) + '</div>' +
             '<div class="topic-diff">Level ' + topicLevel + '  ' + diffLabel + '  ' + diffDots + '</div>' +
-            '<div class="topic-body">' + renderConcepts(topic) + topic.body + '</div>' +
+            '<div class="topic-body">' + renderConcepts(topic) + topic.body + renderLearningActions(cat, topic) + '</div>' +
             '<div class="topic-footer">' +
               '<span class="topic-source">' + esc(topic.source) + '</span>' +
               '<span class="topic-num">' + (idx + 1) + '</span>' +
             '</div>' +
           '</div>' +
         '</div>',
-        getTopicGuideText(cat, topic)
+        getTopicGuideText(cat, topic),
+        topic.id
       );
 
       // Interleaved quote
@@ -210,7 +235,28 @@
     );
 
     pageNotes = notes;
+    pageTopics = topics;
     return result;
+  }
+
+  function setBackgroundAccessibility(hidden, overlay) {
+    Array.prototype.forEach.call(document.body.children, function updateBodyChild(child) {
+      if (child === overlay || child.tagName === 'SCRIPT') return;
+      if (hidden) {
+        child.setAttribute('data-book-previous-aria-hidden', child.getAttribute('aria-hidden') || '');
+        child.setAttribute('data-book-previous-inert', child.inert ? 'true' : 'false');
+        child.setAttribute('aria-hidden', 'true');
+        child.inert = true;
+        return;
+      }
+      if (!child.hasAttribute('data-book-previous-aria-hidden')) return;
+      var previousAria = child.getAttribute('data-book-previous-aria-hidden');
+      if (previousAria) child.setAttribute('aria-hidden', previousAria);
+      else child.removeAttribute('aria-hidden');
+      child.inert = child.getAttribute('data-book-previous-inert') === 'true';
+      child.removeAttribute('data-book-previous-aria-hidden');
+      child.removeAttribute('data-book-previous-inert');
+    });
   }
 
   window.openBook = function (categoryId, levelFilter) {
@@ -237,6 +283,7 @@
     // Remove existing overlay
     var existing = document.getElementById('book-overlay');
     if (existing) {
+      setBackgroundAccessibility(false, existing);
       existing.remove();
       if (pageFlip) { pageFlip.destroy(); pageFlip = null; }
     }
@@ -246,7 +293,7 @@
     overlay.className = 'flipbook-container';
     overlay.innerHTML =
       '<div class="back-nav">' +
-        '<button class="back-link" id="book-back">' +
+        '<button class="back-link" id="book-back" aria-label="Close book and return to the KNOW shelves">' +
           '<svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>' +
           ' Back to shelf' +
         '</button>' +
@@ -259,15 +306,16 @@
         '</div>' +
       '</div>' +
       '<div class="flipbook-wrapper">' +
-        '<button class="nav-btn prev" id="btn-prev">' +
+        '<button class="nav-btn prev" id="btn-prev" aria-label="Previous book page">' +
           '<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M15 18l-6-6 6-6"/></svg>' +
         '</button>' +
         '<div id="flipbook"></div>' +
-        '<button class="nav-btn next" id="btn-next">' +
+        '<button class="nav-btn next" id="btn-next" aria-label="Next book page">' +
           '<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 18l6-6-6-6"/></svg>' +
         '</button>' +
       '</div>';
     document.body.appendChild(overlay);
+    setBackgroundAccessibility(true, overlay);
 
     // Populate pages
     var flipEl = document.getElementById('flipbook');
@@ -338,9 +386,29 @@
       }, 120);
     }
 
+    var openedTopics = {};
+
+    function recordVisibleTopics(pageIndex) {
+      [pageIndex, pageIndex + 1].forEach(function recordPageTopic(index) {
+        var topicId = pageTopics[index];
+        if (!topicId || openedTopics[topicId]) return;
+        var topic = filteredCat.topics.find(function findTopic(item) { return item.id === topicId; });
+        if (!topic || !window.HearthKnowingProgressController) return;
+        openedTopics[topicId] = true;
+        window.HearthKnowingProgressController.recordStage({
+          stage: 'opened',
+          catId: filteredCat.id,
+          topicId: topicId,
+          topicTitle: topic.title,
+          storage: window.localStorage
+        });
+      });
+    }
+
     function updateBookState(pageIndex) {
       updateCoverMode(pageIndex);
       updateGuideText(pageIndex);
+      recordVisibleTopics(pageIndex);
     }
 
     pageFlip.on('init', function (e) { updateBookState(e.data.page); });
@@ -354,6 +422,46 @@
     document.getElementById('btn-next').addEventListener('click', function () { pageFlip.flipNext(); });
     document.getElementById('book-back').addEventListener('click', closeBook);
 
+    overlay.addEventListener('click', function handleLearningAction(event) {
+      var button = event.target.closest && event.target.closest('[data-knowing-action]');
+      if (!button) return;
+      var actions = button.closest('.topic-learning-actions');
+      if (!actions) return;
+      event.preventDefault();
+      event.stopPropagation();
+      var catId = actions.getAttribute('data-category-id');
+      var topicId = actions.getAttribute('data-topic-id');
+      var topicTitle = actions.getAttribute('data-topic-title');
+      var action = button.getAttribute('data-knowing-action');
+      var status = actions.querySelector('.topic-learning-status');
+      if (action === 'study') {
+        if (typeof window.openKnowingTopicInStudy === 'function') window.openKnowingTopicInStudy(catId, topicId);
+        return;
+      }
+      if (!window.HearthKnowingProgressController) return;
+      if (action === 'read') {
+        window.HearthKnowingProgressController.recordStage({ stage: 'read', catId: catId, topicId: topicId, topicTitle: topicTitle, storage: window.localStorage });
+        button.textContent = 'Read';
+        if (status) status.textContent = 'Reading contact saved for the active learner.';
+        return;
+      }
+      if (action === 'answer') {
+        var correct = button.getAttribute('data-correct') === 'true';
+        window.HearthKnowingProgressController.recordStage({
+          stage: 'answered',
+          catId: catId,
+          topicId: topicId,
+          topicTitle: topicTitle,
+          answerId: button.getAttribute('data-answer-id'),
+          correct: correct,
+          storage: window.localStorage
+        });
+        if (status) status.textContent = correct
+          ? 'Yes. The top number tells you how many beats are in each measure.'
+          : 'Not quite. The top number counts the beats in each measure. Read that line once more, then try again.';
+      }
+    });
+
     var keyHandler = function (e) {
       if (!document.getElementById('book-overlay')) return;
       if (e.key === 'ArrowRight') pageFlip.flipNext();
@@ -366,15 +474,21 @@
     requestAnimationFrame(function () { overlay.style.opacity = '1'; });
   };
 
-  function closeBook() {
+  function closeBook(immediate) {
     var overlay = document.getElementById('book-overlay');
     if (!overlay) return;
     if (overlay._keyHandler) document.removeEventListener('keydown', overlay._keyHandler);
-    overlay.style.opacity = '0';
-    setTimeout(function () {
+    function finishClose() {
       overlay.remove();
+      setBackgroundAccessibility(false, null);
       if (pageFlip) { pageFlip.destroy(); pageFlip = null; }
-    }, 500);
+    }
+    if (immediate === true) {
+      finishClose();
+      return;
+    }
+    overlay.style.opacity = '0';
+    setTimeout(finishClose, 500);
   }
 
   window.closeBook = closeBook;

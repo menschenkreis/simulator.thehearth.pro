@@ -181,6 +181,14 @@ Practice comes first because an overwritten unfinished student session is the
 most immediate data-integrity risk. Know follows because its visible shelf can
 currently claim the wrong learner progress.
 
+Checkpoint 2026-07-20: Practice already preserves learner-scoped unfinished
+sessions. Know now projects shelf contact and the separate `opened`, `read`,
+`answered`, and `applied` stages from learner-scoped canonical events. Its old
+global counter is preserved but no longer treated as current learner truth.
+The approved flipbook remains authoritative, Time Signatures has a small check,
+and Know sends an exact subject into Study. Foundation is the next learner-
+isolation batch.
+
 ### Wave 3: Trustworthy Journey
 
 Journey may design its evidence calculation while Wave 2 is underway, but it

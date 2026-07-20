@@ -78,6 +78,14 @@ CORE_MARKERS = {
         "Own",
         "buildEvents",
     ],
+    "core/knowing-progress.js": [
+        "HearthKnowingProgress",
+        "knowing_topic_opened",
+        "knowing_topic_read",
+        "knowing_topic_answered",
+        "buildEvent",
+        "project",
+    ],
     "core/level-one-song-thread.js": [
         "HearthLevelOneSongThread",
         "level-1-a-minor-homecoming",

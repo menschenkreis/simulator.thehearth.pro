@@ -218,6 +218,12 @@ REQUIRED_MARKERS = {
         "returnToSource",
         "Return to Journey",
     ],
+    "core/knowing-progress.js": [
+        "root.HearthKnowingProgress",
+        "knowing_topic_opened",
+        "knowing_topic_answered",
+        "capability_ids",
+    ],
     "adapters/practice-candle-viewer.js": [
         "root.PracticeCandle",
         "root.showPractice",
@@ -628,7 +634,11 @@ REQUIRED_MARKERS = {
     "adapters/knowing-progress-controller.js": [
         "HearthKnowingProgressController",
         "bindProgressGlobals",
-        "markTopic",
+        "recordStage",
+        "readLegacyProgress",
+        "topicProjection",
+        "sendToStudy",
+        "appendCanonical",
     ],
     "adapters/knowing-panel-controller.js": [
         "HearthKnowingPanelController",

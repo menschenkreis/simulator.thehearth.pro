@@ -300,6 +300,63 @@
   line-height: 1.45;
   text-align: left;
 }
+.topic-learning-actions {
+  margin-top: 1.15rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(196,122,58,0.18);
+  text-align: left;
+}
+.topic-check {
+  padding: 0.85rem;
+  margin-bottom: 0.8rem;
+  border: 1px solid rgba(196,122,58,0.16);
+  border-radius: 6px;
+  background: rgba(196,122,58,0.04);
+}
+.topic-check p {
+  margin: 0 0 0.65rem !important;
+  color: var(--book-ink);
+  font-size: 0.78rem;
+  line-height: 1.5;
+  text-align: left;
+}
+.topic-check-actions,
+.topic-learning-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+.topic-learning-buttons {
+  margin-top: 0.6rem;
+}
+.topic-check button,
+.topic-learning-buttons button {
+  min-height: 38px;
+  padding: 0.55rem 0.7rem;
+  border: 1px solid rgba(196,122,58,0.35);
+  border-radius: 6px;
+  background: rgba(255,255,255,0.72);
+  color: #40352b;
+  font: 600 0.68rem/1.25 'IBM Plex Sans', sans-serif;
+  cursor: pointer;
+}
+.topic-learning-buttons button:last-child {
+  background: #5b3a6b;
+  border-color: #5b3a6b;
+  color: #fff;
+}
+.topic-check button:focus-visible,
+.topic-learning-buttons button:focus-visible {
+  outline: 2px solid var(--book-accent);
+  outline-offset: 2px;
+}
+.topic-learning-status {
+  min-height: 1.2rem;
+  margin-top: 0.55rem;
+  color: #6a5140;
+  font-size: 0.67rem;
+  line-height: 1.4;
+}
 .page-topic .topic-footer {
   margin-top: auto;
   padding-top: 0.8rem;

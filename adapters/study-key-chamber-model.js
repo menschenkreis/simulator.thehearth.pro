@@ -328,12 +328,67 @@
   function emptyRecord() {
     return {
       currentSubject: null,
+      subjects: {},
       doors: {},
       attempts: [],
       notes: [],
       lastVisitedDoor: null,
       lastVisitedAt: null
     };
+  }
+
+  function emptySubjectRecord() {
+    return {
+      doors: {},
+      attempts: [],
+      notes: [],
+      lastVisitedDoor: null,
+      lastVisitedAt: null,
+      lastEvidence: null
+    };
+  }
+
+  function subjectKey(subject) {
+    return normalizeKey(subject && (subject.id || subject.topicId || subject.title)) || "open-study";
+  }
+
+  function clone(value) {
+    return JSON.parse(JSON.stringify(value));
+  }
+
+  function archiveCurrentSubject(record) {
+    if (!record || !record.currentSubject) return;
+    record.subjects = record.subjects && typeof record.subjects === "object" ? record.subjects : {};
+    record.subjects[subjectKey(record.currentSubject)] = {
+      doors: clone(record.doors || {}),
+      attempts: clone(record.attempts || []),
+      notes: clone(record.notes || []),
+      lastVisitedDoor: record.lastVisitedDoor || null,
+      lastVisitedAt: record.lastVisitedAt || null,
+      lastEvidence: clone(record.lastEvidence || null)
+    };
+  }
+
+  function activateSubject(record, subject) {
+    if (!record || !subject) return record;
+    var previousKey = subjectKey(record.currentSubject);
+    var nextKey = subjectKey(subject);
+    record.subjects = record.subjects && typeof record.subjects === "object" ? record.subjects : {};
+    if (record.currentSubject && previousKey !== nextKey) archiveCurrentSubject(record);
+    var saved = record.subjects[nextKey] || emptySubjectRecord();
+    record.currentSubject = clone(subject);
+    record.doors = clone(saved.doors || {});
+    record.attempts = clone(saved.attempts || []);
+    record.notes = clone(saved.notes || []);
+    record.lastVisitedDoor = saved.lastVisitedDoor || null;
+    record.lastVisitedAt = saved.lastVisitedAt || null;
+    record.lastEvidence = clone(saved.lastEvidence || null);
+    return record;
+  }
+
+  function syncActiveSubject(record) {
+    archiveCurrentSubject(record);
+    return record;
   }
 
   function studyState(storage) {
@@ -347,7 +402,23 @@
   function learnerRecord(storage, learnerId) {
     var state = studyState(storage);
     if (!state.learners[learnerId]) state.learners[learnerId] = emptyRecord();
+    if (!state.learners[learnerId].subjects || typeof state.learners[learnerId].subjects !== "object") {
+      state.learners[learnerId].subjects = {};
+    }
     return { state: state, record: state.learners[learnerId] };
+  }
+
+  function setSubject(subject, options) {
+    if (!subject || !subject.title) return snapshot(options);
+    var storage = storageFor(options);
+    var learner = activeLearner(storage);
+    var pair = learnerRecord(storage, learner.id || "default");
+    activateSubject(pair.record, subject);
+    syncActiveSubject(pair.record);
+    pair.state.learners[learner.id || "default"] = pair.record;
+    pair.state.version = 2;
+    writeJson(storage, STORAGE_KEY, pair.state);
+    return snapshot({ storage: storage });
   }
 
   function legacyTopicStatus(storage, subject) {
@@ -443,8 +514,9 @@
     pair.record.lastVisitedDoor = doorId;
     pair.record.lastVisitedAt = saved.visitedAt;
     if (!pair.record.currentSubject) pair.record.currentSubject = current.subject;
+    syncActiveSubject(pair.record);
     pair.state.learners[current.learner.id] = pair.record;
-    pair.state.version = 1;
+    pair.state.version = 2;
     writeJson(storage, STORAGE_KEY, pair.state);
 
     if (root.HearthProgressEvents && typeof root.HearthProgressEvents.append === "function") {
@@ -507,8 +579,9 @@
       needsReview: needsReview,
       recordedAt: now
     });
+    syncActiveSubject(pair.record);
     pair.state.learners[current.learner.id] = pair.record;
-    pair.state.version = 1;
+    pair.state.version = 2;
     writeJson(storage, STORAGE_KEY, pair.state);
 
     if (root.HearthProgressEvents && typeof root.HearthProgressEvents.append === "function") {
@@ -541,6 +614,7 @@
       });
     },
     snapshot: snapshot,
+    setSubject: setSubject,
     markVisited: markVisited,
     recordEvidence: recordEvidence
   };
