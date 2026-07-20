@@ -26,6 +26,7 @@ REQUIRED_MARKERS = {
         "core/renderer-registry.js",
         "adapters/action-renderer-registry-bootstrap.js",
         "core/foundation-adapter.js",
+        "core/foundation-progress.js",
         "adapters/foundation-route-manifest-runtime.js",
         "adapters/foundation-seed-loader.js",
         "adapters/foundation-lesson-launcher.js",
@@ -223,6 +224,13 @@ REQUIRED_MARKERS = {
         "knowing_topic_opened",
         "knowing_topic_answered",
         "capability_ids",
+    ],
+    "core/foundation-progress.js": [
+        "root.HearthFoundationProgress",
+        "foundation_topic_opened",
+        "foundation_orientation_completed",
+        "foundation_path_completed",
+        "L1-PREP-01",
     ],
     "adapters/practice-candle-viewer.js": [
         "root.PracticeCandle",
@@ -484,6 +492,8 @@ REQUIRED_MARKERS = {
         "HearthFoundationProgressBridge",
         "markFoundationLessonCompleted",
         "markFoundationTopicCompleted",
+        "recordTopicOpened",
+        "readProgress",
         "hearth-foundation-progress",
     ],
     "adapters/browser-progress-store.js": [
@@ -1280,6 +1290,7 @@ def main() -> int:
         "core/lesson-session.js",
         "core/learner-progress.js",
         "core/progress-event.js",
+        "core/foundation-progress.js",
         "core/journey-progress.js",
         "core/level-one-song-thread.js",
         "adapters/browser-progress-store.js",

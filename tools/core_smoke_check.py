@@ -31,6 +31,13 @@ CORE_MARKERS = {
         "findRouteByTopic",
         "listTopicLessons",
     ],
+    "core/foundation-progress.js": [
+        "HearthFoundationProgress",
+        "foundation_topic_opened",
+        "foundation_orientation_completed",
+        "foundation_path_completed",
+        "buildPathEvent",
+    ],
     "core/renderer-registry.js": [
         "HearthRendererRegistry",
         "createRegistry",

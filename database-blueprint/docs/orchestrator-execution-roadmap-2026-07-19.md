@@ -186,8 +186,11 @@ sessions. Know now projects shelf contact and the separate `opened`, `read`,
 `answered`, and `applied` stages from learner-scoped canonical events. Its old
 global counter is preserved but no longer treated as current learner truth.
 The approved flipbook remains authoritative, Time Signatures has a small check,
-and Know sends an exact subject into Study. Foundation is the next learner-
-isolation batch.
+and Know sends an exact subject into Study. Foundation now also projects
+learner-scoped `opened`, `experienced`, `answered`, and
+`orientation_completed` stages. Its global history remains untouched, future
+frets are genuinely locked, and only completion advances the visible path. A
+full ten-fret completion emits one Journey preparation event.
 
 ### Wave 3: Trustworthy Journey
 

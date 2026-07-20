@@ -60,6 +60,7 @@ assert(learnerMigrationPreviewSource.indexOf(".setItem(") === -1, "Learner migra
 assert(learnerMigrationPreviewSource.indexOf(".removeItem(") === -1, "Learner migration preview must not contain a storage delete call");
 eval(learnerMigrationPreviewSource);
 eval(readText(root + "/core/progress-event.js"));
+eval(readText(root + "/core/foundation-progress.js"));
 eval(readText(root + "/core/journey-progress.js"));
 eval(readText(root + "/core/hearth-brain-chamber.js"));
 eval(readText(root + "/core/knowing-progress.js"));
@@ -2154,27 +2155,63 @@ assert(storedProgress.lessons["f-conversations"].last_step_index === 4, "adapter
 store.clear();
 assert(store.load().lessons["f-conversations"] === undefined, "adapter should clear progress");
 
+var legacyFoundationRaw = '{{"f-threshold":true}}';
 var progressBridgeStorage = {{
-  values: {{}},
+  values: {{ "hearth-foundation-progress": legacyFoundationRaw }},
   getItem: function(key) {{ return this.values[key] || null; }},
   setItem: function(key, value) {{ this.values[key] = String(value); }},
   removeItem: function(key) {{ delete this.values[key]; }}
 }};
-var progressBridgeResult = HearthFoundationProgressBridge.markFoundationLessonCompleted(
-  "f-first-conversation",
-  {{ lesson_id: "f-conversations" }},
-  {{ storage: progressBridgeStorage, now: "2026-07-04T00:10:00.000Z" }}
-);
-var legacyProgress = JSON.parse(progressBridgeStorage.values["hearth-foundation-progress"]);
-var cleanProgress = JSON.parse(progressBridgeStorage.values["hearth.cleanProgress.v1"]);
-assert(progressBridgeResult.lesson_id === "f-conversations", "progress bridge should return lesson id");
-assert(legacyProgress["f-first-conversation"] === true, "progress bridge should write legacy topic progress");
-assert(cleanProgress.lessons["f-conversations"].status === "completed", "progress bridge should write clean progress");
-HearthFoundationProgressBridge.markFoundationTopicCompleted("f-threshold", {{
-  storage: progressBridgeStorage
+var originalGetJourneyState = globalThis.getJourneyState;
+var foundationLearnerId = "ayla";
+globalThis.getJourneyState = function() {{
+  return {{
+    students: [{{ id: "ayla", name: "Ayla" }}, {{ id: "jen", name: "Jen" }}],
+    activeStudentId: foundationLearnerId
+  }};
+}};
+var foundationTopicIds = ["f-threshold", "f-how-to-learn", "f-music-language"];
+var openedFoundation = HearthFoundationProgressBridge.recordTopicOpened("f-threshold", {{
+  storage: progressBridgeStorage,
+  timestamp: "2026-07-20T08:00:00.000Z",
+  suffix: "opened-ayla"
 }});
-legacyProgress = JSON.parse(progressBridgeStorage.values["hearth-foundation-progress"]);
-assert(legacyProgress["f-threshold"] === true, "progress bridge should write fallback topic progress");
+assert(openedFoundation.ok === true, "Foundation should append learner-scoped opened evidence");
+assert(HearthFoundationProgressBridge.readProgress(progressBridgeStorage)["f-threshold"] !== true, "Opening a Foundation fret must not complete it");
+foundationLearnerId = "jen";
+HearthFoundationProgressBridge.recordTopicOpened("f-threshold", {{
+  storage: progressBridgeStorage,
+  timestamp: "2026-07-20T08:01:00.000Z",
+  suffix: "opened-jen"
+}});
+var jenFoundationProjection = HearthFoundationProgressBridge.projection(progressBridgeStorage, "jen");
+var aylaFoundationProjection = HearthFoundationProgressBridge.projection(progressBridgeStorage, "ayla");
+assert(jenFoundationProjection["f-threshold"].opened === true, "Jen should retain her own Foundation contact");
+assert(aylaFoundationProjection["f-threshold"].opened === true, "Ayla should retain her own Foundation contact");
+assert(progressBridgeStorage.values["hearth-foundation-progress"] === legacyFoundationRaw, "New Foundation evidence must leave ambiguous legacy history byte-for-byte unchanged");
+assert(progressBridgeStorage.values["hearth.cleanProgress.v1"] === undefined, "Foundation must not overwrite the old single-learner clean progress record");
+
+foundationLearnerId = "ayla";
+var completedFoundationResult = null;
+foundationTopicIds.forEach(function completeFoundationTopic(topicId, index) {{
+  completedFoundationResult = HearthFoundationProgressBridge.markFoundationTopicCompleted(topicId, {{
+    storage: progressBridgeStorage,
+    topicIds: foundationTopicIds,
+    timestamp: "2026-07-20T08:0" + String(index + 2) + ":00.000Z",
+    suffix: "complete-" + String(index)
+  }});
+}});
+var aylaFoundationSummary = HearthFoundationProgressBridge.summary(progressBridgeStorage, "ayla", {{ topicIds: foundationTopicIds }});
+var jenFoundationSummary = HearthFoundationProgressBridge.summary(progressBridgeStorage, "jen", {{ topicIds: foundationTopicIds }});
+assert(aylaFoundationSummary.completedCount === 3 && aylaFoundationSummary.pathCompleted === true, "Ayla should complete the Foundation path only after every orientation topic");
+assert(jenFoundationSummary.completedCount === 0 && jenFoundationSummary.pathCompleted === false, "Ayla's Foundation completion must not change Jen");
+assert(completedFoundationResult.path_event && completedFoundationResult.path_event.ok === true, "The final Foundation topic should emit one path-completion event");
+var foundationPathEvent = HearthProgressEvents.list(progressBridgeStorage).find(function(event) {{
+  return event.event_type === "foundation_path_completed" && event.learner_id === "ayla";
+}});
+assert(foundationPathEvent.capability_ids[0] === "L1-PREP-01", "A complete Foundation path should send valid preparation evidence to Journey");
+assert(foundationPathEvent.destination_node_id === "journey", "Foundation path evidence should name Journey as its destination");
+globalThis.getJourneyState = originalGetJourneyState;
 
 var controllerStore = HearthBrowserProgressStore.createBrowserProgressStore({{
   progressCore: HearthLearnerProgress,
