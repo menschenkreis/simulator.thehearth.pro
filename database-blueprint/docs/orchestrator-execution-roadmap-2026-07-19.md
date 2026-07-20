@@ -196,6 +196,12 @@ Required sequence:
 5. prove one Journey -> Do -> Journey round trip;
 6. add the guided end review, reminders, practice sheet, and next action.
 
+Checkpoint 2026-07-20: items 5 and 6 now have live desktop vertical slices.
+Journey routes to the exact Do, Study, Hearth, Practice, Play, Create, and
+Mastery activities and returns to the originating step. The structured lesson
+review creates a learner-scoped practice sheet that Practice can read. This
+does not complete evidence-based Level 1 readiness or the safe migration work.
+
 ### Wave 4: Remaining Node Hardening
 
 These batches follow the same shared contract:

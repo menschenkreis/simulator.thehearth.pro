@@ -15,6 +15,7 @@
   const ACTIVITY_CAPABILITY_MAP = window.JOURNEY_LEVEL_ACTIVITY_CAPABILITY_MAP || {};
   const ROADMAP_CAPABILITY_MAP = window.JOURNEY_ROADMAP_CAPABILITY_MAP || {};
   const GUIDE_ASSETS = window.GUIDE_CHARACTER_ASSETS || {};
+  const LESSON_REVIEW = window.HearthJourneyLessonReview || null;
   let studentPickerBound = false;
 
   function esc(v){
@@ -116,6 +117,48 @@
   }
   function getCompanion(student){
     return STUDENT_COMPANIONS[companionKey(student)] || null;
+  }
+  function latestCompanionReview(student, level){
+    const levelState = student && student.levels && level ? student.levels[level.id] : null;
+    return LESSON_REVIEW && levelState ? LESSON_REVIEW.latest(levelState.notes || []) : null;
+  }
+  function companionReviewAnswer(review, field){
+    if(LESSON_REVIEW) return LESSON_REVIEW.answer(review, field);
+    return review && review[field] ? String(review[field]) : '';
+  }
+  function companionPracticeItems(review, companion){
+    if(review && review.practiceSheet && Array.isArray(review.practiceSheet.items)) return review.practiceSheet.items;
+    return companion && Array.isArray(companion.practice) ? companion.practice : [];
+  }
+  function renderCompanionReviewField(field, label, placeholder, wide){
+    return '<label class="journey-review-field '+(wide ? 'wide' : '')+'" for="journey-review-'+attr(field)+'">' +
+      '<span>'+esc(label)+'</span>' +
+      '<input id="journey-review-'+attr(field)+'" type="text" autocomplete="off" placeholder="'+attr(placeholder || '')+'" />' +
+    '</label>';
+  }
+  function renderCompanionReviewForm(student, level, companion){
+    const practiceItems = companionPracticeItems(null, companion);
+    let html = '<div class="journey-review-form-head"><div><div class="journey-kicker">End-of-lesson review</div><h3>Turn today into the next useful step</h3><p>Ask the questions, write short honest answers, then keep only the practice items that still matter.</p></div><span>Teacher + learner</span></div>';
+    html += '<div class="journey-review-field-grid">';
+    html += renderCompanionReviewField('feltHome', 'What felt like home?', 'A musical moment that felt safe or familiar');
+    html += renderCompanionReviewField('mostMusical', 'What sounded most musical?', 'The sound, phrase, scale, rhythm, or exchange');
+    html += renderCompanionReviewField('enjoyed', 'What did the learner enjoy or ask for?', 'Interest is a doorway into the next contact');
+    html += renderCompanionReviewField('helped', 'What explanation or activity helped?', 'For example: jamming, a map clue, listening first');
+    html += renderCompanionReviewField('needs', 'What needs repetition?', 'Name the exact skill, not a judgement');
+    html += renderCompanionReviewField('teacherPrep', 'What should the teacher prepare?', 'One thing to clarify or practise before teaching again');
+    html += renderCompanionReviewField('nextLesson', 'What is the next safe lesson step?', 'A small playable direction for the next lesson', true);
+    html += '</div>';
+    html += '<fieldset class="journey-practice-builder"><legend>Next practice sheet</legend><p>Untick anything that does not belong in the next practice period.</p><div class="journey-practice-builder-list">';
+    practiceItems.forEach((item, index) => {
+      html += '<label><input type="checkbox" class="journey-review-practice" data-practice-item="'+attr(item)+'" checked />' +
+        '<span><b>'+String(index + 1).padStart(2, '0')+'</b>'+esc(item)+'</span></label>';
+    });
+    html += '</div></fieldset>';
+    html += '<div id="journey-companion-review-status" class="journey-review-status" role="status" aria-live="polite"></div>';
+    html += '<div class="journey-actions journey-review-actions"><button class="journey-btn secondary" onclick="Journey.openLevel('+level.num+')">Open '+esc(level.id || 'Level')+' Roadmap</button>' +
+      '<button class="journey-btn secondary" onclick="Journey.openCompanionPractice(\''+attr(student.id)+'\',4)">Open Practice</button>' +
+      '<button class="journey-btn" onclick="Journey.saveCompanionLessonNote(\''+attr(student.id)+'\')">Save review + practice sheet</button></div>';
+    return html;
   }
   function findCompanionStudent(state){
     return (state.students || []).find(student => getCompanion(student));
@@ -1011,6 +1054,9 @@
     const totalMinutes = lessonSteps.reduce((sum, step) => sum + (step.min || 0), 0);
     const commitment = companion.commitment || {};
     const commitmentPct = Math.max(0, Math.min(100, Number(commitment.progressPercent || 0)));
+    const savedReview = latestCompanionReview(student, level);
+    const displayedReview = savedReview || companion.latestReview || null;
+    const displayedPractice = companionPracticeItems(savedReview, companion);
 
     let html = '<div class="journey-shell journey-live-companion">';
     html += '<div class="journey-level-command-row"><button class="back-btn" onclick="Journey.render()">← Back</button>'+renderStudentPicker(state, student)+'</div>';
@@ -1030,7 +1076,7 @@
         '</div>' +
       '</div>';
     }
-    if(saved) html += '<div class="journey-save-confirm">Saved. This lesson note is now part of Jen\'s Journey memory.</div>';
+    if(saved) html += '<div class="journey-save-confirm">Saved. The review, practice sheet, and next lesson step are now part of '+esc(student.name)+'\'s Journey memory.</div>';
     html += '<div class="journey-commit-strip">' +
       '<div class="journey-commit-main">' +
         '<div class="journey-kicker">Practice Thread</div>' +
@@ -1043,19 +1089,20 @@
       '</div>' +
       '<div class="journey-tomorrow-card"><span>Tomorrow</span><strong>'+esc(commitment.tomorrow || 'Repeat the useful step before adding more.')+'</strong></div>' +
     '</div>';
-    if(companion.latestReview){
-      const review = companion.latestReview;
+    if(displayedReview){
+      const review = displayedReview;
       html += '<div class="journey-latest-review">' +
-        '<div class="journey-kicker">Latest Lesson Result</div>' +
+        '<div class="journey-latest-review-head"><div><div class="journey-kicker">Latest Lesson Result</div><small>'+esc(review.date || '')+'</small></div>'+(savedReview ? '<span>Saved review</span>' : '<span>Known starting point</span>')+'</div>' +
         '<div class="journey-latest-review-grid">' +
-          '<span><b>Home:</b> '+esc(review.feltHome || '')+'</span>' +
-          '<span><b>Musical:</b> '+esc(review.mostMusical || '')+'</span>' +
-          '<span><b>Enjoyed:</b> '+esc(review.enjoyed || '')+'</span>' +
-          '<span><b>Helped:</b> '+esc(review.helped || '')+'</span>' +
-          '<span><b>Repeat:</b> '+esc(review.needs || '')+'</span>' +
-          '<span><b>Commit:</b> '+esc(review.commitment || '')+'</span>' +
+          '<span><b>Home:</b> '+esc(companionReviewAnswer(review, 'feltHome') || 'Not recorded')+'</span>' +
+          '<span><b>Musical:</b> '+esc(companionReviewAnswer(review, 'mostMusical') || 'Not recorded')+'</span>' +
+          '<span><b>Enjoyed:</b> '+esc(companionReviewAnswer(review, 'enjoyed') || 'Not recorded')+'</span>' +
+          '<span><b>Helped:</b> '+esc(companionReviewAnswer(review, 'helped') || 'Not recorded')+'</span>' +
+          '<span><b>Repeat:</b> '+esc(companionReviewAnswer(review, 'needs') || 'Not recorded')+'</span>' +
+          '<span><b>Teacher prep:</b> '+esc(companionReviewAnswer(review, 'teacherPrep') || 'Not recorded')+'</span>' +
         '</div>' +
-        '<strong class="journey-latest-next">Next: '+esc(review.nextLesson || '')+'</strong>' +
+        '<strong class="journey-latest-next">Next: '+esc(companionReviewAnswer(review, 'nextLesson') || 'Choose the next safe step after this lesson.')+'</strong>' +
+        '<div class="journey-latest-practice"><div class="journey-mini-label">Practice sheet</div>'+renderSmallList(displayedPractice)+'</div>' +
       '</div>';
     }
     html += '<div class="journey-live-flow">';
@@ -1096,19 +1143,7 @@
       '<div><div class="journey-mini-label">Gaps To Watch</div>'+renderSmallList(companion.gaps)+'</div>' +
       '<div><div class="journey-mini-label">Practice Thread</div>'+renderSmallList(companion.practice)+'</div>' +
     '</div>';
-    html += '<div class="journey-card journey-live-notes"><div class="journey-kicker">After The Lesson</div>';
-    if(companion.reviewPrompts && companion.reviewPrompts.length){
-      html += '<div class="journey-review-prompts">';
-      companion.reviewPrompts.forEach(prompt => {
-        html += '<label><input type="checkbox"> '+esc(prompt)+'</label>';
-      });
-      html += '</div>';
-    }
-    html +=
-      '<textarea class="journey-input" id="journey-companion-note" placeholder="What happened? What worked? What felt messy?"></textarea>' +
-      '<textarea class="journey-input" id="journey-companion-next" placeholder="Next safe step for Jen..." style="margin-top:8px"></textarea>' +
-      '<div class="journey-actions"><button class="journey-btn secondary" onclick="Journey.openLevel('+level.num+')">Open '+esc(level.id || 'Level')+' Roadmap</button><button class="journey-btn" onclick="Journey.saveCompanionLessonNote(\''+student.id+'\')">Save Jen Note</button></div>' +
-    '</div>';
+    html += '<div class="journey-card journey-live-notes">'+renderCompanionReviewForm(student, level, companion)+'</div>';
     html += '</div></section></div>';
     root.innerHTML = html;
     bindStudentPickerClose();
@@ -1358,10 +1393,15 @@
       .journey-commit-meter b{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,#ff6b5b,var(--gold));box-shadow:0 0 16px rgba(212,175,105,.34)}
       .journey-commit-meter small{font-family:JetBrains Mono,monospace;color:var(--gold);font-size:.62rem}
       .journey-latest-review{border:1px solid rgba(255,120,92,.22);border-radius:18px;background:radial-gradient(circle at 9% 18%,rgba(255,92,72,.13),transparent 36%),rgba(8,7,6,.3);padding:12px;margin:0 0 14px;box-shadow:inset 0 1px 0 rgba(255,255,255,.04)}
+      .journey-latest-review-head{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+      .journey-latest-review-head small{display:block;color:var(--dim);font-size:.58rem;margin-top:3px}
+      .journey-latest-review-head > span{font-family:JetBrains Mono,monospace;font-size:.5rem;letter-spacing:.1em;text-transform:uppercase;color:#f5d18f;border:1px solid rgba(255,120,92,.2);padding:5px 7px;border-radius:999px}
       .journey-latest-review-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin-top:8px}
       .journey-latest-review-grid span{border:1px solid rgba(255,245,204,.08);border-radius:10px;background:rgba(8,7,6,.36);padding:8px 9px;color:var(--dim);font-size:.66rem;line-height:1.35}
       .journey-latest-review-grid b{color:var(--text)}
       .journey-latest-next{display:block;margin-top:9px;color:#f5d18f;font-size:.76rem;line-height:1.35}
+      .journey-latest-practice{border-top:1px solid rgba(255,245,204,.08);margin-top:10px;padding-top:10px}
+      .journey-latest-practice .journey-tight-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px 18px}
       .journey-live-flow{display:grid;gap:9px;margin:14px 0}
       .journey-live-step-buttons{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
       .journey-widget-path{position:relative;padding:4px 0 8px}
@@ -1396,6 +1436,28 @@
       .journey-live-step small{justify-self:end;font-family:JetBrains Mono,monospace;color:var(--gold);font-size:.58rem}
       .journey-companion-grid.live{margin-top:16px}
       .journey-live-notes{margin-top:16px}
+      .journey-review-form-head{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;margin-bottom:14px}
+      .journey-review-form-head h3{font-family:Cinzel,serif;color:var(--text);font-size:1rem;margin:4px 0}
+      .journey-review-form-head p{color:var(--dim);font-size:.68rem;line-height:1.42;margin:0;max-width:620px}
+      .journey-review-form-head > span{flex:0 0 auto;font-family:JetBrains Mono,monospace;font-size:.5rem;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);border:1px solid rgba(212,175,105,.18);padding:6px 8px;border-radius:999px}
+      .journey-review-field-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+      .journey-review-field{display:grid;gap:5px;border:1px solid rgba(255,245,204,.08);background:rgba(8,7,6,.28);padding:9px 10px;border-radius:10px}
+      .journey-review-field.wide{grid-column:1/-1}
+      .journey-review-field span{color:var(--text);font-size:.67rem;font-weight:700;line-height:1.3}
+      .journey-review-field input{width:100%;box-sizing:border-box;border:0;border-bottom:1px solid rgba(212,175,105,.22);border-radius:0;background:transparent;color:var(--text);font:inherit;font-size:.72rem;padding:6px 0;outline:0}
+      .journey-review-field input:focus{border-bottom-color:var(--gold);box-shadow:0 2px 0 rgba(212,175,105,.08)}
+      .journey-review-field input::placeholder{color:rgba(218,207,190,.34)}
+      .journey-practice-builder{margin:12px 0 0;border:1px solid rgba(212,175,105,.14);border-radius:12px;padding:10px 12px 12px;background:rgba(212,175,105,.035)}
+      .journey-practice-builder legend{font-family:Cinzel,serif;color:var(--gold);font-size:.76rem;font-weight:800;padding:0 6px}
+      .journey-practice-builder > p{color:var(--dim);font-size:.62rem;margin:0 0 8px}
+      .journey-practice-builder-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+      .journey-practice-builder-list label{display:flex;gap:8px;align-items:flex-start;border:1px solid rgba(255,245,204,.07);background:rgba(8,7,6,.32);border-radius:9px;padding:8px;cursor:pointer}
+      .journey-practice-builder-list input{margin-top:4px;accent-color:var(--gold)}
+      .journey-practice-builder-list span{display:flex;gap:7px;color:var(--text);font-size:.65rem;line-height:1.35}
+      .journey-practice-builder-list b{font-family:JetBrains Mono,monospace;color:var(--gold);font-size:.5rem;padding-top:2px}
+      .journey-review-status{display:none;margin-top:10px;border:1px solid rgba(255,120,92,.26);background:rgba(255,92,72,.07);border-radius:9px;padding:8px 10px;color:#ffd8ca;font-size:.68rem;line-height:1.4}
+      .journey-review-status.on{display:block}
+      .journey-review-actions{justify-content:flex-end}
       .journey-rating-list{display:flex;flex-direction:column;gap:8px}.journey-rating-row{display:flex;justify-content:space-between;gap:8px;align-items:center;font-size:.72rem;color:var(--text);border-bottom:1px solid rgba(255,255,255,.06);padding-bottom:7px}.journey-rating{background:transparent;border:1px solid var(--border);color:var(--dim);border-radius:999px;width:26px;height:26px;cursor:pointer;font-size:.65rem}.journey-rating.on{background:var(--gold);color:#0d0b08;border-color:var(--gold)}
       .journey-review-prompts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin:10px 0 12px}
       .journey-review-prompts label{display:flex;gap:7px;align-items:flex-start;border:1px solid rgba(212,175,105,.12);background:rgba(212,175,105,.055);border-radius:10px;padding:8px 10px;color:var(--text);font-size:.68rem;line-height:1.35}
@@ -1409,7 +1471,7 @@
       @keyframes journey-mastery-orbit-reverse{to{transform:translate(-50%,-50%) rotate(-360deg)}}
       @keyframes journey-mastery-particle{from{transform:rotate(0deg) translateX(58px) translate(-50%,-50%)}to{transform:rotate(360deg) translateX(58px) translate(-50%,-50%)}}
       @keyframes journey-mastery-particle-wide{from{transform:rotate(0deg) translateX(70px) translate(-50%,-50%)}to{transform:rotate(360deg) translateX(70px) translate(-50%,-50%)}}
-      @media(max-width:720px){.journey-map-clue-grid,.journey-review-prompts,.journey-latest-review-grid{grid-template-columns:1fr}}
+      @media(max-width:720px){.journey-map-clue-grid,.journey-review-prompts,.journey-latest-review-grid,.journey-review-field-grid,.journey-practice-builder-list,.journey-latest-practice .journey-tight-list{grid-template-columns:1fr}.journey-review-form-head{flex-direction:column}.journey-review-field.wide{grid-column:auto}.journey-review-actions{justify-content:stretch}.journey-review-actions .journey-btn{flex:1 1 100%}}
       @media(prefers-reduced-motion:reduce){
         .journey-map-guide img,.journey-guide-character,.journey-guide img,.journey-entry-guide img,.journey-neck-level:after,.journey-neck-level.mastery:before,.journey-neck-level.mastery:after,.journey-neck-level.mastery .journey-mastery-orbit,.journey-neck-level.mastery .journey-mastery-particle{animation:none!important}
         .journey-neck-level.mastery .journey-mastery-particle{display:none}
@@ -2002,6 +2064,12 @@
       const step = companionLessonSteps(companion)[stepIndex];
       const spec = step && step.practiceHandoff;
       if(!spec || !window.HearthCrossNodeHandoffStore || typeof window.HearthCrossNodeHandoffStore.createStore !== 'function') return;
+      const level = effectiveCurrentLevel(student);
+      const review = latestCompanionReview(student, level);
+      const practiceItems = companionPracticeItems(review, companion);
+      const nextAction = companionReviewAnswer(review, 'nextLesson') || (companion && companion.nextAction) || spec.instruction;
+      const teacherPrep = companionReviewAnswer(review, 'teacherPrep');
+      const practiceMinutes = review && review.practiceSheet && review.practiceSheet.durationMinutes || companion && companion.commitment && companion.commitment.durationMinutes || 20;
       const store = window.HearthCrossNodeHandoffStore.createStore({ storage:window.sessionStorage });
       const suffix = Date.now().toString(36);
       const handoff = {
@@ -2017,11 +2085,21 @@
         capability_ids:(spec.capability_ids || []).slice(),
         attempt_id:null,
         session_id:'journey-practice-session-'+student.id+'-'+suffix,
-        task:{ id:spec.activity_id, instruction:spec.instruction, parameters:{ source_id:spec.source_id, duration_minutes:20 } },
-        pass_condition:{ description:'Complete one honest practice session and save the reflection.', minimum_evidence_stage:'attempt', criteria:{ source_id:spec.source_id, duration_minutes:20 } },
+        task:{
+          id:spec.activity_id,
+          instruction:nextAction,
+          parameters:{
+            source_id:spec.source_id,
+            duration_minutes:practiceMinutes,
+            review_id:review && review.id || null,
+            practice_items:practiceItems.slice(),
+            teacher_prep:teacherPrep || null
+          }
+        },
+        pass_condition:{ description:'Complete one honest practice session and save the reflection.', minimum_evidence_stage:'attempt', criteria:{ source_id:spec.source_id, duration_minutes:practiceMinutes } },
         easier_step:{ instruction:spec.easier_step, parameters:{ duration_minutes:5, tempo:60 } },
         return_route:{ node_id:'journey', view_id:'companion', params:{ learner_id:student.id, step_index:stepIndex } },
-        fallback_instruction:'Return to Journey and reopen Jen\'s Make Music step.',
+        fallback_instruction:'Return to Journey and reopen '+student.name+'\'s Make Music step.',
         created_at:new Date().toISOString()
       };
       if(!store.set(handoff)) return;
@@ -2116,27 +2194,92 @@
       const s = state.students.find(student => student.id === studentId) || activeStudent(state);
       const level = effectiveCurrentLevel(s);
       const ls = s.levels[level.id] || s.levels.L1;
-      const noteEl = document.getElementById('journey-companion-note');
-      const nextEl = document.getElementById('journey-companion-next');
-      const happened = noteEl && noteEl.value.trim() ? noteEl.value.trim() : 'Used the live Jen consolidation companion.';
-      const next = nextEl && nextEl.value.trim() ? nextEl.value.trim() : 'Repeat A roots, three small pentatonic boxes, and musical conversation.';
-      ls.notes.push({
-        date: today(),
-        text: 'Live lesson companion: '+happened+' NEXT: '+next
+      const companion = getCompanion(s) || {};
+      const status = document.getElementById('journey-companion-review-status');
+      if(!LESSON_REVIEW){
+        if(status){ status.textContent = 'The lesson review model is not available. Refresh the simulator and try again.'; status.classList.add('on'); }
+        return;
+      }
+      const read = field => {
+        const element = document.getElementById('journey-review-'+field);
+        return element ? element.value : '';
+      };
+      const practiceItems = Array.from(document.querySelectorAll('.journey-review-practice:checked')).map(input => input.getAttribute('data-practice-item') || '');
+      const createdAt = new Date().toISOString();
+      const built = LESSON_REVIEW.build({
+        learnerId:s.id,
+        journeyLevelId:level.id,
+        lessonId:level.id+'-companion',
+        lessonFocus:companion.focus || companion.title || 'Journey companion lesson',
+        createdAt:createdAt,
+        answers:{
+          feltHome:read('feltHome'),
+          mostMusical:read('mostMusical'),
+          enjoyed:read('enjoyed'),
+          helped:read('helped'),
+          needs:read('needs'),
+          teacherPrep:read('teacherPrep'),
+          nextLesson:read('nextLesson')
+        },
+        practiceTitle:'Practice after '+(companion.title || 'the lesson'),
+        commitment:(companion.latestReview && companion.latestReview.commitment) || (companion.commitment && companion.commitment.title) || '',
+        durationMinutes:companion.commitment && companion.commitment.durationMinutes,
+        practiceItems:practiceItems
       });
+      if(!built.valid){
+        if(status){
+          status.innerHTML = '<strong>Before saving:</strong> '+built.errors.map(esc).join(' ');
+          status.classList.add('on');
+        }
+        const nextInput = document.getElementById('journey-review-nextLesson');
+        const firstEmpty = Array.from(document.querySelectorAll('.journey-review-field input')).find(input => !input.value.trim());
+        if(nextInput && !nextInput.value.trim()) nextInput.focus();
+        else if(firstEmpty) firstEmpty.focus();
+        return;
+      }
+      const review = built.record;
+      ls.notes.push(review);
       if(window.HearthProgressEvents){
-        window.HearthProgressEvents.append({
+        const event = {
+          id:'evt-'+review.id,
+          version:1,
+          simulator_id:'hearth-guitar',
           event_type:'teacher_lesson_note',
+          actor_role:'teacher',
           node_id:'journey',
+          destination_node_id:null,
           learner_id:s.id,
           journey_level_id:level.id,
-          note:next,
+          category_id:null,
+          lesson_id:review.lessonId,
+          activity_id:'journey-companion-review',
+          drill_id:null,
+          capability_ids:[],
+          attempt_id:null,
+          session_id:'journey-review-session-'+s.id+'-'+createdAt.replace(/[^0-9]/g, '').slice(0, 17),
+          evidence_stage:'contact',
+          evidence_source:'teacher_observation',
+          source_id:null,
+          project_id:null,
+          recording_id:null,
+          handoff_id:null,
+          duration_minutes:null,
+          rating:null,
+          note:review.answers.nextLesson,
+          occurred_at:createdAt,
+          recorded_at:createdAt,
+          created_at:createdAt,
+          return_route:{ node_id:'journey', view_id:'companion', params:{ learner_id:s.id, step_index:6 } },
+          fallback_instruction:'Return to Journey and reopen the live lesson companion.',
           data:{
-            companion:'jen',
-            lesson_focus:'A minor pentatonic consolidation',
-            happened:happened
+            review_id:review.id,
+            practice_item_count:review.practiceSheet.items.length,
+            teacher_prep_recorded:Boolean(review.answers.teacherPrep),
+            related_capability_ids:['L1-REFLECT-01']
           }
-        });
+        };
+        if(typeof window.HearthProgressEvents.appendCanonical === 'function') window.HearthProgressEvents.appendCanonical(event);
+        else window.HearthProgressEvents.append(event);
       }
       saveStudent(s);
       renderCompanionLesson(s.id, true);

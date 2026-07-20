@@ -7,6 +7,24 @@ Audit: `whole-simulator-integration-audit-2026-07-18.md`
 Readiness: Working Vertical Slice; progression truth not yet reliable
 Browser verification: desktop complete through entry lesson; responsive failing
 
+## 2026-07-20 Orchestrator Addendum
+
+- The Level 1 companion now routes to exact Do, Study, Hearth, Practice, Play,
+  Create, and Mastery activities and returns to the originating step.
+- The companion ending is now a structured learner-scoped review rather than
+  two loose text boxes. It records what felt safe, sounded musical, drew
+  interest, helped, needs repetition, needs teacher preparation, and should
+  happen next.
+- Saving also preserves the selected practice-sheet items. Practice reads and
+  displays the complete sheet in the correct 20-minute context.
+- The teacher note is canonical Contact evidence with no credit-bearing
+  capability IDs. It cannot claim that the learner demonstrated the skill.
+- New pure model: `core/journey-lesson-review.js`.
+- Live desktop route and return passed with no browser console errors.
+
+Still pending: capability-based readiness, safe legacy migration, real learner
+evidence across separate days, and responsive hardening.
+
 ## 1. Plain-Language Purpose
 
 Journey answers, "What should I do next?" It is the itinerary through the

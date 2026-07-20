@@ -36,6 +36,7 @@ function assert(condition, message) {{
 
 var root = {str(ROOT)!r};
 eval(readText(root + "/core/lesson-core.js"));
+eval(readText(root + "/core/journey-lesson-review.js"));
 eval(readText(root + "/core/renderer-registry.js"));
 eval(readText(root + "/adapters/action-renderer-registry-bootstrap.js"));
 eval(readText(root + "/core/foundation-adapter.js"));
@@ -825,6 +826,70 @@ assert(JOURNEY_STUDENT_COMPANIONS.jen.lessonButtons[5].doingHandoff.drill_id ===
 assert(JOURNEY_STUDENT_COMPANIONS.jen.lessonButtons[5].playHandoff.activity_id === "play-a-minor-homecoming-role-exchange", "Jen's conversation step should open the matching Play exchange");
 assert(JOURNEY_STUDENT_COMPANIONS.jen.lessonButtons[4].practiceHandoff.activity_id === "practice-plan-a-minor-homecoming-3-day", "Jen's Make Music step should open the exact three-return practice plan");
 assert(JOURNEY_STUDENT_COMPANIONS.jen.lessonButtons[5].masteryHandoff.source_id === "level-1-bb-king-space-and-answer", "Jen's conversation step should open the exact Mastery exemplar");
+var journeyReviewResult = HearthJourneyLessonReview.build({{
+  learnerId: "jen-test",
+  journeyLevelId: "L1",
+  lessonId: "L1-companion",
+  lessonFocus: "A minor pentatonic consolidation",
+  createdAt: "2026-07-20T12:00:00.000Z",
+  answers: {{
+    feltHome: "Jamming",
+    mostMusical: "The scale",
+    enjoyed: "Call and response",
+    helped: "The CAGED landmark clue",
+    needs: "Clean repetition",
+    teacherPrep: "Choose a suitable song",
+    nextLesson: "Learn a rhythm and lead song"
+  }},
+  commitment: "20 minutes a day",
+  durationMinutes: 20,
+  practiceItems: ["A roots at 60 BPM", "Tiny A minor jam", "A roots at 60 BPM"]
+}});
+assert(journeyReviewResult.valid, "A complete Journey lesson review should validate");
+assert(journeyReviewResult.record.learnerId === "jen-test" && journeyReviewResult.record.practiceSheet.durationMinutes === 20, "Journey review should remain learner-scoped and preserve the practice duration");
+assert(journeyReviewResult.record.practiceSheet.items.length === 2, "Journey review should remove duplicate practice items");
+assert(HearthJourneyLessonReview.latest([{{ text: "legacy" }}, journeyReviewResult.record]).id === journeyReviewResult.record.id, "Journey review should recover the latest structured review without rewriting legacy notes");
+var journeyReviewEventCheck = HearthProgressEventContract.validateAndNormalize({{
+  id: "evt-" + journeyReviewResult.record.id,
+  version: 1,
+  simulator_id: "hearth-guitar",
+  event_type: "teacher_lesson_note",
+  learner_id: "jen-test",
+  actor_role: "teacher",
+  node_id: "journey",
+  destination_node_id: null,
+  journey_level_id: "L1",
+  category_id: null,
+  lesson_id: "L1-companion",
+  activity_id: "journey-companion-review",
+  drill_id: null,
+  capability_ids: [],
+  attempt_id: null,
+  session_id: "journey-review-session-jen-test-20260720120000000",
+  evidence_stage: "contact",
+  evidence_source: "teacher_observation",
+  source_id: null,
+  project_id: null,
+  recording_id: null,
+  handoff_id: null,
+  duration_minutes: null,
+  rating: null,
+  note: "Learn a rhythm and lead song",
+  occurred_at: "2026-07-20T12:00:00.000Z",
+  recorded_at: "2026-07-20T12:00:00.000Z",
+  created_at: "2026-07-20T12:00:00.000Z",
+  return_route: {{ node_id: "journey", view_id: "companion", params: {{ learner_id: "jen-test", step_index: 6 }} }},
+  fallback_instruction: "Return to Journey and reopen the live lesson companion.",
+  data: {{ review_id: journeyReviewResult.record.id, practice_item_count: 2, related_capability_ids: ["L1-REFLECT-01"] }}
+}});
+assert(journeyReviewEventCheck.valid && journeyReviewEventCheck.event.capability_ids.length === 0, "A teacher lesson review should satisfy the shared event contract without awarding skill capability evidence");
+var incompleteJourneyReview = HearthJourneyLessonReview.build({{
+  learnerId: "jen-test",
+  createdAt: "2026-07-20T12:00:00.000Z",
+  answers: {{ feltHome: "Jamming" }},
+  practiceItems: ["Tiny jam"]
+}});
+assert(!incompleteJourneyReview.valid && incompleteJourneyReview.errors.some(function(errorMessage) {{ return errorMessage.indexOf("next safe") !== -1; }}), "Journey review should refuse to save without a next safe step");
 var doingEvidenceHtml = HearthDoingTeachingViewer.renderEvidence({{
   evidence: {{ projectedState: "mastered", message: "Three clean attempts across two days support mastery." }},
   ui: HearthDoingUiUtils
@@ -874,6 +939,11 @@ assert(freePracticeContextHtml.indexOf('data-practice-free-minutes="10"') !== -1
 assert(freePracticeContextHtml.indexOf('data-practice-free-focus="Groove"') !== -1, "Free Practice should expose intention choices");
 var reviewPracticeContextHtml = HearthPracticeEntryViewer.renderContext(practiceEntrySnapshot, "review", {{}});
 assert(reviewPracticeContextHtml.indexOf('data-practice-review-id=') !== -1, "Previous Practice should expose learner-specific review entries");
+var lessonReviewPracticeHtml = HearthPracticeEntryViewer.renderContext(Object.assign({{}}, practiceEntrySnapshot, {{
+  lessonReviewPlan: true,
+  recommendations: ["Root notes", "Scale map", "Right hand", "Tiny jam", "Choose a song"]
+}}), "planned", {{}});
+assert(lessonReviewPracticeHtml.indexOf("Choose a song") !== -1, "Practice should show the complete saved lesson-review practice sheet");
 var plannedPracticeSession = HearthPracticePlannedSessionViewer.createSession(practiceEntrySnapshot);
 assert(plannedPracticeSession.focus.indexOf("A roots") !== -1, "Planned Practice should inherit today's focus");
 assert(plannedPracticeSession.minutes === 20, "Planned Practice should inherit the commitment length");

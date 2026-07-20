@@ -102,6 +102,20 @@
       result.commitment.tomorrow = songPlan.nextSession && songPlan.nextSession.finish || result.commitment.tomorrow;
       result.guideText = "Use one calm return to " + songPlan.title + ". The plan remembers separate practice days, not repeated clicks.";
     }
+    var handoffParameters = activeHandoff && activeHandoff.task && activeHandoff.task.parameters || {};
+    var reviewPracticeItems = Array.isArray(handoffParameters.practice_items)
+      ? handoffParameters.practice_items.filter(Boolean)
+      : [];
+    if (reviewPracticeItems.length) {
+      result.lessonReviewPlan = true;
+      result.commitment.title = "Practice from the latest lesson review";
+      result.commitment.targetMinutes = Number(handoffParameters.duration_minutes) || result.commitment.targetMinutes;
+      result.commitment.today = activeHandoff.task.instruction || reviewPracticeItems[0];
+      result.recommendations = reviewPracticeItems.slice();
+      result.guideText = handoffParameters.review_id
+        ? "This plan comes from the latest saved lesson review. Repeat what the lesson actually asked for."
+        : "This is the current Journey practice sheet. Keep the contact calm and specific.";
+    }
     return result;
   }
 

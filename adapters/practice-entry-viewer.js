@@ -27,8 +27,8 @@
     return date.toLocaleDateString(undefined, { month: "short", day: "numeric" });
   }
 
-  function listHtml(items) {
-    return '<ul class="practice-entry-list">' + (items || []).slice(0, 3).map(function renderItem(item) {
+  function listHtml(items, limit) {
+    return '<ul class="practice-entry-list">' + (items || []).slice(0, Number(limit) || 3).map(function renderItem(item) {
       return "<li>" + escapeHtml(item) + "</li>";
     }).join("") + "</ul>";
   }
@@ -123,7 +123,7 @@
       html += " · Day " + escapeHtml(commitment.currentDay) + " of " + escapeHtml(commitment.totalDays);
     }
     html += "</div>";
-    html += listHtml(snapshot.recommendations);
+    html += listHtml(snapshot.recommendations, snapshot.lessonReviewPlan ? 6 : 3);
     if (snapshot.study) {
       html += '<div class="practice-entry-study-signal"><span>Study signal</span><strong>' + escapeHtml(snapshot.study.nextFocus) + '</strong><p>' + escapeHtml(snapshot.study.message) + '</p></div>';
     }

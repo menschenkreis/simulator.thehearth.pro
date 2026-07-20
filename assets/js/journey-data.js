@@ -457,6 +457,7 @@ var JOURNEY_STUDENT_COMPANIONS = {
     },
     commitment: {
       title: "20-minute daily practice thread",
+      durationMinutes: 20,
       currentDay: 1,
       totalDays: 7,
       progressPercent: 14,

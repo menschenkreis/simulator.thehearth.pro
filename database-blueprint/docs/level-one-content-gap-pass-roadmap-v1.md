@@ -66,6 +66,14 @@ The remaining three gaps now have a first coherent implementation:
 - Journey's Conversation step also opens the prepared `A minor conversation`
   seed in Create and returns to the same step. The learner must deliberately
   save the seed before it becomes creative attempt evidence.
+- Journey's end-of-lesson review now captures seven short structured answers,
+  the next safe lesson step, teacher preparation, and a learner-scoped practice
+  sheet. It refuses an empty review instead of inventing a successful result.
+- A saved review remains teacher-observation Contact evidence and cannot award
+  a practical capability or unlock a level by itself.
+- Journey carries the selected practice-sheet items into Practice. Practice
+  shows the complete list, preserves the 20-minute context, and returns to the
+  exact Journey step.
 - A missing responsive CSS boundary was repaired. Shared Study, Practice,
   Create, and Hearth node styling is once again active on desktop instead of
   being trapped inside the small-phone media query.
@@ -81,10 +89,10 @@ The remaining three gaps now have a first coherent implementation:
 
 Automated behavior, loaded-script syntax, and local-reference checks cover the
 new contracts. The Journey routes into Play, Study, Hearth, Practice, and
-Mastery are live-verified, as is the Create seed route. The pass remains **in
-progress** until a learner produces real evidence on separate days and the
-resulting progression is reviewed. Tests must not fabricate that learner
-history.
+Mastery are live-verified, as are the Create seed route and the Journey review
+to Practice route. The pass remains **in progress** until a learner produces
+real evidence on separate days and the resulting progression is reviewed.
+Tests must not fabricate that learner history.
 
 ## Purpose
 
