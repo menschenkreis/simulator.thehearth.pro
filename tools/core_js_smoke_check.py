@@ -61,6 +61,7 @@ assert(learnerMigrationPreviewSource.indexOf(".removeItem(") === -1, "Learner mi
 eval(learnerMigrationPreviewSource);
 eval(readText(root + "/core/progress-event.js"));
 eval(readText(root + "/core/journey-progress.js"));
+eval(readText(root + "/core/hearth-brain-chamber.js"));
 eval(readText(root + "/core/level-one-song-thread.js"));
 eval(readText(root + "/adapters/progress-event-store.js"));
 eval(readText(root + "/adapters/cross-node-handoff-store.js"));
@@ -504,6 +505,28 @@ var connectedNodeProgress = HearthJourneyProgress.summarize({{
 assert(connectedNodeProgress.capabilityEvidence["L1-PRACTICE-01"].met === true, "Three-day Practice evidence should satisfy repeat-over-time");
 assert(connectedNodeProgress.capabilityEvidence["L1-CREATE-01"].met === true, "A saved Create variation should satisfy the first creative choice");
 assert(connectedNodeProgress.capabilityEvidence["L1-STYLE-01"].met === true, "A witnessed performance encounter should satisfy first style contact");
+
+assert(HearthBrainChamber.stages.map(function(stage) {{ return stage.id; }}).join(",") === "understand,experience,apply,own", "Hearth Brain should preserve the approved four-stage learning sequence");
+assert(HearthBrainChamber.validateReflection({{ observationId:"" }}).valid === false, "Hearth Brain should require an honest observation before saving evidence");
+var hearthBrainEvents = HearthBrainChamber.buildEvents({{
+  learnerId:"jen",
+  journeyLevelId:"L1",
+  lessonId:"jen-a-minor-pentatonic-consolidation",
+  activityId:"hearth-brain-pattern-map",
+  handoffId:null,
+  attemptId:"hearth-brain-attempt-test",
+  sessionId:"hearth-brain-session-test",
+  suffix:"test",
+  timestamp:"2026-07-20T12:00:00.000Z",
+  reflection:{{ observationId:"foggy", note:"Returning to A helped, but the nearby note still felt uncertain." }}
+}});
+assert(hearthBrainEvents.length === 2, "Hearth Brain should separate the practical experiment from the learner reflection");
+assert(hearthBrainEvents[0].event_type === "hearth_experiment_completed" && hearthBrainEvents[0].capability_ids[0] === "L1-EAR-01", "The Brain experiment should record only its authorized listening evidence");
+assert(hearthBrainEvents[1].event_type === "hearth_reflection_saved" && hearthBrainEvents[1].capability_ids[0] === "L1-REFLECT-01", "The Brain reflection should record its authorized reflection evidence");
+hearthBrainEvents.forEach(function validateHearthBrainEvent(event) {{
+  assert(HearthProgressEventContract.validateAndNormalize(event).valid === true, "Hearth Brain must emit canonical progress events");
+}});
+assert(HearthBrainChamber.buildEvents({{ learnerId:"jen", reflection:{{ observationId:"" }} }}).length === 0, "Hearth Brain must not fabricate evidence from an empty reflection");
 
 var handoffMemoryValues = {{}};
 var handoffMemoryStorage = {{

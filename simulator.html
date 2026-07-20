@@ -1782,6 +1782,95 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
   .hb-source-notes.open{display:block}
   @media(max-width:780px){.hb-top{flex-direction:column}.hb-guide{max-width:none}.hb-door-summary{grid-template-columns:1fr}.hb-chamber-cards{grid-template-columns:1fr}}
 
+  /* Hearth Inner Instrument v2 */
+  .hb-v2-wrap{max-width:1180px;}
+  .hb-inner-scene{display:grid;grid-template-columns:minmax(230px,300px) minmax(0,1fr);gap:clamp(16px,3vw,42px);align-items:center;min-height:calc(100vh - 130px);padding:clamp(18px,3vw,34px);background:radial-gradient(circle at 66% 30%,rgba(212,175,105,.08),transparent 40%);}
+  .hb-inner-copy{position:relative;z-index:4;align-self:center;}
+  .hb-inner-copy .hb-title{font-size:clamp(1.45rem,2.5vw,2.15rem);letter-spacing:0;}
+  .hb-inner-copy .hb-sub{margin-top:8px;font-size:.82rem;max-width:280px;}
+  .hb-inner-guide{margin-top:24px;background:transparent;border:0;border-left:1px solid rgba(212,175,105,.28);border-radius:0;padding:2px 0 2px 12px;}
+  .hb-inner-prompt{margin:18px 0 0;color:var(--gold);font-family:JetBrains Mono,monospace;font-size:.62rem;letter-spacing:.08em;text-transform:uppercase;}
+  .hb-anatomy-stage{position:relative;width:min(100%,clamp(360px,40vw,500px));aspect-ratio:1094/1400;margin:0 auto;isolation:isolate;}
+  .hb-anatomy-image{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;display:block;filter:drop-shadow(0 24px 36px rgba(0,0,0,.4));pointer-events:none;}
+  .hb-hotspot-layer{position:absolute;inset:0;z-index:3;}
+  .hb-hotspot{position:absolute;left:var(--hb-x);top:var(--hb-y);transform:translate(-50%,-50%);width:clamp(40px,calc(var(--hb-radius) * .75vw),58px);height:clamp(40px,calc(var(--hb-radius) * .75vw),58px);border:1px solid rgba(255,229,158,.34);border-radius:50%;background:rgba(13,11,8,.58);color:var(--gold);display:grid;place-items:center;cursor:pointer;box-shadow:0 0 0 5px rgba(212,175,105,.035),0 8px 22px rgba(0,0,0,.3);transition:transform .18s,border-color .18s,background .18s,box-shadow .18s;backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px);}
+  .hb-hotspot:hover,.hb-hotspot:focus-visible,.hb-hotspot.active{transform:translate(-50%,-50%) scale(1.08);border-color:rgba(255,222,132,.88);background:rgba(90,56,18,.74);box-shadow:0 0 0 8px rgba(212,175,105,.08),0 0 28px rgba(231,154,35,.25);outline:0;}
+  .hb-hotspot-seal{font-family:Cinzel,serif;font-size:.68rem;font-weight:800;}
+  .hb-hotspot-label{position:absolute;left:calc(100% + 9px);top:50%;transform:translateY(-50%);width:max-content;max-width:130px;color:var(--text);font-family:DM Sans,sans-serif;font-size:.64rem;font-weight:800;line-height:1.15;text-align:left;opacity:0;transition:opacity .18s,color .18s;pointer-events:none;}
+  .hb-hotspot:hover .hb-hotspot-label,.hb-hotspot:focus-visible .hb-hotspot-label,.hb-hotspot.active .hb-hotspot-label{opacity:1;color:var(--text);}
+
+  .hb-system-chamber{max-width:940px;}
+  .hb-system-head{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;padding:26px 0 18px;border-bottom:1px solid rgba(212,175,105,.16);}
+  .hb-system-head h2,.hb-brain-work h2{font-family:Cinzel,serif;color:var(--gold);letter-spacing:0;margin:3px 0 8px;font-size:clamp(1.35rem,2.6vw,2rem);}
+  .hb-system-head p{margin:0;color:var(--text);font-size:.82rem;line-height:1.55;max-width:660px;}
+  .hb-system-head img{width:110px;height:130px;object-fit:contain;}
+  .hb-system-path{display:grid;gap:0;}
+  .hb-system-path section{display:grid;grid-template-columns:54px minmax(0,1fr);gap:16px;padding:20px 0;border-bottom:1px solid rgba(212,175,105,.1);}
+  .hb-system-path section>span{font-family:Cinzel,serif;color:rgba(212,175,105,.42);font-size:1.1rem;}
+  .hb-system-path strong{display:block;color:var(--gold);font-family:Cinzel,serif;font-size:.8rem;margin-bottom:5px;}
+  .hb-system-path p{margin:0;color:var(--text);font-size:.76rem;line-height:1.55;}
+  .hb-system-path .hb-zone-list{margin-top:10px;}
+
+  .hb-brain-chamber{max-width:1120px;padding-bottom:32px;}
+  .hb-brain-stage{display:grid;grid-template-columns:minmax(280px,.72fr) minmax(390px,1.28fr);min-height:650px;margin-top:14px;border-top:1px solid rgba(212,175,105,.14);border-bottom:1px solid rgba(212,175,105,.14);background:rgba(13,11,8,.26);}
+  .hb-brain-visual{position:relative;overflow:hidden;min-height:650px;background:radial-gradient(circle at 46% 18%,rgba(232,147,26,.16),transparent 24%);}
+  .hb-brain-visual>img{position:absolute;width:118%;max-width:none;height:auto;left:-10%;top:-1%;opacity:.72;filter:saturate(.82) drop-shadow(0 18px 28px rgba(0,0,0,.45));}
+  .hb-brain-glow{position:absolute;left:47%;top:12%;width:25%;aspect-ratio:1;border-radius:50%;transform:translate(-50%,-50%);background:radial-gradient(circle,rgba(255,211,103,.22),rgba(225,117,22,.08) 44%,transparent 72%);animation:hb-brain-pulse 3.8s ease-in-out infinite;pointer-events:none;}
+  @keyframes hb-brain-pulse{0%,100%{opacity:.55;transform:translate(-50%,-50%) scale(.92)}50%{opacity:1;transform:translate(-50%,-50%) scale(1.08)}}
+  .hb-brain-guide{position:absolute;left:18px;right:18px;bottom:18px;display:flex;align-items:center;gap:10px;padding:12px 14px;border-left:2px solid var(--gold);background:rgba(8,7,5,.84);}
+  .hb-brain-guide img{width:62px;height:62px;object-fit:contain;}
+  .hb-brain-guide p{margin:0;color:var(--text);font-size:.72rem;line-height:1.45;}
+  .hb-brain-work{display:flex;flex-direction:column;padding:clamp(22px,3vw,38px);min-width:0;}
+  .hb-brain-work>header{padding-bottom:18px;}
+  .hb-brain-work>header p{max-width:600px;margin:0;color:var(--dim);font-size:.76rem;line-height:1.5;}
+  .hb-brain-tabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-top:1px solid rgba(212,175,105,.14);border-bottom:1px solid rgba(212,175,105,.14);}
+  .hb-brain-tab{display:flex;flex-direction:column;align-items:flex-start;gap:2px;border:0;border-right:1px solid rgba(212,175,105,.1);background:transparent;color:var(--dim);padding:10px 8px;cursor:pointer;font:700 .62rem DM Sans,sans-serif;}
+  .hb-brain-tab:last-child{border-right:0;}
+  .hb-brain-tab span{font-family:JetBrains Mono,monospace;font-size:.52rem;color:rgba(212,175,105,.42);}
+  .hb-brain-tab.active{color:var(--gold);background:rgba(212,175,105,.07);}
+  .hb-brain-tab.visited{color:var(--text);}
+  .hb-brain-tab:focus-visible{outline:2px solid var(--gold);outline-offset:-2px;}
+  .hb-brain-focus{position:relative;flex:1;padding:clamp(24px,4vw,42px) 0 24px;}
+  .hb-brain-count{position:absolute;right:0;top:20px;font-family:Cinzel,serif;font-size:3.5rem;color:rgba(212,175,105,.07);line-height:1;}
+  .hb-brain-focus h3{position:relative;margin:5px 0 12px;color:var(--text);font-family:Cinzel,serif;font-size:clamp(1.05rem,2vw,1.4rem);}
+  .hb-brain-focus>p{position:relative;margin:0;color:var(--text);font-size:.82rem;line-height:1.65;max-width:620px;}
+  .hb-brain-action{position:relative;margin-top:18px;padding:14px 0 14px 16px;border-left:2px solid var(--gold);color:#f0dba5;font-size:.78rem;line-height:1.5;background:linear-gradient(90deg,rgba(212,175,105,.07),transparent);}
+  .hb-brain-actions{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-top:14px;border-top:1px solid rgba(212,175,105,.12);}
+  .hb-brain-button{border:0;border-radius:8px;background:var(--gold);color:#110d07;padding:10px 15px;font:800 .72rem DM Sans,sans-serif;cursor:pointer;}
+  .hb-brain-button.secondary{border:1px solid rgba(212,175,105,.22);background:transparent;color:var(--gold);}
+  .hb-brain-observations{border:0;padding:18px 0 0;margin:0;display:flex;gap:8px;flex-wrap:wrap;}
+  .hb-brain-observations legend,.hb-brain-note{display:block;width:100%;color:var(--dim);font-family:JetBrains Mono,monospace;font-size:.58rem;letter-spacing:.08em;text-transform:uppercase;}
+  .hb-observation{border:1px solid rgba(212,175,105,.2);border-radius:999px;background:transparent;color:var(--text);padding:8px 12px;font:700 .7rem DM Sans,sans-serif;cursor:pointer;}
+  .hb-observation.active{border-color:var(--gold);background:rgba(212,175,105,.12);color:var(--gold);}
+  .hb-brain-note{margin-top:14px;}
+  .hb-brain-note textarea{display:block;width:100%;min-height:70px;box-sizing:border-box;margin-top:6px;border:1px solid rgba(212,175,105,.16);border-radius:8px;background:rgba(0,0,0,.2);color:var(--text);padding:10px;font:400 .75rem DM Sans,sans-serif;line-height:1.45;resize:vertical;}
+  .hb-brain-status{min-height:18px;margin-top:9px;color:var(--gold);font-size:.68rem;line-height:1.35;}
+
+  @media(max-width:900px){
+    .hb-inner-scene{grid-template-columns:1fr;min-height:auto;}
+    .hb-inner-copy{display:grid;grid-template-columns:1fr minmax(180px,300px);column-gap:18px;align-items:start;}
+    .hb-inner-copy .hb-sub,.hb-inner-prompt{grid-column:1;}
+    .hb-inner-guide{grid-column:2;grid-row:1/5;margin-top:0;}
+    .hb-brain-stage{grid-template-columns:1fr;}
+    .hb-brain-visual{min-height:360px;}
+    .hb-brain-visual>img{width:82%;left:9%;top:-3%;}
+  }
+  @media(max-width:620px){
+    .hb-inner-copy{display:block;}
+    .hb-inner-guide{margin-top:14px;}
+    .hb-anatomy-stage{width:min(100%,430px);}
+    .hb-hotspot-label{display:none;}
+    .hb-hotspot{width:44px;height:44px;}
+    .hb-brain-tabs{grid-template-columns:repeat(2,minmax(0,1fr));}
+    .hb-brain-tab:nth-child(2){border-right:0;}
+    .hb-brain-tab:nth-child(-n+2){border-bottom:1px solid rgba(212,175,105,.1);}
+    .hb-brain-visual{min-height:300px;}
+    .hb-brain-guide{left:10px;right:10px;bottom:10px;}
+    .hb-brain-guide img{width:48px;height:48px;}
+    .hb-system-head{align-items:flex-start;}
+    .hb-system-head img{width:76px;height:88px;}
+  }
+
   /* ═══ HEARTH DASHBOARD (legacy) ═══ */
   .ls-body{padding:16px 12px;}
   .ls-body h3{font-size:1.1rem;}
@@ -4132,8 +4221,9 @@ updateInsightCount();
 <script src="assets/js/play-world.js?v=20260702"></script>
 <script src="assets/js/study-key.js?v=1"></script>
 <script src="assets/js/create-workshop.js?v=1"></script>
-<script src="assets/js/hearth-body-data.js"></script>
-<script src="adapters/hearth-body-viewer.js?v=20260720f"></script>
+<script src="assets/js/hearth-body-data.js?v=20260720a"></script>
+<script src="core/hearth-brain-chamber.js?v=20260720a"></script>
+<script src="adapters/hearth-body-viewer.js?v=20260720g"></script>
 <script src="assets/js/scene-first.js?v=20260701"></script>
 <script src="adapters/create-cauldron-scene-viewer.js?v=20260720h"></script>
 <script src="adapters/study-key-chamber-model.js"></script>

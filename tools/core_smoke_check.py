@@ -70,6 +70,14 @@ CORE_MARKERS = {
         "summarize",
         "capabilityEvidence",
     ],
+    "core/hearth-brain-chamber.js": [
+        "HearthBrainChamber",
+        "Understand",
+        "Experience",
+        "Apply",
+        "Own",
+        "buildEvents",
+    ],
     "core/level-one-song-thread.js": [
         "HearthLevelOneSongThread",
         "level-1-a-minor-homecoming",

@@ -214,6 +214,12 @@ These batches follow the same shared contract:
 3. Mastery: strengthen one exemplar, Practice/Create handoffs, and reflection.
 4. Hearth: simplify first click, build the Brain pilot, and save one real event.
 
+Checkpoint 2026-07-20: the Hearth first click and Brain pilot are implemented.
+The renderer uses the approved anatomical V2 image, seven semantic hit zones,
+the four-stage Brain sequence, and canonical learner-scoped experiment and
+reflection events. Other body-system chambers remain deliberately shallower
+until this pilot is reviewed in real use.
+
 Do not expand Play regions, Mastery catalogues, Hearth body systems, or Create
 prompt breadth before each node's first route is trustworthy end to end.
 
