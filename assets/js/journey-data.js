@@ -568,7 +568,7 @@ var JOURNEY_STUDENT_COMPANIONS = {
         action: "One person holds A minor or a simple pulse. The other plays small A minor pentatonic phrases. Leave space, answer, then swap.",
         prompt: "What sounded like a conversation rather than an exercise?",
         doingHandoff: {
-          label: "Open A Minor Homecoming",
+          label: "Learn the parts in Do",
           room_id: "both-hands",
           category_id: "coordination",
           drill_id: "song-thread-am",
@@ -576,6 +576,15 @@ var JOURNEY_STUDENT_COMPANIONS = {
           instruction: "Listen to the two roles, read the small rhythm and TAB maps, then complete the eight-bar mini-piece and swap roles.",
           pass_condition: "Complete all eight bars, try both roles, stay with the pulse, and name one thing to repeat.",
           easier_step: "Hold muted quarter notes while the lead plays only one A root on beat 1."
+        },
+        playHandoff: {
+          label: "Play and swap roles",
+          source_id: "level-1-a-minor-homecoming",
+          activity_id: "play-a-minor-homecoming-role-exchange",
+          journey_level_id: "L1",
+          capability_ids: ["L1-PLAY-01", "L1-SONG-01", "L1-ROLE-01"],
+          instruction: "Complete the eight-bar mini-piece, try rhythm and lead, then name what changed when the roles listened to each other.",
+          easier_step: "One person holds muted quarter notes while the other lands on one A root."
         },
         createHandoff: {
           label: "Turn this into a riff",

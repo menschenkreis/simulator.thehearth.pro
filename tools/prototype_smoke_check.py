@@ -200,6 +200,8 @@ REQUIRED_MARKERS = {
     "adapters/play-atlas-controller.js": [
         "root.HearthPlayAtlasController",
         "root.showPlay = open",
+        "openWithHandoff",
+        "song-complete",
         "saveResult",
         "play_activity_completed",
     ],

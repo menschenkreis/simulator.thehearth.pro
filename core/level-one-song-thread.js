@@ -97,6 +97,27 @@
         }
       ]
     },
+    playActivity: {
+      routeId: "level-one-a-minor-homecoming-play",
+      activityId: "play-a-minor-homecoming-role-exchange",
+      title: "A Minor Homecoming Role Exchange",
+      roomLabel: "Hearth Studio",
+      summary: "Hold the eight-bar rhythm part, answer with the small pentatonic phrase, then swap roles.",
+      culturalNote: "This is an original Hearth practice piece, not a claim about one musical tradition.",
+      roles: [
+        {
+          id: "rhythm",
+          label: "Rhythm",
+          instruction: "Play the eight-bar chord road with steady quarter-note downstrokes. Protect the pulse and leave room for the lead answer."
+        },
+        {
+          id: "lead",
+          label: "Lead",
+          instruction: "Use the short A minor pentatonic answer, leave space, and land on A while the rhythm part holds the ground."
+        }
+      ],
+      reflectionPrompt: "What changed when rhythm and lead listened to each other?"
+    },
     createTask: {
       sourceId: "level-1-a-minor-homecoming",
       seedTitle: "A Minor Homecoming variation",

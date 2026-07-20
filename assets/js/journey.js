@@ -1080,6 +1080,7 @@
         '<div class="journey-live-action"><strong>Do this:</strong> '+esc(step.action || '')+'</div>' +
         '<div class="journey-live-prompt"><strong>Notice:</strong> '+esc(step.prompt || '')+'</div>' +
         (step.doingHandoff ? '<div class="journey-actions" style="margin-top:12px"><button type="button" class="journey-btn" onclick="Journey.openCompanionDoing(\''+attr(student.id)+'\','+index+')">'+esc(step.doingHandoff.label || 'Open drill')+'</button></div>' : '') +
+        (step.playHandoff ? '<div class="journey-actions" style="margin-top:8px"><button type="button" class="journey-btn" onclick="Journey.openCompanionPlay(\''+attr(student.id)+'\','+index+')">'+esc(step.playHandoff.label || 'Open Play')+'</button></div>' : '') +
         (step.createHandoff ? '<div class="journey-actions" style="margin-top:12px"><button type="button" class="journey-btn secondary" onclick="Journey.openCompanionCreate(\''+attr(student.id)+'\','+index+')">'+esc(step.createHandoff.label || 'Make it yours')+'</button></div>' : '') +
       '</section>';
     });
@@ -1882,6 +1883,50 @@
       if(typeof window.showDoing === 'function') window.showDoing();
       if(typeof window._setDoingRoomConcept === 'function') window._setDoingRoomConcept(spec.room_id);
       if(typeof window._openDoingRoomDrill === 'function') window._openDoingRoomDrill(spec.category_id, spec.drill_id);
+    },
+    openCompanionPlay(studentId, stepIndex){
+      const state = loadState();
+      const student = state.students.find(item => item.id === studentId) || activeStudent(state);
+      const companion = getCompanion(student);
+      const step = companionLessonSteps(companion)[stepIndex];
+      const spec = step && step.playHandoff;
+      if(!spec || !window.HearthCrossNodeHandoffStore || typeof window.HearthCrossNodeHandoffStore.createStore !== 'function') return;
+      const store = window.HearthCrossNodeHandoffStore.createStore({ storage:window.sessionStorage });
+      const suffix = Date.now().toString(36);
+      const handoff = {
+        id:'handoff-journey-play-'+student.id+'-'+suffix,
+        version:1,
+        learner_id:student.id,
+        actor_role:'learner',
+        source_node_id:'journey',
+        destination_node_id:'play',
+        activity_id:spec.activity_id,
+        lesson_id:'jen-a-minor-pentatonic-consolidation',
+        journey_level_id:spec.journey_level_id || 'L1',
+        capability_ids:(spec.capability_ids || []).slice(),
+        attempt_id:null,
+        session_id:'journey-play-session-'+student.id+'-'+suffix,
+        task:{
+          id:spec.activity_id,
+          instruction:spec.instruction,
+          parameters:{ source_id:spec.source_id, tempo_choices:[60,76,100], roles:['rhythm','lead'] }
+        },
+        pass_condition:{
+          description:'Complete all eight bars, try both roles, stay with the pulse, and reflect on the exchange.',
+          minimum_evidence_stage:'application',
+          criteria:{ source_id:spec.source_id, roles_tried:2, complete_form:true }
+        },
+        easier_step:{ instruction:spec.easier_step, parameters:{ tempo:60, root_notes_only:true } },
+        return_route:{ node_id:'journey', view_id:'companion', params:{ learner_id:student.id, step_index:stepIndex } },
+        fallback_instruction:'Return to Journey and reopen Jen\'s Conversation step.',
+        created_at:new Date().toISOString()
+      };
+      if(!store.set(handoff)) return;
+      if(window.HearthPlayAtlasController && typeof window.HearthPlayAtlasController.openWithHandoff === 'function') {
+        window.HearthPlayAtlasController.openWithHandoff(handoff);
+      } else if(typeof window.showPlay === 'function') {
+        window.showPlay();
+      }
     },
     saveCompanionLessonNote(studentId){
       const state = loadState();

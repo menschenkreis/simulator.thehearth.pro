@@ -807,6 +807,7 @@ assert(rootsPilotScene.indexOf("_openDoingCreate") !== -1 && rootsPilotScene.ind
 assert(HearthLevelOneSongThread.id === "level-1-a-minor-homecoming", "Level 1 should expose one stable original song-thread ID");
 assert(HearthLevelOneSongThread.progression.length === 8 && HearthLevelOneSongThread.rights.indexOf("no commercial song") !== -1, "Level 1 song thread should be an eight-bar rights-safe original");
 assert(HearthLevelOneSongThread.practicePlan.sessions.length === 3, "Level 1 song thread should define three connected Practice returns");
+assert(HearthLevelOneSongThread.playActivity.activityId === "play-a-minor-homecoming-role-exchange", "Level 1 song thread should define one stable Play activity");
 assert(MASTERY_EXEMPLARS[0].sourceType === "live performance", "Level 1 Mastery should use a genuine performance exemplar");
 assert(MASTERY_EXEMPLARS[0].artist === "B.B. King" && MASTERY_EXEMPLARS[0].mediaFallback.indexOf("A Minor Homecoming") !== -1, "Mastery should connect B.B. King's phrasing to the internal song fallback");
 var songPilot = HearthDoingDrillCatalog.findDrill(curatedDoing, "song-thread-am");
@@ -817,6 +818,7 @@ assert(songPilotHtml.indexOf("doing-song-thread") !== -1 && songPilotHtml.indexO
 assert(songPilotHtml.indexOf("Eight-bar road") !== -1 && songPilotHtml.indexOf("short TAB answer") !== -1, "Song lab should show the song road and a TAB fragment");
 assert(JOURNEY_STUDENT_COMPANIONS.jen.lessonButtons[2].doingHandoff.drill_id === "strum-1", "Jen's right-hand step should open the reviewed strum drill");
 assert(JOURNEY_STUDENT_COMPANIONS.jen.lessonButtons[5].doingHandoff.drill_id === "song-thread-am", "Jen's conversation step should open the song lab");
+assert(JOURNEY_STUDENT_COMPANIONS.jen.lessonButtons[5].playHandoff.activity_id === "play-a-minor-homecoming-role-exchange", "Jen's conversation step should open the matching Play exchange");
 var doingEvidenceHtml = HearthDoingTeachingViewer.renderEvidence({{
   evidence: {{ projectedState: "mastered", message: "Three clean attempts across two days support mastery." }},
   ui: HearthDoingUiUtils
@@ -1697,6 +1699,40 @@ var livePlayEntryHtml = HearthPlayAtlasViewer.render(livePlaySnapshot, {{
 assert(livePlayEntryHtml.indexOf("Where shall the guitar take us?") !== -1, "The live Play atlas should render the approved visual entrance");
 assert(livePlayEntryHtml.indexOf("Enter the tradition") !== -1, "The live Play atlas should open a tradition-led route");
 assert(livePlayEntryHtml.indexOf("Active learner") !== -1 && livePlayEntryHtml.indexOf("Jen") !== -1, "The live Play atlas should show the active learner");
+var songPlayHandoff = {{
+  id: "handoff-journey-play-jen-test",
+  version: 1,
+  learner_id: "jen",
+  source_node_id: "journey",
+  destination_node_id: "play",
+  activity_id: "play-a-minor-homecoming-role-exchange",
+  lesson_id: "jen-a-minor-pentatonic-consolidation",
+  journey_level_id: "L1",
+  capability_ids: ["L1-PLAY-01", "L1-SONG-01", "L1-ROLE-01"],
+  session_id: "journey-play-session-jen-test",
+  task: {{ id: "play-a-minor-homecoming-role-exchange" }},
+  return_route: {{ node_id: "journey", view_id: "companion", params: {{ learner_id: "jen", step_index: 5 }} }},
+  fallback_instruction: "Return to Journey."
+}};
+var livePlaySongSnapshot = HearthPlayAtlasModel.buildSnapshot({{
+  journeyState: {{ activeStudentId: "jen", students: [{{ id: "jen", name: "Jen" }}] }},
+  regions: [{{ id: "mississippi", name: "Mississippi Delta", tradition: "Delta Blues", color: "#5a9fd4", coords: [205, 290] }}],
+  traditions: PLAY_TRADITIONS,
+  events: [],
+  selectedId: "mississippi",
+  songThread: HearthLevelOneSongThread,
+  handoff: songPlayHandoff
+}});
+assert(livePlaySongSnapshot.route.type === "song" && livePlaySongSnapshot.route.id === HearthLevelOneSongThread.playActivity.routeId, "Play should recognize the shared song handoff");
+var livePlaySongIntroHtml = HearthPlayAtlasViewer.render(livePlaySongSnapshot, {{
+  view: "song", moment: 1, role: "", rolesTried: [], reflection: "", finished: false
+}});
+assert(livePlaySongIntroHtml.indexOf("Hearth Studio") !== -1 && livePlaySongIntroHtml.indexOf("original Hearth practice piece") !== -1, "The Play song route should identify its neutral studio context");
+assert(livePlaySongIntroHtml.indexOf('aria-label="Eight-bar chord road"') !== -1 && livePlaySongIntroHtml.indexOf("Rhythm first") !== -1, "The Play song route should show the complete form and role choice");
+var livePlaySongExchangeHtml = HearthPlayAtlasViewer.render(livePlaySongSnapshot, {{
+  view: "song-converse", moment: 2, role: "lead", rolesTried: ["rhythm", "lead"], reflection: "", finished: false
+}});
+assert(livePlaySongExchangeHtml.indexOf("We completed all 8 bars in both roles") !== -1, "Play should require the learner to carry the full form through both roles");
 var livePlayTraditionHtml = HearthPlayAtlasViewer.render(livePlaySnapshot, {{
   selectedId: "mississippi", view: "tradition", moment: 2, pulseRunning: false,
   home: "", role: "", reflection: "", finished: false
@@ -1754,6 +1790,39 @@ var playProgressEvent = HearthPlayDomain.toProgressEvent(playResult);
 assert(playProgressEvent.event_type === "play_activity_completed", "Play should create the shared completion event type");
 assert(playProgressEvent.learner_id === "jen", "Play completion events should belong to one learner");
 assert(playProgressEvent.data.found_home === true, "Play completion events should preserve musical evidence");
+var songPlayResult = {{
+  id: "play-event-jen-song-test",
+  learner_id: "jen",
+  route_id: HearthLevelOneSongThread.playActivity.routeId,
+  destination_id: null,
+  activity_id: HearthLevelOneSongThread.playActivity.activityId,
+  journey_level_id: "L1",
+  lesson_id: "jen-a-minor-pentatonic-consolidation",
+  duration_minutes: 12,
+  role: "lead",
+  tempo: 60,
+  stayed_with_pulse: true,
+  found_home: true,
+  reflection: "The rhythm held the exchange.",
+  repeat_focus: "Repeat the weaker role.",
+  revisit: true,
+  capability_ids: ["L1-PLAY-01", "L1-SONG-01", "L1-ROLE-01"],
+  evidence_stage: "application",
+  evidence_source: "self_report",
+  attempt_id: "play-attempt-jen-song-test",
+  session_id: "journey-play-session-jen-test",
+  handoff_id: "handoff-journey-play-jen-test",
+  return_route: {{ node_id: "journey", view_id: "companion", params: {{ learner_id: "jen", step_index: 5 }} }},
+  fallback_instruction: "Return to Journey.",
+  roles_tried: ["rhythm", "lead"],
+  song_id: HearthLevelOneSongThread.id,
+  completed_full_form: true,
+  completed_at: "2026-07-20T12:00:00.000Z"
+}};
+var songPlayProgressEvent = HearthPlayDomain.toProgressEvent(songPlayResult);
+var songPlayValidation = HearthProgressEventContract.validateAndNormalize(songPlayProgressEvent);
+assert(songPlayValidation.valid === true, "The Journey-to-Play song exchange should emit a valid canonical progress event");
+assert(songPlayProgressEvent.capability_ids.length === 3 && songPlayProgressEvent.data.roles_tried.length === 2, "Play should return song and role evidence to Journey");
 var playPracticeRecommendation = HearthPlayDomain.createPracticeRecommendation(playResult);
 assert(playPracticeRecommendation.learner_id === "jen", "Play Practice recommendations should stay learner-specific");
 assert(playPracticeRecommendation.focus.indexOf("Land on A") !== -1, "Play should pass the repeat focus into Practice");

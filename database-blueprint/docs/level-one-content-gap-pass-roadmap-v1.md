@@ -43,6 +43,11 @@ The remaining three gaps now have a first coherent implementation:
 - Practice opens the exact Song Lab and returns to the same guided session.
 - One session records an attempt. Only three distinct calendar days can
   support the `repeat a real weakness over time` evidence threshold.
+- Journey now sends the Conversation step to a dedicated Play role exchange.
+  The learner must try the rhythm and lead roles before completion is enabled;
+  exploring the route alone awards no capability evidence. The route returns
+  to the exact Conversation step and passed a live desktop browser check with
+  no console errors.
 - Create receives a ready-to-shape `A Minor Homecoming variation` seed with
   source, learner, Level 1, and capability context. Saving it records the
   learner's creative attempt without claiming mastery.
@@ -54,9 +59,10 @@ The remaining three gaps now have a first coherent implementation:
   review reflection.
 
 Automated behavior, loaded-script syntax, and local-reference checks cover the
-new contracts. The pass remains **in progress** until the Practice, Create, and
-Mastery click paths receive a live browser check and a learner produces real
-evidence on separate days. Tests must not fabricate that learner history.
+new contracts. The Journey -> Play -> Journey route is live-verified. The pass
+remains **in progress** until the Practice, Create, and Mastery click paths
+receive a live browser check and a learner produces real evidence on separate
+days. Tests must not fabricate that learner history.
 
 ## Purpose
 

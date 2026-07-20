@@ -55,6 +55,22 @@
     };
   }
 
+  function songRoute(songThread, handoff) {
+    var activity = songThread && songThread.playActivity;
+    if (!activity || !handoff || !handoff.task || handoff.task.id !== activity.activityId) return null;
+    return {
+      id: activity.routeId,
+      title: activity.title,
+      summary: activity.summary,
+      totalMoments: 4,
+      defaultMoment: 1,
+      currentDestinationId: null,
+      type: "song",
+      sourceLabel: activity.roomLabel,
+      handoffId: handoff.id
+    };
+  }
+
   function buildSnapshot(options) {
     options = options || {};
     var learner = activeLearner(options.journeyState);
@@ -66,6 +82,7 @@
     var selectedRegion = regions.find(function findSelected(region) {
       return region.id === selectedId;
     }) || regions[0] || null;
+    var focusedSongRoute = songRoute(options.songThread, options.handoff);
 
     return {
       learner: learner,
@@ -73,10 +90,12 @@
       traditions: traditions,
       selectedRegion: selectedRegion,
       selectedTradition: selectedRegion ? traditions[selectedRegion.id] || null : null,
+      songThread: focusedSongRoute ? options.songThread : null,
+      handoff: focusedSongRoute ? options.handoff : null,
       markers: regions.map(function buildMarker(region) {
         return markerState(region, selectedRegion && selectedRegion.id, destinationProgress);
       }),
-      route: {
+      route: focusedSongRoute || {
         id: "level-one-a-minor-conversation",
         title: "A Minor Musical Conversation",
         summary: "Turn familiar pentatonic notes into call and response.",
@@ -94,13 +113,16 @@
       events: options.events || [],
       regions: options.regions,
       traditions: options.traditions,
-      selectedId: options.selectedId
+      selectedId: options.selectedId,
+      songThread: options.songThread,
+      handoff: options.handoff
     });
   }
 
   return {
     version: "0.1.0",
     activeLearner: activeLearner,
+    songRoute: songRoute,
     buildSnapshot: buildSnapshot,
     readRuntimeSnapshot: readRuntimeSnapshot
   };
