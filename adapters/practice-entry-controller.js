@@ -55,6 +55,7 @@
       candleState: candleState(),
       plannedSession: plannedSession,
       studySnapshot: studySnapshot,
+      songThread: root.HearthLevelOneSongThread || null,
       doingProgressBridge: root.HearthDoingProgressBridge,
       plannedStepTitle: plannedStep && plannedStep.title
     });

@@ -66,6 +66,44 @@
       passCondition: "Complete all eight bars, try both roles, stay with the pulse, and name one thing to repeat.",
       evidence: "A teacher observation, recording reference, or complete guided take."
     },
+    practicePlan: {
+      id: "practice-plan-a-minor-homecoming-3-day",
+      title: "Three calm returns to A Minor Homecoming",
+      targetDays: 3,
+      minutes: 20,
+      drillHandoff: {
+        roomId: "both-hands",
+        categoryId: "coordination",
+        drillId: "song-thread-am"
+      },
+      sessions: [
+        {
+          day: 1,
+          title: "Separate the roles",
+          focus: "A Minor Homecoming: learn rhythm and lead separately at 60 BPM.",
+          finish: "Name which role needs the smaller next step."
+        },
+        {
+          day: 2,
+          title: "Join the eight bars",
+          focus: "A Minor Homecoming: complete all eight bars at 60 or 76 BPM.",
+          finish: "Compare the pulse and clean sound with the first session."
+        },
+        {
+          day: 3,
+          title: "Swap and keep one choice",
+          focus: "A Minor Homecoming: swap rhythm and lead, then keep one deliberate variation.",
+          finish: "Send the kept rhythm or phrase into Create."
+        }
+      ]
+    },
+    createTask: {
+      sourceId: "level-1-a-minor-homecoming",
+      seedTitle: "A Minor Homecoming variation",
+      starter: "A Minor Homecoming rhythm-and-lead exchange",
+      instruction: "Save the one rhythm, ending note, or two-bar answer you deliberately changed in the song lab.",
+      capabilityIds: ["L1-CREATE-01"]
+    },
     capabilityIds: [
       "L1-TIME-01",
       "L1-TIME-02",
