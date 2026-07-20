@@ -501,7 +501,16 @@ var JOURNEY_STUDENT_COMPANIONS = {
         source: "Hearth + Practice",
         aim: "Arrive before teaching.",
         action: "Tune the guitar, check shoulders, jaw, breath, fretting hand, picking hand, then listen to open strings.",
-        prompt: "What does Jen's body and sound need before we start?"
+        prompt: "What does Jen's body and sound need before we start?",
+        hearthHandoff: {
+          label: "Open the body check",
+          activity_id: "hearth-jen-body-check",
+          zone_id: "breath",
+          journey_level_id: "L1",
+          capability_ids: ["L1-PREP-01"],
+          instruction: "Check jaw, shoulders, breath, back, fretting hand, and picking hand before the first musical task.",
+          easier_step: "Take one slow exhale, drop the shoulders, and play one open string."
+        }
       },
       {
         label: "Safe Map",
@@ -615,7 +624,16 @@ var JOURNEY_STUDENT_COMPANIONS = {
         source: "Hearth + Journey",
         aim: "Capture the next safe step.",
         action: "Ask what felt like home, what sounded musical, what was confusing, and whether the chord-shape map clue helped or felt like too much.",
-        prompt: "What should repeat, simplify, or wait next time?"
+        prompt: "What should repeat, simplify, or wait next time?",
+        hearthHandoff: {
+          label: "Open the feeling check",
+          activity_id: "hearth-jen-feeling-review",
+          zone_id: "heart",
+          journey_level_id: "L1",
+          capability_ids: ["L1-REFLECT-01"],
+          instruction: "Notice what helped Jen feel musical, what created pressure, and what makes her want to return.",
+          easier_step: "Name one moment that felt good and one thing to repeat next time."
+        }
       }
     ],
     reviewPrompts: [

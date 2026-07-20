@@ -12,6 +12,7 @@
   var HEARTH_BODY_ZONES = root.HEARTH_BODY_ZONES || [];
   var debugHotspots = false;
   var activeZone = null;
+  var activeHandoff = null;
 
   function esc(value) {
     return String(value == null ? "" : value).replace(/[&<>"']/g, function(ch) {
@@ -26,6 +27,24 @@
     var el = document.getElementById("p-foundation");
     if (el) el.classList.add("on");
     return el;
+  }
+
+  function handoffStore() {
+    if (!root.HearthCrossNodeHandoffStore || typeof root.HearthCrossNodeHandoffStore.createStore !== "function") return null;
+    return root.HearthCrossNodeHandoffStore.createStore({ storage: root.sessionStorage });
+  }
+
+  function readHearthHandoff() {
+    var store = handoffStore();
+    if (!store) return null;
+    var learnerId = activeHandoff && activeHandoff.learner_id;
+    return store.current({ learnerId: learnerId || undefined, destinationNodeId: "hearth" });
+  }
+
+  function topReturnButton() {
+    return activeHandoff
+      ? '<button class="back-btn" onclick="HearthBody.returnToSource()">&larr; Return to Journey</button>'
+      : '<button class="back-btn" onclick="backToMap()">&larr; Map</button>';
   }
 
   function renderHearthBody() {
@@ -51,7 +70,7 @@
 
     el.innerHTML =
       '<div class="hb-wrap">'
-        + '<button class="back-btn" onclick="backToMap()">&larr; Map</button>'
+        + topReturnButton()
         + '<div class="hb-scene">'
           + '<div class="hb-top">'
             + '<div><div class="hb-kicker">' + esc(HEARTH_BODY_COPY.kicker) + '</div>'
@@ -105,9 +124,13 @@
         + "</ul>"
       : "<p>" + esc(zone.tryThis || "") + "</p>";
 
+    var chamberNavigation = activeHandoff
+      ? '<button class="back-btn" onclick="HearthBody.returnToSource()">&larr; Return to Journey</button>'
+      : '<button class="back-btn" onclick="HearthBody.back()">&larr; Back to Body</button>';
+
     el.innerHTML =
       '<div class="hb-chamber">'
-        + '<button class="back-btn" onclick="HearthBody.back()">&larr; Back to Body</button>'
+        + chamberNavigation
         + '<div class="hb-chamber-card">'
           + '<div class="hb-kicker">' + esc(zone.seal) + ' &middot; ' + esc(zone.label) + '</div>'
           + '<h3>' + esc(zone.label) + '</h3>'
@@ -151,6 +174,30 @@
       activeZone = id;
       renderHearthChamber(id);
     },
+    openWithHandoff: function(handoff) {
+      activeHandoff = handoff || readHearthHandoff();
+      var zoneId = activeHandoff && activeHandoff.task && activeHandoff.task.parameters && activeHandoff.task.parameters.zone_id;
+      activeZone = zoneId || null;
+      if (activeZone) renderHearthChamber(activeZone);
+      else renderHearthBody();
+    },
+    returnToSource: function() {
+      var handoff = activeHandoff || readHearthHandoff();
+      var route = handoff && handoff.return_route;
+      var store = handoffStore();
+      if (store && handoff) store.clear(handoff.id);
+      activeHandoff = null;
+      activeZone = null;
+      if (route && route.node_id === "journey" && root.Journey) {
+        var params = route.params || {};
+        if (typeof root.Journey.openCompanionLesson === "function") root.Journey.openCompanionLesson(params.learner_id);
+        if (typeof root.Journey.focusCompanionStep === "function" && Number.isFinite(Number(params.step_index))) {
+          root.Journey.focusCompanionStep(Number(params.step_index));
+        }
+        return;
+      }
+      if (typeof root.backToMap === "function") root.backToMap();
+    },
     back: function() {
       activeZone = null;
       renderHearthBody();
@@ -165,6 +212,7 @@
   };
 
   root.showHearth = function showHearth() {
+    activeHandoff = readHearthHandoff();
     renderHearthBody();
   };
 

@@ -276,6 +276,9 @@ REQUIRED_MARKERS = {
         "root.showHearth",
         "renderHearthBody",
         "renderHearthChamber",
+        "openWithHandoff",
+        "returnToSource",
+        "Return to Journey",
     ],
     "assets/js/teaching-engine.js": [
         "window.TeachingEngine",
@@ -1196,6 +1199,16 @@ def main() -> int:
                 failures.append(f"{relative_path} step {index} is missing text")
 
     simulator = read_text("simulator.html")
+
+    shared_layout_boundary = re.search(
+        r"@media\(max-width:700px\)\{[\s\S]*?\.node-info p\{[^}]*\}\s*\}\s*"
+        r"/\*\s*═══ SCENESTART SHARED LAYOUT",
+        simulator,
+    )
+    if not shared_layout_boundary:
+        failures.append(
+            "Shared node layout CSS must sit outside the max-width:700px mobile media query"
+        )
 
     for label, onclick in HEADER_TOOL_ACTIONS.items():
         if f'aria-label="{label}"' not in simulator:

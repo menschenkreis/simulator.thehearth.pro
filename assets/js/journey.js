@@ -1079,6 +1079,7 @@
         '<p class="journey-live-aim">'+esc(step.aim || '')+'</p>' +
         '<div class="journey-live-action"><strong>Do this:</strong> '+esc(step.action || '')+'</div>' +
         '<div class="journey-live-prompt"><strong>Notice:</strong> '+esc(step.prompt || '')+'</div>' +
+        (step.hearthHandoff ? '<div class="journey-actions" style="margin-top:12px"><button type="button" class="journey-btn" onclick="Journey.openCompanionHearth(\''+attr(student.id)+'\','+index+')">'+esc(step.hearthHandoff.label || 'Open Hearth')+'</button></div>' : '') +
         (step.studyHandoff ? '<div class="journey-actions" style="margin-top:12px"><button type="button" class="journey-btn" onclick="Journey.openCompanionStudy(\''+attr(student.id)+'\','+index+')">'+esc(step.studyHandoff.label || 'Open Study')+'</button></div>' : '') +
         (step.doingHandoff ? '<div class="journey-actions" style="margin-top:12px"><button type="button" class="journey-btn" onclick="Journey.openCompanionDoing(\''+attr(student.id)+'\','+index+')">'+esc(step.doingHandoff.label || 'Open drill')+'</button></div>' : '') +
         (step.playHandoff ? '<div class="journey-actions" style="margin-top:8px"><button type="button" class="journey-btn" onclick="Journey.openCompanionPlay(\''+attr(student.id)+'\','+index+')">'+esc(step.playHandoff.label || 'Open Play')+'</button></div>' : '') +
@@ -1914,7 +1915,7 @@
         },
         pass_condition:{
           description:'Find A as home in the current pentatonic area and explain the landmark clue plainly.',
-          minimum_evidence_stage:'understanding',
+          minimum_evidence_stage:'demonstration',
           criteria:{ subject_id:spec.subject_id, recommended_door:spec.recommended_door }
         },
         easier_step:{ instruction:spec.easier_step, parameters:{ root_note:'A', caged_language:false } },
@@ -1927,6 +1928,46 @@
         window.StudyKeyChamber.openWithHandoff(handoff);
       } else if(typeof window.showStudy === 'function') {
         window.showStudy();
+      }
+    },
+    openCompanionHearth(studentId, stepIndex){
+      const state = loadState();
+      const student = state.students.find(item => item.id === studentId) || activeStudent(state);
+      const companion = getCompanion(student);
+      const step = companionLessonSteps(companion)[stepIndex];
+      const spec = step && step.hearthHandoff;
+      if(!spec || !window.HearthCrossNodeHandoffStore || typeof window.HearthCrossNodeHandoffStore.createStore !== 'function') return;
+      const store = window.HearthCrossNodeHandoffStore.createStore({ storage:window.sessionStorage });
+      const suffix = Date.now().toString(36);
+      const handoff = {
+        id:'handoff-journey-hearth-'+student.id+'-'+suffix,
+        version:1,
+        learner_id:student.id,
+        actor_role:'learner',
+        source_node_id:'journey',
+        destination_node_id:'hearth',
+        activity_id:spec.activity_id,
+        lesson_id:'jen-a-minor-pentatonic-consolidation',
+        journey_level_id:spec.journey_level_id || 'L1',
+        capability_ids:(spec.capability_ids || []).slice(),
+        attempt_id:null,
+        session_id:'journey-hearth-session-'+student.id+'-'+suffix,
+        task:{ id:spec.activity_id, instruction:spec.instruction, parameters:{ zone_id:spec.zone_id } },
+        pass_condition:{
+          description:spec.instruction,
+          minimum_evidence_stage:spec.zone_id === 'heart' ? 'attempt' : 'contact',
+          criteria:{ zone_id:spec.zone_id }
+        },
+        easier_step:{ instruction:spec.easier_step, parameters:{ zone_id:spec.zone_id } },
+        return_route:{ node_id:'journey', view_id:'companion', params:{ learner_id:student.id, step_index:stepIndex } },
+        fallback_instruction:'Return to Journey and reopen Jen\'s '+step.label+' step.',
+        created_at:new Date().toISOString()
+      };
+      if(!store.set(handoff)) return;
+      if(window.HearthBody && typeof window.HearthBody.openWithHandoff === 'function') {
+        window.HearthBody.openWithHandoff(handoff);
+      } else if(typeof window.showHearth === 'function') {
+        window.showHearth();
       }
     },
     openCompanionPlay(studentId, stepIndex){

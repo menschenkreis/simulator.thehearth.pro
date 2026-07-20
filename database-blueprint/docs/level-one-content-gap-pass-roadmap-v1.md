@@ -52,6 +52,13 @@ The remaining three gaps now have a first coherent implementation:
   Study, lands on the relevant Shape door, and returns to the same Map Clue
   step. Opening the chamber does not mark the subject complete. The route
   passed a live desktop browser check with no console errors.
+- Journey's Tune in and Review steps now open the relevant Hearth chambers:
+  Breath / Body for arrival and Heart / Feeling for reflection. Both return to
+  the exact Journey step and passed live desktop browser checks without
+  awarding completion from opening the chamber.
+- A missing responsive CSS boundary was repaired. Shared Study, Practice,
+  Create, and Hearth node styling is once again active on desktop instead of
+  being trapped inside the small-phone media query.
 - Create receives a ready-to-shape `A Minor Homecoming variation` seed with
   source, learner, Level 1, and capability context. Saving it records the
   learner's creative attempt without claiming mastery.
