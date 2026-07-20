@@ -242,6 +242,8 @@ REQUIRED_MARKERS = {
         "hearth:journey-state",
         "freeDraft",
         "continue-session",
+        "openWithHandoff",
+        "returnToSource",
     ],
     "adapters/practice-planned-session-viewer.js": [
         "root.HearthPracticePlannedSessionViewer",
@@ -270,6 +272,8 @@ REQUIRED_MARKERS = {
         "root.showMastery",
         "MASTERY_SEALS",
         "openSeal",
+        "openWithHandoff",
+        "returnToSource",
     ],
     "adapters/hearth-body-viewer.js": [
         "root.HearthBody",

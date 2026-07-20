@@ -823,6 +823,8 @@ assert(JOURNEY_STUDENT_COMPANIONS.jen.lessonButtons[0].hearthHandoff.zone_id ===
 assert(JOURNEY_STUDENT_COMPANIONS.jen.lessonButtons[6].hearthHandoff.zone_id === "heart", "Jen's Review step should open the Hearth feeling check");
 assert(JOURNEY_STUDENT_COMPANIONS.jen.lessonButtons[5].doingHandoff.drill_id === "song-thread-am", "Jen's conversation step should open the song lab");
 assert(JOURNEY_STUDENT_COMPANIONS.jen.lessonButtons[5].playHandoff.activity_id === "play-a-minor-homecoming-role-exchange", "Jen's conversation step should open the matching Play exchange");
+assert(JOURNEY_STUDENT_COMPANIONS.jen.lessonButtons[4].practiceHandoff.activity_id === "practice-plan-a-minor-homecoming-3-day", "Jen's Make Music step should open the exact three-return practice plan");
+assert(JOURNEY_STUDENT_COMPANIONS.jen.lessonButtons[5].masteryHandoff.source_id === "level-1-bb-king-space-and-answer", "Jen's conversation step should open the exact Mastery exemplar");
 var doingEvidenceHtml = HearthDoingTeachingViewer.renderEvidence({{
   evidence: {{ projectedState: "mastered", message: "Three clean attempts across two days support mastery." }},
   ui: HearthDoingUiUtils

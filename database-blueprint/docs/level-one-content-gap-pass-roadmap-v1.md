@@ -56,6 +56,13 @@ The remaining three gaps now have a first coherent implementation:
   Breath / Body for arrival and Heart / Feeling for reflection. Both return to
   the exact Journey step and passed live desktop browser checks without
   awarding completion from opening the chamber.
+- Journey's Make Music step now opens the exact three-return `A Minor
+  Homecoming` Practice plan. It shows the correct 20-minute focus and Day 1 of
+  3 rather than Jen's older seven-day commitment, then returns to Make Music.
+- Journey's Conversation step now opens a preview of the exact B.B. King
+  Mastery encounter and returns to Conversation. Opening the preview records
+  nothing; the learner must explicitly choose `Begin Witness` before contact
+  evidence can begin.
 - A missing responsive CSS boundary was repaired. Shared Study, Practice,
   Create, and Hearth node styling is once again active on desktop instead of
   being trapped inside the small-phone media query.
@@ -70,10 +77,10 @@ The remaining three gaps now have a first coherent implementation:
   review reflection.
 
 Automated behavior, loaded-script syntax, and local-reference checks cover the
-new contracts. The Journey -> Play -> Journey route is live-verified. The pass
-remains **in progress** until the Practice, Create, and Mastery click paths
-receive a live browser check and a learner produces real evidence on separate
-days. Tests must not fabricate that learner history.
+new contracts. The Journey routes into Play, Study, Hearth, Practice, and
+Mastery are live-verified. The pass remains **in progress** until the Create
+click path receives a live browser check and a learner produces real evidence
+on separate days. Tests must not fabricate that learner history.
 
 ## Purpose
 

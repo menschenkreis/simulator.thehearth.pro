@@ -40,6 +40,36 @@
   ];
 
   var MASTERY_ENCOUNTER_STORAGE = "hearth-mastery-encounter-v1";
+  var activeHandoff = null;
+
+  function handoffStore() {
+    if (!root.HearthCrossNodeHandoffStore || typeof root.HearthCrossNodeHandoffStore.createStore !== "function") return null;
+    return root.HearthCrossNodeHandoffStore.createStore({ storage: root.sessionStorage });
+  }
+
+  function readMasteryHandoff() {
+    var store = handoffStore();
+    if (!store) return null;
+    var learnerId = activeHandoff && activeHandoff.learner_id;
+    return store.current({ learnerId: learnerId || undefined, destinationNodeId: "mastery" });
+  }
+
+  function returnToSource() {
+    var handoff = activeHandoff || readMasteryHandoff();
+    var route = handoff && handoff.return_route;
+    var store = handoffStore();
+    if (store && handoff) store.clear(handoff.id);
+    activeHandoff = null;
+    if (route && route.node_id === "journey" && root.Journey) {
+      var params = route.params || {};
+      if (typeof root.Journey.openCompanionLesson === "function") root.Journey.openCompanionLesson(params.learner_id);
+      if (typeof root.Journey.focusCompanionStep === "function" && Number.isFinite(Number(params.step_index))) {
+        root.Journey.focusCompanionStep(Number(params.step_index));
+      }
+      return;
+    }
+    if (typeof root.backToMap === "function") root.backToMap();
+  }
 
   function currentLearner() {
     var state = null;
@@ -210,9 +240,11 @@
 
   function sceneStart() {
     var title = root.NODE_DATA && root.NODE_DATA.mastery ? root.NODE_DATA.mastery.title : "Mastery";
+    var backAction = activeHandoff ? "MasteryPhoenix.returnToSource()" : "backToMap()";
+    var backLabel = activeHandoff ? "Return to Journey" : "Map";
     return (
       '<div class="sf-wrap">' +
-      '<button class="back-btn" onclick="backToMap()">\u2190 Map</button>' +
+      '<button class="back-btn" onclick="' + backAction + '">\u2190 ' + backLabel + '</button>' +
       '<div class="sf-scene sf-phoenix">' +
       '<div class="sf-top">' +
       "<div>" +
@@ -244,6 +276,7 @@
   }
 
   function showMastery() {
+    activeHandoff = readMasteryHandoff();
     ensureStyle();
     var el = panel();
     if (!el) return;
@@ -253,6 +286,28 @@
       '<div class="sf-scene-prompt">Choose one ember. Begin with a short encounter, not a performance to prove.</div>' +
       '<div id="sf-drawer" class="sf-drawer"><strong>Witness → Notice → Try → Carry</strong><br>Choose one ember to begin. Mastery is where a skill becomes a musical possibility.</div>' +
       "</div></div>";
+  }
+
+  function renderHandoffPreview() {
+    var el = root.document.getElementById("sf-drawer");
+    var record = exemplar();
+    var handoff = activeHandoff || readMasteryHandoff();
+    if (!el || !handoff) return;
+    var task = handoff.task || {};
+    var easier = handoff.easier_step || {};
+    el.innerHTML =
+      '<div class="sf-kicker">Journey encounter</div>' +
+      '<h3 style="font-family:Cinzel;color:' + GOLD + ';margin:5px 0">' + esc(record.title) + '</h3>' +
+      '<p class="sf-encounter-note"><strong>' + esc(record.sourceTitle) + '</strong></p>' +
+      '<p class="sf-encounter-note">' + esc(task.instruction || record.reason) + '</p>' +
+      '<p class="sf-encounter-note"><strong>Smaller step:</strong> ' + esc(easier.instruction || record.mediaFallback) + '</p>' +
+      '<div class="sf-encounter-actions"><button class="sf-primary" onclick="MasteryPhoenix.startEncounter(false)">Begin Witness</button></div>';
+  }
+
+  function openWithHandoff(handoff) {
+    activeHandoff = handoff || readMasteryHandoff();
+    showMastery();
+    renderHandoffPreview();
   }
 
   function choiceLabel(options, id) {
@@ -517,6 +572,8 @@
     chooseTry: chooseTry,
     carryTo: carryTo,
     saveReviewReflection: saveReviewReflection,
+    openWithHandoff: openWithHandoff,
+    returnToSource: returnToSource,
   };
   root.showMastery = showMastery;
 })(typeof window !== "undefined" ? window : globalThis);

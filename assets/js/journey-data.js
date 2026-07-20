@@ -577,6 +577,15 @@ var JOURNEY_STUDENT_COMPANIONS = {
           instruction: "Use A roots as safe landing points, keep the pulse, then add one nearby pentatonic note.",
           pass_condition: "Create a four-bar root-note phrase that stays in time and ends on A.",
           easier_step: "Use one A root only at 60 BPM."
+        },
+        practiceHandoff: {
+          label: "Practice the song thread",
+          source_id: "level-1-a-minor-homecoming",
+          activity_id: "practice-plan-a-minor-homecoming-3-day",
+          journey_level_id: "L1",
+          capability_ids: ["L1-PREP-01", "L1-PRACTICE-01"],
+          instruction: "Use the 20-minute plan to separate the roles, join the eight bars, and return on another day.",
+          easier_step: "Practise the rhythm role only for five minutes at 60 BPM."
         }
       },
       {
@@ -615,6 +624,15 @@ var JOURNEY_STUDENT_COMPANIONS = {
           seed_title: "A minor conversation",
           starter: "A minor pentatonic root notes as safety points",
           instruction: "Make a two-bar answer from one A root note and two nearby pentatonic notes over an A minor groove. Leave one small space before you repeat it."
+        },
+        masteryHandoff: {
+          label: "Watch space become music",
+          source_id: "level-1-bb-king-space-and-answer",
+          activity_id: "mastery-level-1-space-and-answer",
+          journey_level_id: "L1",
+          capability_ids: ["L1-STYLE-01"],
+          instruction: "Notice one choice about space, timing, touch, or landing, then try a tiny version inside A Minor Homecoming.",
+          easier_step: "Play two notes, count four quiet beats, then land on A."
         }
       },
       {
