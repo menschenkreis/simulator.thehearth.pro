@@ -67,6 +67,7 @@ eval(readText(root + "/core/knowing-progress.js"));
 eval(readText(root + "/core/level-one-song-thread.js"));
 eval(readText(root + "/core/create-prompt-policy.js"));
 eval(readText(root + "/core/create-progress.js"));
+eval(readText(root + "/core/mastery-progress.js"));
 eval(readText(root + "/adapters/progress-event-store.js"));
 eval(readText(root + "/adapters/cross-node-handoff-store.js"));
 eval(readText(root + "/core/play-domain.js"));
@@ -1396,6 +1397,40 @@ assert(learnerCreateEvent.capability_ids[0] === "L1-CREATE-01" && learnerCreateE
 assert(HearthProgressEventContract.validateAndNormalize(learnerCreateEvent).valid === true, "Create saved evidence should satisfy the canonical event contract");
 assert(HearthCreateProgress.project([learnerCreateEvent], "jen-1").savedProjects === 1, "Create evidence projection should count only the active learner's saved artifacts");
 assert(HearthCreateProgress.project([learnerCreateEvent], "ayla").savedProjects === 0, "Create evidence projection must not leak between learners");
+var masteryRecord = {{
+  id: "level-1-bb-king-space-and-answer",
+  level: 1,
+  category: "phrasing",
+  capabilityIds: ["L1-STYLE-01"]
+}};
+var masteryState = {{
+  id: "mastery-jen-1",
+  learnerId: "jen-1",
+  notice: "Space",
+  tryIdea: "Play one short phrase and leave room",
+  carriedTo: "practice",
+  reflection: "The silence made the answer clearer."
+}};
+var masteryStartedEvent = HearthMasteryProgress.buildEvent({{
+  kind: "started",
+  learnerId: "jen-1",
+  state: masteryState,
+  record: masteryRecord,
+  timestamp: "2026-07-20T10:10:00.000Z",
+  suffix: "started"
+}});
+assert(masteryStartedEvent.capability_ids.length === 0 && masteryStartedEvent.evidence_stage === "contact", "Opening Mastery must not earn capability credit");
+var masteryTriedEvent = HearthMasteryProgress.buildEvent({{
+  kind: "tried",
+  learnerId: "jen-1",
+  state: masteryState,
+  record: masteryRecord,
+  timestamp: "2026-07-20T10:15:00.000Z",
+  suffix: "tried"
+}});
+assert(masteryTriedEvent.capability_ids[0] === "L1-STYLE-01" && masteryTriedEvent.evidence_stage === "attempt", "Confirmed Mastery experiments should earn attempt evidence");
+assert(masteryTriedEvent.attempt_id && masteryTriedEvent.data.mastery_exemplar_id === masteryRecord.id, "Mastery attempts should preserve encounter and exemplar identity");
+assert(HearthProgressEventContract.validateAndNormalize(masteryTriedEvent).valid === true, "Mastery attempt evidence should satisfy the canonical event contract");
 var fakeCreateStorage = {{
   values: {{
     "hearth-create-current": JSON.stringify({{ title: "A minor spark", ingredients: ["Rhythm"], prompt: "Keep the root note present." }}),

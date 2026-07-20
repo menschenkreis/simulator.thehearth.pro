@@ -49,6 +49,7 @@ Those pieces can use the core, but they should not live inside the core.
 | `level-one-song-thread.js` | One rights-safe Level 1 mini-piece shared by Journey and node-owned activities. |
 | `create-prompt-policy.js` | Pure level-aware Cauldron prompt, heat, and ingredient limits. |
 | `create-progress.js` | Pure learner-contribution detection and canonical Create artifact evidence. |
+| `mastery-progress.js` | Pure canonical Witness, Notice, Try, Carry, and reflection evidence for Mastery. |
 | `play-domain.js` | Pure Play destination, cultural context, route, activity, result, and recommendation contracts. |
 | `contracts/progress-event-envelope-v1.schema.json` | Approved append-only shared evidence envelope. |
 | `contracts/handoff-envelope-v1.schema.json` | Approved learner-safe cross-node task and return envelope. |

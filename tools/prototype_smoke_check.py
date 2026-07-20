@@ -29,6 +29,7 @@ REQUIRED_MARKERS = {
         "core/foundation-progress.js",
         "core/create-prompt-policy.js",
         "core/create-progress.js",
+        "core/mastery-progress.js",
         "adapters/foundation-route-manifest-runtime.js",
         "adapters/foundation-seed-loader.js",
         "adapters/foundation-lesson-launcher.js",
@@ -174,6 +175,13 @@ REQUIRED_MARKERS = {
         "create_seed_saved",
         "L1-CREATE-01",
     ],
+    "core/mastery-progress.js": [
+        "root.HearthMasteryProgress",
+        "mastery_encounter_started",
+        "mastery_experiment_completed",
+        "mastery_reflection_saved",
+        "mastery_exemplar_id",
+    ],
     "adapters/create-state.js": [
         "root.HearthCreateState",
         "createStore",
@@ -308,6 +316,9 @@ REQUIRED_MARKERS = {
         "openSeal",
         "openWithHandoff",
         "returnToSource",
+        "completeTry",
+        "renderArtisticThread",
+        "HearthMasteryProgress",
     ],
     "adapters/hearth-body-viewer.js": [
         "root.HearthBody",

@@ -238,6 +238,14 @@ unchanged handoff starter is contact only; `L1-CREATE-01` is credited only after
 the learner adds a musical fragment and saves it. The global Progress panel now
 reads Create projects from the active learner's scoped profile.
 
+Mastery checkpoint 2026-07-20: one genuine B.B. King performance encounter is
+now trustworthy end to end at the evidence layer. Continue, Watch, Follow a
+Thread, and Review have distinct jobs. Choosing a Try idea no longer claims the
+learner played it; an explicit confirmation records the Attempt. Canonical
+events preserve encounter and exemplar identity, and Carry passes the exact
+notice and experiment into Practice or Create. Catalogue expansion remains
+paused until this route has real learner use and media/profile/mobile QA.
+
 Do not expand Play regions, Mastery catalogues, Hearth body systems, or Create
 prompt breadth before each node's first route is trustworthy end to end.
 
