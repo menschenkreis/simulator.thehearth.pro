@@ -9,6 +9,7 @@
 
   var currentDoorIndex = 0;
   var panelOpen = false;
+  var activeHandoff = null;
 
   function esc(value) {
     return String(value == null ? "" : value).replace(/[&<>"']/g, function (ch) {
@@ -36,6 +37,31 @@
       return root.StudyKeyChamberModel.snapshot({ storage: root.localStorage });
     }
     return { doors: [], subject: { title: "One clear musical idea", summary: "" }, learner: { name: "My Journey" }, summary: {} };
+  }
+
+  function handoffStore() {
+    if (!root.HearthCrossNodeHandoffStore || typeof root.HearthCrossNodeHandoffStore.createStore !== "function") return null;
+    return root.HearthCrossNodeHandoffStore.createStore({ storage: root.sessionStorage });
+  }
+
+  function readStudyHandoff() {
+    var store = handoffStore();
+    var snapshot = modelSnapshot();
+    return store ? store.current({ learnerId: snapshot.learner.id, destinationNodeId: "study" }) : null;
+  }
+
+  function returnButton() {
+    return activeHandoff
+      ? '<button class="back-btn" onclick="StudyKeyChamber.returnToSource()">\u2190 Return to Journey</button>'
+      : '<button class="back-btn" onclick="backToMap()">\u2190 Map</button>';
+  }
+
+  function recommendedDoorIndex(handoff) {
+    var snapshot = modelSnapshot();
+    var parameters = handoff && handoff.task && handoff.task.parameters || {};
+    var requestedId = parameters.recommended_door || (snapshot.subject && snapshot.subject.recommendedDoor) || "word";
+    var index = snapshot.doors.findIndex(function findDoor(door) { return door.id === requestedId; });
+    return index >= 0 ? index : 0;
   }
 
   function doorStateColor(state) {
@@ -119,7 +145,7 @@
 
     el.innerHTML =
       '<div class="sk-wrap">' +
-      '<button class="back-btn" onclick="backToMap()">\u2190 Map</button>' +
+      returnButton() +
       '<div class="sk-scene">' +
       '<div class="sk-top">' +
       "<div>" +
@@ -259,9 +285,34 @@
   }
 
   function showStudy() {
+    activeHandoff = readStudyHandoff();
     panelOpen = false;
-    currentDoorIndex = 0;
+    currentDoorIndex = activeHandoff ? recommendedDoorIndex(activeHandoff) : 0;
     renderStudyChamber();
+  }
+
+  function openWithHandoff(handoff) {
+    activeHandoff = handoff || readStudyHandoff();
+    panelOpen = false;
+    currentDoorIndex = recommendedDoorIndex(activeHandoff);
+    renderStudyChamber();
+  }
+
+  function returnToSource() {
+    var handoff = activeHandoff || readStudyHandoff();
+    var route = handoff && handoff.return_route;
+    var store = handoffStore();
+    if (store && handoff) store.clear(handoff.id);
+    activeHandoff = null;
+    if (route && route.node_id === "journey" && root.Journey) {
+      var params = route.params || {};
+      if (typeof root.Journey.openCompanionLesson === "function") root.Journey.openCompanionLesson(params.learner_id);
+      if (typeof root.Journey.focusCompanionStep === "function" && Number.isFinite(Number(params.step_index))) {
+        root.Journey.focusCompanionStep(Number(params.step_index));
+      }
+      return;
+    }
+    if (typeof root.backToMap === "function") root.backToMap();
   }
 
   function rotate(direction) {
@@ -337,6 +388,8 @@
   root.STUDY_DOORS = root.StudyKeyChamberModel ? root.StudyKeyChamberModel.definitions() : [];
   root.StudyKeyChamber = {
     render: showStudy,
+    openWithHandoff: openWithHandoff,
+    returnToSource: returnToSource,
     rotate: rotate,
     enter: enter,
     back: back,

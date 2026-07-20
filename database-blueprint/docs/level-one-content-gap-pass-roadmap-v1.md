@@ -48,6 +48,10 @@ The remaining three gaps now have a first coherent implementation:
   exploring the route alone awards no capability evidence. The route returns
   to the exact Conversation step and passed a live desktop browser check with
   no console errors.
+- Journey's Map Clue now opens Jen's exact A-minor pentatonic subject in
+  Study, lands on the relevant Shape door, and returns to the same Map Clue
+  step. Opening the chamber does not mark the subject complete. The route
+  passed a live desktop browser check with no console errors.
 - Create receives a ready-to-shape `A Minor Homecoming variation` seed with
   source, learner, Level 1, and capability context. Saving it records the
   learner's creative attempt without claiming mastery.

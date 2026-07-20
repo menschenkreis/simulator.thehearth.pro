@@ -210,6 +210,9 @@ REQUIRED_MARKERS = {
         "root.showStudy",
         "STUDY_DOORS",
         "renderStudyChamber",
+        "openWithHandoff",
+        "returnToSource",
+        "Return to Journey",
     ],
     "adapters/practice-candle-viewer.js": [
         "root.PracticeCandle",

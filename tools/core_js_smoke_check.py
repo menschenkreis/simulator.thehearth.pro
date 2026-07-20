@@ -817,6 +817,8 @@ var songPilotHtml = HearthDoingTeachingViewer.renderVisual(songPilot, HearthDoin
 assert(songPilotHtml.indexOf("doing-song-thread") !== -1 && songPilotHtml.indexOf("Listen before playing") !== -1, "Song lab should begin with a listening comparison");
 assert(songPilotHtml.indexOf("Eight-bar road") !== -1 && songPilotHtml.indexOf("short TAB answer") !== -1, "Song lab should show the song road and a TAB fragment");
 assert(JOURNEY_STUDENT_COMPANIONS.jen.lessonButtons[2].doingHandoff.drill_id === "strum-1", "Jen's right-hand step should open the reviewed strum drill");
+assert(JOURNEY_STUDENT_COMPANIONS.jen.lessonButtons[3].studyHandoff.activity_id === "study-a-minor-pentatonic-map-clue", "Jen's map clue should open the exact Study inquiry");
+assert(JOURNEY_STUDENT_COMPANIONS.jen.lessonButtons[3].studyHandoff.capability_ids.indexOf("L1-KNOW-01") >= 0, "Jen's Study handoff should preserve the knowledge capability context");
 assert(JOURNEY_STUDENT_COMPANIONS.jen.lessonButtons[5].doingHandoff.drill_id === "song-thread-am", "Jen's conversation step should open the song lab");
 assert(JOURNEY_STUDENT_COMPANIONS.jen.lessonButtons[5].playHandoff.activity_id === "play-a-minor-homecoming-role-exchange", "Jen's conversation step should open the matching Play exchange");
 var doingEvidenceHtml = HearthDoingTeachingViewer.renderEvidence({{

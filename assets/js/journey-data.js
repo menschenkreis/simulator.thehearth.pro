@@ -538,7 +538,18 @@ var JOURNEY_STUDENT_COMPANIONS = {
         source: "Study + Knowing",
         aim: "Show one CAGED connection without teaching the whole system.",
         action: "Say: chord shapes are landmarks. Pentatonic notes live around those landmarks. Show only how A is home inside the current A minor pentatonic area.",
-        prompt: "Did this map clue help, or should we drop the word CAGED for now?"
+        prompt: "Did this map clue help, or should we drop the word CAGED for now?",
+        studyHandoff: {
+          label: "Open the map clue in Study",
+          activity_id: "study-a-minor-pentatonic-map-clue",
+          subject_id: "jen-a-minor-pentatonic-home",
+          subject_title: "A as home inside A minor pentatonic",
+          recommended_door: "shape",
+          journey_level_id: "L1",
+          capability_ids: ["L1-MAP-01", "L1-KNOW-01"],
+          instruction: "Use the Shape door to find A as home inside the familiar pentatonic area. Keep CAGED to one small landmark clue.",
+          easier_step: "Drop the word CAGED. Find one A root, play one nearby note, then return to A."
+        }
       },
       {
         label: "Make Music",
