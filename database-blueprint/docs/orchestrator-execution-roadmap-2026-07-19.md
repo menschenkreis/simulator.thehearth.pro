@@ -254,6 +254,13 @@ works without audio, duplicate learner UI is removed, and a saved result can
 open an exact Practice repetition or Create variation without losing its source
 attempt. New regions remain paused.
 
+Whole-map doorway checkpoint 2026-07-20: all nine main node routes were opened
+through the live map in the browser: Hearth, Foundation, Mastery, Do, Practice,
+Play, Know, Study, and Create. The flame still follows the authored path, but
+each hop was shortened and the entrance-card delay was capped. Measured doorway
+times were approximately 1.1-2.0 seconds; Do fell from more than eight seconds
+to about 1.8 seconds. No node renderer or learner evidence was bypassed.
+
 Do not expand Play regions, Mastery catalogues, Hearth body systems, or Create
 prompt breadth before each node's first route is trustworthy end to end.
 

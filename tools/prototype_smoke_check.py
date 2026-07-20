@@ -30,6 +30,8 @@ REQUIRED_MARKERS = {
         "core/create-prompt-policy.js",
         "core/create-progress.js",
         "core/mastery-progress.js",
+        "const FLAME_HOP_MS = 280",
+        "const FLAME_PAUSE_MS = 40",
         "adapters/foundation-route-manifest-runtime.js",
         "adapters/foundation-seed-loader.js",
         "adapters/foundation-lesson-launcher.js",
@@ -122,6 +124,11 @@ REQUIRED_MARKERS = {
         "adapters/hearth-body-viewer.js",
         "adapters/practice-candle-viewer.js",
         "NODE LAYOUT RESCUE LAYER",
+    ],
+    "assets/js/map-node-info.js": [
+        "MAX_NODE_ENTRY_DELAY_MS",
+        "Math.min(travelMs + 160, MAX_NODE_ENTRY_DELAY_MS)",
+        "enterNodeAction",
     ],
     "assets/js/map-node-data.js": [
         "var NODE_DATA",

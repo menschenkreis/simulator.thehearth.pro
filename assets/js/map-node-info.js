@@ -3,6 +3,7 @@
 (function initMapNodeInfo(root) {
   var activeNode = null;
   var nodeEntryToken = 0;
+  var MAX_NODE_ENTRY_DELAY_MS = 2200;
 
   function nodeData() {
     return root.NODE_DATA || {};
@@ -89,7 +90,7 @@
     updateCurrentNodeMarker(id);
     var wasSame = (root._flameNode === id);
     var travelMs = typeof root.moveFlame === 'function' ? root.moveFlame(id, { manual: true }) : 0;
-    var delay = wasSame ? 0 : travelMs + 160;
+    var delay = wasSame ? 0 : Math.min(travelMs + 160, MAX_NODE_ENTRY_DELAY_MS);
     var entryToken = ++nodeEntryToken;
     root.setTimeout(function presentAfterTravel() {
       if (entryToken === nodeEntryToken) presentNodeInfo(data);
