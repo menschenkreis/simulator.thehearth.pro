@@ -47,6 +47,25 @@
     if (enter) enter.textContent = data.cta || ('Enter ' + (data.title || 'Node') + ' \u2192');
     overlay.classList.add('vis');
     panel.classList.add('vis');
+    if (enter) enter.focus();
+  }
+
+  function wireMapNodeAccess() {
+    root.document.querySelectorAll('.mn-g[data-node]').forEach(function wireNode(node) {
+      if (node.dataset.mapAccessBound === 'true') return;
+      var id = node.getAttribute('data-node');
+      var data = nodeData()[id] || {};
+      node.dataset.mapAccessBound = 'true';
+      node.setAttribute('role', 'button');
+      node.setAttribute('tabindex', data.locked ? '-1' : '0');
+      node.setAttribute('aria-label', data.locked ? (data.title || id) + ' locked' : 'Open ' + (data.title || id));
+      if (data.locked) node.setAttribute('aria-disabled', 'true');
+      node.addEventListener('keydown', function activateNode(event) {
+        if (event.key !== 'Enter' && event.key !== ' ') return;
+        event.preventDefault();
+        showNodeInfo(id);
+      });
+    });
   }
 
   function enterNodeAction(data) {
@@ -77,20 +96,32 @@
     }, delay);
   }
 
-  function hideNodeInfo() {
+  function hideNodeInfo(restoreFocus) {
     var panel = root.document.getElementById('ni');
     var overlay = root.document.getElementById('niOverlay');
+    var nodeId = activeNode;
     if (panel) panel.classList.remove('vis');
     if (overlay) overlay.classList.remove('vis');
     activeNode = null;
+    if (restoreFocus !== false && nodeId) {
+      var node = root.document.querySelector('.mn-g[data-node="' + nodeId + '"]');
+      if (node) node.focus();
+    }
   }
 
   function enterNode() {
     var data = nodeData()[activeNode];
     if (!data || data.locked) return;
-    hideNodeInfo();
+    hideNodeInfo(false);
     enterNodeAction(data);
   }
+
+  root.document.addEventListener('keydown', function closeNodeInfo(event) {
+    var panel = root.document.getElementById('ni');
+    if (event.key === 'Escape' && panel && panel.classList.contains('vis')) hideNodeInfo();
+  });
+
+  wireMapNodeAccess();
 
   root.updateCurrentNodeMarker = updateCurrentNodeMarker;
   root.showNodeInfo = showNodeInfo;
@@ -98,4 +129,5 @@
   root.enterNodeAction = enterNodeAction;
   root.hideNodeInfo = hideNodeInfo;
   root.enterNode = enterNode;
+  root.wireMapNodeAccess = wireMapNodeAccess;
 })(window);

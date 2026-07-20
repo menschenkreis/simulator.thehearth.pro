@@ -132,6 +132,8 @@ REQUIRED_MARKERS = {
         "enterNodeAction",
         "hideNodeInfo",
         "updateCurrentNodeMarker",
+        "wireMapNodeAccess",
+        "aria-label",
     ],
     "assets/js/hearth-body-data.js": [
         "var HEARTH_BODY_COPY",

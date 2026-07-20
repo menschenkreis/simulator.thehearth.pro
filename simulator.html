@@ -1259,7 +1259,7 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
   -webkit-backdrop-filter:blur(18px) saturate(1.08);
 }
 .node-info.vis{display:block;}
-.node-info .ni-close{position:absolute;top:9px;right:9px;font-size:0.74rem;color:var(--dim);cursor:pointer;width:26px;height:26px;display:flex;align-items:center;justify-content:center;border-radius:50%;transition:background 0.15s,color 0.15s;}
+.node-info .ni-close{position:absolute;top:9px;right:9px;font-size:0.74rem;color:var(--dim);cursor:pointer;width:26px;height:26px;display:flex;align-items:center;justify-content:center;border:0;padding:0;background:transparent;border-radius:50%;transition:background 0.15s,color 0.15s;}
 .node-info .ni-close:hover{color:var(--text);background:rgba(255,255,255,0.06);}
 .node-info .ni-thumb{display:flex;justify-content:center;margin-bottom:8px;}
 .node-info .ni-thumb[hidden]{display:none;}
@@ -2567,8 +2567,8 @@ body:has(.doing-shell) .mobile-character{display:none;}
       <div class="map-vignette"></div>
     </div>
     <div class="node-info-overlay" id="niOverlay" onclick="hideNodeInfo()"></div>
-    <div class="node-info" id="ni">
-      <span class="ni-close" onclick="hideNodeInfo()">✕</span>
+    <div class="node-info" id="ni" role="dialog" aria-modal="true" aria-labelledby="niTitle">
+      <button type="button" class="ni-close" onclick="hideNodeInfo()" aria-label="Close node details">✕</button>
       <div id="niThumb" class="ni-thumb" hidden><img id="niThumbImg" src="" alt=""/></div>
       <span class="ni-emoji" id="niEmoji"></span>
       <div class="ni-tag" id="niTag"></div>
@@ -2779,7 +2779,7 @@ body:has(.doing-shell) .mobile-character{display:none;}
 <script src="assets/js/create-combos.js"></script>
 <script src="assets/js/references.js"></script>
 <script src="assets/js/map-node-data.js?v=20260717"></script>
-<script src="assets/js/map-node-info.js"></script>
+<script src="assets/js/map-node-info.js?v=20260720"></script>
 <script src="adapters/node-legacy-handlers.js"></script>
 <script>
 let _flameNode = localStorage.getItem('flameNode') || 'foundation';
