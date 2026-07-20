@@ -1237,6 +1237,7 @@ def main() -> int:
         "core/learner-progress.js",
         "core/progress-event.js",
         "core/journey-progress.js",
+        "core/level-one-song-thread.js",
         "adapters/browser-progress-store.js",
         "adapters/progress-event-store.js",
         "adapters/cross-node-handoff-store.js",

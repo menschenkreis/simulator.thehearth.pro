@@ -60,6 +60,7 @@ assert(learnerMigrationPreviewSource.indexOf(".removeItem(") === -1, "Learner mi
 eval(learnerMigrationPreviewSource);
 eval(readText(root + "/core/progress-event.js"));
 eval(readText(root + "/core/journey-progress.js"));
+eval(readText(root + "/core/level-one-song-thread.js"));
 eval(readText(root + "/adapters/progress-event-store.js"));
 eval(readText(root + "/adapters/cross-node-handoff-store.js"));
 eval(readText(root + "/core/play-domain.js"));
@@ -739,7 +740,7 @@ assert(jenMigrationAttempt.reason === "assigned_elsewhere" && migratedDoingEvent
 assert(doingMemoryStorage.getItem("hearth-doing-progress") === JSON.stringify({{ "pent-1": "comfortable" }}), "Do migration should preserve the original legacy data for recovery");
 var curatedDoing = {{ categories: [{{ id: "picking", title: "Picking", drills: [{{ id: "alt-1", title: "Old title", style: "rock", source: "Test", duration: "5 min", body: "<p>Test</p>" }}, {{ id: "alt-2", title: "Draft", style: "rock", source: "Test", duration: "5 min", body: "<p>Test</p>" }}] }}] }};
 HearthDoingDrillCatalog.apply(curatedDoing);
-assert(curatedDoing.catalog.approvedCount === 13, "Doing catalogue should expose the reviewed drill count");
+assert(curatedDoing.catalog.approvedCount === 14, "Doing catalogue should expose the reviewed drill count");
 assert(HearthDoingDrillCatalog.findDrill(curatedDoing, "alt-1").title.indexOf("One String") !== -1, "Doing catalogue should apply reviewed teaching data");
 assert(HearthDoingDrillCatalog.findDrill(curatedDoing, "alt-2").reviewStatus === "draft", "Doing catalogue should preserve unreviewed drills as drafts");
 assert(HearthDoingDrillCatalog.findDrill(curatedDoing, "chord-change-am-c").reviewStatus === "approved", "Doing catalogue should add reviewed chord drills");
@@ -786,6 +787,16 @@ var rootsPilotScene = HearthDoingTeachingViewer.renderScene({{
 }});
 assert(rootsPilotScene.indexOf("Make it musical") !== -1, "A Root Notes in Time should offer an optional Create handoff");
 assert(rootsPilotScene.indexOf("_openDoingCreate") !== -1 && rootsPilotScene.indexOf("pent-roots-time") !== -1, "Doing Create handoff should preserve its drill source");
+assert(HearthLevelOneSongThread.id === "level-1-a-minor-homecoming", "Level 1 should expose one stable original song-thread ID");
+assert(HearthLevelOneSongThread.progression.length === 8 && HearthLevelOneSongThread.rights.indexOf("no commercial song") !== -1, "Level 1 song thread should be an eight-bar rights-safe original");
+var songPilot = HearthDoingDrillCatalog.findDrill(curatedDoing, "song-thread-am");
+assert(songPilot && songPilot.visualType === "interactive-song-thread", "Doing catalogue should include the Level 1 song lab");
+assert(HearthDoingConfig.roomDrillPlans["both-hands"][1].indexOf("song-thread-am") !== -1, "Both Hands room should expose the Level 1 song lab");
+var songPilotHtml = HearthDoingTeachingViewer.renderVisual(songPilot, HearthDoingUiUtils);
+assert(songPilotHtml.indexOf("doing-song-thread") !== -1 && songPilotHtml.indexOf("Listen before playing") !== -1, "Song lab should begin with a listening comparison");
+assert(songPilotHtml.indexOf("Eight-bar road") !== -1 && songPilotHtml.indexOf("short TAB answer") !== -1, "Song lab should show the song road and a TAB fragment");
+assert(JOURNEY_STUDENT_COMPANIONS.jen.lessonButtons[2].doingHandoff.drill_id === "strum-1", "Jen's right-hand step should open the reviewed strum drill");
+assert(JOURNEY_STUDENT_COMPANIONS.jen.lessonButtons[5].doingHandoff.drill_id === "song-thread-am", "Jen's conversation step should open the song lab");
 var doingEvidenceHtml = HearthDoingTeachingViewer.renderEvidence({{
   evidence: {{ projectedState: "mastered", message: "Three clean attempts across two days support mastery." }},
   ui: HearthDoingUiUtils

@@ -7,11 +7,11 @@
  */
 (function initDoingDrillCatalog(root, factory) {
   if (typeof module !== "undefined" && module.exports) {
-    module.exports = factory();
+    module.exports = factory(root);
   } else {
-    root.HearthDoingDrillCatalog = factory();
+    root.HearthDoingDrillCatalog = factory(root);
   }
-})(typeof globalThis !== "undefined" ? globalThis : this, function createDoingDrillCatalog() {
+})(typeof globalThis !== "undefined" ? globalThis : this, function createDoingDrillCatalog(root) {
   "use strict";
 
   var AM_PENTATONIC_BOX_1 = {
@@ -365,6 +365,43 @@
       visualType: "interactive-fretboard",
       fretboard: AM_PENTATONIC_BOX_1,
       fretboardMode: "roots"
+    },
+    "song-thread-am": {
+      categoryId: "coordination",
+      title: "A Minor Homecoming Song Lab",
+      shortTitle: "Song Lab",
+      difficulty: 1,
+      level: 1,
+      hand: "both-hands",
+      capabilityIds: ["L1-TIME-01", "L1-TIME-02", "L1-HARM-02", "L1-MAP-02", "L1-READ-01"],
+      relatedCapabilityIds: ["L1-EAR-01", "L1-PLAY-01", "L1-SONG-01", "L1-ROLE-01", "L1-CREATE-01"],
+      bpm: "60-100",
+      duration: "12 min",
+      source: "Hearth original: A Minor Homecoming",
+      style: "blues",
+      body: "<p>One learner holds a simple chord ground while the other answers with a small A minor pentatonic phrase. Listen, swap roles, then keep one musical choice.</p>",
+      goal: "Connect rhythm guitar, lead guitar, listening, and reading inside one complete eight-bar mini-piece.",
+      setup: "Start at 60 BPM. Learn the rhythm and lead roles separately before putting them together.",
+      steps: [
+        "Listen to the rhythm guide and follow the eight-bar chord road.",
+        "Read the short TAB answer and finish on the A root.",
+        "Play the roles together, swap, and complete all eight bars."
+      ],
+      listenFor: ["Rhythm holds the ground", "Lead leaves space", "A sounds like home"],
+      passCondition: "Complete all eight bars, try both roles, stay with the pulse, and name one thing to repeat.",
+      easier: "Hold muted quarter notes while the lead plays only one A root on beat 1.",
+      harder: "Use the down-up extension and change one ending note without losing A as home.",
+      safety: "Reduce the tempo or separate the roles as soon as either player starts rushing.",
+      bpmChoices: ["60", "76", "100"],
+      visualType: "interactive-song-thread",
+      songThread: root && root.HearthLevelOneSongThread ? root.HearthLevelOneSongThread : null,
+      createHandoff: {
+        label: "Keep your variation",
+        suggested_ingredient: "riff",
+        seed_title: "A Minor Homecoming variation",
+        starter: "A Minor Homecoming rhythm-and-lead exchange",
+        instruction: "Save the one rhythm, ending note, or two-bar answer you deliberately changed in the song lab."
+      }
     }
   };
 

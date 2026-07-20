@@ -46,6 +46,7 @@ Those pieces can use the core, but they should not live inside the core.
 | `learner-migration-preview.js` | Read-only inventory and per-profile preview for legacy learner/progress storage. |
 | `progress-event.js` | Pure canonical progress-event normalization, validation, duplicate comparison, Journey-stage mapping, and read-time legacy projection. |
 | `journey-progress.js` | Pure learner-scoped capability evidence summary for Journey levels. |
+| `level-one-song-thread.js` | One rights-safe Level 1 mini-piece shared by Journey and node-owned activities. |
 | `play-domain.js` | Pure Play destination, cultural context, route, activity, result, and recommendation contracts. |
 | `contracts/progress-event-envelope-v1.schema.json` | Approved append-only shared evidence envelope. |
 | `contracts/handoff-envelope-v1.schema.json` | Approved learner-safe cross-node task and return envelope. |

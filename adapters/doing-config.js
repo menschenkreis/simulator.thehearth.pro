@@ -176,7 +176,7 @@
       1: ["alt-1", "strum-1", "shuffle-1", "pima-1", "pima-2"]
     },
     "both-hands": {
-      1: ["clean-note-1", "chord-clean-am", "chord-change-am-c", "pent-roots-time", "strum-1"]
+      1: ["clean-note-1", "chord-clean-am", "chord-change-am-c", "pent-roots-time", "strum-1", "song-thread-am"]
     }
   };
 

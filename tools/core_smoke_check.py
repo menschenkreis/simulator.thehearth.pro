@@ -70,6 +70,12 @@ CORE_MARKERS = {
         "summarize",
         "capabilityEvidence",
     ],
+    "core/level-one-song-thread.js": [
+        "HearthLevelOneSongThread",
+        "level-1-a-minor-homecoming",
+        "A Minor Homecoming",
+        "no commercial song",
+    ],
     "core/play-domain.js": [
         "HearthPlayDomain",
         "normalizeDestination",

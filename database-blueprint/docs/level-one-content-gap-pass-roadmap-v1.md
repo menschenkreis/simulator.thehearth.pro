@@ -1,7 +1,36 @@
 # Level 1 Content Gap Pass Roadmap V1
 
 Date: 2026-07-18
-Status: Queued next workstream; must not be lost inside the whole-simulator audit
+Status: In progress; first playable song-lab slice verified 2026-07-20
+
+## Implementation Checkpoint: 2026-07-20
+
+The first four gaps now meet in one playable prototype activity:
+
+- `core/level-one-song-thread.js` defines the original, rights-safe eight-bar
+  mini-piece `A Minor Homecoming` with stable IDs, chord road, tempo range,
+  rhythm role, lead role, easier version, and evidence targets.
+- Journey sends Jen's Right Hand step to the existing continuous-strum drill
+  and sends the Conversation step to the exact song lab.
+- Do owns the song lab and presents listening-role comparisons, an eight-bar
+  chord road, a quarter-note strum grid, and a short playable A minor
+  pentatonic TAB answer.
+- Opening the activity records only `Seen`; it does not award song, listening,
+  role, or creative mastery from a click.
+- The song lab returns to the correct Journey context and has no browser
+  console errors in the verified desktop route.
+
+This checkpoint substantially covers the first implementation slice for:
+
+1. song pathway;
+2. stronger right-hand work;
+3. listening before explanation;
+4. TAB and diagram contact.
+
+It does **not** complete the full pass. The next connected batch must carry the
+same song thread through learner-scoped Practice history, a saved Create
+variation, and a genuine sourced Mastery performance encounter. Those three
+gaps remain open below.
 
 ## Purpose
 
@@ -198,4 +227,3 @@ Fully implementing, wiring, testing, and visually polishing all seven parts is
 larger and should be split into verified batches. Do not promise that the
 entire finished learner experience will be production-ready inside the initial
 45-75 minute pass.
-

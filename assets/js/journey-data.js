@@ -519,7 +519,17 @@ var JOURNEY_STUDENT_COMPANIONS = {
         source: "Student interest",
         aim: "Use the thing Jen asked for as the doorway.",
         action: "Choose one right-hand pattern. Repeat it four times calmly, then use it under A roots or a tiny A minor phrase.",
-        prompt: "Did the pattern make the map more musical, or did it add pressure?"
+        prompt: "Did the pattern make the map more musical, or did it add pressure?",
+        doingHandoff: {
+          label: "Open strum engine",
+          room_id: "right-hand",
+          category_id: "rhythm",
+          drill_id: "strum-1",
+          capability_ids: ["L1-TIME-01", "L1-TIME-02"],
+          instruction: "Keep the right hand moving through one full bar before adding A minor or changing chords.",
+          pass_condition: "Keep the hand moving for 30 seconds at 60 BPM without losing the beat.",
+          easier_step: "Mute the strings and use quarter-note downstrokes only."
+        }
       },
       {
         label: "Map Clue",
@@ -557,6 +567,16 @@ var JOURNEY_STUDENT_COMPANIONS = {
         aim: "End by making the idea social and musical.",
         action: "One person holds A minor or a simple pulse. The other plays small A minor pentatonic phrases. Leave space, answer, then swap.",
         prompt: "What sounded like a conversation rather than an exercise?",
+        doingHandoff: {
+          label: "Open A Minor Homecoming",
+          room_id: "both-hands",
+          category_id: "coordination",
+          drill_id: "song-thread-am",
+          capability_ids: ["L1-TIME-01", "L1-TIME-02", "L1-HARM-02", "L1-MAP-02", "L1-READ-01"],
+          instruction: "Listen to the two roles, read the small rhythm and TAB maps, then complete the eight-bar mini-piece and swap roles.",
+          pass_condition: "Complete all eight bars, try both roles, stay with the pulse, and name one thing to repeat.",
+          easier_step: "Hold muted quarter notes while the lead plays only one A root on beat 1."
+        },
         createHandoff: {
           label: "Turn this into a riff",
           suggested_ingredient: "riff",
