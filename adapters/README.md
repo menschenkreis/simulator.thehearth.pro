@@ -73,6 +73,7 @@ Adapters are allowed to connect the clean core to those outside systems.
 | `practice-entry-model.js` | Builds the learner-aware Practice first-click summary. |
 | `practice-entry-viewer.js` | Renders the image-led Practice chamber entrance. |
 | `practice-entry-controller.js` | Wires the Practice chamber hotspots and entry actions. |
+| `practice-planned-session-store.js` | Keeps unfinished guided Practice sessions separate per learner while preserving legacy data. |
 | `practice-planned-session-viewer.js` | Renders the guided Arrive-Focus-Set-Practise-Listen-Reflect practice flow. |
 | `practice-planned-session-controller.js` | Manages the planned-session state, candle handoff, recorder check, and reflection save. |
 | `practice-ui-utils.js` | Shared Practice display helpers for streaks, relative time, and feeling labels. |

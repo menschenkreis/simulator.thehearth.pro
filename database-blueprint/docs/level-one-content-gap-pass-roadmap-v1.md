@@ -32,6 +32,32 @@ same song thread through learner-scoped Practice history, a saved Create
 variation, and a genuine sourced Mastery performance encounter. Those three
 gaps remain open below.
 
+### Connected-node checkpoint: 2026-07-20
+
+The remaining three gaps now have a first coherent implementation:
+
+- Practice reads the shared song record and offers three 20-minute returns:
+  separate the roles, join the eight bars, then swap and keep one choice.
+- Unfinished guided Practice sessions use learner-scoped storage. The former
+  global value remains readable for its original learner and is not deleted.
+- Practice opens the exact Song Lab and returns to the same guided session.
+- One session records an attempt. Only three distinct calendar days can
+  support the `repeat a real weakness over time` evidence threshold.
+- Create receives a ready-to-shape `A Minor Homecoming variation` seed with
+  source, learner, Level 1, and capability context. Saving it records the
+  learner's creative attempt without claiming mastery.
+- Mastery now uses a genuine external performance encounter: B.B. King,
+  `The Thrill Is Gone (Live at Montreux 1993)`. The learner notices one choice,
+  tries a small version inside `A Minor Homecoming`, and can carry it to
+  Practice or Create.
+- The Mastery encounter has an internal no-media fallback and a short saved
+  review reflection.
+
+Automated behavior, loaded-script syntax, and local-reference checks cover the
+new contracts. The pass remains **in progress** until the Practice, Create, and
+Mastery click paths receive a live browser check and a learner produces real
+evidence on separate days. Tests must not fabricate that learner history.
+
 ## Purpose
 
 The whole-simulator audit does not replace this work. It should verify the

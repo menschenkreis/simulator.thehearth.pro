@@ -87,6 +87,7 @@ REQUIRED_MARKERS = {
         "adapters/practice-entry-model.js",
         "adapters/practice-entry-viewer.js",
         "adapters/practice-entry-controller.js",
+        "adapters/practice-planned-session-store.js",
         "adapters/practice-planned-session-viewer.js",
         "adapters/practice-planned-session-controller.js",
         "adapters/play-world-viewer.js",
@@ -250,7 +251,14 @@ REQUIRED_MARKERS = {
         "root.PracticePlannedSession",
         "open-candle",
         "practice_session_completed",
+        "HearthPracticePlannedSessionStore",
+        "songPracticeDayCount",
+    ],
+    "adapters/practice-planned-session-store.js": [
+        "root.HearthPracticePlannedSessionStore",
+        "hearth-planned-practice-v2",
         "hearth-planned-practice-v1",
+        "profiles",
     ],
     "adapters/mastery-phoenix-viewer.js": [
         "root.MasteryPhoenix",

@@ -164,8 +164,9 @@
     function handoffReturnHtml() {
       var handoff = activeNodeHandoff();
       if (!handoff) return "";
+      var returnsToPractice = handoff.return_route && handoff.return_route.node_id === "practice";
       return '<button type="button" class="doing-practice-return" onclick="window._returnFromDoingHandoff()">' +
-        '<span>&larr;</span><b>Return to Journey</b><small>' +
+        '<span>&larr;</span><b>' + (returnsToPractice ? "Return to Practice" : "Return to Journey") + '</b><small>' +
         doingUi.escapeHtml((handoff.task && handoff.task.instruction) || "Continue the guided lesson") +
         '</small></button>';
     }
@@ -179,6 +180,10 @@
       if (!handoff) return;
       var route = handoff.return_route || {};
       handoffStore.clear(handoff.id);
+      if (route.node_id === "practice" && root.PracticePlannedSession && typeof root.PracticePlannedSession.resume === "function") {
+        root.PracticePlannedSession.resume();
+        return;
+      }
       if (route.node_id === "journey" && root.Journey) {
         if (route.view_id === "companion" && typeof root.Journey.openCompanionLesson === "function") {
           root.Journey.openCompanionLesson(handoff.learner_id);
@@ -409,8 +414,10 @@
 
       root.HearthCreateHandoff.open({
         source_node_id: "doing",
-        source_id: entry.drill.id,
+        source_id: handoff.source_id || entry.drill.id,
         lesson_id: handoff.lesson_id || "",
+        journey_level_id: handoff.journey_level_id || "",
+        capability_ids: handoff.capability_ids || [],
         source_title: entry.drill.title,
         suggested_ingredient: handoff.suggested_ingredient,
         seed_title: handoff.seed_title,

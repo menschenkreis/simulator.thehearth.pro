@@ -397,6 +397,9 @@
       songThread: root && root.HearthLevelOneSongThread ? root.HearthLevelOneSongThread : null,
       createHandoff: {
         label: "Keep your variation",
+        source_id: "level-1-a-minor-homecoming",
+        journey_level_id: "L1",
+        capability_ids: ["L1-CREATE-01"],
         suggested_ingredient: "riff",
         seed_title: "A Minor Homecoming variation",
         starter: "A Minor Homecoming rhythm-and-lead exchange",

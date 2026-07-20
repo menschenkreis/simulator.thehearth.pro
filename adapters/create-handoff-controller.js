@@ -24,9 +24,11 @@
       source_node_id: clean(input.source_node_id || "journey"),
       source_id: clean(input.source_id),
       lesson_id: clean(input.lesson_id),
+      journey_level_id: clean(input.journey_level_id),
       title: clean(input.source_title || input.title || "A small musical idea"),
       starter: clean(input.starter),
-      instruction: clean(input.instruction)
+      instruction: clean(input.instruction),
+      capability_ids: Array.isArray(input.capability_ids) ? input.capability_ids.slice() : []
     };
 
     return {
@@ -35,13 +37,13 @@
       title: clean(input.seed_title || "Untitled Song Seed"),
       ingredients: [],
       selected: ingredient ? [ingredient] : [],
-      prompt: "",
-      constraint: "",
+      prompt: source.instruction,
+      constraint: "Change one thing and keep the rest recognizable.",
       payoff: "",
       mutation: "",
       notes: "",
       firstLyric: "",
-      riffIdea: "",
+      riffIdea: source.starter,
       rhythmIdea: "",
       sourceContext: source
     };

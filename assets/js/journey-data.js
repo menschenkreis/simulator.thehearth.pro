@@ -579,6 +579,9 @@ var JOURNEY_STUDENT_COMPANIONS = {
         },
         createHandoff: {
           label: "Turn this into a riff",
+          source_id: "level-1-a-minor-homecoming",
+          journey_level_id: "L1",
+          capability_ids: ["L1-CREATE-01"],
           suggested_ingredient: "riff",
           seed_title: "A minor conversation",
           starter: "A minor pentatonic root notes as safety points",

@@ -1830,8 +1830,10 @@
       if(!handoff || !window.HearthCreateHandoff || typeof window.HearthCreateHandoff.open !== 'function') return;
       window.HearthCreateHandoff.open({
         source_node_id:'journey',
-        source_id:'jen-a-minor-conversation',
+        source_id:handoff.source_id || 'jen-a-minor-conversation',
         lesson_id:'jen-a-minor-pentatonic-consolidation',
+        journey_level_id:handoff.journey_level_id || 'L1',
+        capability_ids:(handoff.capability_ids || []).slice(),
         source_title:step.label,
         suggested_ingredient:handoff.suggested_ingredient,
         seed_title:handoff.seed_title,

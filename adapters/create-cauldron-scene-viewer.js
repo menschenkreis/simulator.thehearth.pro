@@ -97,10 +97,14 @@
 
   function recordCreateEvent(eventType, data) {
     if (!root.HearthProgressEvents || typeof root.HearthProgressEvents.append !== "function") return;
+    data = data || {};
     root.HearthProgressEvents.append({
       event_type: eventType,
       node_id: "create",
-      data: data || {}
+      journey_level_id: data.journey_level_id || null,
+      source_id: data.source_id || null,
+      project_id: data.seed_id || null,
+      data: data
     });
   }
 
@@ -385,8 +389,14 @@
     if (rhythmIdea) seed.rhythmIdea = rhythmIdea.value;
     saveCreateSeed(seed);
     var saved = saveCreateProject(seed);
+    var source = saved.sourceContext || {};
     recordCreateEvent("create_seed_saved", {
       seed_id: saved.id,
+      source_node_id: source.source_node_id || null,
+      source_id: source.source_id || null,
+      journey_level_id: source.journey_level_id || null,
+      capability_ids: Array.isArray(source.capability_ids) ? source.capability_ids.slice() : [],
+      evidence_stage: "attempt",
       ingredients: saved.ingredients || [],
       has_lyric: Boolean(saved.firstLyric),
       has_riff: Boolean(saved.riffIdea),

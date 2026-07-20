@@ -65,6 +65,7 @@ eval(readText(root + "/adapters/progress-event-store.js"));
 eval(readText(root + "/adapters/cross-node-handoff-store.js"));
 eval(readText(root + "/core/play-domain.js"));
 eval(readText(root + "/assets/js/journey-data.js"));
+eval(readText(root + "/assets/js/mastery-data.js"));
 eval(readText(root + "/adapters/study-key-chamber-model.js"));
 eval(readText(root + "/assets/js/play-traditions.js"));
 eval(readText(root + "/adapters/play-atlas-model.js"));
@@ -114,6 +115,7 @@ eval(readText(root + "/adapters/practice-ui-utils.js"));
 eval(readText(root + "/adapters/practice-metronome-controller.js"));
 eval(readText(root + "/adapters/practice-entry-model.js"));
 eval(readText(root + "/adapters/practice-entry-viewer.js"));
+eval(readText(root + "/adapters/practice-planned-session-store.js"));
 eval(readText(root + "/adapters/practice-planned-session-viewer.js"));
 eval(readText(root + "/adapters/play-world-viewer.js"));
 eval(readText(root + "/adapters/mastery-viewer.js"));
@@ -486,6 +488,21 @@ assert(journeyProgressSummary.capabilityEvidence["L1-MAP-01"].met === true, "Aut
 assert(journeyProgressSummary.capabilityEvidence["L1-MAP-02"].stage === "not_encountered", "A node without authority must not credit a capability");
 assert(journeyProgressSummary.complete === false, "One drill event must never complete Level 1");
 assert(journeyProgressSummary.metRequired === 1, "Another learner's evidence must not leak into Jen's progress");
+var connectedNodeProgress = HearthJourneyProgress.summarize({{
+  events: [
+    {{ learner_id:"jen", journey_level_id:"L1", node_id:"practice", data:{{ capability_ids:["L1-PREP-01","L1-PRACTICE-01"], evidence_stage:"demonstration" }}, id:"practice-day-3" }},
+    {{ learner_id:"jen", journey_level_id:"L1", node_id:"create", data:{{ capability_ids:["L1-CREATE-01"], evidence_stage:"attempt" }}, id:"create-variation" }},
+    {{ learner_id:"jen", journey_level_id:"L1", node_id:"mastery", data:{{ capability_ids:["L1-STYLE-01"], evidence_stage:"contact" }}, id:"mastery-performance" }}
+  ],
+  learnerId:"jen",
+  levelId:"L1",
+  capabilities:JOURNEY_LEVEL_CAPABILITIES.L1,
+  evidenceStages:JOURNEY_EVIDENCE_STAGES,
+  eventContract:HearthProgressEventContract
+}});
+assert(connectedNodeProgress.capabilityEvidence["L1-PRACTICE-01"].met === true, "Three-day Practice evidence should satisfy repeat-over-time");
+assert(connectedNodeProgress.capabilityEvidence["L1-CREATE-01"].met === true, "A saved Create variation should satisfy the first creative choice");
+assert(connectedNodeProgress.capabilityEvidence["L1-STYLE-01"].met === true, "A witnessed performance encounter should satisfy first style contact");
 
 var handoffMemoryValues = {{}};
 var handoffMemoryStorage = {{
@@ -789,6 +806,9 @@ assert(rootsPilotScene.indexOf("Make it musical") !== -1, "A Root Notes in Time 
 assert(rootsPilotScene.indexOf("_openDoingCreate") !== -1 && rootsPilotScene.indexOf("pent-roots-time") !== -1, "Doing Create handoff should preserve its drill source");
 assert(HearthLevelOneSongThread.id === "level-1-a-minor-homecoming", "Level 1 should expose one stable original song-thread ID");
 assert(HearthLevelOneSongThread.progression.length === 8 && HearthLevelOneSongThread.rights.indexOf("no commercial song") !== -1, "Level 1 song thread should be an eight-bar rights-safe original");
+assert(HearthLevelOneSongThread.practicePlan.sessions.length === 3, "Level 1 song thread should define three connected Practice returns");
+assert(MASTERY_EXEMPLARS[0].sourceType === "live performance", "Level 1 Mastery should use a genuine performance exemplar");
+assert(MASTERY_EXEMPLARS[0].artist === "B.B. King" && MASTERY_EXEMPLARS[0].mediaFallback.indexOf("A Minor Homecoming") !== -1, "Mastery should connect B.B. King's phrasing to the internal song fallback");
 var songPilot = HearthDoingDrillCatalog.findDrill(curatedDoing, "song-thread-am");
 assert(songPilot && songPilot.visualType === "interactive-song-thread", "Doing catalogue should include the Level 1 song lab");
 assert(HearthDoingConfig.roomDrillPlans["both-hands"][1].indexOf("song-thread-am") !== -1, "Both Hands room should expose the Level 1 song lab");
@@ -867,6 +887,27 @@ var isolatedPracticeSnapshot = HearthPracticeEntryModel.buildSnapshot({{
   candleState: {{ running: true, learnerId: "jen-1", focus: "Jen focus" }}
 }});
 assert(isolatedPracticeSnapshot.activeSession.running === false, "Continue Today should never leak another learner's guided or candle session");
+var songPracticeSnapshot = HearthPracticeEntryModel.buildSnapshot({{
+  journeyState: {{ activeStudentId: "jen-1", students: [{{ id: "jen-1", name: "Jen", levels: {{}} }}] }},
+  companions: {{ jen: {{ commitment: {{ today: "Original plan" }} }} }},
+  events: [],
+  songThread: HearthLevelOneSongThread
+}});
+assert(songPracticeSnapshot.songThread.nextSession.title === "Separate the roles", "Practice should begin the song thread with separate rhythm and lead roles");
+var songPracticeSession = HearthPracticePlannedSessionViewer.createSession(songPracticeSnapshot);
+assert(songPracticeSession.songThread.drillHandoff.drillId === "song-thread-am", "Planned Practice should preserve the exact Song Lab handoff");
+assert(songPracticeSession.focus.indexOf("A Minor Homecoming") !== -1, "Planned Practice should inherit the next song-thread focus");
+var fakePlannedStorage = {{
+  values: {{}},
+  getItem: function(key) {{ return this.values[key] || null; }},
+  setItem: function(key, value) {{ this.values[key] = value; }}
+}};
+var plannedStore = HearthPracticePlannedSessionStore.createStore({{ storage: fakePlannedStorage }});
+plannedStore.save({{ id: "session-jen", learner: {{ id: "jen-1", name: "Jen" }}, focus: "Jen focus" }});
+plannedStore.save({{ id: "session-ayla", learner: {{ id: "ayla-1", name: "Ayla" }}, focus: "Ayla focus" }});
+assert(plannedStore.get("jen-1").focus === "Jen focus", "Planned Practice should restore Jen's unfinished session only");
+assert(plannedStore.get("ayla-1").focus === "Ayla focus", "Planned Practice should restore Ayla's unfinished session only");
+assert(plannedStore.get("missing") === null, "Planned Practice should not assign one learner's session to another learner");
 var plannedPracticeHtml = HearthPracticePlannedSessionViewer.render(plannedPracticeSession);
 assert(plannedPracticeHtml.indexOf("Choose the focus") !== -1 || plannedPracticeHtml.indexOf("Arrive") !== -1, "Planned Practice should render the guided steps");
 assert(plannedPracticeHtml.indexOf('data-practice-flow-action="next"') !== -1, "Planned Practice should render next-step action");
@@ -1221,6 +1262,7 @@ var createHandoffSeed = HearthCreateHandoff.buildSeed({{
 }});
 assert(createHandoffSeed.selected[0] === "riff", "Create handoff should preselect the suggested ingredient");
 assert(createHandoffSeed.sourceContext.lesson_id === "jen-a-minor-pentatonic-consolidation", "Create handoff should preserve its lesson source");
+assert(createHandoffSeed.prompt === "Make a two-bar answer." && createHandoffSeed.riffIdea === "A minor root notes", "Create handoff should open as a usable seed instead of an empty ingredient screen");
 var handoffEvents = [];
 var handoffState = {{
   current: null,

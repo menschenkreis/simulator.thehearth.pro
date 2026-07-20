@@ -63,20 +63,23 @@
   function exemplar() {
     var records = Array.isArray(root.MASTERY_EXEMPLARS) ? root.MASTERY_EXEMPLARS : [];
     return records[0] || {
-      id: "level-1-pentatonic-voice",
+      id: "level-1-bb-king-space-and-answer",
       level: 1,
-      title: "Pentatonic in Motion",
-      sourceLabel: "Level 1 pentatonic source",
-      sourceTitle: "Pentatonic source",
-      sourceUrl: "https://www.youtube.com/watch?v=X9rYOhX77mA",
-      reason: "A small note map can become a musical voice.",
-      noticePrompt: "Listen for what makes a small group of notes sound intentional.",
-      noticeOptions: [{ id: "root-home", label: "Root notes feel like home" }],
-      tryPrompt: "Use one A root as home, then add two nearby pentatonic notes.",
-      tryOptions: [{ id: "return-to-root", label: "Return to A" }],
-      practiceInstruction: "Play the idea at 60 BPM over an A minor groove.",
-      createStarter: "Make a two-bar answer from one A root and two nearby pentatonic notes.",
-      carryPrompt: "Keep one choice from the encounter in your own playing."
+      title: "Space, Answer, Home",
+      sourceLabel: "Live performance",
+      sourceTitle: "B.B. King - The Thrill Is Gone",
+      sourceUrl: "https://www.youtube.com/watch?v=4fk2prKnYnI",
+      reason: "A small pentatonic vocabulary can speak through timing, touch, silence, and clear musical answers.",
+      noticePrompt: "Listen for one short guitar statement and the silence after it.",
+      noticeOptions: [{ id: "space-breathes", label: "He leaves space after the phrase" }],
+      tryPrompt: "Play a tiny answer, leave a full space, then return to A.",
+      tryOptions: [{ id: "leave-a-space", label: "Leave four quiet beats" }],
+      mediaFallback: "Use the A Minor Homecoming guide tones: play two notes, count four quiet beats, then land on A.",
+      practiceInstruction: "Play the idea at 60 BPM inside A Minor Homecoming.",
+      createStarter: "A two-bar answer with a full space before the final A.",
+      carryPrompt: "Keep one choice from the encounter in your own playing.",
+      reflectionPrompt: "What did the master do with fewer notes that you want to remember?",
+      capabilityIds: ["L1-STYLE-01"]
     };
   }
 
@@ -103,12 +106,16 @@
 
   function appendEncounterEvent(eventType, state, data) {
     if (!root.HearthProgressEvents || typeof root.HearthProgressEvents.append !== "function") return;
+    var record = exemplar();
+    data = data || {};
     root.HearthProgressEvents.append({
       learner_id: state.learnerId,
       event_type: eventType,
       node_id: "mastery",
+      journey_level_id: record.level ? "L" + record.level : null,
       source_id: state.exemplarId,
-      data: data || {}
+      activity_id: state.id,
+      data: data
     }, root.localStorage);
   }
 
@@ -122,6 +129,7 @@
       notice: "",
       tryIdea: "",
       carriedTo: "",
+      reflection: "",
       completed: false,
       startedAt: new Date().toISOString(),
       updatedAt: new Date().toISOString()
@@ -283,7 +291,8 @@
     if (state.step === 0) {
       body = '<p class="sf-encounter-note">' + esc(record.reason) + " Listen for one small decision, not the whole performance.</p>" +
         '<div class="sf-encounter-source"><div><div class="sf-kicker">' + esc(record.sourceLabel) + "</div><strong>" + esc(record.sourceTitle) + '</strong></div><a href="' + esc(record.sourceUrl) + '" target="_blank" rel="noopener">Open source</a></div>' +
-        '<p class="sf-encounter-note">' + esc(record.noticePrompt) + "</p>";
+        '<p class="sf-encounter-note">' + esc(record.noticePrompt) + "</p>" +
+        '<p class="sf-encounter-note"><strong>If the source is unavailable:</strong> ' + esc(record.mediaFallback || "Use the internal practice prompt instead.") + "</p>";
       actions = '<button class="sf-primary" onclick="MasteryPhoenix.advanceEncounter()">I\'ve listened</button>';
     } else if (state.step === 1) {
       body = '<p class="sf-encounter-note">' + esc(record.noticePrompt) + " There is no wrong observation. Choose the detail your ear actually caught.</p>" +
@@ -339,7 +348,12 @@
   }
 
   function advanceEncounter() {
-    updateEncounterStep(1, "mastery_encounter_witnessed", { step: "witness" });
+    var record = exemplar();
+    updateEncounterStep(1, "mastery_encounter_witnessed", {
+      step: "witness",
+      capability_ids: (record.capabilityIds || []).slice(),
+      evidence_stage: "contact"
+    });
   }
 
   function chooseNotice(id) {
@@ -352,7 +366,11 @@
     state.step = 2;
     state.updatedAt = new Date().toISOString();
     writeEncounter(state);
-    appendEncounterEvent("mastery_encounter_noticed", state, { notice: id });
+    appendEncounterEvent("mastery_encounter_noticed", state, {
+      notice: id,
+      capability_ids: (record.capabilityIds || []).slice(),
+      evidence_stage: "contact"
+    });
     renderEncounter();
   }
 
@@ -366,7 +384,12 @@
     state.step = 3;
     state.updatedAt = new Date().toISOString();
     writeEncounter(state);
-    appendEncounterEvent("mastery_encounter_tried", state, { notice: state.notice, try_idea: id });
+    appendEncounterEvent("mastery_encounter_tried", state, {
+      notice: state.notice,
+      try_idea: id,
+      capability_ids: (record.capabilityIds || []).slice(),
+      evidence_stage: "attempt"
+    });
     renderEncounter();
   }
 
@@ -408,6 +431,8 @@
         suggested_ingredient: "riff",
         source_node_id: "mastery",
         source_id: record.id,
+        journey_level_id: record.level ? "L" + record.level : "",
+        capability_ids: ["L1-CREATE-01"],
         source_title: record.title,
         seed_title: "A phrase with a voice",
         starter: record.createStarter,
@@ -434,7 +459,21 @@
       '<p class="sf-encounter-note">' + (state.completed ? "This encounter was carried into " + esc(state.carriedTo) + "." : "This encounter is still open.") + "</p>" +
       '<p class="sf-encounter-note">Noticed: <strong>' + esc(choiceLabel(record.noticeOptions, state.notice)) + "</strong></p>" +
       '<p class="sf-encounter-note">Tried: <strong>' + esc(choiceLabel(record.tryOptions, state.tryIdea)) + "</strong></p>" +
-      '<div class="sf-encounter-actions"><button class="sf-primary" onclick="MasteryPhoenix.startEncounter(true)">Start again</button></div>';
+      '<label class="sf-encounter-note" for="mastery-review-reflection"><strong>' + esc(record.reflectionPrompt || "What will you remember?") + '</strong></label>' +
+      '<textarea id="mastery-review-reflection" style="width:100%;box-sizing:border-box;min-height:72px;background:#0d0b08;border:1px solid var(--border);border-radius:9px;color:var(--text);padding:9px;font:inherit" placeholder="One honest sentence is enough.">' + esc(state.reflection || "") + '</textarea>' +
+      '<div class="sf-encounter-actions"><button class="sf-primary" onclick="MasteryPhoenix.saveReviewReflection()">Save reflection</button><button class="sf-secondary" onclick="MasteryPhoenix.startEncounter(true)">Start again</button></div>';
+  }
+
+  function saveReviewReflection() {
+    var learner = currentLearner();
+    var state = readEncounter(learner.id);
+    var input = root.document.getElementById("mastery-review-reflection");
+    if (!state || !input || !String(input.value || "").trim()) return;
+    state.reflection = String(input.value).trim();
+    state.updatedAt = new Date().toISOString();
+    writeEncounter(state);
+    appendEncounterEvent("mastery_reflection_saved", state, { reflection: state.reflection });
+    renderReview();
   }
 
   function openPath(id) {
@@ -477,6 +516,7 @@
     chooseNotice: chooseNotice,
     chooseTry: chooseTry,
     carryTo: carryTo,
+    saveReviewReflection: saveReviewReflection,
   };
   root.showMastery = showMastery;
 })(typeof window !== "undefined" ? window : globalThis);
