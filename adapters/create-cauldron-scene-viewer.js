@@ -20,6 +20,36 @@
   };
 
   var createHeat = "medium";
+  var activeHandoff = null;
+
+  function handoffStore() {
+    if (!root.HearthCrossNodeHandoffStore || typeof root.HearthCrossNodeHandoffStore.createStore !== "function") return null;
+    return root.HearthCrossNodeHandoffStore.createStore({ storage: root.sessionStorage });
+  }
+
+  function readCreateHandoff() {
+    var store = handoffStore();
+    if (!store) return null;
+    var learnerId = activeHandoff && activeHandoff.learner_id;
+    return store.current({ learnerId: learnerId || undefined, destinationNodeId: "create" });
+  }
+
+  function returnToSource() {
+    var handoff = activeHandoff || readCreateHandoff();
+    var route = handoff && handoff.return_route;
+    var store = handoffStore();
+    if (store && handoff) store.clear(handoff.id);
+    activeHandoff = null;
+    if (route && route.node_id === "journey" && root.Journey) {
+      var params = route.params || {};
+      if (typeof root.Journey.openCompanionLesson === "function") root.Journey.openCompanionLesson(params.learner_id);
+      if (typeof root.Journey.focusCompanionStep === "function" && Number.isFinite(Number(params.step_index))) {
+        root.Journey.focusCompanionStep(Number(params.step_index));
+      }
+      return;
+    }
+    if (typeof root.backToMap === "function") root.backToMap();
+  }
 
   function esc(value) {
     return String(value == null ? "" : value).replace(/[&<>"']/g, function (ch) {
@@ -145,6 +175,7 @@
   }
 
   function renderCreate() {
+    activeHandoff = readCreateHandoff();
     var el = panel();
     if (!el) return;
 
@@ -188,7 +219,7 @@
 
     el.innerHTML =
       '<div class="sk-wrap">' +
-      '<button class="back-btn" onclick="backToMap()">\u2190 Map</button>' +
+      '<button class="back-btn" onclick="' + (activeHandoff ? "CreateCauldronScene.returnToSource()" : "backToMap()") + '">\u2190 ' + (activeHandoff ? "Return to Journey" : "Map") + '</button>' +
       '<div class="sk-scene">' +
       '<div class="sk-top">' +
       "<div>" +
@@ -445,6 +476,7 @@
     newSeed: newSeed,
     setHeat: setHeat,
     mutateSeed: mutateSeed,
+    returnToSource: returnToSource,
   };
   root.showCreate = showCreate;
 })(typeof window !== "undefined" ? window : globalThis);

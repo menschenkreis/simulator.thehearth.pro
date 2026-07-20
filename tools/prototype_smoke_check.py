@@ -153,6 +153,7 @@ REQUIRED_MARKERS = {
         "root.showCreate",
         "CREATE_HEAT_LEVELS",
         "stirCauldron",
+        "returnToSource",
     ],
     "adapters/create-state.js": [
         "root.HearthCreateState",

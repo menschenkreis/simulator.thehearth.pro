@@ -1832,7 +1832,30 @@
       const companion = getCompanion(student);
       const step = companionLessonSteps(companion)[stepIndex];
       const handoff = step && step.createHandoff;
-      if(!handoff || !window.HearthCreateHandoff || typeof window.HearthCreateHandoff.open !== 'function') return;
+      if(!handoff || !window.HearthCreateHandoff || typeof window.HearthCreateHandoff.open !== 'function' || !window.HearthCrossNodeHandoffStore || typeof window.HearthCrossNodeHandoffStore.createStore !== 'function') return;
+      const store = window.HearthCrossNodeHandoffStore.createStore({ storage:window.sessionStorage });
+      const suffix = Date.now().toString(36);
+      const routeHandoff = {
+        id:'handoff-journey-create-'+student.id+'-'+suffix,
+        version:1,
+        learner_id:student.id,
+        actor_role:'learner',
+        source_node_id:'journey',
+        destination_node_id:'create',
+        activity_id:'create-level-1-a-minor-conversation',
+        lesson_id:'jen-a-minor-pentatonic-consolidation',
+        journey_level_id:handoff.journey_level_id || 'L1',
+        capability_ids:(handoff.capability_ids || []).slice(),
+        attempt_id:null,
+        session_id:'journey-create-session-'+student.id+'-'+suffix,
+        task:{ id:'create-level-1-a-minor-conversation', instruction:handoff.instruction, parameters:{ source_id:handoff.source_id, suggested_ingredient:handoff.suggested_ingredient } },
+        pass_condition:{ description:'Save one playable variation with a riff, rhythm, note, or lyric fragment.', minimum_evidence_stage:'attempt', criteria:{ source_id:handoff.source_id } },
+        easier_step:{ instruction:'Change only the final note or one rhythm, then save that tiny difference.', parameters:{ changes:1 } },
+        return_route:{ node_id:'journey', view_id:'companion', params:{ learner_id:student.id, step_index:stepIndex } },
+        fallback_instruction:'Return to Journey and reopen Jen\'s Conversation step.',
+        created_at:new Date().toISOString()
+      };
+      if(!store.set(routeHandoff)) return;
       window.HearthCreateHandoff.open({
         source_node_id:'journey',
         source_id:handoff.source_id || 'jen-a-minor-conversation',

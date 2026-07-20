@@ -63,6 +63,9 @@ The remaining three gaps now have a first coherent implementation:
   Mastery encounter and returns to Conversation. Opening the preview records
   nothing; the learner must explicitly choose `Begin Witness` before contact
   evidence can begin.
+- Journey's Conversation step also opens the prepared `A minor conversation`
+  seed in Create and returns to the same step. The learner must deliberately
+  save the seed before it becomes creative attempt evidence.
 - A missing responsive CSS boundary was repaired. Shared Study, Practice,
   Create, and Hearth node styling is once again active on desktop instead of
   being trapped inside the small-phone media query.
@@ -78,9 +81,10 @@ The remaining three gaps now have a first coherent implementation:
 
 Automated behavior, loaded-script syntax, and local-reference checks cover the
 new contracts. The Journey routes into Play, Study, Hearth, Practice, and
-Mastery are live-verified. The pass remains **in progress** until the Create
-click path receives a live browser check and a learner produces real evidence
-on separate days. Tests must not fabricate that learner history.
+Mastery are live-verified, as is the Create seed route. The pass remains **in
+progress** until a learner produces real evidence on separate days and the
+resulting progression is reviewed. Tests must not fabricate that learner
+history.
 
 ## Purpose
 
