@@ -1390,6 +1390,19 @@ var headerStorage = {{
     fProgress: JSON.stringify({{ a: true, b: true }}),
     dProgress: JSON.stringify({{ c: true }}),
     kProgress: JSON.stringify({{}}),
+    "hearth-journey-v2": JSON.stringify({{
+      activeStudentId: "jen-1",
+      students: [{{
+        id: "jen-1",
+        name: "Jen",
+        currentLevel: 2,
+        levels: {{
+          L1: {{ lessonsDone: 8, lessonsTotal: 8, complete: true, lessonRecords: [] }},
+          L2: {{ lessonsDone: 0, lessonsTotal: 10, complete: false, lessonRecords: [] }}
+        }}
+      }}]
+    }}),
+    "hearth-progress-events": JSON.stringify([completeDoEvent]),
     streak: "3"
   }},
   getItem: function(key) {{ return this.values[key] || null; }},
@@ -1397,9 +1410,15 @@ var headerStorage = {{
 }};
 var headerCounts = HearthHeaderToolsController.progressCounts(headerStorage);
 assert(headerCounts.foundation.done === 2, "Header tools controller should count Foundation progress");
+assert(headerCounts.journey.current === "Level 1 consolidation", "Header progress should correct an unsupported legacy Level 2 claim without mutating it");
+assert(headerCounts.journey.capabilityMet === 2 && headerCounts.journey.capabilityTotal === 17, "Header progress should use learner-scoped capability evidence for readiness");
+assert(headerCounts.journey.done === 8, "Historical lesson contacts should remain visible after the readiness correction");
 assert(HearthHeaderToolsController.renderProgressHtml(headerCounts).indexOf("3 days") >= 0, "Header tools controller should render streak progress");
 assert(HearthHeaderToolsController.renderProgressHtml(headerCounts).indexOf("Next best move") >= 0, "Header tools controller should render progress guidance");
-assert(HearthHeaderToolsController.progressSummary(headerCounts).next.label === "Know", "Header tools controller should suggest weakest progress area");
+assert(HearthHeaderToolsController.renderProgressHtml(headerCounts).indexOf("Level readiness") >= 0, "Header progress should clearly label its evidence-based percentage");
+assert(HearthHeaderToolsController.renderProgressHtml(headerCounts).indexOf("Activity history") >= 0, "Header progress should separate activity history from demonstrated readiness");
+assert(HearthHeaderToolsController.progressSummary(headerCounts).next.label === "Journey", "Incomplete evidence should send the learner back to the Journey roadmap");
+assert(HearthHeaderToolsController.progressSummary(headerCounts).overall === headerCounts.journey.capabilityPercent, "Whole progress must not average unlike lesson, topic, and drill counters");
 function makeHeaderPanel(id) {{
   return {{
     id: id,

@@ -196,11 +196,14 @@ Required sequence:
 5. prove one Journey -> Do -> Journey round trip;
 6. add the guided end review, reminders, practice sheet, and next action.
 
-Checkpoint 2026-07-20: items 5 and 6 now have live desktop vertical slices.
-Journey routes to the exact Do, Study, Hearth, Practice, Play, Create, and
-Mastery activities and returns to the originating step. The structured lesson
-review creates a learner-scoped practice sheet that Practice can read. This
-does not complete evidence-based Level 1 readiness or the safe migration work.
+Checkpoint 2026-07-20: all six items now have non-destructive prototype
+coverage. Journey routes to the exact Do, Study, Hearth, Practice, Play,
+Create, and Mastery activities and returns to the originating step. The
+structured lesson review creates a learner-scoped practice sheet that Practice
+can read. Journey and the global Progress panel calculate Level 1 readiness
+from learner-scoped capability evidence, show Jen as Level 1 consolidation,
+and retain older lesson counts only as labelled activity history. The shared
+migration preview remains read-only; no legacy learner data was rewritten.
 
 ### Wave 4: Remaining Node Hardening
 

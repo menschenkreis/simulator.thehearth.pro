@@ -95,12 +95,13 @@ Required handoff envelope:
 
 ## 7. Learner Memory And Progress
 
-Journey has learner records, notes, ratings, and lesson history. Completion is
-still mainly `lessonsDone`, while the capability map defines stronger evidence
-requirements. Migrate by recalculating capability evidence from shared events
-and preserving old counts as historical activity, not mastery. Do not silently
-erase Jen's notes. Separate learner rating, teacher observation, repeated
-practice, musical application, and saved artifact.
+Journey has learner records, notes, ratings, and lesson history. Live Level 1
+readiness and the global Progress panel now calculate from learner-scoped
+capability events. `lessonsDone` remains visible only as historical activity;
+it does not unlock Level 2. The migration preview is still read-only, so old
+counts and Jen's notes remain untouched. Learner rating, teacher observation,
+repeated practice, musical application, and saved artifacts remain separate
+forms of evidence.
 
 ## 8. Content And Source State
 
@@ -120,32 +121,32 @@ future external crosschecks, not curriculum owners.
 - Authored metadata preservation: syntax and smoke checks pass at `93bcc64`.
 - Phone and iPad responsive failure: verified.
 
-Evidence-based unlock, migrations, node return, refresh/resume, keyboard map,
-and complete end-review tests are pending.
+Evidence-based Level 1 unlock, all seven node returns, the structured end
+review, Practice handoff, and contradictory legacy-level display now have
+automated and live desktop checks. Destructive migration remains deliberately
+unimplemented. Full refresh/resume and responsive/keyboard checks remain.
 
 ## 10. Known Gaps And Risks
 
-- Journey can announce false completion/unlocks.
-- Jen's seeded L2 state contradicts current teaching needs.
-- Preflight and lesson numbering are inconsistent.
-- Lesson shell often imitates node work rather than launching node-owned tools.
-- Whole progress mixes incomparable counters.
+- Legacy records can still contain contradictory completion claims, but live
+  Journey and Progress displays now correct them without rewriting history.
+- Some older, unused Journey rendering code still contains lesson-count UI and
+  should be removed only in a dedicated cleanup pass.
+- Level 1 content depth remains uneven even though the node routes are wired.
 - Level 2-8 imply more curriculum than exists.
 - Mobile/tablet layouts are unusable.
 
 ## 11. Prioritized Next Build
 
-1. **Now:** define the evidence-based Level 1 calculation and a non-destructive
-   migration preview. Acceptance: preflight never counts; Jen remains L1; no
-   unlock occurs without configured evidence; old notes remain. Time: 5-8
-   hours. Credit: medium. Images/research: no.
-2. **Next:** implement one real node round trip from Lesson 1 with the shared
-   handoff envelope and guided end review. Time: 4-7 hours. Credit: medium.
-   Images: no.
-3. **Next:** run the protected content-gap pass: song, listening, TAB/diagram,
+1. **Completed prototype checkpoint:** evidence-based Level 1 calculation,
+   read-only migration preview, Jen consolidation display, exact node round
+   trips, and a guided review-to-Practice handoff.
+2. **Next:** run the protected content-gap pass: song, listening, TAB/diagram,
    right hand, multi-day practice, saved creation, Mastery encounter. Time:
    2-4 hours for prototype content plus review. Credit: medium. Research:
    targeted. Images: not required.
+3. **Later:** remove unused lesson-count rendering, complete responsive and
+   keyboard checks, and validate refresh/resume without touching old data.
 4. **Later:** author and validate the rest of Level 1, then crosswalk official
    benchmarks before expanding Level 2. Time: multi-day. Credit: medium-high.
 

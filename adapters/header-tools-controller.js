@@ -280,28 +280,82 @@
   function activeJourneyCounts(storage) {
     var state = readJsonValue(storage, "hearth-journey-v2", null);
     if (!state || !Array.isArray(state.students) || !state.students.length) {
-      return { done: 0, total: 0, label: "Journey", current: "No profile yet" };
+      return {
+        done: 0,
+        total: 0,
+        label: "Journey",
+        current: "No profile yet",
+        capabilityMet: 0,
+        capabilityTotal: 0,
+        capabilityPercent: 0,
+        capabilityComplete: false
+      };
     }
     var active = state.students.find(function findActive(student) {
       return student.id === state.activeStudentId;
     }) || state.students[0];
     var levels = active.levels || {};
-    var done = 0;
-    var total = 0;
-    Object.keys(levels).forEach(function countLevel(levelId) {
-      var level = levels[levelId] || {};
-      var levelNum = parseInt(String(levelId).replace(/[^0-9]/g, ""), 10);
-      var authored = root.JOURNEY_LEVELS && root.JOURNEY_LEVELS[levelNum - 1];
-      var levelTotal = (authored && authored.totalLessons) || 0;
-      if (!levelTotal && Number.isFinite(level.lessonsTotal)) levelTotal = level.lessonsTotal;
-      done += level.lessonsDone || 0;
-      total += levelTotal;
-    });
+    var storedLevelNum = Math.max(1, parseInt(active.currentLevel || "1", 10) || 1);
+    var levelId = "L" + storedLevelNum;
+    var progress = null;
+
+    function summarizeLevel(candidateLevelId) {
+      var capabilities = root.JOURNEY_LEVEL_CAPABILITIES && root.JOURNEY_LEVEL_CAPABILITIES[candidateLevelId];
+      if (!capabilities || !root.HearthJourneyProgress || typeof root.HearthJourneyProgress.summarize !== "function") return null;
+      var events = [];
+      try {
+        if (root.HearthProgressEvents && typeof root.HearthProgressEvents.listNormalized === "function") {
+          events = root.HearthProgressEvents.listNormalized(storage) || [];
+        } else {
+          events = readJsonValue(storage, "hearth-progress-events", []);
+        }
+      } catch (error) {}
+      return root.HearthJourneyProgress.summarize({
+        events: events,
+        learnerId: active.id,
+        levelId: candidateLevelId,
+        capabilities: capabilities,
+        evidenceStages: root.JOURNEY_EVIDENCE_STAGES || [],
+        eventContract: root.HearthProgressEventContract
+      });
+    }
+
+    var levelOneProgress = summarizeLevel("L1");
+    if (storedLevelNum > 1 && levelOneProgress && !levelOneProgress.complete) {
+      levelId = "L1";
+      progress = levelOneProgress;
+    } else {
+      progress = summarizeLevel(levelId);
+    }
+
+    var level = levels[levelId] || {};
+    var levelNum = parseInt(levelId.replace(/[^0-9]/g, ""), 10) || 1;
+    var authored = root.JOURNEY_LEVELS && root.JOURNEY_LEVELS[levelNum - 1];
+    var total = (authored && authored.totalLessons) || (Number.isFinite(level.lessonsTotal) ? level.lessonsTotal : 0);
+    var records = Array.isArray(level.lessonRecords) ? level.lessonRecords : [];
+    var completedRecords = records.filter(function completedRecord(record) {
+      return record && record.status === "complete";
+    }).length;
+    var done = Math.max(completedRecords, Number(level.lessonsDone) || 0);
+    var currentLabel = "Level " + levelNum;
+    if (progress && !progress.complete && (done >= total || storedLevelNum > levelNum || level.complete)) {
+      currentLabel += " consolidation";
+    } else if (progress && progress.complete) {
+      currentLabel += " complete";
+    }
     return {
       done: done,
       total: total,
       label: active.name || "Journey",
-      current: "Level " + (active.currentLevel || 1)
+      learnerId: active.id || null,
+      levelId: levelId,
+      current: currentLabel,
+      capabilityMet: progress ? progress.metRequired : 0,
+      capabilityTotal: progress ? progress.totalRequired : 0,
+      capabilityPercent: progress ? progress.percent : 0,
+      capabilityComplete: Boolean(progress && progress.complete),
+      encountered: progress ? progress.encountered : 0,
+      historicalLevelClaim: storedLevelNum > levelNum
     };
   }
 
@@ -365,19 +419,18 @@
     ].filter(function hasTrackableTotal(area) { return area.item && area.item.total > 0; });
     var done = areas.reduce(function sumDone(total, area) { return total + area.item.done; }, 0);
     var total = areas.reduce(function sumTotal(total, area) { return total + area.item.total; }, 0);
-    var weakest = areas.slice().sort(function sortAreas(a, b) {
-      return percentFor(a.item) - percentFor(b.item);
-    })[0];
-    var overall = total ? Math.round(done / total * 100) : 0;
-    var next = overall >= 100
-      ? { label: "Review", action: "choose a favorite path and keep it alive" }
-      : weakest;
+    var readiness = counts.journey ? counts.journey.capabilityPercent || 0 : 0;
+    var journeyComplete = Boolean(counts.journey && counts.journey.capabilityComplete);
+    var next = journeyComplete
+      ? { label: "Review", action: "review the roadmap before deciding what should deepen next" }
+      : { label: "Journey", action: "open the current roadmap and work the next capability that still needs evidence" };
     return {
       done: done,
       next: next,
-      overall: overall,
+      overall: readiness,
+      readiness: readiness,
       total: total,
-      weakest: weakest
+      weakest: null
     };
   }
 
@@ -389,27 +442,28 @@
     return '<div class="progress-shell">'
       + '<section class="progress-hero" aria-label="Whole simulator progress summary">'
       + '<div class="progress-hero-top"><div class="progress-learner"><span>Active learner</span><strong>' + escapeHtml(learner) + '</strong></div><div class="progress-level-pill">' + escapeHtml(current) + '</div></div>'
-      + '<div class="progress-main-number">' + summary.overall + '<small>%</small></div>'
-      + '<p class="progress-main-caption">Whole-simulator progress from the real things currently tracked in this browser.</p>'
+      + '<div class="progress-main-number">' + summary.readiness + '<small>%</small></div>'
+      + '<p class="progress-main-caption"><strong>Level readiness.</strong> This comes from demonstrated capabilities, not merely opening pages or finishing lesson screens.</p>'
       + '<div class="progress-snapshot">'
-      + '<div><span>Tracked</span><strong>' + summary.done + '/' + summary.total + '</strong></div>'
-      + '<div><span>Streak</span><strong>' + counts.streak + 'd</strong></div>'
+      + '<div><span>Capabilities</span><strong>' + (counts.journey.capabilityMet || 0) + '/' + (counts.journey.capabilityTotal || 0) + '</strong></div>'
+      + '<div><span>Practice</span><strong>' + (counts.practice.minutes || 0) + ' min</strong></div>'
       + '<div><span>Seeds</span><strong>' + counts.create.projects + '</strong></div>'
       + '</div>'
       + '</section>'
       + '<section class="progress-board" aria-label="Progress tracks">'
       + '<div class="progress-next"><span>Next best move</span><strong>' + escapeHtml(next.label) + '</strong><p>' + escapeHtml(next.action) + '.</p></div>'
+      + '<div class="progress-track-heading"><strong>Activity history</strong><span>Useful contact records, not proof of mastery</span></div>'
       + '<div class="progress-track-list">'
-      + progressRow("Foundation", counts.foundation)
-      + (counts.journey.total ? progressRow("Journey Lessons", counts.journey) : "")
-      + progressRow("Do", counts.doing)
-      + progressRow("Know", counts.knowing)
-      + (counts.practice.total ? progressRow("Practice Drills", counts.practice) : "")
+      + progressRow("Foundation contacts", counts.foundation)
+      + (counts.journey.total ? progressRow("Journey lessons logged", counts.journey) : "")
+      + progressRow("Do drill records", counts.doing)
+      + progressRow("Know topic contacts", counts.knowing)
+      + (counts.practice.total ? progressRow("Practice drill records", counts.practice) : "")
       + '</div>'
       + '<div class="progress-evidence-grid">'
       + '<div class="progress-evidence-card"><span>Practice</span><strong>' + (counts.practice.sessions || 0) + '</strong><small>sessions · ' + (counts.practice.minutes || 0) + ' min · ' + counts.streak + ' days</small></div>'
       + '<div class="progress-evidence-card"><span>Create</span><strong>' + counts.create.projects + '</strong><small>saved seeds' + (counts.create.hasDraft ? ' · draft open' : '') + '</small></div>'
-      + '<div class="progress-evidence-card"><span>Journey</span><strong>' + (counts.journey.done || 0) + '</strong><small>lessons logged for ' + escapeHtml(learner) + '</small></div>'
+      + '<div class="progress-evidence-card"><span>Journey</span><strong>' + (counts.journey.encountered || 0) + '</strong><small>capabilities encountered - ' + (counts.journey.done || 0) + ' lessons logged</small></div>'
       + '</div>'
       + '</section>'
       + '</div>';

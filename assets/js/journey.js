@@ -1767,8 +1767,8 @@
     const primary = lesson.conceptNames[0] || 'the core concept';
     const blocks = lesson.blocks.map(b => b.title);
     if(lessonsDone === 0) return 'Welcome to ' + level.id + '. Lesson ' + n + ' focuses on ' + primary + '. You will review, warm up, learn the concept, drill it, apply it to music, and reflect. This lesson is planned for about ' + (lesson.minutes || 60) + ' minutes.';
-    if(n > total) return 'You have completed all ' + total + ' lessons in ' + level.id + '. The next level is unlocked - keep the momentum going.';
-    if(n === total) return 'This is your final lesson in ' + level.id + '. Lesson ' + n + ' brings together everything you have learned. Focus on ' + primary + ' and lock it in before moving forward.';
+    if(n > total) return 'You have logged all ' + total + ' guided lessons in ' + level.id + '. Now consolidate any required skills that still need evidence before the next level opens.';
+    if(n === total) return 'This is the final guided lesson in ' + level.id + '. Lesson ' + n + ' brings the work together, but honest skill evidence still decides readiness for the next level.';
     const prev = lesson.conceptNames[1] || 'last time';
     return 'Lesson ' + n + ' of ' + total + '. Today you are working on ' + primary + '. You will drill it slowly, apply it to a real musical moment, and leave with clear notes for next time. One honest contact.';
   }
@@ -1778,7 +1778,7 @@
     if(student.name.toLowerCase().includes('jen')) return 'Jen\'s path should track what happened in the real lesson, not an abstract syllabus. Use notes to capture gaps, interests, and next gradients — then the next lesson adapts.';
     if((lvlState.lessonsDone||0)===0) return 'Foundation gave you the map. Now we train the hands. Start with one full contact: review what you know, wake the hands, learn one new concept, drill it slowly, apply it to music, then reflect. The lesson is one hour because it has a beginning, middle, and closure.';
     if(level.num===1) return 'Level 1 is the bridge from understanding to doing. Each lesson adds one new movement or idea. If a concept feels foggy, stop and clear it — the Foundation mindset never stops being useful. Rate concepts honestly; \"need work\" is navigation, not failure.';
-    return 'The spine remembers progress per student. Complete enough lessons in '+level.id+' and the next level unlocks. Rate concepts honestly — \"need work\" is navigation, not failure.';
+    return 'The spine remembers evidence per learner. Lessons show where you have travelled; the next level opens when the required skills have been demonstrated. Rate concepts honestly - \"need work\" is navigation, not failure.';
   }
 
   function lightMapSpine(student){
