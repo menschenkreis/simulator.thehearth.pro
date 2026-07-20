@@ -27,6 +27,8 @@ REQUIRED_MARKERS = {
         "adapters/action-renderer-registry-bootstrap.js",
         "core/foundation-adapter.js",
         "core/foundation-progress.js",
+        "core/create-prompt-policy.js",
+        "core/create-progress.js",
         "adapters/foundation-route-manifest-runtime.js",
         "adapters/foundation-seed-loader.js",
         "adapters/foundation-lesson-launcher.js",
@@ -158,6 +160,19 @@ REQUIRED_MARKERS = {
         "CREATE_HEAT_LEVELS",
         "stirCauldron",
         "returnToSource",
+        "learnerContext",
+    ],
+    "core/create-prompt-policy.js": [
+        "root.HearthCreatePromptPolicy",
+        "LEVEL_ONE_PROMPTS",
+        "maxIngredients",
+        "allowedHeatIds",
+    ],
+    "core/create-progress.js": [
+        "root.HearthCreateProgress",
+        "hasLearnerContribution",
+        "create_seed_saved",
+        "L1-CREATE-01",
     ],
     "adapters/create-state.js": [
         "root.HearthCreateState",
@@ -167,7 +182,8 @@ REQUIRED_MARKERS = {
     "adapters/create-handoff-controller.js": [
         "root.HearthCreateHandoff",
         "buildSeed",
-        "create_handoff_opened",
+        "HearthCreateProgress",
+        "appendCanonical",
     ],
     "adapters/doing-teaching-viewer.js": [
         "renderCreateHandoff",

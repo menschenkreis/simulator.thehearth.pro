@@ -1,8 +1,8 @@
 # The Hearth Mastery: Create Continuation Brief
 
 Date: 2026-07-18
-Branch: `cleanup/handoff-architecture`
-Verified commit: `93bcc64`
+Branch: `audit/orchestrator`
+Verified checkpoint: 2026-07-20 Create evidence hardening
 Audit: `whole-simulator-integration-audit-2026-07-18.md`
 Readiness: Working Vertical Slice
 Browser verification: desktop complete; profile summary and responsive partial
@@ -23,6 +23,15 @@ strengthens the result; Mastery may supply inspiration.
 - The global whole-progress header still reads older Create keys.
 - Cross-node handoffs open the Cauldron and now explicitly log the active
   learner.
+- Level 1 is constrained to Low Heat and one ingredient. Its prompt set uses
+  small playable tasks and excludes harmonics and other unearned techniques.
+- Saving a generated or unchanged starter records contact only. A saved riff,
+  rhythm, lyric, or note contribution records canonical artifact evidence for
+  `L1-CREATE-01`.
+- Saved projects now carry `status`, `nextAction`, and
+  `needsAnotherSession` metadata.
+- Whole-progress reads the active learner's scoped Create profile instead of
+  the old global project keys.
 
 ## 3. Active Ownership Map
 
@@ -38,9 +47,10 @@ strengthens the result; Mastery may supply inspiration.
 
 ## 4. What The Audit Changed
 
-Create handoff events now write the active learner explicitly and the behaviour
-is covered by an automated assertion. No prompts, images, or saved projects were
-rewritten.
+Create handoff, started, mutated, and saved events now use the canonical event
+envelope. Prompt policy and artifact evidence are pure core modules, leaving the
+Cauldron renderer responsible only for interaction. Existing prompts, images,
+legacy keys, and saved projects were not deleted or rewritten.
 
 ## 5. Protected Decisions
 
@@ -85,20 +95,20 @@ mobile, and cross-node return tests remain.
 
 ## 10. Known Gaps And Risks
 
-- Prompt difficulty can contradict the selected level.
-- Whole-progress reads the wrong authority.
 - Artifact schema is too small for richer songs/audio.
-- Return context and capability evidence are incomplete.
+- Non-Journey Create entrances still have less precise return context than the
+  canonical Journey handoff route.
 - Resource/source coverage is thin.
+- The Cauldron still repeats some prompt copy between the visual stage and the
+  editing workstation; this is polish, not an evidence blocker.
 
 ## 11. Prioritized Next Build
 
-1. **Now:** validate and filter prompt ingredients by level/capability; fix
-   whole-progress to use scoped evidence. Acceptance: Level 1 never receives
-   harmonics unless explicitly chosen; Ayla/Jen counts differ correctly.
-   Time: 4-6 hours. Credit: medium. Images/research: no.
-2. **Next:** complete source/return envelopes and save one Level 1 song artifact
-   from Journey. Time: 4-7 hours. Credit: medium. Images: no.
+1. **Now completed:** Level 1 prompt calibration, learner-scoped whole-progress,
+   canonical saved evidence, and learner-contribution checks.
+2. **Next:** browser-test a real Journey -> Create -> save -> Journey round trip
+   without synthetic data, then show the saved artifact in Journey review.
+   Time: 2-4 hours. Credit: medium-low. Images: no.
 3. **Later:** versioned richer artifacts, audio, revision comparison, and export.
    Time: 10-20 hours staged. Credit: medium-high. Research: yes for rights.
 

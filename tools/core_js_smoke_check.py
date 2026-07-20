@@ -65,6 +65,8 @@ eval(readText(root + "/core/journey-progress.js"));
 eval(readText(root + "/core/hearth-brain-chamber.js"));
 eval(readText(root + "/core/knowing-progress.js"));
 eval(readText(root + "/core/level-one-song-thread.js"));
+eval(readText(root + "/core/create-prompt-policy.js"));
+eval(readText(root + "/core/create-progress.js"));
 eval(readText(root + "/adapters/progress-event-store.js"));
 eval(readText(root + "/adapters/cross-node-handoff-store.js"));
 eval(readText(root + "/core/play-domain.js"));
@@ -1357,6 +1359,43 @@ assert(cauldronResult.prompt === "write a hook", "Create cauldron model should p
 var cauldronResultHtml = HearthCreateCauldronViewer.renderMixResult(cauldronResult);
 assert(cauldronResultHtml.indexOf("Single ingredient: Melody") >= 0, "Create cauldron viewer should render mix result");
 assert(typeof HearthCreateCauldronController.syncSelectionUi === "function", "Create cauldron controller should expose selection sync");
+var levelOneRiffPrompts = HearthCreatePromptPolicy.safePrompts({{
+  id: "riff",
+  prompts: ["Play a riff entirely on harmonics.", "Play three notes slowly."]
+}}, 1);
+assert(levelOneRiffPrompts.length > 0 && levelOneRiffPrompts.join(" ").toLowerCase().indexOf("harmonic") === -1, "Level 1 Create prompts must exclude harmonics");
+assert(HearthCreatePromptPolicy.maxIngredients(1) === 1, "Level 1 Create should use one ingredient at a time");
+assert(HearthCreatePromptPolicy.allowedHeatIds(1, [{{ id: "low", levels: [1, 2] }}, {{ id: "medium", levels: [2, 3] }}]).join(",") === "low", "Level 1 Create should expose only low heat");
+var safeCreateResult = HearthCreatePromptPolicy.resolve({{
+  selected: ["riff", "rhythm"],
+  ingredients: [
+    {{ id: "riff", name: "Riff", symbol: "R", prompts: ["Play a riff entirely on harmonics."] }},
+    {{ id: "rhythm", name: "Rhythm", symbol: "T", prompts: ["Tap a pulse."] }}
+  ],
+  combos: [],
+  level: 1,
+  random: function() {{ return 0; }}
+}});
+assert(safeCreateResult.selected.length === 1 && safeCreateResult.prompt.toLowerCase().indexOf("harmonic") === -1, "Level 1 Create resolution should clamp selection and keep the prompt playable");
+var promptOnlyCreateEvent = HearthCreateProgress.buildEvent({{
+  kind: "saved",
+  learnerId: "jen-1",
+  seed: {{ id: "seed-prompt", ingredients: ["Riff"], riffIdea: "A root", sourceContext: {{ starter: "A root", journey_level_id: "L1" }} }},
+  timestamp: "2026-07-20T10:00:00.000Z",
+  suffix: "prompt-only"
+}});
+assert(promptOnlyCreateEvent.capability_ids.length === 0 && promptOnlyCreateEvent.evidence_stage === "contact", "Saving an unchanged generated starter must not earn Create capability credit");
+var learnerCreateEvent = HearthCreateProgress.buildEvent({{
+  kind: "saved",
+  learnerId: "jen-1",
+  seed: {{ id: "seed-learner", ingredients: ["Riff"], riffIdea: "A root, C, then A", sourceContext: {{ starter: "A root", journey_level_id: "L1", source_node_id: "journey" }} }},
+  timestamp: "2026-07-20T10:05:00.000Z",
+  suffix: "learner-fragment"
+}});
+assert(learnerCreateEvent.capability_ids[0] === "L1-CREATE-01" && learnerCreateEvent.evidence_source === "artifact", "A learner-shaped saved fragment should earn Create attempt evidence");
+assert(HearthProgressEventContract.validateAndNormalize(learnerCreateEvent).valid === true, "Create saved evidence should satisfy the canonical event contract");
+assert(HearthCreateProgress.project([learnerCreateEvent], "jen-1").savedProjects === 1, "Create evidence projection should count only the active learner's saved artifacts");
+assert(HearthCreateProgress.project([learnerCreateEvent], "ayla").savedProjects === 0, "Create evidence projection must not leak between learners");
 var fakeCreateStorage = {{
   values: {{
     "hearth-create-current": JSON.stringify({{ title: "A minor spark", ingredients: ["Rhythm"], prompt: "Keep the root note present." }}),
@@ -1403,7 +1442,8 @@ var handoffRenderCount = 0;
 var handoffOpener = HearthCreateHandoff.createHandoff({{
   root: {{
     HearthCreateState: {{ createStore: function() {{ return handoffState; }} }},
-    HearthProgressEvents: {{ append: function(event) {{ handoffEvents.push(event); }} }},
+    HearthCreateProgress: HearthCreateProgress,
+    HearthProgressEvents: {{ appendCanonical: function(event) {{ handoffEvents.push(event); return {{ ok: true, event: event }}; }} }},
     CreateCauldronScene: {{ render: function() {{ handoffRenderCount += 1; }} }}
   }}
 }});
@@ -1453,6 +1493,14 @@ var headerStorage = {{
       }}]
     }}),
     "hearth-progress-events": JSON.stringify([completeDoEvent]),
+    "hearth-create-v1": JSON.stringify({{
+      version: 1,
+      legacy_migrated: true,
+      profiles: {{
+        "jen-1": {{ current: {{ title: "Jen draft", notes: "A C A" }}, projects: [{{ id: "jen-seed", title: "Jen seed" }}] }},
+        "ayla": {{ current: {{}}, projects: [{{ id: "ayla-seed-1" }}, {{ id: "ayla-seed-2" }}] }}
+      }}
+    }}),
     streak: "3"
   }},
   getItem: function(key) {{ return this.values[key] || null; }},
@@ -1463,6 +1511,7 @@ assert(headerCounts.foundation.done === 2, "Header tools controller should count
 assert(headerCounts.journey.current === "Level 1 consolidation", "Header progress should correct an unsupported legacy Level 2 claim without mutating it");
 assert(headerCounts.journey.capabilityMet === 2 && headerCounts.journey.capabilityTotal === 17, "Header progress should use learner-scoped capability evidence for readiness");
 assert(headerCounts.journey.done === 8, "Historical lesson contacts should remain visible after the readiness correction");
+assert(headerCounts.create.projects === 1 && headerCounts.create.learnerId === "jen-1", "Header progress should read Create projects from the active learner's scoped profile");
 assert(HearthHeaderToolsController.renderProgressHtml(headerCounts).indexOf("3 days") >= 0, "Header tools controller should render streak progress");
 assert(HearthHeaderToolsController.renderProgressHtml(headerCounts).indexOf("Next best move") >= 0, "Header tools controller should render progress guidance");
 assert(HearthHeaderToolsController.renderProgressHtml(headerCounts).indexOf("Level readiness") >= 0, "Header progress should clearly label its evidence-based percentage");

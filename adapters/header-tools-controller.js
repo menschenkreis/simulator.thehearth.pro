@@ -375,12 +375,26 @@
   }
 
   function createCounts(storage) {
-    var projects = readJsonValue(storage, "hearth-create-projects", []);
-    var current = readJsonValue(storage, "hearth-create-current", {});
+    var journeyState = readJsonValue(storage, "hearth-journey-v2", {});
+    var createState = root.HearthCreateState && typeof root.HearthCreateState.createStore === "function"
+      ? root.HearthCreateState.createStore({ storage: storage })
+      : null;
+    var projects = createState ? createState.listProjects(journeyState) : [];
+    var current = createState ? createState.getCurrent(journeyState) : {};
+    var learnerId = createState ? createState.activeLearnerId(journeyState) : null;
+    var evidence = { savedProjects: 0 };
+    if (learnerId && root.HearthCreateProgress && typeof root.HearthCreateProgress.project === "function") {
+      var events = root.HearthProgressEvents && typeof root.HearthProgressEvents.listNormalized === "function"
+        ? root.HearthProgressEvents.listNormalized(storage)
+        : [];
+      evidence = root.HearthCreateProgress.project(events, learnerId);
+    }
     var hasDraft = Boolean(current && (current.notes || (current.ingredients && current.ingredients.length)));
     return {
       projects: Array.isArray(projects) ? projects.length : 0,
-      hasDraft: hasDraft
+      hasDraft: hasDraft,
+      savedEvidence: evidence.savedProjects || 0,
+      learnerId: learnerId
     };
   }
 

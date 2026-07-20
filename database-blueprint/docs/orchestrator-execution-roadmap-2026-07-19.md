@@ -231,6 +231,13 @@ the four-stage Brain sequence, and canonical learner-scoped experiment and
 reflection events. Other body-system chambers remain deliberately shallower
 until this pilot is reviewed in real use.
 
+Checkpoint 2026-07-20: Create now has a level-aware prompt policy and canonical
+artifact evidence. Level 1 exposes Low Heat and one ingredient, uses small
+playable prompts, and cannot randomly request harmonics. A generated prompt or
+unchanged handoff starter is contact only; `L1-CREATE-01` is credited only after
+the learner adds a musical fragment and saves it. The global Progress panel now
+reads Create projects from the active learner's scoped profile.
+
 Do not expand Play regions, Mastery catalogues, Hearth body systems, or Create
 prompt breadth before each node's first route is trustworthy end to end.
 

@@ -19,7 +19,7 @@
     oneNote: "Use one note only. Change rhythm, silence, and touch until it says something.",
   };
 
-  var createHeat = "medium";
+  var createHeat = "low";
   var activeHandoff = null;
 
   function handoffStore() {
@@ -81,6 +81,47 @@
       : null;
   }
 
+  function journeyState() {
+    if (typeof root.getJourneyState === "function") return root.getJourneyState();
+    return read("hearth-journey-v2", {});
+  }
+
+  function learnerContext() {
+    var state = journeyState() || {};
+    var students = Array.isArray(state.students) ? state.students : [];
+    var learner = students.find(function findActive(student) {
+      return student && student.id === state.activeStudentId;
+    }) || students[0] || { id: state.activeStudentId || "default", name: "Learner", currentLevel: 1 };
+    var storedLevel = Math.max(1, parseInt(learner.currentLevel || "1", 10) || 1);
+    var effectiveLevel = storedLevel;
+
+    if (storedLevel > 1) {
+      var capabilities = root.JOURNEY_LEVEL_CAPABILITIES && root.JOURNEY_LEVEL_CAPABILITIES.L1;
+      var canSummarize = capabilities && root.HearthJourneyProgress &&
+        typeof root.HearthJourneyProgress.summarize === "function";
+      var events = root.HearthProgressEvents && typeof root.HearthProgressEvents.listNormalized === "function"
+        ? root.HearthProgressEvents.listNormalized(root.localStorage)
+        : [];
+      var summary = canSummarize ? root.HearthJourneyProgress.summarize({
+        events: events,
+        learnerId: learner.id,
+        levelId: "L1",
+        capabilities: capabilities,
+        evidenceStages: root.JOURNEY_EVIDENCE_STAGES || [],
+        eventContract: root.HearthProgressEventContract
+      }) : null;
+      if (!summary || !summary.complete) effectiveLevel = 1;
+    }
+
+    return {
+      learnerId: learner.id || "default",
+      learnerName: learner.name || "Learner",
+      level: effectiveLevel,
+      journeyLevelId: "L" + effectiveLevel,
+      state: state
+    };
+  }
+
   function panel() {
     root.document.querySelectorAll(".pnl").forEach(function (pnl) {
       pnl.classList.remove("on");
@@ -125,17 +166,25 @@
     return seed;
   }
 
-  function recordCreateEvent(eventType, data) {
-    if (!root.HearthProgressEvents || typeof root.HearthProgressEvents.append !== "function") return;
+  function recordCreateEvent(kind, seed, data) {
+    if (!root.HearthProgressEvents || !root.HearthCreateProgress) return null;
     data = data || {};
-    root.HearthProgressEvents.append({
-      event_type: eventType,
-      node_id: "create",
-      journey_level_id: data.journey_level_id || null,
-      source_id: data.source_id || null,
-      project_id: data.seed_id || null,
-      data: data
+    var context = learnerContext();
+    var event = root.HearthCreateProgress.buildEvent({
+      kind: kind,
+      learnerId: context.learnerId,
+      seed: seed || {},
+      sourceContext: seed && seed.sourceContext,
+      handoff: activeHandoff,
+      journey_level_id: seed && seed.sourceContext && seed.sourceContext.journey_level_id || context.journeyLevelId,
+      projectId: seed && seed.id || data.seed_id,
+      mutation: data.mutation,
+      suffix: Date.now() + "-" + Math.random().toString(36).slice(2, 7)
     });
+    if (!event) return null;
+    return typeof root.HearthProgressEvents.appendCanonical === "function"
+      ? root.HearthProgressEvents.appendCanonical(event, root.localStorage)
+      : root.HearthProgressEvents.append(event, root.localStorage);
   }
 
   function renderSourceContext(seed) {
@@ -179,10 +228,17 @@
     var el = panel();
     if (!el) return;
 
+    var context = learnerContext();
+    var policy = root.HearthCreatePromptPolicy;
     var ingredients = root.CAULDRON_INGREDIENTS || [];
     var seed = getCreateSeed();
-    var selected = new Set(seed.selected || []);
+    var maximum = policy ? policy.maxIngredients(context.level) : 1;
+    var selected = new Set((seed.selected || []).slice(0, maximum));
     var hasSeed = seed.prompt && seed.prompt.length > 0;
+    var allowedHeatIds = policy ? policy.allowedHeatIds(context.level, CREATE_HEAT_LEVELS) : ["low"];
+    if (allowedHeatIds.indexOf(createHeat) === -1) {
+      createHeat = policy ? policy.defaultHeatId(context.level, CREATE_HEAT_LEVELS) : "low";
+    }
     var glowColor = createHeatGlow();
     var entryIntent = createIntent();
     var guideText = hasSeed
@@ -204,7 +260,9 @@
       );
     }).join("");
 
-    var heatPills = CREATE_HEAT_LEVELS.map(function (heat) {
+    var heatPills = CREATE_HEAT_LEVELS.filter(function allowedHeat(heat) {
+      return allowedHeatIds.indexOf(heat.id) !== -1;
+    }).map(function (heat) {
       var active = createHeat === heat.id;
       return (
         '<button class="practice-pill' + (active ? " active" : "") + '" style="' + (active ? "border-color:" + heat.color + ";color:" + heat.color : "") + '" onclick="CreateCauldronScene.setHeat(\'' + heat.id + "')\">" +
@@ -214,7 +272,7 @@
     }).join("");
 
     var stirButton = selected.size > 0 ? '<button class="sf-stir-btn" onclick="CreateCauldronScene.stirCauldron()">Stir the Cauldron</button>' : "";
-    var hint = selected.size > 0 ? "" : '<div style="font-size:.62rem;color:var(--dim);margin-top:6px;text-align:center">Select ingredients, then choose heat</div>';
+    var hint = '<div style="font-size:.62rem;color:var(--dim);margin-top:6px;text-align:center">Level ' + context.level + " · choose up to " + maximum + " ingredient" + (maximum === 1 ? "" : "s") + "</div>";
     var workstation = hasSeed ? renderWorkstation(seed) : "";
 
     el.innerHTML =
@@ -289,7 +347,10 @@
   }
 
   function showCreate() {
-    createHeat = "medium";
+    var context = learnerContext();
+    createHeat = root.HearthCreatePromptPolicy
+      ? root.HearthCreatePromptPolicy.defaultHeatId(context.level, CREATE_HEAT_LEVELS)
+      : "low";
     renderCreate();
   }
 
@@ -297,7 +358,12 @@
     var seed = getCreateSeed();
     var selected = new Set(seed.selected || []);
     if (selected.has(id)) selected.delete(id);
-    else selected.add(id);
+    else {
+      var context = learnerContext();
+      var maximum = root.HearthCreatePromptPolicy ? root.HearthCreatePromptPolicy.maxIngredients(context.level) : 1;
+      if (selected.size >= maximum) selected.clear();
+      selected.add(id);
+    }
     seed.selected = Array.from(selected);
     saveCreateSeed(seed);
     renderCreate();
@@ -310,47 +376,18 @@
 
     var ingredients = root.CAULDRON_INGREDIENTS || [];
     var combos = root.CREATE_COMBOS || [];
-    var result = null;
-
-    if (selected.length === 1) {
-      var ingredient = ingredients.find(function (item) {
-        return item.id === selected[0];
-      });
-      if (ingredient) {
-        var prompt = ingredient.prompts[Math.floor(Math.random() * ingredient.prompts.length)];
-        result = {
-          constraint: "Single ingredient: " + ingredient.name,
-          prompt: ingredient.symbol + " " + ingredient.name + ": " + prompt,
-          level: 1,
-          labels: [ingredient.symbol + " " + ingredient.name],
-          payoff: "",
-        };
-      }
-    } else {
-      var sorted = selected.slice().sort();
-      var match = combos.find(function (combo) {
-        return combo.ingredients.slice().sort().join(",") === sorted.join(",");
-      });
-      if (match) {
-        result = {
-          constraint: match.constraint,
-          prompt: match.prompt,
-          level: match.level,
-          labels: selected.map(ingredientLabel),
-          payoff: match.payoff || "",
-        };
-      } else {
-        result = {
-          constraint: "Combine: " + selected.map(ingredientLabel).join(" + "),
-          prompt: selected.map(randomIngredientPrompt).join("\n\n"),
-          level: selected.length,
-          labels: selected.map(ingredientLabel),
-          payoff: "",
-        };
-      }
-    }
+    var context = learnerContext();
+    var result = root.HearthCreatePromptPolicy
+      ? root.HearthCreatePromptPolicy.resolve({
+        selected: selected,
+        ingredients: ingredients,
+        combos: combos,
+        level: context.level
+      })
+      : null;
 
     if (!result) return;
+    selected = Array.isArray(result.selected) && result.selected.length ? result.selected : selected;
     var heat = CREATE_HEAT_LEVELS.find(function (item) {
       return item.id === createHeat;
     });
@@ -382,28 +419,8 @@
       rhythmIdea: "",
     };
     saveCreateSeed(seed);
-    recordCreateEvent("create_seed_started", {
-      seed_id: seed.id,
-      heat: createHeat,
-      ingredients: seed.ingredients,
-      prompt_level: result.level
-    });
+    recordCreateEvent("started", seed, { seed_id: seed.id });
     renderCreate();
-  }
-
-  function ingredientLabel(id) {
-    var ingredient = (root.CAULDRON_INGREDIENTS || []).find(function (item) {
-      return item.id === id;
-    });
-    return ingredient ? ingredient.symbol + " " + ingredient.name : id;
-  }
-
-  function randomIngredientPrompt(id) {
-    var ingredient = (root.CAULDRON_INGREDIENTS || []).find(function (item) {
-      return item.id === id;
-    });
-    if (!ingredient) return "";
-    return ingredient.prompts[Math.floor(Math.random() * ingredient.prompts.length)];
   }
 
   function saveSeed() {
@@ -418,21 +435,15 @@
     if (firstLyric) seed.firstLyric = firstLyric.value;
     if (riffIdea) seed.riffIdea = riffIdea.value;
     if (rhythmIdea) seed.rhythmIdea = rhythmIdea.value;
+    var metadata = root.HearthCreateProgress
+      ? root.HearthCreateProgress.savedMetadata(seed)
+      : { status: "saved", needsAnotherSession: false, nextAction: "Play the fragment once." };
+    seed.status = metadata.status;
+    seed.needsAnotherSession = metadata.needsAnotherSession;
+    seed.nextAction = metadata.nextAction;
     saveCreateSeed(seed);
     var saved = saveCreateProject(seed);
-    var source = saved.sourceContext || {};
-    recordCreateEvent("create_seed_saved", {
-      seed_id: saved.id,
-      source_node_id: source.source_node_id || null,
-      source_id: source.source_id || null,
-      journey_level_id: source.journey_level_id || null,
-      capability_ids: Array.isArray(source.capability_ids) ? source.capability_ids.slice() : [],
-      evidence_stage: "attempt",
-      ingredients: saved.ingredients || [],
-      has_lyric: Boolean(saved.firstLyric),
-      has_riff: Boolean(saved.riffIdea),
-      has_rhythm: Boolean(saved.rhythmIdea)
-    });
+    recordCreateEvent("saved", saved, { seed_id: saved.id });
     renderCreate();
   }
 
@@ -455,6 +466,11 @@
   }
 
   function setHeat(id) {
+    var context = learnerContext();
+    var allowed = root.HearthCreatePromptPolicy
+      ? root.HearthCreatePromptPolicy.allowedHeatIds(context.level, CREATE_HEAT_LEVELS)
+      : ["low"];
+    if (allowed.indexOf(id) === -1) return;
     createHeat = id;
     renderCreate();
   }
@@ -463,7 +479,7 @@
     var seed = getCreateSeed();
     seed.mutation = CREATE_MUTATIONS[type] || "";
     saveCreateSeed(seed);
-    recordCreateEvent("create_seed_mutated", { seed_id: seed.id || null, mutation: type });
+    recordCreateEvent("mutated", seed, { seed_id: seed.id || null, mutation: type });
     renderCreate();
   }
 
@@ -477,6 +493,7 @@
     setHeat: setHeat,
     mutateSeed: mutateSeed,
     returnToSource: returnToSource,
+    learnerContext: learnerContext,
   };
   root.showCreate = showCreate;
 })(typeof window !== "undefined" ? window : globalThis);
