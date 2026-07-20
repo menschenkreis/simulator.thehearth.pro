@@ -85,6 +85,7 @@
       '<p class="play-atlas-copy">Mute the strings and make four small downstrokes. Keep the ground steady, but leave your hand relaxed enough for a voice to move around it.</p>' +
       '<div class="play-atlas-pulse' + (state.pulseRunning ? " running" : "") + '" aria-label="Four-beat visual pulse"><span class="play-atlas-beat"></span><span class="play-atlas-beat"></span><span class="play-atlas-beat"></span><span class="play-atlas-beat"></span></div>' +
       '<button class="play-atlas-primary" type="button" data-play-action="toggle-pulse">' + (state.pulseRunning ? "Pause visual pulse" : "Start visual pulse") + '</button>' +
+      '<p class="play-atlas-note"><strong>No audio needed:</strong> the visual pulse is the fallback. Count 1, 2, 3, 4 aloud and keep the hand small.</p>' +
       '<button class="play-atlas-secondary" type="button" data-play-action="home">I can hold the ground</button>' +
       '<button class="play-atlas-secondary" type="button" data-play-action="tradition">Back to tradition</button>';
   }
@@ -204,7 +205,8 @@
       '</div>' +
       '<p class="play-atlas-note">Credit the musicians and communities you learned from. This route is one visit, not completion of a culture.</p>' +
       '<button class="play-atlas-primary" type="button" data-play-action="finish"' + (state.reflection || state.finished ? "" : " disabled") + '>' + (state.finished ? "Route saved" : "Finish and remember") + '</button>' +
-      (state.finished ? '<p class="play-atlas-confirmation">This reflection now feeds Journey and your future Practice plan.</p>' : "") +
+      (state.finished ? '<p class="play-atlas-confirmation">This reflection is saved as an honest musical attempt. Journey can see it without calling it mastery.</p>' +
+        '<div class="play-atlas-finish-actions"><button class="play-atlas-secondary" type="button" data-play-action="send-practice">Repeat in Practice</button><button class="play-atlas-secondary" type="button" data-play-action="send-create">Keep a variation</button><button class="play-atlas-primary" type="button" data-play-action="destination">Back to the atlas</button></div>' : "") +
       '<button class="play-atlas-secondary" type="button" data-play-action="converse">Back to conversation</button>';
   }
 
@@ -230,7 +232,6 @@
     return '<div class="play-atlas-shell' + (songRoute ? " song-route" : "") + '" style="--destination:' + esc(selected.color || "#d4af69") + '">' +
       '<button class="play-atlas-back" type="button" data-play-action="' + (songRoute ? "return-handoff" : "back") + '" title="' + (songRoute ? "Return to Journey" : "Back to map") + '" aria-label="' + (songRoute ? "Return to Journey" : "Back to map") + '">&larr;</button>' +
       '<div class="play-atlas-heading"><span class="play-atlas-eyebrow">' + (songRoute ? "Play - Hearth Studio" : "Play - Musical world atlas") + '</span><h2>' + (songRoute ? esc(snapshot.songThread.title) : "Where shall the guitar take us?") + '</h2></div>' +
-      '<div class="play-atlas-learner"><span class="play-atlas-eyebrow">Active learner</span><strong>' + esc(snapshot.learner.name) + '</strong></div>' +
       '<section class="play-atlas-stage" aria-label="Musical world atlas">' +
         '<img class="play-atlas-art" src="images/play-world-atlas.webp" alt="Illustrated world atlas of guitar traditions">' +
         '<div class="play-atlas-shade" aria-hidden="true"></div>' +

@@ -464,6 +464,58 @@
     };
   }
 
+  function createPracticeHandoff(result, options) {
+    options = options || {};
+    var normalized = normalizePlayResult(result, options);
+    var recommendation = createPracticeRecommendation(normalized);
+    if (!recommendation || !normalized.learner_id || !normalized.activity_id) return null;
+    var now = options.now || new Date().toISOString();
+    var suffix = options.suffix || String(Date.parse(now) || Date.now());
+    return {
+      id: "handoff-play-practice-" + normalized.learner_id + "-" + suffix,
+      version: 1,
+      learner_id: normalized.learner_id,
+      actor_role: "learner",
+      source_node_id: "play",
+      destination_node_id: "practice",
+      activity_id: normalized.activity_id,
+      lesson_id: normalized.lesson_id,
+      journey_level_id: normalized.journey_level_id,
+      capability_ids: [],
+      attempt_id: normalized.attempt_id,
+      session_id: normalized.session_id,
+      task: {
+        id: "repeat-" + normalized.activity_id,
+        instruction: recommendation.focus,
+        parameters: {
+          focus: recommendation.focus,
+          reason: recommendation.reason,
+          duration_minutes: recommendation.suggested_minutes,
+          tempo: recommendation.tempo,
+          source_result_id: normalized.id,
+          source_attempt_id: normalized.attempt_id,
+          source_destination_id: normalized.destination_id
+        }
+      },
+      pass_condition: {
+        description: "Complete one honest repetition and save what changed.",
+        minimum_evidence_stage: "attempt",
+        criteria: { source_result_id: normalized.id }
+      },
+      easier_step: {
+        instruction: "Use one role for five minutes, then write down what needs another return.",
+        parameters: { duration_minutes: 5, tempo: recommendation.tempo || 60 }
+      },
+      return_route: {
+        node_id: "play",
+        view_id: "remember",
+        params: { destination_id: normalized.destination_id, activity_id: normalized.activity_id }
+      },
+      fallback_instruction: "Return to Play and reopen the saved musical exchange.",
+      created_at: now
+    };
+  }
+
   return {
     version: "0.2.0",
     cultureClaimStatuses: CULTURE_CLAIM_STATUSES.slice(),
@@ -484,6 +536,7 @@
     validateDestination: validateDestination,
     buildMarkerStates: buildMarkerStates,
     toProgressEvent: toProgressEvent,
-    createPracticeRecommendation: createPracticeRecommendation
+    createPracticeRecommendation: createPracticeRecommendation,
+    createPracticeHandoff: createPracticeHandoff
   };
 });

@@ -246,6 +246,14 @@ events preserve encounter and exemplar identity, and Carry passes the exact
 notice and experiment into Practice or Create. Catalogue expansion remains
 paused until this route has real learner use and media/profile/mobile QA.
 
+Play checkpoint 2026-07-20: the existing Mississippi route now emits canonical
+learner-scoped Attempt evidence and keeps a complete Journey song exchange at
+Application evidence. Institutional source records are attached to the current
+cultural claims, while community review stays visibly pending. The visual pulse
+works without audio, duplicate learner UI is removed, and a saved result can
+open an exact Practice repetition or Create variation without losing its source
+attempt. New regions remain paused.
+
 Do not expand Play regions, Mastery catalogues, Hearth body systems, or Create
 prompt breadth before each node's first route is trustworthy end to end.
 

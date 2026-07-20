@@ -52,7 +52,8 @@
       finished: false,
       mode: "atlas",
       rolesTried: [],
-      completedFullForm: false
+      completedFullForm: false,
+      lastResult: null
     };
   }
 
@@ -138,7 +139,7 @@
       route_id: snapshot.route.id,
       destination_id: isSong ? null : snapshot.selectedRegion.id,
       activity_id: isSong && activeHandoff ? activeHandoff.activity_id : "a-minor-musical-conversation",
-      journey_level_id: isSong && activeHandoff ? activeHandoff.journey_level_id : "level-1",
+      journey_level_id: isSong && activeHandoff ? activeHandoff.journey_level_id : "L1",
       lesson_id: isSong && activeHandoff ? activeHandoff.lesson_id : null,
       duration_minutes: isSong ? 12 : 10,
       role: state.role,
@@ -148,15 +149,23 @@
       reflection: reflectionText(state.reflection),
       repeat_focus: isSong ? "Repeat the weaker role in A Minor Homecoming, then complete the eight bars again." : "Return to A after each short phrase, then leave space for an answer.",
       revisit: true,
-      capability_ids: isSong && activeHandoff ? (activeHandoff.capability_ids || []).slice() : [],
-      evidence_stage: isSong ? "application" : "",
-      evidence_source: isSong ? "self_report" : "",
-      attempt_id: isSong ? "play-attempt-" + snapshot.learner.id + "-" + Date.now() : null,
-      session_id: isSong && activeHandoff ? activeHandoff.session_id : null,
+      capability_ids: isSong && activeHandoff
+        ? (activeHandoff.capability_ids || []).slice()
+        : ["L1-EAR-01", "L1-PLAY-01", "L1-ROLE-01", "L1-STYLE-01"],
+      evidence_stage: isSong ? "application" : "attempt",
+      evidence_source: "self_report",
+      attempt_id: "play-attempt-" + snapshot.learner.id + "-" + Date.now(),
+      session_id: isSong && activeHandoff ? activeHandoff.session_id : "play-session-" + snapshot.learner.id,
       handoff_id: isSong && activeHandoff ? activeHandoff.id : null,
-      return_route: isSong && activeHandoff ? activeHandoff.return_route : null,
-      fallback_instruction: isSong && activeHandoff ? activeHandoff.fallback_instruction : null,
-      roles_tried: isSong ? state.rolesTried.slice() : [state.role],
+      return_route: isSong && activeHandoff ? activeHandoff.return_route : {
+        node_id: "play",
+        view_id: "remember",
+        params: { destination_id: snapshot.selectedRegion.id }
+      },
+      fallback_instruction: isSong && activeHandoff
+        ? activeHandoff.fallback_instruction
+        : "No recording is required. Use the visual pulse at 60 BPM, leave space, and return to A.",
+      roles_tried: state.rolesTried.slice(),
       song_id: isSong && snapshot.songThread ? snapshot.songThread.id : null,
       completed_full_form: isSong ? state.completedFullForm : false,
       completed_at: timestamp
@@ -169,9 +178,15 @@
       note: result.reflection,
       data: result
     };
-    if (root.HearthProgressEvents && typeof root.HearthProgressEvents.append === "function") {
-      if (!root.HearthProgressEvents.append(event, root.localStorage)) return;
+    if (root.HearthProgressEvents) {
+      if (event.version === 1 && typeof root.HearthProgressEvents.appendCanonical === "function") {
+        var canonicalWrite = root.HearthProgressEvents.appendCanonical(event, root.localStorage);
+        if (!canonicalWrite || !canonicalWrite.ok) return;
+      } else if (typeof root.HearthProgressEvents.append === "function" && !root.HearthProgressEvents.append(event, root.localStorage)) {
+        return;
+      }
     }
+    state.lastResult = result;
     state.finished = true;
     state.moment = 8;
     saveSession();
@@ -202,9 +217,10 @@
   function sendToCreate() {
     var song = snapshot && snapshot.songThread;
     if (!song || !root.HearthCreateHandoff || typeof root.HearthCreateHandoff.open !== "function") return;
+    var result = state && state.lastResult;
     root.HearthCreateHandoff.open({
       source_node_id: "play",
-      source_id: song.createTask.sourceId,
+      source_id: result && result.id || song.createTask.sourceId,
       lesson_id: activeHandoff && activeHandoff.lesson_id,
       journey_level_id: activeHandoff && activeHandoff.journey_level_id,
       capability_ids: song.createTask.capabilityIds.slice(),
@@ -212,8 +228,24 @@
       suggested_ingredient: "riff",
       seed_title: song.createTask.seedTitle,
       starter: song.createTask.starter,
-      instruction: song.createTask.instruction
+      instruction: song.createTask.instruction,
+      attempt_id: result && result.attempt_id,
+      session_id: result && result.session_id,
+      handoff_id: result && result.handoff_id
     });
+  }
+
+  function sendToPractice() {
+    if (!state || !state.lastResult || !root.HearthPlayDomain || typeof root.HearthPlayDomain.createPracticeHandoff !== "function") return;
+    var handoff = root.HearthPlayDomain.createPracticeHandoff(state.lastResult, {
+      suffix: Date.now().toString(36)
+    });
+    var store = handoffStore();
+    if (!handoff || !store || !store.set(handoff)) return;
+    if (root.HearthPracticeEntryController && typeof root.HearthPracticeEntryController.openWithHandoff === "function") {
+      return root.HearthPracticeEntryController.openWithHandoff(handoff);
+    }
+    if (typeof root.showPractice === "function") root.showPractice();
   }
 
   function handleClick(event) {
@@ -248,12 +280,7 @@
       state.completedFullForm = true;
       return setView("song-remember", 3);
     }
-    if (action === "send-practice") {
-      if (root.HearthPracticeEntryController && typeof root.HearthPracticeEntryController.showPractice === "function") {
-        return root.HearthPracticeEntryController.showPractice();
-      }
-      if (typeof root.showPractice === "function") return root.showPractice();
-    }
+    if (action === "send-practice") return sendToPractice();
     if (action === "send-create") return sendToCreate();
     if (action === "select-destination") {
       state = defaultState();
@@ -279,7 +306,11 @@
       saveSession();
       return render();
     }
-    if (action === "remember") return setView("remember", 8);
+    if (action === "remember") {
+      rememberRole(state.role);
+      rememberRole(state.role === "rhythm" ? "lead" : "rhythm");
+      return setView("remember", 8);
+    }
     if (action === "choose-reflection") return choose(target, "reflection");
     if (action === "finish") return saveResult();
   }

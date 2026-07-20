@@ -36,6 +36,10 @@
       }
       return;
     }
+    if (route && route.node_id === "play" && typeof root.showPlay === "function") {
+      root.showPlay();
+      return;
+    }
     if (typeof root.backToMap === "function") root.backToMap();
   }
 
@@ -115,6 +119,14 @@
       result.guideText = handoffParameters.review_id
         ? "This plan comes from the latest saved lesson review. Repeat what the lesson actually asked for."
         : "This is the current Journey practice sheet. Keep the contact calm and specific.";
+    }
+    if (activeHandoff && activeHandoff.source_node_id === "play" && activeHandoff.task) {
+      var playParameters = activeHandoff.task.parameters || {};
+      result.commitment.title = "Repeat what Play revealed";
+      result.commitment.targetMinutes = Number(playParameters.duration_minutes) || 10;
+      result.commitment.today = activeHandoff.task.instruction || playParameters.focus || result.commitment.today;
+      result.recommendations = [result.commitment.today];
+      result.guideText = playParameters.reason || "Play found one musical relationship worth repeating. Practise that relationship, not the whole route.";
     }
     return result;
   }
@@ -250,7 +262,9 @@
     }
     target.innerHTML = root.HearthPracticeEntryViewer.render(lastSnapshot, selectedMode, entryUiState());
     var back = target.querySelector("[data-practice-back]");
-    if (back && activeHandoff) back.textContent = "\u2190 Return to Journey";
+    if (back && activeHandoff) {
+      back.textContent = activeHandoff.source_node_id === "play" ? "\u2190 Return to Play" : "\u2190 Return to Journey";
+    }
     bindEntry(target);
   }
 

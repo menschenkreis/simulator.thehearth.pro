@@ -1927,7 +1927,7 @@ var livePlayEntryHtml = HearthPlayAtlasViewer.render(livePlaySnapshot, {{
 }});
 assert(livePlayEntryHtml.indexOf("Where shall the guitar take us?") !== -1, "The live Play atlas should render the approved visual entrance");
 assert(livePlayEntryHtml.indexOf("Enter the tradition") !== -1, "The live Play atlas should open a tradition-led route");
-assert(livePlayEntryHtml.indexOf("Active learner") !== -1 && livePlayEntryHtml.indexOf("Jen") !== -1, "The live Play atlas should show the active learner");
+assert(livePlayEntryHtml.indexOf("Active learner") === -1, "Play should rely on the global learner control instead of duplicating it locally");
 var songPlayHandoff = {{
   id: "handoff-journey-play-jen-test",
   version: 1,
@@ -1968,6 +1968,11 @@ var livePlayTraditionHtml = HearthPlayAtlasViewer.render(livePlaySnapshot, {{
 }});
 assert(livePlayTraditionHtml.indexOf("Carried by") !== -1, "The live Play route should identify who carries the tradition");
 assert(livePlayTraditionHtml.indexOf('data-play-action="pulse"') !== -1, "The live Play tradition should lead into a playable pulse step");
+var livePlayPulseHtml = HearthPlayAtlasViewer.render(livePlaySnapshot, {{
+  selectedId: "mississippi", view: "pulse", moment: 3, pulseRunning: false,
+  home: "", role: "", reflection: "", finished: false
+}});
+assert(livePlayPulseHtml.indexOf("No audio needed") !== -1, "Play should remain usable when external media is unavailable");
 var livePlayConversationHtml = HearthPlayAtlasViewer.render(livePlaySnapshot, {{
   selectedId: "mississippi", view: "converse", moment: 6, pulseRunning: false,
   home: "open-a", role: "lead", reflection: "", finished: false
@@ -1997,11 +2002,12 @@ assert(aylaMarkerStates[1].state === "current", "Ayla's Play route should remain
 assert(jenPlayRoute.current_destination_id === "mississippi", "Play marker selection should not mutate route data");
 
 var playResult = {{
+  id: "play-event-jen-mississippi-test",
   learner_id: "jen",
   route_id: "jen-level-one-play",
   destination_id: "mississippi",
   activity_id: "a-minor-musical-conversation",
-  journey_level_id: "level-1",
+  journey_level_id: "L1",
   lesson_id: "level-1-lesson-1",
   duration_minutes: 12,
   role: "lead",
@@ -2013,12 +2019,21 @@ var playResult = {{
   reflection: "The call and response sounded musical.",
   repeat_focus: "Land on A after each short phrase.",
   revisit: true,
+  capability_ids: ["L1-EAR-01", "L1-PLAY-01", "L1-ROLE-01", "L1-STYLE-01"],
+  evidence_stage: "attempt",
+  evidence_source: "self_report",
+  attempt_id: "play-attempt-jen-mississippi-test",
+  session_id: "play-session-jen",
+  roles_tried: ["rhythm", "lead"],
+  return_route: {{ node_id: "play", view_id: "remember", params: {{ destination_id: "mississippi" }} }},
+  fallback_instruction: "Use the visual pulse at 60 BPM.",
   completed_at: "2026-07-18T12:00:00.000Z"
 }};
 var playProgressEvent = HearthPlayDomain.toProgressEvent(playResult);
 assert(playProgressEvent.event_type === "play_activity_completed", "Play should create the shared completion event type");
 assert(playProgressEvent.learner_id === "jen", "Play completion events should belong to one learner");
 assert(playProgressEvent.data.found_home === true, "Play completion events should preserve musical evidence");
+assert(HearthProgressEventContract.validateAndNormalize(playProgressEvent).valid === true, "The Mississippi musical attempt should satisfy the canonical event contract");
 var songPlayResult = {{
   id: "play-event-jen-song-test",
   learner_id: "jen",
@@ -2055,6 +2070,13 @@ assert(songPlayProgressEvent.capability_ids.length === 3 && songPlayProgressEven
 var playPracticeRecommendation = HearthPlayDomain.createPracticeRecommendation(playResult);
 assert(playPracticeRecommendation.learner_id === "jen", "Play Practice recommendations should stay learner-specific");
 assert(playPracticeRecommendation.focus.indexOf("Land on A") !== -1, "Play should pass the repeat focus into Practice");
+var playPracticeHandoff = HearthPlayDomain.createPracticeHandoff(playResult, {{
+  now: "2026-07-18T12:05:00.000Z",
+  suffix: "test"
+}});
+assert(playPracticeHandoff.destination_node_id === "practice" && playPracticeHandoff.source_node_id === "play", "Play should build an explicit Practice handoff");
+assert(playPracticeHandoff.learner_id === "jen" && playPracticeHandoff.task.parameters.source_result_id === playResult.id, "Play Practice handoffs should preserve learner and result identity");
+assert(playPracticeHandoff.return_route.node_id === "play", "Practice should know how to return to the saved Play exchange");
 
 function createStudyStorage(initialValues) {{
   var values = initialValues || {{}};

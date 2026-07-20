@@ -219,6 +219,8 @@ REQUIRED_MARKERS = {
         "renderHotspots",
         "renderDrawer",
         "Enter the tradition",
+        "No audio needed",
+        "Repeat in Practice",
     ],
     "adapters/play-atlas-model.js": [
         "root.HearthPlayAtlasModel",
@@ -233,6 +235,8 @@ REQUIRED_MARKERS = {
         "song-complete",
         "saveResult",
         "play_activity_completed",
+        "sendToPractice",
+        "createPracticeHandoff",
     ],
     "adapters/study-key-chamber-viewer.js": [
         "root.StudyKeyChamber",
@@ -286,6 +290,8 @@ REQUIRED_MARKERS = {
         "continue-session",
         "openWithHandoff",
         "returnToSource",
+        "Return to Play",
+        "Repeat what Play revealed",
     ],
     "adapters/practice-planned-session-viewer.js": [
         "root.HearthPracticePlannedSessionViewer",
