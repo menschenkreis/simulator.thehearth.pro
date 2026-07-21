@@ -30,7 +30,9 @@
   function readCreateHandoff() {
     var store = handoffStore();
     if (!store) return null;
-    var learnerId = activeHandoff && activeHandoff.learner_id;
+    var state = journeyState();
+    var learnerId = activeHandoff && activeHandoff.learner_id ||
+      state && state.activeStudentId;
     return store.current({ learnerId: learnerId || undefined, destinationNodeId: "create" });
   }
 

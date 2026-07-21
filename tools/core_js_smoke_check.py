@@ -550,6 +550,22 @@ assert(handoffStore.current({{ learnerId:"ayla", destinationNodeId:"doing" }}) =
 assert(handoffStore.current({{ learnerId:"jen", destinationNodeId:"practice" }}) === null, "A handoff must not leak to another destination node");
 assert(handoffStore.clear("another-handoff") === false, "A mismatched clear request must preserve the active handoff");
 assert(handoffStore.clear("handoff-test-1") === true && handoffStore.read() === null, "Returning should clear the matching handoff");
+var refreshHandoff = {{
+  id:"handoff-refresh-1",
+  version:1,
+  learner_id:"jen",
+  source_node_id:"play",
+  destination_node_id:"practice",
+  task:{{ instruction:"Repeat the A landing phrase.", parameters:{{ focus:"Land on A" }} }},
+  return_route:{{ node_id:"play", view_id:"remember", params:{{ destination_id:"mississippi" }} }},
+  fallback_instruction:"Return to Play and reopen the saved exchange."
+}};
+assert(handoffStore.set(refreshHandoff) === refreshHandoff, "A Play-to-Practice handoff should be stored before navigation");
+var rereadHandoffStore = HearthCrossNodeHandoffStore.createStore({{ storage:handoffMemoryStorage }});
+assert(rereadHandoffStore.current({{ learnerId:"jen", destinationNodeId:"practice" }}).task.parameters.focus === "Land on A", "A handoff should survive a refresh-style store reread");
+assert(rereadHandoffStore.current({{ learnerId:"jen", destinationNodeId:"practice" }}).return_route.node_id === "play", "The handoff should preserve the exact return node");
+assert(rereadHandoffStore.current({{ learnerId:"jen", destinationNodeId:"create" }}) === null, "A refreshed handoff should still reject the wrong destination");
+assert(rereadHandoffStore.clear("handoff-refresh-1") === true && Object.keys(handoffMemoryValues).length === 0, "A completed return should remove only the active handoff");
 
 assert(
   JSON.stringify(HearthFoundationRouteManifest.routes) === JSON.stringify(foundationManifest.routes),

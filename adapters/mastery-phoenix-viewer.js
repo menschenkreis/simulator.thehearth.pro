@@ -50,7 +50,9 @@
   function readMasteryHandoff() {
     var store = handoffStore();
     if (!store) return null;
-    var learnerId = activeHandoff && activeHandoff.learner_id;
+    var learner = currentLearner();
+    var learnerId = activeHandoff && activeHandoff.learner_id ||
+      learner && learner.id;
     return store.current({ learnerId: learnerId || undefined, destinationNodeId: "mastery" });
   }
 

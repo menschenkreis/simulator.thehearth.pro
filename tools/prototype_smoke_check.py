@@ -169,6 +169,7 @@ REQUIRED_MARKERS = {
         "stirCauldron",
         "returnToSource",
         "learnerContext",
+        "state && state.activeStudentId",
     ],
     "core/create-prompt-policy.js": [
         "root.HearthCreatePromptPolicy",
@@ -299,6 +300,7 @@ REQUIRED_MARKERS = {
         "returnToSource",
         "Return to Play",
         "Repeat what Play revealed",
+        "state && state.activeStudentId",
     ],
     "adapters/practice-planned-session-viewer.js": [
         "root.HearthPracticePlannedSessionViewer",
@@ -332,6 +334,7 @@ REQUIRED_MARKERS = {
         "completeTry",
         "renderArtisticThread",
         "HearthMasteryProgress",
+        "learner && learner.id",
     ],
     "adapters/hearth-body-viewer.js": [
         "root.HearthBody",
@@ -341,6 +344,7 @@ REQUIRED_MARKERS = {
         "openWithHandoff",
         "returnToSource",
         "Return to Journey",
+        "state && state.activeStudentId",
     ],
     "assets/js/teaching-engine.js": [
         "window.TeachingEngine",
