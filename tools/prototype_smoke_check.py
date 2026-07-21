@@ -665,6 +665,17 @@ REQUIRED_MARKERS = {
         "buildLevels",
         "recommendedLevel",
     ],
+    "assets/js/knowing-concepts.js": [
+        "window.KNOWING_CONCEPTS",
+        "check:",
+        "correctFeedback",
+        "nextNode:",
+    ],
+    "assets/js/book-reader.js": [
+        "question.answers",
+        "Suggested proof room:",
+        "nextNodeHint: concepts.nextNode",
+    ],
     "adapters/knowing-shelf-viewer.js": [
         "HearthKnowingShelfViewer",
         "renderKnowingShelf",

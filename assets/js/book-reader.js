@@ -115,7 +115,7 @@
       ? '<div class="concept-proof-card">' +
           (concepts.plain ? '<div><span>Plain meaning</span><p>' + esc(concepts.plain) + '</p></div>' : '') +
           (concepts.guitarProof ? '<div><span>Prove it on guitar</span><p>' + esc(concepts.guitarProof) + '</p></div>' : '') +
-          (concepts.nextNode ? '<strong>Best next room: ' + esc(concepts.nextNode) + '</strong>' : '') +
+          (concepts.nextNode ? '<strong>Suggested proof room: ' + esc(concepts.nextNode) + '</strong>' : '') +
         '</div>'
       : '';
     return '<div class="topic-concepts">' +
@@ -128,14 +128,18 @@
   }
 
   function renderLearningActions(cat, topic) {
-    var check = topic.id === 'time-signatures'
-      ? '<div class="topic-check" data-knowing-check="time-signatures">' +
+    var concepts = window.KNOWING_CONCEPTS && window.KNOWING_CONCEPTS[topic.id] || {};
+    var question = concepts.check;
+    var answers = question && Array.isArray(question.answers)
+      ? question.answers.map(function (answer) {
+          return '<button type="button" data-knowing-action="answer" data-answer-id="' + esc(answer.id) + '" data-correct="' + (answer.correct === true ? 'true' : 'false') + '">' + esc(answer.label) + '</button>';
+        }).join('')
+      : '';
+    var check = question && question.prompt && answers
+      ? '<div class="topic-check" data-knowing-check="' + esc(topic.id) + '">' +
           '<div class="concept-heading">Quick check</div>' +
-          '<p>What does the top number of a time signature tell you?</p>' +
-          '<div class="topic-check-actions">' +
-            '<button type="button" data-knowing-action="answer" data-answer-id="beats-per-measure" data-correct="true">How many beats are in each measure</button>' +
-            '<button type="button" data-knowing-action="answer" data-answer-id="chord-name" data-correct="false">Which chord to play</button>' +
-          '</div>' +
+          '<p>' + esc(question.prompt) + '</p>' +
+          '<div class="topic-check-actions">' + answers + '</div>' +
         '</div>'
       : '';
     return '<div class="topic-learning-actions" data-category-id="' + esc(cat.id) + '" data-topic-id="' + esc(topic.id) + '" data-topic-title="' + esc(topic.title) + '">' +
@@ -449,13 +453,15 @@
       var topicTitle = actions.getAttribute('data-topic-title');
       var action = button.getAttribute('data-knowing-action');
       var status = actions.querySelector('.topic-learning-status');
+      var concepts = window.KNOWING_CONCEPTS && window.KNOWING_CONCEPTS[topicId] || {};
+      var check = concepts.check || {};
       if (action === 'study') {
         if (typeof window.openKnowingTopicInStudy === 'function') window.openKnowingTopicInStudy(catId, topicId);
         return;
       }
       if (!window.HearthKnowingProgressController) return;
       if (action === 'read') {
-        window.HearthKnowingProgressController.recordStage({ stage: 'read', catId: catId, topicId: topicId, topicTitle: topicTitle, storage: window.localStorage });
+        window.HearthKnowingProgressController.recordStage({ stage: 'read', catId: catId, topicId: topicId, topicTitle: topicTitle, nextNodeHint: concepts.nextNode || null, storage: window.localStorage });
         button.textContent = 'Read contact saved';
         if (status) status.textContent = 'Saved as reading contact for the active learner. Understanding still needs a check or application.';
         return;
@@ -469,11 +475,12 @@
           topicTitle: topicTitle,
           answerId: button.getAttribute('data-answer-id'),
           correct: correct,
+          nextNodeHint: concepts.nextNode || null,
           storage: window.localStorage
         });
         if (status) status.textContent = correct
-          ? 'Yes. The top number tells you how many beats are in each measure.'
-          : 'Not quite. The top number counts the beats in each measure. Read that line once more, then try again.';
+          ? (check.correctFeedback || 'Yes. That answer matches the idea on this page.')
+          : (check.incorrectFeedback || 'Not quite. Read the plain meaning once more, then try again.');
       }
     });
 

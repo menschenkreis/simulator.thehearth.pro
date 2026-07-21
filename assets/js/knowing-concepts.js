@@ -7,6 +7,15 @@
       plain: 'A time signature tells you how to count the bar before you play it.',
       guitarProof: 'Choose one open chord. Count 4/4, then 3/4, then 6/8 out loud while your strumming hand keeps moving.',
       nextNode: 'Practice',
+      check: {
+        prompt: 'What does the top number of a time signature tell you?',
+        answers: [
+          { id: 'beats-per-measure', label: 'How many beats are in each measure', correct: true },
+          { id: 'chord-name', label: 'Which chord to play', correct: false }
+        ],
+        correctFeedback: 'Yes. The top number tells you how many beats are in each measure.',
+        incorrectFeedback: 'Not quite. The top number counts the beats in each measure. Read that line once more, then try again.'
+      },
       keywords: ['meter', 'bar line', 'measure', 'simple time', 'compound time', 'odd meter', 'counting patterns', 'conducting patterns', 'strong beats', 'weak beats'],
       sources: ['Wolfsohn: rhythm and time signatures', 'Leavitt Modern Method: reading time signatures', 'US Navy Ear Training: simple and compound time']
     },
@@ -15,6 +24,15 @@
       plain: 'Subdivision is the smaller grid inside the beat.',
       guitarProof: 'Set 60 BPM. Play one muted string as quarters, eighths, then sixteenths without changing the pulse.',
       nextNode: 'Do',
+      check: {
+        prompt: 'What changes when you subdivide a beat?',
+        answers: [
+          { id: 'smaller-grid', label: 'The beat is divided into smaller equal parts', correct: true },
+          { id: 'faster-tempo', label: 'The metronome tempo automatically becomes faster', correct: false }
+        ],
+        correctFeedback: 'Yes. The pulse stays steady while the inner grid becomes smaller.',
+        incorrectFeedback: 'Not quite. Subdivision changes the inner grid, not the metronome tempo.'
+      },
       keywords: ['quarter notes', 'eighth notes', 'sixteenth notes', 'triplets', '1 e and a', 'metronome', 'beat grid', 'time feel', 'alternate picking', 'rhythmic density'],
       sources: ['US Navy Ear Training: divided and subdivided beats', 'Ross Bolton Funk Guitar: isolating sixteenths', 'Leavitt Modern Method: eighth-note reading']
     },
@@ -23,6 +41,15 @@
       plain: 'Syncopation puts attention on the spaces between the main beats.',
       guitarProof: 'Mute the strings and strum steady eighth notes. Accent only the “and” counts for one minute.',
       nextNode: 'Play',
+      check: {
+        prompt: 'Where does syncopation often place the accent?',
+        answers: [
+          { id: 'between-beats', label: 'Between or away from the expected main beats', correct: true },
+          { id: 'first-beat-only', label: 'Only on the first beat of every bar', correct: false }
+        ],
+        correctFeedback: 'Yes. Syncopation gives weight to an unexpected part of the rhythmic grid.',
+        incorrectFeedback: 'Not quite. Listen for emphasis between or away from the expected strong beats.'
+      },
       keywords: ['off-beat', 'anticipation', 'accent', 'muting', 'scratch rhythm', 'sixteenth-note funk', 'ties', 'rests', 'clave', 'groove pocket'],
       sources: ['Ross Bolton Funk Guitar: scratch or float, forging the funk', 'Paul Donat Bossa Nova: syncopated chord rhythms', 'US Navy Ear Training: syncopation']
     },
@@ -31,6 +58,15 @@
       plain: 'Rhythm notation is a set of duration symbols: sound lengths and silence lengths.',
       guitarProof: 'On one open chord, play whole notes, half notes, quarter notes, and eighth notes at 70 BPM.',
       nextNode: 'Practice',
+      check: {
+        prompt: 'What do note values and rests mainly describe?',
+        answers: [
+          { id: 'duration', label: 'How long sound and silence last', correct: true },
+          { id: 'pitch-location', label: 'Which fret contains the note', correct: false }
+        ],
+        correctFeedback: 'Yes. Rhythm symbols organize duration: when sound happens and when silence happens.',
+        incorrectFeedback: 'Not quite. Fret position concerns pitch; note values and rests concern duration.'
+      },
       keywords: ['whole note', 'half note', 'quarter note', 'eighth note', 'sixteenth note', 'rests', 'dotted notes', 'ties', 'duration', 'rhythm notation'],
       sources: ['Leavitt Modern Method: reading rhythm', 'US Navy Ear Training: counting systems', 'Teach Yourself Visually Guitar: reading rhythm']
     },
@@ -40,6 +76,15 @@
       plain: 'A triad is a three-note chord: root, third, and fifth.',
       guitarProof: 'Play C, then name or find C, E, and G inside the chord shape.',
       nextNode: 'Study',
+      check: {
+        prompt: 'Which three roles form a basic triad?',
+        answers: [
+          { id: 'root-third-fifth', label: 'Root, third, and fifth', correct: true },
+          { id: 'root-second-seventh', label: 'Root, second, and seventh', correct: false }
+        ],
+        correctFeedback: 'Yes. Root, third, and fifth are the basic triad structure.',
+        incorrectFeedback: 'Not quite. Return to the plain meaning: root, third, and fifth.'
+      },
       keywords: ['root', 'third', 'fifth', 'major triad', 'minor triad', 'diminished triad', 'augmented triad', 'inversions', 'diatonic triads', 'CAGED fragments'],
       sources: ['Wolfsohn: triads and diatonic triads', 'Fretboard Roadmaps: chord fragments', 'Peckham: triads over bass notes']
     },
@@ -69,6 +114,15 @@
       plain: 'The pentatonic scale is a five-note vocabulary that is easy to turn into riffs and phrases.',
       guitarProof: 'Find the A root notes in box 1. Make only the root notes musical before adding nearby scale notes.',
       nextNode: 'Play',
+      check: {
+        prompt: 'How many different notes make up a pentatonic scale?',
+        answers: [
+          { id: 'five-notes', label: 'Five', correct: true },
+          { id: 'seven-notes', label: 'Seven', correct: false }
+        ],
+        correctFeedback: 'Yes. Penta means five: five notes form this compact musical vocabulary.',
+        incorrectFeedback: 'Not quite. “Penta” points to five notes.'
+      },
       keywords: ['minor pentatonic', 'major pentatonic', 'five positions', 'blue note', 'box pattern', 'phrasing', 'bends', 'slides', 'call and response'],
       sources: ['Belkadi: pentatonic scale family', 'Fretboard Roadmaps: movable blues and sliding pentatonics', 'Guitar Building Blocks: pentatonic patterns']
     },
@@ -162,6 +216,15 @@
       plain: 'One fret is a half step. Two frets are a whole step.',
       guitarProof: 'Pick one string and move 0-1-2 frets while saying half step, then whole step.',
       nextNode: 'Foundation',
+      check: {
+        prompt: 'On one guitar string, how far is a whole step?',
+        answers: [
+          { id: 'two-frets', label: 'Two frets', correct: true },
+          { id: 'one-fret', label: 'One fret', correct: false }
+        ],
+        correctFeedback: 'Yes. One fret is a half step; two frets make a whole step.',
+        incorrectFeedback: 'Not quite. One fret is only a half step, so a whole step needs two frets.'
+      },
       keywords: ['half step', 'whole step', 'semitone', 'two-fret distance', 'interval formula', 'chromatic scale', 'fretboard distance'],
       sources: ['Wolfsohn: whole steps and half steps', 'Fretboard Roadmaps: major scale on one string', 'Guitar Building Blocks: notes on the neck']
     },
@@ -191,6 +254,15 @@
       plain: 'Notation tells you pitch and rhythm; TAB tells you where to put your fingers.',
       guitarProof: 'Read one note name, find it on the guitar, then compare it with the matching TAB position.',
       nextNode: 'Study',
+      check: {
+        prompt: 'What does TAB show most directly?',
+        answers: [
+          { id: 'finger-location', label: 'Where to place a finger on the strings and frets', correct: true },
+          { id: 'complete-rhythm', label: 'The complete rhythm without any other symbols', correct: false }
+        ],
+        correctFeedback: 'Yes. TAB is strongest at showing physical string and fret locations.',
+        incorrectFeedback: 'Not quite. TAB mainly shows location; rhythm often needs notation or added rhythmic marks.'
+      },
       keywords: ['staff', 'treble clef', 'ledger lines', 'note names', 'standard notation', 'first position', 'reading-first', 'duets'],
       sources: ['Leavitt Modern Method: notation-first approach', 'Berklee Phase 1: reading path', 'Teach Yourself Visually: standard notation']
     },
