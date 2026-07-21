@@ -225,6 +225,17 @@
     );
   }
 
+  function renderCauldronTableau(selectedCount, glowColor, prompt) {
+    var caption = prompt || "Select ingredients and stir the cauldron.";
+    return (
+      '<div class="create-cauldron-tableau" style="--cauldron-glow:' + esc(glowColor) + '">' +
+      '<img src="images/create/create-cauldron-tableau-v2.png" alt="A glowing creative cauldron on a worktable">' +
+      (selectedCount > 0 ? '<div class="create-cauldron-tableau-orb" aria-hidden="true"></div>' : "") +
+      '<div class="create-cauldron-tableau-caption">' + esc(caption) + "</div>" +
+      "</div>"
+    );
+  }
+
   function renderCreate() {
     activeHandoff = readCreateHandoff();
     var el = panel();
@@ -293,11 +304,8 @@
       "</div>" +
       "</div>" +
       '<div class="sf-stage" style="flex-direction:column;min-height:auto;padding:8px 18px">' +
-      renderCauldronSvg(selected.size, glowColor) +
       renderSourceContext(seed) +
-      '<div style="text-align:center;color:var(--gold);font-family:Cinzel;font-size:.82rem;margin:8px auto 0;max-width:420px;line-height:1.5;white-space:pre-line">' +
-      esc(seed.prompt || "Select ingredients and stir the cauldron.") +
-      "</div>" +
+      renderCauldronTableau(selected.size, glowColor, seed.prompt) +
       "</div>" +
       (hasSeed ? "" :
         '<div class="sf-stage" style="min-height:auto;padding:8px 18px;flex-direction:column">' +
