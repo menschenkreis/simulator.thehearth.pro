@@ -88,7 +88,7 @@
       '</div>' +
       (isRecommended && level.level > 1
         ? '<span style="font-family:Josefin Sans,sans-serif;font-size:0.6rem;color:var(--dim);letter-spacing:1px">Recommended after Level ' + (level.level - 1) + '</span>'
-        : '<span style="font-family:JetBrains Mono,monospace;font-size:0.6rem;color:var(--dim)">' + level.totalDone + '/' + level.totalTopics + ' visited \u00B7 ' + pct + '%</span>'
+        : '<span style="font-family:JetBrains Mono,monospace;font-size:0.6rem;color:var(--dim)">' + level.totalDone + '/' + level.totalTopics + ' opened \u00B7 ' + pct + '%</span>'
       ) +
     '</div>' +
     '<div style="height:2px;background:var(--border);border-radius:1px;margin-bottom:12px;overflow:hidden">' +
@@ -149,21 +149,20 @@
             '<div>' +
               '<div class="knowing-entry-kicker">Knowing Library</div>' +
               '<h2>' + knowing.title + '</h2>' +
-              '<p>Use this room when a word, sound, shape, or idea needs to become clear.</p>' +
+              '<p>Use this room when a word, sound, shape, or idea needs to become clear before you take it back to the guitar.</p>' +
             '</div>' +
           '</div>' +
           '<div class="knowing-entry-guide">' +
             '<img src="images/character-symbols/Thinking Question Mark.png" alt="">' +
-            '<div>Open one book. Clear one idea. Then return to the guitar and use it.</div>' +
+            '<div>KNOW clears the map. Study checks it. The guitar proves it.</div>' +
           '</div>' +
         '</div>' +
-        '<div class="knowing-entry-focus">' +
-          '<div>' +
-            '<div class="knowing-entry-kicker" style="color:' + level.color + '">Recommended shelf</div>' +
-            '<h3>' + level.label + ' &middot; ' + level.sub + '</h3>' +
-          '</div>' +
-          '<div class="knowing-entry-progress">' + level.totalDone + '/' + level.totalTopics + ' visited &middot; ' + pct + '%</div>' +
+        '<div class="knowing-entry-principles">' +
+          '<div class="knowing-entry-principle"><span>01 Contact</span><strong>Open the right idea</strong><p>Opening a topic only means you touched it. It is not mastery.</p></div>' +
+          '<div class="knowing-entry-principle"><span>02 Clarity</span><strong>Read one plain thing</strong><p>Save read contact when a word or shape is clearer than before.</p></div>' +
+          '<div class="knowing-entry-principle"><span>03 Proof</span><strong>Send it onward</strong><p>Use Study, Do, or Practice when the idea needs evidence.</p></div>' +
         '</div>' +
+        '<div class="knowing-entry-kicker" style="position:relative;z-index:2;color:' + level.color + ';margin:2px 0 8px">Recommended shelf</div>' +
         renderLevelShelf(knowing, level, recommendedLevel) +
         '<div class="knowing-entry-actions">' +
           primaryAction +

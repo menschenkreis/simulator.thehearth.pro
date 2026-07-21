@@ -131,10 +131,17 @@
         '</div>'
       : '';
     return '<div class="topic-learning-actions" data-category-id="' + esc(cat.id) + '" data-topic-id="' + esc(topic.id) + '" data-topic-title="' + esc(topic.title) + '">' +
+      '<div class="topic-evidence-ladder" aria-label="Knowledge evidence stages">' +
+        '<div class="topic-evidence-step"><strong>Open</strong><span>contact</span></div>' +
+        '<div class="topic-evidence-step"><strong>Read</strong><span>clearer</span></div>' +
+        '<div class="topic-evidence-step"><strong>Check</strong><span>answered</span></div>' +
+        '<div class="topic-evidence-step"><strong>Apply</strong><span>proved elsewhere</span></div>' +
+      '</div>' +
+      '<p class="topic-learning-note">Reading saves contact for this learner. It does not count as mastery until the idea is checked or used.</p>' +
       check +
       '<div class="topic-learning-buttons">' +
-        '<button type="button" data-knowing-action="read">I have read this</button>' +
-        '<button type="button" data-knowing-action="study">Open exact topic in Study</button>' +
+        '<button type="button" data-knowing-action="read">Save read contact</button>' +
+        '<button type="button" data-knowing-action="study">Take this to Study</button>' +
       '</div>' +
       '<div class="topic-learning-status" role="status" aria-live="polite"></div>' +
     '</div>';
@@ -441,8 +448,8 @@
       if (!window.HearthKnowingProgressController) return;
       if (action === 'read') {
         window.HearthKnowingProgressController.recordStage({ stage: 'read', catId: catId, topicId: topicId, topicTitle: topicTitle, storage: window.localStorage });
-        button.textContent = 'Read';
-        if (status) status.textContent = 'Reading contact saved for the active learner.';
+        button.textContent = 'Read contact saved';
+        if (status) status.textContent = 'Saved as reading contact for the active learner. Understanding still needs a check or application.';
         return;
       }
       if (action === 'answer') {
