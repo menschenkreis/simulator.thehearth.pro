@@ -4,27 +4,42 @@
   window.KNOWING_CONCEPTS = {
     'time-signatures': {
       focus: 'Understand meter as the frame for counting, strumming, reading, and ensemble time.',
+      plain: 'A time signature tells you how to count the bar before you play it.',
+      guitarProof: 'Choose one open chord. Count 4/4, then 3/4, then 6/8 out loud while your strumming hand keeps moving.',
+      nextNode: 'Practice',
       keywords: ['meter', 'bar line', 'measure', 'simple time', 'compound time', 'odd meter', 'counting patterns', 'conducting patterns', 'strong beats', 'weak beats'],
       sources: ['Wolfsohn: rhythm and time signatures', 'Leavitt Modern Method: reading time signatures', 'US Navy Ear Training: simple and compound time']
     },
     'subdivision': {
       focus: 'Turn the beat into a grid so rhythm can be felt, counted, and played precisely.',
+      plain: 'Subdivision is the smaller grid inside the beat.',
+      guitarProof: 'Set 60 BPM. Play one muted string as quarters, eighths, then sixteenths without changing the pulse.',
+      nextNode: 'Do',
       keywords: ['quarter notes', 'eighth notes', 'sixteenth notes', 'triplets', '1 e and a', 'metronome', 'beat grid', 'time feel', 'alternate picking', 'rhythmic density'],
       sources: ['US Navy Ear Training: divided and subdivided beats', 'Ross Bolton Funk Guitar: isolating sixteenths', 'Leavitt Modern Method: eighth-note reading']
     },
     'syncopation': {
       focus: 'Learn how off-beat accents create groove, funk, reggae, bossa, and rhythmic tension.',
+      plain: 'Syncopation puts attention on the spaces between the main beats.',
+      guitarProof: 'Mute the strings and strum steady eighth notes. Accent only the “and” counts for one minute.',
+      nextNode: 'Play',
       keywords: ['off-beat', 'anticipation', 'accent', 'muting', 'scratch rhythm', 'sixteenth-note funk', 'ties', 'rests', 'clave', 'groove pocket'],
       sources: ['Ross Bolton Funk Guitar: scratch or float, forging the funk', 'Paul Donat Bossa Nova: syncopated chord rhythms', 'US Navy Ear Training: syncopation']
     },
     'rhythm-building-blocks': {
       focus: 'Build all rhythms from note values, rests, dots, ties, and repeatable counting habits.',
+      plain: 'Rhythm notation is a set of duration symbols: sound lengths and silence lengths.',
+      guitarProof: 'On one open chord, play whole notes, half notes, quarter notes, and eighth notes at 70 BPM.',
+      nextNode: 'Practice',
       keywords: ['whole note', 'half note', 'quarter note', 'eighth note', 'sixteenth note', 'rests', 'dotted notes', 'ties', 'duration', 'rhythm notation'],
       sources: ['Leavitt Modern Method: reading rhythm', 'US Navy Ear Training: counting systems', 'Teach Yourself Visually Guitar: reading rhythm']
     },
 
     'triads': {
       focus: 'See every basic chord as root, third, and fifth, then move those shapes across the neck.',
+      plain: 'A triad is a three-note chord: root, third, and fifth.',
+      guitarProof: 'Play C, then name or find C, E, and G inside the chord shape.',
+      nextNode: 'Study',
       keywords: ['root', 'third', 'fifth', 'major triad', 'minor triad', 'diminished triad', 'augmented triad', 'inversions', 'diatonic triads', 'CAGED fragments'],
       sources: ['Wolfsohn: triads and diatonic triads', 'Fretboard Roadmaps: chord fragments', 'Peckham: triads over bass notes']
     },
@@ -51,6 +66,9 @@
 
     'pentatonic': {
       focus: 'Use five-note scales as the first practical vocabulary for melody, phrasing, and improvisation.',
+      plain: 'The pentatonic scale is a five-note vocabulary that is easy to turn into riffs and phrases.',
+      guitarProof: 'Find the A root notes in box 1. Make only the root notes musical before adding nearby scale notes.',
+      nextNode: 'Play',
       keywords: ['minor pentatonic', 'major pentatonic', 'five positions', 'blue note', 'box pattern', 'phrasing', 'bends', 'slides', 'call and response'],
       sources: ['Belkadi: pentatonic scale family', 'Fretboard Roadmaps: movable blues and sliding pentatonics', 'Guitar Building Blocks: pentatonic patterns']
     },
@@ -141,6 +159,9 @@
 
     'whole-half-steps': {
       focus: 'Use frets as physical evidence for musical distance.',
+      plain: 'One fret is a half step. Two frets are a whole step.',
+      guitarProof: 'Pick one string and move 0-1-2 frets while saying half step, then whole step.',
+      nextNode: 'Foundation',
       keywords: ['half step', 'whole step', 'semitone', 'two-fret distance', 'interval formula', 'chromatic scale', 'fretboard distance'],
       sources: ['Wolfsohn: whole steps and half steps', 'Fretboard Roadmaps: major scale on one string', 'Guitar Building Blocks: notes on the neck']
     },
@@ -167,6 +188,9 @@
 
     'notation-basics': {
       focus: 'Read pitch on the staff and connect it to the guitar without relying only on TAB.',
+      plain: 'Notation tells you pitch and rhythm; TAB tells you where to put your fingers.',
+      guitarProof: 'Read one note name, find it on the guitar, then compare it with the matching TAB position.',
+      nextNode: 'Study',
       keywords: ['staff', 'treble clef', 'ledger lines', 'note names', 'standard notation', 'first position', 'reading-first', 'duets'],
       sources: ['Leavitt Modern Method: notation-first approach', 'Berklee Phase 1: reading path', 'Teach Yourself Visually: standard notation']
     },

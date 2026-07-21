@@ -129,6 +129,7 @@
         topic_title: options.topicTitle || topicId,
         category_id: categoryId,
         knowledge_stage: stage,
+        next_node_hint: options.nextNodeHint || null,
         correct: stage === "answered" ? options.correct === true : null,
         answer_id: options.answerId || null
       }

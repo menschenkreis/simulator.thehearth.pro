@@ -88,6 +88,7 @@
       topicTitle: options.topicTitle,
       correct: options.correct,
       answerId: options.answerId,
+      nextNodeHint: options.nextNodeHint,
       destinationNodeId: options.destinationNodeId || null,
       suffix: options.suffix || String(Date.now()) + "-" + Math.random().toString(36).slice(2, 6),
       timestamp: options.timestamp,
@@ -112,12 +113,14 @@
     var found = findTopic(catId, topicId);
     var learner = activeLearner(storage);
     if (!found || !learner) return false;
+    var concepts = root.KNOWING_CONCEPTS && root.KNOWING_CONCEPTS[topicId] || {};
     recordStage({
       stage: "read",
       catId: catId,
       topicId: topicId,
       topicTitle: found.topic.title,
       destinationNodeId: "study",
+      nextNodeHint: concepts.nextNode || null,
       storage: storage
     });
     rememberTopic(topicId, storage);
@@ -130,6 +133,7 @@
         source: found.topic.source || "KNOW",
         categoryId: catId,
         topicId: topicId,
+        nextNodeHint: concepts.nextNode || null,
         recommendedDoor: catId === "scales" ? "shape" : "word"
       }, { storage: storage });
     }

@@ -1247,7 +1247,7 @@ var knowingOpenedEvent = HearthKnowingProgress.buildEvent({{
 }});
 var knowingReadEvent = HearthKnowingProgress.buildEvent({{
   learnerId: "jen-1", stage: "read", categoryId: "rhythm", topicId: "pulse", topicTitle: "Pulse",
-  timestamp: "2026-07-20T10:01:00.000Z", suffix: "read"
+  timestamp: "2026-07-20T10:01:00.000Z", suffix: "read", nextNodeHint: "Practice"
 }});
 var knowingAnswerEvent = HearthKnowingProgress.buildEvent({{
   learnerId: "jen-1", stage: "answered", categoryId: "rhythm", topicId: "pulse", topicTitle: "Pulse",
@@ -1255,6 +1255,7 @@ var knowingAnswerEvent = HearthKnowingProgress.buildEvent({{
 }});
 assert(knowingOpenedEvent.capability_ids.length === 0, "Opening a KNOW topic must not grant capability credit");
 assert(knowingReadEvent.evidence_stage === "contact", "Reading remains contact rather than demonstrated understanding");
+assert(knowingReadEvent.data.next_node_hint === "Practice", "KNOW events should preserve the recommended next node hint");
 assert(knowingAnswerEvent.capability_ids[0] === "L1-KNOW-01", "A correct KNOW check may supply Level 1 knowledge evidence");
 var jenKnowingProjection = HearthKnowingProgress.project([knowingOpenedEvent, knowingReadEvent, knowingAnswerEvent], "jen-1");
 assert(jenKnowingProjection.pulse.read === true && jenKnowingProjection.pulse.answeredCorrect === true, "KNOW projection should preserve separate evidence stages");

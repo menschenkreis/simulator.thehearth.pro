@@ -111,9 +111,17 @@
     var sources = (concepts.sources || []).map(function (source) {
       return '<li>' + esc(source) + '</li>';
     }).join('');
+    var proof = concepts.plain || concepts.guitarProof
+      ? '<div class="concept-proof-card">' +
+          (concepts.plain ? '<div><span>Plain meaning</span><p>' + esc(concepts.plain) + '</p></div>' : '') +
+          (concepts.guitarProof ? '<div><span>Prove it on guitar</span><p>' + esc(concepts.guitarProof) + '</p></div>' : '') +
+          (concepts.nextNode ? '<strong>Best next room: ' + esc(concepts.nextNode) + '</strong>' : '') +
+        '</div>'
+      : '';
     return '<div class="topic-concepts">' +
       '<div class="concept-heading">Key concepts from the library</div>' +
       '<p class="concept-focus">' + esc(concepts.focus || '') + '</p>' +
+      proof +
       '<div class="concept-chip-row">' + keywords + '</div>' +
       (sources ? '<ul class="concept-sources">' + sources + '</ul>' : '') +
     '</div>';

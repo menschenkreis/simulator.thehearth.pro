@@ -274,6 +274,46 @@
   color: #333;
   text-align: left;
 }
+.concept-proof-card {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem;
+  margin: 0.75rem 0;
+  padding: 0.7rem;
+  border: 1px solid rgba(196,122,58,0.16);
+  border-radius: 8px;
+  background: rgba(255,255,255,0.62);
+}
+.concept-proof-card div {
+  min-width: 0;
+}
+.concept-proof-card span {
+  display: block;
+  margin-bottom: 0.25rem;
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 0.52rem;
+  letter-spacing: 1.6px;
+  text-transform: uppercase;
+  color: var(--book-accent);
+}
+.concept-proof-card p {
+  margin: 0 !important;
+  font-size: 0.68rem;
+  line-height: 1.45;
+  color: #332b24;
+  text-align: left;
+}
+.concept-proof-card strong {
+  grid-column: 1 / -1;
+  display: block;
+  border-top: 1px solid rgba(196,122,58,0.12);
+  padding-top: 0.45rem;
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 0.56rem;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: rgba(0,0,0,0.48);
+}
 .concept-chip-row {
   display: flex;
   flex-wrap: wrap;
@@ -392,8 +432,9 @@
   line-height: 1.4;
 }
 @media (max-width: 720px) {
+  .concept-proof-card,
   .topic-evidence-ladder {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: 1fr;
   }
 }
 .page-topic .topic-footer {
