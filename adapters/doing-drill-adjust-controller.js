@@ -13,8 +13,8 @@
   "use strict";
 
   var messages = {
-    easier: "Easier mode coming soon. Try slowing the BPM.",
-    harder: "Harder mode coming soon. Try adding accents or increasing BPM."
+    easier: "Make this easier: slow the BPM, use fewer notes, and aim for one clean repeat.",
+    harder: "Make this harder: add accents, raise the BPM slightly, or keep the phrase going for one extra cycle."
   };
 
   function messageForAdjustment(adjustment) {

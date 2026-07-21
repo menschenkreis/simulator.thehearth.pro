@@ -502,7 +502,7 @@
       '<summary class="journey-companion-summary">' +
         '<span><span class="journey-kicker">'+esc(companion.label || 'Lesson Companion')+'</span>' +
         '<strong>'+esc(companion.title || 'Next lesson focus')+'</strong></span>' +
-        '<span>Open Live Lesson</span>' +
+        '<span>Open Lesson Companion</span>' +
       '</summary>' +
       '<div class="journey-companion-head">' +
         '<div>' +
@@ -510,7 +510,7 @@
           '<div class="journey-companion-title">'+esc(companion.title || 'Next lesson focus')+'</div>' +
         '</div>' +
         '<div class="journey-actions compact">' +
-        '<button type="button" class="journey-btn" onclick="Journey.openCompanionLesson(\''+student.id+'\')">Open Live Lesson</button>' +
+        '<button type="button" class="journey-btn" onclick="Journey.openCompanionLesson(\''+student.id+'\')">Open Lesson Companion</button>' +
           '<button class="journey-btn secondary" onclick="Journey.openLevel('+effectiveCurrentLevel(student).num+')">Open Path</button>' +
         '</div>' +
       '</div>' +
@@ -536,7 +536,7 @@
       '<div class="journey-preview-title">'+esc(companion.label || companionStudent.name)+'</div>' +
       '<div class="journey-preview-copy">'+esc(companion.nextAction || '')+'</div></div>' +
       '<div class="journey-actions compact">' +
-        '<button type="button" class="journey-btn" onclick="Journey.openCompanionLesson(\''+companionStudent.id+'\')">Open Live Lesson</button>' +
+        '<button type="button" class="journey-btn" onclick="Journey.openCompanionLesson(\''+companionStudent.id+'\')">Open Lesson Companion</button>' +
         '<button class="journey-btn secondary" onclick="Journey.switchStudent(\''+companionStudent.id+'\')">Show Jen</button>' +
       '</div>' +
     '</div>';

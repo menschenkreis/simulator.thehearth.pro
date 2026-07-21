@@ -63,7 +63,7 @@
     var stateLabels = options.stateLabels || {};
 
     if (!roomDrills.length) {
-      return '<div class="doing-room-empty">No Level 1 drills are mapped here yet.</div>';
+      return '<div class="doing-room-empty">This room has no Level 1 drills yet. Use another room or the practice catalogue.</div>';
     }
 
     return roomDrills.map(function renderRoomDrillNode(item) {
@@ -109,7 +109,7 @@
       "</div>" +
       '<div class="doing-room-actions">' +
       '<button class="doing-board-tab active" type="button" onclick="window._doingBackToMap()">Back to Do map</button>' +
-      '<button class="doing-board-tab" type="button" onclick="window._doingRoomToLibrary(\'' + ui.escapeHtml(board.id) + '\')">Full library</button>' +
+      '<button class="doing-board-tab" type="button" onclick="window._doingRoomToLibrary(\'' + ui.escapeHtml(board.id) + '\')">Practice catalogue</button>' +
       "</div>" +
       "</div>" +
       '<div class="doing-room-tabs" aria-label="Choose a training room">' + roomButtons + "</div>" +
@@ -117,7 +117,7 @@
       renderRoomGraphic(options) +
       '<div class="doing-room-drill-strip" aria-label="' + ui.escapeHtml(board.label) + ' drills">' + renderRoomDrillNodes(options) + "</div>" +
       "</div>" +
-      '<div class="doing-room-preview-note">The image is the room. The circles are the drills. Use Full Library when you want the exact catalogue view.</div>' +
+      '<div class="doing-room-preview-note">The image anchors the skill area. The circles are the actual drills; opening one replaces the image with instructions, feedback, and later a demonstration video.</div>' +
       "</section>";
   }
 

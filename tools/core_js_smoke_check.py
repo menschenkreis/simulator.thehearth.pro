@@ -1091,7 +1091,7 @@ assert(
   "Doing controls controller should route library quick link to training"
 );
 assert(
-  HearthDoingDrillAdjustController.messageForAdjustment("easier").indexOf("slowing the BPM") !== -1,
+  HearthDoingDrillAdjustController.messageForAdjustment("easier").indexOf("slow the BPM") !== -1,
   "Doing drill adjust controller should return easier message"
 );
 assert(
@@ -1283,7 +1283,7 @@ assert(studyState.summary.doneTopics === 1, "Knowing study model should count co
 assert(studyState.summary.quizPassed === 1, "Knowing study model should count passed quizzes");
 assert(studyState.currentTopic.id === "sync", "Knowing study model should choose first incomplete topic");
 var studyDashboardHtml = HearthKnowingStudyDashboardViewer.renderStudyDashboard({{ knowing: fakeKnowing, completed: {{ pulse: true }}, studyState: studyState }});
-assert(studyDashboardHtml.indexOf("Study Lab") >= 0, "Knowing study dashboard viewer should render title");
+assert(studyDashboardHtml.indexOf("Key Chamber") >= 0, "Knowing study dashboard viewer should render title");
 assert(studyDashboardHtml.indexOf("sync") >= 0, "Knowing study dashboard viewer should render next topic action");
 var studyQuestions = HearthKnowingStudyQuestionModel.generateQuestions(fakeKnowing.categories[0].topics[0]);
 assert(studyQuestions.length === 4, "Knowing study question model should build term and reflection questions");
