@@ -90,44 +90,42 @@
     return door.guide;
   }
 
-  function sideDoor(x, door, direction) {
-    var color = doorStateColor(door.state);
+  function doorHotspot(slot, door, offset) {
+    var selected = slot === 0;
+    var locked = selected && door.state === "locked";
+    var state = doorStateLabel(door.state).toLowerCase();
+    var action = selected ? (locked ? "Locked" : "Open") : "Select";
+    var handler = selected ? "StudyKeyChamber.enter()" : "StudyKeyChamber.rotate(" + offset + ")";
     return (
-      '<g class="door-group" style="opacity:.35" onclick="StudyKeyChamber.rotate(' + direction + ')">' +
-      '<rect x="' + (x - 28) + '" y="100" width="56" height="180" rx="14" fill="' + color + '" opacity=".12" stroke="' + color + '" stroke-opacity=".3" class="door-shape"/>' +
-      '<text x="' + x + '" y="185" text-anchor="middle" fill="' + color + '" font-family="Cinzel,serif" font-size="18" opacity=".6">' + door.symbol + "</text>" +
-      '<text x="' + x + '" y="208" text-anchor="middle" fill="' + color + '" font-family="JetBrains Mono" font-size="8" opacity=".5">' + esc(door.label) + "</text>" +
-      "</g>"
+      '<button type="button" class="sk-door-hotspot' + (selected ? " is-selected" : "") + '" data-slot="' + slot + '" style="--sk-door-color:' + doorStateColor(door.state) + '"' + (locked ? " disabled" : ' onclick="' + handler + '"') + ' aria-label="' + action + " " + esc(door.label) + " door, " + esc(state) + '">' +
+      '<span class="sk-door-slot-label">' + esc(door.label) + "</span>" +
+      "</button>"
     );
   }
 
-  function renderDoorSvg(snapshot, current, previous, next) {
-    var color = doorStateColor(current.state);
-    var opacity = current.state === "locked" ? ".25" : ".6";
-    var glowId = "sk-glow-" + current.id;
-    var svg = '<svg viewBox="0 0 560 360" class="sk-door-svg">';
-
-    svg += '<ellipse cx="280" cy="320" rx="200" ry="20" fill="' + GOLD + '" opacity=".06"/>';
-    svg += sideDoor(110, previous, -1);
-    svg += sideDoor(450, next, 1);
-    svg += '<defs><radialGradient id="' + glowId + '"><stop offset="0%" stop-color="' + color + '" stop-opacity=".25"/><stop offset="100%" stop-color="' + color + '" stop-opacity="0"/></radialGradient></defs>';
-    svg += '<circle cx="280" cy="190" r="110" fill="url(#' + glowId + ')"/>';
-    svg += '<g class="door-group" onclick="StudyKeyChamber.enter()">';
-    svg += '<rect x="218" y="55" width="124" height="260" rx="24" fill="' + color + '" opacity="' + opacity + '" stroke="' + color + '" stroke-width="2" stroke-opacity=".5" class="door-shape"/>';
-    svg += '<circle cx="280" cy="175" r="12" fill="none" stroke="' + GOLD + '" stroke-width="1.5" opacity=".7"/>';
-    svg += '<rect x="278" y="175" width="4" height="14" rx="2" fill="' + GOLD + '" opacity=".7"/>';
-    svg += '<text x="280" y="145" text-anchor="middle" fill="' + color + '" font-family="Cinzel,serif" font-size="32">' + current.symbol + "</text>";
-    svg += '<text x="280" y="220" text-anchor="middle" fill="' + color + '" font-family="Cinzel,serif" font-size="16" font-weight="600">' + esc(current.label) + "</text>";
-    svg += '<text x="280" y="245" text-anchor="middle" fill="' + color + '" font-family="JetBrains Mono" font-size="8" opacity=".7">' + doorStateLabel(current.state) + "</text>";
-    svg += "</g>";
-    svg += '<g style="cursor:pointer" onclick="StudyKeyChamber.rotate(-1)"><text x="30" y="200" fill="' + GOLD + '" font-size="24" opacity=".4" font-family="DM Sans">\u2039</text></g>';
-    svg += '<g style="cursor:pointer" onclick="StudyKeyChamber.rotate(1)"><text x="530" y="200" fill="' + GOLD + '" font-size="24" opacity=".4" font-family="DM Sans">\u203a</text></g>';
-    snapshot.doors.forEach(function (_door, index) {
-      var dotX = 220 + index * 24;
-      svg += '<circle cx="' + dotX + '" cy="340" r="' + (index === currentDoorIndex ? "3.5" : "2.5") + '" fill="' + GOLD + '" opacity="' + (index === currentDoorIndex ? "1" : ".25") + '"/>';
-    });
-    svg += "</svg>";
-    return svg;
+  function renderChamberStage(snapshot, current) {
+    var total = snapshot.doors.length;
+    function doorAt(offset) {
+      return snapshot.doors[(currentDoorIndex + offset + total) % total];
+    }
+    return (
+      '<div class="sk-stage sk-stage--image">' +
+      '<img class="sk-chamber-image" src="images/study/study-key-chamber-concept-v1.png" alt="A circular study chamber with six doors">' +
+      '<div class="sk-chamber-shade" aria-hidden="true"></div>' +
+      doorHotspot(-2, doorAt(-2), -2) +
+      doorHotspot(-1, doorAt(-1), -1) +
+      doorHotspot(0, current, 0) +
+      doorHotspot(1, doorAt(1), 1) +
+      doorHotspot(2, doorAt(2), 2) +
+      '<div class="sk-selected-door" style="--sk-door-color:' + doorStateColor(current.state) + '" aria-hidden="true">' +
+      '<span>' + esc(doorStateLabel(current.state)) + "</span>" +
+      '<strong>' + esc(current.label) + "</strong>" +
+      '<small>' + esc(current.mode) + "</small>" +
+      "</div>" +
+      '<button type="button" class="sk-turn sk-turn--previous" onclick="StudyKeyChamber.rotate(-1)" aria-label="Previous Study door">\u2039</button>' +
+      '<button type="button" class="sk-turn sk-turn--next" onclick="StudyKeyChamber.rotate(1)" aria-label="Next Study door">\u203a</button>' +
+      "</div>"
+    );
   }
 
   function renderStudyChamber() {
@@ -138,9 +136,7 @@
     if (!doors.length) return;
     var total = doors.length;
     currentDoorIndex = Math.max(0, Math.min(currentDoorIndex, total - 1));
-    var previous = doors[(currentDoorIndex - 1 + total) % total];
     var current = doors[currentDoorIndex];
-    var next = doors[(currentDoorIndex + 1) % total];
     var color = doorStateColor(current.state);
 
     el.innerHTML =
@@ -163,7 +159,7 @@
       "<div>" + esc(guideText(snapshot)) + "</div>" +
       "</div>" +
       "</div>" +
-      '<div class="sk-stage">' + renderDoorSvg(snapshot, current, previous, next) + "</div>" +
+      renderChamberStage(snapshot, current) +
       "</div>" +
       '<div class="sk-drawer" id="sk-drawer">' +
       '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">' +

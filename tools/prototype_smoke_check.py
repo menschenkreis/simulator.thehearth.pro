@@ -30,6 +30,7 @@ REQUIRED_MARKERS = {
         "core/create-prompt-policy.js",
         "core/create-progress.js",
         "core/mastery-progress.js",
+        "requestAnimationFrame(function(){ window.renderMapNodeHitLayer(); });",
         "const FLAME_HOP_MS = 280",
         "const FLAME_PAUSE_MS = 40",
         "adapters/foundation-route-manifest-runtime.js",
@@ -254,6 +255,9 @@ REQUIRED_MARKERS = {
         "openWithHandoff",
         "returnToSource",
         "Return to Journey",
+        "images/study/study-key-chamber-concept-v1.png",
+        "sk-door-hotspot",
+        "Previous Study door",
     ],
     "core/knowing-progress.js": [
         "root.HearthKnowingProgress",
