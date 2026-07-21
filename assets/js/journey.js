@@ -1892,9 +1892,15 @@
       document.querySelectorAll('.journey-live-step-btn').forEach(btn => {
         btn.classList.toggle('active', btn.getAttribute('data-step') === String(index));
       });
+      let activePanel = null;
       document.querySelectorAll('.journey-live-focus').forEach(panel => {
-        panel.classList.toggle('active', panel.getAttribute('data-step-panel') === String(index));
+        const active = panel.getAttribute('data-step-panel') === String(index);
+        panel.classList.toggle('active', active);
+        if(active) activePanel = panel;
       });
+      if(activePanel && typeof activePanel.scrollIntoView === 'function'){
+        activePanel.scrollIntoView({ block:'center', behavior:'smooth' });
+      }
     },
     openCompanionCreate(studentId, stepIndex){
       const state = loadState();
