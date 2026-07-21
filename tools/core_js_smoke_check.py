@@ -35,6 +35,11 @@ function assert(condition, message) {{
 }}
 
 var root = {str(ROOT)!r};
+eval(readText(root + "/adapters/browser-storage-fallback.js"));
+assert(typeof localStorage !== "undefined" && typeof localStorage.getItem === "function", "Storage fallback should create a localStorage-compatible object when browser storage is unavailable");
+assert(typeof sessionStorage !== "undefined" && typeof sessionStorage.getItem === "function", "Storage fallback should create a sessionStorage-compatible object when browser storage is unavailable");
+localStorage.setItem("storage-fallback-smoke", "ok");
+assert(localStorage.getItem("storage-fallback-smoke") === "ok", "Storage fallback should preserve values for the current session");
 eval(readText(root + "/core/lesson-core.js"));
 eval(readText(root + "/core/journey-lesson-review.js"));
 eval(readText(root + "/core/renderer-registry.js"));

@@ -94,8 +94,8 @@
     var roomButtons = roomIds.map(function renderRoomButton(roomId) {
       var room = config.boardForId(roomId);
       var active = room.id === board.id;
-      return '<button class="doing-room-tab' + (active ? " active" : "") + '" type="button" onclick="window._setDoingRoomConcept(\'' + room.id + '\')">' +
-        '<span>' + ui.escapeHtml(room.shortLabel) + "</span>" +
+      return '<button class="doing-room-tab' + (active ? " active" : "") + '" type="button" aria-label="' + ui.escapeHtml(room.label) + '" onclick="window._setDoingRoomConcept(\'' + room.id + '\')">' +
+        '<span aria-hidden="true">' + ui.escapeHtml(room.shortLabel) + "</span>" +
         '<b>' + ui.escapeHtml(room.label) + "</b>" +
         "</button>";
     }).join("");

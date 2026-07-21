@@ -560,6 +560,10 @@ body{background:var(--bg);color:var(--text);font-family:DM Sans,sans-serif;displ
 /* Map zoom/pan */
 .map-wrap{touch-action:manipulate;}
 .map-svg{width:100%;height:auto;display:block;max-height:calc(100vh - 60px);transform-origin:center center;transition:transform 0.2s;}
+.map-node-hit-layer{position:absolute;inset:0;z-index:24;pointer-events:none;}
+.map-node-hit{position:absolute;display:block;border:0;background:transparent;border-radius:999px;padding:0;transform:translate(-50%,-50%);pointer-events:auto;cursor:pointer;-webkit-tap-highlight-color:transparent;}
+.map-node-hit:focus-visible{outline:2px solid rgba(245,213,143,0.95);outline-offset:3px;box-shadow:0 0 0 8px rgba(212,175,105,0.1),0 0 26px rgba(212,175,105,0.34);}
+.map-node-hit[aria-disabled="true"]{cursor:not-allowed;}
 
 /* Node styling */
 .mn-g{cursor:pointer;-webkit-tap-highlight-color:transparent;transform-box:fill-box;transform-origin:center;transition:filter 0.25s,transform 0.25s;}
@@ -2754,6 +2758,7 @@ body:has(.doing-shell) .mobile-character{display:none;}
 
 </div>
 
+<script src="adapters/browser-storage-fallback.js?v=20260721"></script>
 <script src="assets/js/foundation.js"></script>
 <script src="core/lesson-core.js"></script>
 <script src="core/renderer-registry.js"></script>
@@ -2817,7 +2822,7 @@ body:has(.doing-shell) .mobile-character{display:none;}
 <script src="adapters/doing-explorer-controller.js"></script>
 <script src="adapters/doing-map-viewer.js?v=20260717b"></script>
 <script src="adapters/doing-map-controller.js?v=20260717"></script>
-<script src="adapters/doing-room-viewer.js?v=20260719b"></script>
+<script src="adapters/doing-room-viewer.js?v=20260721"></script>
 <script src="adapters/doing-panel-controller.js?v=20260721a"></script>
 <script src="core/knowing-progress.js?v=20260720b"></script>
 <script src="adapters/knowing-level-model.js"></script>
@@ -2866,7 +2871,7 @@ body:has(.doing-shell) .mobile-character{display:none;}
 <script src="assets/js/journey-data.js?v=20260720g"></script>
 <script src="core/journey-lesson-review.js?v=20260720a"></script>
 <script src="assets/js/guide-character-data.js"></script>
-<script src="assets/js/journey.js?v=20260721b"></script>
+<script src="assets/js/journey.js?v=20260721c"></script>
 <script src="adapters/journey-legacy-handlers.js"></script>
 
 <script src="assets/js/play.js"></script>
@@ -2878,7 +2883,7 @@ body:has(.doing-shell) .mobile-character{display:none;}
 <script src="assets/js/create-combos.js"></script>
 <script src="assets/js/references.js"></script>
 <script src="assets/js/map-node-data.js?v=20260717"></script>
-<script src="assets/js/map-node-info.js?v=20260720"></script>
+<script src="assets/js/map-node-info.js?v=20260721"></script>
 <script src="adapters/node-legacy-handlers.js"></script>
 <script>
 let _flameNode = localStorage.getItem('flameNode') || 'foundation';

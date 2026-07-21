@@ -9,6 +9,18 @@
     return root.NODE_DATA || {};
   }
 
+  function attr(value) {
+    return String(value == null ? '' : value).replace(/[&<>"']/g, function escapeAttr(character) {
+      return ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#39;'
+      })[character];
+    });
+  }
+
   function updateCurrentNodeMarker(nodeId) {
     root.document.querySelectorAll('.mn-g.current').forEach(function clearCurrent(node) {
       node.classList.remove('current');
@@ -67,6 +79,51 @@
         showNodeInfo(id);
       });
     });
+    renderMapNodeHitLayer();
+  }
+
+  function renderMapNodeHitLayer() {
+    var wrap = root.document.querySelector('.map-wrap');
+    if (!wrap) return;
+    var layer = wrap.querySelector('.map-node-hit-layer');
+    if (!layer) {
+      layer = root.document.createElement('div');
+      layer.className = 'map-node-hit-layer';
+      wrap.appendChild(layer);
+    }
+    var wrapRect = wrap.getBoundingClientRect();
+    var html = '';
+    root.document.querySelectorAll('.mn-g[data-node]').forEach(function addHit(node) {
+      var id = node.getAttribute('data-node');
+      var data = nodeData()[id] || {};
+      var rect = node.getBoundingClientRect();
+      if (!rect.width || !rect.height) return;
+      var size = Math.max(72, Math.min(150, Math.max(rect.width, rect.height) + 34));
+      if (id === 'mastery') size = Math.max(size, Math.min(190, Math.max(rect.width, rect.height)));
+      var left = rect.left - wrapRect.left + rect.width / 2;
+      var top = rect.top - wrapRect.top + rect.height / 2;
+      html += '<button type="button" class="map-node-hit" data-node-hit="' + attr(id) + '" ' +
+        'style="left:' + left.toFixed(2) + 'px;top:' + top.toFixed(2) + 'px;width:' + size.toFixed(2) + 'px;height:' + size.toFixed(2) + 'px" ' +
+        'aria-label="' + attr(data.locked ? (data.title || id) + ' locked' : 'Open ' + (data.title || id)) + '"' +
+        (data.locked ? ' aria-disabled="true" tabindex="-1"' : '') + '></button>';
+    });
+    layer.innerHTML = html;
+    layer.querySelectorAll('.map-node-hit').forEach(function bindHit(button) {
+      var id = button.getAttribute('data-node-hit');
+      var data = nodeData()[id] || {};
+      button.addEventListener('click', function openNodeHit(event) {
+        event.preventDefault();
+        if (!data.locked) showNodeInfo(id);
+      });
+      button.addEventListener('mouseenter', function previewNodeHit(event) {
+        var node = root.document.querySelector('.mn-g[data-node="' + id + '"]');
+        if (node) node.classList.add('current');
+        if (typeof root.showNodePreview === 'function') root.showNodePreview(id, event);
+      });
+      button.addEventListener('mouseleave', function clearPreviewNodeHit() {
+        if (typeof root.hideNodePreview === 'function') root.hideNodePreview();
+      });
+    });
   }
 
   function enterNodeAction(data) {
@@ -123,6 +180,10 @@
   });
 
   wireMapNodeAccess();
+  root.addEventListener('resize', function refreshMapNodeHitLayer() {
+    root.clearTimeout(root.__hearthMapHitLayerTimer);
+    root.__hearthMapHitLayerTimer = root.setTimeout(renderMapNodeHitLayer, 120);
+  });
 
   root.updateCurrentNodeMarker = updateCurrentNodeMarker;
   root.showNodeInfo = showNodeInfo;
@@ -131,4 +192,5 @@
   root.hideNodeInfo = hideNodeInfo;
   root.enterNode = enterNode;
   root.wireMapNodeAccess = wireMapNodeAccess;
+  root.renderMapNodeHitLayer = renderMapNodeHitLayer;
 })(window);

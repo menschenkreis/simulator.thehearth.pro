@@ -916,7 +916,7 @@
       : legacyCompletionClaim
         ? level.name+' is in consolidation. Earlier lesson records are kept, but the level stays open until the skills are demonstrated.'
       : 'Stay with '+level.name+'. Each dot shows what this level asks from that category.';
-    const actionLabel = companion ? 'Open Live Lesson' : progress.complete ? 'Review '+level.name : lessonsDone > 0 ? 'Continue '+level.name : 'Start Entry Check';
+    const actionLabel = companion ? 'Open Lesson Companion' : progress.complete ? 'Review '+level.name : lessonsDone > 0 ? 'Continue '+level.name : 'Start Entry Check';
     const categories = journeyRoadmapCategories();
     const doingEvents = journeyDoingEvents();
     const categoryLessons = {};
@@ -936,7 +936,7 @@
     if(studySignal && !companion) Object.assign(nextAction, studySignal);
 
     let html = '<div class="journey-shell journey-level-entry" style="--journey-level-color:'+attr(level.color)+';--journey-level-rgb:'+hexToRgb(level.color)+';--journey-level-progress:'+pct+'%">';
-    html += '<div class="journey-level-command-row"><button class="back-btn" onclick="Journey.render()">← Back</button>'+renderStudentPicker(state, student)+'</div>';
+    html += '<div class="journey-level-command-row compact"><button class="back-btn" onclick="Journey.render()">← Back</button><div class="journey-active-context"><span>Active learner</span><strong>'+esc(student.name)+'</strong></div></div>';
 
     html += '<section class="journey-level-entry-stage" aria-label="'+attr(level.name)+' curriculum path">';
     html += '<aside class="journey-entry-guide">';
@@ -987,7 +987,7 @@
         const click = unlocked ? ' onclick="Journey.openLevel('+lp.num+')"': ' disabled';
         html += '<button type="button" class="'+classes.join(' ')+'" style="--dot-color:'+attr(lp.color)+';--dot-rgb:'+hexToRgb(lp.color)+';--dot-progress:'+dotPct+'%"'+click+' title="'+attr(title)+'" aria-label="'+attr(title)+'">';
         html += '<b>L'+lp.num+'</b>';
-        html += '<span>'+esc(roadmapLevelText(section, lp))+'</span>';
+        html += '<span aria-hidden="true">'+esc(roadmapLevelText(section, lp))+'</span>';
         html += '</button>';
       });
       html += '</div>';
@@ -1000,7 +1000,7 @@
     html += '<div class="journey-entry-actions">';
     html += '<button class="journey-btn journey-begin-btn" onclick="Journey.beginLevel('+level.num+')">'+esc(actionLabel)+'</button>';
     if(companion){
-      html += '<button class="journey-btn secondary" onclick="Journey.openLesson('+(level.num)+','+nextLesson+')">Open Level Lesson</button>';
+      html += '<button class="journey-btn secondary" onclick="Journey.openLesson('+(level.num)+','+nextLesson+')">Standard lesson view</button>';
     }
     html += '</div>';
     html += '</div>';
@@ -1062,7 +1062,7 @@
     const displayedPractice = companionPracticeItems(savedReview, companion);
 
     let html = '<div class="journey-shell journey-live-companion">';
-    html += '<div class="journey-level-command-row"><button class="back-btn" onclick="Journey.render()">← Back</button>'+renderStudentPicker(state, student)+'</div>';
+    html += '<div class="journey-level-command-row compact"><button class="back-btn" onclick="Journey.render()">← Back</button><div class="journey-active-context"><span>Active learner</span><strong>'+esc(student.name)+'</strong></div></div>';
     html += '<section class="journey-live-stage">';
     html += '<aside class="journey-live-guide"><img src="'+attr(guideImage)+'" alt="" /><div class="journey-entry-bubble"><div class="journey-kicker">Guide</div><p>Keep this lesson calm and useful. Consolidate first, then make it musical.</p></div></aside>';
     html += '<div class="journey-live-panel">';
@@ -1172,7 +1172,11 @@
       .journey-home-title{font-family:Cinzel,serif;font-size:1.36rem;color:var(--gold);font-weight:800;letter-spacing:.03em;text-align:center;margin:0 0 10px}
       .journey-top-row{position:relative;z-index:20;display:flex;justify-content:center;width:100%}
       .journey-level-command-row{width:min(1384px,100%);display:flex;align-items:center;justify-content:space-between;gap:16px;position:relative;z-index:30}
+      .journey-level-command-row.compact{justify-content:space-between}
       .journey-level-command-row .journey-top-row{width:auto;justify-content:flex-end}
+      .journey-active-context{display:flex;flex-direction:column;align-items:flex-end;justify-content:center;min-height:34px;border:1px solid rgba(212,175,105,.12);border-radius:12px;background:rgba(255,255,255,.025);padding:7px 11px;box-shadow:inset 0 1px 0 rgba(255,255,255,.035)}
+      .journey-active-context span{font-family:JetBrains Mono,monospace;font-size:.47rem;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);line-height:1}
+      .journey-active-context strong{font-family:Cinzel,serif;font-size:.78rem;line-height:1.15;color:var(--gold);margin-top:2px}
       .journey-student-picker{position:relative}
       .journey-student-trigger{display:grid;grid-template-columns:1fr auto;grid-template-areas:"label icon" "name icon";align-items:center;column-gap:12px;min-width:210px;text-align:center;border:1px solid rgba(255,255,255,.12);background:rgba(24,22,19,.72);color:var(--text);border-radius:14px;padding:9px 12px;box-shadow:0 10px 24px rgba(0,0,0,.16);cursor:pointer;backdrop-filter:blur(14px)}
       .journey-student-trigger span{grid-area:label;font-family:JetBrains Mono,monospace;font-size:.53rem;letter-spacing:.13em;text-transform:uppercase;color:var(--dim)}
