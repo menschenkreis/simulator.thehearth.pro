@@ -557,15 +557,18 @@
     return html;
   }
 
-  function renderStudentPicker(state, student){
-    let html = '<div class="journey-top-row">' +
-      '<div class="journey-student-picker">' +
-        '<button type="button" class="journey-student-trigger" onclick="Journey.toggleStudentMenu(event)" aria-haspopup="menu">' +
-          '<span>Active learner</span>' +
-          '<strong>'+esc(student.name)+'</strong>' +
-          '<b>v</b>' +
-        '</button>' +
-        '<div class="journey-student-menu" role="menu">';
+  function renderStudentPicker(state, student, mode){
+    const globalMenu = mode === 'global-menu';
+    let html = '<div class="journey-top-row '+(globalMenu ? 'global-profile-menu-row' : '')+'">' +
+      '<div class="journey-student-picker '+(globalMenu ? 'global-profile-menu' : '')+'">';
+    if(!globalMenu){
+      html += '<button type="button" class="journey-student-trigger" onclick="Journey.toggleStudentMenu(event)" aria-haspopup="menu">' +
+        '<span>Active learner</span>' +
+        '<strong>'+esc(student.name)+'</strong>' +
+        '<b>v</b>' +
+      '</button>';
+    }
+    html += '<div class="journey-student-menu" role="menu">';
 
     state.students.forEach(s => {
       const active = s.id === student.id;
@@ -1184,6 +1187,11 @@
       .journey-student-option > button:first-child small{font-size:.58rem;color:var(--dim)}
       .journey-student-remove{border:0;background:transparent;color:rgba(212,175,105,.44);font-size:.68rem;padding:8px 9px;cursor:pointer}
       .journey-student-add{width:100%;margin-top:6px;border:1px solid rgba(212,175,105,.18);background:rgba(212,175,105,.07);color:var(--gold);border-radius:10px;padding:9px 10px;font-weight:800;cursor:pointer}
+      .journey-top-row.global-profile-menu-row{position:fixed;right:16px;top:62px;z-index:180;width:260px;height:0;margin:0;pointer-events:none}
+      .journey-student-picker.global-profile-menu{width:260px;pointer-events:none}
+      .journey-student-picker.global-profile-menu.open{pointer-events:auto}
+      .journey-student-picker.global-profile-menu .journey-student-menu{left:auto;right:0;top:0;transform:none}
+      .journey-student-picker.global-profile-menu.open .journey-student-menu{transform:none}
       .journey-home-actions{position:relative;z-index:12;display:flex;justify-content:center;align-items:center;gap:10px;flex-wrap:wrap;margin:-12px auto 0;padding:8px 10px;width:fit-content;max-width:min(520px,92vw);border:1px solid rgba(212,175,105,.16);border-radius:999px;background:rgba(13,11,8,.58);box-shadow:0 14px 34px rgba(0,0,0,.22);backdrop-filter:blur(14px)}
       .journey-home-actions .journey-btn{min-width:132px;border-radius:999px;padding:10px 16px}
       .journey-home-primary{box-shadow:0 0 22px rgba(212,175,105,.16)}
@@ -1506,7 +1514,7 @@
 
     let html = '<div class="journey-shell journey-home journey-map-home">';
 
-    html += renderStudentPicker(state, student);
+    html += renderStudentPicker(state, student, 'global-menu');
     html += '<div class="journey-entry-stage">';
     html += renderJourneyMapGuide(student);
     html += renderJourneyNeckStage(state, student, level, lvlState, levelPositions);

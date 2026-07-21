@@ -2197,9 +2197,33 @@ assert(timeSignaturePracticeSnapshot.study.nextFocus === "Apply Time Signatures 
 assert(timeSignaturePracticeSnapshot.recommendations.indexOf("Apply Time Signatures in Practice") !== -1, "Practice recommendations should include the completed Time Signatures Study result");
 assert(!/pentatonic|tonal centre|a root|a minor phrase/.test(timeSignaturePracticeText), "Time Signatures Practice handoff must not leak A-minor language");
 
+var journeySource = readText(root + "/assets/js/journey.js");
+var requiredCompanionHandoffs = {{
+  openCompanionCreate: "create",
+  openCompanionDoing: "doing",
+  openCompanionStudy: "study",
+  openCompanionHearth: "hearth",
+  openCompanionPractice: "practice",
+  openCompanionMastery: "mastery",
+  openCompanionPlay: "play"
+}};
+Object.keys(requiredCompanionHandoffs).forEach(function verifyCompanionHandoff(functionName) {{
+  var functionSource = extractFunctionSource(journeySource, functionName);
+  var destination = requiredCompanionHandoffs[functionName];
+  assert(functionSource.indexOf("destination_node_id:'" + destination + "'") !== -1, functionName + " should build a handoff to " + destination);
+  assert(functionSource.indexOf("learner_id:student.id") !== -1, functionName + " should keep the handoff learner-scoped");
+  assert(functionSource.indexOf("return_route:{{ node_id:'journey'") !== -1, functionName + " should keep a Journey return route");
+  assert(functionSource.indexOf("fallback_instruction:") !== -1, functionName + " should provide a fallback instruction");
+  assert(functionSource.indexOf("store.set(") !== -1, functionName + " should store the cross-node handoff before opening the node");
+}});
+
 function extractFunctionSource(source, name) {{
   var marker = "function " + name + "(";
   var start = source.indexOf(marker);
+  if (start === -1) {{
+    marker = name + "(studentId";
+    start = source.indexOf(marker);
+  }}
   assert(start !== -1, "Could not find Journey helper: " + name);
   var braceStart = source.indexOf("{{", start);
   var depth = 0;
