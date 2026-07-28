@@ -202,24 +202,206 @@ assert(HearthDoingConfig.focusCats.length === 4, "Doing config should expose foc
 assert(HearthDoingConfig.roomDrillPlans["left-hand"][1].indexOf("chrom-1") !== -1, "Doing config should expose curated room drills");
 var doingFeedbackEvent = HearthDoingProgressBridge.feedbackEvent({{
   category: {{ id: "scales", title: "Scales" }},
-  drill: {{ id: "pent-1", title: "A Minor Pentatonic Box 1", duration: "5 min" }},
+  drill: {{
+    id: "pent-1",
+    title: "A Minor Pentatonic Box 1",
+    duration: "5 min",
+    easier: "Use only the lowest two strings.",
+    passCondition: "Play the shape and land on three A roots.",
+    capabilityIds: ["L1-MAP-01", "L1-READ-01"]
+  }},
+  learnerId: "jen-1",
   state: "clean",
   level: 1,
-  room: "left-hand"
+  room: "left-hand",
+  sessionId: "practice-session-1",
+  occurredAt: "2026-07-19T08:00:00.000Z",
+  recordedAt: "2026-07-19T08:00:02.000Z"
 }});
 assert(doingFeedbackEvent.event_type === "drill_feedback_recorded", "Doing feedback should use the shared event vocabulary");
 assert(doingFeedbackEvent.rating === 3 && doingFeedbackEvent.journey_level_id === "L1", "Doing feedback should preserve skill strength and level");
+assert(doingFeedbackEvent.learner_id === "jen-1", "Doing feedback should explicitly preserve the active learner");
 assert(doingFeedbackEvent.data.journey_categories.indexOf("Scales") !== -1, "Doing feedback should map into Journey categories");
-var doingEvidenceEvents = [Object.assign({{ learner_id: "jen-1", created_at: new Date().toISOString() }}, doingFeedbackEvent)];
+assert(doingFeedbackEvent.activity_id === "pent-1" && doingFeedbackEvent.capability_ids.indexOf("L1-MAP-01") !== -1, "Doing feedback should carry canonical activity and capability IDs at the top level");
+assert(doingFeedbackEvent.data.activity_id === doingFeedbackEvent.activity_id && doingFeedbackEvent.data.capability_ids[0] === doingFeedbackEvent.capability_ids[0], "Doing feedback should mirror new envelope fields for the legacy event store");
+[
+  "destination_node_id", "activity_id", "capability_ids", "attempt_id", "session_id",
+  "evidence_stage", "evidence_source", "occurred_at", "recorded_at", "return_route",
+  "fallback_instruction"
+].forEach(function verifyDoingCompatibilityMirror(field) {{
+  assert(JSON.stringify(doingFeedbackEvent.data[field]) === JSON.stringify(doingFeedbackEvent[field]), "Doing feedback should mirror canonical field under data: " + field);
+}});
+assert(!Object.prototype.hasOwnProperty.call(doingFeedbackEvent, "source_node_id") && !Object.prototype.hasOwnProperty.call(doingFeedbackEvent.data, "destination_node_ids") && !Object.prototype.hasOwnProperty.call(doingFeedbackEvent.data, "practice_session_id"), "Doing feedback should not emit retired private contract names");
+assert(doingFeedbackEvent.destination_node_id === null && doingFeedbackEvent.data.destination_node_id === null, "Evidence events should remain broadcasts rather than multi-destination commands");
+assert(doingFeedbackEvent.attempt_id && doingFeedbackEvent.session_id === "practice-session-1", "Doing feedback should distinguish one attempt from its enclosing Practice session");
+assert(doingFeedbackEvent.evidence_stage === "demonstration" && doingFeedbackEvent.evidence_source === "self_report", "Doing feedback should use the shared evidence vocabulary");
+assert(doingFeedbackEvent.occurred_at === "2026-07-19T08:00:00.000Z" && doingFeedbackEvent.recorded_at === "2026-07-19T08:00:02.000Z" && doingFeedbackEvent.created_at === doingFeedbackEvent.occurred_at, "Doing feedback should preserve canonical and legacy timestamps");
+assert(doingFeedbackEvent.return_route.view_id === "room-concept" && doingFeedbackEvent.return_route.params.drill_id === "pent-1", "Doing feedback should keep a canonical local return route");
+assert(doingFeedbackEvent.data.task.id === "pent-1" && doingFeedbackEvent.data.task.parameters.drill_id === "pent-1", "Legacy event data should mirror the exact structured task");
+assert(doingFeedbackEvent.data.pass_condition.description.indexOf("three A roots") !== -1 && doingFeedbackEvent.data.easier_step.instruction.indexOf("lowest two strings") !== -1, "Legacy event data should mirror structured handoff recovery fields");
+var doingEvidenceEvents = [Object.assign({{ created_at: new Date().toISOString() }}, doingFeedbackEvent)];
 var doingScaleEvidence = HearthDoingProgressBridge.summaryForJourneyCategory(doingEvidenceEvents, "jen-1", "Scales", 1);
 assert(doingScaleEvidence.count === 1 && doingScaleEvidence.strongestLabel === "Clean once", "Journey should summarize learner-specific Do evidence");
 assert(HearthDoingProgressBridge.practiceRecommendations(doingEvidenceEvents, "jen-1", 2)[0].indexOf("reliable") !== -1, "Practice should receive an unfinished Do recommendation");
+var doingOpenedEvent = HearthDoingProgressBridge.drillOpenedEvent({{
+  category: {{ id: "scales", title: "Scales" }},
+  drill: {{ id: "pent-1", title: "A Minor Pentatonic Box 1" }},
+  learnerId: "jen-1",
+  level: 1,
+  room: "left-hand"
+}});
+assert(doingOpenedEvent.event_type === "drill_opened" && doingOpenedEvent.data.state === "seen", "Opening a Do drill should create learner evidence without claiming practice");
+assert(doingOpenedEvent.attempt_id === null && doingOpenedEvent.evidence_stage === "contact" && doingOpenedEvent.evidence_source === "direct_interaction", "Opening a Do drill should use the shared contact evidence contract");
+assert(HearthDoingProgressBridge.feedbackEvent({{ category: {{ id: "scales" }}, drill: {{ id: "pent-1" }}, state: "clean" }}) === null, "Do should not emit learner-owned evidence without an explicit learner ID");
+var separatedDoingProgress = HearthDoingProgressBridge.progressForLearner([
+  Object.assign({{ created_at: "2026-07-19T08:00:00.000Z" }}, doingOpenedEvent),
+  Object.assign({{ created_at: "2026-07-19T08:01:00.000Z" }}, doingFeedbackEvent),
+  {{
+    event_type: "drill_feedback_recorded",
+    learner_id: "ayla-1",
+    drill_id: "pent-1",
+    rating: 5,
+    data: {{ state: "mastered" }},
+    created_at: "2026-07-19T08:02:00.000Z"
+  }}
+], "jen-1");
+assert(separatedDoingProgress["pent-1"] === "clean", "Do rings should use only the selected learner's latest evidence");
+
+var singleMasteredEvent = HearthDoingProgressBridge.feedbackEvent({{
+  category: {{ id: "scales", title: "Scales" }},
+  drill: {{ id: "pent-1", title: "A Minor Pentatonic Box 1", easier: "Use two strings." }},
+  learnerId: "jen-1",
+  state: "mastered",
+  level: 1,
+  room: "left-hand"
+}});
+singleMasteredEvent.created_at = "2026-07-19T08:00:00.000Z";
+var singleMasteryEvidence = HearthDoingProgressBridge.evidenceForDrill([singleMasteredEvent], "jen-1", "pent-1");
+assert(singleMasteryEvidence.projectedState === "clean", "One self-rated Mastered click must produce only one clean evidence pass");
+assert(HearthDoingProgressBridge.summaryForJourneyCategory([singleMasteredEvent], "jen-1", "Scales", 1).strongestState === "clean", "Journey must receive trusted Do evidence rather than the raw self-rating");
+
+var secondCleanEvent = Object.assign({{}}, doingFeedbackEvent, {{ created_at: "2026-07-19T08:01:00.000Z" }});
+var sameDayEvidence = HearthDoingProgressBridge.evidenceForDrill([singleMasteredEvent, secondCleanEvent], "jen-1", "pent-1");
+assert(sameDayEvidence.projectedState === "comfortable" && sameDayEvidence.cleanPasses === 2, "Two separate clean attempts should build comfort");
+var nextDayMasteredEvent = Object.assign({{}}, singleMasteredEvent, {{
+  id: "doing-event-next-day",
+  attempt_id: "doing-attempt-next-day",
+  created_at: "2026-07-20T08:00:00.000Z",
+  data: Object.assign({{}}, singleMasteredEvent.data, {{ attempt_id: "doing-attempt-next-day" }})
+}});
+var trustedMasteryEvidence = HearthDoingProgressBridge.evidenceForDrill([singleMasteredEvent, secondCleanEvent, nextDayMasteredEvent], "jen-1", "pent-1");
+assert(trustedMasteryEvidence.projectedState === "mastered" && trustedMasteryEvidence.distinctDays === 2, "Mastery should require repeated clean evidence across two days");
+var quickDuplicateEvidence = HearthDoingProgressBridge.evidenceForDrill([
+  singleMasteredEvent,
+  Object.assign({{}}, secondCleanEvent, {{ created_at: "2026-07-19T08:00:10.000Z" }})
+], "jen-1", "pent-1");
+assert(quickDuplicateEvidence.cleanPasses === 1, "Immediate duplicate clicks should not count as separate clean attempts");
+
+var repeatedFeedbackEvents = [];
+var repeatedFeedbackStore = {{ append: function(event) {{ repeatedFeedbackEvents.push(event); return event; }} }};
+HearthDoingProgressBridge.recordFeedback({{
+  category: {{ id: "scales", title: "Scales" }},
+  drill: {{ id: "pent-1", title: "A Minor Pentatonic Box 1" }},
+  learnerId: "jen-1",
+  state: "clean",
+  previousState: "clean",
+  occurredAt: "2026-07-20T10:00:00.000Z",
+  eventStore: repeatedFeedbackStore
+}});
+HearthDoingProgressBridge.recordFeedback({{
+  category: {{ id: "scales", title: "Scales" }},
+  drill: {{ id: "pent-1", title: "A Minor Pentatonic Box 1" }},
+  learnerId: "jen-1",
+  state: "clean",
+  previousState: "clean",
+  occurredAt: "2026-07-20T10:01:00.000Z",
+  eventStore: repeatedFeedbackStore
+}});
+assert(repeatedFeedbackEvents.length === 2 && repeatedFeedbackEvents[0].attempt_id !== repeatedFeedbackEvents[1].attempt_id, "Repeating the same rating after a deliberate fresh attempt should add distinct evidence");
+
+var tooHardEvent = HearthDoingProgressBridge.feedbackEvent({{
+  category: {{ id: "fretting", title: "Fretting" }},
+  drill: {{ id: "chrom-1", title: "1-2-3-4 Clean Contact", easier: "Use only fingers 1 and 2 on one string." }},
+  learnerId: "jen-1",
+  state: "seen",
+  level: 1,
+  room: "left-hand"
+}});
+tooHardEvent.created_at = "2026-07-20T09:00:00.000Z";
+assert(tooHardEvent.data.recommended_difficulty === "easier", "Too hard feedback should request an easier gradient");
+assert(tooHardEvent.evidence_stage === "attempt" && tooHardEvent.evidence_source === "self_report", "Too hard feedback should remain attempt evidence rather than being reduced to opening contact");
+assert(HearthDoingProgressBridge.practiceRecommendations([tooHardEvent], "jen-1", 1)[0].indexOf("Use only fingers 1 and 2") !== -1, "Practice should receive the drill's exact easier next step");
+var tooHardEvidence = HearthDoingProgressBridge.evidenceForDrill([tooHardEvent], "jen-1", "chrom-1");
+var tooHardEvidenceHtml = HearthDoingTeachingViewer.renderEvidence({{
+  evidence: tooHardEvidence,
+  easier: tooHardEvent.data.easier_step,
+  ui: HearthDoingUiUtils
+}});
+assert(tooHardEvidenceHtml.indexOf("Easier step saved for Practice") !== -1 && tooHardEvidenceHtml.indexOf("Use only fingers 1 and 2") !== -1, "The drill scene should explain the saved easier next step");
+
+var doingStorageValues = {{
+  "hearth-journey-v2": JSON.stringify({{ activeStudentId: "ayla-1" }}),
+  "hearth-doing-progress": JSON.stringify({{ "pent-1": "comfortable" }})
+}};
+var doingMemoryStorage = {{
+  getItem: function(key) {{ return Object.prototype.hasOwnProperty.call(doingStorageValues, key) ? doingStorageValues[key] : null; }},
+  setItem: function(key, value) {{ doingStorageValues[key] = String(value); }}
+}};
+var migratedDoingEvents = [];
+var doingMemoryEventStore = {{
+  list: function() {{ return migratedDoingEvents.slice(); }},
+  append: function(event) {{
+    var saved = Object.assign({{ id: "doing-event-" + (migratedDoingEvents.length + 1), created_at: new Date().toISOString() }}, event);
+    migratedDoingEvents.push(saved);
+    return saved;
+  }}
+}};
+var migrationDoing = {{
+  categories: [{{
+    id: "scales",
+    title: "Scales",
+    drills: [{{ id: "pent-1", title: "A Minor Pentatonic Box 1", duration: "5 min" }}]
+  }}]
+}};
+var doingMigration = HearthDoingProgressBridge.migrateLegacyProgress({{
+  doing: migrationDoing,
+  eventStore: doingMemoryEventStore,
+  learnerId: "ayla-1",
+  levelForDrill: function() {{ return 1; }},
+  storage: doingMemoryStorage
+}});
+assert(doingMigration.migrated && doingMigration.count === 1, "Legacy Do progress should migrate once without being deleted");
+assert(migratedDoingEvents[0].evidence_source === "migrated_legacy", "Migrated Do progress should declare its weaker legacy evidence source");
+assert(HearthDoingProgressBridge.progressForLearner(migratedDoingEvents, "ayla-1")["pent-1"] === "comfortable", "Migrated Do progress should appear for its assigned learner");
+assert(!HearthDoingProgressBridge.progressForLearner(migratedDoingEvents, "jen-1")["pent-1"], "Migrated Do progress should not leak into another learner's rings");
+var jenMigrationAttempt = HearthDoingProgressBridge.migrateLegacyProgress({{
+  doing: migrationDoing,
+  eventStore: doingMemoryEventStore,
+  learnerId: "jen-1",
+  levelForDrill: function() {{ return 1; }},
+  storage: doingMemoryStorage
+}});
+assert(jenMigrationAttempt.reason === "assigned_elsewhere" && migratedDoingEvents.length === 1, "The same legacy Do progress should never be copied into a second profile");
+assert(doingMemoryStorage.getItem("hearth-doing-progress") === JSON.stringify({{ "pent-1": "comfortable" }}), "Do migration should preserve the original legacy data for recovery");
 var curatedDoing = {{ categories: [{{ id: "picking", title: "Picking", drills: [{{ id: "alt-1", title: "Old title", style: "rock", source: "Test", duration: "5 min", body: "<p>Test</p>" }}, {{ id: "alt-2", title: "Draft", style: "rock", source: "Test", duration: "5 min", body: "<p>Test</p>" }}] }}] }};
 HearthDoingDrillCatalog.apply(curatedDoing);
 assert(curatedDoing.catalog.approvedCount === 13, "Doing catalogue should expose the reviewed drill count");
 assert(HearthDoingDrillCatalog.findDrill(curatedDoing, "alt-1").title.indexOf("One String") !== -1, "Doing catalogue should apply reviewed teaching data");
 assert(HearthDoingDrillCatalog.findDrill(curatedDoing, "alt-2").reviewStatus === "draft", "Doing catalogue should preserve unreviewed drills as drafts");
 assert(HearthDoingDrillCatalog.findDrill(curatedDoing, "chord-change-am-c").reviewStatus === "approved", "Doing catalogue should add reviewed chord drills");
+assert(HearthDoingDrillCatalog.reviewed["pent-1"].capabilityIds.indexOf("L1-MAP-01") !== -1, "Reviewed drills should carry Journey capability mappings");
+Object.keys(HearthDoingDrillCatalog.reviewed).forEach(function verifyDoingCapabilityAuthority(drillId) {{
+  var drill = HearthDoingDrillCatalog.reviewed[drillId];
+  (drill.capabilityIds || []).forEach(function verifyCreditBearingCapability(capabilityId) {{
+    var capability = JOURNEY_LEVEL_CAPABILITIES.L1.find(function findCapability(item) {{ return item.id === capabilityId; }});
+    assert(capability && capability.nodeIds.indexOf("doing") !== -1, "Do evidence may only claim a capability authorized for doing: " + drillId + " / " + capabilityId);
+  }});
+  (drill.relatedCapabilityIds || []).forEach(function verifyRelatedCapability(capabilityId) {{
+    assert(journeyCapabilityIds[capabilityId], "Do related capability must still use a stable Journey ID: " + drillId + " / " + capabilityId);
+  }});
+}});
+assert(HearthDoingDrillCatalog.reviewed["chrom-1"].capabilityIds.length === 0 && HearthDoingDrillCatalog.reviewed["chrom-1"].relatedCapabilityIds.indexOf("L1-PRACTICE-01") !== -1, "Do should keep non-credit Practice outcomes separate from evidence capability IDs");
+assert(HearthDoingDrillCatalog.reviewed["pent-roots-time"].capabilityIds.indexOf("L1-PLAY-01") === -1 && HearthDoingDrillCatalog.reviewed["pent-roots-time"].relatedCapabilityIds.indexOf("L1-PLAY-01") !== -1, "Do should not claim Play-owned musical exchange evidence");
 var tabPilot = HearthDoingDrillCatalog.reviewed["chrom-1"];
 assert(tabPilot.visualType === "interactive-tab", "1-2-3-4 should use the interactive tab renderer");
 var tabPilotHtml = HearthDoingTeachingViewer.renderVisual(tabPilot, HearthDoingUiUtils);
@@ -250,6 +432,17 @@ var rootsPilotScene = HearthDoingTeachingViewer.renderScene({{
 }});
 assert(rootsPilotScene.indexOf("Make it musical") !== -1, "A Root Notes in Time should offer an optional Create handoff");
 assert(rootsPilotScene.indexOf("_openDoingCreate") !== -1 && rootsPilotScene.indexOf("pent-roots-time") !== -1, "Doing Create handoff should preserve its drill source");
+var doingEvidenceHtml = HearthDoingTeachingViewer.renderEvidence({{
+  evidence: {{ projectedState: "mastered", message: "Three clean attempts across two days support mastery." }},
+  ui: HearthDoingUiUtils
+}});
+assert(doingEvidenceHtml.indexOf('data-evidence-state="mastered"') !== -1 && doingEvidenceHtml.indexOf("Mastery supported") !== -1, "Doing teaching viewer should explain projected mastery evidence");
+var doingEasierEvidenceHtml = HearthDoingTeachingViewer.renderEvidence({{
+  evidence: {{ projectedState: "seen", needsEasierStep: true, message: "Use the easier step." }},
+  easier: "Use two strings.",
+  ui: HearthDoingUiUtils
+}});
+assert(doingEasierEvidenceHtml.indexOf("needs-easier") !== -1 && doingEasierEvidenceHtml.indexOf("Use two strings") !== -1, "Doing teaching viewer should surface the reviewed easier step");
 assert(HearthDoingUiUtils.escapeHtml("<pick>") === "&lt;pick&gt;", "Doing UI utils should escape HTML");
 assert(HearthDoingUiUtils.drillShort({{ title: "Alternate Picking" }}) === "AP", "Doing UI utils should build drill initials");
 var practiceEntrySnapshot = HearthPracticeEntryModel.buildSnapshot({{

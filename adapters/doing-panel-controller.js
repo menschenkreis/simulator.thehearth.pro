@@ -43,7 +43,17 @@
       drillCatalog.apply(doing);
     }
     var storage = root.localStorage;
-    var progress = JSON.parse((storage && storage.getItem("hearth-doing-progress")) || "{}");
+    var progressBridge = root.HearthDoingProgressBridge;
+    var eventStore = root.HearthProgressEvents;
+    var learnerId = progressBridge && typeof progressBridge.activeLearnerId === "function"
+      ? progressBridge.activeLearnerId(storage)
+      : null;
+    var legacyProgress = {};
+    try {
+      legacyProgress = JSON.parse((storage && storage.getItem("hearth-doing-progress")) || "{}");
+    } catch (error) {
+      legacyProgress = {};
+    }
     var doingConfig = root.HearthDoingConfig;
     var doingUi = root.HearthDoingUiUtils;
     var doingBoard = root.HearthDoingDrillBoardModel;
@@ -54,6 +64,24 @@
     var stateLabels = doingConfig.stateLabels;
     var guitarZones = doingConfig.guitarZones;
     var focusCats = doingConfig.focusCats;
+    var learnerProgressReady = Boolean(
+      learnerId && progressBridge && typeof progressBridge.progressForLearner === "function" &&
+      eventStore && typeof eventStore.list === "function"
+    );
+    if (learnerProgressReady && typeof progressBridge.migrateLegacyProgress === "function") {
+      var migrationResult = progressBridge.migrateLegacyProgress({
+        doing: doing,
+        eventStore: eventStore,
+        learnerId: learnerId,
+        levelForDrill: doingConfig.levelForDrill,
+        stateLabels: stateLabels,
+        storage: storage
+      });
+      if (migrationResult && migrationResult.reason === "append_failed") learnerProgressReady = false;
+    }
+    var progress = learnerProgressReady
+      ? progressBridge.progressForLearner(eventStore.list(storage), learnerId)
+      : legacyProgress;
     var progressSummary = doingBoard.summarizeProgress(doing, progress, stateOrder);
     var nextDrill = doingBoard.findNextDrill(doing, progress, stateOrder);
     var state = {
@@ -70,10 +98,42 @@
       activeRoomDrill: null
     };
 
-    function practiceReturnHtml() {
-      var activeSession = root.PracticePlannedSession && typeof root.PracticePlannedSession.current === "function"
+    function refreshProgressProjection(projectEvents) {
+      if (learnerProgressReady && projectEvents !== false) {
+        progress = progressBridge.progressForLearner(eventStore.list(storage), learnerId);
+      }
+      progressSummary = doingBoard.summarizeProgress(doing, progress, stateOrder);
+      nextDrill = doingBoard.findNextDrill(doing, progress, stateOrder);
+    }
+
+    function activePracticeSession() {
+      var session = root.PracticePlannedSession && typeof root.PracticePlannedSession.current === "function"
         ? root.PracticePlannedSession.current()
         : null;
+      var sessionLearnerId = session && session.learner && session.learner.id;
+      if (sessionLearnerId && String(sessionLearnerId) !== String(learnerId)) return null;
+      return session;
+    }
+
+    function activePracticeContext() {
+      var session = activePracticeSession();
+      if (!session || !session.id) return {};
+      return {
+        lessonId: session.lessonId || null,
+        sessionId: session.id,
+        returnRoute: {
+          node_id: "practice",
+          view_id: "planned-session",
+          params: {
+            session_id: session.id,
+            action: "PracticePlannedSession.resume"
+          }
+        }
+      };
+    }
+
+    function practiceReturnHtml() {
+      var activeSession = activePracticeSession();
       if (!activeSession) return "";
       return '<button type="button" class="doing-practice-return" onclick="window.PracticePlannedSession.resume()">' +
         '<span>&larr;</span><b>Guided practice</b><small>' + doingUi.escapeHtml(activeSession.focus || "Current focus") + '</small>' +
@@ -101,6 +161,21 @@
 
     function getState(drillId) {
       return doingBoard.getState(progress, stateOrder, drillId);
+    }
+
+    function getEvidence(drillId) {
+      if (learnerProgressReady && progressBridge && typeof progressBridge.evidenceForDrill === "function") {
+        return progressBridge.evidenceForDrill(eventStore.list(storage), learnerId, drillId);
+      }
+      return {
+        projectedState: getState(drillId),
+        latestSelfState: getState(drillId),
+        feedbackCount: getState(drillId) ? 1 : 0,
+        cleanPasses: stateOrder.indexOf(getState(drillId)) >= stateOrder.indexOf("clean") ? 1 : 0,
+        distinctDays: 0,
+        needsEasierStep: getState(drillId) === "seen",
+        message: "Progress is available for this session."
+      };
     }
 
     function progressDegrees(drillId) {
@@ -149,19 +224,51 @@
 
     function recordDrillFeedback(catId, drillId, nextState, previousState, room) {
       var entry = findDrillEntry(drillId);
-      var bridge = root.HearthDoingProgressBridge;
+      var bridge = progressBridge;
       if (!entry || entry.cat.id !== catId || !bridge || typeof bridge.recordFeedback !== "function") return;
-      bridge.recordFeedback({
+      var context = activePracticeContext();
+      return bridge.recordFeedback({
         category: entry.cat,
         drill: entry.drill,
+        learnerId: learnerId,
         state: nextState,
         previousState: previousState,
         stateLabels: stateLabels,
         room: room,
         level: getDoingLevel(entry.drill),
+        lessonId: context.lessonId,
+        sessionId: context.sessionId,
+        returnRoute: context.returnRoute,
         eventStore: root.HearthProgressEvents,
         storage: storage
       });
+    }
+
+    function recordDrillOpen(cat, drill, room) {
+      if (!progressBridge || typeof progressBridge.recordOpen !== "function") {
+        progress[drill.id] = "seen";
+        refreshProgressProjection(false);
+        return null;
+      }
+      var context = activePracticeContext();
+      var recorded = progressBridge.recordOpen({
+        category: cat,
+        drill: drill,
+        learnerId: learnerId,
+        level: getDoingLevel(drill),
+        room: room,
+        lessonId: context.lessonId,
+        sessionId: context.sessionId,
+        returnRoute: context.returnRoute,
+        eventStore: eventStore,
+        storage: storage
+      });
+      if (recorded && learnerProgressReady) refreshProgressProjection();
+      else {
+        progress[drill.id] = "seen";
+        refreshProgressProjection(false);
+      }
+      return recorded;
     }
 
     root.showDoingDrill = function showDoingDrill(catId, drillId) {
@@ -171,9 +278,7 @@
       var drill = cat.drills.find(function findDrill(item) { return item.id === drillId; });
       if (!drill) return;
       if (!getState(drillId)) {
-        progress[drillId] = "seen";
-        if (storage) storage.setItem("hearth-doing-progress", JSON.stringify(progress));
-        progressSummary = doingBoard.summarizeProgress(doing, progress, stateOrder);
+        recordDrillOpen(cat, drill, "library");
       }
       var level = levels.find(function findLevel(item) {
         return item.level === getDoingLevel(drill);
@@ -184,6 +289,7 @@
         drill: drill,
         level: level,
         state: getState(drillId),
+        evidence: getEvidence(drillId),
         config: doingConfig,
         ui: doingUi,
         backAction: "window._doingBackToLibrary"
@@ -193,10 +299,12 @@
     root.setDoingDrillState = function setDoingDrillState(catId, drillId, nextState) {
       if (stateOrder.indexOf(nextState) < 0) return;
       var previousState = getState(drillId);
-      progress[drillId] = nextState;
-      if (storage) storage.setItem("hearth-doing-progress", JSON.stringify(progress));
-      progressSummary = doingBoard.summarizeProgress(doing, progress, stateOrder);
-      recordDrillFeedback(catId, drillId, nextState, previousState, state.activeBoard === "all" ? "library" : state.activeBoard);
+      var recorded = recordDrillFeedback(catId, drillId, nextState, previousState, state.activeBoard === "all" ? "library" : state.activeBoard);
+      if (recorded && learnerProgressReady) refreshProgressProjection();
+      else if (previousState !== nextState) {
+        progress[drillId] = nextState;
+        refreshProgressProjection(false);
+      }
       root.showDoingDrill(catId, drillId);
     };
 
@@ -292,6 +400,7 @@
         roomDrills: roomDrills,
         selectedItem: selectedItem,
         getState: getState,
+        getEvidence: getEvidence,
         progressDegrees: progressDegrees,
         stateLabels: stateLabels
       });
@@ -311,9 +420,7 @@
       var drill = cat.drills.find(function findDrill(item) { return item.id === drillId; });
       if (!drill) return;
       if (!getState(drillId)) {
-        progress[drillId] = "seen";
-        if (storage) storage.setItem("hearth-doing-progress", JSON.stringify(progress));
-        progressSummary = doingBoard.summarizeProgress(doing, progress, stateOrder);
+        recordDrillOpen(cat, drill, state.activeRoomConcept || "room");
       }
       state.activeRoomDrill = { catId: catId, drillId: drillId };
       state.doingView = "room-concept";
@@ -324,10 +431,12 @@
     root._setDoingRoomDrillState = function setDoingRoomDrillState(catId, drillId, nextState) {
       if (stateOrder.indexOf(nextState) < 0) return;
       var previousState = getState(drillId);
-      progress[drillId] = nextState;
-      if (storage) storage.setItem("hearth-doing-progress", JSON.stringify(progress));
-      progressSummary = doingBoard.summarizeProgress(doing, progress, stateOrder);
-      recordDrillFeedback(catId, drillId, nextState, previousState, state.activeRoomConcept || "room");
+      var recorded = recordDrillFeedback(catId, drillId, nextState, previousState, state.activeRoomConcept || "room");
+      if (recorded && learnerProgressReady) refreshProgressProjection();
+      else if (previousState !== nextState) {
+        progress[drillId] = nextState;
+        refreshProgressProjection(false);
+      }
       state.activeRoomDrill = { catId: catId, drillId: drillId };
       state.doingView = "room-concept";
       shell();
@@ -455,7 +564,7 @@
   }
 
   return {
-    version: "0.1.0",
+    version: "0.3.0",
     applyState: applyState,
     showDoing: showDoing
   };
