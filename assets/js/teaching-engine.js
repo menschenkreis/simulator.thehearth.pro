@@ -13,7 +13,10 @@ const CHAR = {
   neutral:    'images/character-face/Neutral.png',
   encouraging:'images/character-face/Encouraging.png',
   thinking:   'images/character-face/Thinking.png',
-  celebratory:'images/character-face/Celebratory.png'
+  celebratory:'images/character-face/Celebratory.png',
+  headNeutral:'images/character-generated/guide-head-neutral-v1-ui.webp',
+  headQuestion:'images/character-generated/guide-head-question-v1-ui.webp',
+  lightbulb:  'images/character-generated/guide-head-lightbulb-v1-ui.webp'
 };
 
 // ── Conversation Step Types ──
@@ -41,6 +44,37 @@ function createTeachingEngine(containerEl, opts){
     scores: {},       // per-concept right/wrong tracking
     completed: false
   };
+  var coreController = null;
+
+  function createCoreController(lesson){
+    if(!window.HearthTeachingEngineCoreAdapter) return null;
+    try {
+      var progressStore = opts.progressStore || null;
+      if(!progressStore && window.HearthBrowserProgressStore && window.HearthLearnerProgress){
+        progressStore = window.HearthBrowserProgressStore.createBrowserProgressStore({
+          progressCore: window.HearthLearnerProgress
+        });
+      }
+      return window.HearthTeachingEngineCoreAdapter.createTeachingLessonController({
+        seed: lesson,
+        progressStore: progressStore
+      });
+    } catch(error) {
+      if(window.console && console.warn){
+        console.warn('TeachingEngine clean core bridge disabled:', error.message);
+      }
+      return null;
+    }
+  }
+
+  function syncStateFromCore(coreState){
+    if(!coreState || !coreState.session) return;
+    state.stepIdx = coreState.session.step_index;
+    state.history = coreState.session.history.slice();
+    state.wrongCount = coreState.session.wrong_count;
+    state.scores = Object.assign({}, coreState.session.scores);
+    state.completed = coreState.session.completed;
+  }
 
   // ── Render a single step ──
   function renderStep(step, lesson){
@@ -110,6 +144,10 @@ function createTeachingEngine(containerEl, opts){
         if(choice.correct){
           state.scores[concept].right++;
           state.wrongCount = 0;
+          if(coreController){
+            var correctCoreAnswer = coreController.answerChoice(idx);
+            syncStateFromCore(correctCoreAnswer.state);
+          }
           if(typeof playSfx==='function')playSfx('lesson-correct');
 
           // Flash green
@@ -131,6 +169,10 @@ function createTeachingEngine(containerEl, opts){
         } else {
           state.scores[concept].wrong++;
           state.wrongCount++;
+          if(coreController){
+            var wrongCoreAnswer = coreController.answerChoice(idx);
+            syncStateFromCore(wrongCoreAnswer.state);
+          }
           if(typeof playSfx==='function')playSfx('lesson-wrong');
 
           // Flash red
@@ -164,6 +206,24 @@ function createTeachingEngine(containerEl, opts){
   }
 
   function renderAction(step, lesson){
+    var rendererKey = step.renderer_key || step.rendererKey;
+    var rendererRegistry = opts.rendererRegistry || window.HearthActionRendererRegistry || null;
+    if(rendererKey && rendererRegistry && typeof rendererRegistry.has === 'function' && rendererRegistry.has(rendererKey)){
+      rendererRegistry.render(rendererKey, {
+        container: container,
+        step: step,
+        lesson: lesson,
+        state: state,
+        advance: function(){ advance(lesson); },
+        config: step.renderer_config || step.rendererConfig || {}
+      });
+      return;
+    }
+
+    if(rendererKey && window.console && console.warn){
+      console.warn('Missing action renderer:', rendererKey);
+    }
+
     if(typeof step.render === 'function'){
       step.render(container, function(){ advance(lesson); }, lesson, state);
       return;
@@ -317,6 +377,9 @@ function createTeachingEngine(containerEl, opts){
     container.querySelectorAll('.teach-nav-btn').forEach(btn => {
       btn.addEventListener('click', function(){
         state.completed = true;
+        if(coreController){
+          syncStateFromCore(coreController.complete());
+        }
         if(opts.onComplete) opts.onComplete(state.scores);
       });
     });
@@ -411,6 +474,17 @@ function createTeachingEngine(containerEl, opts){
   }
 
   function advance(lesson){
+    if(coreController){
+      var coreState = coreController.advance();
+      syncStateFromCore(coreState);
+      if(state.completed){
+        renderEnd({text: lesson.completeText || '<p>Lesson complete!</p>', buttonLabel: 'Continue →'}, lesson);
+      } else if(state.stepIdx < lesson.steps.length){
+        renderStep(lesson.steps[state.stepIdx], lesson);
+      }
+      return;
+    }
+
     state.history.push(state.stepIdx);
     state.stepIdx++;
     if(state.stepIdx < lesson.steps.length){
@@ -421,6 +495,13 @@ function createTeachingEngine(containerEl, opts){
   }
 
   function back(lesson){
+    if(coreController){
+      var coreState = coreController.back();
+      syncStateFromCore(coreState);
+      renderStep(lesson.steps[state.stepIdx], lesson);
+      return;
+    }
+
     if(state.history.length > 0){
       state.stepIdx = state.history.pop();
       renderStep(lesson.steps[state.stepIdx], lesson);
@@ -430,6 +511,12 @@ function createTeachingEngine(containerEl, opts){
   // ── Back button ──
   function goBack(lesson){
     if(state.history.length === 0) return;
+    if(coreController){
+      var coreState = coreController.back();
+      syncStateFromCore(coreState);
+      renderStep(lesson.steps[state.stepIdx], lesson);
+      return;
+    }
     state.stepIdx = state.history.pop();
     renderStep(lesson.steps[state.stepIdx], lesson);
   }
@@ -444,6 +531,8 @@ function createTeachingEngine(containerEl, opts){
       state.wrongCount = 0;
       state.scores = {};
       state.completed = false;
+      coreController = createCoreController(lesson);
+      if(coreController) syncStateFromCore(coreController.start());
       renderStep(lesson.steps[0], lesson);
     },
     back: function(){ goBack(currentLesson); },

@@ -47,7 +47,20 @@
   function complete(catId,topicId,val){
     setStatus(topicId,val); const notes=read('hearth-study-notes',[]); const get=id=>{const e=document.getElementById(id);return e?e.value.trim():''};
     notes.push({ts:new Date().toISOString(),topicId,status:val,define:get('sk-define'),draw:get('sk-draw'),doIt:get('sk-do'),word:get('sk-word')}); write('hearth-study-notes',notes);
-    if(val==='open'||val==='mastered'){const done=read('hearth-knowing-progress',{}); done[topicId]=true; write('hearth-knowing-progress',done);}
+    if(val==='open'||val==='mastered'){
+      const done=read('hearth-knowing-progress',{}); done[topicId]=true; write('hearth-knowing-progress',done);
+      if(window.HearthProgressEvents){
+        window.HearthProgressEvents.append({
+          event_type:'concept_read',
+          node_id:'study',
+          category_id:catId,
+          source_id:topicId,
+          rating:val==='mastered'?5:4,
+          note:get('sk-word'),
+          data:{ topic_id:topicId, status:val, define:get('sk-define'), draw:get('sk-draw'), do_it:get('sk-do') }
+        });
+      }
+    }
     render();
   }
   function copyTerm(encoded){const term=decodeURIComponent(encoded); const box=document.getElementById('sk-word'); if(box&&!box.value)box.value=term;}
@@ -57,6 +70,5 @@
     document.head.appendChild(s);
   }
   window.StudyKey={render,openSession,complete,copyTerm};
-  window.showStudy=render;
   window.showStudySession=openSession;
 })();

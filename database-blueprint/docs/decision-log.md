@@ -435,11 +435,23 @@ Current Jen lesson insights:
 - Jen should bring or create a small pentatonic riff
 - Ayla needs a clearer pentatonic explanation before the next lesson
 
+2026-07-16 update:
+
+- jamming felt like home for Jen
+- the A minor pentatonic scale started to sound musical
+- CAGED helped when framed only as a small landmark clue
+- Jen needs lots of repetition, not more new material
+- Jen committed to 20 minutes of practice a day
+- Jen requested a clear practice sheet listing the drills learned so far
+- next lesson should move toward a song using A minor pentatonic with rhythm guitar and lead guitar
+
 Feature implications:
 
 - chord identifier from selected frets/strings
 - tab beside notation in Study/Knowing/Doing
 - teacher-prep notes attached to student profiles
+- student-facing practice sheets generated from lesson memory
+- song-based consolidation views that connect rhythm guitar, lead guitar, and jamming
 
 See:
 

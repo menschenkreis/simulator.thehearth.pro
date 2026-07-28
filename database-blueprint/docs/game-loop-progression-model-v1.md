@@ -231,25 +231,25 @@ Not just:
 
 But:
 
-`You can now make first contact with sound, pulse, and the instrument.`
+`You can now use time feel, open chords, pentatonics, and first blues vocabulary in a small musical way.`
 
 ## Level 1 Feeling
 
 Level 1 should feel like:
 
-- entering the world
-- learning how to learn
-- first contact with sound
-- first body awareness
-- first pulse
-- first chord attempt
-- first practice ritual
-- first source-backed explanation
-- first creative seed
+- beginning the QJam Level 1 technical path after Foundation
+- improving time feel
+- auditing and using the open-chord vocabulary
+- changing between simple open chords
+- learning pentatonic shape 1
+- turning pentatonic notes into phrases
+- entering first blues solo vocabulary
+- connecting chords and scale phrases
+- writing honest notes about ready, shaky, and missing skills
 
-Level 1 is not about being good.
+Level 1 is not about being advanced.
 
-It is about becoming oriented and brave enough to begin.
+It is about making the first technical layer usable enough to support Level 2.
 
 ## Unlocks
 
