@@ -425,8 +425,8 @@ var JOURNEY_AUTHORED_LESSONS = {
 var JOURNEY_STUDENT_COMPANIONS = {
   jen: {
     label: "Jen Lesson Companion",
-    title: "A minor pentatonic consolidation + tiny CAGED clue",
-    focus: "Consolidate A minor pentatonic and right-hand patterns. Use CAGED only as a tiny map clue: chord shapes are landmarks, and pentatonic notes live around those landmarks.",
+    title: "Love Itself: rhythm, lead + connected scale maps",
+    focus: "Continue Leonard Cohen's Love Itself in small sections. Consolidate the Marcello warm-up and finger independence, strengthen the open-position rhythm part, and use the F-position major-scale area for short lead responses.",
     studySubject: {
       id: "jen-a-minor-pentatonic-home",
       title: "A as home inside A minor pentatonic",
@@ -436,24 +436,24 @@ var JOURNEY_STUDENT_COMPANIONS = {
       topicId: "pentatonic",
       recommendedDoor: "shape"
     },
-    guideNote: "Jen asked for consolidation. Keep the gradient gentle: root notes as safety points, rhythm second, then one or two extra pentatonic notes. CAGED is optional language, not the lesson goal.",
-    mainRule: "Do not teach the full CAGED system today. If Jen overloads, drop the word CAGED and return to: find A, play a tiny phrase, come back to A.",
+    guideNote: "Jen is progressing across several connected skills. Keep the song section small, stabilise the rhythm role, then let the lead answer with two or three notes. Do not turn the whole neck into one memorisation task.",
+    mainRule: "One reliable song section and one musical response are enough. Quietly place difficult chords, keep the pulse, and build the neck map one rooted position at a time.",
     mapClue: {
       title: "The only CAGED idea for today",
       phrase: "Chord shapes are landmarks. Pentatonic notes live around those landmarks.",
       use: "Show one connection: A is home, the A minor pentatonic box sits around that home, and the phrase can always land back on A.",
       avoid: "Avoid all five shapes, transposition, full-neck theory, or proving that she understands CAGED."
     },
-    nextAction: "Plan the next lesson around a song that uses A minor pentatonic with rhythm guitar and lead guitar. Keep jamming as the doorway, repeat the scale map often, and use CAGED only as a helpful landmark clue.",
+    nextAction: "Continue Love Itself in one short section. Strengthen the open-position rhythm part, repeat the F-position major-scale pattern, and swap rhythm and lead only when both parts can continue slowly.",
     latestReview: {
-      date: "2026-07-16",
-      feltHome: "The jamming.",
-      mostMusical: "The scale itself started to sound musical.",
-      enjoyed: "Jen enjoyed and asked for more jamming.",
-      helped: "The CAGED clue definitely helped.",
-      needs: "Everything still needs lots of repetition.",
+      date: "2026-07-22",
+      feltHome: "The familiar Marcello warm-up and musical call and response.",
+      mostMusical: "Beginning to combine the Love Itself rhythm part with lead responses.",
+      enjoyed: "Starting a real song and trying rhythm and lead together.",
+      helped: "Transposing the capo arrangement into an open position and separating the two musical roles.",
+      needs: "The song chords, barre-shaped changes, scale patterns, timing, finger independence, and whole-neck understanding all need repetition.",
       commitment: "Practise 20 minutes a day.",
-      nextLesson: "Learn a song that uses A minor pentatonic with rhythm guitar and lead guitar."
+      nextLesson: "Continue one short section of Love Itself, strengthen rhythm first, then answer from the F-position major-scale area."
     },
     commitment: {
       title: "20-minute daily practice thread",
@@ -461,8 +461,8 @@ var JOURNEY_STUDENT_COMPANIONS = {
       currentDay: 1,
       totalDays: 7,
       progressPercent: 14,
-      today: "20 minutes: A minor pentatonic, A roots, and one musical jam.",
-      tomorrow: "Repeat the same map, then start choosing a song for rhythm + lead."
+      today: "20 minutes: Marcello warm-up, finger independence, one Love Itself section, and one short scale response.",
+      tomorrow: "Repeat the same song section, loop one hard chord change, then swap rhythm and lead."
     },
     doorway: [
       "Right-hand patterns",
@@ -665,10 +665,12 @@ var JOURNEY_STUDENT_COMPANIONS = {
     ],
     practice: [
       "Practise 20 minutes a day",
-      "Make A root notes musical at 60 BPM",
-      "Repeat the A minor pentatonic map until it feels familiar",
-      "Use A as the safety note inside the pentatonic box",
-      "Choose a song that can hold rhythm guitar and lead guitar"
+      "Play one slow, clean Marcello-style scale warm-up",
+      "Keep the finger-independence drill tiny and relaxed",
+      "Practise one short section of Love Itself in the open-position arrangement",
+      "Loop one harder barre-shaped chord change slowly",
+      "Repeat the major-scale pattern around F and make a two- or three-note response",
+      "Practise rhythm and lead separately before swapping roles"
     ]
   }
 };

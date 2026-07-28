@@ -49,16 +49,17 @@ Jen has also done a musical conversation:
 
 Jen needs consolidation more than more information right now.
 
-Latest lesson update - 2026-07-16:
+Latest lesson update - 2026-07-22:
 
-- What felt like home: the jamming.
-- What sounded most musical: the A minor pentatonic scale itself started to feel musical.
-- What Jen enjoyed or asked for: more jamming.
-- CAGED helped, as long as it stayed a small map clue rather than a full theory lesson.
-- Everything still needs lots of repetition.
-- Jen is committing to 20 minutes of practice a day.
-- Jen wants the next lesson to include a song that uses A minor pentatonic with rhythm guitar and lead guitar.
-- Jen requested notes on the drills learned so far and a clear list of what to practise.
+- Reviewed the Marcello-style scale warm-up and used the scale pattern in musical call and response.
+- Continued the finger-independence exercises; progress is visible but repetition is still needed.
+- Began learning Leonard Cohen's "Love Itself."
+- Transposed the capo arrangement so it could be explored in an open position.
+- Began working with harder barre-shaped chords.
+- Learned a major-scale pattern around the F position.
+- Began combining rhythm and lead roles while playing together.
+- Progress is being made across all of these areas, but none should be marked mastered yet.
+- The whole neck is still unclear; build one reliable position and its root notes before trying to learn the entire neck.
 
 Current anchors:
 
@@ -70,6 +71,8 @@ Current anchors:
 - Clean tone needs work: buzzing strings, unclear sound, rushing.
 - Finger independence is valuable but too steep unless broken down.
 - Jen benefits from ending lessons with musical conversation.
+- The new song gives rhythm, chord, scale, and lead work one shared musical purpose.
+- The F-position major-scale area is new and needs to remain small and clearly rooted.
 
 ## Current Student Interests
 
@@ -80,6 +83,7 @@ Jen wants to:
 - make technical work feel musical
 - jam more
 - learn a song that uses A minor pentatonic with rhythm guitar and lead guitar
+- continue learning "Love Itself" as a shared rhythm-and-lead arrangement
 
 Use her interests as the doorway.
 
@@ -93,6 +97,8 @@ Track these without shame:
 - E and A string landmarks are not automatic yet.
 - Clean tone and even timing need patient work.
 - Finger-independence drills must be very small.
+- Harder barre-shaped chords need quiet placement and slow, repeated changes.
+- The whole-neck map is not yet understood; avoid turning that into one large memorisation task.
 
 ## Ayla Teacher Prep
 
@@ -105,6 +111,8 @@ Ayla should prepare:
 - a gentle flamenco-strum feel prompt
 - C chord shape and likely beginner difficulties
 - a way to turn every drill into a musical exchange
+- the next small section of "Love Itself" for rhythm and lead
+- a clear explanation of the roots and nearby connections around the F-position major-scale pattern
 
 ## Practice Themes For Jen
 
@@ -118,6 +126,10 @@ Useful reminders:
 - Keep touching A minor pentatonic and try making a tiny riff.
 - Use the flamenco strum gently, more for feel than perfection.
 - Keep finger-independence drills tiny and patient.
+- Practise the open-position "Love Itself" arrangement in short sections.
+- Loop one harder chord change slowly rather than repeatedly restarting the whole song.
+- Practise the major-scale pattern around F, then make a two- or three-note response from it.
+- Alternate rhythm and lead roles when practising together.
 
 ## Core Teaching Principle
 
