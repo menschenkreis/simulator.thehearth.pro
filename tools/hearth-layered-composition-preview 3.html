@@ -1,0 +1,765 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hearth Layered Inner Instrument - Composition Preview</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #090806;
+      --ink: #f3ead8;
+      --muted: #a79d8b;
+      --gold: #d8b867;
+      --gold-soft: rgba(216, 184, 103, 0.26);
+      --line: rgba(216, 184, 103, 0.17);
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      min-height: 100%;
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    body {
+      overflow-x: hidden;
+      background:
+        radial-gradient(circle at 50% 44%, rgba(111, 79, 37, 0.12), transparent 35%),
+        linear-gradient(180deg, #0d0b08, #070605 74%);
+    }
+
+    button { font: inherit; }
+
+    .preview-shell {
+      min-height: 100vh;
+      padding: 18px 22px 28px;
+      border-top: 1px solid rgba(216, 184, 103, 0.2);
+    }
+
+    .preview-head {
+      max-width: 1160px;
+      margin: 0 auto;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 22px;
+      padding: 8px 0 12px;
+      border-bottom: 1px solid rgba(216, 184, 103, 0.1);
+    }
+
+    .eyebrow {
+      color: var(--gold);
+      font-family: ui-monospace, "SFMono-Regular", Menlo, monospace;
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 5px 0 0;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 28px;
+      font-weight: 600;
+      letter-spacing: 0;
+    }
+
+    .head-note {
+      max-width: 360px;
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+      text-align: right;
+    }
+
+    .experience {
+      position: relative;
+      max-width: 1260px;
+      min-height: 790px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: minmax(220px, 280px) minmax(520px, 700px) minmax(220px, 280px);
+      justify-content: center;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .guide-column {
+      align-self: center;
+      min-width: 0;
+      text-align: center;
+    }
+
+    .guide-figure {
+      width: min(210px, 82%);
+      max-height: 290px;
+      object-fit: contain;
+      object-position: center bottom;
+      filter: drop-shadow(0 20px 28px rgba(0, 0, 0, 0.42));
+    }
+
+    .guide-speech {
+      position: relative;
+      width: min(270px, 100%);
+      min-height: 112px;
+      margin: 4px auto 0;
+      padding: 17px 18px;
+      border: 1px solid rgba(216, 184, 103, 0.32);
+      border-radius: 8px;
+      background: rgba(10, 8, 6, 0.88);
+      text-align: left;
+      box-shadow: 0 16px 34px rgba(0, 0, 0, 0.24);
+    }
+
+    .guide-speech::before {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: -8px;
+      width: 14px;
+      height: 14px;
+      border-left: 1px solid rgba(216, 184, 103, 0.32);
+      border-top: 1px solid rgba(216, 184, 103, 0.32);
+      background: #0a0806;
+      transform: translateX(-50%) rotate(45deg);
+    }
+
+    .guide-label {
+      color: var(--gold);
+      font-family: ui-monospace, "SFMono-Regular", Menlo, monospace;
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    .guide-copy {
+      margin: 8px 0 0;
+      color: var(--ink);
+      font-size: 15px;
+      line-height: 1.55;
+    }
+
+    .instrument-stage {
+      position: relative;
+      width: min(100%, 680px);
+      aspect-ratio: 4 / 5;
+      margin: 10px auto;
+      isolation: isolate;
+    }
+
+    .instrument-stage::before {
+      content: "";
+      position: absolute;
+      inset: 9% 12% 4%;
+      border: 1px solid rgba(216, 184, 103, 0.09);
+      border-radius: 50%;
+      box-shadow: inset 0 0 86px rgba(216, 184, 103, 0.025);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    #path-canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .system-layer {
+      --accent: #d8b867;
+      position: absolute;
+      left: var(--x);
+      top: var(--y);
+      width: var(--w);
+      height: var(--h);
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: var(--ink);
+      transform: translate(-50%, -50%);
+      cursor: pointer;
+      z-index: var(--z, 4);
+      transition: filter 180ms ease, opacity 180ms ease, transform 180ms ease;
+    }
+
+    .system-layer:focus-visible {
+      outline: none;
+    }
+
+    .system-layer:focus-visible .layer-label {
+      box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 72%, transparent),
+                  0 0 16px color-mix(in srgb, var(--accent) 28%, transparent);
+    }
+
+    .instrument-stage.has-focus .system-layer:not(.is-active):not(.is-selected) {
+      opacity: 0.44;
+      filter: saturate(0.65) brightness(0.7);
+    }
+
+    .system-layer.is-active,
+    .system-layer.is-selected {
+      transform: translate(-50%, -50%) scale(1.035);
+      filter: drop-shadow(0 0 12px color-mix(in srgb, var(--accent) 66%, transparent))
+              drop-shadow(0 0 26px color-mix(in srgb, var(--accent) 24%, transparent));
+      opacity: 1;
+    }
+
+    .layer-label {
+      position: absolute;
+      left: 50%;
+      bottom: -31px;
+      min-width: max-content;
+      padding: 5px 8px;
+      border: 1px solid color-mix(in srgb, var(--accent) 42%, transparent);
+      border-radius: 6px;
+      background: rgba(8, 7, 5, 0.92);
+      color: #f5ecda;
+      font-family: ui-monospace, "SFMono-Regular", Menlo, monospace;
+      font-size: 10px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      opacity: 0;
+      transform: translate(-50%, 4px);
+      pointer-events: none;
+      transition: opacity 160ms ease, transform 160ms ease;
+      z-index: 20;
+    }
+
+    .system-layer.is-active .layer-label,
+    .system-layer.is-selected .layer-label,
+    .system-layer:focus-visible .layer-label {
+      opacity: 1;
+      transform: translate(-50%, 0);
+    }
+
+    .guitar-layer {
+      z-index: 2;
+    }
+
+    .guitar-layer img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      pointer-events: none;
+      filter: saturate(0.86) brightness(0.9) drop-shadow(0 22px 26px rgba(0, 0, 0, 0.4));
+      transition: filter 180ms ease;
+    }
+
+    .guitar-layer.is-active img,
+    .guitar-layer.is-selected img {
+      filter: saturate(1.03) brightness(1.03) drop-shadow(0 0 16px rgba(216, 184, 103, 0.4));
+    }
+
+    .brain-layer img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      pointer-events: none;
+      opacity: 0.92;
+      filter: sepia(0.25) saturate(1.3) drop-shadow(0 0 10px rgba(224, 103, 81, 0.25));
+    }
+
+    .placeholder-art {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      pointer-events: none;
+    }
+
+    .eyes-art {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      padding: 13% 7%;
+    }
+
+    .eye {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1.8;
+      border: 2px solid currentColor;
+      border-radius: 70% 30% 70% 30%;
+      transform: rotate(45deg);
+      color: var(--accent);
+      box-shadow: inset 0 0 12px color-mix(in srgb, var(--accent) 18%, transparent);
+    }
+
+    .eye::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 28%;
+      aspect-ratio: 1;
+      border-radius: 50%;
+      background: color-mix(in srgb, var(--accent) 76%, #fff 24%);
+      box-shadow: 0 0 10px var(--accent);
+      transform: translate(-50%, -50%);
+    }
+
+    .ears-art {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 30%;
+      padding: 4% 12%;
+    }
+
+    .ear {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      border: 3px solid var(--accent);
+      border-left-width: 1px;
+      border-radius: 54% 46% 55% 45%;
+      opacity: 0.9;
+    }
+
+    .ear::after {
+      content: "";
+      position: absolute;
+      inset: 24% 18% 26% 34%;
+      border: 2px solid color-mix(in srgb, var(--accent) 76%, #fff 24%);
+      border-left-color: transparent;
+      border-radius: 50%;
+    }
+
+    .ear:last-child { transform: scaleX(-1); }
+
+    .hands-art {
+      grid-template-columns: 1fr 1fr;
+      gap: 44%;
+      padding: 6% 2%;
+    }
+
+    .hand {
+      position: relative;
+      width: 72%;
+      height: 62%;
+      border: 2px solid var(--accent);
+      border-radius: 42% 42% 34% 34%;
+      box-shadow: inset 0 0 16px color-mix(in srgb, var(--accent) 10%, transparent);
+    }
+
+    .hand i {
+      position: absolute;
+      bottom: 78%;
+      width: 15%;
+      height: 66%;
+      border: 2px solid var(--accent);
+      border-bottom: 0;
+      border-radius: 12px 12px 4px 4px;
+      background: rgba(8, 7, 5, 0.7);
+    }
+
+    .hand i:nth-child(1) { left: 2%; height: 48%; transform: rotate(-24deg); transform-origin: bottom; }
+    .hand i:nth-child(2) { left: 19%; height: 72%; }
+    .hand i:nth-child(3) { left: 40%; height: 88%; }
+    .hand i:nth-child(4) { left: 61%; height: 78%; }
+    .hand i:nth-child(5) { left: 81%; height: 58%; transform: rotate(15deg); transform-origin: bottom; }
+    .hand:last-child { transform: scaleX(-1); }
+
+    .breath-art {
+      grid-template-columns: 1fr 1fr;
+      gap: 5%;
+      padding: 8% 16% 13%;
+    }
+
+    .lung {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      border: 2px solid var(--accent);
+      border-radius: 48% 52% 58% 42%;
+      opacity: 0.72;
+      box-shadow: inset 0 0 22px color-mix(in srgb, var(--accent) 10%, transparent);
+    }
+
+    .lung::after {
+      content: "";
+      position: absolute;
+      top: -17%;
+      width: 2px;
+      height: 45%;
+      background: var(--accent);
+      opacity: 0.68;
+    }
+
+    .lung:first-child::after { right: -4%; transform: rotate(18deg); }
+    .lung:last-child::after { left: -4%; transform: rotate(-18deg); }
+
+    .feeling-art {
+      border-radius: 50%;
+      border: 1px solid color-mix(in srgb, var(--accent) 64%, transparent);
+      box-shadow:
+        0 0 0 7px color-mix(in srgb, var(--accent) 10%, transparent),
+        0 0 0 15px color-mix(in srgb, #e5b65d 8%, transparent),
+        0 0 26px color-mix(in srgb, var(--accent) 50%, transparent);
+    }
+
+    .feeling-art::before,
+    .feeling-art::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    .feeling-art::before {
+      width: 48%;
+      height: 48%;
+      background: color-mix(in srgb, var(--accent) 74%, #f4d17f 26%);
+      box-shadow: 0 0 16px var(--accent);
+    }
+
+    .feeling-art::after {
+      width: 12%;
+      height: 12%;
+      background: #fff4cc;
+    }
+
+    .selection-column {
+      align-self: center;
+      min-width: 0;
+      padding-left: 12px;
+    }
+
+    .selection-line {
+      width: 42px;
+      height: 1px;
+      margin-bottom: 14px;
+      background: var(--gold);
+      opacity: 0.5;
+    }
+
+    .selection-kicker {
+      color: var(--gold);
+      font-family: ui-monospace, "SFMono-Regular", Menlo, monospace;
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    .selection-title {
+      margin: 7px 0;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 20px;
+      font-weight: 600;
+    }
+
+    .selection-copy {
+      max-width: 240px;
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    .selection-state {
+      margin-top: 15px;
+      color: rgba(243, 234, 216, 0.55);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    @media (max-width: 980px) {
+      .experience {
+        grid-template-columns: minmax(170px, 230px) minmax(460px, 620px);
+      }
+      .selection-column { display: none; }
+    }
+
+    @media (max-width: 720px) {
+      .preview-shell { padding: 13px 12px 24px; }
+      .preview-head { align-items: flex-start; }
+      .head-note { display: none; }
+      .experience {
+        min-height: 0;
+        grid-template-columns: 1fr;
+        gap: 0;
+      }
+      .instrument-stage {
+        width: min(100%, 560px);
+        order: 1;
+      }
+      .guide-column {
+        order: 2;
+        display: grid;
+        grid-template-columns: 100px minmax(0, 1fr);
+        align-items: end;
+        gap: 10px;
+      }
+      .guide-figure { width: 100px; }
+      .guide-speech { width: 100%; margin: 0; }
+      .guide-speech::before { left: -8px; top: 50%; transform: translateY(-50%) rotate(-45deg); }
+      .layer-label { bottom: -25px; font-size: 8px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .system-layer, .layer-label { transition: none; }
+    }
+  </style>
+</head>
+<body>
+  <main class="preview-shell">
+    <header class="preview-head">
+      <div>
+        <div class="eyebrow">The Hearth - Composition Prototype</div>
+        <h1>The Inner Instrument</h1>
+      </div>
+      <p class="head-note">The image itself is the navigation. Final transparent artwork will replace every temporary organ shape.</p>
+    </header>
+
+    <section class="experience" aria-label="Layered Inner Instrument composition preview">
+      <aside class="guide-column">
+        <img class="guide-figure" src="../images/character-generated/guide-seated-teaching-v1-ui.webp" alt="The Hearth guide">
+        <div class="guide-speech" aria-live="polite">
+          <div class="guide-label" id="guide-label">Hearth</div>
+          <p class="guide-copy" id="guide-copy">Choose a part of your inner instrument.</p>
+        </div>
+      </aside>
+
+      <div class="instrument-stage" id="instrument-stage">
+        <canvas id="path-canvas" aria-hidden="true"></canvas>
+      </div>
+
+      <aside class="selection-column" aria-live="polite">
+        <div class="selection-line"></div>
+        <div class="selection-kicker">Selected system</div>
+        <h2 class="selection-title" id="selection-title">The whole learner</h2>
+        <p class="selection-copy" id="selection-copy">Sound, movement, attention, memory, breath, and feeling become music together.</p>
+        <div class="selection-state" id="selection-state">Select a layer to test the deeper-room handoff.</div>
+      </aside>
+    </section>
+  </main>
+
+  <script>
+    (function() {
+      "use strict";
+
+      var systems = [
+        {
+          id: "integration",
+          label: "The Inner Instrument",
+          guide: "All of these systems learn together. The guitar lets you hear their cooperation.",
+          copy: "Sound, movement, attention, memory, breath, and feeling become music together.",
+          x: 50, y: 52, w: 48, h: 92, z: 2, color: "#d8b867", type: "guitar"
+        },
+        {
+          id: "brain",
+          label: "Brain & Nervous System",
+          guide: "Your brain builds maps between sound, movement, attention, memory, and prediction.",
+          copy: "Patterns become familiar through clear repetition, feedback, rest, and emotional safety.",
+          x: 50, y: 10, w: 28, h: 18, z: 8, color: "#e56a55", type: "brain"
+        },
+        {
+          id: "eyes",
+          label: "Eyes & Visual Maps",
+          guide: "Your eyes help turn strings, frets, tab, and chord shapes into a spatial map.",
+          copy: "Vision connects position, distance, movement, notation, and remembered shapes.",
+          x: 31, y: 27, w: 19, h: 8, z: 7, color: "#e7b34f", type: "eyes"
+        },
+        {
+          id: "ears",
+          label: "Ears & Hearing",
+          guide: "The ears receive vibration. The brain learns to recognize pitch, rhythm, tone, and meaning.",
+          copy: "Listening develops through comparison, singing, matching, memory, and musical context.",
+          x: 69, y: 27, w: 20, h: 12, z: 7, color: "#d5d65c", type: "ears"
+        },
+        {
+          id: "hands",
+          label: "Hands & Touch",
+          guide: "The hands learn with small accurate movements, useful sensation, and release - not force.",
+          copy: "Touch, pressure, joints, tendons, nerves, timing, and attention work as one movement system.",
+          x: 50, y: 53, w: 78, h: 19, z: 7, color: "#71c982", type: "hands"
+        },
+        {
+          id: "breath",
+          label: "Breath & Body",
+          guide: "Breath and posture set the conditions in which the hands can move and the mind can listen.",
+          copy: "Body awareness includes tension, balance, energy, recovery, and nervous-system regulation.",
+          x: 50, y: 71, w: 55, h: 31, z: 5, color: "#58c7c1", type: "breath"
+        },
+        {
+          id: "feeling",
+          label: "Feeling & Motivation",
+          guide: "Confidence, joy, shame, identity, and safety change what the learner is willing to attempt.",
+          copy: "Feeling belongs to the whole brain-body system and connects technique to expression.",
+          x: 50, y: 66, w: 13, h: 10, z: 10, color: "#a77ed1", type: "feeling"
+        }
+      ];
+
+      var stage = document.getElementById("instrument-stage");
+      var guideLabel = document.getElementById("guide-label");
+      var guideCopy = document.getElementById("guide-copy");
+      var selectionTitle = document.getElementById("selection-title");
+      var selectionCopy = document.getElementById("selection-copy");
+      var selectionState = document.getElementById("selection-state");
+      var activeId = "";
+      var selectedId = "";
+      var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+      function artFor(system) {
+        if (system.type === "guitar") {
+          return '<img src="../images/journey-backgrounds/journey-guitar-map-transparent-v2.png" alt="">';
+        }
+        if (system.type === "brain") {
+          return '<img src="../images/knowing-icon-brain.png" alt="">';
+        }
+        if (system.type === "eyes") {
+          return '<span class="placeholder-art eyes-art"><i class="eye"></i><i class="eye"></i></span>';
+        }
+        if (system.type === "ears") {
+          return '<span class="placeholder-art ears-art"><i class="ear"></i><i class="ear"></i></span>';
+        }
+        if (system.type === "hands") {
+          var fingers = '<i></i><i></i><i></i><i></i><i></i>';
+          return '<span class="placeholder-art hands-art"><span class="hand">' + fingers + '</span><span class="hand">' + fingers + '</span></span>';
+        }
+        if (system.type === "breath") {
+          return '<span class="placeholder-art breath-art"><i class="lung"></i><i class="lung"></i></span>';
+        }
+        return '<span class="placeholder-art feeling-art"></span>';
+      }
+
+      systems.forEach(function(system) {
+        var button = document.createElement("button");
+        button.type = "button";
+        button.className = "system-layer " + system.type + "-layer";
+        button.dataset.id = system.id;
+        button.setAttribute("aria-label", system.label);
+        button.style.setProperty("--x", system.x + "%");
+        button.style.setProperty("--y", system.y + "%");
+        button.style.setProperty("--w", system.w + "%");
+        button.style.setProperty("--h", system.h + "%");
+        button.style.setProperty("--z", system.z);
+        button.style.setProperty("--accent", system.color);
+        button.innerHTML = artFor(system) + '<span class="layer-label">' + system.label + '</span>';
+        button.addEventListener("mouseenter", function() { focusSystem(system.id); });
+        button.addEventListener("focus", function() { focusSystem(system.id); });
+        button.addEventListener("mouseleave", clearFocus);
+        button.addEventListener("blur", clearFocus);
+        button.addEventListener("click", function() { selectSystem(system.id); });
+        stage.appendChild(button);
+      });
+
+      function getSystem(id) {
+        return systems.find(function(system) { return system.id === id; });
+      }
+
+      function updateClasses() {
+        stage.classList.toggle("has-focus", Boolean(activeId || selectedId));
+        stage.querySelectorAll(".system-layer").forEach(function(layer) {
+          layer.classList.toggle("is-active", layer.dataset.id === activeId);
+          layer.classList.toggle("is-selected", layer.dataset.id === selectedId);
+        });
+      }
+
+      function focusSystem(id) {
+        activeId = id;
+        var system = getSystem(id);
+        guideLabel.textContent = system.label;
+        guideCopy.textContent = system.guide;
+        updateClasses();
+      }
+
+      function clearFocus() {
+        activeId = "";
+        if (selectedId) {
+          var selected = getSystem(selectedId);
+          guideLabel.textContent = selected.label;
+          guideCopy.textContent = selected.guide;
+        } else {
+          guideLabel.textContent = "Hearth";
+          guideCopy.textContent = "Choose a part of your inner instrument.";
+        }
+        updateClasses();
+      }
+
+      function selectSystem(id) {
+        selectedId = id;
+        activeId = id;
+        var system = getSystem(id);
+        guideLabel.textContent = system.label;
+        guideCopy.textContent = system.guide;
+        selectionTitle.textContent = system.label;
+        selectionCopy.textContent = system.copy;
+        selectionState.textContent = "This click would open the " + system.label + " chamber.";
+        updateClasses();
+      }
+
+      var canvas = document.getElementById("path-canvas");
+      var context = canvas.getContext("2d");
+      var lastFrame = 0;
+
+      function sizeCanvas() {
+        var ratio = Math.min(window.devicePixelRatio || 1, 2);
+        var rect = stage.getBoundingClientRect();
+        canvas.width = Math.round(rect.width * ratio);
+        canvas.height = Math.round(rect.height * ratio);
+        context.setTransform(ratio, 0, 0, ratio, 0, 0);
+      }
+
+      function point(system, width, height) {
+        return { x: width * system.x / 100, y: height * system.y / 100 };
+      }
+
+      function curvePoint(from, to, bend, t) {
+        var cx = (from.x + to.x) / 2 + bend;
+        var cy = (from.y + to.y) / 2;
+        var omt = 1 - t;
+        return {
+          x: omt * omt * from.x + 2 * omt * t * cx + t * t * to.x,
+          y: omt * omt * from.y + 2 * omt * t * cy + t * t * to.y
+        };
+      }
+
+      function draw(time) {
+        if (!reduceMotion && time - lastFrame < 40) {
+          requestAnimationFrame(draw);
+          return;
+        }
+        lastFrame = time;
+        var rect = stage.getBoundingClientRect();
+        var width = rect.width;
+        var height = rect.height;
+        context.clearRect(0, 0, width, height);
+        var integration = point(getSystem("integration"), width, height);
+        integration.y = height * 0.66;
+
+        systems.filter(function(system) { return system.id !== "integration"; }).forEach(function(system, index) {
+          var from = point(system, width, height);
+          var selected = system.id === activeId || system.id === selectedId;
+          var bend = (index % 2 === 0 ? -1 : 1) * width * (0.06 + index * 0.006);
+          context.beginPath();
+          context.moveTo(from.x, from.y);
+          context.quadraticCurveTo((from.x + integration.x) / 2 + bend, (from.y + integration.y) / 2, integration.x, integration.y);
+          context.strokeStyle = selected ? system.color : "rgba(216,184,103,0.15)";
+          context.lineWidth = selected ? 1.7 : 0.8;
+          context.setLineDash(selected ? [4, 5] : [2, 8]);
+          context.stroke();
+
+          var progress = reduceMotion ? 0.56 : ((time / 2600 + index * 0.13) % 1);
+          var particle = curvePoint(from, integration, bend, progress);
+          context.beginPath();
+          context.arc(particle.x, particle.y, selected ? 2.8 : 1.4, 0, Math.PI * 2);
+          context.fillStyle = selected ? system.color : "rgba(216,184,103,0.3)";
+          context.fill();
+        });
+        context.setLineDash([]);
+        if (!reduceMotion) requestAnimationFrame(draw);
+      }
+
+      sizeCanvas();
+      window.addEventListener("resize", sizeCanvas);
+      requestAnimationFrame(draw);
+    })();
+  </script>
+</body>
+</html>

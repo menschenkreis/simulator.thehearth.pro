@@ -31,6 +31,7 @@ REQUIRED_MARKERS = {
         "core/create-progress.js",
         "core/mastery-progress.js",
         "requestAnimationFrame(function(){ window.renderMapNodeHitLayer(); });",
+        "if(t==='map' && window.renderMapNodeHitLayer)",
         "const FLAME_HOP_MS = 280",
         "const FLAME_PAUSE_MS = 40",
         "adapters/foundation-route-manifest-runtime.js",

@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hearth Guitar Map Sounds</title>
+  <style>
+    :root{--ink:#0d0b08;--panel:#17120d;--line:rgba(220,180,100,.22);--gold:#e2bd6b;--text:#f5ead3;--muted:#aa9a80;--red:#ff6258;}
+    *{box-sizing:border-box}
+    body{min-width:320px;margin:0;background:radial-gradient(circle at 50% -20%,rgba(166,94,32,.13),transparent 34%),var(--ink);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;}
+    main{width:min(1080px,calc(100% - 40px));margin:0 auto;padding:54px 0 72px;}
+    header{display:flex;align-items:end;justify-content:space-between;gap:24px;padding-bottom:22px;border-bottom:1px solid var(--line);}
+    h1{margin:0;font-family:Georgia,serif;font-size:clamp(1.7rem,3vw,2.5rem);font-weight:600;letter-spacing:0;color:#ffe4a8;}
+    header p{max-width:390px;margin:6px 0 0;color:var(--muted);font-size:.88rem;line-height:1.45;}
+    .count{font-variant-numeric:tabular-nums;color:var(--gold);font-size:.8rem;font-weight:750;white-space:nowrap;}
+    .board{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));border:1px solid var(--line);border-top:0;}
+    .sound{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:14px;min-height:92px;padding:15px 18px;border-top:1px solid var(--line);}
+    .sound:nth-child(odd){border-right:1px solid var(--line)}
+    .sound.is-chosen{background:linear-gradient(90deg,rgba(226,189,107,.13),transparent 72%);}
+    .play{width:38px;height:38px;display:grid;place-items:center;flex:none;border:1px solid rgba(226,189,107,.5);border-radius:50%;background:rgba(226,189,107,.09);color:#ffe4a8;font-size:.78rem;cursor:pointer;transition:transform .16s,background .16s;}
+    .play:hover{transform:scale(1.06);background:rgba(226,189,107,.2)}
+    .sound-copy{min-width:0;display:grid;gap:4px;}
+    .sound-copy small{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);}
+    .sound-copy b{font-family:Georgia,serif;font-size:1.05rem;font-weight:600;}
+    .sound-copy span{overflow:hidden;color:var(--muted);font-size:.72rem;text-overflow:ellipsis;white-space:nowrap;}
+    .choose{min-width:70px;border:1px solid rgba(220,180,100,.28);border-radius:999px;background:transparent;color:var(--muted);padding:7px 10px;font-size:.7rem;font-weight:750;cursor:pointer;transition:color .16s,border-color .16s,background .16s;}
+    .choose:hover{color:var(--text);border-color:rgba(226,189,107,.7)}
+    .sound.is-chosen .choose{border-color:rgba(226,189,107,.88);background:var(--gold);color:#171108;}
+    .status{min-height:23px;margin:20px 0 0;color:var(--muted);font-size:.78rem;}
+    .status strong{color:var(--gold)}
+    @media(max-width:720px){main{width:min(100% - 24px,640px);padding-top:32px}header{align-items:start;flex-direction:column;gap:12px}.board{grid-template-columns:1fr}.sound:nth-child(odd){border-right:0}.sound{grid-template-columns:auto minmax(0,1fr) auto;padding:13px 12px;gap:10px}}
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <div>
+        <h1>Map Sound Palette</h1>
+        <p>One guitar gesture for each place. Choose only the sounds that feel like they belong.</p>
+      </div>
+      <div class="count" id="count">0 selected</div>
+    </header>
+    <section class="board" id="board" aria-label="Guitar sound candidates"></section>
+    <div class="status" id="status">Audition first. Selections stay on this computer until we import the approved files.</div>
+  </main>
+  <script>
+    (function () {
+      var sourceRoot = "file:///Users/alessandralove/Desktop/guitar%20sounds/";
+      var storageKey = "hearth-guitar-map-sound-audition-v1";
+      var candidates = [
+        { id:"foundation-c", group:"foundation", node:"Foundation", feeling:"First clear note", file:"Single 6_C.wav" },
+        { id:"doing-open-fifths", group:"doing", node:"Do", feeling:"Open fifths", file:"Chord 19_G-D-A.wav" },
+        { id:"doing-wide-strum", group:"doing", node:"Do", feeling:"Wide strum", file:"Strum 13_EMaj.wav" },
+        { id:"doing-fast-slide", group:"doing", node:"Do", feeling:"Quick slide", file:"Dobro Fast Slide_B.wav" },
+        { id:"practise", node:"Practise", feeling:"Settled home note", file:"Single 9_A.wav" },
+        { id:"play", node:"Play", feeling:"Immediate movement", file:"Strum 22_Amin.wav" },
+        { id:"hearth-suspended", group:"hearth", node:"The Hearth", feeling:"Suspended warmth", file:"gtrchord_A7sus2.wav" },
+        { id:"hearth-gravity", group:"hearth", node:"The Hearth", feeling:"Quiet gravity", file:"Chord 26_Dmin.wav" },
+        { id:"hearth-interior", group:"hearth", node:"The Hearth", feeling:"Soft interior", file:"COY_Guitar_Chord_Bmin7.wav" },
+        { id:"knowing-clear-c", group:"knowing", node:"Know", feeling:"Clear answer", file:"Single 6_C.wav" },
+        { id:"knowing-opened", group:"knowing", node:"Know", feeling:"An idea opening", file:"Chord 5_GMaj7.wav" },
+        { id:"knowing-bright", group:"knowing", node:"Know", feeling:"Bright discovery", file:"Chord 12_EMaj7wav.wav" },
+        { id:"study", node:"Study", feeling:"Focus and resolution", file:"Chord 2_D.wav" },
+        { id:"create", node:"Create", feeling:"Colour and possibility", file:"Chord 24_EMaj7.wav" },
+        { id:"mastery", node:"Mastery", feeling:"Open arrival", file:"COY_Guitar_Chord_Gmaj7.wav" },
+        { id:"clean-take-bright", group:"clean-take", node:"Clean take", feeling:"Quick bright nod", file:"AccEStab1_keyAMaj_134bpm.wav" },
+        { id:"clean-take-lift", group:"clean-take", node:"Clean take", feeling:"Small blues lift", file:"BluesySlideLick.2_keyGMaj_120bpm.wav" },
+        { id:"clean-take-flourish", group:"clean-take", node:"Clean take", feeling:"Gentle flourish", file:"BluesySlideLick3_keyGMaj_120bpm.wav" }
+      ];
+      candidates.forEach(function (candidate) { candidate.group = candidate.group || candidate.id; });
+      var chosen = {};
+      var currentAudio = null;
+      try {
+        var stored = JSON.parse(localStorage.getItem(storageKey) || "{}");
+        if (Array.isArray(stored)) {
+          stored.forEach(function (id) {
+            var candidate = candidates.find(function (item) { return item.id === id; });
+            if (candidate) chosen[candidate.group] = candidate.id;
+          });
+        } else if (stored && typeof stored === "object") {
+          chosen = stored;
+        }
+      } catch (_) {}
+
+      function audioUrl(file) { return sourceRoot + encodeURIComponent(file); }
+      function save() { localStorage.setItem(storageKey, JSON.stringify(chosen)); }
+      function updateCount() {
+        document.getElementById("count").textContent = Object.keys(chosen).length + " selected";
+      }
+      function stopCurrent() {
+        if (!currentAudio) return;
+        currentAudio.pause();
+        currentAudio.currentTime = 0;
+        currentAudio = null;
+        document.querySelectorAll(".play").forEach(function (button) { button.innerHTML = "&#9654;"; });
+      }
+      function togglePlay(candidate, button) {
+        if (currentAudio && currentAudio.dataset.soundId === candidate.id) { stopCurrent(); return; }
+        stopCurrent();
+        var audio = new Audio(audioUrl(candidate.file));
+        audio.dataset.soundId = candidate.id;
+        audio.volume = .72;
+        audio.addEventListener("ended", stopCurrent);
+        audio.addEventListener("error", function () {
+          stopCurrent();
+          document.getElementById("status").textContent = "This sample could not load. Keep this page opened as a local file and check that the Guitar sounds folder is still on the Desktop.";
+        });
+        currentAudio = audio;
+        button.textContent = "II";
+        audio.play().catch(function () { document.getElementById("status").textContent = "Your browser needs one more click to allow sound."; });
+      }
+      function render() {
+        var board = document.getElementById("board");
+        board.innerHTML = candidates.map(function (candidate) {
+          var isChosen = chosen[candidate.group] === candidate.id;
+          return '<article class="sound' + (isChosen ? ' is-chosen' : '') + '" data-id="' + candidate.id + '">' +
+            '<button class="play" type="button" aria-label="Play ' + candidate.node + ' sound">&#9654;</button>' +
+            '<div class="sound-copy"><small>' + candidate.node + '</small><b>' + candidate.feeling + '</b><span>' + candidate.file + '</span></div>' +
+            '<button class="choose" type="button">' + (isChosen ? 'Chosen' : 'Choose') + '</button>' +
+          '</article>';
+        }).join('');
+        board.querySelectorAll(".sound").forEach(function (row) {
+          var candidate = candidates.find(function (item) { return item.id === row.dataset.id; });
+          row.querySelector(".play").addEventListener("click", function () { togglePlay(candidate, this); });
+          row.querySelector(".choose").addEventListener("click", function () {
+            if (chosen[candidate.group] === candidate.id) delete chosen[candidate.group]; else chosen[candidate.group] = candidate.id;
+            save(); render();
+          });
+        });
+        updateCount();
+      }
+      render();
+    })();
+  </script>
+</body>
+</html>

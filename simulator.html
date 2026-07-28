@@ -3800,6 +3800,9 @@ function sw(t){
 
   document.querySelectorAll('.pnl').forEach(p=>p.classList.remove('on'));
   document.getElementById('p-'+t).classList.add('on');
+  if(t==='map' && window.renderMapNodeHitLayer){
+    requestAnimationFrame(function(){ window.renderMapNodeHitLayer(); });
+  }
   // Populate panels on open
   if(t==='lesson') populateJourney();
   if(t==='drill') populateNotebook();

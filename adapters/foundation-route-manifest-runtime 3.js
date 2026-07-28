@@ -1,0 +1,89 @@
+/*
+ * Foundation route manifest runtime copy v0.
+ *
+ * Browser-friendly copy of core/foundation-route-manifest.json. Keep this file
+ * in sync with the JSON manifest until route data is loaded by a backend/API.
+ */
+(function initFoundationRouteManifest(root) {
+  "use strict";
+
+  root.HearthFoundationRouteManifest = {
+    version: 1,
+    node_id: "foundation",
+    source: "simulator.html showFoundationTopic()",
+    routes: [
+      {
+        topic_id: "f-threshold",
+        lesson_id: "f-threshold",
+        seed_file: "database-blueprint/seeds/foundation_threshold_lesson_v2.json",
+        route_status: "active"
+      },
+      {
+        topic_id: "f-how-to-learn",
+        lesson_id: "f-how-to-learn",
+        seed_file: "database-blueprint/seeds/foundation_how_to_learn_lesson_v2.json",
+        route_status: "active"
+      },
+      {
+        topic_id: "f-music-language",
+        lesson_id: "f-learning-a-language",
+        seed_file: "database-blueprint/seeds/foundation_learning_a_language_lesson_v2.json",
+        route_status: "active"
+      },
+      {
+        topic_id: "f-musical-alphabet",
+        lesson_id: "f-language-of-music",
+        seed_file: "database-blueprint/seeds/foundation_language_of_music_lesson_v2.json",
+        route_status: "active"
+      },
+      {
+        topic_id: "f-rhythm-pulse",
+        lesson_id: "f-rhythm-pulse",
+        seed_file: "database-blueprint/seeds/foundation_rhythm_pulse_lesson_v2.json",
+        route_status: "active"
+      },
+      {
+        topic_id: "f-guitar-map",
+        lesson_id: "f-language-of-guitar",
+        seed_file: "database-blueprint/seeds/foundation_language_of_guitar_lesson_v2.json",
+        route_status: "active"
+      },
+      {
+        topic_id: "f-instrument-body",
+        lesson_id: "f-the-guitar",
+        seed_file: "database-blueprint/seeds/foundation_the_guitar_lesson_v2.json",
+        route_status: "active"
+      },
+      {
+        topic_id: "f-hands-sound",
+        lesson_id: "f-speaking",
+        seed_file: "database-blueprint/seeds/foundation_speaking_lesson_v2.json",
+        route_status: "active"
+      },
+      {
+        topic_id: "f-first-shapes",
+        lesson_id: "f-first-shapes",
+        seed_file: "database-blueprint/seeds/foundation_first_shapes_lesson_v2.json",
+        route_status: "active"
+      },
+      {
+        topic_id: "f-first-conversation",
+        lesson_id: "f-conversations",
+        seed_file: "database-blueprint/seeds/foundation_conversations_lesson_v2.json",
+        route_status: "active"
+      },
+      {
+        topic_id: null,
+        lesson_id: "f-the-tool",
+        seed_file: "database-blueprint/seeds/foundation_the_tool_lesson_v2.json",
+        route_status: "loaded_but_not_currently_mapped"
+      },
+      {
+        topic_id: null,
+        lesson_id: "f-first-conversation",
+        seed_file: "database-blueprint/seeds/foundation_first_conversation_lesson_v2.json",
+        route_status: "loaded_but_not_currently_mapped"
+      }
+    ]
+  };
+})(typeof globalThis !== "undefined" ? globalThis : this);
