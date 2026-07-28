@@ -1,7 +1,98 @@
 # Level 1 Content Gap Pass Roadmap V1
 
 Date: 2026-07-18
-Status: Queued next workstream; must not be lost inside the whole-simulator audit
+Status: In progress; first playable song-lab slice verified 2026-07-20
+
+## Implementation Checkpoint: 2026-07-20
+
+The first four gaps now meet in one playable prototype activity:
+
+- `core/level-one-song-thread.js` defines the original, rights-safe eight-bar
+  mini-piece `A Minor Homecoming` with stable IDs, chord road, tempo range,
+  rhythm role, lead role, easier version, and evidence targets.
+- Journey sends Jen's Right Hand step to the existing continuous-strum drill
+  and sends the Conversation step to the exact song lab.
+- Do owns the song lab and presents listening-role comparisons, an eight-bar
+  chord road, a quarter-note strum grid, and a short playable A minor
+  pentatonic TAB answer.
+- Opening the activity records only `Seen`; it does not award song, listening,
+  role, or creative mastery from a click.
+- The song lab returns to the correct Journey context and has no browser
+  console errors in the verified desktop route.
+
+This checkpoint substantially covers the first implementation slice for:
+
+1. song pathway;
+2. stronger right-hand work;
+3. listening before explanation;
+4. TAB and diagram contact.
+
+It does **not** complete the full pass. The next connected batch must carry the
+same song thread through learner-scoped Practice history, a saved Create
+variation, and a genuine sourced Mastery performance encounter. Those three
+gaps remain open below.
+
+### Connected-node checkpoint: 2026-07-20
+
+The remaining three gaps now have a first coherent implementation:
+
+- Practice reads the shared song record and offers three 20-minute returns:
+  separate the roles, join the eight bars, then swap and keep one choice.
+- Unfinished guided Practice sessions use learner-scoped storage. The former
+  global value remains readable for its original learner and is not deleted.
+- Practice opens the exact Song Lab and returns to the same guided session.
+- One session records an attempt. Only three distinct calendar days can
+  support the `repeat a real weakness over time` evidence threshold.
+- Journey now sends the Conversation step to a dedicated Play role exchange.
+  The learner must try the rhythm and lead roles before completion is enabled;
+  exploring the route alone awards no capability evidence. The route returns
+  to the exact Conversation step and passed a live desktop browser check with
+  no console errors.
+- Journey's Map Clue now opens Jen's exact A-minor pentatonic subject in
+  Study, lands on the relevant Shape door, and returns to the same Map Clue
+  step. Opening the chamber does not mark the subject complete. The route
+  passed a live desktop browser check with no console errors.
+- Journey's Tune in and Review steps now open the relevant Hearth chambers:
+  Breath / Body for arrival and Heart / Feeling for reflection. Both return to
+  the exact Journey step and passed live desktop browser checks without
+  awarding completion from opening the chamber.
+- Journey's Make Music step now opens the exact three-return `A Minor
+  Homecoming` Practice plan. It shows the correct 20-minute focus and Day 1 of
+  3 rather than Jen's older seven-day commitment, then returns to Make Music.
+- Journey's Conversation step now opens a preview of the exact B.B. King
+  Mastery encounter and returns to Conversation. Opening the preview records
+  nothing; the learner must explicitly choose `Begin Witness` before contact
+  evidence can begin.
+- Journey's Conversation step also opens the prepared `A minor conversation`
+  seed in Create and returns to the same step. The learner must deliberately
+  save the seed before it becomes creative attempt evidence.
+- Journey's end-of-lesson review now captures seven short structured answers,
+  the next safe lesson step, teacher preparation, and a learner-scoped practice
+  sheet. It refuses an empty review instead of inventing a successful result.
+- A saved review remains teacher-observation Contact evidence and cannot award
+  a practical capability or unlock a level by itself.
+- Journey carries the selected practice-sheet items into Practice. Practice
+  shows the complete list, preserves the 20-minute context, and returns to the
+  exact Journey step.
+- A missing responsive CSS boundary was repaired. Shared Study, Practice,
+  Create, and Hearth node styling is once again active on desktop instead of
+  being trapped inside the small-phone media query.
+- Create receives a ready-to-shape `A Minor Homecoming variation` seed with
+  source, learner, Level 1, and capability context. Saving it records the
+  learner's creative attempt without claiming mastery.
+- Mastery now uses a genuine external performance encounter: B.B. King,
+  `The Thrill Is Gone (Live at Montreux 1993)`. The learner notices one choice,
+  tries a small version inside `A Minor Homecoming`, and can carry it to
+  Practice or Create.
+- The Mastery encounter has an internal no-media fallback and a short saved
+  review reflection.
+
+Automated behavior, loaded-script syntax, and local-reference checks cover the
+new contracts. The Journey routes into Play, Study, Hearth, Practice, and
+Mastery are live-verified, as are the Create seed route and the Journey review
+to Practice route. The pass remains **in progress** until a learner produces
+real evidence on separate days and the resulting progression is reviewed.
+Tests must not fabricate that learner history.
 
 ## Purpose
 
@@ -198,4 +289,3 @@ Fully implementing, wiring, testing, and visually polishing all seven parts is
 larger and should be split into verified batches. Do not promise that the
 entire finished learner experience will be production-ready inside the initial
 45-75 minute pass.
-

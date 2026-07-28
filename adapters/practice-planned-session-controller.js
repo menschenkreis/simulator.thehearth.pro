@@ -2,26 +2,37 @@
 (function initPracticePlannedSessionController(root) {
   "use strict";
 
-  var SESSION_STORAGE_KEY = "hearth-planned-practice-v1";
   var session = null;
   var recording = false;
 
-  function restoreSession() {
+  function activeLearnerId() {
     try {
-      var saved = JSON.parse(localStorage.getItem(SESSION_STORAGE_KEY) || "null");
-      return saved && saved.id ? saved : null;
-    } catch (error) {
+      var state = typeof root.getJourneyState === "function"
+        ? root.getJourneyState()
+        : JSON.parse(localStorage.getItem("hearth-journey-v2") || "null");
+      return state && state.activeStudentId || null;
+    } catch (_error) {
       return null;
     }
   }
 
+  function plannedStore() {
+    return root.HearthPracticePlannedSessionStore && typeof root.HearthPracticePlannedSessionStore.createStore === "function"
+      ? root.HearthPracticePlannedSessionStore.createStore({ storage: localStorage })
+      : null;
+  }
+
+  function restoreSession() {
+    var store = plannedStore();
+    var saved = store && store.get(activeLearnerId());
+    return saved && saved.id ? saved : null;
+  }
+
   function persistSession() {
-    try {
-      if (session) localStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify(session));
-      else localStorage.removeItem(SESSION_STORAGE_KEY);
-    } catch (error) {
-      // The current in-memory session remains usable without storage.
-    }
+    var store = plannedStore();
+    if (!store) return;
+    if (session) store.save(session);
+    else store.clear(activeLearnerId());
   }
 
   session = restoreSession();
@@ -63,7 +74,81 @@
   }
 
   function snapshotSession() {
+    var learnerId = activeLearnerId();
+    if (session && session.learner && String(session.learner.id || "") !== String(learnerId || "")) {
+      session = restoreSession();
+    }
     return session ? JSON.parse(JSON.stringify(session)) : null;
+  }
+
+  function localDay(value) {
+    var date = value instanceof Date ? value : new Date(value);
+    if (Number.isNaN(date.getTime())) return "";
+    return [date.getFullYear(), date.getMonth() + 1, date.getDate()].join("-");
+  }
+
+  function songPracticeDayCount(sourceId, learnerId, now) {
+    var events = root.HearthProgressEvents && typeof root.HearthProgressEvents.list === "function"
+      ? root.HearthProgressEvents.list(localStorage)
+      : [];
+    var days = [];
+    events.forEach(function collectSongPracticeDay(event) {
+      var data = event && event.data || {};
+      if (!event || event.event_type !== "practice_session_completed" || String(event.learner_id || "") !== String(learnerId || "")) return;
+      if (event.source_id !== sourceId && data.thread_id !== sourceId) return;
+      var day = localDay(event.created_at);
+      if (day && days.indexOf(day) === -1) days.push(day);
+    });
+    var today = localDay(now);
+    if (today && days.indexOf(today) === -1) days.push(today);
+    return days.length;
+  }
+
+  function openDoingDrill() {
+    var thread = session && session.songThread;
+    var spec = thread && thread.drillHandoff;
+    if (!spec || !root.HearthCrossNodeHandoffStore || typeof root.HearthCrossNodeHandoffStore.createStore !== "function") {
+      if (typeof root.showDoing === "function") root.showDoing();
+      return;
+    }
+    var learnerId = session.learner && session.learner.id || null;
+    var suffix = Date.now().toString(36);
+    var store = root.HearthCrossNodeHandoffStore.createStore({ storage: root.sessionStorage });
+    var handoff = {
+      id: "handoff-practice-doing-" + learnerId + "-" + suffix,
+      version: 1,
+      learner_id: learnerId,
+      actor_role: "learner",
+      source_node_id: "practice",
+      destination_node_id: "doing",
+      activity_id: spec.drillId,
+      lesson_id: null,
+      journey_level_id: "L1",
+      capability_ids: ["L1-TIME-01", "L1-TIME-02", "L1-HARM-02", "L1-MAP-02", "L1-READ-01"],
+      attempt_id: null,
+      session_id: session.id,
+      task: {
+        id: spec.drillId,
+        instruction: session.focus,
+        parameters: { room_id: spec.roomId, category_id: spec.categoryId, drill_id: spec.drillId, bpm: [60, 76, 100] }
+      },
+      pass_condition: {
+        description: "Complete all eight bars, try both roles, and name one thing to repeat.",
+        minimum_evidence_stage: "demonstration",
+        criteria: { drill_id: spec.drillId, clean_passes: 1 }
+      },
+      easier_step: {
+        instruction: "Hold muted quarter notes while the lead plays one A root on beat 1.",
+        parameters: { drill_id: spec.drillId, bpm: 60 }
+      },
+      return_route: { node_id: "practice", view_id: "planned-session", params: { session_id: session.id } },
+      fallback_instruction: "Return to the guided Practice session and reopen the Song Lab.",
+      created_at: new Date().toISOString()
+    };
+    if (!store.set(handoff)) return;
+    if (typeof root.showDoing === "function") root.showDoing();
+    if (typeof root._setDoingRoomConcept === "function") root._setDoingRoomConcept(spec.roomId);
+    if (typeof root._openDoingRoomDrill === "function") root._openDoingRoomDrill(spec.categoryId, spec.drillId);
   }
 
   function bind(target) {
@@ -121,14 +206,29 @@
     session.saved = true;
     persistSession();
     if (root.HearthProgressEvents && typeof root.HearthProgressEvents.append === "function") {
+      var sourceContext = session.sourceContext || {};
+      var now = new Date().toISOString();
+      var practiceDays = sourceContext.sourceId
+        ? songPracticeDayCount(sourceContext.sourceId, session.learner && session.learner.id, now)
+        : 0;
+      var evidenceStage = practiceDays >= 3 ? "demonstration" : "attempt";
       root.HearthProgressEvents.append({
         learner_id: session.learner && session.learner.id || null,
         event_type: "practice_session_completed",
-        node_id: "practise",
+        node_id: "practice",
+        journey_level_id: sourceContext.journeyLevelId || null,
+        source_id: sourceContext.sourceId || null,
+        activity_id: sourceContext.practicePlanId || null,
         duration_minutes: session.minutes,
         note: session.reflectionReturn || session.reflectionHard || session.focus,
+        created_at: now,
         data: {
           source: "planned-practice-flow",
+          thread_id: sourceContext.sourceId || null,
+          practice_plan_id: sourceContext.practicePlanId || null,
+          practice_days: practiceDays,
+          capability_ids: sourceContext.sourceId ? ["L1-PREP-01", "L1-PRACTICE-01"] : [],
+          evidence_stage: evidenceStage,
           focus: session.focus,
           bpm: session.bpm,
           repetitions: session.repetitions,
@@ -173,7 +273,7 @@
       return;
     }
     if (action === "open-do") {
-      if (typeof root.showDoing === "function") root.showDoing();
+      openDoingDrill();
       return;
     }
     if (action === "open-candle" && root.PracticeCandle && typeof root.PracticeCandle.open === "function") {
@@ -225,10 +325,14 @@
   }
 
   root.PracticePlannedSession = {
-    version: "0.2.0",
+    version: "0.3.0",
     current: snapshotSession,
     open: open,
     resume: render,
     saveReflection: saveReflection
   };
+
+  root.addEventListener("hearth:journey-state", function switchPracticeLearner() {
+    session = restoreSession();
+  });
 })(window);

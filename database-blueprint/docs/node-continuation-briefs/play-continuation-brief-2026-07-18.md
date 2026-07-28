@@ -1,11 +1,12 @@
 # The Hearth Mastery: Play Continuation Brief
 
-Date: 2026-07-18
-Branch: `cleanup/handoff-architecture`
-Verified commit: `93bcc64`
+Date: 2026-07-20
+Branch: `audit/orchestrator`
+Verified checkpoint: Mississippi route and handoff hardening
 Audit: `whole-simulator-integration-audit-2026-07-18.md`
-Readiness: Working Vertical Slice for Mississippi
-Browser verification: desktop complete for one route; responsive partial
+Readiness: Trustworthy Vertical Slice for Mississippi
+Browser verification: desktop atlas, tradition, and no-audio pulse complete;
+responsive partial
 
 ## 1. Plain-Language Purpose
 
@@ -19,9 +20,17 @@ new artifact; Mastery owns encounters with accomplished musicians.
 - First click opens the world atlas.
 - Mississippi opens a developed route with cultural context, sources, progress,
   and musical steps.
-- Completion is learner-scoped and emits `play_activity_completed`.
+- Mississippi cultural claims have four nearby reviewed institutional source
+  records. Community review remains explicitly pending.
+- Completion is learner-scoped and emits canonical `play_activity_completed`
+  evidence. A standalone route records an honest Attempt; the complete Journey
+  song exchange can record Application.
+- The visual 60 BPM pulse is the built-in no-audio fallback.
+- A saved Play result can create an exact learner-specific Practice task or a
+  Create seed carrying source attempt and session references.
 - Other regions are intentionally more open/incomplete.
-- A second learner selector label duplicates the global header.
+- The duplicate local learner label was removed; the global profile control is
+  authoritative.
 
 ## 3. Active Ownership Map
 
@@ -29,15 +38,16 @@ new artifact; Mastery owns encounters with accomplished musicians.
 - Atlas model/view: `play-atlas-model.js`, `play-atlas-viewer.js`
 - Region route: Play world/domain data and `play-world-viewer.js`
 - State: learner-specific `hearth-play-session-v1:<learner>`
-- Event: `play_activity_completed`
-- Sources: live external links; no mapped internal Play source notes
+- Event: canonical `play_activity_completed`
+- Sources: four reviewed source records inside `assets/js/play-traditions.js`
 - Tests: Play domain/atlas assertions and renderer ownership safeguard
 
 ## 4. What The Audit Changed
 
-The renderer ownership check and documentation now correctly identify the atlas
-controller as the active `showPlay` owner. No route content or visual design was
-changed.
+The orchestrator kept the atlas and route design, removed duplicate learner UI,
+made Mississippi completion canonical, added a no-audio fallback, and built a
+real Play -> Practice -> Play handoff. Create receives the exact saved result
+references. No region or image was added.
 
 ## 5. Protected Decisions
 
@@ -58,44 +68,45 @@ groove, or call-and-response instructions.
 
 ## 7. Learner Memory And Progress
 
-The active route uses learner-scoped state and events. Preserve stable region
-and activity IDs. Distinguish opened, listened, attempted, applied musically,
-and repeated. Remove the duplicate local learner selector only after the global
-selector preserves current context.
+The active route uses learner-scoped state and events. Stable region and
+activity IDs are preserved. Opened, attempted, and applied musically remain
+separate. The saved result is retained in the learner session so follow-on
+Practice/Create actions retain their origin.
 
 ## 8. Content And Source State
 
-Mississippi is the strongest prototype route but still needs internal source
-notes and a rights review. Play currently has zero mapped notes in the resource
-inventory. Future regions require careful cultural research, musical examples,
-and media rights. Build one reviewed route at a time.
+Mississippi is the strongest prototype route. Material cultural claims now map
+to National Park Service, Smithsonian Folkways, and Library of Congress source
+records, but community review is still pending and should remain visible.
+Future regions require careful cultural research, musical examples, and media
+rights. Build one reviewed route at a time.
 
 ## 9. Checks And Evidence
 
-- Desktop atlas -> Mississippi route: verified.
-- Learner-scoped session/event code: verified.
-- Play owner safeguard: pass at `93bcc64`.
-- General smoke checks: pass.
+- Desktop atlas -> Mississippi -> tradition -> no-audio pulse: browser verified
+  on 2026-07-20.
+- Learner-scoped canonical attempt and Play -> Practice handoff: regression
+  tested.
+- Play owner and general smoke checks pass at this checkpoint.
 
-Backing-media failure, keyboard atlas use, profile switch/resume, mobile, and
-other regions need dedicated tests.
+Keyboard atlas use, profile switch/resume, mobile, and full Practice/Create
+return routes still need dedicated browser tests.
 
 ## 10. Known Gaps And Risks
 
-- Cultural claims lack mapped internal notes.
 - Route breadth is visually implied but not yet delivered.
 - Media availability and rights are fragile.
-- Cross-node handoffs are incomplete.
-- Duplicate learner controls create confusion.
+- Community review is not complete.
+- Cross-node handoffs are structurally complete for the current result, but
+  still need full browser return testing.
 
 ## 11. Prioritized Next Build
 
-1. **Now:** attach reviewed source records and a no-media fallback to
-   Mississippi. Acceptance: each material cultural claim is traceable and the
-   route works with media blocked. Time: 4-7 hours. Credit: medium. Research:
-   yes. Images: no.
-2. **Next:** complete Practice/Create handoff envelopes and connect one Level 1
-   song application. Time: 4-7 hours. Credit: medium. Research: likely.
+1. **Now:** browser-test profile switch/resume, keyboard, mobile, and the full
+   Practice/Create return paths. Time: 2-4 hours. Credit: medium-low.
+2. **Next:** obtain careful community/cultural review for Mississippi before
+   describing it as publication-ready. Time: external dependency. Credit:
+   medium. Research/review: yes.
 3. **Later:** develop the next region only after the route template passes
    cultural and learning review. Time: 8-16 hours per route. Credit: high.
 

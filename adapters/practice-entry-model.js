@@ -166,6 +166,36 @@
     });
   }
 
+  function songThreadSignalFor(songThread, events) {
+    var plan = songThread && songThread.practicePlan;
+    if (!songThread || !plan || !Array.isArray(plan.sessions) || !plan.sessions.length) return null;
+    var matching = (events || []).filter(function isSongPractice(event) {
+      var data = event && event.data || {};
+      return event && event.event_type === "practice_session_completed" &&
+        (event.source_id === songThread.id || data.thread_id === songThread.id || data.practice_plan_id === plan.id);
+    });
+    var days = [];
+    matching.forEach(function collectDay(event) {
+      var day = localDay(event.created_at);
+      if (day && days.indexOf(day) === -1) days.push(day);
+    });
+    var completedDays = Math.min(Number(plan.targetDays) || plan.sessions.length, days.length);
+    var nextIndex = Math.min(completedDays, plan.sessions.length - 1);
+    return {
+      id: songThread.id,
+      sourceId: songThread.sourceId,
+      title: songThread.title,
+      purpose: songThread.purpose,
+      practicePlanId: plan.id,
+      planTitle: plan.title,
+      targetDays: Number(plan.targetDays) || plan.sessions.length,
+      completedDays: completedDays,
+      minutes: Number(plan.minutes) || 20,
+      nextSession: Object.assign({}, plan.sessions[nextIndex]),
+      drillHandoff: Object.assign({}, plan.drillHandoff || {})
+    };
+  }
+
   function buildSnapshot(options) {
     options = options || {};
     var now = options.now instanceof Date ? options.now : new Date();
@@ -178,6 +208,7 @@
     });
     var events = learnerPracticeEvents(learnerEvents, learner.id);
     var studySignal = studySignalFor(options.studySnapshot);
+    var songThread = songThreadSignalFor(options.songThread, learnerEvents);
     var targetMinutes = targetMinutesFor(companion);
     var todayMinutes = events.reduce(function totalToday(total, event) {
       return localDay(event.created_at) === localDay(now)
@@ -187,7 +218,10 @@
     var commitment = (companion && companion.commitment) || {};
     var repeatFocus = latestRepeatFocus(learnerEvents);
     var recommendations = recommendationsFor(learner, companion, learnerEvents, studySignal, options.doingProgressBridge);
-    var focus = repeatFocus || commitment.today || recommendations[0] || "One small clean practice step.";
+    if (songThread && songThread.nextSession && recommendations.indexOf(songThread.nextSession.focus) === -1) {
+      recommendations.unshift(songThread.nextSession.focus);
+    }
+    var focus = repeatFocus || songThread && songThread.nextSession && songThread.nextSession.focus || commitment.today || recommendations[0] || "One small clean practice step.";
     var candleState = options.candleState || {};
     var plannedSession = options.plannedSession || null;
     var plannedLearnerId = plannedSession && plannedSession.learner && plannedSession.learner.id;
@@ -215,6 +249,7 @@
       },
       recommendations: recommendations,
       study: studySignal,
+      songThread: songThread,
       history: historyRows(events),
       totals: {
         sessions: events.length,
@@ -247,6 +282,7 @@
     buildSnapshot: buildSnapshot,
     companionFor: companionFor,
     learnerPracticeEvents: learnerPracticeEvents,
+    songThreadSignalFor: songThreadSignalFor,
     normalizeKey: normalizeKey
   };
 });

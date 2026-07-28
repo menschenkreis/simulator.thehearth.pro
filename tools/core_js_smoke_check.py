@@ -35,7 +35,13 @@ function assert(condition, message) {{
 }}
 
 var root = {str(ROOT)!r};
+eval(readText(root + "/adapters/browser-storage-fallback.js"));
+assert(typeof localStorage !== "undefined" && typeof localStorage.getItem === "function", "Storage fallback should create a localStorage-compatible object when browser storage is unavailable");
+assert(typeof sessionStorage !== "undefined" && typeof sessionStorage.getItem === "function", "Storage fallback should create a sessionStorage-compatible object when browser storage is unavailable");
+localStorage.setItem("storage-fallback-smoke", "ok");
+assert(localStorage.getItem("storage-fallback-smoke") === "ok", "Storage fallback should preserve values for the current session");
 eval(readText(root + "/core/lesson-core.js"));
+eval(readText(root + "/core/journey-lesson-review.js"));
 eval(readText(root + "/core/renderer-registry.js"));
 eval(readText(root + "/adapters/action-renderer-registry-bootstrap.js"));
 eval(readText(root + "/core/foundation-adapter.js"));
@@ -54,8 +60,25 @@ eval(readText(root + "/adapters/foundation-audio.js"));
 eval(readText(root + "/core/lesson-view-model.js"));
 eval(readText(root + "/core/lesson-session.js"));
 eval(readText(root + "/core/learner-progress.js"));
+var learnerMigrationPreviewSource = readText(root + "/core/learner-migration-preview.js");
+assert(learnerMigrationPreviewSource.indexOf(".setItem(") === -1, "Learner migration preview must not contain a storage write call");
+assert(learnerMigrationPreviewSource.indexOf(".removeItem(") === -1, "Learner migration preview must not contain a storage delete call");
+eval(learnerMigrationPreviewSource);
+eval(readText(root + "/core/progress-event.js"));
+eval(readText(root + "/core/foundation-progress.js"));
+eval(readText(root + "/core/journey-progress.js"));
+eval(readText(root + "/core/hearth-brain-chamber.js"));
+eval(readText(root + "/core/knowing-progress.js"));
+eval(readText(root + "/core/level-one-song-thread.js"));
+eval(readText(root + "/core/create-prompt-policy.js"));
+eval(readText(root + "/core/create-progress.js"));
+eval(readText(root + "/core/mastery-progress.js"));
+eval(readText(root + "/adapters/progress-event-store.js"));
+eval(readText(root + "/adapters/cross-node-handoff-store.js"));
 eval(readText(root + "/core/play-domain.js"));
 eval(readText(root + "/assets/js/journey-data.js"));
+eval(readText(root + "/assets/js/mastery-data.js"));
+eval(readText(root + "/adapters/study-key-chamber-model.js"));
 eval(readText(root + "/assets/js/play-traditions.js"));
 eval(readText(root + "/adapters/play-atlas-model.js"));
 eval(readText(root + "/adapters/play-atlas-viewer.js"));
@@ -104,6 +127,7 @@ eval(readText(root + "/adapters/practice-ui-utils.js"));
 eval(readText(root + "/adapters/practice-metronome-controller.js"));
 eval(readText(root + "/adapters/practice-entry-model.js"));
 eval(readText(root + "/adapters/practice-entry-viewer.js"));
+eval(readText(root + "/adapters/practice-planned-session-store.js"));
 eval(readText(root + "/adapters/practice-planned-session-viewer.js"));
 eval(readText(root + "/adapters/play-world-viewer.js"));
 eval(readText(root + "/adapters/mastery-viewer.js"));
@@ -124,6 +148,307 @@ eval(readText(root + "/adapters/dictionary-controller.js"));
 
 var seed = JSON.parse(readText(root + "/database-blueprint/seeds/foundation_conversations_lesson_v2.json"));
 var foundationManifest = JSON.parse(readText(root + "/core/foundation-route-manifest.json"));
+var proposedEventSchema = JSON.parse(readText(root + "/core/contracts/progress-event-envelope-v1.schema.json"));
+var proposedHandoffSchema = JSON.parse(readText(root + "/core/contracts/handoff-envelope-v1.schema.json"));
+var evidenceStageCompatibility = JSON.parse(readText(root + "/core/contracts/evidence-stage-compatibility-v1.json"));
+
+assert(proposedEventSchema.required.indexOf("node_id") !== -1, "Event proposal should preserve node_id as the producing node");
+assert(proposedEventSchema.properties.source_node_id === undefined, "Event proposal should not introduce a competing source_node_id");
+assert(proposedEventSchema.properties.created_at.deprecated === true, "Event proposal should allow the temporary created_at compatibility alias");
+assert(proposedHandoffSchema.required.indexOf("source_node_id") !== -1, "Handoff proposal should require its source node");
+assert(proposedHandoffSchema.required.indexOf("destination_node_id") !== -1, "Handoff proposal should require one destination node");
+assert(proposedHandoffSchema.required.indexOf("fallback_instruction") !== -1, "Handoff proposal should require a top-level fallback instruction");
+assert(evidenceStageCompatibility.canonical_to_journey.attempt === "attempted", "Shared attempt evidence should map explicitly into Journey");
+assert(evidenceStageCompatibility.canonical_to_journey.application === "applied_musically", "Shared application evidence should map explicitly into Journey");
+assert(evidenceStageCompatibility.journey_to_canonical.externally_assessed === null, "External assessment should not be inferred from a generic event stage");
+assert(proposedEventSchema.properties.capability_ids.description.indexOf("authorize node_id") !== -1, "Event capability IDs should obey producer-node authority");
+assert(proposedHandoffSchema.properties.capability_ids.description.indexOf("authorize destination_node_id") !== -1, "Handoff capability IDs should obey destination-node authority");
+assert(HearthProgressEventContract.normalizeJourneyLevelId("level-1") === "L1", "Journey level aliases should normalize to the live L1 identifier");
+assert(HearthProgressEventContract.toJourneyEvidenceStage("demonstration") === "demonstrated", "Canonical evidence should map into the live Journey stage vocabulary at read time");
+Object.keys(evidenceStageCompatibility.canonical_to_journey).forEach(function verifyRuntimeEvidenceStage(stage) {{
+  assert(HearthProgressEventContract.toJourneyEvidenceStage(stage) === evidenceStageCompatibility.canonical_to_journey[stage], "Runtime Journey stage mapping should match the approved compatibility contract: " + stage);
+}});
+
+var progressStoreLegacyEvent = {{
+  id: "legacy-event-1",
+  version: 1,
+  simulator_id: "hearth-guitar",
+  learner_id: "jen-1",
+  event_type: "concept_read",
+  node_id: "knowing",
+  journey_level_id: null,
+  category_id: "theory",
+  lesson_id: null,
+  drill_id: null,
+  source_id: "topic-intervals",
+  duration_minutes: null,
+  rating: null,
+  note: "",
+  data: {{ topic_id: "topic-intervals" }},
+  created_at: "2026-07-18T09:00:00.000Z"
+}};
+var progressStoreValues = {{
+  "hearth-progress-events": JSON.stringify([progressStoreLegacyEvent]),
+  "hearth-journey-v2": JSON.stringify({{ activeStudentId: "ayla-1" }})
+}};
+var progressStoreWriteCount = 0;
+var progressStoreStorage = {{
+  getItem: function(key) {{
+    return Object.prototype.hasOwnProperty.call(progressStoreValues, key) ? progressStoreValues[key] : null;
+  }},
+  setItem: function(key, value) {{
+    progressStoreWriteCount += 1;
+    progressStoreValues[key] = String(value);
+  }}
+}};
+var progressStoreBeforeRead = progressStoreStorage.getItem("hearth-progress-events");
+var progressStoreRawRead = HearthProgressEvents.listRaw(progressStoreStorage);
+var progressStoreNormalizedRead = HearthProgressEvents.listNormalized(progressStoreStorage);
+assert(progressStoreWriteCount === 0, "Raw and normalized event reads must not write storage");
+assert(progressStoreStorage.getItem("hearth-progress-events") === progressStoreBeforeRead, "Reading existing history must not rewrite it");
+assert(progressStoreRawRead[0].data.topic_id === "topic-intervals", "Legacy events should remain readable in their raw stored shape");
+assert(progressStoreNormalizedRead[0].source_format === "legacy_v0", "Legacy normalized reads should be explicitly labelled as compatibility projections");
+assert(progressStoreNormalizedRead[0].compatibility_mode === "read_time_projection_only", "Legacy normalization should say that it is read-time only");
+assert(progressStoreNormalizedRead[0].event.occurred_at === progressStoreLegacyEvent.created_at, "Legacy created_at should project to occurred_at without rewriting raw history");
+
+var completeDoEvent = {{
+  id: "evt-do-jen-pent-01",
+  version: 1,
+  simulator_id: "hearth-guitar",
+  event_type: "drill_feedback_recorded",
+  learner_id: "jen-1",
+  actor_role: "learner",
+  node_id: "doing",
+  destination_node_id: "journey",
+  journey_level_id: "L1",
+  category_id: "coordination",
+  lesson_id: "level-1-lesson-1",
+  activity_id: "pent-roots-time",
+  drill_id: "pent-roots-time",
+  capability_ids: ["L1-MAP-01", "L1-TIME-01"],
+  attempt_id: "attempt-jen-pent-01",
+  session_id: "session-jen-20260719",
+  evidence_stage: "demonstration",
+  evidence_source: "self_report",
+  source_id: null,
+  project_id: null,
+  recording_id: null,
+  handoff_id: "handoff-jen-pent-01",
+  duration_minutes: 5,
+  rating: 3,
+  note: "",
+  occurred_at: "2026-07-19T10:15:00.000Z",
+  recorded_at: "2026-07-19T10:15:02.000Z",
+  created_at: "2026-07-19T10:15:00.000Z",
+  return_route: {{
+    node_id: "journey",
+    view_id: "lesson",
+    params: {{ lesson_id: "level-1-lesson-1", block_id: "do" }}
+  }},
+  fallback_instruction: "Return to Journey and reopen Level 1 Lesson 1.",
+  data: {{
+    state: "clean",
+    destination_node_id: "journey",
+    activity_id: "pent-roots-time",
+    capability_ids: ["L1-MAP-01", "L1-TIME-01"],
+    related_capability_ids: ["L1-PRACTICE-01"],
+    attempt_id: "attempt-jen-pent-01",
+    session_id: "session-jen-20260719",
+    evidence_stage: "demonstration",
+    evidence_source: "self_report",
+    occurred_at: "2026-07-19T10:15:00.000Z",
+    recorded_at: "2026-07-19T10:15:02.000Z",
+    task: {{ instruction: "Play three A roots in time." }},
+    pass_condition: {{ description: "Three clean repetitions stay with the pulse." }},
+    easier_step: {{ instruction: "Play one A root without the metronome." }},
+    return_route: {{
+      node_id: "journey",
+      view_id: "lesson",
+      params: {{ lesson_id: "level-1-lesson-1", block_id: "do" }}
+    }},
+    fallback_instruction: "Return to Journey and reopen Level 1 Lesson 1."
+  }}
+}};
+
+var completeDoAppend = HearthProgressEvents.append(completeDoEvent, progressStoreStorage);
+assert(completeDoAppend && completeDoAppend.id === completeDoEvent.id, "A complete Do event should append through the producer-facing canonical bridge");
+var completeDoStored = HearthProgressEvents.listRaw(progressStoreStorage)[1];
+[
+  "destination_node_id",
+  "activity_id",
+  "capability_ids",
+  "attempt_id",
+  "session_id",
+  "evidence_stage",
+  "evidence_source",
+  "occurred_at",
+  "recorded_at",
+  "return_route",
+  "fallback_instruction"
+].forEach(function verifyCanonicalFieldSurvives(field) {{
+  assert(JSON.stringify(completeDoStored[field]) === JSON.stringify(completeDoEvent[field]), "Canonical append/read should preserve " + field);
+}});
+assert(completeDoStored.actor_role === "learner" && completeDoStored.handoff_id === "handoff-jen-pent-01", "Canonical append/read should preserve optional approved context");
+assert(completeDoStored.data.related_capability_ids[0] === "L1-PRACTICE-01", "Non-credit related capability context should survive in data");
+assert(completeDoStored.data.pass_condition.description.indexOf("pulse") !== -1, "Do pass conditions should survive in event data");
+assert(completeDoStored.data.easier_step.instruction.indexOf("without") !== -1, "Do easier steps should survive in event data");
+assert(HearthProgressEvents.listNormalized(progressStoreStorage)[1].source_format === "canonical_v1", "Canonical records should be recognized on normalized read");
+assert(HearthProgressEvents.listNormalized(progressStoreStorage)[1].valid === true, "A stored Do event should remain valid after read normalization");
+assert(JSON.stringify(HearthProgressEvents.listRaw(progressStoreStorage)[0]) === JSON.stringify(progressStoreLegacyEvent), "Appending a canonical event must preserve preceding legacy event records");
+
+var progressStoreAfterFirstAppend = progressStoreStorage.getItem("hearth-progress-events");
+var progressStoreWritesAfterFirstAppend = progressStoreWriteCount;
+var equivalentDoEvent = JSON.parse(JSON.stringify(completeDoEvent));
+equivalentDoEvent.journey_level_id = "level-1";
+var duplicateDoAppend = HearthProgressEvents.appendCanonical(equivalentDoEvent, progressStoreStorage);
+assert(duplicateDoAppend.ok && duplicateDoAppend.status === "duplicate", "The same ID and normalized payload should be idempotent");
+assert(progressStoreWriteCount === progressStoreWritesAfterFirstAppend, "An idempotent duplicate should not rewrite storage");
+assert(progressStoreStorage.getItem("hearth-progress-events") === progressStoreAfterFirstAppend, "An idempotent duplicate should leave history byte-for-byte unchanged");
+
+var conflictingDoEvent = JSON.parse(JSON.stringify(completeDoEvent));
+conflictingDoEvent.rating = 4;
+var conflictingDoAppend = HearthProgressEvents.appendCanonical(conflictingDoEvent, progressStoreStorage);
+assert(!conflictingDoAppend.ok && conflictingDoAppend.status === "conflict", "The same ID with different data should be a blocking conflict");
+assert(conflictingDoAppend.errors[0].code === "duplicate_id_conflict", "Duplicate conflicts should be distinguishable from validation failures");
+assert(progressStoreStorage.getItem("hearth-progress-events") === progressStoreAfterFirstAppend, "A conflicting duplicate must not overwrite or append anything");
+
+var missingLearnerDoEvent = JSON.parse(JSON.stringify(completeDoEvent));
+missingLearnerDoEvent.id = "evt-do-missing-learner";
+delete missingLearnerDoEvent.learner_id;
+var missingLearnerBefore = progressStoreStorage.getItem("hearth-progress-events");
+var missingLearnerAppend = HearthProgressEvents.appendResult(missingLearnerDoEvent, progressStoreStorage);
+assert(!missingLearnerAppend.ok && missingLearnerAppend.status === "rejected", "A canonical event without learner_id should be rejected");
+assert(missingLearnerAppend.errors.some(function(item) {{ return item.field === "learner_id"; }}), "Missing learner validation should identify learner_id");
+assert(progressStoreStorage.getItem("hearth-progress-events") === missingLearnerBefore, "Validation failure must not mutate storage");
+assert(HearthProgressEvents.listRaw(progressStoreStorage).length === 2, "Rejected and duplicate canonical events should not be added");
+var journeyStageEvent = JSON.parse(JSON.stringify(completeDoEvent));
+journeyStageEvent.id = "evt-do-wrong-stage-vocabulary";
+journeyStageEvent.evidence_stage = "attempted";
+var journeyStageAppend = HearthProgressEvents.appendCanonical(journeyStageEvent, progressStoreStorage);
+assert(!journeyStageAppend.ok && journeyStageAppend.errors.some(function(item) {{ return item.code === "invalid_evidence_stage"; }}), "Canonical writes should reject Journey display-stage labels rather than store them");
+assert(progressStoreStorage.getItem("hearth-progress-events") === missingLearnerBefore, "Evidence-stage validation failure must not mutate storage");
+
+var legacyCompatibilityValues = {{
+  "hearth-progress-events": "[]",
+  "hearth-journey-v2": JSON.stringify({{ activeStudentId: "jen-1" }})
+}};
+var legacyCompatibilityStorage = {{
+  getItem: function(key) {{ return Object.prototype.hasOwnProperty.call(legacyCompatibilityValues, key) ? legacyCompatibilityValues[key] : null; }},
+  setItem: function(key, value) {{ legacyCompatibilityValues[key] = String(value); }}
+}};
+var legacyCompatibilityAppend = HearthProgressEvents.appendResult({{
+  id: "legacy-play-1",
+  event_type: "play_activity_completed",
+  node_id: "play",
+  occurred_at: "2026-07-19T11:00:00.000Z",
+  data: {{ activity_id: "play-call-response" }}
+}}, legacyCompatibilityStorage);
+assert(legacyCompatibilityAppend.ok && legacyCompatibilityAppend.source_format === "legacy_v0", "Incomplete existing producers should be routed to the labelled legacy path");
+assert(legacyCompatibilityAppend.event.learner_id === "jen-1", "Only the labelled legacy path may retain active-Journey learner inference");
+assert(legacyCompatibilityAppend.event.occurred_at === "2026-07-19T11:00:00.000Z", "Approved transitional fields should not be stripped from legacy producer events");
+
+var cappedEvents = [];
+for (var cappedIndex = 0; cappedIndex < 1000; cappedIndex += 1) {{
+  cappedEvents.push({{
+    id: "legacy-cap-" + cappedIndex,
+    version: 1,
+    simulator_id: "hearth-guitar",
+    learner_id: "jen-1",
+    event_type: "concept_read",
+    node_id: "knowing",
+    data: {{ index: cappedIndex }},
+    created_at: "2026-07-18T09:00:00.000Z"
+  }});
+}}
+var cappedStorageValue = JSON.stringify(cappedEvents);
+var cappedStorage = {{
+  getItem: function(key) {{ return key === "hearth-progress-events" ? cappedStorageValue : null; }},
+  setItem: function(key, value) {{ if (key === "hearth-progress-events") cappedStorageValue = String(value); }}
+}};
+var cappedDoEvent = JSON.parse(JSON.stringify(completeDoEvent));
+cappedDoEvent.id = "evt-do-cap-1000";
+var cappedAppend = HearthProgressEvents.appendCanonical(cappedDoEvent, cappedStorage);
+var cappedAfter = HearthProgressEvents.listRaw(cappedStorage);
+assert(cappedAppend.ok && cappedAfter.length === 1000, "The shared event store should retain its predictable 1,000-event cap");
+assert(cappedAfter[0].id === "legacy-cap-1", "Appending event 1,001 should remove exactly the oldest event");
+assert(cappedAfter[999].id === "evt-do-cap-1000", "The newest canonical event should occupy the final capped position");
+
+var migrationStorageValues = {{
+  "hearth_users": JSON.stringify([
+    {{ name: "private entry profile", level: 1 }}
+  ]),
+  "hearth_current": JSON.stringify({{ name: "private entry profile", level: 1 }}),
+  "hearth-journey-v2": JSON.stringify({{
+    activeStudentId: "ayla-1",
+    students: [
+      {{ id: "ayla-1", name: "Ayla" }},
+      {{ id: "jen-1", name: "Jen" }}
+    ]
+  }}),
+  "hearth-journey-active-student": "jen-1",
+  "hearth-foundation-progress": JSON.stringify({{ "f-threshold": true }}),
+  "hearth-progress-events": JSON.stringify([
+    {{ id: "event-1", learner_id: "jen-1", event_type: "drill_feedback_recorded" }},
+    {{ id: "event-2", event_type: "practice_session_completed", note: "private reflection text" }}
+  ]),
+  "hearth-practice-log": JSON.stringify([
+    {{ learner_id: "jen-1", duration_minutes: 5 }},
+    {{ duration_minutes: 3, reflection: "private practice note" }}
+  ]),
+  "hearth-create-v1": JSON.stringify({{
+    version: 1,
+    profiles: {{ "ayla-1": {{ current: {{ id: "scoped-seed" }}, projects: [] }} }}
+  }}),
+  "hearth-create-current": JSON.stringify({{ id: "legacy-seed" }}),
+  "hearth-knowing-progress": "{{invalid-json",
+  "hearth-play-session-v1:ghost-learner": JSON.stringify({{ view: "destination" }}),
+  "hearth-notebook-general": "private notebook content"
+}};
+var migrationStorageKeys = Object.keys(migrationStorageValues);
+var migrationWriteCalls = 0;
+var migrationDeleteCalls = 0;
+var migrationStorage = {{
+  get length() {{ return migrationStorageKeys.length; }},
+  key: function(index) {{ return migrationStorageKeys[index] || null; }},
+  getItem: function(key) {{
+    return Object.prototype.hasOwnProperty.call(migrationStorageValues, key)
+      ? migrationStorageValues[key]
+      : null;
+  }},
+  setItem: function() {{ migrationWriteCalls += 1; throw new Error("preview attempted a write"); }},
+  removeItem: function() {{ migrationDeleteCalls += 1; throw new Error("preview attempted a delete"); }},
+  clear: function() {{ migrationDeleteCalls += 1; throw new Error("preview attempted a clear"); }}
+}};
+var migrationStorageBefore = JSON.stringify(migrationStorageValues);
+var migrationPreview = HearthLearnerMigrationPreview.preview(migrationStorage, {{
+  now: "2026-07-19T12:00:00.000Z"
+}});
+var migrationStorageAfter = JSON.stringify(migrationStorageValues);
+function migrationItem(sourceKey) {{
+  return migrationPreview.items.find(function(item) {{ return item.source_key === sourceKey; }});
+}}
+function hasMigrationConflict(item, code) {{
+  return item && item.conflicts.some(function(itemConflict) {{ return itemConflict.code === code; }});
+}}
+
+assert(migrationPreview.safety.mode === "read_only" && migrationPreview.safety.can_apply === false, "Migration preview should declare that it cannot apply changes");
+assert(migrationPreview.safety.write_operations === 0 && migrationPreview.safety.delete_operations === 0, "Migration preview should report zero mutations");
+assert(migrationWriteCalls === 0 && migrationDeleteCalls === 0, "Migration preview should never invoke write/delete storage methods");
+assert(migrationStorageAfter === migrationStorageBefore, "Migration preview should leave source storage byte-for-byte unchanged");
+assert(HearthLearnerMigrationPreview.inventory().length === 36, "Learner storage inventory should contain all 36 reviewed key patterns");
+assert(hasMigrationConflict(migrationItem("hearth_users"), "records_missing_learner_id"), "Entry profiles without stable learner IDs should require reconciliation");
+assert(hasMigrationConflict(migrationItem("hearth-foundation-progress"), "ambiguous_global_owner"), "Global Foundation progress should be blocked when two learners exist");
+assert(hasMigrationConflict(migrationItem("hearth-progress-events"), "records_missing_learner_id"), "Shared events should report records with missing learner identity");
+assert(hasMigrationConflict(migrationItem("hearth-knowing-progress"), "invalid_source_json"), "Invalid legacy JSON should be preserved and blocked");
+assert(hasMigrationConflict(migrationItem("hearth-play-session-v1:ghost-learner"), "unknown_learner_id"), "Profile-key storage should report unknown learner IDs");
+assert(hasMigrationConflict(migrationItem("hearth-create-current"), "overlapping_destination_sources"), "Legacy Create state should report overlap with the learner-scoped store");
+assert(migrationPreview.conflicts.some(function(itemConflict) {{ return itemConflict.code === "active_learner_sources_disagree"; }}), "Preview should report conflicting active learner sources");
+assert(migrationItem("hearth-foundation-progress").rollback.preserve_source === true, "Every migration proposal should preserve its source key");
+var serializedMigrationPreview = JSON.stringify(migrationPreview);
+assert(serializedMigrationPreview.indexOf("private reflection text") === -1, "Preview report should not expose event note contents");
+assert(serializedMigrationPreview.indexOf("private practice note") === -1, "Preview report should not expose Practice note contents");
+assert(serializedMigrationPreview.indexOf("private notebook content") === -1, "Preview report should not expose notebook contents");
+assert(serializedMigrationPreview.indexOf("private entry profile") === -1, "Preview report should not expose entry profile names");
 
 assert(JOURNEY_CAPABILITY_FAMILIES.length === 7, "Journey should expose seven learner-facing capability families");
 assert(JOURNEY_LEVEL_CAPABILITIES.L1.length === 17, "Level 1 should expose the canonical capability set");
@@ -135,8 +460,10 @@ JOURNEY_LEVEL_CAPABILITIES.L1.forEach(function rememberCapability(capability) {{
   journeyCapabilityIds[capability.id] = true;
 }});
 var currentLevelOneActivities = JOURNEY_LEVEL_ACTIVITY_CAPABILITY_MAP.L1;
-assert(Object.keys(currentLevelOneActivities).length === 8, "Current Level 1 activities should all have capability mappings");
+assert(Object.keys(currentLevelOneActivities).length === 9, "Entry Check and all eight Level 1 lessons should have capability mappings");
 assert(currentLevelOneActivities["l1-entry-preflight"].countsTowardLevel === false, "Level 1 entry check should be classified as preflight");
+assert(currentLevelOneActivities["l1-song-path"].countsTowardLevel === true, "Level 1 should include a counted song pathway");
+assert(Object.keys(currentLevelOneActivities).filter(function(activityId) {{ return currentLevelOneActivities[activityId].countsTowardLevel; }}).length === 8, "Level 1 should contain exactly eight counted lessons");
 Object.keys(currentLevelOneActivities).forEach(function checkJourneyActivity(activityId) {{
   var activity = currentLevelOneActivities[activityId];
   assert(Object.keys(activity.blocks).length === 6, "Each current Journey activity should map its six authored blocks: " + activityId);
@@ -149,6 +476,101 @@ Object.keys(currentLevelOneActivities).forEach(function checkJourneyActivity(act
     }});
   }});
 }});
+
+assert(JOURNEY_AUTHORED_LESSONS.L1.length === 9, "Level 1 should author one Entry Check plus eight lessons");
+assert(JOURNEY_AUTHORED_LESSONS.L1[0].countsTowardLevel === false, "The Entry Check must not count as Lesson 1");
+assert(JOURNEY_AUTHORED_LESSONS.L1.filter(function(lesson) {{ return lesson.countsTowardLevel !== false; }}).length === 8, "Only eight Level 1 lessons should count");
+assert(JOURNEY_AUTHORED_LESSONS.L1[7].title.indexOf("Carry It Into a Song") !== -1, "Level 1 should contain the protected song pathway");
+assert(JOURNEY_AUTHORED_LESSONS.L1[8].title.indexOf("Lesson 8") === 0, "The final integration should remain learner-facing Lesson 8");
+
+var journeyProgressEvents = [
+  {{ learner_id:"jen", journey_level_id:"L1", node_id:"doing", capability_ids:["L1-MAP-01"], evidence_stage:"demonstration", id:"jen-map" }},
+  {{ learner_id:"ayla", journey_level_id:"L1", node_id:"doing", capability_ids:["L1-MAP-01"], evidence_stage:"demonstration", id:"ayla-map" }},
+  {{ learner_id:"jen", journey_level_id:"L1", node_id:"journey", capability_ids:["L1-MAP-02"], evidence_stage:"consolidation", id:"wrong-authority" }}
+];
+var journeyProgressSummary = HearthJourneyProgress.summarize({{
+  events: journeyProgressEvents,
+  learnerId:"jen",
+  levelId:"L1",
+  capabilities:JOURNEY_LEVEL_CAPABILITIES.L1,
+  evidenceStages:JOURNEY_EVIDENCE_STAGES,
+  eventContract:HearthProgressEventContract
+}});
+assert(journeyProgressSummary.capabilityEvidence["L1-MAP-01"].met === true, "Authorized Do evidence should satisfy the mapped Level 1 capability");
+assert(journeyProgressSummary.capabilityEvidence["L1-MAP-02"].stage === "not_encountered", "A node without authority must not credit a capability");
+assert(journeyProgressSummary.complete === false, "One drill event must never complete Level 1");
+assert(journeyProgressSummary.metRequired === 1, "Another learner's evidence must not leak into Jen's progress");
+var connectedNodeProgress = HearthJourneyProgress.summarize({{
+  events: [
+    {{ learner_id:"jen", journey_level_id:"L1", node_id:"practice", data:{{ capability_ids:["L1-PREP-01","L1-PRACTICE-01"], evidence_stage:"demonstration" }}, id:"practice-day-3" }},
+    {{ learner_id:"jen", journey_level_id:"L1", node_id:"create", data:{{ capability_ids:["L1-CREATE-01"], evidence_stage:"attempt" }}, id:"create-variation" }},
+    {{ learner_id:"jen", journey_level_id:"L1", node_id:"mastery", data:{{ capability_ids:["L1-STYLE-01"], evidence_stage:"contact" }}, id:"mastery-performance" }}
+  ],
+  learnerId:"jen",
+  levelId:"L1",
+  capabilities:JOURNEY_LEVEL_CAPABILITIES.L1,
+  evidenceStages:JOURNEY_EVIDENCE_STAGES,
+  eventContract:HearthProgressEventContract
+}});
+assert(connectedNodeProgress.capabilityEvidence["L1-PRACTICE-01"].met === true, "Three-day Practice evidence should satisfy repeat-over-time");
+assert(connectedNodeProgress.capabilityEvidence["L1-CREATE-01"].met === true, "A saved Create variation should satisfy the first creative choice");
+assert(connectedNodeProgress.capabilityEvidence["L1-STYLE-01"].met === true, "A witnessed performance encounter should satisfy first style contact");
+
+assert(HearthBrainChamber.stages.map(function(stage) {{ return stage.id; }}).join(",") === "understand,experience,apply,own", "Hearth Brain should preserve the approved four-stage learning sequence");
+assert(HearthBrainChamber.validateReflection({{ observationId:"" }}).valid === false, "Hearth Brain should require an honest observation before saving evidence");
+var hearthBrainEvents = HearthBrainChamber.buildEvents({{
+  learnerId:"jen",
+  journeyLevelId:"L1",
+  lessonId:"jen-a-minor-pentatonic-consolidation",
+  activityId:"hearth-brain-pattern-map",
+  handoffId:null,
+  attemptId:"hearth-brain-attempt-test",
+  sessionId:"hearth-brain-session-test",
+  suffix:"test",
+  timestamp:"2026-07-20T12:00:00.000Z",
+  reflection:{{ observationId:"foggy", note:"Returning to A helped, but the nearby note still felt uncertain." }}
+}});
+assert(hearthBrainEvents.length === 2, "Hearth Brain should separate the practical experiment from the learner reflection");
+assert(hearthBrainEvents[0].event_type === "hearth_experiment_completed" && hearthBrainEvents[0].capability_ids[0] === "L1-EAR-01", "The Brain experiment should record only its authorized listening evidence");
+assert(hearthBrainEvents[1].event_type === "hearth_reflection_saved" && hearthBrainEvents[1].capability_ids[0] === "L1-REFLECT-01", "The Brain reflection should record its authorized reflection evidence");
+hearthBrainEvents.forEach(function validateHearthBrainEvent(event) {{
+  assert(HearthProgressEventContract.validateAndNormalize(event).valid === true, "Hearth Brain must emit canonical progress events");
+}});
+assert(HearthBrainChamber.buildEvents({{ learnerId:"jen", reflection:{{ observationId:"" }} }}).length === 0, "Hearth Brain must not fabricate evidence from an empty reflection");
+
+var handoffMemoryValues = {{}};
+var handoffMemoryStorage = {{
+  getItem: function(key) {{ return Object.prototype.hasOwnProperty.call(handoffMemoryValues, key) ? handoffMemoryValues[key] : null; }},
+  setItem: function(key, value) {{ handoffMemoryValues[key] = String(value); }},
+  removeItem: function(key) {{ delete handoffMemoryValues[key]; }}
+}};
+var handoffStore = HearthCrossNodeHandoffStore.createStore({{ storage:handoffMemoryStorage }});
+var testHandoff = {{
+  id:"handoff-test-1", version:1, learner_id:"jen", source_node_id:"journey", destination_node_id:"doing",
+  return_route:{{ node_id:"journey", view_id:"companion", params:{{ learner_id:"jen" }} }}
+}};
+assert(handoffStore.set(testHandoff) === testHandoff, "A valid cross-node handoff should be stored");
+assert(handoffStore.current({{ learnerId:"jen", destinationNodeId:"doing" }}).id === "handoff-test-1", "The intended learner and node should receive the handoff");
+assert(handoffStore.current({{ learnerId:"ayla", destinationNodeId:"doing" }}) === null, "A handoff must not leak to another learner");
+assert(handoffStore.current({{ learnerId:"jen", destinationNodeId:"practice" }}) === null, "A handoff must not leak to another destination node");
+assert(handoffStore.clear("another-handoff") === false, "A mismatched clear request must preserve the active handoff");
+assert(handoffStore.clear("handoff-test-1") === true && handoffStore.read() === null, "Returning should clear the matching handoff");
+var refreshHandoff = {{
+  id:"handoff-refresh-1",
+  version:1,
+  learner_id:"jen",
+  source_node_id:"play",
+  destination_node_id:"practice",
+  task:{{ instruction:"Repeat the A landing phrase.", parameters:{{ focus:"Land on A" }} }},
+  return_route:{{ node_id:"play", view_id:"remember", params:{{ destination_id:"mississippi" }} }},
+  fallback_instruction:"Return to Play and reopen the saved exchange."
+}};
+assert(handoffStore.set(refreshHandoff) === refreshHandoff, "A Play-to-Practice handoff should be stored before navigation");
+var rereadHandoffStore = HearthCrossNodeHandoffStore.createStore({{ storage:handoffMemoryStorage }});
+assert(rereadHandoffStore.current({{ learnerId:"jen", destinationNodeId:"practice" }}).task.parameters.focus === "Land on A", "A handoff should survive a refresh-style store reread");
+assert(rereadHandoffStore.current({{ learnerId:"jen", destinationNodeId:"practice" }}).return_route.node_id === "play", "The handoff should preserve the exact return node");
+assert(rereadHandoffStore.current({{ learnerId:"jen", destinationNodeId:"create" }}) === null, "A refreshed handoff should still reject the wrong destination");
+assert(rereadHandoffStore.clear("handoff-refresh-1") === true && Object.keys(handoffMemoryValues).length === 0, "A completed return should remove only the active handoff");
 
 assert(
   JSON.stringify(HearthFoundationRouteManifest.routes) === JSON.stringify(foundationManifest.routes),
@@ -385,7 +807,7 @@ assert(jenMigrationAttempt.reason === "assigned_elsewhere" && migratedDoingEvent
 assert(doingMemoryStorage.getItem("hearth-doing-progress") === JSON.stringify({{ "pent-1": "comfortable" }}), "Do migration should preserve the original legacy data for recovery");
 var curatedDoing = {{ categories: [{{ id: "picking", title: "Picking", drills: [{{ id: "alt-1", title: "Old title", style: "rock", source: "Test", duration: "5 min", body: "<p>Test</p>" }}, {{ id: "alt-2", title: "Draft", style: "rock", source: "Test", duration: "5 min", body: "<p>Test</p>" }}] }}] }};
 HearthDoingDrillCatalog.apply(curatedDoing);
-assert(curatedDoing.catalog.approvedCount === 13, "Doing catalogue should expose the reviewed drill count");
+assert(curatedDoing.catalog.approvedCount === 14, "Doing catalogue should expose the reviewed drill count");
 assert(HearthDoingDrillCatalog.findDrill(curatedDoing, "alt-1").title.indexOf("One String") !== -1, "Doing catalogue should apply reviewed teaching data");
 assert(HearthDoingDrillCatalog.findDrill(curatedDoing, "alt-2").reviewStatus === "draft", "Doing catalogue should preserve unreviewed drills as drafts");
 assert(HearthDoingDrillCatalog.findDrill(curatedDoing, "chord-change-am-c").reviewStatus === "approved", "Doing catalogue should add reviewed chord drills");
@@ -432,6 +854,91 @@ var rootsPilotScene = HearthDoingTeachingViewer.renderScene({{
 }});
 assert(rootsPilotScene.indexOf("Make it musical") !== -1, "A Root Notes in Time should offer an optional Create handoff");
 assert(rootsPilotScene.indexOf("_openDoingCreate") !== -1 && rootsPilotScene.indexOf("pent-roots-time") !== -1, "Doing Create handoff should preserve its drill source");
+assert(HearthLevelOneSongThread.id === "level-1-a-minor-homecoming", "Level 1 should expose one stable original song-thread ID");
+assert(HearthLevelOneSongThread.progression.length === 8 && HearthLevelOneSongThread.rights.indexOf("no commercial song") !== -1, "Level 1 song thread should be an eight-bar rights-safe original");
+assert(HearthLevelOneSongThread.practicePlan.sessions.length === 3, "Level 1 song thread should define three connected Practice returns");
+assert(HearthLevelOneSongThread.playActivity.activityId === "play-a-minor-homecoming-role-exchange", "Level 1 song thread should define one stable Play activity");
+assert(MASTERY_EXEMPLARS[0].sourceType === "live performance", "Level 1 Mastery should use a genuine performance exemplar");
+assert(MASTERY_EXEMPLARS[0].artist === "B.B. King" && MASTERY_EXEMPLARS[0].mediaFallback.indexOf("A Minor Homecoming") !== -1, "Mastery should connect B.B. King's phrasing to the internal song fallback");
+var songPilot = HearthDoingDrillCatalog.findDrill(curatedDoing, "song-thread-am");
+assert(songPilot && songPilot.visualType === "interactive-song-thread", "Doing catalogue should include the Level 1 song lab");
+assert(HearthDoingConfig.roomDrillPlans["both-hands"][1].indexOf("song-thread-am") !== -1, "Both Hands room should expose the Level 1 song lab");
+var songPilotHtml = HearthDoingTeachingViewer.renderVisual(songPilot, HearthDoingUiUtils);
+assert(songPilotHtml.indexOf("doing-song-thread") !== -1 && songPilotHtml.indexOf("Listen before playing") !== -1, "Song lab should begin with a listening comparison");
+assert(songPilotHtml.indexOf("Eight-bar road") !== -1 && songPilotHtml.indexOf("short TAB answer") !== -1, "Song lab should show the song road and a TAB fragment");
+assert(JOURNEY_STUDENT_COMPANIONS.jen.lessonButtons[2].doingHandoff.drill_id === "strum-1", "Jen's right-hand step should open the reviewed strum drill");
+assert(JOURNEY_STUDENT_COMPANIONS.jen.lessonButtons[3].studyHandoff.activity_id === "study-a-minor-pentatonic-map-clue", "Jen's map clue should open the exact Study inquiry");
+assert(JOURNEY_STUDENT_COMPANIONS.jen.lessonButtons[3].studyHandoff.capability_ids.indexOf("L1-KNOW-01") >= 0, "Jen's Study handoff should preserve the knowledge capability context");
+assert(JOURNEY_STUDENT_COMPANIONS.jen.lessonButtons[0].hearthHandoff.zone_id === "breath", "Jen's Tune in step should open the Hearth body check");
+assert(JOURNEY_STUDENT_COMPANIONS.jen.lessonButtons[6].hearthHandoff.zone_id === "heart", "Jen's Review step should open the Hearth feeling check");
+assert(JOURNEY_STUDENT_COMPANIONS.jen.lessonButtons[5].doingHandoff.drill_id === "song-thread-am", "Jen's conversation step should open the song lab");
+assert(JOURNEY_STUDENT_COMPANIONS.jen.lessonButtons[5].playHandoff.activity_id === "play-a-minor-homecoming-role-exchange", "Jen's conversation step should open the matching Play exchange");
+assert(JOURNEY_STUDENT_COMPANIONS.jen.lessonButtons[4].practiceHandoff.activity_id === "practice-plan-a-minor-homecoming-3-day", "Jen's Make Music step should open the exact three-return practice plan");
+assert(JOURNEY_STUDENT_COMPANIONS.jen.lessonButtons[5].masteryHandoff.source_id === "level-1-bb-king-space-and-answer", "Jen's conversation step should open the exact Mastery exemplar");
+var journeyReviewResult = HearthJourneyLessonReview.build({{
+  learnerId: "jen-test",
+  journeyLevelId: "L1",
+  lessonId: "L1-companion",
+  lessonFocus: "A minor pentatonic consolidation",
+  createdAt: "2026-07-20T12:00:00.000Z",
+  answers: {{
+    feltHome: "Jamming",
+    mostMusical: "The scale",
+    enjoyed: "Call and response",
+    helped: "The CAGED landmark clue",
+    needs: "Clean repetition",
+    teacherPrep: "Choose a suitable song",
+    nextLesson: "Learn a rhythm and lead song"
+  }},
+  commitment: "20 minutes a day",
+  durationMinutes: 20,
+  practiceItems: ["A roots at 60 BPM", "Tiny A minor jam", "A roots at 60 BPM"]
+}});
+assert(journeyReviewResult.valid, "A complete Journey lesson review should validate");
+assert(journeyReviewResult.record.learnerId === "jen-test" && journeyReviewResult.record.practiceSheet.durationMinutes === 20, "Journey review should remain learner-scoped and preserve the practice duration");
+assert(journeyReviewResult.record.practiceSheet.items.length === 2, "Journey review should remove duplicate practice items");
+assert(HearthJourneyLessonReview.latest([{{ text: "legacy" }}, journeyReviewResult.record]).id === journeyReviewResult.record.id, "Journey review should recover the latest structured review without rewriting legacy notes");
+var journeyReviewEventCheck = HearthProgressEventContract.validateAndNormalize({{
+  id: "evt-" + journeyReviewResult.record.id,
+  version: 1,
+  simulator_id: "hearth-guitar",
+  event_type: "teacher_lesson_note",
+  learner_id: "jen-test",
+  actor_role: "teacher",
+  node_id: "journey",
+  destination_node_id: null,
+  journey_level_id: "L1",
+  category_id: null,
+  lesson_id: "L1-companion",
+  activity_id: "journey-companion-review",
+  drill_id: null,
+  capability_ids: [],
+  attempt_id: null,
+  session_id: "journey-review-session-jen-test-20260720120000000",
+  evidence_stage: "contact",
+  evidence_source: "teacher_observation",
+  source_id: null,
+  project_id: null,
+  recording_id: null,
+  handoff_id: null,
+  duration_minutes: null,
+  rating: null,
+  note: "Learn a rhythm and lead song",
+  occurred_at: "2026-07-20T12:00:00.000Z",
+  recorded_at: "2026-07-20T12:00:00.000Z",
+  created_at: "2026-07-20T12:00:00.000Z",
+  return_route: {{ node_id: "journey", view_id: "companion", params: {{ learner_id: "jen-test", step_index: 6 }} }},
+  fallback_instruction: "Return to Journey and reopen the live lesson companion.",
+  data: {{ review_id: journeyReviewResult.record.id, practice_item_count: 2, related_capability_ids: ["L1-REFLECT-01"] }}
+}});
+assert(journeyReviewEventCheck.valid && journeyReviewEventCheck.event.capability_ids.length === 0, "A teacher lesson review should satisfy the shared event contract without awarding skill capability evidence");
+var incompleteJourneyReview = HearthJourneyLessonReview.build({{
+  learnerId: "jen-test",
+  createdAt: "2026-07-20T12:00:00.000Z",
+  answers: {{ feltHome: "Jamming" }},
+  practiceItems: ["Tiny jam"]
+}});
+assert(!incompleteJourneyReview.valid && incompleteJourneyReview.errors.some(function(errorMessage) {{ return errorMessage.indexOf("next safe") !== -1; }}), "Journey review should refuse to save without a next safe step");
 var doingEvidenceHtml = HearthDoingTeachingViewer.renderEvidence({{
   evidence: {{ projectedState: "mastered", message: "Three clean attempts across two days support mastery." }},
   ui: HearthDoingUiUtils
@@ -481,6 +988,11 @@ assert(freePracticeContextHtml.indexOf('data-practice-free-minutes="10"') !== -1
 assert(freePracticeContextHtml.indexOf('data-practice-free-focus="Groove"') !== -1, "Free Practice should expose intention choices");
 var reviewPracticeContextHtml = HearthPracticeEntryViewer.renderContext(practiceEntrySnapshot, "review", {{}});
 assert(reviewPracticeContextHtml.indexOf('data-practice-review-id=') !== -1, "Previous Practice should expose learner-specific review entries");
+var lessonReviewPracticeHtml = HearthPracticeEntryViewer.renderContext(Object.assign({{}}, practiceEntrySnapshot, {{
+  lessonReviewPlan: true,
+  recommendations: ["Root notes", "Scale map", "Right hand", "Tiny jam", "Choose a song"]
+}}), "planned", {{}});
+assert(lessonReviewPracticeHtml.indexOf("Choose a song") !== -1, "Practice should show the complete saved lesson-review practice sheet");
 var plannedPracticeSession = HearthPracticePlannedSessionViewer.createSession(practiceEntrySnapshot);
 assert(plannedPracticeSession.focus.indexOf("A roots") !== -1, "Planned Practice should inherit today's focus");
 assert(plannedPracticeSession.minutes === 20, "Planned Practice should inherit the commitment length");
@@ -502,6 +1014,27 @@ var isolatedPracticeSnapshot = HearthPracticeEntryModel.buildSnapshot({{
   candleState: {{ running: true, learnerId: "jen-1", focus: "Jen focus" }}
 }});
 assert(isolatedPracticeSnapshot.activeSession.running === false, "Continue Today should never leak another learner's guided or candle session");
+var songPracticeSnapshot = HearthPracticeEntryModel.buildSnapshot({{
+  journeyState: {{ activeStudentId: "jen-1", students: [{{ id: "jen-1", name: "Jen", levels: {{}} }}] }},
+  companions: {{ jen: {{ commitment: {{ today: "Original plan" }} }} }},
+  events: [],
+  songThread: HearthLevelOneSongThread
+}});
+assert(songPracticeSnapshot.songThread.nextSession.title === "Separate the roles", "Practice should begin the song thread with separate rhythm and lead roles");
+var songPracticeSession = HearthPracticePlannedSessionViewer.createSession(songPracticeSnapshot);
+assert(songPracticeSession.songThread.drillHandoff.drillId === "song-thread-am", "Planned Practice should preserve the exact Song Lab handoff");
+assert(songPracticeSession.focus.indexOf("A Minor Homecoming") !== -1, "Planned Practice should inherit the next song-thread focus");
+var fakePlannedStorage = {{
+  values: {{}},
+  getItem: function(key) {{ return this.values[key] || null; }},
+  setItem: function(key, value) {{ this.values[key] = value; }}
+}};
+var plannedStore = HearthPracticePlannedSessionStore.createStore({{ storage: fakePlannedStorage }});
+plannedStore.save({{ id: "session-jen", learner: {{ id: "jen-1", name: "Jen" }}, focus: "Jen focus" }});
+plannedStore.save({{ id: "session-ayla", learner: {{ id: "ayla-1", name: "Ayla" }}, focus: "Ayla focus" }});
+assert(plannedStore.get("jen-1").focus === "Jen focus", "Planned Practice should restore Jen's unfinished session only");
+assert(plannedStore.get("ayla-1").focus === "Ayla focus", "Planned Practice should restore Ayla's unfinished session only");
+assert(plannedStore.get("missing") === null, "Planned Practice should not assign one learner's session to another learner");
 var plannedPracticeHtml = HearthPracticePlannedSessionViewer.render(plannedPracticeSession);
 assert(plannedPracticeHtml.indexOf("Choose the focus") !== -1 || plannedPracticeHtml.indexOf("Arrive") !== -1, "Planned Practice should render the guided steps");
 assert(plannedPracticeHtml.indexOf('data-practice-flow-action="next"') !== -1, "Planned Practice should render next-step action");
@@ -558,7 +1091,7 @@ assert(
   "Doing controls controller should route library quick link to training"
 );
 assert(
-  HearthDoingDrillAdjustController.messageForAdjustment("easier").indexOf("slowing the BPM") !== -1,
+  HearthDoingDrillAdjustController.messageForAdjustment("easier").indexOf("slow the BPM") !== -1,
   "Doing drill adjust controller should return easier message"
 );
 assert(
@@ -697,24 +1230,50 @@ var knowingTopicHtml = HearthKnowingTopicViewer.renderKnowingTopic({{
   knowing: fakeKnowing,
   cat: fakeKnowing.categories[0],
   topic: fakeKnowing.categories[0].topics[0],
-  completed: {{ pulse: true }}
+  completed: {{ pulse: true }},
+  topicState: {{ opened: true, read: true, answeredCorrect: false }}
 }});
 assert(knowingTopicHtml.indexOf("Back to Rhythm") !== -1, "Knowing topic viewer should render book back action");
 assert(knowingTopicHtml.indexOf("Mark as understood") === -1, "Knowing topic viewer should reflect completed topic");
+assert(knowingTopicHtml.indexOf("I have read this") === -1 && knowingTopicHtml.indexOf(">Read<") !== -1, "Knowing topic viewer should distinguish reading from understanding");
+assert(knowingTopicHtml.indexOf("Open exact topic in Study") !== -1, "Knowing topic viewer should expose the exact Study handoff");
 assert(
   HearthKnowingTopicViewer.nextTopicFor(fakeKnowing.categories[0], fakeKnowing.categories[0].topics[0]).id === "sync",
   "Knowing topic viewer should find next topic"
 );
+var knowingOpenedEvent = HearthKnowingProgress.buildEvent({{
+  learnerId: "jen-1", stage: "opened", categoryId: "rhythm", topicId: "pulse", topicTitle: "Pulse",
+  timestamp: "2026-07-20T10:00:00.000Z", suffix: "open"
+}});
+var knowingReadEvent = HearthKnowingProgress.buildEvent({{
+  learnerId: "jen-1", stage: "read", categoryId: "rhythm", topicId: "pulse", topicTitle: "Pulse",
+  timestamp: "2026-07-20T10:01:00.000Z", suffix: "read", nextNodeHint: "Practice"
+}});
+var knowingAnswerEvent = HearthKnowingProgress.buildEvent({{
+  learnerId: "jen-1", stage: "answered", categoryId: "rhythm", topicId: "pulse", topicTitle: "Pulse",
+  answerId: "beats-per-measure", correct: true, timestamp: "2026-07-20T10:02:00.000Z", suffix: "answer"
+}});
+assert(knowingOpenedEvent.capability_ids.length === 0, "Opening a KNOW topic must not grant capability credit");
+assert(knowingReadEvent.evidence_stage === "contact", "Reading remains contact rather than demonstrated understanding");
+assert(knowingReadEvent.data.next_node_hint === "Practice", "KNOW events should preserve the recommended next node hint");
+assert(knowingAnswerEvent.capability_ids[0] === "L1-KNOW-01", "A correct KNOW check may supply Level 1 knowledge evidence");
+var jenKnowingProjection = HearthKnowingProgress.project([knowingOpenedEvent, knowingReadEvent, knowingAnswerEvent], "jen-1");
+assert(jenKnowingProjection.pulse.read === true && jenKnowingProjection.pulse.answeredCorrect === true, "KNOW projection should preserve separate evidence stages");
+assert(Object.keys(HearthKnowingProgress.project([knowingOpenedEvent], "ayla-1")).length === 0, "KNOW evidence must not leak between Jen and Ayla");
 var fakeKnowingStorage = {{
-  value: "{{}}",
-  getItem: function() {{ return this.value; }},
-  setItem: function(key, value) {{ this.value = value; }}
+  values: {{
+    "hearth-journey-v2": JSON.stringify({{ activeStudentId: "jen-1", students: [{{ id: "jen-1", name: "Jen" }}, {{ id: "ayla-1", name: "Ayla" }}] }}),
+    "hearth-knowing-progress": JSON.stringify({{ "old-global-topic": true }})
+  }},
+  getItem: function(key) {{ return this.values[key] || null; }},
+  setItem: function(key, value) {{ this.values[key] = value; }}
 }};
-HearthKnowingProgressController.markTopic({{ topicId: "pulse", storage: fakeKnowingStorage }});
+HearthKnowingProgressController.recordStage({{ stage: "read", catId: "rhythm", topicId: "pulse", topicTitle: "Pulse", storage: fakeKnowingStorage, timestamp: "2026-07-20T10:03:00.000Z", suffix: "controller" }});
 assert(
   HearthKnowingProgressController.readProgress(fakeKnowingStorage).pulse === true,
-  "Knowing progress controller should mark topic complete"
+  "Knowing progress controller should project learner-scoped topic contact"
 );
+assert(HearthKnowingProgressController.readLegacyProgress(fakeKnowingStorage)["old-global-topic"] === true, "KNOW should preserve old global progress without assigning it to a learner");
 assert(typeof HearthKnowingPanelController.showKnowing === "function", "Knowing panel controller should expose showKnowing");
 assert(
   HearthKnowingPanelController.readProgress(fakeKnowingStorage).pulse === true,
@@ -725,7 +1284,7 @@ assert(studyState.summary.doneTopics === 1, "Knowing study model should count co
 assert(studyState.summary.quizPassed === 1, "Knowing study model should count passed quizzes");
 assert(studyState.currentTopic.id === "sync", "Knowing study model should choose first incomplete topic");
 var studyDashboardHtml = HearthKnowingStudyDashboardViewer.renderStudyDashboard({{ knowing: fakeKnowing, completed: {{ pulse: true }}, studyState: studyState }});
-assert(studyDashboardHtml.indexOf("Study Lab") >= 0, "Knowing study dashboard viewer should render title");
+assert(studyDashboardHtml.indexOf("Key Chamber") >= 0, "Knowing study dashboard viewer should render title");
 assert(studyDashboardHtml.indexOf("sync") >= 0, "Knowing study dashboard viewer should render next topic action");
 var studyQuestions = HearthKnowingStudyQuestionModel.generateQuestions(fakeKnowing.categories[0].topics[0]);
 assert(studyQuestions.length === 4, "Knowing study question model should build term and reflection questions");
@@ -823,6 +1382,77 @@ assert(cauldronResult.prompt === "write a hook", "Create cauldron model should p
 var cauldronResultHtml = HearthCreateCauldronViewer.renderMixResult(cauldronResult);
 assert(cauldronResultHtml.indexOf("Single ingredient: Melody") >= 0, "Create cauldron viewer should render mix result");
 assert(typeof HearthCreateCauldronController.syncSelectionUi === "function", "Create cauldron controller should expose selection sync");
+var levelOneRiffPrompts = HearthCreatePromptPolicy.safePrompts({{
+  id: "riff",
+  prompts: ["Play a riff entirely on harmonics.", "Play three notes slowly."]
+}}, 1);
+assert(levelOneRiffPrompts.length > 0 && levelOneRiffPrompts.join(" ").toLowerCase().indexOf("harmonic") === -1, "Level 1 Create prompts must exclude harmonics");
+assert(HearthCreatePromptPolicy.maxIngredients(1) === 1, "Level 1 Create should use one ingredient at a time");
+assert(HearthCreatePromptPolicy.allowedHeatIds(1, [{{ id: "low", levels: [1, 2] }}, {{ id: "medium", levels: [2, 3] }}]).join(",") === "low", "Level 1 Create should expose only low heat");
+var safeCreateResult = HearthCreatePromptPolicy.resolve({{
+  selected: ["riff", "rhythm"],
+  ingredients: [
+    {{ id: "riff", name: "Riff", symbol: "R", prompts: ["Play a riff entirely on harmonics."] }},
+    {{ id: "rhythm", name: "Rhythm", symbol: "T", prompts: ["Tap a pulse."] }}
+  ],
+  combos: [],
+  level: 1,
+  random: function() {{ return 0; }}
+}});
+assert(safeCreateResult.selected.length === 1 && safeCreateResult.prompt.toLowerCase().indexOf("harmonic") === -1, "Level 1 Create resolution should clamp selection and keep the prompt playable");
+var promptOnlyCreateEvent = HearthCreateProgress.buildEvent({{
+  kind: "saved",
+  learnerId: "jen-1",
+  seed: {{ id: "seed-prompt", ingredients: ["Riff"], riffIdea: "A root", sourceContext: {{ starter: "A root", journey_level_id: "L1" }} }},
+  timestamp: "2026-07-20T10:00:00.000Z",
+  suffix: "prompt-only"
+}});
+assert(promptOnlyCreateEvent.capability_ids.length === 0 && promptOnlyCreateEvent.evidence_stage === "contact", "Saving an unchanged generated starter must not earn Create capability credit");
+var learnerCreateEvent = HearthCreateProgress.buildEvent({{
+  kind: "saved",
+  learnerId: "jen-1",
+  seed: {{ id: "seed-learner", ingredients: ["Riff"], riffIdea: "A root, C, then A", sourceContext: {{ starter: "A root", journey_level_id: "L1", source_node_id: "journey" }} }},
+  timestamp: "2026-07-20T10:05:00.000Z",
+  suffix: "learner-fragment"
+}});
+assert(learnerCreateEvent.capability_ids[0] === "L1-CREATE-01" && learnerCreateEvent.evidence_source === "artifact", "A learner-shaped saved fragment should earn Create attempt evidence");
+assert(HearthProgressEventContract.validateAndNormalize(learnerCreateEvent).valid === true, "Create saved evidence should satisfy the canonical event contract");
+assert(HearthCreateProgress.project([learnerCreateEvent], "jen-1").savedProjects === 1, "Create evidence projection should count only the active learner's saved artifacts");
+assert(HearthCreateProgress.project([learnerCreateEvent], "ayla").savedProjects === 0, "Create evidence projection must not leak between learners");
+var masteryRecord = {{
+  id: "level-1-bb-king-space-and-answer",
+  level: 1,
+  category: "phrasing",
+  capabilityIds: ["L1-STYLE-01"]
+}};
+var masteryState = {{
+  id: "mastery-jen-1",
+  learnerId: "jen-1",
+  notice: "Space",
+  tryIdea: "Play one short phrase and leave room",
+  carriedTo: "practice",
+  reflection: "The silence made the answer clearer."
+}};
+var masteryStartedEvent = HearthMasteryProgress.buildEvent({{
+  kind: "started",
+  learnerId: "jen-1",
+  state: masteryState,
+  record: masteryRecord,
+  timestamp: "2026-07-20T10:10:00.000Z",
+  suffix: "started"
+}});
+assert(masteryStartedEvent.capability_ids.length === 0 && masteryStartedEvent.evidence_stage === "contact", "Opening Mastery must not earn capability credit");
+var masteryTriedEvent = HearthMasteryProgress.buildEvent({{
+  kind: "tried",
+  learnerId: "jen-1",
+  state: masteryState,
+  record: masteryRecord,
+  timestamp: "2026-07-20T10:15:00.000Z",
+  suffix: "tried"
+}});
+assert(masteryTriedEvent.capability_ids[0] === "L1-STYLE-01" && masteryTriedEvent.evidence_stage === "attempt", "Confirmed Mastery experiments should earn attempt evidence");
+assert(masteryTriedEvent.attempt_id && masteryTriedEvent.data.mastery_exemplar_id === masteryRecord.id, "Mastery attempts should preserve encounter and exemplar identity");
+assert(HearthProgressEventContract.validateAndNormalize(masteryTriedEvent).valid === true, "Mastery attempt evidence should satisfy the canonical event contract");
 var fakeCreateStorage = {{
   values: {{
     "hearth-create-current": JSON.stringify({{ title: "A minor spark", ingredients: ["Rhythm"], prompt: "Keep the root note present." }}),
@@ -856,6 +1486,7 @@ var createHandoffSeed = HearthCreateHandoff.buildSeed({{
 }});
 assert(createHandoffSeed.selected[0] === "riff", "Create handoff should preselect the suggested ingredient");
 assert(createHandoffSeed.sourceContext.lesson_id === "jen-a-minor-pentatonic-consolidation", "Create handoff should preserve its lesson source");
+assert(createHandoffSeed.prompt === "Make a two-bar answer." && createHandoffSeed.riffIdea === "A minor root notes", "Create handoff should open as a usable seed instead of an empty ingredient screen");
 var handoffEvents = [];
 var handoffState = {{
   current: null,
@@ -868,7 +1499,8 @@ var handoffRenderCount = 0;
 var handoffOpener = HearthCreateHandoff.createHandoff({{
   root: {{
     HearthCreateState: {{ createStore: function() {{ return handoffState; }} }},
-    HearthProgressEvents: {{ append: function(event) {{ handoffEvents.push(event); }} }},
+    HearthCreateProgress: HearthCreateProgress,
+    HearthProgressEvents: {{ appendCanonical: function(event) {{ handoffEvents.push(event); return {{ ok: true, event: event }}; }} }},
     CreateCauldronScene: {{ render: function() {{ handoffRenderCount += 1; }} }}
   }}
 }});
@@ -905,6 +1537,27 @@ var headerStorage = {{
     fProgress: JSON.stringify({{ a: true, b: true }}),
     dProgress: JSON.stringify({{ c: true }}),
     kProgress: JSON.stringify({{}}),
+    "hearth-journey-v2": JSON.stringify({{
+      activeStudentId: "jen-1",
+      students: [{{
+        id: "jen-1",
+        name: "Jen",
+        currentLevel: 2,
+        levels: {{
+          L1: {{ lessonsDone: 8, lessonsTotal: 8, complete: true, lessonRecords: [] }},
+          L2: {{ lessonsDone: 0, lessonsTotal: 10, complete: false, lessonRecords: [] }}
+        }}
+      }}]
+    }}),
+    "hearth-progress-events": JSON.stringify([completeDoEvent]),
+    "hearth-create-v1": JSON.stringify({{
+      version: 1,
+      legacy_migrated: true,
+      profiles: {{
+        "jen-1": {{ current: {{ title: "Jen draft", notes: "A C A" }}, projects: [{{ id: "jen-seed", title: "Jen seed" }}] }},
+        "ayla": {{ current: {{}}, projects: [{{ id: "ayla-seed-1" }}, {{ id: "ayla-seed-2" }}] }}
+      }}
+    }}),
     streak: "3"
   }},
   getItem: function(key) {{ return this.values[key] || null; }},
@@ -912,9 +1565,16 @@ var headerStorage = {{
 }};
 var headerCounts = HearthHeaderToolsController.progressCounts(headerStorage);
 assert(headerCounts.foundation.done === 2, "Header tools controller should count Foundation progress");
+assert(headerCounts.journey.current === "Level 1 consolidation", "Header progress should correct an unsupported legacy Level 2 claim without mutating it");
+assert(headerCounts.journey.capabilityMet === 2 && headerCounts.journey.capabilityTotal === 17, "Header progress should use learner-scoped capability evidence for readiness");
+assert(headerCounts.journey.done === 8, "Historical lesson contacts should remain visible after the readiness correction");
+assert(headerCounts.create.projects === 1 && headerCounts.create.learnerId === "jen-1", "Header progress should read Create projects from the active learner's scoped profile");
 assert(HearthHeaderToolsController.renderProgressHtml(headerCounts).indexOf("3 days") >= 0, "Header tools controller should render streak progress");
 assert(HearthHeaderToolsController.renderProgressHtml(headerCounts).indexOf("Next best move") >= 0, "Header tools controller should render progress guidance");
-assert(HearthHeaderToolsController.progressSummary(headerCounts).next.label === "Know", "Header tools controller should suggest weakest progress area");
+assert(HearthHeaderToolsController.renderProgressHtml(headerCounts).indexOf("Level readiness") >= 0, "Header progress should clearly label its evidence-based percentage");
+assert(HearthHeaderToolsController.renderProgressHtml(headerCounts).indexOf("Activity history") >= 0, "Header progress should separate activity history from demonstrated readiness");
+assert(HearthHeaderToolsController.progressSummary(headerCounts).next.label === "Journey", "Incomplete evidence should send the learner back to the Journey roadmap");
+assert(HearthHeaderToolsController.progressSummary(headerCounts).overall === headerCounts.journey.capabilityPercent, "Whole progress must not average unlike lesson, topic, and drill counters");
 function makeHeaderPanel(id) {{
   return {{
     id: id,
@@ -1289,13 +1949,52 @@ var livePlayEntryHtml = HearthPlayAtlasViewer.render(livePlaySnapshot, {{
 }});
 assert(livePlayEntryHtml.indexOf("Where shall the guitar take us?") !== -1, "The live Play atlas should render the approved visual entrance");
 assert(livePlayEntryHtml.indexOf("Enter the tradition") !== -1, "The live Play atlas should open a tradition-led route");
-assert(livePlayEntryHtml.indexOf("Active learner") !== -1 && livePlayEntryHtml.indexOf("Jen") !== -1, "The live Play atlas should show the active learner");
+assert(livePlayEntryHtml.indexOf("Active learner") === -1, "Play should rely on the global learner control instead of duplicating it locally");
+var songPlayHandoff = {{
+  id: "handoff-journey-play-jen-test",
+  version: 1,
+  learner_id: "jen",
+  source_node_id: "journey",
+  destination_node_id: "play",
+  activity_id: "play-a-minor-homecoming-role-exchange",
+  lesson_id: "jen-a-minor-pentatonic-consolidation",
+  journey_level_id: "L1",
+  capability_ids: ["L1-PLAY-01", "L1-SONG-01", "L1-ROLE-01"],
+  session_id: "journey-play-session-jen-test",
+  task: {{ id: "play-a-minor-homecoming-role-exchange" }},
+  return_route: {{ node_id: "journey", view_id: "companion", params: {{ learner_id: "jen", step_index: 5 }} }},
+  fallback_instruction: "Return to Journey."
+}};
+var livePlaySongSnapshot = HearthPlayAtlasModel.buildSnapshot({{
+  journeyState: {{ activeStudentId: "jen", students: [{{ id: "jen", name: "Jen" }}] }},
+  regions: [{{ id: "mississippi", name: "Mississippi Delta", tradition: "Delta Blues", color: "#5a9fd4", coords: [205, 290] }}],
+  traditions: PLAY_TRADITIONS,
+  events: [],
+  selectedId: "mississippi",
+  songThread: HearthLevelOneSongThread,
+  handoff: songPlayHandoff
+}});
+assert(livePlaySongSnapshot.route.type === "song" && livePlaySongSnapshot.route.id === HearthLevelOneSongThread.playActivity.routeId, "Play should recognize the shared song handoff");
+var livePlaySongIntroHtml = HearthPlayAtlasViewer.render(livePlaySongSnapshot, {{
+  view: "song", moment: 1, role: "", rolesTried: [], reflection: "", finished: false
+}});
+assert(livePlaySongIntroHtml.indexOf("Hearth Studio") !== -1 && livePlaySongIntroHtml.indexOf("original Hearth practice piece") !== -1, "The Play song route should identify its neutral studio context");
+assert(livePlaySongIntroHtml.indexOf('aria-label="Eight-bar chord road"') !== -1 && livePlaySongIntroHtml.indexOf("Rhythm first") !== -1, "The Play song route should show the complete form and role choice");
+var livePlaySongExchangeHtml = HearthPlayAtlasViewer.render(livePlaySongSnapshot, {{
+  view: "song-converse", moment: 2, role: "lead", rolesTried: ["rhythm", "lead"], reflection: "", finished: false
+}});
+assert(livePlaySongExchangeHtml.indexOf("We completed all 8 bars in both roles") !== -1, "Play should require the learner to carry the full form through both roles");
 var livePlayTraditionHtml = HearthPlayAtlasViewer.render(livePlaySnapshot, {{
   selectedId: "mississippi", view: "tradition", moment: 2, pulseRunning: false,
   home: "", role: "", reflection: "", finished: false
 }});
 assert(livePlayTraditionHtml.indexOf("Carried by") !== -1, "The live Play route should identify who carries the tradition");
 assert(livePlayTraditionHtml.indexOf('data-play-action="pulse"') !== -1, "The live Play tradition should lead into a playable pulse step");
+var livePlayPulseHtml = HearthPlayAtlasViewer.render(livePlaySnapshot, {{
+  selectedId: "mississippi", view: "pulse", moment: 3, pulseRunning: false,
+  home: "", role: "", reflection: "", finished: false
+}});
+assert(livePlayPulseHtml.indexOf("No audio needed") !== -1, "Play should remain usable when external media is unavailable");
 var livePlayConversationHtml = HearthPlayAtlasViewer.render(livePlaySnapshot, {{
   selectedId: "mississippi", view: "converse", moment: 6, pulseRunning: false,
   home: "open-a", role: "lead", reflection: "", finished: false
@@ -1325,11 +2024,12 @@ assert(aylaMarkerStates[1].state === "current", "Ayla's Play route should remain
 assert(jenPlayRoute.current_destination_id === "mississippi", "Play marker selection should not mutate route data");
 
 var playResult = {{
+  id: "play-event-jen-mississippi-test",
   learner_id: "jen",
   route_id: "jen-level-one-play",
   destination_id: "mississippi",
   activity_id: "a-minor-musical-conversation",
-  journey_level_id: "level-1",
+  journey_level_id: "L1",
   lesson_id: "level-1-lesson-1",
   duration_minutes: 12,
   role: "lead",
@@ -1341,15 +2041,370 @@ var playResult = {{
   reflection: "The call and response sounded musical.",
   repeat_focus: "Land on A after each short phrase.",
   revisit: true,
+  capability_ids: ["L1-EAR-01", "L1-PLAY-01", "L1-ROLE-01", "L1-STYLE-01"],
+  evidence_stage: "attempt",
+  evidence_source: "self_report",
+  attempt_id: "play-attempt-jen-mississippi-test",
+  session_id: "play-session-jen",
+  roles_tried: ["rhythm", "lead"],
+  return_route: {{ node_id: "play", view_id: "remember", params: {{ destination_id: "mississippi" }} }},
+  fallback_instruction: "Use the visual pulse at 60 BPM.",
   completed_at: "2026-07-18T12:00:00.000Z"
 }};
 var playProgressEvent = HearthPlayDomain.toProgressEvent(playResult);
 assert(playProgressEvent.event_type === "play_activity_completed", "Play should create the shared completion event type");
 assert(playProgressEvent.learner_id === "jen", "Play completion events should belong to one learner");
 assert(playProgressEvent.data.found_home === true, "Play completion events should preserve musical evidence");
+assert(HearthProgressEventContract.validateAndNormalize(playProgressEvent).valid === true, "The Mississippi musical attempt should satisfy the canonical event contract");
+var songPlayResult = {{
+  id: "play-event-jen-song-test",
+  learner_id: "jen",
+  route_id: HearthLevelOneSongThread.playActivity.routeId,
+  destination_id: null,
+  activity_id: HearthLevelOneSongThread.playActivity.activityId,
+  journey_level_id: "L1",
+  lesson_id: "jen-a-minor-pentatonic-consolidation",
+  duration_minutes: 12,
+  role: "lead",
+  tempo: 60,
+  stayed_with_pulse: true,
+  found_home: true,
+  reflection: "The rhythm held the exchange.",
+  repeat_focus: "Repeat the weaker role.",
+  revisit: true,
+  capability_ids: ["L1-PLAY-01", "L1-SONG-01", "L1-ROLE-01"],
+  evidence_stage: "application",
+  evidence_source: "self_report",
+  attempt_id: "play-attempt-jen-song-test",
+  session_id: "journey-play-session-jen-test",
+  handoff_id: "handoff-journey-play-jen-test",
+  return_route: {{ node_id: "journey", view_id: "companion", params: {{ learner_id: "jen", step_index: 5 }} }},
+  fallback_instruction: "Return to Journey.",
+  roles_tried: ["rhythm", "lead"],
+  song_id: HearthLevelOneSongThread.id,
+  completed_full_form: true,
+  completed_at: "2026-07-20T12:00:00.000Z"
+}};
+var songPlayProgressEvent = HearthPlayDomain.toProgressEvent(songPlayResult);
+var songPlayValidation = HearthProgressEventContract.validateAndNormalize(songPlayProgressEvent);
+assert(songPlayValidation.valid === true, "The Journey-to-Play song exchange should emit a valid canonical progress event");
+assert(songPlayProgressEvent.capability_ids.length === 3 && songPlayProgressEvent.data.roles_tried.length === 2, "Play should return song and role evidence to Journey");
 var playPracticeRecommendation = HearthPlayDomain.createPracticeRecommendation(playResult);
 assert(playPracticeRecommendation.learner_id === "jen", "Play Practice recommendations should stay learner-specific");
 assert(playPracticeRecommendation.focus.indexOf("Land on A") !== -1, "Play should pass the repeat focus into Practice");
+var playPracticeHandoff = HearthPlayDomain.createPracticeHandoff(playResult, {{
+  now: "2026-07-18T12:05:00.000Z",
+  suffix: "test"
+}});
+assert(playPracticeHandoff.destination_node_id === "practice" && playPracticeHandoff.source_node_id === "play", "Play should build an explicit Practice handoff");
+assert(playPracticeHandoff.learner_id === "jen" && playPracticeHandoff.task.parameters.source_result_id === playResult.id, "Play Practice handoffs should preserve learner and result identity");
+assert(playPracticeHandoff.return_route.node_id === "play", "Practice should know how to return to the saved Play exchange");
+
+function createStudyStorage(initialValues) {{
+  var values = initialValues || {{}};
+  return {{
+    values: values,
+    getItem: function(key) {{ return this.values[key] || null; }},
+    setItem: function(key, value) {{ this.values[key] = String(value); }},
+    removeItem: function(key) {{ delete this.values[key]; }}
+  }};
+}}
+
+globalThis.JOURNEY_STUDENT_COMPANIONS = JOURNEY_STUDENT_COMPANIONS;
+globalThis.KNOWING = {{
+  categories: [
+    {{
+      id: "rhythm",
+      title: "Rhythm",
+      description: "Time, pulse, and grouping.",
+      topics: [{{ id: "time-signatures", title: "Time Signatures", source: "Test rhythm source" }}]
+    }},
+    {{
+      id: "scales",
+      title: "Scales",
+      description: "Roots and note maps.",
+      topics: [{{ id: "pentatonic", title: "Pentatonic Scale", source: "Test scale source" }}]
+    }}
+  ]
+}};
+
+var aMinorStudyStorage = createStudyStorage({{
+  "hearth-journey-v2": JSON.stringify({{
+    students: [{{ id: "jen", name: "Jen", levels: {{}} }}],
+    activeStudentId: "jen"
+  }})
+}});
+var aMinorStudy = StudyKeyChamberModel.snapshot({{ storage: aMinorStudyStorage }});
+var aMinorStudyText = aMinorStudy.doors.map(function(door) {{
+  return [door.action, door.activity, door.proof].join(" ");
+}}).join(" ").toLowerCase();
+assert(aMinorStudy.subject.subjectFamily === "scales", "A-minor pentatonic should resolve to the scales family");
+assert(aMinorStudy.subject.activityTemplateId === "study-a-minor-pentatonic-v1", "A-minor pentatonic should keep its dedicated Study template");
+assert(aMinorStudy.subject.usesGeneralFallback === false, "A-minor pentatonic should not use the general fallback");
+assert(aMinorStudy.subject.recommendedDoor === "shape", "A-minor pentatonic should still recommend the Shape door");
+assert(aMinorStudyText.indexOf("pentatonic") !== -1 && aMinorStudyText.indexOf("a root") !== -1, "A-minor pentatonic doors should retain root-note and pentatonic work");
+
+var timeSignatureStudyStorage = createStudyStorage({{
+  "hearth-journey-v2": JSON.stringify({{
+    students: [{{ id: "alex", name: "Alex", levels: {{}} }}],
+    activeStudentId: "alex"
+  }}),
+  "hearth-knowing-state": JSON.stringify({{ lastTopic: "time-signatures" }})
+}});
+var timeSignatureStudy = StudyKeyChamberModel.snapshot({{ storage: timeSignatureStudyStorage }});
+var timeSignatureStudyText = timeSignatureStudy.doors.map(function(door) {{
+  return [door.action, door.activity, door.proof].join(" ");
+}}).join(" ").toLowerCase();
+assert(timeSignatureStudy.subject.title === "Time Signatures", "Study should retain the Time Signatures subject title");
+assert(timeSignatureStudy.subject.subjectFamily === "rhythm", "Time Signatures should resolve to the rhythm family");
+assert(timeSignatureStudy.subject.activityTemplateId === "study-rhythm-family-v1", "Time Signatures should use the rhythm Study template");
+assert(timeSignatureStudy.subject.usesGeneralFallback === false, "Time Signatures should not use the general fallback");
+assert(timeSignatureStudyText.indexOf("beat") !== -1 && timeSignatureStudyText.indexOf("measure") !== -1, "Time Signatures doors should ask rhythm-specific work");
+assert(!/pentatonic|tonal centre|a root|a minor phrase|fretboard/.test(timeSignatureStudyText), "Time Signatures doors must not leak A-minor pentatonic activities");
+assert(timeSignatureStudy.doors.every(function(door) {{ return door.templateId === "study-rhythm-family-v1"; }}), "Every Time Signatures door should come from the rhythm template");
+assert(timeSignatureStudy.doors[0].activity !== aMinorStudy.doors[0].activity, "Time Signatures and A-minor pentatonic should receive contrasting Word activities");
+
+var completedTimeSignatureStudy = StudyKeyChamberModel.recordEvidence("word", {{
+  feeling: "nailed",
+  note: "I can count the beat grouping steadily."
+}}, {{ storage: timeSignatureStudyStorage }});
+var switchedScaleStudy = StudyKeyChamberModel.setSubject({{
+  id: "pentatonic",
+  title: "Pentatonic Scale",
+  summary: "Roots and note maps.",
+  source: "KNOW",
+  categoryId: "scales",
+  topicId: "pentatonic",
+  recommendedDoor: "shape"
+}}, {{ storage: timeSignatureStudyStorage }});
+assert(switchedScaleStudy.subject.title === "Pentatonic Scale", "KNOW should set the exact Study subject");
+assert(switchedScaleStudy.doors.find(function(door) {{ return door.id === "word"; }}).state !== "understood", "Study evidence must not leak from Time Signatures into Pentatonic Scale");
+var restoredTimeSignatureStudy = StudyKeyChamberModel.setSubject({{
+  id: "time-signatures",
+  title: "Time Signatures",
+  summary: "Time, pulse, and grouping.",
+  source: "KNOW",
+  categoryId: "rhythm",
+  topicId: "time-signatures",
+  recommendedDoor: "word"
+}}, {{ storage: timeSignatureStudyStorage }});
+assert(restoredTimeSignatureStudy.doors.find(function(door) {{ return door.id === "word"; }}).state === "understood", "Study should restore evidence when the learner returns to the same subject");
+var timeSignaturePracticeSnapshot = HearthPracticeEntryModel.buildSnapshot({{
+  journeyState: {{ activeStudentId: "alex", students: [{{ id: "alex", name: "Alex", levels: {{}} }}] }},
+  companions: {{}},
+  events: [],
+  studySnapshot: completedTimeSignatureStudy
+}});
+var timeSignaturePracticeText = [
+  timeSignaturePracticeSnapshot.study && timeSignaturePracticeSnapshot.study.nextFocus,
+  timeSignaturePracticeSnapshot.study && timeSignaturePracticeSnapshot.study.message
+].concat(timeSignaturePracticeSnapshot.recommendations || []).join(" ").toLowerCase();
+assert(timeSignaturePracticeSnapshot.study.nextFocus === "Apply Time Signatures in Practice", "A clear Time Signatures result should give Practice the matching subject");
+assert(timeSignaturePracticeSnapshot.recommendations.indexOf("Apply Time Signatures in Practice") !== -1, "Practice recommendations should include the completed Time Signatures Study result");
+assert(!/pentatonic|tonal centre|a root|a minor phrase/.test(timeSignaturePracticeText), "Time Signatures Practice handoff must not leak A-minor language");
+
+var journeySource = readText(root + "/assets/js/journey.js");
+var requiredCompanionHandoffs = {{
+  openCompanionCreate: "create",
+  openCompanionDoing: "doing",
+  openCompanionStudy: "study",
+  openCompanionHearth: "hearth",
+  openCompanionPractice: "practice",
+  openCompanionMastery: "mastery",
+  openCompanionPlay: "play"
+}};
+Object.keys(requiredCompanionHandoffs).forEach(function verifyCompanionHandoff(functionName) {{
+  var functionSource = extractFunctionSource(journeySource, functionName);
+  var destination = requiredCompanionHandoffs[functionName];
+  assert(functionSource.indexOf("destination_node_id:'" + destination + "'") !== -1, functionName + " should build a handoff to " + destination);
+  assert(functionSource.indexOf("learner_id:student.id") !== -1, functionName + " should keep the handoff learner-scoped");
+  assert(functionSource.indexOf("return_route:{{ node_id:'journey'") !== -1, functionName + " should keep a Journey return route");
+  assert(functionSource.indexOf("fallback_instruction:") !== -1, functionName + " should provide a fallback instruction");
+  assert(functionSource.indexOf("store.set(") !== -1, functionName + " should store the cross-node handoff before opening the node");
+}});
+
+function extractFunctionSource(source, name) {{
+  var marker = "function " + name + "(";
+  var start = source.indexOf(marker);
+  if (start === -1) {{
+    marker = "\\n    " + name + "(";
+    start = source.indexOf(marker);
+    if (start !== -1) start += marker.indexOf(name);
+  }}
+  assert(start !== -1, "Could not find Journey helper: " + name);
+  var braceStart = source.indexOf("{{", start);
+  var depth = 0;
+  for (var index = braceStart; index < source.length; index++) {{
+    if (source.charAt(index) === "{{") depth += 1;
+    if (source.charAt(index) === "}}") depth -= 1;
+    if (depth === 0) return source.slice(start, index + 1);
+  }}
+  throw new Error("Could not extract Journey helper: " + name);
+}}
+
+var originalJourneyWindow = globalThis.window;
+var originalJourneyStorage = globalThis.localStorage;
+globalThis.window = {{
+  StudyKeyChamberModel: {{
+    snapshot: function() {{ return completedTimeSignatureStudy; }}
+  }}
+}};
+globalThis.localStorage = timeSignatureStudyStorage;
+eval(extractFunctionSource(readText(root + "/assets/js/journey.js"), "journeyStudySignal"));
+var timeSignatureJourneySignal = journeyStudySignal();
+assert(timeSignatureJourneySignal.title === "Apply Time Signatures in Practice", "Journey should surface the correct completed Study subject");
+assert(!/pentatonic|tonal centre|a root|a minor phrase/.test(timeSignatureJourneySignal.title + " " + timeSignatureJourneySignal.body), "Journey Study signal must not leak A-minor language");
+globalThis.window = originalJourneyWindow;
+globalThis.localStorage = originalJourneyStorage;
+
+globalThis.KNOWING = {{
+  categories: [{{
+    id: "uncatalogued",
+    title: "Uncatalogued",
+    description: "A subject without an approved Study family.",
+    topics: [{{ id: "experimental-idea", title: "Experimental Idea", source: "Test unknown source" }}]
+  }}]
+}};
+var generalStudyStorage = createStudyStorage({{
+  "hearth-journey-v2": JSON.stringify({{
+    students: [{{ id: "casey", name: "Casey", levels: {{}} }}],
+    activeStudentId: "casey"
+  }}),
+  "hearth-knowing-state": JSON.stringify({{ lastTopic: "experimental-idea" }})
+}});
+var generalStudy = StudyKeyChamberModel.snapshot({{ storage: generalStudyStorage }});
+var generalStudyText = generalStudy.doors.map(function(door) {{ return door.activity; }}).join(" ").toLowerCase();
+assert(generalStudy.subject.subjectFamily === "general", "An unknown subject should resolve to the general inquiry family");
+assert(generalStudy.subject.activityTemplateId === "study-general-inquiry-v1", "An unknown subject should use the stable general inquiry template");
+assert(generalStudy.subject.usesGeneralFallback === true, "An unknown subject should expose that it uses the general fallback");
+assert(generalStudy.doors.every(function(door) {{ return door.activityLabel === "General inquiry" && door.usesGeneralFallback === true; }}), "Every unknown-subject door should be clearly labelled as a general inquiry");
+assert(generalStudyText.indexOf("general inquiry") !== -1, "Unknown-subject activities should label the general inquiry in their instructions");
+assert(!/pentatonic|tonal centre|a root|a minor phrase/.test(generalStudyText), "The general fallback must not leak A-minor pentatonic activities");
+var publicStudyDefinitions = StudyKeyChamberModel.definitions();
+assert(publicStudyDefinitions.every(function(door) {{ return door.usesGeneralFallback === true && door.activity; }}), "Public Study door definitions should remain complete and use the safe fallback without a subject");
+
+function createStudyStorage(initialValues) {{
+  var values = initialValues || {{}};
+  return {{
+    values: values,
+    getItem: function(key) {{ return this.values[key] || null; }},
+    setItem: function(key, value) {{ this.values[key] = String(value); }},
+    removeItem: function(key) {{ delete this.values[key]; }}
+  }};
+}}
+
+globalThis.JOURNEY_STUDENT_COMPANIONS = JOURNEY_STUDENT_COMPANIONS;
+globalThis.KNOWING = {{
+  categories: [
+    {{
+      id: "rhythm",
+      title: "Rhythm",
+      description: "Time, pulse, and grouping.",
+      topics: [{{ id: "time-signatures", title: "Time Signatures", source: "Test rhythm source" }}]
+    }},
+    {{
+      id: "scales",
+      title: "Scales",
+      description: "Roots and note maps.",
+      topics: [{{ id: "pentatonic", title: "Pentatonic Scale", source: "Test scale source" }}]
+    }}
+  ]
+}};
+
+var aMinorStudyStorage = createStudyStorage({{
+  "hearth-journey-v2": JSON.stringify({{
+    students: [{{ id: "jen", name: "Jen", levels: {{}} }}],
+    activeStudentId: "jen"
+  }})
+}});
+var aMinorStudy = StudyKeyChamberModel.snapshot({{ storage: aMinorStudyStorage }});
+var aMinorStudyText = aMinorStudy.doors.map(function(door) {{
+  return [door.action, door.activity, door.proof].join(" ");
+}}).join(" ").toLowerCase();
+assert(aMinorStudy.subject.subjectFamily === "scales", "A-minor pentatonic should resolve to the scales family");
+assert(aMinorStudy.subject.activityTemplateId === "study-a-minor-pentatonic-v1", "A-minor pentatonic should keep its dedicated Study template");
+assert(aMinorStudy.subject.usesGeneralFallback === false, "A-minor pentatonic should not use the general fallback");
+assert(aMinorStudy.subject.recommendedDoor === "shape", "A-minor pentatonic should still recommend the Shape door");
+assert(aMinorStudyText.indexOf("pentatonic") !== -1 && aMinorStudyText.indexOf("a root") !== -1, "A-minor pentatonic doors should retain root-note and pentatonic work");
+
+var timeSignatureStudyStorage = createStudyStorage({{
+  "hearth-journey-v2": JSON.stringify({{
+    students: [{{ id: "alex", name: "Alex", levels: {{}} }}],
+    activeStudentId: "alex"
+  }}),
+  "hearth-knowing-state": JSON.stringify({{ lastTopic: "time-signatures" }})
+}});
+var timeSignatureStudy = StudyKeyChamberModel.snapshot({{ storage: timeSignatureStudyStorage }});
+var timeSignatureStudyText = timeSignatureStudy.doors.map(function(door) {{
+  return [door.action, door.activity, door.proof].join(" ");
+}}).join(" ").toLowerCase();
+assert(timeSignatureStudy.subject.title === "Time Signatures", "Study should retain the Time Signatures subject title");
+assert(timeSignatureStudy.subject.subjectFamily === "rhythm", "Time Signatures should resolve to the rhythm family");
+assert(timeSignatureStudy.subject.activityTemplateId === "study-rhythm-family-v1", "Time Signatures should use the rhythm Study template");
+assert(timeSignatureStudy.subject.usesGeneralFallback === false, "Time Signatures should not use the general fallback");
+assert(timeSignatureStudyText.indexOf("beat") !== -1 && timeSignatureStudyText.indexOf("measure") !== -1, "Time Signatures doors should ask rhythm-specific work");
+assert(!/pentatonic|tonal centre|a root|a minor phrase|fretboard/.test(timeSignatureStudyText), "Time Signatures doors must not leak A-minor pentatonic activities");
+assert(timeSignatureStudy.doors.every(function(door) {{ return door.templateId === "study-rhythm-family-v1"; }}), "Every Time Signatures door should come from the rhythm template");
+assert(timeSignatureStudy.doors[0].activity !== aMinorStudy.doors[0].activity, "Time Signatures and A-minor pentatonic should receive contrasting Word activities");
+
+var completedTimeSignatureStudy = StudyKeyChamberModel.recordEvidence("word", {{
+  feeling: "nailed",
+  note: "I can count the beat grouping steadily."
+}}, {{ storage: timeSignatureStudyStorage }});
+var timeSignaturePracticeSnapshot = HearthPracticeEntryModel.buildSnapshot({{
+  journeyState: {{ activeStudentId: "alex", students: [{{ id: "alex", name: "Alex", levels: {{}} }}] }},
+  companions: {{}},
+  events: [],
+  studySnapshot: completedTimeSignatureStudy
+}});
+var timeSignaturePracticeText = [
+  timeSignaturePracticeSnapshot.study && timeSignaturePracticeSnapshot.study.nextFocus,
+  timeSignaturePracticeSnapshot.study && timeSignaturePracticeSnapshot.study.message
+].concat(timeSignaturePracticeSnapshot.recommendations || []).join(" ").toLowerCase();
+assert(timeSignaturePracticeSnapshot.study.nextFocus === "Apply Time Signatures in Practice", "A clear Time Signatures result should give Practice the matching subject");
+assert(timeSignaturePracticeSnapshot.recommendations.indexOf("Apply Time Signatures in Practice") !== -1, "Practice recommendations should include the completed Time Signatures Study result");
+assert(!/pentatonic|tonal centre|a root|a minor phrase/.test(timeSignaturePracticeText), "Time Signatures Practice handoff must not leak A-minor language");
+
+var originalJourneyWindow = globalThis.window;
+var originalJourneyStorage = globalThis.localStorage;
+globalThis.window = {{
+  StudyKeyChamberModel: {{
+    snapshot: function() {{ return completedTimeSignatureStudy; }}
+  }}
+}};
+globalThis.localStorage = timeSignatureStudyStorage;
+eval(extractFunctionSource(readText(root + "/assets/js/journey.js"), "journeyStudySignal"));
+var timeSignatureJourneySignal = journeyStudySignal();
+assert(timeSignatureJourneySignal.title === "Apply Time Signatures in Practice", "Journey should surface the correct completed Study subject");
+assert(!/pentatonic|tonal centre|a root|a minor phrase/.test(timeSignatureJourneySignal.title + " " + timeSignatureJourneySignal.body), "Journey Study signal must not leak A-minor language");
+globalThis.window = originalJourneyWindow;
+globalThis.localStorage = originalJourneyStorage;
+
+globalThis.KNOWING = {{
+  categories: [{{
+    id: "uncatalogued",
+    title: "Uncatalogued",
+    description: "A subject without an approved Study family.",
+    topics: [{{ id: "experimental-idea", title: "Experimental Idea", source: "Test unknown source" }}]
+  }}]
+}};
+var generalStudyStorage = createStudyStorage({{
+  "hearth-journey-v2": JSON.stringify({{
+    students: [{{ id: "casey", name: "Casey", levels: {{}} }}],
+    activeStudentId: "casey"
+  }}),
+  "hearth-knowing-state": JSON.stringify({{ lastTopic: "experimental-idea" }})
+}});
+var generalStudy = StudyKeyChamberModel.snapshot({{ storage: generalStudyStorage }});
+var generalStudyText = generalStudy.doors.map(function(door) {{ return door.activity; }}).join(" ").toLowerCase();
+assert(generalStudy.subject.subjectFamily === "general", "An unknown subject should resolve to the general inquiry family");
+assert(generalStudy.subject.activityTemplateId === "study-general-inquiry-v1", "An unknown subject should use the stable general inquiry template");
+assert(generalStudy.subject.usesGeneralFallback === true, "An unknown subject should expose that it uses the general fallback");
+assert(generalStudy.doors.every(function(door) {{ return door.activityLabel === "General inquiry" && door.usesGeneralFallback === true; }}), "Every unknown-subject door should be clearly labelled as a general inquiry");
+assert(generalStudyText.indexOf("general inquiry") !== -1, "Unknown-subject activities should label the general inquiry in their instructions");
+assert(!/pentatonic|tonal centre|a root|a minor phrase/.test(generalStudyText), "The general fallback must not leak A-minor pentatonic activities");
+var publicStudyDefinitions = StudyKeyChamberModel.definitions();
+assert(publicStudyDefinitions.every(function(door) {{ return door.usesGeneralFallback === true && door.activity; }}), "Public Study door definitions should remain complete and use the safe fallback without a subject");
 
 var fakeStorage = {{
   values: {{}},
@@ -1376,27 +2431,63 @@ assert(storedProgress.lessons["f-conversations"].last_step_index === 4, "adapter
 store.clear();
 assert(store.load().lessons["f-conversations"] === undefined, "adapter should clear progress");
 
+var legacyFoundationRaw = '{{"f-threshold":true}}';
 var progressBridgeStorage = {{
-  values: {{}},
+  values: {{ "hearth-foundation-progress": legacyFoundationRaw }},
   getItem: function(key) {{ return this.values[key] || null; }},
   setItem: function(key, value) {{ this.values[key] = String(value); }},
   removeItem: function(key) {{ delete this.values[key]; }}
 }};
-var progressBridgeResult = HearthFoundationProgressBridge.markFoundationLessonCompleted(
-  "f-first-conversation",
-  {{ lesson_id: "f-conversations" }},
-  {{ storage: progressBridgeStorage, now: "2026-07-04T00:10:00.000Z" }}
-);
-var legacyProgress = JSON.parse(progressBridgeStorage.values["hearth-foundation-progress"]);
-var cleanProgress = JSON.parse(progressBridgeStorage.values["hearth.cleanProgress.v1"]);
-assert(progressBridgeResult.lesson_id === "f-conversations", "progress bridge should return lesson id");
-assert(legacyProgress["f-first-conversation"] === true, "progress bridge should write legacy topic progress");
-assert(cleanProgress.lessons["f-conversations"].status === "completed", "progress bridge should write clean progress");
-HearthFoundationProgressBridge.markFoundationTopicCompleted("f-threshold", {{
-  storage: progressBridgeStorage
+var originalGetJourneyState = globalThis.getJourneyState;
+var foundationLearnerId = "ayla";
+globalThis.getJourneyState = function() {{
+  return {{
+    students: [{{ id: "ayla", name: "Ayla" }}, {{ id: "jen", name: "Jen" }}],
+    activeStudentId: foundationLearnerId
+  }};
+}};
+var foundationTopicIds = ["f-threshold", "f-how-to-learn", "f-music-language"];
+var openedFoundation = HearthFoundationProgressBridge.recordTopicOpened("f-threshold", {{
+  storage: progressBridgeStorage,
+  timestamp: "2026-07-20T08:00:00.000Z",
+  suffix: "opened-ayla"
 }});
-legacyProgress = JSON.parse(progressBridgeStorage.values["hearth-foundation-progress"]);
-assert(legacyProgress["f-threshold"] === true, "progress bridge should write fallback topic progress");
+assert(openedFoundation.ok === true, "Foundation should append learner-scoped opened evidence");
+assert(HearthFoundationProgressBridge.readProgress(progressBridgeStorage)["f-threshold"] !== true, "Opening a Foundation fret must not complete it");
+foundationLearnerId = "jen";
+HearthFoundationProgressBridge.recordTopicOpened("f-threshold", {{
+  storage: progressBridgeStorage,
+  timestamp: "2026-07-20T08:01:00.000Z",
+  suffix: "opened-jen"
+}});
+var jenFoundationProjection = HearthFoundationProgressBridge.projection(progressBridgeStorage, "jen");
+var aylaFoundationProjection = HearthFoundationProgressBridge.projection(progressBridgeStorage, "ayla");
+assert(jenFoundationProjection["f-threshold"].opened === true, "Jen should retain her own Foundation contact");
+assert(aylaFoundationProjection["f-threshold"].opened === true, "Ayla should retain her own Foundation contact");
+assert(progressBridgeStorage.values["hearth-foundation-progress"] === legacyFoundationRaw, "New Foundation evidence must leave ambiguous legacy history byte-for-byte unchanged");
+assert(progressBridgeStorage.values["hearth.cleanProgress.v1"] === undefined, "Foundation must not overwrite the old single-learner clean progress record");
+
+foundationLearnerId = "ayla";
+var completedFoundationResult = null;
+foundationTopicIds.forEach(function completeFoundationTopic(topicId, index) {{
+  completedFoundationResult = HearthFoundationProgressBridge.markFoundationTopicCompleted(topicId, {{
+    storage: progressBridgeStorage,
+    topicIds: foundationTopicIds,
+    timestamp: "2026-07-20T08:0" + String(index + 2) + ":00.000Z",
+    suffix: "complete-" + String(index)
+  }});
+}});
+var aylaFoundationSummary = HearthFoundationProgressBridge.summary(progressBridgeStorage, "ayla", {{ topicIds: foundationTopicIds }});
+var jenFoundationSummary = HearthFoundationProgressBridge.summary(progressBridgeStorage, "jen", {{ topicIds: foundationTopicIds }});
+assert(aylaFoundationSummary.completedCount === 3 && aylaFoundationSummary.pathCompleted === true, "Ayla should complete the Foundation path only after every orientation topic");
+assert(jenFoundationSummary.completedCount === 0 && jenFoundationSummary.pathCompleted === false, "Ayla's Foundation completion must not change Jen");
+assert(completedFoundationResult.path_event && completedFoundationResult.path_event.ok === true, "The final Foundation topic should emit one path-completion event");
+var foundationPathEvent = HearthProgressEvents.list(progressBridgeStorage).find(function(event) {{
+  return event.event_type === "foundation_path_completed" && event.learner_id === "ayla";
+}});
+assert(foundationPathEvent.capability_ids[0] === "L1-PREP-01", "A complete Foundation path should send valid preparation evidence to Journey");
+assert(foundationPathEvent.destination_node_id === "journey", "Foundation path evidence should name Journey as its destination");
+globalThis.getJourneyState = originalGetJourneyState;
 
 var controllerStore = HearthBrowserProgressStore.createBrowserProgressStore({{
   progressCore: HearthLearnerProgress,

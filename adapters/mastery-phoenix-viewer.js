@@ -40,6 +40,38 @@
   ];
 
   var MASTERY_ENCOUNTER_STORAGE = "hearth-mastery-encounter-v1";
+  var activeHandoff = null;
+
+  function handoffStore() {
+    if (!root.HearthCrossNodeHandoffStore || typeof root.HearthCrossNodeHandoffStore.createStore !== "function") return null;
+    return root.HearthCrossNodeHandoffStore.createStore({ storage: root.sessionStorage });
+  }
+
+  function readMasteryHandoff() {
+    var store = handoffStore();
+    if (!store) return null;
+    var learner = currentLearner();
+    var learnerId = activeHandoff && activeHandoff.learner_id ||
+      learner && learner.id;
+    return store.current({ learnerId: learnerId || undefined, destinationNodeId: "mastery" });
+  }
+
+  function returnToSource() {
+    var handoff = activeHandoff || readMasteryHandoff();
+    var route = handoff && handoff.return_route;
+    var store = handoffStore();
+    if (store && handoff) store.clear(handoff.id);
+    activeHandoff = null;
+    if (route && route.node_id === "journey" && root.Journey) {
+      var params = route.params || {};
+      if (typeof root.Journey.openCompanionLesson === "function") root.Journey.openCompanionLesson(params.learner_id);
+      if (typeof root.Journey.focusCompanionStep === "function" && Number.isFinite(Number(params.step_index))) {
+        root.Journey.focusCompanionStep(Number(params.step_index));
+      }
+      return;
+    }
+    if (typeof root.backToMap === "function") root.backToMap();
+  }
 
   function currentLearner() {
     var state = null;
@@ -63,20 +95,23 @@
   function exemplar() {
     var records = Array.isArray(root.MASTERY_EXEMPLARS) ? root.MASTERY_EXEMPLARS : [];
     return records[0] || {
-      id: "level-1-pentatonic-voice",
+      id: "level-1-bb-king-space-and-answer",
       level: 1,
-      title: "Pentatonic in Motion",
-      sourceLabel: "Level 1 pentatonic source",
-      sourceTitle: "Pentatonic source",
-      sourceUrl: "https://www.youtube.com/watch?v=X9rYOhX77mA",
-      reason: "A small note map can become a musical voice.",
-      noticePrompt: "Listen for what makes a small group of notes sound intentional.",
-      noticeOptions: [{ id: "root-home", label: "Root notes feel like home" }],
-      tryPrompt: "Use one A root as home, then add two nearby pentatonic notes.",
-      tryOptions: [{ id: "return-to-root", label: "Return to A" }],
-      practiceInstruction: "Play the idea at 60 BPM over an A minor groove.",
-      createStarter: "Make a two-bar answer from one A root and two nearby pentatonic notes.",
-      carryPrompt: "Keep one choice from the encounter in your own playing."
+      title: "Space, Answer, Home",
+      sourceLabel: "Live performance",
+      sourceTitle: "B.B. King - The Thrill Is Gone",
+      sourceUrl: "https://www.youtube.com/watch?v=4fk2prKnYnI",
+      reason: "A small pentatonic vocabulary can speak through timing, touch, silence, and clear musical answers.",
+      noticePrompt: "Listen for one short guitar statement and the silence after it.",
+      noticeOptions: [{ id: "space-breathes", label: "He leaves space after the phrase" }],
+      tryPrompt: "Play a tiny answer, leave a full space, then return to A.",
+      tryOptions: [{ id: "leave-a-space", label: "Leave four quiet beats" }],
+      mediaFallback: "Use the A Minor Homecoming guide tones: play two notes, count four quiet beats, then land on A.",
+      practiceInstruction: "Play the idea at 60 BPM inside A Minor Homecoming.",
+      createStarter: "A two-bar answer with a full space before the final A.",
+      carryPrompt: "Keep one choice from the encounter in your own playing.",
+      reflectionPrompt: "What did the master do with fewer notes that you want to remember?",
+      capabilityIds: ["L1-STYLE-01"]
     };
   }
 
@@ -101,15 +136,21 @@
     }
   }
 
-  function appendEncounterEvent(eventType, state, data) {
-    if (!root.HearthProgressEvents || typeof root.HearthProgressEvents.append !== "function") return;
-    root.HearthProgressEvents.append({
-      learner_id: state.learnerId,
-      event_type: eventType,
-      node_id: "mastery",
-      source_id: state.exemplarId,
-      data: data || {}
-    }, root.localStorage);
+  function appendEncounterEvent(kind, state) {
+    if (!root.HearthProgressEvents || !root.HearthMasteryProgress) return null;
+    var record = exemplar();
+    var event = root.HearthMasteryProgress.buildEvent({
+      kind: kind,
+      learnerId: state.learnerId,
+      state: state,
+      record: record,
+      handoff: activeHandoff,
+      suffix: Date.now() + "-" + Math.random().toString(36).slice(2, 7)
+    });
+    if (!event) return null;
+    return typeof root.HearthProgressEvents.appendCanonical === "function"
+      ? root.HearthProgressEvents.appendCanonical(event, root.localStorage)
+      : root.HearthProgressEvents.append(event, root.localStorage);
   }
 
   function newEncounter(learner, record) {
@@ -122,6 +163,7 @@
       notice: "",
       tryIdea: "",
       carriedTo: "",
+      reflection: "",
       completed: false,
       startedAt: new Date().toISOString(),
       updatedAt: new Date().toISOString()
@@ -202,9 +244,11 @@
 
   function sceneStart() {
     var title = root.NODE_DATA && root.NODE_DATA.mastery ? root.NODE_DATA.mastery.title : "Mastery";
+    var backAction = activeHandoff ? "MasteryPhoenix.returnToSource()" : "backToMap()";
+    var backLabel = activeHandoff ? "Return to Journey" : "Map";
     return (
       '<div class="sf-wrap">' +
-      '<button class="back-btn" onclick="backToMap()">\u2190 Map</button>' +
+      '<button class="back-btn" onclick="' + backAction + '">\u2190 ' + backLabel + '</button>' +
       '<div class="sf-scene sf-phoenix">' +
       '<div class="sf-top">' +
       "<div>" +
@@ -236,6 +280,7 @@
   }
 
   function showMastery() {
+    activeHandoff = readMasteryHandoff();
     ensureStyle();
     var el = panel();
     if (!el) return;
@@ -245,6 +290,28 @@
       '<div class="sf-scene-prompt">Choose one ember. Begin with a short encounter, not a performance to prove.</div>' +
       '<div id="sf-drawer" class="sf-drawer"><strong>Witness → Notice → Try → Carry</strong><br>Choose one ember to begin. Mastery is where a skill becomes a musical possibility.</div>' +
       "</div></div>";
+  }
+
+  function renderHandoffPreview() {
+    var el = root.document.getElementById("sf-drawer");
+    var record = exemplar();
+    var handoff = activeHandoff || readMasteryHandoff();
+    if (!el || !handoff) return;
+    var task = handoff.task || {};
+    var easier = handoff.easier_step || {};
+    el.innerHTML =
+      '<div class="sf-kicker">Journey encounter</div>' +
+      '<h3 style="font-family:Cinzel;color:' + GOLD + ';margin:5px 0">' + esc(record.title) + '</h3>' +
+      '<p class="sf-encounter-note"><strong>' + esc(record.sourceTitle) + '</strong></p>' +
+      '<p class="sf-encounter-note">' + esc(task.instruction || record.reason) + '</p>' +
+      '<p class="sf-encounter-note"><strong>Smaller step:</strong> ' + esc(easier.instruction || record.mediaFallback) + '</p>' +
+      '<div class="sf-encounter-actions"><button class="sf-primary" onclick="MasteryPhoenix.startEncounter(false)">Begin Witness</button></div>';
+  }
+
+  function openWithHandoff(handoff) {
+    activeHandoff = handoff || readMasteryHandoff();
+    showMastery();
+    renderHandoffPreview();
   }
 
   function choiceLabel(options, id) {
@@ -283,7 +350,8 @@
     if (state.step === 0) {
       body = '<p class="sf-encounter-note">' + esc(record.reason) + " Listen for one small decision, not the whole performance.</p>" +
         '<div class="sf-encounter-source"><div><div class="sf-kicker">' + esc(record.sourceLabel) + "</div><strong>" + esc(record.sourceTitle) + '</strong></div><a href="' + esc(record.sourceUrl) + '" target="_blank" rel="noopener">Open source</a></div>' +
-        '<p class="sf-encounter-note">' + esc(record.noticePrompt) + "</p>";
+        '<p class="sf-encounter-note">' + esc(record.noticePrompt) + "</p>" +
+        '<p class="sf-encounter-note"><strong>If the source is unavailable:</strong> ' + esc(record.mediaFallback || "Use the internal practice prompt instead.") + "</p>";
       actions = '<button class="sf-primary" onclick="MasteryPhoenix.advanceEncounter()">I\'ve listened</button>';
     } else if (state.step === 1) {
       body = '<p class="sf-encounter-note">' + esc(record.noticePrompt) + " There is no wrong observation. Choose the detail your ear actually caught.</p>" +
@@ -294,8 +362,10 @@
       body = '<p class="sf-encounter-note">You noticed: <strong>' + esc(choiceLabel(record.noticeOptions, state.notice)) + "</strong></p>" +
         '<p class="sf-encounter-note">' + esc(record.tryPrompt) + " Choose one small way to test it.</p>" +
         '<div class="sf-encounter-choices">' + (record.tryOptions || []).map(function (item) {
-          return '<button class="sf-encounter-choice" onclick="MasteryPhoenix.chooseTry(\'' + esc(item.id) + '\')">' + esc(item.label) + "</button>";
-        }).join("") + "</div>";
+          return '<button class="sf-encounter-choice" aria-pressed="' + (state.tryIdea === item.id ? "true" : "false") + '" onclick="MasteryPhoenix.chooseTry(\'' + esc(item.id) + '\')">' + esc(item.label) + "</button>";
+        }).join("") + "</div>" +
+        (state.tryIdea ? '<p class="sf-encounter-note">Play it once now. Smaller and honest is better than impressive.</p>' : "");
+      actions = state.tryIdea ? '<button class="sf-primary" onclick="MasteryPhoenix.completeTry()">I tried it</button>' : "";
     } else {
       body = '<p class="sf-encounter-note">You noticed: <strong>' + esc(choiceLabel(record.noticeOptions, state.notice)) + "</strong>.</p>" +
         '<p class="sf-encounter-note">You will try: <strong>' + esc(choiceLabel(record.tryOptions, state.tryIdea)) + "</strong>.</p>" +
@@ -318,28 +388,24 @@
     if (!state || state.completed || restart) {
       state = newEncounter(learner, record);
       writeEncounter(state);
-      appendEncounterEvent("mastery_encounter_opened", state, {
-        title: record.title,
-        level: record.level,
-        category: record.category
-      });
+      appendEncounterEvent("started", state);
     }
     renderEncounter();
   }
 
-  function updateEncounterStep(step, eventType, data) {
+  function updateEncounterStep(step, eventKind) {
     var learner = currentLearner();
     var state = readEncounter(learner.id);
     if (!state || state.completed) return;
     state.step = step;
     state.updatedAt = new Date().toISOString();
     writeEncounter(state);
-    appendEncounterEvent(eventType, state, data);
+    appendEncounterEvent(eventKind, state);
     renderEncounter();
   }
 
   function advanceEncounter() {
-    updateEncounterStep(1, "mastery_encounter_witnessed", { step: "witness" });
+    updateEncounterStep(1, "witnessed");
   }
 
   function chooseNotice(id) {
@@ -352,7 +418,7 @@
     state.step = 2;
     state.updatedAt = new Date().toISOString();
     writeEncounter(state);
-    appendEncounterEvent("mastery_encounter_noticed", state, { notice: id });
+    appendEncounterEvent("noticed", state);
     renderEncounter();
   }
 
@@ -363,10 +429,19 @@
     var valid = (record.tryOptions || []).some(function (item) { return item.id === id; });
     if (!state || state.step !== 2 || !valid) return;
     state.tryIdea = id;
+    state.updatedAt = new Date().toISOString();
+    writeEncounter(state);
+    renderEncounter();
+  }
+
+  function completeTry() {
+    var learner = currentLearner();
+    var state = readEncounter(learner.id);
+    if (!state || state.step !== 2 || !state.tryIdea) return;
     state.step = 3;
     state.updatedAt = new Date().toISOString();
     writeEncounter(state);
-    appendEncounterEvent("mastery_encounter_tried", state, { notice: state.notice, try_idea: id });
+    appendEncounterEvent("tried", state);
     renderEncounter();
   }
 
@@ -380,13 +455,7 @@
     state.completedAt = new Date().toISOString();
     state.updatedAt = state.completedAt;
     writeEncounter(state);
-    appendEncounterEvent("mastery_encounter_carried", state, {
-      destination: destination,
-      notice: state.notice,
-      try_idea: state.tryIdea,
-      repeat_next: record.practiceInstruction,
-      create_instruction: record.createStarter
-    });
+    appendEncounterEvent("carried", state);
 
     if (destination === "practice") {
       if (root.PracticeCandle && typeof root.PracticeCandle.open === "function") {
@@ -395,7 +464,13 @@
           focus: "Pentatonic phrase · " + choiceLabel(record.tryOptions, state.tryIdea),
           learnerId: learner.id,
           returnAction: "showMastery",
-          returnLabel: "Mastery"
+          returnLabel: "Mastery",
+          sourceContext: {
+            mastery_encounter_id: state.id,
+            mastery_exemplar_id: record.id,
+            notice: state.notice,
+            try_idea: state.tryIdea
+          }
         });
       } else if (typeof root.showPractice === "function") {
         root.showPractice();
@@ -408,10 +483,14 @@
         suggested_ingredient: "riff",
         source_node_id: "mastery",
         source_id: record.id,
+        journey_level_id: record.level ? "L" + record.level : "",
+        capability_ids: ["L1-CREATE-01"],
         source_title: record.title,
         seed_title: "A phrase with a voice",
         starter: record.createStarter,
-        instruction: record.carryPrompt + " Try: " + choiceLabel(record.tryOptions, state.tryIdea) + "."
+        instruction: record.carryPrompt + " Try: " + choiceLabel(record.tryOptions, state.tryIdea) + ".",
+        attempt_id: state.id + "-try",
+        session_id: state.id
       });
     } else if (typeof root.showCreate === "function") {
       root.showCreate();
@@ -434,7 +513,49 @@
       '<p class="sf-encounter-note">' + (state.completed ? "This encounter was carried into " + esc(state.carriedTo) + "." : "This encounter is still open.") + "</p>" +
       '<p class="sf-encounter-note">Noticed: <strong>' + esc(choiceLabel(record.noticeOptions, state.notice)) + "</strong></p>" +
       '<p class="sf-encounter-note">Tried: <strong>' + esc(choiceLabel(record.tryOptions, state.tryIdea)) + "</strong></p>" +
-      '<div class="sf-encounter-actions"><button class="sf-primary" onclick="MasteryPhoenix.startEncounter(true)">Start again</button></div>';
+      '<label class="sf-encounter-note" for="mastery-review-reflection"><strong>' + esc(record.reflectionPrompt || "What will you remember?") + '</strong></label>' +
+      '<textarea id="mastery-review-reflection" style="width:100%;box-sizing:border-box;min-height:72px;background:#0d0b08;border:1px solid var(--border);border-radius:9px;color:var(--text);padding:9px;font:inherit" placeholder="One honest sentence is enough.">' + esc(state.reflection || "") + '</textarea>' +
+      '<div class="sf-encounter-actions"><button class="sf-primary" onclick="MasteryPhoenix.saveReviewReflection()">Save reflection</button><button class="sf-secondary" onclick="MasteryPhoenix.startEncounter(true)">Start again</button></div>';
+  }
+
+  function saveReviewReflection() {
+    var learner = currentLearner();
+    var state = readEncounter(learner.id);
+    var input = root.document.getElementById("mastery-review-reflection");
+    if (!state || !input || !String(input.value || "").trim()) return;
+    state.reflection = String(input.value).trim();
+    state.updatedAt = new Date().toISOString();
+    writeEncounter(state);
+    appendEncounterEvent("reflected", state);
+    renderReview();
+  }
+
+  function continueEncounter() {
+    var learner = currentLearner();
+    var state = readEncounter(learner.id);
+    if (!state) {
+      startEncounter(false);
+    } else if (state.completed) {
+      renderReview();
+    } else {
+      renderEncounter();
+    }
+  }
+
+  function renderArtisticThread() {
+    var el = root.document.getElementById("sf-drawer");
+    var record = exemplar();
+    if (!el) return;
+    el.innerHTML =
+      '<div class="sf-kicker">Artistic thread · ' + esc(record.artist || "B.B. King") + "</div>" +
+      '<h3 style="font-family:Cinzel;color:' + GOLD + ';margin:5px 0">Space → Answer → Home</h3>' +
+      '<ol class="sf-encounter-note" style="padding-left:20px;line-height:1.8">' +
+      "<li><strong>Space:</strong> silence lets a short phrase breathe.</li>" +
+      "<li><strong>Answer:</strong> the next phrase responds instead of filling every gap.</li>" +
+      "<li><strong>Home:</strong> one settled note gives the listener somewhere to land.</li>" +
+      "</ol>" +
+      '<p class="sf-encounter-note">Follow this thread through the performance, then test only one link in A Minor Homecoming.</p>' +
+      '<div class="sf-encounter-actions"><button class="sf-primary" onclick="MasteryPhoenix.startEncounter(false)">Begin this thread</button></div>';
   }
 
   function openPath(id) {
@@ -442,7 +563,15 @@
       renderReview();
       return;
     }
-    startEncounter(false);
+    if (id === "continue") {
+      continueEncounter();
+      return;
+    }
+    if (id === "thread") {
+      renderArtisticThread();
+      return;
+    }
+    startEncounter(true);
   }
 
   function openSeal(id) {
@@ -476,7 +605,11 @@
     advanceEncounter: advanceEncounter,
     chooseNotice: chooseNotice,
     chooseTry: chooseTry,
+    completeTry: completeTry,
     carryTo: carryTo,
+    saveReviewReflection: saveReviewReflection,
+    openWithHandoff: openWithHandoff,
+    returnToSource: returnToSource,
   };
   root.showMastery = showMastery;
 })(typeof window !== "undefined" ? window : globalThis);

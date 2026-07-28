@@ -9,31 +9,38 @@
 
   root.MASTERY_EXEMPLARS = [
     {
-      id: "level-1-pentatonic-voice",
+      id: "level-1-bb-king-space-and-answer",
       level: 1,
-      category: "scales",
-      title: "Pentatonic in Motion",
-      sourceLabel: "QJamTracks · Level 1 pentatonic source",
-      sourceTitle: "THIS is how you learn the PENTATONICS",
-      sourceUrl: "https://www.youtube.com/watch?v=X9rYOhX77mA",
-      reason: "A small note map can become a musical voice.",
-      noticePrompt: "Listen for what makes a small group of notes sound intentional.",
+      category: "blues phrasing",
+      title: "Space, Answer, Home",
+      artist: "B.B. King",
+      sourceType: "live performance",
+      sourceLabel: "Stages · live at Montreux 1993",
+      sourceTitle: "B.B. King - The Thrill Is Gone (Live at Montreux 1993)",
+      sourceUrl: "https://www.youtube.com/watch?v=4fk2prKnYnI",
+      sourceCheckedAt: "2026-07-20",
+      rightsNote: "External performance reference only; no recording, lyrics, or notation are copied into the simulator.",
+      reason: "B.B. King shows how a small pentatonic vocabulary can speak through timing, touch, silence, and clear musical answers.",
+      noticePrompt: "Listen for one short guitar statement, the silence after it, and the note that makes the phrase feel settled.",
       noticeOptions: [
-        { id: "root-home", label: "Root notes feel like home" },
-        { id: "rhythm-speaks", label: "Rhythm gives the notes a voice" },
-        { id: "space-breathes", label: "Space makes the phrase breathe" },
-        { id: "touch-colours", label: "Touch changes the colour" }
+        { id: "space-breathes", label: "He leaves space after the phrase" },
+        { id: "root-home", label: "The landing note feels settled" },
+        { id: "rhythm-section-holds", label: "The band holds the ground" },
+        { id: "touch-colours", label: "Touch makes one note expressive" }
       ],
-      tryPrompt: "Use one A root as home, then let two nearby pentatonic notes answer it.",
+      tryPrompt: "Bring the principle into A Minor Homecoming: play a tiny answer, leave a full space, then return to A.",
       tryOptions: [
-        { id: "return-to-root", label: "Return to A" },
-        { id: "change-the-rhythm", label: "Change the rhythm" },
-        { id: "leave-a-space", label: "Leave a space" },
-        { id: "change-the-touch", label: "Change the touch" }
+        { id: "leave-a-space", label: "Leave four quiet beats" },
+        { id: "return-to-root", label: "End the answer on A" },
+        { id: "change-the-rhythm", label: "Repeat with a new rhythm" },
+        { id: "change-the-touch", label: "Change the touch on one note" }
       ],
-      practiceInstruction: "Play the idea at 60 BPM, then carry it into a two-bar phrase over an A minor groove.",
-      createStarter: "Make a two-bar answer from one A root note and two nearby pentatonic notes over an A minor groove.",
-      carryPrompt: "Keep one choice from the encounter and let it become part of your own playing."
+      mediaFallback: "If the performance cannot open, use the A Minor Homecoming guide tones: play one two-note answer, count four quiet beats, then land on A.",
+      practiceInstruction: "At 60 BPM, play a two-note answer, leave one full bar of space, then return to A inside A Minor Homecoming.",
+      createStarter: "A two-bar A minor pentatonic answer with a full space before the final A.",
+      carryPrompt: "Keep one choice about space, landing, rhythm, or touch and let it change your own A Minor Homecoming phrase.",
+      reflectionPrompt: "What did the master do with fewer notes that you want to remember?",
+      capabilityIds: ["L1-STYLE-01"]
     }
   ];
 })(typeof window !== "undefined" ? window : globalThis);

@@ -94,12 +94,18 @@
     fretZones.forEach(function renderZone(fz) {
       var cls = fz.isDone ? "done" : fz.isActive ? "active" : fz.isLocked ? "locked" : "";
       var numCls = fz.isDone ? "done" : fz.isActive ? "active" : fz.isLocked ? "locked" : "";
+      var interaction = fz.isLocked
+        ? ' aria-disabled="true"'
+        : ' role="button" tabindex="0" aria-label="Open Foundation fret ' + fz.idx + ': ' + fz.topic.title + '"' +
+          ' onclick="showFoundationTopic(\'' + fz.topic.id + '\')"' +
+          ' onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();showFoundationTopic(\'' + fz.topic.id + '\')}"';
 
+      svgZones += '<g class="found-neck-hit ' + cls + '" data-fret="' + fz.idx + '"' + interaction + '>';
       svgZones += '<rect class="found-neck-zone ' + cls + '" ' +
         'data-fret="' + fz.idx + '" ' +
-        'x="' + fz.x + '" y="' + fz.y + '" width="' + fz.w + '" height="' + fz.h + '" rx="4" ' +
-        'onclick="showFoundationTopic(\'' + fz.topic.id + '\')"/>';
+        'x="' + fz.x + '" y="' + fz.y + '" width="' + fz.w + '" height="' + fz.h + '" rx="4"/>';
       svgZones += '<text class="found-neck-num ' + numCls + '" x="' + fz.cx + '" y="' + (fz.cy + 5) + '" text-anchor="middle">' + fz.idx + "</text>";
+      svgZones += "</g>";
     });
 
     return svgZones;

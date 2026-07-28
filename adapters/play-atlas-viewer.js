@@ -85,6 +85,7 @@
       '<p class="play-atlas-copy">Mute the strings and make four small downstrokes. Keep the ground steady, but leave your hand relaxed enough for a voice to move around it.</p>' +
       '<div class="play-atlas-pulse' + (state.pulseRunning ? " running" : "") + '" aria-label="Four-beat visual pulse"><span class="play-atlas-beat"></span><span class="play-atlas-beat"></span><span class="play-atlas-beat"></span><span class="play-atlas-beat"></span></div>' +
       '<button class="play-atlas-primary" type="button" data-play-action="toggle-pulse">' + (state.pulseRunning ? "Pause visual pulse" : "Start visual pulse") + '</button>' +
+      '<p class="play-atlas-note"><strong>No audio needed:</strong> the visual pulse is the fallback. Count 1, 2, 3, 4 aloud and keep the hand small.</p>' +
       '<button class="play-atlas-secondary" type="button" data-play-action="home">I can hold the ground</button>' +
       '<button class="play-atlas-secondary" type="button" data-play-action="tradition">Back to tradition</button>';
   }
@@ -104,6 +105,67 @@
   function choice(kind, value, title, detail, selected) {
     return '<button class="play-atlas-choice' + (selected ? " selected" : "") + '" type="button" data-play-action="choose-' + esc(kind) + '" data-value="' + esc(value) + '">' +
       '<strong>' + esc(title) + '</strong><span>' + esc(detail) + '</span></button>';
+  }
+
+  function songBarRoad(song) {
+    return '<div class="play-atlas-song-road" aria-label="Eight-bar chord road">' +
+      (song.progression || []).map(function renderBar(bar) {
+        return '<div><span>' + esc(bar.bar) + '</span><strong>' + esc(bar.chord) + '</strong></div>';
+      }).join("") + '</div>';
+  }
+
+  function songRole(song, roleId) {
+    var roles = song && song.playActivity && song.playActivity.roles || [];
+    return roles.find(function findRole(role) { return role.id === roleId; }) || roles[0] || {};
+  }
+
+  function drawerSongIntro(snapshot, state) {
+    var song = snapshot.songThread;
+    var activity = song.playActivity;
+    return '<span class="play-atlas-eyebrow">Journey handoff - ' + esc(activity.roomLabel) + '</span>' +
+      '<h3>' + esc(song.title) + '</h3>' +
+      '<p class="play-atlas-copy">' + esc(activity.summary) + '</p>' +
+      '<p class="play-atlas-note">' + esc(activity.culturalNote) + '</p>' +
+      songBarRoad(song) +
+      '<div class="play-atlas-choices">' +
+        choice("song-role", "rhythm", "Rhythm first", song.rhythm.label + " - hold the ground", state.role === "rhythm") +
+        choice("song-role", "lead", "Lead first", song.lead.label + " - make the answer", state.role === "lead") +
+      '</div>' +
+      '<button class="play-atlas-primary" type="button" data-play-action="song-begin"' + (state.role ? "" : " disabled") + '>Begin my first role</button>' +
+      '<p class="play-atlas-note">Easier: ' + esc(song.completion.easier) + '</p>';
+  }
+
+  function drawerSongConversation(snapshot, state) {
+    var song = snapshot.songThread;
+    var role = songRole(song, state.role);
+    var tried = Array.isArray(state.rolesTried) ? state.rolesTried : [];
+    var bothTried = tried.indexOf("rhythm") !== -1 && tried.indexOf("lead") !== -1;
+    var nextRole = state.role === "rhythm" ? "lead" : "rhythm";
+    return '<span class="play-atlas-eyebrow">Play the whole form - 60 BPM</span>' +
+      '<h3>' + esc(role.label || "Your role") + '</h3>' +
+      '<p class="play-atlas-copy">' + esc(role.instruction) + '</p>' +
+      songBarRoad(song) +
+      '<div class="play-atlas-turn"><b>Listen</b><br>The other role has a different job, but both roles share the same pulse.</div>' +
+      '<div class="play-atlas-turn"><b>Complete</b><br>Stay with all eight bars. A small complete form matters more than a clever unfinished fragment.</div>' +
+      (!bothTried ? '<button class="play-atlas-primary" type="button" data-play-action="song-swap">I played this role - swap to ' + esc(nextRole) + '</button>' : '') +
+      '<button class="play-atlas-primary" type="button" data-play-action="song-complete"' + (bothTried ? "" : " disabled") + '>We completed all 8 bars in both roles</button>' +
+      '<button class="play-atlas-secondary" type="button" data-play-action="song-intro">Back to the song road</button>';
+  }
+
+  function drawerSongRemember(snapshot, state) {
+    var song = snapshot.songThread;
+    var activity = song.playActivity;
+    return '<span class="play-atlas-eyebrow">Remember the exchange</span><h3>What changed?</h3>' +
+      '<p class="play-atlas-copy">' + esc(activity.reflectionPrompt) + '</p>' +
+      '<div class="play-atlas-choices single">' +
+        choice("reflection", "voice", "The lead became a voice", "The phrase answered instead of running through the scale.", state.reflection === "voice") +
+        choice("reflection", "space", "The space mattered", "Listening became part of the exchange.", state.reflection === "space") +
+        choice("reflection", "ground", "The rhythm held the song", "The pulse supported the lead without crowding it.", state.reflection === "ground") +
+      '</div>' +
+      '<button class="play-atlas-primary" type="button" data-play-action="finish"' + (state.reflection || state.finished ? "" : " disabled") + '>' + (state.finished ? "Song exchange saved" : "Save this musical evidence") + '</button>' +
+      (state.finished ? '<p class="play-atlas-confirmation">Journey can now see the complete song and role exchange. Choose where the idea goes next.</p>' +
+        '<div class="play-atlas-finish-actions"><button class="play-atlas-secondary" type="button" data-play-action="send-practice">Repeat in Practice</button><button class="play-atlas-secondary" type="button" data-play-action="send-create">Keep a variation</button><button class="play-atlas-primary" type="button" data-play-action="return-handoff">Return to Journey</button></div>' : '') +
+      '<button class="play-atlas-secondary" type="button" data-play-action="song-converse">Back to the roles</button>';
   }
 
   function drawerJoin(state) {
@@ -143,11 +205,17 @@
       '</div>' +
       '<p class="play-atlas-note">Credit the musicians and communities you learned from. This route is one visit, not completion of a culture.</p>' +
       '<button class="play-atlas-primary" type="button" data-play-action="finish"' + (state.reflection || state.finished ? "" : " disabled") + '>' + (state.finished ? "Route saved" : "Finish and remember") + '</button>' +
-      (state.finished ? '<p class="play-atlas-confirmation">This reflection now feeds Journey and your future Practice plan.</p>' : "") +
+      (state.finished ? '<p class="play-atlas-confirmation">This reflection is saved as an honest musical attempt. Journey can see it without calling it mastery.</p>' +
+        '<div class="play-atlas-finish-actions"><button class="play-atlas-secondary" type="button" data-play-action="send-practice">Repeat in Practice</button><button class="play-atlas-secondary" type="button" data-play-action="send-create">Keep a variation</button><button class="play-atlas-primary" type="button" data-play-action="destination">Back to the atlas</button></div>' : "") +
       '<button class="play-atlas-secondary" type="button" data-play-action="converse">Back to conversation</button>';
   }
 
   function renderDrawer(snapshot, state) {
+    if (snapshot.route.type === "song") {
+      if (state.view === "song-converse") return drawerSongConversation(snapshot, state);
+      if (state.view === "song-remember") return drawerSongRemember(snapshot, state);
+      return drawerSongIntro(snapshot, state);
+    }
     if (state.view === "tradition") return drawerTradition(snapshot);
     if (state.view === "pulse") return drawerPulse(state);
     if (state.view === "home") return drawerHome(state);
@@ -160,19 +228,19 @@
   function render(snapshot, state) {
     var moment = Number(state.moment) || snapshot.route.defaultMoment;
     var selected = snapshot.selectedRegion || {};
-    return '<div class="play-atlas-shell" style="--destination:' + esc(selected.color || "#d4af69") + '">' +
-      '<button class="play-atlas-back" type="button" data-play-action="back" title="Back to map" aria-label="Back to map">&larr;</button>' +
-      '<div class="play-atlas-heading"><span class="play-atlas-eyebrow">Play - Musical world atlas</span><h2>Where shall the guitar take us?</h2></div>' +
-      '<div class="play-atlas-learner"><span class="play-atlas-eyebrow">Active learner</span><strong>' + esc(snapshot.learner.name) + '</strong></div>' +
+    var songRoute = snapshot.route.type === "song";
+    return '<div class="play-atlas-shell' + (songRoute ? " song-route" : "") + '" style="--destination:' + esc(selected.color || "#d4af69") + '">' +
+      '<button class="play-atlas-back" type="button" data-play-action="' + (songRoute ? "return-handoff" : "back") + '" title="' + (songRoute ? "Return to Journey" : "Back to map") + '" aria-label="' + (songRoute ? "Return to Journey" : "Back to map") + '">&larr;</button>' +
+      '<div class="play-atlas-heading"><span class="play-atlas-eyebrow">' + (songRoute ? "Play - Hearth Studio" : "Play - Musical world atlas") + '</span><h2>' + (songRoute ? esc(snapshot.songThread.title) : "Where shall the guitar take us?") + '</h2></div>' +
       '<section class="play-atlas-stage" aria-label="Musical world atlas">' +
         '<img class="play-atlas-art" src="images/play-world-atlas.webp" alt="Illustrated world atlas of guitar traditions">' +
         '<div class="play-atlas-shade" aria-hidden="true"></div>' +
-        '<div class="play-atlas-hotspots">' + renderHotspots(snapshot) + '</div>' +
+        '<div class="play-atlas-hotspots">' + (songRoute ? "" : renderHotspots(snapshot)) + '</div>' +
       '</section>' +
-      '<aside class="play-atlas-guide" aria-label="Guide"><img src="images/character-generated/guide-seated-listening-v1-ui.webp" alt="Guide listening with a guitar"><div class="play-atlas-guide-bubble"><span class="play-atlas-eyebrow">Guide</span><p>Your Journey is pointing to one tradition. Follow the bright glow, or wander and listen.</p></div></aside>' +
+      '<aside class="play-atlas-guide" aria-label="Guide"><img src="images/character-generated/guide-seated-listening-v1-ui.webp" alt="Guide listening with a guitar"><div class="play-atlas-guide-bubble"><span class="play-atlas-eyebrow">Guide</span><p>' + (songRoute ? "One complete, calm exchange. Hold the ground, answer, then swap." : "Your Journey is pointing to one tradition. Follow the bright glow, or wander and listen.") + '</p></div></aside>' +
       '<aside class="play-atlas-drawer" aria-live="polite">' + renderDrawer(snapshot, state) + '</aside>' +
       '<div class="play-atlas-route" aria-label="Current Play route"><div class="play-atlas-progress" style="--value:' + (moment / snapshot.route.totalMoments * 360) + 'deg"></div>' +
-        '<div class="play-atlas-route-copy"><span class="play-atlas-eyebrow">Today\'s Level 1 route</span><strong>' + esc(snapshot.route.title) + '</strong><span>' + esc(snapshot.route.summary) + '</span></div>' +
+        '<div class="play-atlas-route-copy"><span class="play-atlas-eyebrow">' + (songRoute ? "Journey song thread" : "Today\'s Level 1 route") + '</span><strong>' + esc(snapshot.route.title) + '</strong><span>' + esc(snapshot.route.summary) + '</span></div>' +
         '<div class="play-atlas-route-status">' + moment + ' of ' + snapshot.route.totalMoments + '<br>moments explored</div></div>' +
       '</div>';
   }

@@ -38,22 +38,40 @@ The other nodes retain these jobs:
 
 ## Current State
 
+### Orchestrator checkpoint: 2026-07-20
+
+The approved V2 composition is now installed in the live Hearth first click.
+The former summary cards, duplicate system rail, mouse-only SVG circles, and
+`Start with Brain` shortcut have been removed from the active renderer.
+
+The anatomical image now contains seven semantic HTML hit zones: Brain, Eyes,
+Ears, Hands, Breath/Body, Feeling, and Integration. The legacy `heart` ID is
+accepted as an alias for canonical `feeling`. The controls support mouse,
+keyboard focus, and accessible names.
+
+Brain is the completed pilot chamber. It follows `Understand -> Experience ->
+Apply -> Own`, uses the A-as-home pattern-recognition experiment, requires an
+honest observation before saving, and emits separate canonical experiment and
+reflection events for the active learner. It does not claim to diagnose or
+measure brain development. Other systems use a simpler four-part presentation
+and remain the next depth pass.
+
+Automated contract, renderer ownership, reference, and smoke checks pass. Live
+desktop first-click, Brain navigation, and empty-save behavior are verified.
+Full phone/tablet and real learner-save testing remain.
+
 ### Existing live implementation
 
-The active Hearth implementation is still the older scene-first body view:
+The active Hearth implementation is:
 
 - `adapters/hearth-body-viewer.js`
 - `assets/js/hearth-body-data.js`
 - Hearth styling and panel layout in `simulator.html`
 
-The live first click currently contains a large rectangular body image, summary
-cards, SVG hotspot circles, separate seals, a system-pill rail, and a
-`Start with Brain` button. This is functional but reads as a dashboard and does
-not yet make the visible anatomy itself feel like the navigation.
-
-The live chamber currently renders several text cards for each system. The
-content is useful, but the interaction should become a short visual guided
-sequence instead of a card grid.
+The live first click now uses the approved transparent V2 anatomical learner as
+the navigation. Brain has the full guided chamber. The remaining six systems
+still need deeper experiences and evidence capture after the Brain pattern is
+reviewed in real use.
 
 ### Approved-direction visual candidate
 

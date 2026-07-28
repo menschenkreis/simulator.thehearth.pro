@@ -13,11 +13,11 @@
 })(typeof globalThis !== "undefined" ? globalThis : this, function createFoundationPanelController(root) {
   "use strict";
 
-  function readLegacyProgress() {
+  function readProgress() {
     if (root.HearthFoundationProgressBridge) {
-      return root.HearthFoundationProgressBridge.readLegacyProgress();
+      return root.HearthFoundationProgressBridge.readProgress();
     }
-    return JSON.parse(root.localStorage.getItem("hearth-foundation-progress") || "{}");
+    return {};
   }
 
   function showFoundation() {
@@ -37,7 +37,7 @@
       return root.HearthFoundationMapViewer.renderFoundationMap({
         foundation: foundation,
         targetEl: targetEl,
-        completed: readLegacyProgress()
+        completed: readProgress()
       });
     }
     return null;
@@ -56,7 +56,7 @@
       return null;
     }
 
-    var completed = readLegacyProgress();
+    var completed = readProgress();
     var nextTopic = foundation.topics.find(function findNext(topic) {
       return !completed[topic.id];
     });
@@ -66,7 +66,7 @@
 
   return {
     version: "0.1.0",
-    readLegacyProgress: readLegacyProgress,
+    readProgress: readProgress,
     showFoundation: showFoundation,
     startFoundationLesson: startFoundationLesson,
     startLesson1: startLesson1

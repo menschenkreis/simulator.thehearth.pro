@@ -105,7 +105,7 @@
         '</svg>' +
       '</div>' +
       '<div style="text-align:center;font-family:JetBrains Mono,monospace;color:var(--gold);font-size:0.75rem;margin:8px 0">0 &middot; 2 &middot; 2 &middot; 1 &middot; 0 &middot; 0</div>' +
-      '<div class="doing-exp-placeholder">Chord identifier coming next.</div>';
+      '<div class="doing-exp-placeholder">Chord identification is parked for the next build pass. For now, use this as the E major reference card.</div>';
   }
 
   function renderTabPanel() {
@@ -128,7 +128,7 @@
     if (activeTab === "chords") return renderChordsPanel();
     if (activeTab === "tab") return renderTabPanel();
     return '<h3>Chord Identifier</h3>' +
-      '<div class="doing-exp-placeholder">Coming next.</div>';
+      '<div class="doing-exp-placeholder">This tool is intentionally parked until the drill rooms and progress evidence are stable.</div>';
   }
 
   function renderDoingExplorer(options) {

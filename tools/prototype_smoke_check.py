@@ -26,6 +26,13 @@ REQUIRED_MARKERS = {
         "core/renderer-registry.js",
         "adapters/action-renderer-registry-bootstrap.js",
         "core/foundation-adapter.js",
+        "core/foundation-progress.js",
+        "core/create-prompt-policy.js",
+        "core/create-progress.js",
+        "core/mastery-progress.js",
+        "requestAnimationFrame(function(){ window.renderMapNodeHitLayer(); });",
+        "const FLAME_HOP_MS = 280",
+        "const FLAME_PAUSE_MS = 40",
         "adapters/foundation-route-manifest-runtime.js",
         "adapters/foundation-seed-loader.js",
         "adapters/foundation-lesson-launcher.js",
@@ -39,6 +46,9 @@ REQUIRED_MARKERS = {
         "adapters/foundation-action-renderers.js",
         "adapters/foundation-audio.js",
         "core/lesson-session.js",
+        "core/progress-event.js",
+        "core/journey-progress.js",
+        "adapters/cross-node-handoff-store.js",
         "adapters/foundation-progress-bridge.js",
         "adapters/teaching-engine-core-adapter.js",
         "assets/js/teaching-engine.js",
@@ -84,6 +94,7 @@ REQUIRED_MARKERS = {
         "adapters/practice-entry-model.js",
         "adapters/practice-entry-viewer.js",
         "adapters/practice-entry-controller.js",
+        "adapters/practice-planned-session-store.js",
         "adapters/practice-planned-session-viewer.js",
         "adapters/practice-planned-session-controller.js",
         "adapters/play-world-viewer.js",
@@ -115,6 +126,11 @@ REQUIRED_MARKERS = {
         "adapters/practice-candle-viewer.js",
         "NODE LAYOUT RESCUE LAYER",
     ],
+    "assets/js/map-node-info.js": [
+        "MAX_NODE_ENTRY_DELAY_MS",
+        "Math.min(travelMs + 160, MAX_NODE_ENTRY_DELAY_MS)",
+        "enterNodeAction",
+    ],
     "assets/js/map-node-data.js": [
         "var NODE_DATA",
         "window.NODE_DATA",
@@ -128,6 +144,8 @@ REQUIRED_MARKERS = {
         "enterNodeAction",
         "hideNodeInfo",
         "updateCurrentNodeMarker",
+        "wireMapNodeAccess",
+        "aria-label",
     ],
     "assets/js/hearth-body-data.js": [
         "var HEARTH_BODY_COPY",
@@ -136,7 +154,8 @@ REQUIRED_MARKERS = {
         "window.HEARTH_BODY_ZONES",
         'id: "brain"',
         'id: "hands"',
-        'id: "heart"',
+        'id: "feeling"',
+        'id: "integration"',
         "development",
         "practices",
         "care",
@@ -149,6 +168,28 @@ REQUIRED_MARKERS = {
         "root.showCreate",
         "CREATE_HEAT_LEVELS",
         "stirCauldron",
+        "returnToSource",
+        "learnerContext",
+        "state && state.activeStudentId",
+    ],
+    "core/create-prompt-policy.js": [
+        "root.HearthCreatePromptPolicy",
+        "LEVEL_ONE_PROMPTS",
+        "maxIngredients",
+        "allowedHeatIds",
+    ],
+    "core/create-progress.js": [
+        "root.HearthCreateProgress",
+        "hasLearnerContribution",
+        "create_seed_saved",
+        "L1-CREATE-01",
+    ],
+    "core/mastery-progress.js": [
+        "root.HearthMasteryProgress",
+        "mastery_encounter_started",
+        "mastery_experiment_completed",
+        "mastery_reflection_saved",
+        "mastery_exemplar_id",
     ],
     "adapters/create-state.js": [
         "root.HearthCreateState",
@@ -158,7 +199,8 @@ REQUIRED_MARKERS = {
     "adapters/create-handoff-controller.js": [
         "root.HearthCreateHandoff",
         "buildSeed",
-        "create_handoff_opened",
+        "HearthCreateProgress",
+        "appendCanonical",
     ],
     "adapters/doing-teaching-viewer.js": [
         "renderCreateHandoff",
@@ -186,6 +228,8 @@ REQUIRED_MARKERS = {
         "renderHotspots",
         "renderDrawer",
         "Enter the tradition",
+        "No audio needed",
+        "Repeat in Practice",
     ],
     "adapters/play-atlas-model.js": [
         "root.HearthPlayAtlasModel",
@@ -196,14 +240,37 @@ REQUIRED_MARKERS = {
     "adapters/play-atlas-controller.js": [
         "root.HearthPlayAtlasController",
         "root.showPlay = open",
+        "openWithHandoff",
+        "song-complete",
         "saveResult",
         "play_activity_completed",
+        "sendToPractice",
+        "createPracticeHandoff",
     ],
     "adapters/study-key-chamber-viewer.js": [
         "root.StudyKeyChamber",
         "root.showStudy",
         "STUDY_DOORS",
         "renderStudyChamber",
+        "openWithHandoff",
+        "returnToSource",
+        "Return to Journey",
+        "images/study/study-key-chamber-concept-v1.png",
+        "sk-door-hotspot",
+        "Previous Study door",
+    ],
+    "core/knowing-progress.js": [
+        "root.HearthKnowingProgress",
+        "knowing_topic_opened",
+        "knowing_topic_answered",
+        "capability_ids",
+    ],
+    "core/foundation-progress.js": [
+        "root.HearthFoundationProgress",
+        "foundation_topic_opened",
+        "foundation_orientation_completed",
+        "foundation_path_completed",
+        "L1-PREP-01",
     ],
     "adapters/practice-candle-viewer.js": [
         "root.PracticeCandle",
@@ -233,6 +300,11 @@ REQUIRED_MARKERS = {
         "hearth:journey-state",
         "freeDraft",
         "continue-session",
+        "openWithHandoff",
+        "returnToSource",
+        "Return to Play",
+        "Repeat what Play revealed",
+        "state && state.activeStudentId",
     ],
     "adapters/practice-planned-session-viewer.js": [
         "root.HearthPracticePlannedSessionViewer",
@@ -247,19 +319,36 @@ REQUIRED_MARKERS = {
         "root.PracticePlannedSession",
         "open-candle",
         "practice_session_completed",
+        "HearthPracticePlannedSessionStore",
+        "songPracticeDayCount",
+    ],
+    "adapters/practice-planned-session-store.js": [
+        "root.HearthPracticePlannedSessionStore",
+        "hearth-planned-practice-v2",
         "hearth-planned-practice-v1",
+        "profiles",
     ],
     "adapters/mastery-phoenix-viewer.js": [
         "root.MasteryPhoenix",
         "root.showMastery",
         "MASTERY_SEALS",
         "openSeal",
+        "openWithHandoff",
+        "returnToSource",
+        "completeTry",
+        "renderArtisticThread",
+        "HearthMasteryProgress",
+        "learner && learner.id",
     ],
     "adapters/hearth-body-viewer.js": [
         "root.HearthBody",
         "root.showHearth",
         "renderHearthBody",
         "renderHearthChamber",
+        "openWithHandoff",
+        "returnToSource",
+        "Return to Journey",
+        "state && state.activeStudentId",
     ],
     "assets/js/teaching-engine.js": [
         "window.TeachingEngine",
@@ -278,6 +367,9 @@ REQUIRED_MARKERS = {
         "window.JOURNEY_LEVELS",
         "JOURNEY_AUTHORED_LESSONS",
         "GUIDE_CHARACTER_ASSETS",
+        "openCompanionDoing",
+        "HearthCrossNodeHandoffStore",
+        "guided lessons recorded",
     ],
     "assets/js/guide-character-data.js": [
         "window.GUIDE_CHARACTER_ASSETS",
@@ -314,10 +406,12 @@ REQUIRED_MARKERS = {
         "var JOURNEY_AUTHORED_LESSONS",
         "var JOURNEY_STUDENT_COMPANIONS",
         "window.JOURNEY_LEVELS",
-        "Level 1 Entry Check",
+        "Entry Check: Find the Real Starting Point",
+        "Carry It Into a Song",
         "QJam Level 1 Integration",
         "A minor pentatonic consolidation",
         "root notes as safety points",
+        "doingHandoff",
     ],
     "assets/js/lesson-1-foundation.js": [
         "LESSON_1_FOUNDATION",
@@ -417,10 +511,37 @@ REQUIRED_MARKERS = {
     ],
     "core/lesson-session.js": ["HearthLessonSession", "evaluateChoice"],
     "core/learner-progress.js": ["HearthLearnerProgress", "recordLessonAnswer"],
+    "core/progress-event.js": [
+        "HearthProgressEventContract",
+        "validateAndNormalize",
+        "normalizeForRead",
+        "sameNormalizedPayload",
+    ],
+    "core/journey-progress.js": [
+        "HearthJourneyProgress",
+        "normalizeLevelId",
+        "summarize",
+        "capabilityEvidence",
+    ],
+    "adapters/progress-event-store.js": [
+        "HearthProgressEvents",
+        "appendCanonical",
+        "appendLegacy",
+        "listNormalized",
+        "duplicate_id_conflict",
+    ],
+    "adapters/cross-node-handoff-store.js": [
+        "HearthCrossNodeHandoffStore",
+        "hearth-active-handoff-v1",
+        "destinationNodeId",
+        "learnerId",
+    ],
     "adapters/foundation-progress-bridge.js": [
         "HearthFoundationProgressBridge",
         "markFoundationLessonCompleted",
         "markFoundationTopicCompleted",
+        "recordTopicOpened",
+        "readProgress",
         "hearth-foundation-progress",
     ],
     "adapters/browser-progress-store.js": [
@@ -436,6 +557,7 @@ REQUIRED_MARKERS = {
         "attempt_id",
         "occurred_at",
         "return_route",
+        "handoff_id",
         "migrateLegacyProgress",
         "drill_opened",
         "hearth-doing-progress-migration-v1",
@@ -538,11 +660,25 @@ REQUIRED_MARKERS = {
         "recordDrillOpen",
         "doing-practice-return",
         "PracticePlannedSession.resume",
+        "Return to Journey",
+        "_returnFromDoingHandoff",
+        "activeTaskContext",
     ],
     "adapters/knowing-level-model.js": [
         "HearthKnowingLevelModel",
         "buildLevels",
         "recommendedLevel",
+    ],
+    "assets/js/knowing-concepts.js": [
+        "window.KNOWING_CONCEPTS",
+        "check:",
+        "correctFeedback",
+        "nextNode:",
+    ],
+    "assets/js/book-reader.js": [
+        "question.answers",
+        "Suggested proof room:",
+        "nextNodeHint: concepts.nextNode",
     ],
     "adapters/knowing-shelf-viewer.js": [
         "HearthKnowingShelfViewer",
@@ -567,7 +703,11 @@ REQUIRED_MARKERS = {
     "adapters/knowing-progress-controller.js": [
         "HearthKnowingProgressController",
         "bindProgressGlobals",
-        "markTopic",
+        "recordStage",
+        "readLegacyProgress",
+        "topicProjection",
+        "sendToStudy",
+        "appendCanonical",
     ],
     "adapters/knowing-panel-controller.js": [
         "HearthKnowingPanelController",
@@ -1147,6 +1287,16 @@ def main() -> int:
 
     simulator = read_text("simulator.html")
 
+    shared_layout_boundary = re.search(
+        r"@media\(max-width:700px\)\{[\s\S]*?\.node-info p\{[^}]*\}\s*\}\s*"
+        r"/\*\s*═══ SCENESTART SHARED LAYOUT",
+        simulator,
+    )
+    if not shared_layout_boundary:
+        failures.append(
+            "Shared node layout CSS must sit outside the max-width:700px mobile media query"
+        )
+
     for label, onclick in HEADER_TOOL_ACTIONS.items():
         if f'aria-label="{label}"' not in simulator:
             failures.append(f"Header is missing top action: {label}")
@@ -1198,7 +1348,13 @@ def main() -> int:
         "core/lesson-view-model.js",
         "core/lesson-session.js",
         "core/learner-progress.js",
+        "core/progress-event.js",
+        "core/foundation-progress.js",
+        "core/journey-progress.js",
+        "core/level-one-song-thread.js",
         "adapters/browser-progress-store.js",
+        "adapters/progress-event-store.js",
+        "adapters/cross-node-handoff-store.js",
         "adapters/foundation-progress-bridge.js",
         "adapters/teaching-engine-core-adapter.js",
         "assets/js/teaching-engine.js",

@@ -34,13 +34,20 @@
   function createSession(snapshot, options) {
     options = options || {};
     var recommendations = (snapshot && snapshot.recommendations || []).slice(0, 5);
-    var focus = options.focus || snapshot && snapshot.commitment && snapshot.commitment.today || recommendations[0] || "One small clean practice step.";
+    var songThread = snapshot && snapshot.songThread || null;
+    var focus = options.focus || songThread && songThread.nextSession && songThread.nextSession.focus || snapshot && snapshot.commitment && snapshot.commitment.today || recommendations[0] || "One small clean practice step.";
     return {
       id: "practice-session-" + Date.now(),
       stepIndex: 0,
       saved: false,
       learner: snapshot && snapshot.learner || { id: null, name: "My Journey" },
       recommendations: recommendations,
+      songThread: songThread ? JSON.parse(JSON.stringify(songThread)) : null,
+      sourceContext: songThread ? {
+        sourceId: songThread.id,
+        practicePlanId: songThread.practicePlanId,
+        journeyLevelId: "L1"
+      } : null,
       focus: focus,
       minutes: snapshot && snapshot.commitment && snapshot.commitment.targetMinutes || 20,
       bpm: 60,
@@ -55,6 +62,18 @@
       reflectionHard: "",
       reflectionReturn: snapshot && snapshot.commitment && snapshot.commitment.tomorrow || ""
     };
+  }
+
+  function songThreadSummary(session) {
+    var thread = session.songThread;
+    if (!thread) return "";
+    var next = thread.nextSession || {};
+    return '<div class="practice-flow-song-thread">' +
+      '<span>Shared Level 1 thread</span>' +
+      '<b>' + escapeHtml(thread.title) + '</b>' +
+      '<small>Return ' + escapeHtml(Math.min(thread.completedDays + 1, thread.targetDays)) + ' of ' + escapeHtml(thread.targetDays) +
+        (next.title ? ' · ' + escapeHtml(next.title) : '') + '</small>' +
+    '</div>';
   }
 
   function progressText(session) {
@@ -144,9 +163,10 @@
       return '<div class="practice-flow-body practice-flow-body--practise">' +
         '<p class="practice-flow-question">Find the movement. Then stay with it.</p>' +
         '<p class="practice-flow-guidance">Today&apos;s focus: <strong>' + escapeHtml(session.focus) + '</strong></p>' +
+        songThreadSummary(session) +
         '<div class="practice-flow-practise-path" aria-label="Practice handoff">' +
           '<button type="button" class="practice-flow-path-stop" data-practice-flow-action="open-do">' +
-            '<span aria-hidden="true">1</span><b>Open the drill</b><small>Do</small>' +
+            '<span aria-hidden="true">1</span><b>' + escapeHtml(session.songThread ? "Open the Song Lab" : "Open the drill") + '</b><small>Do</small>' +
           '</button>' +
           '<i aria-hidden="true"></i>' +
           '<button type="button" class="practice-flow-path-stop is-primary" data-practice-flow-action="open-candle">' +

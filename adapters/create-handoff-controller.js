@@ -24,9 +24,14 @@
       source_node_id: clean(input.source_node_id || "journey"),
       source_id: clean(input.source_id),
       lesson_id: clean(input.lesson_id),
+      journey_level_id: clean(input.journey_level_id),
       title: clean(input.source_title || input.title || "A small musical idea"),
       starter: clean(input.starter),
-      instruction: clean(input.instruction)
+      instruction: clean(input.instruction),
+      capability_ids: Array.isArray(input.capability_ids) ? input.capability_ids.slice() : [],
+      attempt_id: clean(input.attempt_id),
+      session_id: clean(input.session_id),
+      handoff_id: clean(input.handoff_id)
     };
 
     return {
@@ -35,13 +40,13 @@
       title: clean(input.seed_title || "Untitled Song Seed"),
       ingredients: [],
       selected: ingredient ? [ingredient] : [],
-      prompt: "",
-      constraint: "",
+      prompt: source.instruction,
+      constraint: "Change one thing and keep the rest recognizable.",
       payoff: "",
       mutation: "",
       notes: "",
       firstLyric: "",
-      riffIdea: "",
+      riffIdea: source.starter,
       rhythmIdea: "",
       sourceContext: source
     };
@@ -64,19 +69,20 @@
       createState.setCurrent(seed);
       createState.setIntent("handoff");
 
-      if (host.HearthProgressEvents && typeof host.HearthProgressEvents.append === "function") {
-        host.HearthProgressEvents.append({
-          event_type: "create_handoff_opened",
-          node_id: "create",
-          learner_id: createState.activeLearnerId(),
-          lesson_id: seed.sourceContext.lesson_id || null,
-          data: {
-            source_node_id: seed.sourceContext.source_node_id,
-            source_id: seed.sourceContext.source_id,
-            suggested_ingredient: seed.selected[0] || null,
-            starter: seed.sourceContext.starter
-          }
+      if (host.HearthProgressEvents && host.HearthCreateProgress) {
+        var event = host.HearthCreateProgress.buildEvent({
+          kind: "handoff_opened",
+          learnerId: createState.activeLearnerId(),
+          seed: seed,
+          sourceContext: seed.sourceContext,
+          projectId: seed.id,
+          suffix: Date.now() + "-" + Math.random().toString(36).slice(2, 7)
         });
+        if (event && typeof host.HearthProgressEvents.appendCanonical === "function") {
+          host.HearthProgressEvents.appendCanonical(event, host.localStorage);
+        } else if (event && typeof host.HearthProgressEvents.append === "function") {
+          host.HearthProgressEvents.append(event, host.localStorage);
+        }
       }
 
       if (host.CreateCauldronScene && typeof host.CreateCauldronScene.render === "function") {

@@ -123,9 +123,24 @@ var JOURNEY_LEVEL_EVIDENCE_RULES = {
   }
 };
 
-// Maps the currently authored lesson blocks to capabilities without changing
-// the visible eight-lesson prototype. Lesson 1 is now classified as preflight;
-// the later content migration will replace it with eight counted lessons.
+var JOURNEY_ROADMAP_CAPABILITY_MAP = {
+  L1: {
+    "rhythm": ["L1-TIME-01", "L1-TIME-02"],
+    "chords and harmony": ["L1-HARM-01", "L1-HARM-02"],
+    "scales": ["L1-MAP-01", "L1-MAP-02"],
+    "technique": ["L1-PREP-01", "L1-MAP-01"],
+    "improvisation": ["L1-MAP-02", "L1-PLAY-01"],
+    "picking": ["L1-TIME-02"],
+    "fingerstyle": [],
+    "theory": ["L1-KNOW-01"],
+    "reading": ["L1-READ-01"],
+    "integration": ["L1-PLAY-01", "L1-SONG-01", "L1-ROLE-01", "L1-CREATE-01", "L1-PRACTICE-01", "L1-REFLECT-01"]
+  }
+};
+
+// Maps the Entry Check and eight counted lessons to Level 1 capabilities.
+// Source lesson numbers preserve the authored order; learner-facing lesson
+// numbers omit the Entry Check.
 var JOURNEY_LEVEL_ACTIVITY_CAPABILITY_MAP = {
   L1: {
     "l1-entry-preflight": {
@@ -226,8 +241,22 @@ var JOURNEY_LEVEL_ACTIVITY_CAPABILITY_MAP = {
         reflect: ["L1-REFLECT-01", "L1-PRACTICE-01"]
       }
     },
-    "l1-integration": {
+    "l1-song-path": {
       sourceLessonNumber: 8,
+      kind: "lesson",
+      countsTowardLevel: true,
+      capabilityIds: ["L1-TIME-02", "L1-HARM-02", "L1-MAP-02", "L1-EAR-01", "L1-PLAY-01", "L1-SONG-01", "L1-ROLE-01", "L1-CREATE-01", "L1-REFLECT-01"],
+      blocks: {
+        review: ["L1-HARM-02", "L1-MAP-02"],
+        warmup: ["L1-PREP-01", "L1-TIME-02"],
+        concept: ["L1-KNOW-01", "L1-ROLE-01"],
+        drill: ["L1-TIME-02", "L1-HARM-02", "L1-MAP-02"],
+        music: ["L1-PLAY-01", "L1-SONG-01", "L1-ROLE-01", "L1-CREATE-01"],
+        reflect: ["L1-REFLECT-01", "L1-PRACTICE-01"]
+      }
+    },
+    "l1-integration": {
+      sourceLessonNumber: 9,
       kind: "checkpoint",
       countsTowardLevel: true,
       capabilityIds: ["L1-TIME-01", "L1-TIME-02", "L1-HARM-01", "L1-HARM-02", "L1-MAP-01", "L1-MAP-02", "L1-EAR-01", "L1-READ-01", "L1-KNOW-01", "L1-PLAY-01", "L1-SONG-01", "L1-ROLE-01", "L1-CREATE-01", "L1-STYLE-01", "L1-PREP-01", "L1-PRACTICE-01", "L1-REFLECT-01"],
@@ -246,7 +275,8 @@ var JOURNEY_LEVEL_ACTIVITY_CAPABILITY_MAP = {
 var JOURNEY_AUTHORED_LESSONS = {
   L1: [
     {
-      title: "Lesson 1: Level 1 Entry Check",
+      title: "Entry Check: Find the Real Starting Point",
+      countsTowardLevel: false,
       minutes: 60,
       summary: "Begin Level 1 by finding the learner's real starting point: body, pulse, clean sound, one usable chord, and one tiny musical loop.",
       categoryTags: ["Rhythm", "Chords & Harmony", "Technique", "Integration"],
@@ -262,7 +292,7 @@ var JOURNEY_AUTHORED_LESSONS = {
       ]
     },
     {
-      title: "Lesson 2: The 8 Open Chords",
+      title: "Lesson 1: The 8 Open Chords",
       minutes: 60,
       summary: "Audit the QJam Level 1 open-chord set and identify which shapes are usable, shaky, or missing.",
       categoryTags: ["Chords & Harmony", "Technique", "Theory", "Integration"],
@@ -278,7 +308,7 @@ var JOURNEY_AUTHORED_LESSONS = {
       ]
     },
     {
-      title: "Lesson 3: Common-Finger Chord Changes",
+      title: "Lesson 2: Common-Finger Chord Changes",
       minutes: 60,
       summary: "Use the open-chord set musically by finding easier changes and keeping time through the movement.",
       categoryTags: ["Chords & Harmony", "Rhythm", "Technique", "Integration"],
@@ -294,7 +324,7 @@ var JOURNEY_AUTHORED_LESSONS = {
       ]
     },
     {
-      title: "Lesson 4: Pentatonic Shape 1",
+      title: "Lesson 3: Pentatonic Shape 1",
       minutes: 60,
       summary: "Begin the QJam Level 1 pentatonic work by learning shape 1 as a usable fretboard map.",
       categoryTags: ["Scales", "Technique", "Theory", "Reading", "Improvisation"],
@@ -310,7 +340,7 @@ var JOURNEY_AUTHORED_LESSONS = {
       ]
     },
     {
-      title: "Lesson 5: Pentatonic Phrasing",
+      title: "Lesson 4: Pentatonic Phrasing",
       minutes: 60,
       summary: "Turn the pentatonic box from a finger pattern into small musical phrases.",
       categoryTags: ["Scales", "Improvisation", "Rhythm", "Technique", "Integration"],
@@ -326,7 +356,7 @@ var JOURNEY_AUTHORED_LESSONS = {
       ]
     },
     {
-      title: "Lesson 6: First Blues Solo Entry",
+      title: "Lesson 5: First Blues Solo Entry",
       minutes: 60,
       summary: "Use QJam Level 1 improvisation as a doorway into simple blues solo vocabulary.",
       categoryTags: ["Improvisation", "Scales", "Rhythm", "Technique", "Integration"],
@@ -342,7 +372,7 @@ var JOURNEY_AUTHORED_LESSONS = {
       ]
     },
     {
-      title: "Lesson 7: Chords Meet Pentatonics",
+      title: "Lesson 6: Chords Meet Pentatonics",
       minutes: 60,
       summary: "Connect the Level 1 chord world to the Level 1 pentatonic/improvisation world.",
       categoryTags: ["Chords & Harmony", "Scales", "Improvisation", "Theory", "Integration"],
@@ -355,6 +385,22 @@ var JOURNEY_AUTHORED_LESSONS = {
         { id:"drill", min:18, phase:"DRILL", source:"Doing/Practice", title:"Chord then phrase loop", body:"Play two bars of chords, then two bars of a pentatonic phrase. Repeat at least four times. Keep rhythm steady across the switch.", prompt:"Where did the timing break?" },
         { id:"music", min:13, phase:"MUSIC APPLICATION", source:"Play/Create", title:"Mini arrangement", body:"Make a tiny arrangement: chord intro, short phrase, chord answer. It can be simple, but it should have a beginning and an answer.", prompt:"Describe the mini arrangement." },
         { id:"reflect", min:5, phase:"REFLECT", source:"Hearth", title:"Connection note", body:"Write whether the learner understands why scales and chords belong in the same musical world.", prompt:"What connection needs clearer teaching?" }
+      ]
+    },
+    {
+      title: "Lesson 7: Carry It Into a Song",
+      minutes: 60,
+      summary: "Use one accessible song frame to connect rhythm guitar, A minor pentatonic lead, listening, and role exchange.",
+      categoryTags: ["Rhythm", "Chords & Harmony", "Scales", "Improvisation", "Picking", "Reading", "Integration"],
+      conceptNames: ["Song map", "Rhythm and lead roles", "Listening landmarks"],
+      taskNames: ["Listen for sections", "Rhythm part", "Lead safety notes", "Role swap", "Complete take"],
+      blocks: [
+        { id:"review", min:6, phase:"REVIEW", source:"Journey Notes", title:"Choose the musical tools that already work", body:"Bring back one usable chord or rhythm pattern and one A minor pentatonic phrase. The song is a container for skills already touched, not a pile of new challenges.", prompt:"Which rhythm part and lead phrase are safe enough to use?" },
+        { id:"warmup", min:8, phase:"WARM-UP", source:"Practice/Hearth", title:"Tune in and find the pulse", body:"Tune the guitar, release tension, then tap or mute-strum with the recording or a slow substitute pulse. Listen before playing the full part.", prompt:"Where is the pulse easiest to hear?" },
+        { id:"concept", min:10, phase:"CONCEPT", source:"Study/Knowing", title:"A song gives every skill a job", body:"Map the song in plain language: section, pulse, rhythm-guitar job, lead-guitar space, and A as a safety note. Use TAB or a tiny diagram only where it makes the next action clearer.", prompt:"What are the rhythm and lead jobs in this song?" },
+        { id:"drill", min:16, phase:"DRILL", source:"Doing/Practice", title:"Rehearse each role separately", body:"Loop the smallest rhythm section first. Then loop a tiny A minor pentatonic response. Keep a clear pass condition: stay with the pulse and finish the phrase without panic.", prompt:"Which role needs an easier step?" },
+        { id:"music", min:15, phase:"MUSIC APPLICATION", source:"Play/Create", title:"Play, swap roles, and keep one choice", body:"One person holds the rhythm while the other uses a small pentatonic phrase. Swap. Make one deliberate change and keep it as the learner's creative choice.", prompt:"What survived when the roles swapped?" },
+        { id:"reflect", min:5, phase:"REFLECT", source:"Mastery/Hearth/Journey", title:"Save the take and the next step", body:"Notice one strong musical moment, one exact weakness, and one thing to repeat tomorrow. A complete small take matters more than pretending the whole song is finished.", prompt:"What should be repeated tomorrow, and what can wait?" }
       ]
     },
     {
@@ -379,8 +425,9 @@ var JOURNEY_AUTHORED_LESSONS = {
 var JOURNEY_STUDENT_COMPANIONS = {
   jen: {
     label: "Jen Lesson Companion",
-    title: "A minor pentatonic consolidation + tiny CAGED clue",
-    focus: "Consolidate A minor pentatonic and right-hand patterns. Use CAGED only as a tiny map clue: chord shapes are landmarks, and pentatonic notes live around those landmarks.",
+    title: "Love Itself: rhythm, lead + connected scale maps",
+    consolidationFocus: "A minor pentatonic consolidation",
+    focus: "Continue Leonard Cohen's Love Itself in small sections. Consolidate the Marcello warm-up and finger independence, strengthen the open-position rhythm part, and use the F-position major-scale area for short lead responses.",
     studySubject: {
       id: "jen-a-minor-pentatonic-home",
       title: "A as home inside A minor pentatonic",
@@ -390,32 +437,33 @@ var JOURNEY_STUDENT_COMPANIONS = {
       topicId: "pentatonic",
       recommendedDoor: "shape"
     },
-    guideNote: "Jen asked for consolidation. Keep the gradient gentle: root notes as safety points, rhythm second, then one or two extra pentatonic notes. CAGED is optional language, not the lesson goal.",
-    mainRule: "Do not teach the full CAGED system today. If Jen overloads, drop the word CAGED and return to: find A, play a tiny phrase, come back to A.",
+    guideNote: "Jen is progressing across several connected skills. Keep the song section small, stabilise the rhythm role, then let the lead answer with two or three notes. Do not turn the whole neck into one memorisation task.",
+    mainRule: "One reliable song section and one musical response are enough. Quietly place difficult chords, keep the pulse, and build the neck map one rooted position at a time.",
     mapClue: {
       title: "The only CAGED idea for today",
       phrase: "Chord shapes are landmarks. Pentatonic notes live around those landmarks.",
       use: "Show one connection: A is home, the A minor pentatonic box sits around that home, and the phrase can always land back on A.",
       avoid: "Avoid all five shapes, transposition, full-neck theory, or proving that she understands CAGED."
     },
-    nextAction: "Plan the next lesson around a song that uses A minor pentatonic with rhythm guitar and lead guitar. Keep jamming as the doorway, repeat the scale map often, and use CAGED only as a helpful landmark clue.",
+    nextAction: "Continue Love Itself in one short section. Strengthen the open-position rhythm part, repeat the F-position major-scale pattern, and swap rhythm and lead only when both parts can continue slowly.",
     latestReview: {
-      date: "2026-07-16",
-      feltHome: "The jamming.",
-      mostMusical: "The scale itself started to sound musical.",
-      enjoyed: "Jen enjoyed and asked for more jamming.",
-      helped: "The CAGED clue definitely helped.",
-      needs: "Everything still needs lots of repetition.",
+      date: "2026-07-22",
+      feltHome: "The familiar Marcello warm-up and musical call and response.",
+      mostMusical: "Beginning to combine the Love Itself rhythm part with lead responses.",
+      enjoyed: "Starting a real song and trying rhythm and lead together.",
+      helped: "Transposing the capo arrangement into an open position and separating the two musical roles.",
+      needs: "The song chords, barre-shaped changes, scale patterns, timing, finger independence, and whole-neck understanding all need repetition.",
       commitment: "Practise 20 minutes a day.",
-      nextLesson: "Learn a song that uses A minor pentatonic with rhythm guitar and lead guitar."
+      nextLesson: "Continue one short section of Love Itself, strengthen rhythm first, then answer from the F-position major-scale area."
     },
     commitment: {
       title: "20-minute daily practice thread",
+      durationMinutes: 20,
       currentDay: 1,
       totalDays: 7,
       progressPercent: 14,
-      today: "20 minutes: A minor pentatonic, A roots, and one musical jam.",
-      tomorrow: "Repeat the same map, then start choosing a song for rhythm + lead."
+      today: "20 minutes: Marcello warm-up, finger independence, one Love Itself section, and one short scale response.",
+      tomorrow: "Repeat the same song section, loop one hard chord change, then swap rhythm and lead."
     },
     doorway: [
       "Right-hand patterns",
@@ -455,7 +503,16 @@ var JOURNEY_STUDENT_COMPANIONS = {
         source: "Hearth + Practice",
         aim: "Arrive before teaching.",
         action: "Tune the guitar, check shoulders, jaw, breath, fretting hand, picking hand, then listen to open strings.",
-        prompt: "What does Jen's body and sound need before we start?"
+        prompt: "What does Jen's body and sound need before we start?",
+        hearthHandoff: {
+          label: "Open the body check",
+          activity_id: "hearth-jen-body-check",
+          zone_id: "breath",
+          journey_level_id: "L1",
+          capability_ids: ["L1-PREP-01"],
+          instruction: "Check jaw, shoulders, breath, back, fretting hand, and picking hand before the first musical task.",
+          easier_step: "Take one slow exhale, drop the shoulders, and play one open string."
+        }
       },
       {
         label: "Safe Map",
@@ -473,7 +530,17 @@ var JOURNEY_STUDENT_COMPANIONS = {
         source: "Student interest",
         aim: "Use the thing Jen asked for as the doorway.",
         action: "Choose one right-hand pattern. Repeat it four times calmly, then use it under A roots or a tiny A minor phrase.",
-        prompt: "Did the pattern make the map more musical, or did it add pressure?"
+        prompt: "Did the pattern make the map more musical, or did it add pressure?",
+        doingHandoff: {
+          label: "Open strum engine",
+          room_id: "right-hand",
+          category_id: "rhythm",
+          drill_id: "strum-1",
+          capability_ids: ["L1-TIME-01", "L1-TIME-02"],
+          instruction: "Keep the right hand moving through one full bar before adding A minor or changing chords.",
+          pass_condition: "Keep the hand moving for 30 seconds at 60 BPM without losing the beat.",
+          easier_step: "Mute the strings and use quarter-note downstrokes only."
+        }
       },
       {
         label: "Map Clue",
@@ -482,7 +549,18 @@ var JOURNEY_STUDENT_COMPANIONS = {
         source: "Study + Knowing",
         aim: "Show one CAGED connection without teaching the whole system.",
         action: "Say: chord shapes are landmarks. Pentatonic notes live around those landmarks. Show only how A is home inside the current A minor pentatonic area.",
-        prompt: "Did this map clue help, or should we drop the word CAGED for now?"
+        prompt: "Did this map clue help, or should we drop the word CAGED for now?",
+        studyHandoff: {
+          label: "Open the map clue in Study",
+          activity_id: "study-a-minor-pentatonic-map-clue",
+          subject_id: "jen-a-minor-pentatonic-home",
+          subject_title: "A as home inside A minor pentatonic",
+          recommended_door: "shape",
+          journey_level_id: "L1",
+          capability_ids: ["L1-MAP-01", "L1-KNOW-01"],
+          instruction: "Use the Shape door to find A as home inside the familiar pentatonic area. Keep CAGED to one small landmark clue.",
+          easier_step: "Drop the word CAGED. Find one A root, play one nearby note, then return to A."
+        }
       },
       {
         label: "Make Music",
@@ -491,7 +569,26 @@ var JOURNEY_STUDENT_COMPANIONS = {
         source: "Doing",
         aim: "Turn roots and nearby notes into a phrase.",
         action: "Play only A roots with rhythm. Add one nearby pentatonic note, then one more. Repeat the phrase and change the ending.",
-        prompt: "Which tiny phrase feels musical enough to repeat?"
+        prompt: "Which tiny phrase feels musical enough to repeat?",
+        doingHandoff: {
+          label: "Open A roots drill",
+          room_id: "both-hands",
+          category_id: "coordination",
+          drill_id: "pent-roots-time",
+          capability_ids: ["L1-MAP-01", "L1-MAP-02", "L1-TIME-01"],
+          instruction: "Use A roots as safe landing points, keep the pulse, then add one nearby pentatonic note.",
+          pass_condition: "Create a four-bar root-note phrase that stays in time and ends on A.",
+          easier_step: "Use one A root only at 60 BPM."
+        },
+        practiceHandoff: {
+          label: "Practice the song thread",
+          source_id: "level-1-a-minor-homecoming",
+          activity_id: "practice-plan-a-minor-homecoming-3-day",
+          journey_level_id: "L1",
+          capability_ids: ["L1-PREP-01", "L1-PRACTICE-01"],
+          instruction: "Use the 20-minute plan to separate the roles, join the eight bars, and return on another day.",
+          easier_step: "Practise the rhythm role only for five minutes at 60 BPM."
+        }
       },
       {
         label: "Conversation",
@@ -501,12 +598,43 @@ var JOURNEY_STUDENT_COMPANIONS = {
         aim: "End by making the idea social and musical.",
         action: "One person holds A minor or a simple pulse. The other plays small A minor pentatonic phrases. Leave space, answer, then swap.",
         prompt: "What sounded like a conversation rather than an exercise?",
+        doingHandoff: {
+          label: "Learn the parts in Do",
+          room_id: "both-hands",
+          category_id: "coordination",
+          drill_id: "song-thread-am",
+          capability_ids: ["L1-TIME-01", "L1-TIME-02", "L1-HARM-02", "L1-MAP-02", "L1-READ-01"],
+          instruction: "Listen to the two roles, read the small rhythm and TAB maps, then complete the eight-bar mini-piece and swap roles.",
+          pass_condition: "Complete all eight bars, try both roles, stay with the pulse, and name one thing to repeat.",
+          easier_step: "Hold muted quarter notes while the lead plays only one A root on beat 1."
+        },
+        playHandoff: {
+          label: "Play and swap roles",
+          source_id: "level-1-a-minor-homecoming",
+          activity_id: "play-a-minor-homecoming-role-exchange",
+          journey_level_id: "L1",
+          capability_ids: ["L1-PLAY-01", "L1-SONG-01", "L1-ROLE-01"],
+          instruction: "Complete the eight-bar mini-piece, try rhythm and lead, then name what changed when the roles listened to each other.",
+          easier_step: "One person holds muted quarter notes while the other lands on one A root."
+        },
         createHandoff: {
           label: "Turn this into a riff",
+          source_id: "level-1-a-minor-homecoming",
+          journey_level_id: "L1",
+          capability_ids: ["L1-CREATE-01"],
           suggested_ingredient: "riff",
           seed_title: "A minor conversation",
           starter: "A minor pentatonic root notes as safety points",
           instruction: "Make a two-bar answer from one A root note and two nearby pentatonic notes over an A minor groove. Leave one small space before you repeat it."
+        },
+        masteryHandoff: {
+          label: "Watch space become music",
+          source_id: "level-1-bb-king-space-and-answer",
+          activity_id: "mastery-level-1-space-and-answer",
+          journey_level_id: "L1",
+          capability_ids: ["L1-STYLE-01"],
+          instruction: "Notice one choice about space, timing, touch, or landing, then try a tiny version inside A Minor Homecoming.",
+          easier_step: "Play two notes, count four quiet beats, then land on A."
         }
       },
       {
@@ -516,7 +644,16 @@ var JOURNEY_STUDENT_COMPANIONS = {
         source: "Hearth + Journey",
         aim: "Capture the next safe step.",
         action: "Ask what felt like home, what sounded musical, what was confusing, and whether the chord-shape map clue helped or felt like too much.",
-        prompt: "What should repeat, simplify, or wait next time?"
+        prompt: "What should repeat, simplify, or wait next time?",
+        hearthHandoff: {
+          label: "Open the feeling check",
+          activity_id: "hearth-jen-feeling-review",
+          zone_id: "heart",
+          journey_level_id: "L1",
+          capability_ids: ["L1-REFLECT-01"],
+          instruction: "Notice what helped Jen feel musical, what created pressure, and what makes her want to return.",
+          easier_step: "Name one moment that felt good and one thing to repeat next time."
+        }
       }
     ],
     reviewPrompts: [
@@ -529,10 +666,12 @@ var JOURNEY_STUDENT_COMPANIONS = {
     ],
     practice: [
       "Practise 20 minutes a day",
-      "Make A root notes musical at 60 BPM",
-      "Repeat the A minor pentatonic map until it feels familiar",
-      "Use A as the safety note inside the pentatonic box",
-      "Choose a song that can hold rhythm guitar and lead guitar"
+      "Play one slow, clean Marcello-style scale warm-up",
+      "Keep the finger-independence drill tiny and relaxed",
+      "Practise one short section of Love Itself in the open-position arrangement",
+      "Loop one harder barre-shaped chord change slowly",
+      "Repeat the major-scale pattern around F and make a two- or three-note response",
+      "Practise rhythm and lead separately before swapping roles"
     ]
   }
 };
@@ -545,6 +684,7 @@ if (typeof window !== "undefined") {
   window.JOURNEY_CAPABILITY_FAMILIES = JOURNEY_CAPABILITY_FAMILIES;
   window.JOURNEY_LEVEL_CAPABILITIES = JOURNEY_LEVEL_CAPABILITIES;
   window.JOURNEY_LEVEL_EVIDENCE_RULES = JOURNEY_LEVEL_EVIDENCE_RULES;
+  window.JOURNEY_ROADMAP_CAPABILITY_MAP = JOURNEY_ROADMAP_CAPABILITY_MAP;
   window.JOURNEY_LEVEL_ACTIVITY_CAPABILITY_MAP = JOURNEY_LEVEL_ACTIVITY_CAPABILITY_MAP;
   window.JOURNEY_AUTHORED_LESSONS = JOURNEY_AUTHORED_LESSONS;
   window.JOURNEY_STUDENT_COMPANIONS = JOURNEY_STUDENT_COMPANIONS;

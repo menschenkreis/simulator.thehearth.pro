@@ -71,7 +71,7 @@
       }
       return {
         actionText: "You've completed all topics in <strong>" + cat.title + "</strong>! Pick another discipline.",
-        button: { label: "\u2190 Study Lab", target: "study" },
+        button: { label: "\u2190 Key Chamber", target: "study" },
         emoji: "\uD83D\uDCD6",
         markComplete: true,
         message: "Understood!"

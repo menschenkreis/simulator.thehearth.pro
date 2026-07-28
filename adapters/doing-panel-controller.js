@@ -43,6 +43,9 @@
       drillCatalog.apply(doing);
     }
     var storage = root.localStorage;
+    var handoffStore = root.HearthCrossNodeHandoffStore && typeof root.HearthCrossNodeHandoffStore.createStore === "function"
+      ? root.HearthCrossNodeHandoffStore.createStore({ storage: root.sessionStorage })
+      : null;
     var progressBridge = root.HearthDoingProgressBridge;
     var eventStore = root.HearthProgressEvents;
     var learnerId = progressBridge && typeof progressBridge.activeLearnerId === "function"
@@ -132,6 +135,24 @@
       };
     }
 
+    function activeNodeHandoff() {
+      if (!handoffStore) return null;
+      return handoffStore.current({ learnerId: learnerId, destinationNodeId: "doing" });
+    }
+
+    function activeTaskContext() {
+      var handoff = activeNodeHandoff();
+      if (handoff) {
+        return {
+          lessonId: handoff.lesson_id || null,
+          sessionId: handoff.session_id || null,
+          handoffId: handoff.id,
+          returnRoute: handoff.return_route
+        };
+      }
+      return activePracticeContext();
+    }
+
     function practiceReturnHtml() {
       var activeSession = activePracticeSession();
       if (!activeSession) return "";
@@ -139,6 +160,42 @@
         '<span>&larr;</span><b>Guided practice</b><small>' + doingUi.escapeHtml(activeSession.focus || "Current focus") + '</small>' +
       '</button>';
     }
+
+    function handoffReturnHtml() {
+      var handoff = activeNodeHandoff();
+      if (!handoff) return "";
+      var returnsToPractice = handoff.return_route && handoff.return_route.node_id === "practice";
+      return '<button type="button" class="doing-practice-return" onclick="window._returnFromDoingHandoff()">' +
+        '<span>&larr;</span><b>' + (returnsToPractice ? "Return to Practice" : "Return to Journey") + '</b><small>' +
+        doingUi.escapeHtml((handoff.task && handoff.task.instruction) || "Continue the guided lesson") +
+        '</small></button>';
+    }
+
+    function returnContextHtml() {
+      return handoffReturnHtml() || practiceReturnHtml();
+    }
+
+    root._returnFromDoingHandoff = function returnFromDoingHandoff() {
+      var handoff = activeNodeHandoff();
+      if (!handoff) return;
+      var route = handoff.return_route || {};
+      handoffStore.clear(handoff.id);
+      if (route.node_id === "practice" && root.PracticePlannedSession && typeof root.PracticePlannedSession.resume === "function") {
+        root.PracticePlannedSession.resume();
+        return;
+      }
+      if (route.node_id === "journey" && root.Journey) {
+        if (route.view_id === "companion" && typeof root.Journey.openCompanionLesson === "function") {
+          root.Journey.openCompanionLesson(handoff.learner_id);
+          return;
+        }
+        if (typeof root.Journey.openLevel === "function") {
+          root.Journey.openLevel(Number(route.params && route.params.level_num) || 1);
+          return;
+        }
+      }
+      if (root.Journey && typeof root.Journey.render === "function") root.Journey.render();
+    };
 
     function boardOptions() {
       return {
@@ -226,7 +283,7 @@
       var entry = findDrillEntry(drillId);
       var bridge = progressBridge;
       if (!entry || entry.cat.id !== catId || !bridge || typeof bridge.recordFeedback !== "function") return;
-      var context = activePracticeContext();
+      var context = activeTaskContext();
       return bridge.recordFeedback({
         category: entry.cat,
         drill: entry.drill,
@@ -238,6 +295,7 @@
         level: getDoingLevel(entry.drill),
         lessonId: context.lessonId,
         sessionId: context.sessionId,
+        handoffId: context.handoffId,
         returnRoute: context.returnRoute,
         eventStore: root.HearthProgressEvents,
         storage: storage
@@ -250,7 +308,7 @@
         refreshProgressProjection(false);
         return null;
       }
-      var context = activePracticeContext();
+      var context = activeTaskContext();
       var recorded = progressBridge.recordOpen({
         category: cat,
         drill: drill,
@@ -259,6 +317,7 @@
         room: room,
         lessonId: context.lessonId,
         sessionId: context.sessionId,
+        handoffId: context.handoffId,
         returnRoute: context.returnRoute,
         eventStore: eventStore,
         storage: storage
@@ -284,7 +343,7 @@
         return item.level === getDoingLevel(drill);
       }) || levels[0];
       if (!root.HearthDoingDrillDetailViewer) return;
-      panel.innerHTML = practiceReturnHtml() + root.HearthDoingDrillDetailViewer.renderDoingDrillDetail({
+      panel.innerHTML = returnContextHtml() + root.HearthDoingDrillDetailViewer.renderDoingDrillDetail({
         cat: cat,
         drill: drill,
         level: level,
@@ -355,8 +414,10 @@
 
       root.HearthCreateHandoff.open({
         source_node_id: "doing",
-        source_id: entry.drill.id,
+        source_id: handoff.source_id || entry.drill.id,
         lesson_id: handoff.lesson_id || "",
+        journey_level_id: handoff.journey_level_id || "",
+        capability_ids: handoff.capability_ids || [],
         source_title: entry.drill.title,
         suggested_ingredient: handoff.suggested_ingredient,
         seed_title: handoff.seed_title,
@@ -518,7 +579,7 @@
 
     function shell() {
       if (state.doingView === "map") {
-        panel.innerHTML = practiceReturnHtml() + renderMap();
+        panel.innerHTML = returnContextHtml() + renderMap();
         bindControls();
         return;
       }
@@ -535,7 +596,7 @@
       }
 
       if (!root.HearthDoingShellViewer) return;
-      panel.innerHTML = practiceReturnHtml() + root.HearthDoingShellViewer.renderDoingShell({
+      panel.innerHTML = returnContextHtml() + root.HearthDoingShellViewer.renderDoingShell({
         doing: doing,
         ui: doingUi,
         progressSummary: progressSummary,

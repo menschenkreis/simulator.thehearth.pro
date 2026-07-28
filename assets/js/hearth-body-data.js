@@ -5,7 +5,7 @@ var HEARTH_BODY_COPY = {
   title: "The Inner Instrument",
   subtitle: "Learn how your hands, brain, eyes, ears, body, and feelings develop while you learn guitar.",
   guide: "The guitar is the outer instrument. The learner is the inner instrument.",
-  defaultPrompt: "Choose a system to see what it does and how to train it."
+  defaultPrompt: "Choose one part of the inner instrument."
 };
 
 var HEARTH_BODY_ZONES = [
@@ -13,9 +13,9 @@ var HEARTH_BODY_ZONES = [
     id: "brain",
     label: "Brain",
     seal: "B",
-    x: "50%",
-    y: "7.5%",
-    r: 4.0,
+    x: "45%",
+    y: "11%",
+    r: 5.2,
     guide: "The brain builds the maps that let sound, movement, attention, and memory work together.",
     system: "The brain is not one single learning machine. Different areas help you listen, move, remember, predict, focus, and feel safe enough to try.",
     parts: [
@@ -37,9 +37,9 @@ var HEARTH_BODY_ZONES = [
     id: "hands",
     label: "Hands",
     seal: "H",
-    x: "42%",
-    y: "43%",
-    r: 4.3,
+    x: "78%",
+    y: "48%",
+    r: 5.1,
     guide: "The hands are living tissues: bones, joints, tendons, nerves, skin, and attention working together.",
     system: "Hands do not learn by force. They learn by small, accurate movements repeated with relaxed attention.",
     parts: [
@@ -61,9 +61,9 @@ var HEARTH_BODY_ZONES = [
     id: "ears",
     label: "Ears",
     seal: "E",
-    x: "47.5%",
-    y: "12.5%",
-    r: 3.1,
+    x: "54%",
+    y: "18%",
+    r: 3.5,
     guide: "The ears collect vibration, but listening is trained by the ear and brain together.",
     system: "The ear receives sound through vibration. The brain learns to recognize pitch, rhythm, tone color, distance, and musical meaning.",
     parts: [
@@ -85,9 +85,9 @@ var HEARTH_BODY_ZONES = [
     id: "eyes",
     label: "Eyes",
     seal: "I",
-    x: "53.5%",
-    y: "10.8%",
-    r: 2.9,
+    x: "39%",
+    y: "18%",
+    r: 3.3,
     guide: "The eyes help turn the guitar into a map of shapes, distances, symbols, and movement.",
     system: "Eyes take in light and movement, but visual learning also depends on attention, pattern recognition, and spatial memory.",
     parts: [
@@ -109,9 +109,9 @@ var HEARTH_BODY_ZONES = [
     id: "breath",
     label: "Breath / Body",
     seal: "Br",
-    x: "45.5%",
-    y: "31%",
-    r: 4.6,
+    x: "48%",
+    y: "32%",
+    r: 5.0,
     guide: "The body sets the conditions for learning: posture, breath, tension, energy, and recovery.",
     system: "Breath and posture affect the nervous system. When the body feels rushed or braced, the hands often tighten and timing suffers.",
     parts: [
@@ -130,12 +130,13 @@ var HEARTH_BODY_ZONES = [
     care: "If your whole body braces to play something, the step is too large. Make it smaller."
   },
   {
-    id: "heart",
-    label: "Heart / Feeling",
-    seal: "Hrt",
-    x: "50.5%",
-    y: "24.5%",
-    r: 3.7,
+    id: "feeling",
+    aliases: ["heart"],
+    label: "Feeling",
+    seal: "F",
+    x: "49%",
+    y: "39%",
+    r: 4.2,
     guide: "Feeling is part of learning. Confidence, shame, joy, and identity change what the body will risk.",
     system: "The emotional system affects attention, memory, motivation, and whether the learner keeps returning.",
     parts: [
@@ -152,6 +153,30 @@ var HEARTH_BODY_ZONES = [
       "Choose one song, tone, or rhythm that makes you want to return."
     ],
     care: "If practice becomes proof that you are bad, stop. The task needs gentler framing, not harsher judgment."
+  },
+  {
+    id: "integration",
+    label: "Integration",
+    seal: "All",
+    x: "52%",
+    y: "58%",
+    r: 5.2,
+    guide: "The inner instrument works as one system when listening, movement, attention, breath, and feeling meet in music.",
+    system: "Integration is not a separate organ. It is the cooperation of the learner's systems during one real musical action.",
+    parts: [
+      "The ears compare the sound with the intention.",
+      "The eyes and touch help locate the next movement.",
+      "The brain predicts, notices, and updates.",
+      "Breath and feeling affect whether the movement stays free."
+    ],
+    development: "Integration develops by using small skills together, noticing what breaks, and returning to the weakest link without shame.",
+    guitar: "A short complete phrase can train more integration than a long exercise played without listening.",
+    practices: [
+      "Play one short phrase and name what you heard, felt, and changed.",
+      "Keep the pulse while changing only one musical detail.",
+      "End with a complete small musical action."
+    ],
+    care: "When everything collapses at once, separate the systems and rebuild one link at a time."
   }
 ];
 

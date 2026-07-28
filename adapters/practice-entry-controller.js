@@ -6,6 +6,44 @@
   var lastSnapshot = null;
   var selectedReviewId = "";
   var freeDraft = { minutes: 20, focus: "Clean" };
+  var activeHandoff = null;
+
+  function handoffStore() {
+    if (!root.HearthCrossNodeHandoffStore || typeof root.HearthCrossNodeHandoffStore.createStore !== "function") return null;
+    return root.HearthCrossNodeHandoffStore.createStore({ storage: root.sessionStorage });
+  }
+
+  function readPracticeHandoff() {
+    var store = handoffStore();
+    if (!store) return null;
+    var state = journeyState();
+    var learnerId = activeHandoff && activeHandoff.learner_id ||
+      state && state.activeStudentId;
+    return store.current({ learnerId: learnerId || undefined, destinationNodeId: "practice" });
+  }
+
+  function returnToSource() {
+    var handoff = activeHandoff || readPracticeHandoff();
+    var route = handoff && handoff.return_route;
+    var store = handoffStore();
+    if (store && handoff) store.clear(handoff.id);
+    activeHandoff = null;
+    if (route && route.node_id === "journey" && root.Journey) {
+      var practicePanel = document.getElementById("p-foundation");
+      if (practicePanel) practicePanel.innerHTML = "";
+      var params = route.params || {};
+      if (typeof root.Journey.openCompanionLesson === "function") root.Journey.openCompanionLesson(params.learner_id);
+      if (typeof root.Journey.focusCompanionStep === "function" && Number.isFinite(Number(params.step_index))) {
+        root.Journey.focusCompanionStep(Number(params.step_index));
+      }
+      return;
+    }
+    if (route && route.node_id === "play" && typeof root.showPlay === "function") {
+      root.showPlay();
+      return;
+    }
+    if (typeof root.backToMap === "function") root.backToMap();
+  }
 
   function panel() {
     document.querySelectorAll(".pnl").forEach(function hidePanel(item) {
@@ -48,16 +86,51 @@
     var studySnapshot = root.StudyKeyChamberModel && typeof root.StudyKeyChamberModel.snapshot === "function"
       ? root.StudyKeyChamberModel.snapshot({ storage: localStorage })
       : null;
-    return root.HearthPracticeEntryModel.buildSnapshot({
+    var result = root.HearthPracticeEntryModel.buildSnapshot({
       journeyState: journeyState(),
       companions: root.JOURNEY_STUDENT_COMPANIONS,
       events: progressEvents(),
       candleState: candleState(),
       plannedSession: plannedSession,
       studySnapshot: studySnapshot,
+      songThread: root.HearthLevelOneSongThread || null,
       doingProgressBridge: root.HearthDoingProgressBridge,
       plannedStepTitle: plannedStep && plannedStep.title
     });
+    var handoffActivityId = activeHandoff && activeHandoff.activity_id;
+    var songPlan = result.songThread;
+    if (songPlan && handoffActivityId === songPlan.practicePlanId) {
+      result.commitment.title = songPlan.planTitle;
+      result.commitment.targetMinutes = songPlan.minutes;
+      result.commitment.currentDay = Math.min(songPlan.completedDays + 1, songPlan.targetDays);
+      result.commitment.totalDays = songPlan.targetDays;
+      result.commitment.today = songPlan.nextSession && songPlan.nextSession.focus || result.commitment.today;
+      result.commitment.tomorrow = songPlan.nextSession && songPlan.nextSession.finish || result.commitment.tomorrow;
+      result.guideText = "Use one calm return to " + songPlan.title + ". The plan remembers separate practice days, not repeated clicks.";
+    }
+    var handoffParameters = activeHandoff && activeHandoff.task && activeHandoff.task.parameters || {};
+    var reviewPracticeItems = Array.isArray(handoffParameters.practice_items)
+      ? handoffParameters.practice_items.filter(Boolean)
+      : [];
+    if (reviewPracticeItems.length) {
+      result.lessonReviewPlan = true;
+      result.commitment.title = "Practice from the latest lesson review";
+      result.commitment.targetMinutes = Number(handoffParameters.duration_minutes) || result.commitment.targetMinutes;
+      result.commitment.today = activeHandoff.task.instruction || reviewPracticeItems[0];
+      result.recommendations = reviewPracticeItems.slice();
+      result.guideText = handoffParameters.review_id
+        ? "This plan comes from the latest saved lesson review. Repeat what the lesson actually asked for."
+        : "This is the current Journey practice sheet. Keep the contact calm and specific.";
+    }
+    if (activeHandoff && activeHandoff.source_node_id === "play" && activeHandoff.task) {
+      var playParameters = activeHandoff.task.parameters || {};
+      result.commitment.title = "Repeat what Play revealed";
+      result.commitment.targetMinutes = Number(playParameters.duration_minutes) || 10;
+      result.commitment.today = activeHandoff.task.instruction || playParameters.focus || result.commitment.today;
+      result.recommendations = [result.commitment.today];
+      result.guideText = playParameters.reason || "Play found one musical relationship worth repeating. Practise that relationship, not the whole route.";
+    }
+    return result;
   }
 
   function entryUiState() {
@@ -171,12 +244,14 @@
     });
     var back = target.querySelector("[data-practice-back]");
     if (back) back.addEventListener("click", function onBackClick() {
-      if (typeof root.backToMap === "function") root.backToMap();
+      if (activeHandoff || readPracticeHandoff()) returnToSource();
+      else if (typeof root.backToMap === "function") root.backToMap();
     });
     bindContextActions(target);
   }
 
   function showPractice() {
+    activeHandoff = readPracticeHandoff();
     var target = panel();
     if (!target || !root.HearthPracticeEntryModel || !root.HearthPracticeEntryViewer) return;
     lastSnapshot = snapshot();
@@ -188,13 +263,25 @@
       freeDraft.focus = preferences.focus && preferences.focus !== "All" ? preferences.focus : freeDraft.focus;
     }
     target.innerHTML = root.HearthPracticeEntryViewer.render(lastSnapshot, selectedMode, entryUiState());
+    var back = target.querySelector("[data-practice-back]");
+    if (back && activeHandoff) {
+      back.textContent = activeHandoff.source_node_id === "play" ? "\u2190 Return to Play" : "\u2190 Return to Journey";
+    }
     bindEntry(target);
+  }
+
+  function openWithHandoff(handoff) {
+    activeHandoff = handoff || readPracticeHandoff();
+    selectedMode = "planned";
+    showPractice();
   }
 
   root.HearthPracticeEntryController = {
     version: "1.1.0",
     showPractice: showPractice,
-    selectMode: setSelectedMode
+    selectMode: setSelectedMode,
+    openWithHandoff: openWithHandoff,
+    returnToSource: returnToSource
   };
   root.showPractice = showPractice;
 

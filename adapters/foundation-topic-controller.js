@@ -13,23 +13,31 @@
 })(typeof globalThis !== "undefined" ? globalThis : this, function createFoundationTopicController(root) {
   "use strict";
 
-  function readLegacyProgress() {
+  function readProgress() {
     if (root.HearthFoundationProgressBridge) {
-      return root.HearthFoundationProgressBridge.readLegacyProgress();
+      return root.HearthFoundationProgressBridge.readProgress();
     }
-    return JSON.parse(root.localStorage.getItem("hearth-foundation-progress") || "{}");
+    return {};
   }
 
   function renderFoundationTopicStep(topicId, stepIndex) {
     if (!root.HearthFoundationTopicViewer) {
       return null;
     }
+    var foundation = root.FOUNDATION;
+    var topic = foundation && foundation.topics.find(function findTopic(item) {
+      return item.id === topicId;
+    });
+    var step = topic && topic.steps && topic.steps[stepIndex || 0];
+    if (root.HearthFoundationProgressBridge) {
+      root.HearthFoundationProgressBridge.recordTopicStep(topicId, step && step.label);
+    }
     return root.HearthFoundationTopicViewer.renderFoundationTopicStep({
-      foundation: root.FOUNDATION,
+      foundation: foundation,
       targetEl: root.document.getElementById("p-foundation"),
       topicId: topicId,
       stepIndex: stepIndex || 0,
-      completed: readLegacyProgress()
+      completed: readProgress()
     });
   }
 
@@ -48,6 +56,10 @@
     });
     if (!topic) {
       return null;
+    }
+
+    if (root.HearthFoundationProgressBridge) {
+      root.HearthFoundationProgressBridge.recordTopicOpened(topicId);
     }
 
     if (typeof root.setNotebookContext === "function") {
@@ -73,9 +85,11 @@
       }
 
       var engine = root._teachEngine = root.TeachingEngine(teachContainer, {
-        onComplete: function onComplete() {
+        onComplete: function onComplete(scores) {
           if (root.HearthFoundationProgressBridge) {
-            root.HearthFoundationProgressBridge.markFoundationLessonCompleted(topicId, lessonInfo);
+            root.HearthFoundationProgressBridge.markFoundationLessonCompleted(topicId, lessonInfo, {
+              scores: scores || {}
+            });
           }
           if (typeof root.showFoundation === "function") {
             root.showFoundation();
@@ -127,7 +141,7 @@
   return {
     version: "0.1.0",
     completeFoundationTopic: completeFoundationTopic,
-    readLegacyProgress: readLegacyProgress,
+    readProgress: readProgress,
     renderFoundationTopicStep: renderFoundationTopicStep,
     showFoundationTopic: showFoundationTopic
   };

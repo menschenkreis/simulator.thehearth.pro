@@ -14,7 +14,8 @@
     complete: false,
     learnerId: null,
     returnAction: "",
-    returnLabel: ""
+    returnLabel: "",
+    sourceContext: null
   };
 
   function persistedCandle() {
@@ -28,6 +29,7 @@
       learnerId: PRACTICE_CANDLE.learnerId,
       returnAction: PRACTICE_CANDLE.returnAction,
       returnLabel: PRACTICE_CANDLE.returnLabel,
+      sourceContext: PRACTICE_CANDLE.sourceContext,
       updatedAt: new Date().toISOString()
     };
   }
@@ -50,6 +52,7 @@
       PRACTICE_CANDLE.totalMs = Number(saved.totalMs) || PRACTICE_CANDLE.durationMinutes * 60 * 1000;
       PRACTICE_CANDLE.returnAction = saved.returnAction || "";
       PRACTICE_CANDLE.returnLabel = saved.returnLabel || "";
+      PRACTICE_CANDLE.sourceContext = saved.sourceContext || null;
       PRACTICE_CANDLE.complete = Boolean(saved.complete);
       PRACTICE_CANDLE.learnerId = saved.learnerId || null;
       PRACTICE_CANDLE.running = Boolean(saved.running && PRACTICE_CANDLE.startedAt && Date.now() - PRACTICE_CANDLE.startedAt < PRACTICE_CANDLE.totalMs);
@@ -198,7 +201,8 @@
           blockers: blockers.split(",").map(function(item) { return item.trim(); }).filter(Boolean),
           improved: feeling,
           hard: blockers,
-          repeat_next: nextStep
+          repeat_next: nextStep,
+          source_context: PRACTICE_CANDLE.sourceContext
         }
       });
     }
@@ -346,6 +350,7 @@
       PRACTICE_CANDLE.learnerId = options.learnerId || PRACTICE_CANDLE.learnerId || null;
       PRACTICE_CANDLE.returnAction = options.returnAction || "";
       PRACTICE_CANDLE.returnLabel = options.returnLabel || "";
+      PRACTICE_CANDLE.sourceContext = options.sourceContext || null;
       PRACTICE_CANDLE.startedAt = null;
       PRACTICE_CANDLE.running = false;
       PRACTICE_CANDLE.complete = false;

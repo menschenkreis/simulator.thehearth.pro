@@ -7,6 +7,32 @@ Audit: `whole-simulator-integration-audit-2026-07-18.md`
 Readiness: Working Vertical Slice
 Browser verification: desktop complete; responsive and keyboard partial
 
+## 2026-07-20 Implementation Checkpoint
+
+Know now has one authoritative live reading experience: the approved flipbook
+remains the visual reader, but it records progress through the shared canonical
+event store instead of the old global shelf counter.
+
+Completed in this checkpoint:
+
+- `opened`, `read`, `answered`, and `applied` are separate evidence stages;
+- all new evidence is attached to the active learner and stable topic ID;
+- old global progress is preserved as historical data and is not assigned to a
+  learner automatically;
+- opening or reading a topic does not award capability credit;
+- a correct check response can award the approved Know capability;
+- Time Signatures has a small check-for-understanding;
+- Know sends the exact topic ID, title, category, and source route to Study;
+- Study preserves separate door evidence when the learner changes subjects;
+- the flipbook controls have accessible names and the background is inert while
+  the book is open;
+- focused model, route, learner-separation, syntax, reference, and browser checks
+  pass.
+
+The next Know work is content and return-route depth, not another reader
+rewrite. Missing-media fallback, source review across the full topic inventory,
+responsive testing, and a real Study/Journey `applied` return remain open.
+
 ## 1. Plain-Language Purpose
 
 Know is the browsable guitar library. It helps a learner understand names,
@@ -40,9 +66,10 @@ is not merely historical.
 
 ## 4. What The Audit Changed
 
-No Know implementation changed. The audit verified the live library path,
-topic-specific video, stale shelf progress, competing reader ownership, and
-accessibility problems.
+The audit first verified the live library path, topic-specific video, stale
+shelf progress, competing reader ownership, and accessibility problems. The
+2026-07-20 checkpoint then repaired the reader/progress boundary without
+replacing the approved shelf or book metaphor.
 
 ## 5. Protected Decisions
 
@@ -60,15 +87,15 @@ owns source-backed explanation and concept contact. It should emit topic
 contact plus optional learner response. Study receives the exact subject and
 must return evidence without Know reading Study's DOM.
 
-Current Know-to-Study subject transfer partly works; progress and return context
-do not.
+Know-to-Study now transfers the exact subject and source context. A full
+Study-to-Know/Journey return carrying `applied` evidence remains unfinished.
 
 ## 7. Learner Memory And Progress
 
-The global shelf key must migrate to per-learner evidence. Stable topic IDs
-already exist and should remain canonical. Record `opened`, `read`, `answered`,
-and `applied` separately. Shelf completion should reflect an agreed meaningful
-state, not merely opening the book.
+New progress is projected from per-learner canonical evidence. The old global
+shelf key remains untouched because its learner ownership is ambiguous. Stable
+topic IDs remain canonical. Shelf contact reflects visited topics; understanding
+and capability evidence remain visibly separate.
 
 ## 8. Content And Source State
 
@@ -80,32 +107,32 @@ be visible. Video rights and availability need fallback handling.
 ## 9. Checks And Evidence
 
 - Desktop: Know -> Rhythm -> Time Signatures: verified.
-- Know -> Study subject signal: partially verified.
-- Shelf remained `0/15`: verified defect.
-- Accessibility snapshot exposed inactive controls/unlabelled arrows.
-- Smoke and ownership checks: pass at `93bcc64`.
+- Know -> Study exact subject signal: model verified.
+- Shelf contact updates only from learner-scoped evidence: model and browser
+  verified.
+- Inactive background and labelled book controls: browser verified.
+- Smoke, ownership, syntax, and local-reference checks: pass at the 2026-07-20
+  checkpoint.
 
 Mobile, keyboard page turning, refresh/resume, missing video, and all 52 topic
 routes need focused coverage.
 
 ## 10. Known Gaps And Risks
 
-- Active legacy reader bypasses canonical progress.
-- Global progress leaks across profiles.
-- Exposure is easily mistaken for understanding.
+- Missing media currently has weak fallback guidance.
+- The `applied` stage needs a real return from Study, Journey, or guitar use.
 - Source coverage and rights are incomplete.
-- Inactive content is not hidden from assistive technology.
+- Responsive and full keyboard coverage are incomplete.
 
 ## 11. Prioritized Next Build
 
-1. **Now:** make one reader path authoritative and emit learner-scoped topic
-   evidence. Acceptance: reading Time Signatures updates only the active
-   learner's shelf after refresh. Time: 4-6 hours. Credit: medium. Images: no.
-2. **Next:** repair Know <-> Study subject and return contracts; add an optional
-   check-for-understanding. Time: 4-6 hours. Credit: medium. Research: no.
-3. **Later:** source-review and deepen the 52-topic inventory in batches, with
-   accessible page controls and media fallbacks. Time: multi-day. Credit:
-   medium. Research: yes.
+1. **Now:** add missing-media fallback and prove one Study/Journey return that
+   records `applied` without awarding fake mastery. Time: 2-4 hours. Credit:
+   low to medium. Images: no.
+2. **Next:** responsive and keyboard testing for the shelf, flipbook, check, and
+   return route. Time: 2-4 hours. Credit: medium. Research: no.
+3. **Later:** source-review and deepen the 52-topic inventory in batches. Time:
+   multi-day. Credit: medium. Research: yes.
 
 ## 12. Do-Not-Disturb List
 

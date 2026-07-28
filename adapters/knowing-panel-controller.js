@@ -33,6 +33,12 @@
     return JSON.parse((storage && storage.getItem("hearth-knowing-progress")) || "{}");
   }
 
+  function readTopicStates(storage) {
+    return root.HearthKnowingProgressController && typeof root.HearthKnowingProgressController.topicProjection === "function"
+      ? root.HearthKnowingProgressController.topicProjection(storage)
+      : {};
+  }
+
   function renderKnowingShelf(viewMode) {
     var documentRef = root.document;
     var panel = showPanel(documentRef);
@@ -98,12 +104,23 @@
       return item.id === topicId;
     });
     if (!topic) return;
+    if (root.HearthKnowingProgressController && typeof root.HearthKnowingProgressController.recordStage === "function") {
+      root.HearthKnowingProgressController.recordStage({
+        stage: "opened",
+        catId: catId,
+        topicId: topicId,
+        topicTitle: topic.title,
+        storage: root.localStorage
+      });
+    }
+    var topicStates = readTopicStates(root.localStorage);
     if (typeof root.setNotebookContext === "function") root.setNotebookContext(catId + "-" + topicId, topic.title);
     panel.innerHTML = root.HearthKnowingTopicViewer.renderKnowingTopic({
       knowing: knowing,
       cat: cat,
       topic: topic,
-      completed: readProgress(root.localStorage)
+      completed: readProgress(root.localStorage),
+      topicState: topicStates[topicId] || null
     });
   }
 

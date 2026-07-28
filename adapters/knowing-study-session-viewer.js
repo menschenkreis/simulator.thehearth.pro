@@ -50,9 +50,9 @@
 
   function renderVideo(topic) {
     return '<div style="background:var(--card);border:1px dashed var(--border);border-radius:8px;padding:20px;margin-bottom:16px;text-align:center">' +
-      '<div style="font-size:1.5rem;margin-bottom:6px">\uD83C\uDFAC</div>' +
-      '<div style="font-size:0.75rem;color:var(--dim)">Video lesson coming soon</div>' +
-      '<div style="font-size:0.65rem;color:var(--dim);margin-top:4px">Source: ' + topic.source + '</div>' +
+      '<div style="font-family:JetBrains Mono;font-size:0.62rem;color:var(--gold);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:6px">Mapped resource</div>' +
+      '<div style="font-size:0.75rem;color:var(--dim)">No direct video has been approved for this exact topic yet.</div>' +
+      '<div style="font-size:0.65rem;color:var(--dim);margin-top:4px">Current source: ' + topic.source + '</div>' +
     '</div>';
   }
 
@@ -109,7 +109,7 @@
     var color = session.color;
 
     return '<div style="padding:20px;max-width:700px;margin:0 auto">' +
-      '<button class="back-btn" onclick="showStudy()">← Back to Study Lab</button>' +
+      '<button class="back-btn" onclick="showStudy()">← Back to Key Chamber</button>' +
       '<div style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:20px;margin-bottom:16px">' +
         '<div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap">' +
           '<span style="border:1px solid ' + color + '30;color:' + color + ';padding:3px 8px;border-radius:4px;font-size:0.65rem;font-family:JetBrains Mono">' + cat.title.toUpperCase() + '</span>' +
@@ -148,7 +148,7 @@
       '<div style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:16px;margin:16px 0;font-size:0.85rem;color:var(--text)">' + outcome.actionText + '</div>' +
       '<div style="display:flex;gap:8px;justify-content:center">' +
         renderResultButton(session, outcome.button) +
-        '<button class="back-btn" onclick="showStudy()">← Study Lab</button>' +
+        '<button class="back-btn" onclick="showStudy()">← Key Chamber</button>' +
       '</div>' +
     '</div>';
   }

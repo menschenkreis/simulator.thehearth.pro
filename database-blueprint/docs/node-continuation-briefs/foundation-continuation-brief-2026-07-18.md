@@ -7,6 +7,32 @@ Audit: `whole-simulator-integration-audit-2026-07-18.md`
 Readiness: Working Vertical Slice
 Browser verification: desktop complete; responsive partial and failing
 
+## 2026-07-20 Implementation Checkpoint
+
+Foundation now records new progress as learner-scoped canonical evidence while
+preserving the approved gateway and ten-fret path.
+
+Completed in this checkpoint:
+
+- `opened`, `experienced`, `answered`, and `orientation_completed` are separate
+  topic stages;
+- Ayla and Jen receive separate new Foundation evidence;
+- the ambiguous global `hearth-foundation-progress` history remains untouched
+  and is not silently assigned to the active learner;
+- opening Fret 0 leaves the visible count at `0/10`;
+- a completed topic, rather than an opened topic, advances the learner's fret
+  count;
+- the ten-fret path emits one `foundation_path_completed` event only after all
+  ten topics are complete;
+- that path event supplies valid `L1-PREP-01` preparation evidence to Journey;
+- locked future frets no longer open when clicked, and available frets support
+  keyboard activation;
+- model, learner-isolation, event-contract, route, syntax, and browser checks
+  pass.
+
+The live browser QA opened Fret 0 for Jen once. This is contact evidence only,
+not completion. No legacy Foundation data was modified.
+
 ## 1. Plain-Language Purpose
 
 Foundation is the threshold. It teaches a learner how to enter the guitar world
@@ -66,10 +92,11 @@ Current condition: no canonical shared Foundation event is emitted.
 
 ## 7. Learner Memory And Progress
 
-The current visible key is global and must be migrated, not discarded. Define
-stable topic IDs and distinguish `opened`, `experienced`, `answered`, and
-`orientation_completed`. Resume the learner at the most recent incomplete
-block. Keep teacher notes outside public learner copy.
+New visible progress is projected from learner-scoped canonical evidence. The
+old global key is preserved as ambiguous historical data and remains available
+to the read-only migration preview. Stable topic IDs distinguish `opened`,
+`experienced`, `answered`, and `orientation_completed`. The map resumes at the
+first unfinished fret. Keep teacher notes outside public learner copy.
 
 ## 8. Content And Source State
 
@@ -81,7 +108,7 @@ rights-recorded.
 ## 9. Checks And Evidence
 
 - Desktop path: Map -> Foundation -> Fret 0 -> teaching scene: verified.
-- Profile switch: visible Foundation count did not change: leak verified.
+- Profile separation: model verified; live switching remains a focused follow-up.
 - Phone and iPad: clipped: verified.
 - Smoke checks, renderer ownership, all loaded JavaScript syntax, and local
   asset references: pass through `bb7adaf`.
@@ -90,7 +117,8 @@ Keyboard, refresh/resume, and missing-media recovery need dedicated tests.
 
 ## 10. Known Gaps And Risks
 
-- Regression risk: competing legacy progress paths.
+- Historical global progress remains intentionally unassigned until ownership
+  can be confirmed.
 - Intentional unfinished work: nine themes lack Fret 0 depth.
 - Content debt: source and level calibration.
 - Wiring debt: no shared evidence or Journey readiness.
@@ -98,9 +126,9 @@ Keyboard, refresh/resume, and missing-media recovery need dedicated tests.
 
 ## 11. Prioritized Next Build
 
-1. **Now:** add learner-scoped Foundation evidence with a legacy migration.
-   Acceptance: Ayla and Jen show separate fret progress after refresh.
-   Time: 3-5 hours. Credit: medium. Images/research: no.
+1. **Now:** live-test profile switching and refresh/resume, then repair the
+   known phone and tablet clipping without changing the gateway composition.
+   Time: 2-4 hours. Credit: medium. Images/research: no.
 2. **Next:** finish one more theme to the Fret 0 standard and return its
    evidence to Journey. Acceptance: action, feedback, saved evidence, next step.
    Time: 3-5 hours. Credit: medium. Research: likely; images: no.
@@ -115,7 +143,7 @@ legacy data before a tested migration.
 
 ## 13. Recommended Opening Instruction
 
-Read this brief and the whole-simulator audit first. Inspect the live Foundation
-path before editing. Implement the `Now` batch only, preserve the approved
-gateway and simulator-wide contracts, update this brief at the next stable
-checkpoint, explain decisions plainly, and warn before high-credit work.
+Read this brief and the whole-simulator audit first. Keep the approved gateway,
+canonical evidence, and preserved legacy history. Verify profile switching and
+responsive behavior before deepening content. Explain decisions plainly and
+warn before high-credit research or media work.

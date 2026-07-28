@@ -70,7 +70,7 @@
       '<button class="back-btn" onclick="backToMap()">← Map</button>' +
       '<div style="text-align:center;margin-bottom:24px">' +
         '<div style="font-size:2rem;margin-bottom:6px">\uD83D\uDCC4</div>' +
-        '<div style="font-family:Cinzel,serif;color:#8a6aaa;font-size:1.3rem;font-weight:700">Study Lab</div>' +
+        '<div style="font-family:Cinzel,serif;color:#8a6aaa;font-size:1.3rem;font-weight:700">Key Chamber</div>' +
         '<div style="font-size:0.7rem;color:var(--dim);margin-top:4px;font-style:italic">Guided study sessions. Context. Terms. Deep questions. Understanding.</div>' +
       '</div>' +
       renderProgress(studyState.summary) +

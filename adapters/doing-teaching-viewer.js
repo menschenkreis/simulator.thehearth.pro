@@ -378,12 +378,124 @@
     updateInteractiveFretboard(fretboardEl);
   }
 
+  function songThreadFor(drill) {
+    return drill.songThread || root.HearthLevelOneSongThread || {};
+  }
+
+  function renderSongThread(drill, ui) {
+    var thread = songThreadFor(drill);
+    var progression = Array.isArray(thread.progression) ? thread.progression : [];
+    var rhythm = thread.rhythm || {};
+    var lead = thread.lead || {};
+    var listening = thread.listening || {};
+    var roleButtons = (listening.roles || []).map(function renderRole(role) {
+      return '<button type="button" data-song-role="' + ui.escapeHtml(role.id) + '" ' +
+        'onclick="window.HearthDoingTeachingViewer.playSongThread(this, \'' + ui.escapeHtml(role.id) + '\')">' +
+        '<b>' + ui.escapeHtml(role.label) + '</b><span>' + ui.escapeHtml(role.notice) + '</span></button>';
+    }).join("");
+    var bars = progression.map(function renderBar(bar) {
+      return '<span><small>Bar ' + ui.escapeHtml(bar.bar) + '</small><b>' + ui.escapeHtml(bar.chord) + '</b></span>';
+    }).join("");
+    var rhythmCells = (rhythm.count || []).map(function renderCount(count, index) {
+      var stroke = (rhythm.strokes || [])[index] || "-";
+      return '<span class="' + (stroke === "-" ? "is-rest" : "is-play") + '"><small>' +
+        ui.escapeHtml(count) + '</small><b>' + (stroke === "D" ? "↓" : stroke === "U" ? "↑" : "·") + '</b></span>';
+    }).join("");
+    var leadSteps = Array.isArray(lead.steps) ? lead.steps : [];
+    var tabRows = (lead.strings || ["e", "B", "G", "D", "A", "E"]).map(function renderTabRow(stringName) {
+      var cells = leadSteps.map(function renderTabCell(step) {
+        if (step.string !== stringName) return '<span aria-hidden="true">—</span>';
+        return '<button type="button" title="Play ' + ui.escapeHtml(step.note) + '" aria-label="Play ' +
+          ui.escapeHtml(step.note + ', string ' + stringName + ', fret ' + step.fret) + '" ' +
+          'onclick="window.HearthDoingTeachingViewer.playSongThreadNote(this, ' + Number(step.frequency || 220) + ')">' +
+          ui.escapeHtml(step.fret) + '</button>';
+      }).join("");
+      return '<div><b>' + ui.escapeHtml(stringName) + '</b><span>' + cells + '</span></div>';
+    }).join("");
+    var counts = leadSteps.map(function renderLeadCount(step) {
+      return '<span>' + ui.escapeHtml(step.count) + '</span>';
+    }).join("");
+
+    return '<div class="doing-song-thread" data-song-thread="' + ui.escapeHtml(thread.id || "level-1-song") + '">' +
+      '<div class="doing-song-head"><div><span>Original Level 1 mini-piece</span><b>' + ui.escapeHtml(thread.title || drill.title) +
+      '</b></div><em>60 BPM · guide tones</em></div>' +
+      '<p>' + ui.escapeHtml(thread.purpose || drill.goal) + '</p>' +
+      '<div class="doing-song-listen"><b>Listen before playing</b><div>' + roleButtons + '</div>' +
+        '<p>' + ui.escapeHtml(listening.prompt || "What changes between the roles?") + '</p>' +
+        '<output aria-live="polite">Choose one guide. These are simple reference tones, not a guitar recording.</output></div>' +
+      '<div class="doing-song-road"><b>Eight-bar road</b><div>' + bars + '</div></div>' +
+      '<div class="doing-song-parts">' +
+        '<section><span>Rhythm role · strum grid</span><div class="doing-song-rhythm">' + rhythmCells + '</div><p>' + ui.escapeHtml(rhythm.easier || "") + '</p></section>' +
+        '<section><span>Lead role · short TAB answer</span><div class="doing-song-counts"><i></i>' + counts + '</div>' +
+          '<div class="doing-song-tab" aria-label="Short A minor pentatonic tablature">' + tabRows + '</div><p>' + ui.escapeHtml(lead.easier || "") + '</p></section>' +
+      '</div></div>';
+  }
+
+  function getSongAudioContext() {
+    var AudioContext = root.AudioContext || root.webkitAudioContext;
+    if (!AudioContext) return null;
+    if (!root.__hearthSongAudioContext) root.__hearthSongAudioContext = new AudioContext();
+    return root.__hearthSongAudioContext;
+  }
+
+  function scheduleGuideTone(context, frequency, start, duration, volume, wave) {
+    var oscillator = context.createOscillator();
+    var gain = context.createGain();
+    oscillator.type = wave || "triangle";
+    oscillator.frequency.setValueAtTime(frequency, start);
+    gain.gain.setValueAtTime(0.0001, start);
+    gain.gain.exponentialRampToValueAtTime(volume || 0.06, start + 0.02);
+    gain.gain.exponentialRampToValueAtTime(0.0001, start + duration);
+    oscillator.connect(gain);
+    gain.connect(context.destination);
+    oscillator.start(start);
+    oscillator.stop(start + duration + 0.03);
+  }
+
+  function playSongThread(control, role) {
+    var context = getSongAudioContext();
+    var scene = control && control.closest ? control.closest(".doing-song-thread") : null;
+    if (!context || !scene) return;
+    if (context.state === "suspended") context.resume();
+    Array.prototype.forEach.call(scene.querySelectorAll("[data-song-role]"), function markRole(button) {
+      button.classList.toggle("is-active", button === control);
+    });
+    var start = context.currentTime + 0.04;
+    var pulse = 0.36;
+    var roots = [110, 110, 130.81, 130.81, 98, 98, 110, 110];
+    var lead = [261.63, 293.66, 329.63, 293.66, 220];
+    if (role === "rhythm" || role === "together") {
+      roots.forEach(function scheduleRoot(frequency, index) {
+        scheduleGuideTone(context, frequency, start + index * pulse, pulse * 0.72, 0.055, "triangle");
+      });
+    }
+    if (role === "lead" || role === "together") {
+      lead.forEach(function scheduleLead(frequency, index) {
+        scheduleGuideTone(context, frequency, start + index * pulse, pulse * 0.68, 0.04, "sine");
+      });
+    }
+    var output = scene.querySelector("output");
+    if (output) output.textContent = control.querySelector("span").textContent;
+  }
+
+  function playSongThreadNote(control, frequency) {
+    var context = getSongAudioContext();
+    if (!context) return;
+    if (context.state === "suspended") context.resume();
+    scheduleGuideTone(context, Number(frequency) || 220, context.currentTime + 0.02, 0.44, 0.055, "sine");
+    var tab = control && control.closest ? control.closest(".doing-song-tab") : null;
+    if (tab) Array.prototype.forEach.call(tab.querySelectorAll("button"), function markNote(button) {
+      button.classList.toggle("is-active", button === control);
+    });
+  }
+
   function renderVisual(drill, ui) {
     var asset = drill.asset || "";
     var title = drill.shortTitle || drill.title;
     var visualType = drill.visualType || "movement";
     var isInteractive = visualType === "interactive-tab" || visualType === "interactive-strum-grid" ||
-      visualType === "interactive-chord-check" || visualType === "interactive-fretboard";
+      visualType === "interactive-chord-check" || visualType === "interactive-fretboard" ||
+      visualType === "interactive-song-thread";
     var assetHtml = visualType === "interactive-tab"
       ? renderInteractiveTab(drill, ui)
       : visualType === "interactive-strum-grid"
@@ -392,6 +504,8 @@
       ? renderInteractiveChordCheck(drill, ui)
       : visualType === "interactive-fretboard"
       ? renderInteractiveFretboard(drill, ui)
+      : visualType === "interactive-song-thread"
+      ? renderSongThread(drill, ui)
       : asset
       ? '<img class="doing-teaching-asset" src="' + ui.escapeHtml(asset) + '" alt="' + ui.escapeHtml(title + " demonstration") + '" draggable="false">'
       : '<div class="doing-teaching-diagram doing-teaching-diagram--' + ui.escapeHtml(visualType) + '" aria-hidden="true">' +
@@ -546,7 +660,7 @@
   }
 
   return {
-    version: "1.1.0",
+    version: "1.2.0",
     renderEvidence: renderEvidence,
     renderFeedback: renderFeedback,
     renderListenChips: renderListenChips,
@@ -555,10 +669,13 @@
     normalizedStrumGrid: normalizedStrumGrid,
     normalizedChord: normalizedChord,
     normalizedFretboard: normalizedFretboard,
+    playSongThread: playSongThread,
+    playSongThreadNote: playSongThreadNote,
     renderCreateHandoff: renderCreateHandoff,
     renderScene: renderScene,
     renderSteps: renderSteps,
     renderVisual: renderVisual,
+    renderSongThread: renderSongThread,
     setTabDirection: setTabDirection,
     setFretboardMode: setFretboardMode,
     selectFretboardNote: selectFretboardNote,

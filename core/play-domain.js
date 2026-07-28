@@ -241,6 +241,17 @@
       repeat_focus: asString(result.repeat_focus),
       recording_id: result.recording_id || null,
       revisit: Boolean(result.revisit),
+      capability_ids: asArray(result.capability_ids),
+      evidence_stage: asString(result.evidence_stage),
+      evidence_source: asString(result.evidence_source),
+      attempt_id: result.attempt_id || null,
+      session_id: result.session_id || null,
+      handoff_id: result.handoff_id || null,
+      return_route: clone(result.return_route || null),
+      fallback_instruction: result.fallback_instruction || null,
+      roles_tried: asArray(result.roles_tried),
+      song_id: result.song_id || null,
+      completed_full_form: Boolean(result.completed_full_form),
       completed_at: result.completed_at || options.now || new Date().toISOString()
     };
   }
@@ -368,6 +379,48 @@
 
   function toProgressEvent(result, options) {
     var normalized = normalizePlayResult(result, options);
+    if (normalized.capability_ids.length) {
+      var timestamp = normalized.completed_at;
+      return {
+        id: result.id || "play-event-" + normalized.learner_id + "-" + Date.parse(timestamp),
+        version: 1,
+        simulator_id: "hearth-guitar",
+        event_type: "play_activity_completed",
+        learner_id: normalized.learner_id,
+        actor_role: "learner",
+        node_id: "play",
+        destination_node_id: null,
+        journey_level_id: normalized.journey_level_id,
+        lesson_id: normalized.lesson_id,
+        activity_id: normalized.activity_id,
+        capability_ids: normalized.capability_ids,
+        attempt_id: normalized.attempt_id,
+        session_id: normalized.session_id,
+        evidence_stage: normalized.evidence_stage || "application",
+        evidence_source: normalized.evidence_source || "self_report",
+        handoff_id: normalized.handoff_id,
+        duration_minutes: normalized.duration_minutes,
+        note: normalized.reflection,
+        occurred_at: timestamp,
+        recorded_at: timestamp,
+        return_route: normalized.return_route,
+        fallback_instruction: normalized.fallback_instruction,
+        data: {
+          route_id: normalized.route_id,
+          destination_id: normalized.destination_id,
+          activity_id: normalized.activity_id,
+          role: normalized.role,
+          roles_tried: normalized.roles_tried,
+          song_id: normalized.song_id,
+          completed_full_form: normalized.completed_full_form,
+          tempo: normalized.tempo,
+          stayed_with_pulse: normalized.stayed_with_pulse,
+          found_home: normalized.found_home,
+          revisit: normalized.revisit,
+          repeat_focus: normalized.repeat_focus
+        }
+      };
+    }
     return {
       event_type: "play_activity_completed",
       node_id: "play",
@@ -411,6 +464,58 @@
     };
   }
 
+  function createPracticeHandoff(result, options) {
+    options = options || {};
+    var normalized = normalizePlayResult(result, options);
+    var recommendation = createPracticeRecommendation(normalized);
+    if (!recommendation || !normalized.learner_id || !normalized.activity_id) return null;
+    var now = options.now || new Date().toISOString();
+    var suffix = options.suffix || String(Date.parse(now) || Date.now());
+    return {
+      id: "handoff-play-practice-" + normalized.learner_id + "-" + suffix,
+      version: 1,
+      learner_id: normalized.learner_id,
+      actor_role: "learner",
+      source_node_id: "play",
+      destination_node_id: "practice",
+      activity_id: normalized.activity_id,
+      lesson_id: normalized.lesson_id,
+      journey_level_id: normalized.journey_level_id,
+      capability_ids: [],
+      attempt_id: normalized.attempt_id,
+      session_id: normalized.session_id,
+      task: {
+        id: "repeat-" + normalized.activity_id,
+        instruction: recommendation.focus,
+        parameters: {
+          focus: recommendation.focus,
+          reason: recommendation.reason,
+          duration_minutes: recommendation.suggested_minutes,
+          tempo: recommendation.tempo,
+          source_result_id: normalized.id,
+          source_attempt_id: normalized.attempt_id,
+          source_destination_id: normalized.destination_id
+        }
+      },
+      pass_condition: {
+        description: "Complete one honest repetition and save what changed.",
+        minimum_evidence_stage: "attempt",
+        criteria: { source_result_id: normalized.id }
+      },
+      easier_step: {
+        instruction: "Use one role for five minutes, then write down what needs another return.",
+        parameters: { duration_minutes: 5, tempo: recommendation.tempo || 60 }
+      },
+      return_route: {
+        node_id: "play",
+        view_id: "remember",
+        params: { destination_id: normalized.destination_id, activity_id: normalized.activity_id }
+      },
+      fallback_instruction: "Return to Play and reopen the saved musical exchange.",
+      created_at: now
+    };
+  }
+
   return {
     version: "0.2.0",
     cultureClaimStatuses: CULTURE_CLAIM_STATUSES.slice(),
@@ -431,6 +536,7 @@
     validateDestination: validateDestination,
     buildMarkerStates: buildMarkerStates,
     toProgressEvent: toProgressEvent,
-    createPracticeRecommendation: createPracticeRecommendation
+    createPracticeRecommendation: createPracticeRecommendation,
+    createPracticeHandoff: createPracticeHandoff
   };
 });
